@@ -1,8 +1,9 @@
 <?php
+
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -16,18 +17,12 @@
  * @copyright Copyright 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class WKHtmlToPDF
+class WKHtmlToPDF extends WKHtmlToX
 {
-    protected $wkhtmltopdf;
-    protected $documents = 1;
-    protected $docrefs = array();
-    protected $barcodes = array();
-    protected $patients = array();
-    protected $canvas_image_path;
-    public $custom_tags = array();
     public $left;
     public $middle;
     public $right;
+
     public $top_margin;
     public $bottom_margin;
     public $left_margin;
@@ -35,103 +30,19 @@ class WKHtmlToPDF
 
     public function __construct()
     {
-        if (Yii::app()->params['wkhtmltopdf_path']) {
-            if (!file_exists(Yii::app()->params['wkhtmltopdf_path'])) {
-                if (!$this->wkhtmltopdf = trim(`which wkhtmltopdf`)) {
-                    throw new Exception('wkhtmltopdf not found in the current path.');
-                }
-            } else {
-                $this->wkhtmltopdf = Yii::app()->params['wkhtmltopdf_path'];
-            }
-        }
+        $this->param_key = 'pdf';
+        $this->application_name = 'wkhtmltopdf';
 
-        $banner = $this->execute($this->wkhtmltopdf.' 2>&1');
+        parent::__construct();
 
-        if (preg_match('/reduced functionality/i', $banner)) {
-            throw new Exception('wkhtmltopdf has not been compiled with patched QT and so cannot be used.');
-        }
+        $this->left = Yii::app()->params['wkhtmltox']['pdf']['footer_left'];
+        $this->middle = Yii::app()->params['wkhtmltox']['pdf']['footer_middle'];
+        $this->right = Yii::app()->params['wkhtmltox']['pdf']['footer_right'];
 
-        $this->left = Yii::app()->params['wkhtmltopdf_footer_left'];
-        $this->middle = Yii::app()->params['wkhtmltopdf_footer_middle'];
-        $this->right = Yii::app()->params['wkhtmltopdf_footer_right'];
-
-        $this->top_margin = Yii::app()->params['wkhtmltopdf_top_margin'];
-        $this->bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
-        $this->left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
-        $this->right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
-    }
-
-    protected function execute($command)
-    {
-        return shell_exec($command);
-    }
-
-    public function getAssetManager()
-    {
-        return Yii::app()->assetManager;
-    }
-
-    public function remapAssetPaths($html)
-    {
-        $html = str_replace('href="/assets/', 'href="'.$this->getAssetManager()->basePath.'/', $html);
-        $html = str_replace('src="/assets/', 'src="'.$this->getAssetManager()->basePath.'/', $html);
-
-        return $html;
-    }
-
-    public function remapCanvasImagePaths($html)
-    {
-        preg_match_all('/<img src="\/.*?\/default\/eventImage\?event_id=[0-9]+&image_name=(.*?)"/', $html, $m);
-
-        foreach ($m[0] as $i => $img) {
-            $html = str_replace($img, "<img src=\"$this->canvas_image_path/{$m[1][$i]}.png\"", $html);
-        }
-
-        return $html;
-    }
-
-    public function findOrCreateDirectory($path)
-    {
-        if (!file_exists($path)) {
-            if (!@mkdir($path, 0755, true)) {
-                throw new Exception("Unable to create directory: $path: check permissions.");
-            }
-        }
-    }
-
-    public function readFile($path)
-    {
-        if (!$data = @file_get_contents($path)) {
-            throw new Exception("File not found: $path");
-        }
-
-        return $data;
-    }
-
-    public function writeFile($path, $data)
-    {
-        if (!@file_put_contents($path, $data)) {
-            throw new Exception("Unable to write to $path: check permissions.");
-        }
-    }
-
-    public function deleteFile($path)
-    {
-        if (@file_exists($path)) {
-            if (!@unlink($path)) {
-                throw new Exception("Unable to delete $path: check permissions.");
-            }
-        }
-    }
-
-    public function fileExists($path)
-    {
-        return @file_exists($path);
-    }
-
-    public function fileSize($path)
-    {
-        return @filesize($path);
+        $this->top_margin = Yii::app()->params['wkhtmltox']['pdf']['top_margin'];
+        $this->bottom_margin = Yii::app()->params['wkhtmltox']['pdf']['bottom_margin'];
+        $this->left_margin = Yii::app()->params['wkhtmltox']['pdf']['left_margin'];
+        $this->right_margin = Yii::app()->params['wkhtmlto']['pdf']['right_margin'];
     }
 
     public function formatFooter($footer, $left, $middle, $right)
@@ -226,11 +137,6 @@ class WKHtmlToPDF
         $this->patients = $patients;
     }
 
-    public function setCanvasImagePath($image_path)
-    {
-        $this->canvas_image_path = $image_path;
-    }
-
     public function setLeft($left)
     {
         $this->left = $left;
@@ -266,21 +172,27 @@ class WKHtmlToPDF
         $this->right_margin = $right_margin;
     }
 
-    public function generatePDF($imageDirectory, $prefix, $suffix, $html, $output_html = false, $inject_autoprint_js = true)
-    {
+    public function generatePDF(
+        $imageDirectory,
+        $prefix,
+        $suffix,
+        $html,
+        $output_html = false,
+        $inject_autoprint_js = true
+    ) {
         !$output_html && $html = $this->remapAssetPaths($html);
         !$output_html && $html = $this->remapCanvasImagePaths($html);
 
         $this->findOrCreateDirectory($imageDirectory);
 
-        $html_file = $suffix ? "$imageDirectory".DIRECTORY_SEPARATOR."{$prefix}_$suffix.html" : "$imageDirectory".DIRECTORY_SEPARATOR."$prefix.html";
-        $pdf_file = $suffix ? "$imageDirectory".DIRECTORY_SEPARATOR."{$prefix}_$suffix.pdf" : "$imageDirectory".DIRECTORY_SEPARATOR."$prefix.pdf";
-        $footer_file = $suffix ? "$imageDirectory".DIRECTORY_SEPARATOR."footer_$suffix.html" : "$imageDirectory".DIRECTORY_SEPARATOR.'footer.html';
+        $html_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.html";
+        $pdf_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.pdf";
+        $footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . 'footer.html';
 
         $this->writeFile($html_file, $html);
 
         $footer = $this->formatFooter(
-            $this->readFile(Yii::app()->basePath.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'print'.DIRECTORY_SEPARATOR.'pdf_footer.php'),
+            $this->readFile(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'print' . DIRECTORY_SEPARATOR . 'pdf_footer.php'),
             $this->left,
             $this->middle,
             $this->right,
@@ -292,19 +204,19 @@ class WKHtmlToPDF
         $this->writeFile($footer_file, $footer);
 
         if ($output_html) {
-            echo $html.$footer;
+            echo $html . $footer;
 
             return true;
         }
 
-        $top_margin = $this->top_margin ? '-T '.$this->top_margin : '';
-        $bottom_margin = $this->bottom_margin ? '-B '.$this->bottom_margin : '';
-        $left_margin = $this->left_margin ? '-L '.$this->left_margin : '';
-        $right_margin = $this->right_margin ? '-R '.$this->right_margin : '';
+        $top_margin = $this->top_margin ? '-T ' . $this->top_margin : '';
+        $bottom_margin = $this->bottom_margin ? '-B ' . $this->bottom_margin : '';
+        $left_margin = $this->left_margin ? '-L ' . $this->left_margin : '';
+        $right_margin = $this->right_margin ? '-R ' . $this->right_margin : '';
 
-        $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n'.Yii::app()->params['wkhtmltopdf_nice_level'].' ' : '';
+        $nice = Yii::app()->params['wkhtmltox']['pdf']['nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmlto']['pdf']['nice_level'] . ' ' : '';
 
-        $res = $this->execute($nice.escapeshellarg($this->wkhtmltopdf).' --footer-html '.escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file).' '.escapeshellarg($pdf_file).' 2>&1');
+        $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
             if ($this->fileSize($pdf_file) == 0) {
