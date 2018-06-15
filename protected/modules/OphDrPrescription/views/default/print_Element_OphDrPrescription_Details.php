@@ -22,7 +22,7 @@ $copy = $data['copy'];
 $header_text = null;
 $footer_text = null;
 
-$allowed_tags='<a><b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><img><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
+$allowed_tags='<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
 $header_param = Yii::app()->params['prescription_boilerplate_header'];
 if(!is_null($header_param)) {
