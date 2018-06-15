@@ -89,9 +89,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                   <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
 
                   <?php
-
                         $attributes['placeholder'] = $entry->units;
-                        $attributes['class'] = "input-validate numbers-only";
+                        $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
                         if($entry->units == 'mg'){
                             $attributes['class'] .= " decimal";
                         }
