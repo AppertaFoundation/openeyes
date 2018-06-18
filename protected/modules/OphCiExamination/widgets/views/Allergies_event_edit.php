@@ -25,7 +25,7 @@
 ?>
 
 <div class="element-fields" id="<?= $model_name ?>_element">
-    <div class="field-row row<?=count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
+    <div class="field-row row<?=$this->isAllergiesSetYes($element) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_allergies">Confirm patient has no allergies:</label>
         </div>
@@ -36,7 +36,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="<?=$element->no_allergies_date ? 'hidden' : ''?>">
+  <table id="<?= $model_name ?>_entry_table">
       <thead>
       <tr>
           <th>Allergy</th>
