@@ -24,14 +24,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$element = this.options.element;
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
-
         this.allergySelector = '[name$="[allergy_id]"]';
         this.$other = $('#' + this.options.modelName + '_other');
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
-
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
+        this.allergyNotCheckedValue = this.options.allergyNotCheckedValue;
+        this.allergyNoValue = this.options.allergyNoValue;
+        this.allergyYesValue = this.options.allergyYesValue;
 
         this.initialiseTriggers();
         this.dedupeAllergySelectors();
@@ -40,7 +41,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     AllergiesController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_Allergies',
-        element: undefined
+        element: undefined,
+        allergyNotCheckedValue: "-9",
+        allergyNoValue: "0",
+        allergyYesValue: "1"
     };
 
     AllergiesController.prototype.initialiseTriggers = function () {
@@ -84,32 +88,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    /**
-     * Checks if any of the listed allergies has a radio checked with yes value
-     * @returns {boolean}
-     */
-    AllergiesController.prototype.isAllergiesCheckedYes = function () {
-        var checkedYesFound = false;
+    AllergiesController.prototype.isAllergiesChecked = function (value) {
+        var valueChecked = false;
         this.$table.find('input[type=radio]:checked').each(function (i) {
-            if ($(this).val() === "1") {
-                checkedYesFound = true;
+            if ($(this).val() === value) {
+                valueChecked = true;
                 return false;
             }
         });
-        if (checkedYesFound) {
+        if (valueChecked) {
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * Set all the allergy radio buttons to No
-     */
     AllergiesController.prototype.setRadioButtonsToNo = function () {
         this.$table.find('input[type=radio]').each(function (i) {
             if ($(this).val() === "0") {
-                $(this).attr('checked', 'checked');
                 $(this).prop('checked', 'checked');
             }
         });
@@ -132,11 +128,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
+     * If the no allergy box is checked and any of the allergies are checked
+     * into not checked then uncheck the 'No allergies' box
+     * or
      * If any of the allergy boxes is checked yes then hide the 'patient has no allergies' box
      * else show the box
      */
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.isAllergiesCheckedYes()) {
+        if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
+            this.$noAllergiesFld.prop('checked', false);
+        }
+        if (this.isAllergiesChecked(this.allergyYesValue)) {
             this.$noAllergiesWrapper.hide();
             this.$noAllergiesFld.prop('checked', false);
         } else {
