@@ -47,7 +47,7 @@ class WKHtmlToImage extends WKHtmlToX
 
         $this->writeFile($html_file, $html);
 
-        $res = $this->execute(escapeshellarg($this->application_path) . ' ' . escapeshellarg($html_file) . ' ' . escapeshellarg($image_file) . ' 2>&1');
+        $res = $this->execute(escapeshellarg($this->application_path) . ' --width 1920 --disable-smart-width ' . escapeshellarg($html_file) . ' ' . escapeshellarg($image_file) . ' 2>&1');
 
         if (!$this->fileExists($image_file) || $this->fileSize($image_file) == 0) {
             if ($this->fileSize($image_file) == 0) {

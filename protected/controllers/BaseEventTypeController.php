@@ -939,7 +939,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @throws CHttpException
      */
-    public function actionView($id)
+    public function actionView($id, $render_as_image = false)
     {
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
@@ -987,7 +987,56 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
 
+        if ($render_as_image) {
+            ob_start();
+            $this->render('view', $viewData);
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            $image = new WKHtmlToImage();
+            $image->setCanvasImagePath($this->event->imageDirectory);
+            $directory = Yii::app()->assetManager->basePath;
+
+            $image->generateImage($directory, 'sample_image', '', $content);
+        } else {
+            $this->render('view', $viewData);
+        }
+    }
+
+    public function actionImage($id)
+    {
+        ob_start();
+        //$this->render('modules/OphCiExamination/view/');
+        /*$ctrl = new \OEModule\OphCiExamination\controllers\DefaultController(4686453);
+        $ctrl->beforeAction('view');
+        $ctrl->init();
+        $ctrl->actionView(4686453);*/
+
+        $this->setOpenElementsFromCurrentEvent('view');
+        // Decide whether to display the 'edit' button in the template
+
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $id,
+        ), $this->extraViewProperties);
+
         $this->render('view', $viewData);
+
+        //echo '<html><strong>foobar</strong></html>';
+
+        //$this->forward('view');
+        $content = ob_get_contents();
+        ob_end_clean();
+        //$image = new WkHtmlImage($content);
+        $image = new WKHtmlToImage();
+        $image->setCanvasImagePath($this->event->imageDirectory);
+        $directory = Yii::app()->assetManager->basePath;
+
+        $image->generateImage($directory, 'sample_image', '', $content);
+
+        Yii::log($content);
+        //$image->saveAs('/vagrant/imagetest.png');
+        //echo $image->getError();
     }
 
     /**
@@ -1915,16 +1964,16 @@ class BaseEventTypeController extends BaseModuleController
         $wk->setBarcode($this->event->barcodeHTML);
 
         foreach (array('left', 'middle', 'right') as $section) {
-            if (isset(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name])) {
-                $setMethod = 'set' . ucfirst($section);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name])) {
+                $setMethod = 'set'.ucfirst($section);
+                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name]);
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-            if (isset(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name])) {
-                $setMethod = 'setMargin' . ucfirst($margin);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name])) {
+                $setMethod = 'setMargin'.ucfirst($margin);
+                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name]);
             }
         }
 
