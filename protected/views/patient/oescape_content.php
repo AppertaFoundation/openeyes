@@ -20,3 +20,9 @@
 <main class="oescape flex-layout flex-stretch"  id="oescape-layout">
     <?php echo $content; ?>
 </main>
+<script type="text/javascript">
+  $('#oescape-layout').ready(function() {
+    //Immediately set the size to the selected value
+    setOEScapeSize($('.js-oes-area-resize.selected').attr('data-area'));
+  });
+</script>

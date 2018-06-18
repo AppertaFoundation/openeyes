@@ -2,34 +2,25 @@
   <div>
     <!-- resize left chart area and Left & Right Eye buttons -->
     <!-- note: no whitespace (gaps) in HTML, SVG is styled by CSS -->
-    <button class="js-oes-area-resize" data-area="small">
-      <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
-        <title>oescape-chart-size-small</title>
-        <rect x="1.5" y="1.5" width="34" height="15"></rect>
-        <rect x="3.5" y="3.5" width="8" height="11"></rect>
-      </svg>
-    </button>
-    <button class="js-oes-area-resize selected" data-area="medium">
-      <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
-        <title>oescape-chart-size-medium</title>
-        <rect x="1.5" y="1.5" width="34" height="15"></rect>
-        <rect x="3.5" y="3.5" width="16" height="11"></rect>
-      </svg>
-    </button>
-    <button class="js-oes-area-resize" data-area="large">
-      <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
-        <title>oescape-chart-size-large</title>
-        <rect x="1.5" y="1.5" width="34" height="15"></rect>
-        <rect x="3.5" y="3.5" width="24" height="11"></rect>
-      </svg>
-    </button>
-    <button class="js-oes-area-resize" data-area="full">
-      <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
-        <title>oescape-chart-size-full</title>
-        <rect x="1.5" y="1.5" width="34" height="15"></rect>
-        <rect x="3.5" y="3.5" width="30" height="11"></rect>
-      </svg>
-    </button>
+    <?php
+
+      $selected_size = array_key_exists('oescape_chart_size', $_SESSION) ? $_SESSION['oescape_chart_size']: 'medium';
+      $area_sizes = [
+          ['name' => 'small', 'width' => '8'],
+          ['name' => 'medium', 'width' => '16'],
+          ['name' => 'large', 'width' => '24'],
+          ['name' => 'full', 'width' => '30'],
+      ];
+      foreach($area_sizes as $size):
+    ?>
+      <button class="js-oes-area-resize <?=$selected_size==$size['name'] ? 'selected':''?>" data-area="<?=$size['name']?>">
+        <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
+          <title>oescape-chart-size-small</title>
+          <rect x="1.5" y="1.5" width="34" height="15"></rect>
+          <rect x="3.5" y="3.5" width="<?=$size['width']?>" height="11"></rect>
+        </svg>
+      </button>
+    <?php endforeach;?>
     <button class="js-oes-eyeside-right selected">Right Eye</button>
     <button class="js-oes-eyeside-left">Left Eye</button>
   </div>

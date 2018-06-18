@@ -1,8 +1,5 @@
 $(document).ready(function () {
 
-  var left = $('.oes-left-side'),
-    right = $('.oes-right-side'),
-    size, percent;
 
 
 // setup resize buttons
@@ -12,58 +9,29 @@ $(document).ready(function () {
     $('.js-oes-area-resize.selected').removeClass('selected');
     $(this).addClass('selected');
     var str = $(this).data('area');
-    switch(str){
-      case 'small':
-        size = 500;
-        percent = '30%';
-        break;
-      case 'medium':
-        size = 700;
-        percent = '50%';
-        break;
-      case 'large':
-        size = 900;
-        percent = '70%';
-        break;
-      case 'full':
-        size = null;  // null, when passed to highcharts makes chart fill container
-        break;
-    }
-
-    // fullsize requires some tweaking
-    if(size == null){
-      left.css({"min-width":"500px", "width":"100%"});
-      right.hide();
-    } else {
-      left.css({"min-width": size + "px", "width": percent});
-      right.show();
-    }
-    var highcarts_list = $('.highchart-section');
-    for (var i = 0; i<  highcarts_list.length; i++){
-      if ($(highcarts_list[i]).is(":visible")){
-        $(highcarts_list[i]).highcharts().reflow();
-      }
-    }
+    setOEScapeSize(str);
+    //Send the preferred size back to the server
+    $.ajax({
+      'type': 'POST',
+      'data': 'chart_size=' + str + '&YII_CSRF_TOKEN='+ YII_CSRF_TOKEN,
+      'url': baseUrl+'/OphCiExamination/OEScapeData/SetPreferredChartSize',
+    });
   });
+
 
   //switch between right and left eye
-  $('.js-oes-eyeside-right').click(function (e) {
+  $('.js-oes-eyeside-right, .js-oes-eyeside-left').click(function (e) {
     e.preventDefault();
-    $(this).addClass('selected');
-    $('.js-oes-eyeside-left').removeClass('selected');
-    $('.highcharts-right').show();
-    $('.highcharts-left').hide();
-    $('.highcharts-right').highcharts().redraw(e);
+    var side = $(e.target).hasClass('js-oes-eyeside-right') ? 'right' : 'left';
+    var other_side = side === 'left' ? 'right' : 'left';
+    var selected_eye = $('.highcharts-' + side);
 
-  });
+    $(this).addClass('selected'); //select the button
+    $('.js-oes-eyeside-' + other_side).removeClass('selected'); //deselect the other button
+    selected_eye.show(); //show the new side
+    $('.highcharts-' + other_side).hide(); //hide the other side
 
-  $('.js-oes-eyeside-left').click(function (e) {
-    e.preventDefault();
-    $(this).addClass('selected');
-    $('.js-oes-eyeside-right').removeClass('selected');
-    $('.highcharts-right').hide();
-    $('.highcharts-left').show();
-    $('.highcharts-left').highcharts().redraw(e);
+    setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
 
   // exit oescape and go back to last viewed (non-oes) page
@@ -129,4 +97,48 @@ function cleanVATicks(ticks, options, charts, axis_index){
   charts.right.update(options);
   charts.left.redraw();
   charts.right.redraw();
+}
+
+function setOEScapeSize(str){
+  //This refers to the left and right of the screen, not the eyes
+  var left = $('.oes-left-side'),
+    right = $('.oes-right-side'),
+    size, percent;
+
+  switch(str){
+    case 'small':
+      size = 500;
+      percent = '30%';
+      break;
+    case 'medium':
+      size = 700;
+      percent = '50%';
+      break;
+    case 'large':
+      size = 900;
+      percent = '70%';
+      break;
+    case 'full':
+      size = null;  // null, when passed to highcharts makes chart fill container
+      break;
+  }
+  var highcarts_list = $('.highchart-section');
+  //This needs doing before and after the change in size to prevent mis-alignments between the graphs
+  var reflow = function (){
+    for (var i = 0; i<  highcarts_list.length; i++){
+      if ($(highcarts_list[i]).is(":visible")){
+        $(highcarts_list[i]).highcharts().reflow();
+      }
+    }
+  };
+  reflow();
+  // fullsize requires some tweaking
+  if(size == null){
+    left.css({"min-width":"500px", "width":"100%"});
+    right.hide();
+  } else {
+    left.css({"min-width": size + "px", "width": percent});
+    right.show();
+  }
+  reflow();
 }
