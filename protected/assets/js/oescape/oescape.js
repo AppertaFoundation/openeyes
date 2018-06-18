@@ -13,22 +13,21 @@ $(document).ready(function () {
     //Send the preferred size back to the server
     $.ajax({
       'type': 'POST',
-      'data': 'chart_size=' + str + '&YII_CSRF_TOKEN='+ YII_CSRF_TOKEN,
+      'data': {'chart_size' : str, 'YII_CSRF_TOKEN' : YII_CSRF_TOKEN},
       'url': baseUrl+'/OphCiExamination/OEScapeData/SetPreferredChartSize',
     });
   });
 
 
   //switch between right and left eye
-  $('.js-oes-eyeside-right, .js-oes-eyeside-left').click(function (e) {
+  $('.js-oes-eyeside').click(function (e) {
     e.preventDefault();
-    var side = $(e.target).hasClass('js-oes-eyeside-right') ? 'right' : 'left';
+    var side = $(e.target).attr('data-side');
     var other_side = side === 'left' ? 'right' : 'left';
-    var selected_eye = $('.highcharts-' + side);
 
+    $('.js-oes-eyeside').removeClass('selected'); //deselect the other button
     $(this).addClass('selected'); //select the button
-    $('.js-oes-eyeside-' + other_side).removeClass('selected'); //deselect the other button
-    selected_eye.show(); //show the new side
+    $('.highcharts-' + side).show(); //show the new side
     $('.highcharts-' + other_side).hide(); //hide the other side
 
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
@@ -99,13 +98,17 @@ function cleanVATicks(ticks, options, charts, axis_index){
   charts.right.redraw();
 }
 
-function setOEScapeSize(str){
+/**
+ * Sets the horizontal size of the OEScape graphs
+ * @param size_str string (small|medium|large|full)
+ */
+function setOEScapeSize(size_str){
   //This refers to the left and right of the screen, not the eyes
   var left = $('.oes-left-side'),
     right = $('.oes-right-side'),
     size, percent;
 
-  switch(str){
+  switch(size_str){
     case 'small':
       size = 500;
       percent = '30%';

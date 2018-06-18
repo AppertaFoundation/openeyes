@@ -21,8 +21,8 @@
         </svg>
       </button>
     <?php endforeach;?>
-    <button class="js-oes-eyeside-right selected">Right Eye</button>
-    <button class="js-oes-eyeside-left">Left Eye</button>
+    <button class="js-oes-eyeside selected" data-side="right">Right Eye</button>
+    <button class="js-oes-eyeside" data-side="left">Left Eye</button>
   </div>
 
   <div class="nav-title">
