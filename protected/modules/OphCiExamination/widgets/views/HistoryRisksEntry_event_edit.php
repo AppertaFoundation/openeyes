@@ -37,12 +37,12 @@ if (!isset($values)) {
 ?>
 <tr data-key="<?= $row_count ?>">
   <td>
-    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>" />
       <?php
       echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
-      echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
-      echo $values['risk_display']; ?>
-    <span class="<?= $model_name ?>_other_wrapper" <?= $values['other'] ? '' : 'style="display: none;"' ?>>
+      echo CHtml::hiddenField($field_prefix . '[other]', $values['other']); ?>
+    <label class="risk-display" data-id="<?= $values['risk_id']?>" data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display'];?></label>
+    <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['other']?:'none'?>">
         <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>

@@ -96,12 +96,18 @@ $required_risk_ids = array_map(function ($r) {
             <div class="flex-layout flex-top flex-left">
               <ul id="history-risks-option" class="add-options" data-multi="true" data-clickadd="false">
                   <?php
+                  $exist_risks = array();
+                  foreach ($element->entries as $entry){
+                    array_push($exist_risks,$entry->risk_id);
+                  }
                   foreach ($risks_options as $risk_item) {
+                    if (!in_array($risk_item->id, $exist_risks)) {
                       ?>
                     <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
                       <span class="restrict-width"><?php echo $risk_item->name; ?></span>
                     </li>
-                  <?php } ?>
+                  <?php }
+                  } ?>
               </ul>
             </div>
           </td>
@@ -127,7 +133,7 @@ $required_risk_ids = array_map(function ($r) {
                   'id' => '',
                   'risk_id' => '{{risk_id}}',
                   'risk_display' => '{{risk_display}}',
-                  'other' => '{{other}}',
+                  'other' => null,
                   'comments' => '{{comments}}',
                   'has_risk' => (string)HistoryRisksEntry::$PRESENT,
               ),
@@ -159,6 +165,6 @@ $required_risk_ids = array_map(function ($r) {
     addRisks,
     adder.find('#show-add-popup'),
     popup.find('.add-icon-btn'),
-    adder.find('#close-btn .add-icon-btn')
+    adder.find('#close-btn, .add-icon-btn')
   );
 </script>
