@@ -63,7 +63,7 @@ if( is_array($complications) ){
 }
 ?>
 
-<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row field-row"
+<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row"
      style="display: <?php if (!$show_desc) { echo ' none'; } ?>">
   <div class="<?php echo $form->columns('label'); ?>">
     <label for="<?php echo get_class($element) ?>_<?php echo $side . '_oth_descrip' ?>">

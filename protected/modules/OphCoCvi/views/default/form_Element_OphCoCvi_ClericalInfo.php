@@ -21,7 +21,7 @@ if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
 ?>
     <div class="element-fields full-width">
-      <div class="field-row">
+      <div class="data-group">
         <table class="cols-full">
           <colgroup>
             <col class="cols-6">
@@ -83,8 +83,8 @@ if ($this->checkClericalEditAccess()) {
           </tbody>
         </table>
       </div>
-      <div class="field-row flex-layout flex-top col-gap">
-        <div class="cols-6">
+      <div class="flex-layout flex-top col-gap">
+        <div class="cols-6 data-group">
           <table class="cols-full last-left">
             <colgroup>
               <col class="cols-6">
@@ -155,7 +155,7 @@ if ($this->checkClericalEditAccess()) {
             </tbody>
           </table>
         </div>
-        <div class="cols-6">
+        <div class="cols-6 data-group">
           <table class="cols-full last-left">
             <colgroup>
               <col class="cols-6">

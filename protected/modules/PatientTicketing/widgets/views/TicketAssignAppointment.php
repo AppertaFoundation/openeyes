@@ -19,12 +19,12 @@ $api = Yii::app()->moduleAPI->get('PatientTicketing');
 if ($outcome = $api->getFollowUp($this->ticket->id)) {
     ?>
 
-<fieldset class="field-row row" data-formName="<?=$this->form_name ?>">
-	<div class="large-<?= $this->label_width ?> column">
+<fieldset class="row" data-formName="<?=$this->form_name ?>">
+	<div class="cols-<?= $this->label_width ?> column">
 		<label for="site">Follow-up appointment:</label>
 	</div>
-	<div class="large-<?= $this->data_width ?> column">
-	<table class="blank">
+	<div class="cols-<?= $this->data_width ?> data-group column">
+    <table class="blank">
 
 	<thead>
 	<tr>
@@ -58,8 +58,7 @@ if ($outcome = $api->getFollowUp($this->ticket->id)) {
 	</tr>
 	</tbody>
 </table>
-		</div>
-
+  </div>
 </fieldset>
 <?php } ?>
 

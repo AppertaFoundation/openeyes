@@ -25,7 +25,7 @@
 		</h3>
 	</header>
 
-	<div class="js-toggle-body">
+	<div class="js-toggle-body data-group">
 
 		<table class="plain patient-data">
 			<thead>
@@ -80,7 +80,7 @@
                     ),
                 ))?>
 
-					<fieldset class="field-row">
+					<fieldset class="data-group">
 
 						<legend><strong>Add ophthalmic diagnosis</strong></legend>
 
@@ -94,8 +94,8 @@
                             'loader' => 'add_ophthalmic_diagnosis_loader',
                         ))?>
 
-						<div class="row field-row hide" id="add_ophthalmic_diagnosis_loader">
-							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
+						<div class="row hide" id="add_ophthalmic_diagnosis_loader">
+							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> cols-<?php echo $form->layoutColumns['field'];?> column end">
 								<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 									searching...
 							</p>
@@ -103,7 +103,7 @@
 
 						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-						<fieldset class="diagnosis_eye row field-row">
+						<fieldset class="diagnosis_eye row">
 							<legend class="<?php echo $form->columns('label');?>">
 								Eye:
 							</legend>

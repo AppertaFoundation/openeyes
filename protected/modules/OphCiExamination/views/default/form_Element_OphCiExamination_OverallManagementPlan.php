@@ -84,7 +84,7 @@ $label_width = 5;
       </tr>
       </tbody>
     </table>
-    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="field-row js-comment-container"
+    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="js-comment-container"
          <?php if (!$element->comments): ?>style="display: none;"<?php endif; ?>>
         <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
             array(
@@ -105,8 +105,8 @@ $label_width = 5;
             data-side="<?= $eye ?>">
           <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <div class="row field-row">
-              <div class="large-3 column">
+            <div class="row">
+              <div class="cols-3 column">
                 <label for="<?= CHtml::modelName($element) . '[' . $eye . '_target_iop_id]' ?>">
                   Target IOP:
                 </label>

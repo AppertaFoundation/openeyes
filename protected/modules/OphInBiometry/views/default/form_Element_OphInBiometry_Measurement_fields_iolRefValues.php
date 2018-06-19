@@ -1,43 +1,43 @@
 
-        <div class="large-8 column">
-			<div class="row field-row">
-				<div class="large-2 column">
+        <div class="cols-8 column">
+			<div class="row">
+				<div class="cols-2 column">
 					<span class="field-info">Lens name:</span>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<span><?php echo $iolRefValues->lens->name; ?></span>
 				</div>
             </div>
-            <div class="row field-row">
-				<div class="large-2 column">
+            <div class="row">
+				<div class="cols-2 column">
 					<span class="field-info">Formula name:</span>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
                     <span><?php echo $iolRefValues->formula->name; ?></span>
 				</div>
 			</div>
-            <div class="row field-row">
-                <div class="large-2 column">
+            <div class="row">
+                <div class="cols-2 column">
                     <span class="field-info">A const:</span>
                 </div>
-                <div class="large-6 column">
+                <div class="cols-6 column">
                     <span><?php echo $this->formatAconst($iolRefValues->lens->acon); ?></span>
                 </div>
             </div>
 
-            <div class="row field-row">
-                <div class="large-2 column">
+            <div class="row">
+                <div class="cols-2 column">
                     <span class="field-info">Emmetropia:</span>
                 </div>
-                <div class="large-6 column">
+                <div class="cols-6 column">
                     <span><?php echo $iolRefValues->{"emmetropia_$side"}; ?></span>
                 </div>
             </div>
 
         </div>
-        <div class="large-4 column">
-            <div class="row field-row">
-                <div class="large-4 column">
+        <div class="cols-4 column">
+            <div class="row">
+                <div class="cols-4 column">
                     <table>
                         <tr>
                             <th>IOL</th>

@@ -59,14 +59,14 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </div>
   </td>
   <td>
-      <fieldset class="row field-row fuzzy-date">
+      <fieldset class="row fuzzy-date">
         <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>" />
         <i class="oe-i start small pad"></i>
           <?= Helper::convertMySQL2NHS($entry->start_date) ?>
       </fieldset>
   </td>
   <td>
-        <fieldset class="row field-row fuzzy-date">
+        <fieldset class="row fuzzy-date">
             <div class="cols-11">
                 <?php if (!$entry->end_date) { ?>
                   <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">

@@ -18,9 +18,8 @@
 ?>
 <?php if (!$nowrapper) :?>
 	<div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
-       class="row field-row flex-layout flex-left"
-       style="<?=($hidden) ? 'display: none':''?>"
-  >
+       class="row flex-layout flex-left"
+       style="<?=($hidden) ? 'display: none':''?>" >
       <?php if (!$no_label): ?>
         <div class="cols-<?= $layoutColumns['label'] ?> column">
           <label for="<?= CHtml::modelName($element) . "_$field" ?>">

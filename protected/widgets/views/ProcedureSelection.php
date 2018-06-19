@@ -34,23 +34,18 @@
           <?php } ?>
           <?php if (!empty($subsections) || !empty($procedures)) {
               if (!empty($subsections)) { ?>
-                <div class="field-row">
-                    <?php echo CHtml::dropDownList('subsection_id_' . $identifier, '', $subsections,
+                  <?php echo CHtml::dropDownList('subsection_id_' . $identifier, '', $subsections,
                         array('empty' => 'Select a subsection')); ?>
-                </div>
-                <div class="field-row hide">
+                <div class="hide">
                     <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', array(),
                         array('empty' => 'Select a commonly used procedure')); ?>
                 </div>
               <?php } else { ?>
-                <div class="field-row">
-                    <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', $procedures,
-                        array('empty' => 'Select a commonly used procedure')); ?>
-                </div>
+                  <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', $procedures,
+                      array('empty' => 'Select a commonly used procedure')); ?>
               <?php }
           } ?>
-        <div class="field-row">
-            <?php
+          <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => 'procedure_id_' . $identifier,
                 'id' => 'autocomplete_procedure_id_' . $identifier,
@@ -98,30 +93,28 @@
                 ),
                 'htmlOptions' => array('placeholder' => 'or enter procedure here', 'class' => 'cols-9'),
             )); ?>
-        </div>
       </fieldset>
     </div><?php $totalDuration = 0; ?>
-      <div class="cols-6">
-          <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
-               style="<?php if (empty($selected_procedures)) { ?> display: none;<?php } ?>">
-              <table class="plain">
-                  <thead>
-                  <tr>
-                      <th>Procedure</th>
-                      <?php if ($durations) { ?>
-                          <th>Duration</th>
-                      <?php } ?>
-                      <th></th>
-                  </tr>
-                  </thead>
-                  <tbody class="body">
-                  <?php
-                  if (!empty($selected_procedures)) {
-                      foreach ($selected_procedures as $procedure) {
-                          $totalDuration += $procedure['default_duration'];
-                          ?>
-                          <tr class="item">
-                              <td class="procedure">
+  <div class="cols-6">
+    <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
+         style="<?php if (empty($selected_procedures)) { ?> display: none;<?php } ?>">
+      <table class="plain">
+        <thead>
+        <tr>
+          <th>Procedure</th>
+            <?php if ($durations) { ?>
+              <th>Duration</th>
+            <?php } ?>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody class="body">
+        <?php
+        if (!empty($selected_procedures)) {
+            foreach ($selected_procedures as $procedure) {
+                $totalDuration += $procedure['default_duration']; ?>
+              <tr class="item">
+                <td class="procedure">
                   <span class="field"><?= CHtml::hiddenField('Procedures_' . $identifier . '[]',
                           $procedure['id']); ?></span>
                                   <span class="value"><?= $procedure['term']; ?></span>

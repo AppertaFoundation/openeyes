@@ -32,10 +32,10 @@
 	<?php echo $form->dropDownList($theatre, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -'))?>
 	<?php echo $form->textField($theatre, 'name')?>
 	<?php echo $form->textField($theatre, 'code', array('size' => 10))?>
-	<div id="div_OphTrOperationbooking_Operation_Theatre_ward_id" class="row field-row">
-		<div class="large-2 column"><label for="OphTrOperationbooking_Operation_Theatre_ward_id">Ward:</label>
+	<div id="div_OphTrOperationbooking_Operation_Theatre_ward_id" class="row">
+		<div class="cols-2 column"><label for="OphTrOperationbooking_Operation_Theatre_ward_id">Ward:</label>
 		</div>
-		<div class="large-5 column end">
+		<div class="cols-5 column end">
 			<?php echo $this->actionGetWardOptions($theatre->site_id, $theatre->ward_id);
         ?></div>
 	</div>

@@ -25,13 +25,13 @@
     echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(),
         array('empty' => '- Please select -'), false, array('field' => 3));
     ?>
-  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="row field-row">
-    <legend class="large-2 column">
+  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="row">
+    <legend class="cols-2 column">
       Patient consents to share data:
     </legend>
     <input type="hidden" value=""
            name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
-    <div class="large-10 column end">
+    <div class="cols-10 column end">
       <label class="inline highlight">
           <?php echo $form->radioButton($element, 'patient_sharedata_consent'); ?> Yes
     </div>

@@ -16,33 +16,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-    $items_count = count($items);
-
+$items_count = count($items);
 ?>
-<div class="row field-row" id="div_Tag_drugs">
-    <div class="large-2 column">
-        <label>Drugs tagged</label>
-    </div>
-    <div class="large-5 column end">
-        <?php if($items_count > 0): ?>
+<div class="row" id="div_Tag_drugs">
+  <div class="cols-2 column">
+    <label>Drugs tagged</label>
+  </div>
+  <div class="cols-5 column end">
+      <?php if ($items_count > 0): ?>
         <table class="generic-admin" id="drugs_list">
-            <thead>
-                <tr>
-                    <th>Drug name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($items as $i): ?>
-                <tr>
-                    <td><?php echo htmlentities($i->name); ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
+          <thead>
+          <tr>
+            <th>Drug name</th>
+          </tr>
+          </thead>
+          <tbody>
+          <?php foreach ($items as $i): ?>
+            <tr>
+              <td><?php echo htmlentities($i->name); ?></td>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
         </table>
-        <?php else: ?>
+      <?php else: ?>
         <p>
-            No drugs have been tagged yet.
+          No drugs have been tagged yet.
         </p>
-        <?php endif; ?>
-    </div>
+      <?php endif; ?>
+  </div>
 </div>

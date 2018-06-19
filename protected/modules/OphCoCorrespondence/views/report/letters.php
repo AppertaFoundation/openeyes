@@ -28,35 +28,35 @@
 		))?>
 
 		<input type="hidden" name="report-name" value="Letters" />
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label for="phrases">
 					Phrases:
 				</label>
 			</div>
-			<div class="large-5 column end phraseList">
+			<div class="cols-5 column end phraseList">
 				<div>
 					<?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]','')?>
 				</div>
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label></label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<button type="submit" class="classy blue mini small" id="add_letter_phrase"><span class="button-span button-span-blue">Add</span></button>
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label>
 					Search method:
 				</label>
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or" checked="checked" />
 				<label for="condition_or">
 					Must contain <strong>any</strong> of the phrases
@@ -64,11 +64,11 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label></label>
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and" value="and" />
 				<label for="condition_and">
 					Must contain <strong>all</strong> of the phrases
@@ -76,11 +76,11 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label></label>
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0" />
 				<input type="checkbox" id="match_correspondence" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked" />
 				<label for="match_correspondence">
@@ -89,11 +89,11 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label></label>
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0" />
 				<input type="checkbox" id="match_legacy_letters" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked" />
 				<label for="match_legacy_letters">
@@ -102,13 +102,13 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label for="OphCoCorrespondence_ReportLetters_start_date">
 					Date from:
 				</label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'name' => 'OphCoCorrespondence_ReportLetters[start_date]',
 					'options' => array(
@@ -120,13 +120,13 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label for="OphCoCorrespondence_ReportLetters_end_date">
 					Date to:
 				</label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'name' => 'OphCoCorrespondence_ReportLetters[end_date]',
 					'options' => array(
@@ -138,13 +138,13 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label for="author_id">
 					Author
 				</label>
 			</div>
-			<div class="large-3 column end">
+			<div class="cols-3 column end">
                 <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
 				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[author_id]','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
                 <?php else: ?>
@@ -160,21 +160,21 @@
 
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<label for="site_id">
 					Site
 				</label>
 			</div>
-			<div class="large-3 column end">
+			<div class="cols-3 column end">
 				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
-        <div class="row field-row">
-            <div class="large-2 column">
+        <div class="row">
+            <div class="cols-2 column">
 				<label for="site_id">Status</label>
 			</div>
-			<div class="large-6 column end">
+			<div class="cols-6 column end">
                 <?php
                     $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
                     $htmlOptions['separator'] = '';

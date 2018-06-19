@@ -77,28 +77,28 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'enableAjaxValidation' => false,
         'htmlOptions' => array('style' => 'display: none;', 'class' => 'panel'),
     ))?>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Firm:</label>
 	</div>
-	<div class="large-5 column end">
+	<div class="cols-5 column end">
 		<?php echo CHtml::dropDownList('inline_firm_id', '', Firm::model()->getListWithSpecialties(), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Theatre:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Date:</label>
 	</div>
-	<div class="large-2 column end">
+	<div class="cols-2 column end">
 		<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'inline_date',
                 'id' => 'inline_date',
@@ -113,72 +113,72 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Start time:</label>
 	</div>
-	<div class="large-2 column end"><?php echo CHtml::textField('inline_start_time', '', array('size' => 10))?>
+	<div class="cols-2 column end"><?php echo CHtml::textField('inline_start_time', '', array('size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">End time:</label>
 	</div>
-	<div class="large-2 column end"><?php echo CHtml::textField('inline_end_time', '', array('size' => 10))?>
+	<div class="cols-2 column end"><?php echo CHtml::textField('inline_end_time', '', array('size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Consultant:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Paediatric:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Anaesthetist:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">General anaesthetic:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Available:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="row">
+	<div class="cols-2 column">
 		<label for="">Comments:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
+	<div class="cols-5 column end"><?php echo CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-10 large-offset-2 column">
+<div class="row">
+	<div class="cols-10 large-offset-2 column">
 		<?php echo EventAction::button('Update', 'update_inline', null, array('class' => 'small'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		<span class="timeWarning" style="display: none;">Please be patient, it may take some time to process all the sessions ...</span>

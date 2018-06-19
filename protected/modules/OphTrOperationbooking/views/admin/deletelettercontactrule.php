@@ -107,7 +107,7 @@
 	<p><strong><big>Are you sure you want to delete this rule<?php if ($rule->children) {?> and its descendants<?php }?>?</big></strong></p>
 
 	<?php echo $form->errorSummary($rule); ?>
-	<div class="field-row">
+	<div class="data-group">
 		<?php echo EventAction::button('Delete', 'delete', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
 		<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'cancel'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

@@ -20,11 +20,11 @@
 ?>
 
 <div id="<?=$model_name?>_form_wrapper">
-    <div class="field-row row">
-        <div class="large-2 column">
+    <div class="row">
+        <div class="cols-2 column">
             <label for="<?=$model_name?>_risk_id">Risk:</label>
         </div>
-        <div class="large-3 column end">
+        <div class="cols-3 column end">
             <?php
             $risks = $this->getRiskOptions();
             $risks_opts = array(
@@ -39,23 +39,23 @@
         </div>
     </div>
 
-    <div class="field-row row hidden" id="<?= $model_name ?>_other_wrapper">
-        <div class="large-2 column">
+    <div class="row hidden" id="<?= $model_name ?>_other_wrapper">
+        <div class="cols-2 column">
             <label for="<?=$model_name?>_other_risk">Other Risk:</label>
         </div>
-        <div class="large-3 column end">
+        <div class="cols-3 column end">
             <?php echo CHtml::textField($model_name . '_other_risk', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         </div>
     </div>
 
-    <div class="field-row row">
-        <div class="large-2 column">
+    <div class="row">
+        <div class="cols-2 column">
             <label for="<?= $model_name ?>_comments">Comments:</label>
         </div>
-        <div class="large-3 column">
+        <div class="cols-3 column">
             <?php echo CHtml::textField($model_name . '_comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         </div>
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button>
         </div>
     </div>

@@ -42,11 +42,11 @@
 	<?php echo $form->radioBoolean($sequence, 'paediatric')?>
 	<?php echo $form->radioBoolean($sequence, 'anaesthetist')?>
 	<?php echo $form->radioBoolean($sequence, 'general_anaesthetic')?>
-	<fieldset id="OphTrOperationbooking_Operation_Sequence_week_selection" class="row field-row">
-		<legend class="large-2 column">
+	<fieldset id="OphTrOperationbooking_Operation_Sequence_week_selection" class="row">
+		<legend class="cols-2 column">
 			Week selection:
 		</legend>
-		<div class="large-5 column end">
+		<div class="cols-5 column end">
 			<input type="hidden" name="OphTrOperationbooking_Operation_Sequence[week_selection_week1]" value="0" />
 			<input type="hidden" name="OphTrOperationbooking_Operation_Sequence[week_selection_week2]" value="0" />
 			<input type="hidden" name="OphTrOperationbooking_Operation_Sequence[week_selection_week3]" value="0" />
@@ -71,8 +71,8 @@
 		</div>
 	</fieldset>
 	<?php echo $form->errorSummary($sequence); ?>
-	<div class="field-row row">
-		<div class="large-10 large-offset-2 column">
+	<div class="row">
+		<div class="cols-10 large-offset-2 column">
 			<?php echo EventAction::button('Save', 'save', array('level' => 'save'))->toHtml()?>
 			<?php echo EventAction::link('Cancel',
                     Yii::app()->createUrl('OphTrOperationbooking/admin/viewSequences'),

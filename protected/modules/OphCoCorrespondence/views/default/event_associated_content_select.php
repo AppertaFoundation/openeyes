@@ -7,7 +7,7 @@ if (empty($patient)) {
     <div class="large-2 column">
         <label>Attachments:</label>
     </div>
-    <div class="large-10 column end">
+    <div class="cols-10 data-group column end">
         <table id="correspondence_attachments_table">
             <thead>
             <tr>
@@ -18,14 +18,10 @@ if (empty($patient)) {
             </tr>
             </thead>
             <tbody>
-            <tr id="correspondence_attachments_table_last_row" data-id="1">
-                <td colspan="2">
-                <td>
-                <td>
-                    <?php
-
-                    $events = $this->getAttachableEvents($patient);
-                    ?>
+                <tr id="correspondence_attachments_table_last_row" data-id="1">
+                    <td colspan="2"><td>
+                    <td>
+                        <?php $events = $this->getAttachableEvents($patient); ?>
                     <?= CHtml::dropDownList(
                         'attachment_events',
                         ' ',

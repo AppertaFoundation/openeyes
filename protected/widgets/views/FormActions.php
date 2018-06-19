@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row">
-	<div class="large-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
+<div class="row">
+	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
 		<?php echo EventAction::button($buttonOptions['submit'], 'save', array(), array('class' => 'button small'))->toHtml()?>
 		<?php if ($buttonOptions['cancel']) {
     $cancelHtmlOptions = array('class' => 'warning button small');

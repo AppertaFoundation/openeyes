@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>true));
+$this->beginContent('//patient/event_container', array('no_face' => true));
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
@@ -35,66 +35,68 @@ $this->moduleNameCssClass .= ' edit';
   </header>
   <input type="hidden" name="SelectBooking"/>
 
-  <div class="field-row">
+  <div class="data-group">
     <div class="data-value flex-layout">
       <p>
           <?php if (count($bookings) > 0) { ?>
-          Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
-        <?php } else { ?>
-          There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
-        <?php } ?>
+            Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
+          <?php } else { ?>
+            There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
+          <?php } ?>
       </p>
     </div>
-      <br />
+    <br/>
     <div class="cols-8">
       <div class="data-group" style="padding-left: 100px">
         <table class="cols-full last-left">
-        <thead>
+          <thead>
           <tr>
             <th>Booked Date</th>
             <th>Procedure</th>
             <th>Comments</th>
           </tr>
-        </thead>
-        <tbody>
-        <?php if ($bookings) {
-            foreach ($bookings as $operation) { ?>
-              <tr>
-                <td>
-                    <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
-                </td>
-                <td>
-                  <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
-                  <?php foreach ($operation->procedures as $i => $procedure) {
-                        if ($i > 0) { echo '<br/>'; }
-                        echo $operation->eye->name . ' ' . $procedure->term;
-                    } ?>
-                  </a>
-                </td>
-                <td>
-                  <?= $operation->comments; ?>
-                </td>
-              </tr>
-                <?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',
-                    array($operation->event_id))) { ?>
-                <div class="alert-box alert with-icon">
-                  Warning: this booking already has a consent form
-                </div>
-                <?php } ?>
-            <?php }
-        } ?>
-        <tr>
-          <td>N/A</td>
-          <td>
-            <a href="#" class="booking-select" data-booking="unbooked"> Unbooked procedures </a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+          <?php if ($bookings) {
+              foreach ($bookings as $operation) { ?>
+                <tr>
+                  <td>
+                      <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
+                  </td>
+                  <td>
+                    <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
+                        <?php foreach ($operation->procedures as $i => $procedure) {
+                            if ($i > 0) {
+                                echo '<br/>';
+                            }
+                            echo $operation->eye->name . ' ' . $procedure->term;
+                        } ?>
+                    </a>
+                  </td>
+                  <td>
+                      <?= $operation->comments; ?>
+                  </td>
+                </tr>
+                  <?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',
+                      array($operation->event_id))) { ?>
+                  <div class="alert-box alert with-icon">
+                    Warning: this booking already has a consent form
+                  </div>
+                  <?php } ?>
+              <?php }
+          } ?>
+          <tr>
+            <td>N/A</td>
+            <td>
+              <a href="#" class="booking-select" data-booking="unbooked"> Unbooked procedures </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <?php $this->displayErrors($errors, true) ?>
-    <?php $this->endWidget(); ?>
+      <?php $this->displayErrors($errors, true) ?>
+      <?php $this->endWidget(); ?>
 </section>
 <script type="text/javascript">
   $(function () {

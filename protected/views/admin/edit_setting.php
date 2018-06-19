@@ -37,13 +37,13 @@
             </div>
         </div>
         <?php } ?>
-		<div class="row field-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<label for="<?php echo $metadata->key?>">
 					<?php echo $metadata->name?>
 				</label>
 			</div>
-			<div class="large-3 column end">
+			<div class="cols-3 column end">
 				<?php $this->renderPartial('_admin_setting_'.strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata))?>
 			</div>
 		</div>

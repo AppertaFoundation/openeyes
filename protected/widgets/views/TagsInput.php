@@ -18,13 +18,13 @@
     $div_id = @$htmlOptions['div_id'];
     $div_class = isset($htmlOptions['div_class']) ? $htmlOptions['div_class'] : 'eventDetail';
 ?>
-<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-    <div class="large-<?php echo $layoutColumns['label'];?> column">
+<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+    <div class="cols-<?php echo $layoutColumns['label'];?> column">
         <label for="<?php echo $field?>">
             <?php echo $label; ?>:
         </label>
     </div>
-    <div class="large-<?php echo $layoutColumns['field'];?> column end">
+    <div class="cols-<?php echo $layoutColumns['field'];?> column end">
         <div class="oe-tagsinput-wrapper">
             <input
                 name="<?php echo CHtml::modelName($element)."[$field]"; ?>" id="tags"

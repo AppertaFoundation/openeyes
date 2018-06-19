@@ -39,13 +39,13 @@
 	<?php echo $form->textField($rule, 'name')?>
 	<?php echo $form->textField($rule, 'telephone', array(), array(), array('field' => 3))?>
 	<?php if ($rule->children) {?>
-		<div class="row field-row">
-			<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+		<div class="row">
+			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:
 				</div>
 			</div>
-			<div class="large-<?php echo 12 - $form->layoutColumns['label'];?> column">
+			<div class="cols-<?php echo 12 - $form->layoutColumns['label'];?> column">
 				<div class="panel" style="margin:0">
 					<?php
                     $this->widget('CTreeView', array(

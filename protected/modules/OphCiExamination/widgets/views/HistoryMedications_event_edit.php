@@ -27,7 +27,7 @@ $element_errors = $element->getErrors();
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-  <div class="field-row flex-layout">
+  <div class="data-group flex-layout">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class=" cols-10 <?php echo $element_errors ? 'highlighted-error' : '' ?>">
         <thead class="row" style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >

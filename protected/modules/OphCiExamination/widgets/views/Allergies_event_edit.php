@@ -27,13 +27,11 @@ $required_allergy_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-    <div class="field-row row<?=$this->isAllergiesSetYes($element) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
-        <div class="large-3 column">
-            <label for="<?=$model_name?>_no_allergies">Confirm patient has no allergies:</label>
-        </div>
-        <div class="large-2 column end">
-            <?php echo CHtml::checkBox($model_name .'[no_allergies]', $element->no_allergies_date ? true : false); ?>
-        </div>
+  <div class="row cols-full">
+    <div class="<?= $this->isAllergiesSetYes($element) ? ' hidden' : '' ?>"
+         id="<?= $model_name ?>_no_allergies_wrapper">
+      <label for="<?= $model_name ?>_no_allergies">Confirm patient has no allergies:</label>
+        <?php echo CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false); ?>
     </div>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>

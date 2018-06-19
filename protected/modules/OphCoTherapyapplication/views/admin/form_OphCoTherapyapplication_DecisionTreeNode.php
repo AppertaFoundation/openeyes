@@ -37,7 +37,7 @@ foreach ($model->getDefaultFunctions() as $func) {
 echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => '- Please select -')); ?>
 
 
-<div class="row field-row">
+<div class="row">
 	<div class="large-<?php echo $form->layoutColumns['label'];?> column">
 		<?php echo $form->labelEx($model, 'default_value'); ?>
 	</div>

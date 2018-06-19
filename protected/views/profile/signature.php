@@ -6,7 +6,7 @@
 <?php if($user->checkSignature()) {?>
   <div class="standard">
     You have a captured signature in the system, if you want to check the signature image please enter your 4 digit PIN:
-    <div id="div_signature_pin" class="row field-row">
+    <div id="div_signature_pin" class="row">
       <div class="cols-2">
         <label for="signature_pin">PIN:</label>
       </div>

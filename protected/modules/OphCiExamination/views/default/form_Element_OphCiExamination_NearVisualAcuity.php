@@ -53,7 +53,7 @@ $this->endClip('element-title-additional');
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right">
-		<div class="active-form field-row flex-layout">
+		<div class="active-form data-group flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table class="blank va_readings cols-9"<?php if (!$element->right_readings) {
     ?> style="display: none;" <?php 
@@ -76,13 +76,13 @@ $this->endClip('element-title-additional');
 }?>
 				</tbody>
 			</table>
-			<div class="field-row row noReadings"<?php if ($element->right_readings) {
+			<div class="row noReadings"<?php if ($element->right_readings) {
     ?> style="display: none;" <?php 
 } ?>>
-				<div class="large-4 column">
+				<div class="cols-4 column">
 					<div class="field-info">Not recorded</div>
 				</div>
-				<div class="large-8 column end">
+				<div class="cols-8 column end">
 					<?php echo $form->checkBox($element, 'right_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
 					<?php echo $form->checkBox($element, 'right_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
@@ -103,7 +103,7 @@ $this->endClip('element-title-additional');
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
     ?> inactive<?php 
 }?>" data-side="left">
-		<div class="active-form field-row flex-layout">
+		<div class="active-form data-group flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table class="blank va_readings cols-9"<?php if (!$element->left_readings) {
     ?> style="display: none;" <?php 
@@ -126,11 +126,11 @@ $this->endClip('element-title-additional');
 }?>
 				</tbody>
 			</table>
-			<div class="field-row row noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
-				<div class="large-4 column">
+			<div class="row noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
+				<div class="cols-4 column">
 					<div class="field-info">Not recorded</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
 					<?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>

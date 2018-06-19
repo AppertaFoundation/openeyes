@@ -30,8 +30,8 @@
 
 	<?php echo $form->slider($element, 'nausea', array('min' => 0, 'max' => 3, 'step' => 1, 'width' => 200))?>
 
-	<div class="row field-row">
-		<div class="large-10 large-offset-2 column">
+	<div class="row">
+		<div class="cols-10 large-offset-2 column">
 			<div class="field-info">
 				<em>0 - none, 1 - mild, 2 - moderate, 3 - severe</em>
 			</div>

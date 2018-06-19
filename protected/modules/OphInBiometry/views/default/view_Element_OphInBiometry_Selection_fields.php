@@ -18,7 +18,7 @@
                     'id' => $this->selectionValues[0]->{"formula_id_$side"},
                 ));
         } ?>
-        <div class="field-row">
+        <div class="data-group">
             <table class="cols-11 large-text">
                 <colgroup>
                     <col class="cols-3">

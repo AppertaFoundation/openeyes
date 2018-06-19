@@ -53,12 +53,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
     <?php echo $form->errorSummary(array($contact, $patient, $address)); ?>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
 
-        <div class="large-4 column"><?php echo $form->labelEx($patient, 'hos_num'); ?></div>
-        <div class="large-4 column end">
+        <div class="cols-4 column"><?php echo $form->labelEx($patient, 'hos_num'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40)); ?>
 
         </div>
@@ -66,17 +66,17 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
       </div>
     </div>
   </div>
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row">
-        <div class="large-4 column nhs-number-wrapper">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-4 column nhs-number-wrapper">
           <div class="nhs-number warning">
             <span class="hide-text print-only">NHS Number:</span>
           </div>
           <div>Number</div>
         </div>
 
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <?php echo $form->textField($patient, 'nhs_num', array('size' => 40, 'maxlength' => 40, 'data-child_row' => '.nhs-num-status')); ?>
         </div>
           <?php echo $form->error($patient, 'nhs_num'); ?>
@@ -84,11 +84,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
   </div>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row nhs-num-status <?php echo(!$patient->nhs_num ? 'hide' : ''); ?>">
-        <div class="large-4 column"><?php echo $form->labelEx($patient, 'nhs_num_status_id'); ?></div>
-        <div class="large-7 column end">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row nhs-num-status <?php echo(!$patient->nhs_num ? 'hide' : ''); ?>">
+        <div class="cols-4 column"><?php echo $form->labelEx($patient, 'nhs_num_status_id'); ?></div>
+        <div class="cols-7 column end">
             <?php echo $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses, array('empty' => '-- select --')); ?>
             <?php echo $form->error($patient, 'nhs_num_status_id'); ?>
         </div>
@@ -99,35 +99,35 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   <hr>
   <!-- -->
 
-  <div class="row field-row">
-    <div class="large-6 column">
+  <div class="row">
+    <div class="cols-6 column">
 
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($contact, 'title'); ?></div>
-        <div class="large-4 column end">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($contact, 'title'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40)); ?>
             <?php echo $form->error($contact, 'title'); ?>
         </div>
       </div>
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($contact, 'first_name'); ?></div>
-        <div class="large-4 column end">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($contact, 'first_name'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->textField($contact, 'first_name', array('size' => 40, 'maxlength' => 40)); ?>
             <?php echo $form->error($contact, 'first_name'); ?>
         </div>
       </div>
 
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($contact, 'last_name'); ?></div>
-        <div class="large-4 column end">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($contact, 'last_name'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->textField($contact, 'last_name', array('size' => 40, 'maxlength' => 40)); ?>
             <?php echo $form->error($contact, 'last_name'); ?>
         </div>
       </div>
 
-       <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($contact, 'maiden_name'); ?></div>
-        <div class="large-4 column end">
+       <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($contact, 'maiden_name'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->textField($contact, 'maiden_name', array('size' => 40, 'maxlength' => 40)); ?>
             <?php echo $form->error($contact, 'maiden_name'); ?>
         </div>
@@ -135,9 +135,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
       <!-- -->
 
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($patient, 'dob'); ?></div>
-        <div class="large-4 column">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($patient, 'dob'); ?></div>
+        <div class="cols-4 column">
 
             <?php
                 if( (bool)strtotime($patient->dob) ){
@@ -163,19 +163,19 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
             ))*/ ?>
             <?php echo $form->error($patient, 'dob'); ?>
         </div>
-          <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
+          <div class="cols-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($patient, 'gender'); ?></div>
-        <div class="large-4 column end">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($patient, 'gender'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->dropDownList($patient, 'gender', $genders, array('empty' => '-- select --')); ?>
             <?php echo $form->error($patient, 'gender'); ?>
         </div>
       </div>
 
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($patient, 'ethnic_group_id'); ?></div>
-        <div class="large-4 column end">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($patient, 'ethnic_group_id'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->dropDownList($patient, 'ethnic_group_id', $ethnic_groups, array('empty' => '-- select --')); ?>
             <?php echo $form->error($patient, 'ethnic_group_id'); ?>
         </div>
@@ -183,19 +183,18 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
 
 
-    <div class="large-6 column">
+    <div class="cols-6 column">
         <?php $this->renderPartial('_form_address', array('form' => $form, 'address' => $address, 'countries' => $countries, 'address_type_ids' => $address_type_ids)); ?>
     </div>
-
   </div>
 
   <hr>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($contact, 'primary_phone'); ?></div>
-        <div class="large-4 column end">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($contact, 'primary_phone'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)); ?>
             <?php echo $form->error($contact, 'primary_phone'); ?>
         </div>
@@ -203,11 +202,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
   </div>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($address, 'email'); ?></div>
-        <div class="large-4 column end">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($address, 'email'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255)); ?>
             <?php echo $form->error($address, 'email'); ?>
         </div>
@@ -217,11 +216,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
   <hr>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row">
-        <div class="large-3 column"><?php echo $form->labelEx($patient, 'is_deceased'); ?></div>
-        <div class="large-4 column end">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-3 column"><?php echo $form->labelEx($patient, 'is_deceased'); ?></div>
+        <div class="cols-4 column end">
             <?php echo $form->checkBox($patient, 'is_deceased', array('data-child_row' => '.date_of_death')); ?>
             <?php echo $form->error($patient, 'is_deceased'); ?>
         </div>
@@ -229,11 +228,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
   </div>
 
-  <div class="row field-row">
-    <div class="large-6 column">
-      <div class="row field-row date_of_death <?php echo($patient->is_deceased == 0 ? 'hide' : ''); ?>">
-        <div class="large-3 column"><?php echo $form->labelEx($patient, 'date_of_death'); ?></div>
-        <div class="large-4 column">
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row date_of_death <?php echo($patient->is_deceased == 0 ? 'hide' : ''); ?>">
+        <div class="cols-3 column"><?php echo $form->labelEx($patient, 'date_of_death'); ?></div>
+        <div class="cols-4 column">
 
             <?php
             if( (bool)strtotime($patient->date_of_death) ){
@@ -260,7 +259,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
             ))*/ ?>
             <?php echo $form->error($patient, 'date_of_death'); ?>
         </div>
-        <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
+        <div class="cols-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
     </div>
   </div>
@@ -268,19 +267,19 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   <hr>
 
   <!--
-	<div class="row field-row">
-            <div class="large-3 column"><?php echo $form->labelEx($patient, 'pas_key'); ?></div>
-            <div class="large-4 column end">
+	<div class="row">
+            <div class="cols-3 column"><?php echo $form->labelEx($patient, 'pas_key'); ?></div>
+            <div class="cols-4 column end">
                 <?php echo $form->textField($patient, 'pas_key', array('size' => 10, 'maxlength' => 10)); ?>
                 <?php echo $form->error($patient, 'pas_key'); ?>
             </div>
 	</div>
 -->
-  <div class="row field-row">
-    <div class="large-6 column">       
-      <div class="row field-row">
-        <div class="large-4 column"><?php echo $form->labelEx($patient, 'gp_id'); ?></div>
-        <div class="large-4 column end"><?php
+  <div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-4 column"><?php echo $form->labelEx($patient, 'gp_id'); ?></div>
+        <div class="cols-4 column end"><?php
             echo $form->error($patient, 'gp_id');
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => 'gp_id',
@@ -312,22 +311,22 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
             ));?>
         </div>
       </div>
-    <div id="selected_gp_wrapper" class="row field-row <?php echo !$patient->gp_id ? 'hide' : ''?>">
-        <div class="large-offset-4 large-8 column selected_gp end alert-box"><span class="name"><?php echo $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
+    <div id="selected_gp_wrapper" class="row <?php echo !$patient->gp_id ? 'hide' : ''?>">
+        <div class="large-offset-4 cols-8 column selected_gp end alert-box"><span class="name"><?php echo $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
         <?php echo CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class'=>'hidden_id')); ?>
     </div>
-    <div id="no_gp_result" class="row field-row hide">
-        <div class="large-offset-4 large-8 column selected_gp end">No result</div>
+    <div id="no_gp_result" class="row hide">
+        <div class="large-offset-4 cols-8 column selected_gp end">No result</div>
     </div>
         
     </div>
   </div>
 
-<div class="row field-row">
-    <div class="large-6 column">       
-      <div class="row field-row">
-        <div class="large-4 column"><?php echo $form->labelEx($patient, 'practice_id'); ?></div>
-        <div class="large-4 column end"><?php
+<div class="row">
+    <div class="cols-6 column">
+      <div class="row">
+        <div class="cols-4 column"><?php echo $form->labelEx($patient, 'practice_id'); ?></div>
+        <div class="cols-4 column end"><?php
             echo $form->error($patient, 'practice_id');
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => 'practice_id',
@@ -359,12 +358,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
             ));?>
         </div>
       </div>
-    <div id="selected_practice_wrapper" class="row field-row <?php echo !$patient->practice_id ? 'hide' : ''?>">
-        <div class="large-offset-4 large-8 column selected_practice end alert-box"><span class="name"><?php echo $patient->practice_id ? $patient->practice->getAddressLines() : ''?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
+    <div id="selected_practice_wrapper" class="row <?php echo !$patient->practice_id ? 'hide' : ''?>">
+        <div class="large-offset-4 cols-8 column selected_practice end alert-box"><span class="name"><?php echo $patient->practice_id ? $patient->practice->getAddressLines() : ''?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
         <?php echo CHtml::hiddenField('Patient[practice_id]', $patient->practice_id, array('class'=>'hidden_id')); ?>
     </div>
-    <div id="no_practice_result" class="row field-row hide">
-        <div class="large-offset-4 large-8 column selected_practice end">No result</div>
+    <div id="no_practice_result" class="row hide">
+        <div class="large-offset-4 cols-8 column selected_practice end">No result</div>
     </div>
         
     </div>

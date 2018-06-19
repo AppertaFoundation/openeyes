@@ -17,7 +17,7 @@
  */
 ?>
 <div class="eyedraw-fields">
-  <div class="field-row">
+  <div class="data-group">
     <label for="<?php echo $side . '_opticdisc_mode'; ?>">
       Mode:
     </label>
@@ -30,7 +30,7 @@
               ),
           )) ?>
   </div>
-  <div class="field-row">
+  <div class="data-group">
     <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_cd_ratio_id'; ?>">
         <?php echo $element->getAttributeLabel($side . '_cd_ratio_id') ?>:
     </label>
@@ -44,7 +44,7 @@
       <?php echo CHtml::activeDropDownList($element, $side . '_cd_ratio_id', CHtml::listData($options, 'id', 'name'),
           $cd_ratio_html_options) ?>
   </div>
-  <div class="field-row">
+  <div class="data-group">
     <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_diameter'; ?>">
         <?php echo $element->getAttributeLabel($side . '_diameter') ?>:
     </label>
@@ -73,7 +73,7 @@
       <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
     </div>
   </div>
-  <div class="field-row">
+  <div class="data-group">
       <?php echo CHtml::activeTextArea($element, $side . '_description', array(
           'autocomplete' => Yii::app()->params['html_autocomplete'],
           'rows' => 1,

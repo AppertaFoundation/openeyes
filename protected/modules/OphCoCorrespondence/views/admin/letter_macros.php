@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<form id="admin_sessions_filters" class="panel">
-		<div class="row field-row">
+		<div class="row">
 			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('type', '', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()), array('empty' => '- Type -'))?>
 			</div>
@@ -51,27 +51,29 @@
 	</form>
 	<form id="admin_letter_macros">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>ID</th>
-					<th>Owner</th>
-					<th>Name</th>
-					<th>Recipient</th>
-					<th>CC patient</th>
-					<th>CC doctor</th>
-					<th>CC DRSS</th>
-					<th>Use nickname</th>
-					<th>Episode status</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php $this->renderPartial('_macros', array('macros' => $macros))?>
-			</tbody>
-		</table>
+    <div class="data-group">
+      <table class="grid">
+        <thead>
+        <tr>
+          <th><input type="checkbox" name="selectall" id="selectall" /></th>
+          <th>ID</th>
+          <th>Owner</th>
+          <th>Name</th>
+          <th>Recipient</th>
+          <th>CC patient</th>
+          <th>CC doctor</th>
+          <th>CC DRSS</th>
+          <th>Use nickname</th>
+          <th>Episode status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php $this->renderPartial('_macros', array('macros' => $macros))?>
+        </tbody>
+      </table>
+    </div>
 	</form>
-	<div class="row field-row">
+	<div class="row">
 		<div class="cols-4 column end">
 			<?php echo CHtml::htmlButton('Delete macros', array('class' => 'button small deleteMacros'))?>
 		</div>

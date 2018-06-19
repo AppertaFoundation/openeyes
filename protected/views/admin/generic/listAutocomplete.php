@@ -75,7 +75,7 @@
             }
         }
         ?>
-            <div class="row field-row">
+            <div class="row data-group">
                 <table class="grid">
                     <thead>
                     <tr>

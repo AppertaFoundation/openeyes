@@ -30,7 +30,7 @@ $key = 0;
       <i class="oe-i remove-circle remove-side small"></i>
         <?php echo $form->dropDownList($element, 'right_instrument_id', 'OphCiPhasing_Instrument', array(), false, array('label' => 2, 'field' => 4)) ?>
         <?php echo $form->radioBoolean($element, 'right_dilated', array(), array('label' => 2, 'field' => 10)) ?>
-      <fieldset class="row field-row">
+      <fieldset class="row">
         <legend class="cols-2 column">
           Readings:
         </legend>
@@ -93,7 +93,7 @@ $key = 0;
       <i class="oe-i remove-circle remove-side small"></i>
         <?php echo $form->dropDownList($element, 'left_instrument_id', 'OphCiPhasing_Instrument', array(), false, array('label' => 2, 'field' => 4)) ?>
         <?php echo $form->radioBoolean($element, 'left_dilated', array(), array('label' => 2, 'field' => 10)) ?>
-      <fieldset class="row field-row">
+      <fieldset class="row">
         <legend class="cols-2 column">
           Readings:
         </legend>

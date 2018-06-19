@@ -27,7 +27,7 @@ $biometry_data = [
 ?>
 
 <div class="element-data" data-biometry-data='<?= json_encode($biometry_data) ?>'>
-    <div class="field-row">
+    <div class="data-group">
       <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"
              name="Element_OphTrOperationnote_Biometry[id]" value="<?php echo $element->id; ?>">
 
@@ -218,7 +218,7 @@ $biometry_data = [
             </tbody>
         </table>
     </div>
-    <div class="field-row">
+    <div class="data-group">
         <table class="label-value last-left">
             <colgroup>
                 <col class="cols-6">

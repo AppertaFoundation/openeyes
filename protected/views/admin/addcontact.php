@@ -38,8 +38,8 @@
 		<?php echo $form->dropDownList($contact, 'contact_label_id', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -'))?>
 
 		<?php /* TODO */ ?>
-		<div class="row field-row hide">
-			<div class="large-5 large-offset-2 column">
+		<div class="row hide">
+			<div class="cols-5 large-offset-2 column">
 				<?php echo EventAction::button('Add label', 'add_label', array(), array('class' => 'small'))->toHtml()?>
 			</div>
 		</div>

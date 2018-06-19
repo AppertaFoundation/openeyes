@@ -23,7 +23,7 @@
       <div class="element-eye <?= $eye_side ?>-eye <?= $page_side ?> side
           <?php if (!$element->hasEye($eye_side)): ?>inactive<?php endif; ?>"
            data-side="<?= $eye_side ?>">
-        <div class="active-form field-row flex-layout"
+        <div class="active-form data-group flex-layout"
              style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 

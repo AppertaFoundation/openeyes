@@ -40,7 +40,7 @@
     }, 'name');
 ?>
 
-<div id="allergy" class="field-row">
+<div id="allergy" class="data-group">
         <?php
         $columns = array(
             array(

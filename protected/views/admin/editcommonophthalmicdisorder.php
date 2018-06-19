@@ -24,9 +24,9 @@
     <h2>Common Ophthalmic Disorder</h2>
 
     <form method="get">
-        <div class="row field-row">
-            <div class="large-2 column"><label for="subspecialty_id">Subspecialty</label></div>
-            <div class="large-5 column end">
+        <div class="row">
+            <div class="cols-2 column"><label for="subspecialty_id">Subspecialty</label></div>
+            <div class="cols-5 column end">
                 <?php echo CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData($subspecialty, 'id', 'name')); ?>
             </div>
         </div>

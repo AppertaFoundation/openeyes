@@ -19,7 +19,7 @@
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
     <div class="element-fields full-width">
-      <div class="field-row">
+      <div class="data-group">
         <table class="cols-6 last-left">
           <colgroup>
             <col class="cols-5">
@@ -38,8 +38,8 @@ if ($this->checkClinicalEditAccess()) { ?>
           </tbody>
         </table>
       </div>
-      <div class="field-row flex-layout flex-top col-gap">
-        <div class="cols-6">
+      <div class="flex-layout flex-top col-gap">
+        <div class="cols-6 data-group">
           <table class="cols-full last-left">
             <colgroup>
               <col class="cols-5">
@@ -72,7 +72,7 @@ if ($this->checkClinicalEditAccess()) { ?>
             </tbody>
           </table>
         </div>
-        <div class="cols-6">
+        <div class="cols-6 data-group">
           <table class="cols-full last-left">
             <colgroup>
               <col class="cols-5">
@@ -104,15 +104,14 @@ if ($this->checkClinicalEditAccess()) { ?>
         </div>
       </div>
 
-
-      <div class="field-row">
+      <div class="data-group">
         <div class="">
           <h3 class="element-title">Visual Acuity</h3>
         </div>
         <div class="indent-correct element-eyes element-fields">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
           <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
-            <div class="active-form">
+            <div class="active-form data-group">
               <table class="cols-full">
                 <tbody>
                 <tr>
@@ -168,18 +167,14 @@ if ($this->checkClinicalEditAccess()) { ?>
           <?php } ?>
         </div>
       </div>
-
-
-      <div class="field-row">
+      <div class="data-group">
         <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
             'element' => $element,
             'form' => $form,
         ))?>
-
         <?php echo $form->textArea($element, 'diagnoses_not_covered', array()) ?>
       </div>
 <?php } else {
-
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>
 <script type="application/javascript">

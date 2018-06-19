@@ -18,7 +18,7 @@
 
 <div id="edit_oph_info" style="display: none;">
 
-    <fieldset class="field-row">
+    <fieldset class="data-group">
         <legend><strong>Edit CVI Status</strong></legend>
         <?php
         $form = $this->beginWidget('FormLayout', array(
@@ -30,7 +30,7 @@
             ),
         )) ?>
 
-        <div class="field-row row">
+        <div class="row">
             <div class="<?php echo $form->columns('label'); ?>">
                 <label for="PatientOphInfo_cvi_status_id">Status:</label>
             </div>

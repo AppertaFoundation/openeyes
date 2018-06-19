@@ -153,7 +153,7 @@
         <tr>
             <?php $hide_search = strlen($element->la_name) > 0; ?>
           <td>
-            <div class="row field-row">
+            <div class="row">
               <div class="small-push-6">
                 <a href="#" id="la-search-toggle" class=" <?= $hide_search ? '': ' disabled'?>">Find Local Authority Details</a>
               </div>

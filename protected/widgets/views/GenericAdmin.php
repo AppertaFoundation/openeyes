@@ -22,9 +22,9 @@
     if ($filter_fields) { ?>
 		<form method="get">
 			<?php foreach ($filter_fields as $filter_field) { ?>
-				<div class="row field-row">
-					<div class="large-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
-					<div class="large-5 column end"><?=
+				<div class="row">
+					<div class="cols-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
+					<div class="cols-5 column end"><?=
                         CHtml::dropDownList(
                             $filter_field['field'], $filter_field['value'],
                             SelectionHelper::listData($filter_field['model']),

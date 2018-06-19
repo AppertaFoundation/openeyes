@@ -32,7 +32,7 @@ foreach ($dilation_drugs as $d_drug) {
     <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
-        <div class="active-form field-row flex-layout"
+        <div class="active-form data-group flex-layout"
              style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">

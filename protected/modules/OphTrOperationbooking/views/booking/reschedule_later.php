@@ -40,7 +40,7 @@
         <?php
         echo CHtml::form(array('booking/rescheduleLater/' . $operation->event_id), 'post', array('id' => 'cancelForm'));
         echo CHtml::hiddenField('booking_id', isset($operation->booking) ? $operation->booking->id : null); ?>
-      <div class="row field-row">
+      <div class="row">
         <div class="cols-2 column">
             <?php echo CHtml::label('Re-schedule reason: ', 'cancellation_reason'); ?>
         </div>

@@ -1,4 +1,4 @@
-<div class="field-row">
+<div class="data-group">
     <table class="cols-11 last-left">
         <colgroup>
             <col class="cols-3">
@@ -249,7 +249,7 @@
         </tbody>
     </table>
 </div>
-<div class="field-row">
+<div class="data-group">
     <table class="cols-11 last-left">
         <colgroup>
             <col class="cols-6">

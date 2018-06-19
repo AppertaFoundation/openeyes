@@ -32,7 +32,7 @@ function getRiskLevelColour($risk_level){
 }
 ?>
 <div class="element-fields flex-layout full-width ">
-	<div class="field-row row collapse">
+	<div class="row collapse">
 		<div class="cols-2 column">
 			<div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php }?> risk">

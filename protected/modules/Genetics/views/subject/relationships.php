@@ -3,11 +3,11 @@ $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applica
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.Genetics.Relationships.js');
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
 ?>
-<div class="row field-row">
-    <div class="large-2 column">
+<div class="row">
+    <div class="cols-2 column">
         <label for="genetics_patient_lookup">Relationships:</label>
     </div>
-    <div class="large-5 column">
+    <div class="cols-5 column">
         <input type="text" name="genetics_patient_lookup" id="genetics_patient_lookup" placeholder="Search for a related patient">
         <div style="display:none" class="no-result-patients warning alert-box">
           <div class="small-12 column text-center">
@@ -29,7 +29,7 @@ Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
             <?php endif;?>
         </ul>
     </div>
-    <div class="large-1 column end">
+    <div class="cols-1 column end">
         <img class="loader-relation" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
     </div>
 </div>

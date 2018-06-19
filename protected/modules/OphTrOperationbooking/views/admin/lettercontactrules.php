@@ -24,20 +24,20 @@
 		</div>
 	</header>
 	<form id="rulestest" class="panel">
-		<fieldset class="row field-row">
-			<legend class="large-1 column align">
+		<fieldset class="row">
+			<legend class="cols-1 column align">
 				Test:
 			</legend>
-			<div class="large-2 column">
+			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('lcr_site_id', '', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Site -'))?>
 			</div>
-			<div class="large-2 column">
+			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('lcr_subspecialty_id', '', CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'), array('empty' => '- Subspecialty -'))?>
 			</div>
-			<div class="large-2 column">
+			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<?php echo CHtml::dropDownList('lcr_theatre_id', '', array(), array('empty' => '- Theatre -'))?>
 			</div>
 		</fieldset>

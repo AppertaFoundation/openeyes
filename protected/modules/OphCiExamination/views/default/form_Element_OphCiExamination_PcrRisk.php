@@ -167,7 +167,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                     );
                 endif;
             endforeach;?>
-          <div class="row field-row">
+          <div class="row">
             <span class="pcr-risk-div">
               <label class="pro-theme highlighter">
                 PCR Risk <span class="pcr-span">&nbsp;</span> %

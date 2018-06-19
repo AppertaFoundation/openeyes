@@ -30,14 +30,10 @@ $this->moduleNameCssClass .= ' edit';
       </header>
 
       <div class="element-fields">
-
-        <div class="field-row">
-          <div class="field-info">
-            This patient already has a CVI. Are you sure you want to create a new one?
-          </div>
+        <div class="field-info">
+          This patient already has a CVI. Are you sure you want to create a new one?
         </div>
-        <div class="field-row">
-          <div class="field-info">
+        <div class="field-info">
             Current CVI are as follows:
               <?php if ($current_cvis) {
                   $manager = $this->getManager();
@@ -52,15 +48,12 @@ $this->moduleNameCssClass .= ' edit';
                 </ul>
               <?php } ?>
           </div>
-        </div>
-        <div class="field-row">
-          <div class="field-info">
-            <a href="<?= $can_create ? \Yii::app()->request->requestUri . "&createnewcvi=1" : '#'; ?>">
-              <button class="primary small <?= $can_create ? '' : ' disabled' ?>">
-                Proceed to Create new CVI
-              </button>
-            </a>
-          </div>
+        <div class="field-info">
+          <a href="<?= $can_create ? \Yii::app()->request->requestUri . "&createnewcvi=1" : '#'; ?>">
+            <button class="primary small <?= $can_create ? '' : ' disabled' ?>">
+              Proceed to Create new CVI
+            </button>
+          </a>
         </div>
       </div>
     </section>

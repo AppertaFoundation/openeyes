@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+<div class="row procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="cols-<?php echo $layoutColumns['label'];?> column">
 		<div class="data-label"><?php echo $label?></div>
 	</div>

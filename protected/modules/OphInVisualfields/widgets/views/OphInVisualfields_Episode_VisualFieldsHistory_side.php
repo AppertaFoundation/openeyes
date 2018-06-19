@@ -16,22 +16,22 @@ $field = $element->{"{$side}_field"};
 ?>
 <div class="element-eye <?= $side ?>-eye column">
 	<?php if ($field): ?>
-		<div class="field-row row">
+		<div class="row">
 			<div class="cols-12 column"><?= ucfirst($side) ?> Eye</div>
 		</div>
-		<div class="field-row row">
+		<div class="row">
 			<div class="cols-12 column"><a class="OphInVisualfields_field_image" data-image-id="<?= $field->image_id ?>" href="#"><img
 						src="/file/view/<?= $field->cropped_image_id ?>/400/img.gif"></a></div>
 		</div>
-		<div class="field-row row">
+		<div class="row">
 			<div class="cols-6 column"><p>Date</p></div>
 			<div class="cols-6 column"><p><?=date(Helper::NHS_DATE_FORMAT.' H:i:s', strtotime($field->study_datetime)) ?></p></div>
 		</div>
-		<div class="field-row row">
+		<div class=" row">
 			<div class="cols-6 column"><p>Strategy</p></div>
 			<div class="cols-6 column"><p><?= CHtml::encode($field->strategy->name) ?></p></div>
 		</div>
-		<div class="field-row row">
+		<div class="row">
 			<div class="cols-6 column"><p>Test Name</p></div>
 			<div class="cols-6 column"><p><?= CHtml::encode($field->pattern->name) ?></p></div>
 		</div>

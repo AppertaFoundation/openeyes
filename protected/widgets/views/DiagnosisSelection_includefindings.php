@@ -34,7 +34,7 @@ if (!$nowrapper) {?>
 }?>
 
 <?php if (!$nowrapper) {?>
-  <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
+  <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row hidden">
 			<div class="cols-<?php echo $layoutColumns['label'];?> column"
            style="<?=!$showLabel?"display: none;":""?>"
       >
@@ -45,7 +45,7 @@ if (!$nowrapper) {?>
 		</div>
   </div>
 <?php }else{?>
-<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
+<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row hidden">
   <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array('style' => 'display: none;'));?>
 </div>
 <?php }?>
@@ -53,7 +53,7 @@ if (!$nowrapper) {?>
 
 
 <?php if (!$nowrapper) {?>
-<div class="row field-row">
+<div class="row">
 		<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$showLabel) {?> hidden<?php }?>">
 			<label></label>
 		</div>

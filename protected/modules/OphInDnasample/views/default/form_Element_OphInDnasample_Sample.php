@@ -35,11 +35,11 @@
             $hidden = '';
         }
     ?>
-    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row field-row <?php echo $hidden; ?>">
-        <div class="large-2 column">
+    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row <?php echo $hidden; ?>">
+        <div class="cols-2 column">
             <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10 column end">
             <?php echo CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
         </div>
     </div>

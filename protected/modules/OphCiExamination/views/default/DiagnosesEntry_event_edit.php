@@ -78,7 +78,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
                <?php if ($values['is_principal'] == 1) {?>checked="checked" <?php } ?>/>
     </td>
     <td>
-        <fieldset class="row field-row fuzzy-date">
+        <fieldset class="row fuzzy-date">
           <input id="diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" >
           <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         </fieldset>

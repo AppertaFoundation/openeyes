@@ -16,13 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="field-row">
+<div class="data-group">
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="large-12 column autoreport-display">
+    <div class="cols-12 column autoreport-display">
         <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"></span>
     </div>
 </div>
-<div class="field-row">
+<div class="data-group">
     <?php
         $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawDefault();
         echo $form->hiddenField($element, $side.'_nuclear_id', array(
@@ -34,7 +34,7 @@
         'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawMapping()),
         'data-eyedraw-default' => $default ? $default->id : ''));
     ?>
-    <div class="large-12 column end">
+    <div class="cols-12 column end">
         <?php echo CHtml::activeTextArea(
             $element,
             $side . '_description',

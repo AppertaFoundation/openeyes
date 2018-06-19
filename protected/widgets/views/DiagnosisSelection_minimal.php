@@ -19,11 +19,11 @@
 <?php $class_field = "{$class}_{$field}"; ?>
 
 <?php if (!$nowrapper) {?>
-	<div class="row field-row diagnosis-selection">
-		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+	<div class="row diagnosis-selection">
+		<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 			<label for="<?php echo $class_field;?>">Diagnosis:</label>
 		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
 			<?php
             $list_options = array('empty' => 'Select a commonly used diagnosis');
@@ -56,13 +56,13 @@
 
 	<?php if ($secondary_to) {?>
 		<?php if (!$nowrapper) {?>
-			<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
+			<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row hidden">
 				<?php if (!$nowrapper) {?>
-					<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+					<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 						<label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
 					</div>
 				<?php }?>
-				<div class="large-<?php echo $layoutColumns['field'];?> column end">
+				<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 		<?php }?>
 				<?php echo CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
 		<?php if (!$nowrapper) {?>
@@ -72,13 +72,13 @@
 	<?php }?>
 
 	<?php if (!$nowrapper) {?>
-		<div class="row field-row">
+		<div class="row">
 			<?php if (!$nowrapper) {?>
-				<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+				<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 					<label></label>
 				</div>
 			<?php }?>
-			<div class="large-<?php echo $layoutColumns['field'];?> column end">
+			<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
 			<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 				<?php

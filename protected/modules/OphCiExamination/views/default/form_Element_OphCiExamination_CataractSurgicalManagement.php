@@ -17,7 +17,7 @@
  */
 ?>
 <div class="sub-element-fields">
-  <div class="field-row">
+  <div class="data-group">
       <?php echo $form->radioButtons($element, 'eye_id',
           CHtml::listData(
               \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
@@ -42,12 +42,12 @@
           </span>
       <?php endif; ?>
   </div>
-  <div class="cols-12 flex-layout flex-top">
+  <div class="cols-12 data-group flex-layout flex-top">
     <table class="cols-6">
       <tbody>
       <tr>
         <td>
-          <div class="field-row">
+          <div class="row">
               <?php
               if ($active_check === 'on') {
                   echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
@@ -111,7 +111,7 @@
     </table>
   </div>
 
-  <div class="row field-row flex-layout cols-6 flex-left flex-top">
+  <div class="row flex-layout cols-6 flex-left flex-top">
     <div class="cols-6 column">
         <label for="<?php echo get_class($element) . 'reasonForSurgery'; ?>">
             <?php echo $element->getAttributeLabel('reasonForSurgery') ?>:

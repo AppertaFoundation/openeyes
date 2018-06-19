@@ -1,5 +1,5 @@
-<div class="row field-row">
-    <div class="large-2 column">
+<div class="row">
+    <div  class="large-2 column">
         <label>Attachments:</label>
     </div>
     <div class="large-10 column end">

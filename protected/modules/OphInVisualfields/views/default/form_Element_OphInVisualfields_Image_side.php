@@ -41,7 +41,7 @@ Yii::app()->clientScript->registerScript(
 ?>
 <div class="element-eye <?= $side ?>-eye column">
     <?php if ($current_field): ?>
-      <div class="field-row row">
+      <div class="row">
         <div class="cols-5 column">
             <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
                 array('nowrapper' => true)) ?>
@@ -53,31 +53,32 @@ Yii::app()->clientScript->registerScript(
           </a>
         </div>
       </div>
-
-      <table class="label-value cols-10">
-        <tbody>
-        <tr>
-          <td>
-            <div class="data-label">Strategy</div>
-          </td>
-          <td>
-            <div class="data-value" id="Element_OphInVisualfields_Image_strategy_<?= $side ?>">
-                <?= CHtml::encode($current_field['strategy']) ?>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="data-label">Test Name</div>
-          </td>
-          <td>
-            <div class="data-value" id="Element_OphInVisualfields_Image_pattern_<?= $side ?>">
-                <?= CHtml::encode($current_field['pattern']) ?>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="data-group">
+        <table class="label-value cols-10">
+          <tbody>
+          <tr>
+            <td>
+              <div class="data-label">Strategy</div>
+            </td>
+            <td>
+              <div class="data-value" id="Element_OphInVisualfields_Image_strategy_<?= $side ?>">
+                  <?= CHtml::encode($current_field['strategy']) ?>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label">Test Name</div>
+            </td>
+            <td>
+              <div class="data-value" id="Element_OphInVisualfields_Image_pattern_<?= $side ?>">
+                  <?= CHtml::encode($current_field['pattern']) ?>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     <?php else: ?>
       <p>There are no fields to view for the <?= $side ?> eye.</p>
     <?php endif; ?>

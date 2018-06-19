@@ -58,7 +58,7 @@ $model_name = CHtml::modelName($element);
   <tbody>
     <tr>
       <td>
-        <div id="div_<?= $model_name.'_'.$eye; ?>_laser" class="row field-row flex-layout">
+        <div id="div_<?= $model_name.'_'.$eye; ?>_laser" class="row flex-layout">
           <div class="column">
             <label for="<?=$model_name.'_'.$eye.'_laser_status_id';?>">
                 <?=$element->getAttributeLabel($eye.'_laser_status_id') ?>:
@@ -99,7 +99,7 @@ $model_name = CHtml::modelName($element);
         style="<?= (!$show_deferral)? "display: none":""?>"
     >
       <td>
-        <div class="row field-row flex-layout flex-top">
+        <div class="row flex-layout flex-top">
           <div class="column">
             <label for="<?php echo $model_name.'_'.$eye.'_laser_deferralreason_id';?>">
                 <?php echo $element->getAttributeLabel($eye.'_laser_deferralreason_id')?>:
@@ -107,7 +107,7 @@ $model_name = CHtml::modelName($element);
           </div>
           <div class="column end">
               <?php echo CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
-            <div class="row field-row cols-full"
+            <div class="row cols-full"
                  id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason_other"
                  style="<?= (!$show_deferral_other)? "display: none":""?>"
             >
@@ -124,11 +124,9 @@ $model_name = CHtml::modelName($element);
       </td>
     </tr>
   </tbody>
-  <tbody
-        id="<?php echo $model_name.'_'.$eye;?>_treatment_fields"
-        class="field-row row"
-        style="<?= (!$show_treatment)? "display: none":""?>"
-  >
+  <tbody id="<?php echo $model_name.'_'.$eye;?>_treatment_fields"
+        class="row"
+        style="<?= (!$show_treatment)? "display: none":""?>" >
     <tr>
       <td>
         <div class="flex-layout cols-full">
@@ -164,7 +162,7 @@ $model_name = CHtml::modelName($element);
     ?>
     <tr class=" lasertype_other "
         style="<?= (!$show_other) ? 'display: none' : ''?>">
-      <td class="flex-layout row field-row">
+      <td class="flex-layout row">
             <div class="column">
               <label for="<?php echo $model_name.'_'.$eye.'_lasertype_other';?>">
                   <?php echo $element->getAttributeLabel($eye.'_lasertype_other'); ?>:

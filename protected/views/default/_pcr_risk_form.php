@@ -249,7 +249,7 @@ $criteria = new CDbCriteria();
           </table>
         </div>
       </div>
-      <div class="field-row-pad-top flex-layout">
+      <div class="data-group-pad-top flex-layout">
         <div>
             Excess risk compared to average eye <span class="pcr-erisk highlighter"><strong><span> 3  </span></strong></span> times
           <a href="https://www.nature.com/articles/6703049"

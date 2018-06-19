@@ -70,7 +70,7 @@
                         ),
                     ))?>
 
-				<fieldset class="field-row">
+				<fieldset class="data-group">
 
 					<legend><strong>Add Systemic diagnosis</strong></legend>
 
@@ -84,7 +84,7 @@
                             'loader' => 'add_systemic_diagnosis_loader',
                         ))?>
 
-					<div class="row field-row hide" id="add_systemic_diagnosis_loader">
+					<div class="row hide" id="add_systemic_diagnosis_loader">
 						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
 							<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 								searching...
@@ -93,7 +93,7 @@
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-					<fieldset class="diagnosis_eye row field-row">
+					<fieldset class="diagnosis_eye row">
 						<legend class="<?php echo $form->columns('label');?>">
 							Side:
 						</legend>

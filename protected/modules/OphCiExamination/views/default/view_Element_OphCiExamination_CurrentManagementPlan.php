@@ -29,75 +29,77 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
   ?>
 	<section class="element-eye <?=$side?> side <?=$eye?>-eye">
     <?php if ($element->$hasEyeFunc()):?>
-    <table>
-      <tbody>
-      <tr class="row field-row"
-           id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop_id" >
-        <td class="cols-5 column"><label>IOP:</label></td>
-        <td class="cols-7 column end"
-             id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
-          <?= ($iop == null) ? 'N/A' : $iop[$eye.'IOP'].' mmHg';?>
-          <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && $iop[$eye.'IOP'] > $targetIOP[$eye]):?>
-            <span class="iop_notification error">*** IOP above target ***</span>
-          <?php endif?>
-        </td>
-      </tr>
-      <tr class="row">
-        <td class="cols-5 column">
-          <div class="data-label">
-              <?php echo CHtml::encode($element->getAttributeLabel($eye.'_glaucoma_status_id'))?>
-          </div>
-        </td>
-        <td class="cols-7 column end">
-          <div class="data-value">
-              <?php
-              $eyeGlocStatus = $eye."_glaucoma_status";
-              echo $element->$eyeGlocStatus ? $element->$eyeGlocStatus->name : 'None'?>
-          </div>
-        </td>
-      </tr>
-      <tr class="row">
-        <td class="cols-5 column">
-          <div class="data-label">
-              <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drop-related_prob_id'))?>
-          </div>
-        </td>
-        <td class="cols-7 column end">
-          <div class="data-value">
-              <?php echo $element->{$eye.'_drop-related_prob'} ? $element->{$eye.'_drop-related_prob'}->name : 'None'?>
-          </div>
-        </td>
-      </tr>
-      <tr class="row">
-        <td class="cols-5 column">
-          <div class="data-label">
-              <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drops_id'))?>
-          </div>
-        </td>
-        <td class="cols-7 column end">
-          <div class="data-value">
-              <?php
-              $eyeDrops = $eye."_drops";
-              echo $element->$eyeDrops ? $element->$eyeDrops->name : 'None'?>
-          </div>
-        </td>
-      </tr>
-      <tr class="row">
-        <td class="cols-5 column">
-          <div class="data-label">
-              <?php echo CHtml::encode($element->getAttributeLabel($eye.'_surgery_id'))?>
-          </div>
-        </td>
-        <td class="cols-7 column end">
-          <div class="data-value">
-              <?php
-              $eyeSurgery = $eye."_surgery";
-              echo $element->$eyeSurgery ? $element->$eyeSurgery->name : 'N/A'?>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="data-group">
+      <table>
+        <tbody>
+        <tr class="row"
+            id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop_id" >
+          <td class="cols-5 column"><label>IOP:</label></td>
+          <td class="cols-7 column end"
+              id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
+              <?= ($iop == null) ? 'N/A' : $iop[$eye.'IOP'].' mmHg';?>
+              <?php if (isset($targetIOP[$eye]) && !is_null($targetIOP[$eye]) && $iop[$eye.'IOP'] > $targetIOP[$eye]):?>
+                <span class="iop_notification error">*** IOP above target ***</span>
+              <?php endif?>
+          </td>
+        </tr>
+        <tr class="row">
+          <td class="cols-5 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_glaucoma_status_id'))?>
+            </div>
+          </td>
+          <td class="cols-7 column end">
+            <div class="data-value">
+                <?php
+                $eyeGlocStatus = $eye."_glaucoma_status";
+                echo $element->$eyeGlocStatus ? $element->$eyeGlocStatus->name : 'None'?>
+            </div>
+          </td>
+        </tr>
+        <tr class="row">
+          <td class="cols-5 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drop-related_prob_id'))?>
+            </div>
+          </td>
+          <td class="cols-7 column end">
+            <div class="data-value">
+                <?php echo $element->{$eye.'_drop-related_prob'} ? $element->{$eye.'_drop-related_prob'}->name : 'None'?>
+            </div>
+          </td>
+        </tr>
+        <tr class="row">
+          <td class="cols-5 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drops_id'))?>
+            </div>
+          </td>
+          <td class="cols-7 column end">
+            <div class="data-value">
+                <?php
+                $eyeDrops = $eye."_drops";
+                echo $element->$eyeDrops ? $element->$eyeDrops->name : 'None'?>
+            </div>
+          </td>
+        </tr>
+        <tr class="row">
+          <td class="cols-5 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_surgery_id'))?>
+            </div>
+          </td>
+          <td class="cols-7 column end">
+            <div class="data-value">
+                <?php
+                $eyeSurgery = $eye."_surgery";
+                echo $element->$eyeSurgery ? $element->$eyeSurgery->name : 'N/A'?>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
     <?php else:?>
       Not recorded
     <?php endif;?>

@@ -15,15 +15,13 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
     $items_count = count($items);
-
 ?>
-<div class="row field-row" id="div_Tag_drugs">
-    <div class="large-2 column">
+<div class="row" id="div_Tag_drugs">
+    <div class="cols-2 column">
         <label>Medication drugs tagged</label>
     </div>
-    <div class="large-5 column end">
+    <div class="cols-5 data-group column end">
         <?php if($items_count > 0): ?>
         <table class="generic-admin" id="drugs_list">
             <thead>

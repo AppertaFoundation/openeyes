@@ -1,8 +1,8 @@
-<div class="row field-row">
-    <div class="large-2 column">
+<div class="row">
+    <div class="cols-2 column">
         <label>Subjects:</label>
     </div>
-    <div class="large-5 column end">
+    <div class="cols-5 column end">
         <ul class="subjects_list">
             <?php foreach($subjects as $subject):?>
                 <li>

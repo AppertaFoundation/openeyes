@@ -22,7 +22,6 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
     'id', 'name');
 $key = 0;
 ?>
-
 <?php
 $this->beginClip('element-title-additional');
 if ($element->isNewRecord) {
@@ -60,7 +59,7 @@ if ($cvi_api) {
       <div
           class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
           data-side="<?= $eye_side ?>">
-        <div class="active-form field-row flex-layout">
+        <div class="active-form data-group flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table
@@ -83,12 +82,11 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div
-                class="field-row row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
-              <div class="large-4 column">
+            <div class="row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
+              <div class="cols-4 column">
                 <div class="field-info">Not recorded</div>
               </div>
-              <div class="large-8 column end">
+              <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
                   <?php echo $form->checkBox($element, $eye_side . '_eye_missing',

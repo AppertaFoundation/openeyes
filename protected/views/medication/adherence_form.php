@@ -41,9 +41,9 @@ if ($adherence === null) {
 
 ?>
 <input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
-<fieldset class="field-row">
+<fieldset class="data-group">
 	<legend><strong>Adherence</strong></legend>
-	<div class="row field-row">
+	<div class="row">
 		<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
 		<div class="<?= $form->columns('field') ?>"><?=
             CHtml::activeDropDownList(
@@ -53,7 +53,7 @@ if ($adherence === null) {
             )
             ?></div>
 	</div>
-	<div class="row field-row">
+	<div class="row">
 		<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
 		<div class="<?= $form->columns('field') ?>">
 			<?= CHtml::activeTextArea($adherence, 'comments') ?>

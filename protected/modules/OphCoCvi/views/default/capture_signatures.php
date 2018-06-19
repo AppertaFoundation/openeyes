@@ -23,7 +23,7 @@ if ($this->checkUserSigned()) {
     <div class="element-data" xmlns="http://www.w3.org/1999/html">
         <div class="row">
             <div class="cols-12 column">
-                <div id="div_signature_pin"  class="row field-row">
+                <div id="div_signature_pin"  class="row">
                     <div class="cols-12 column">
                         This CVI has been signed by <b><?php echo $clinical_element->consultant->getFullName()?></b>
                     </div>
@@ -37,7 +37,7 @@ if ($this->checkUserSigned()) {
             <div class="row">
                 <div class="cols-12 column">
                 <?php if (!$user->checkSignature()) { ?>
-                    <div id="div_signature_pin" class="row field-row">
+                    <div id="div_signature_pin" class="row">
                         <div class="cols-12 column">
                             <label>To sign this CVI, you will need to capture and upload your signature.
                                 <a href="/profile/signature">Please click here to capture consultant signature
@@ -57,7 +57,7 @@ if ($this->checkUserSigned()) {
                             'method' => 'POST'
                         ));
                         ?>
-                        <div id="div_signature_pin" class="row field-row">
+                        <div id="div_signature_pin" class="row">
                             <div class="cols-4 column">
                                 <label for="signature_pin">Consultant's signature - please enter your PIN:</label>
                             </div>
@@ -77,7 +77,7 @@ if ($this->checkUserSigned()) {
                         <?php
                         $this->endWidget();
                     } else { ?>
-                        <div id="div_signature_pin" class="row field-row">
+                        <div id="div_signature_pin" class="row">
                         <div class="cols-12 column">
                             <label>You can sign this CVI once the clinical data has been created.</label>
                         </div>

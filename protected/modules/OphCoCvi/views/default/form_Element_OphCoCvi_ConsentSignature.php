@@ -26,11 +26,11 @@
   <tbody>
   <tr class="col-gap">
     <td>
-      <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row field-row">
-        <div class="large-2 column">
+      <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row">
+        <div class="cols-2 column">
           <label>Signed By:</label>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10 column end">
             <?php echo $form->radioButtons($element, 'is_patient', array(
                 1 => 'Patient',
                 0 => "Patient's Representative",

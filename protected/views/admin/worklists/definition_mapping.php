@@ -34,7 +34,11 @@
     ))?>
     <?php echo $form->checkbox($mapping, 'willdisplay'); ?>
     <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-    <div class="row field-row"><div class="large-8 column large-push-2"><i>If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.</i></div></div>
+    <div class="row">
+      <div class="large-8 column large-push-2">
+        <i>If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.</i>
+      </div>
+    </div>
     <?php echo $form->textField($mapping, 'valuelist', array('autocomplete' => Yii::app()->params['html_autocomplete']),
         null, array('field' => 2))?>
 

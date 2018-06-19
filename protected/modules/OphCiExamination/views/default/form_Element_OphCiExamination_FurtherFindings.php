@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-  <div class="field-row furtherfindings-multi-select">
+  <div class="furtherfindings-multi-select">
       <?php echo $form->multiSelectListFreeText(
           $element,
           CHtml::modelName($element) . '[further_findings_assignment]',

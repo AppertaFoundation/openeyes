@@ -39,7 +39,7 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
     }, 'name');
 ?>
 
-<div id="risks" class="field-row">
+<div id="risks" class="data-group">
         <?php
         $columns = array(
             array(
@@ -101,7 +101,6 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
         ));
         ?>
         <button id="add_new_risk" type="button" class="small primary right">Add</button>
-
 </div>
 
 

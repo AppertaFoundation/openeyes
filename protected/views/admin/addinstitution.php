@@ -31,7 +31,7 @@
     ))?>
 		<?php echo $form->textField($institution, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($institution, 'remote_id', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-		<fieldset class="field-row">
+		<fieldset class="data-group">
 			<legend>Address</legend>
 			<?php echo $form->textField($address, 'address1', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 			<?php echo $form->textField($address, 'address2', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>

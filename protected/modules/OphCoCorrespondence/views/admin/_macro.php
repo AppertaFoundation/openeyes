@@ -48,20 +48,20 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
         <?php echo $form->dropDownList($macro, 'episode_status_id', CHtml::listData(EpisodeStatus::model()->findAll(array('order' => 'id asc')), 'id', 'name'), array('empty' => '- None -'))?>
         <?php echo $form->textArea($macro, 'body')?>
 
-        <div class="row field-row">
-            <div class="large-10 large-offset-2 column shortCodeDescription">
+        <div class="row">
+            <div class="cols-10 large-offset-2 column shortCodeDescription">
                 &nbsp;
             </div>
         </div>
-        <div class="row field-row">
-            <div class="large-8 large-offset-2 column">
-                <div class="row field-row">
-                    <div class="large-3 column">
+        <div class="row">
+            <div class="cols-8 large-offset-2 column">
+                <div class="row">
+                    <div class="cols-3 column">
                         <label for="shortcode">
                             Add shortcode:
                         </label>
                     </div>
-                    <div class="large-6 column end">
+                    <div class="cols-6 column end">
                         <?php echo CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code', 'description'), array('empty' => '- Select -'))?>
                     </div>
                 </div>
@@ -73,7 +73,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
             $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
         ?>
 
-        <div class="field-row">
+        <div class="data-group">
             <p>Attachments</p>
             <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
                 <thead>
@@ -141,8 +141,8 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
         </div>
 
 
-    <div class="row field-row">
-            <div class="large-10 large-offset-2 column">
+    <div class="row">
+            <div class="cols-10 large-offset-2 column">
                 <button class="button small primary event-action" name="save" type="submit" id="et_save">Save</button>
                 <button class="warning button small primary cancelEditMacro" name="cancel" type="submit">Cancel</button>
             </div>

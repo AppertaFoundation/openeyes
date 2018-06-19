@@ -32,7 +32,7 @@
     <?php } ?>
     <?php
     if ($disorder_section->comments_allowed == 1) { ?>
-        <fieldset class="flex-layout field-row">
+        <fieldset class="flex-layout data-group">
             <div class="cols-5">
                 <label><?php echo $disorder_section->comments_label; ?></label>
             </div>

@@ -24,7 +24,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 ?>
 <div class="eyedraw-fields">
 
-  <div class="field-row">
+  <div class="data-group">
     <label for="<?php echo $side . '_gonioscopy_mode'; ?>">
       Mode:
     </label>
@@ -104,7 +104,6 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
       </div>
     </div>
   </div>
-
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
   <div class="row">
     <div class="cols-6 column end">
@@ -117,7 +116,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     </div>
   </div>
 
-  <div class="field-row">
+  <div class="data-group">
     <label for="<?= CHtml::modelName($element) . '_' . $side . '_description'; ?>">
         <?= $element->getAttributeLabel($side . '_description'); ?>:
     </label>

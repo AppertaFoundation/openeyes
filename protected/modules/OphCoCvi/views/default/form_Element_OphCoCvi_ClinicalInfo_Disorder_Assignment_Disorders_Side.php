@@ -1,13 +1,12 @@
-<table class="row field-row">
-  <colgroup>
-    <col>
-    <col class="cols-6">
-  </colgroup>
-  <tbody>
-<?php foreach ($disorder_section->disorders as $disorder) {
-        $field_base_name = CHtml::modelName($element) . "[{$side}_disorders][{$disorder->id}]";
-    ?>
-
+<div class="data-group">
+  <table class="row">
+    <colgroup>
+      <col>
+      <col class="cols-6">
+    </colgroup>
+    <tbody>
+    <?php foreach ($disorder_section->disorders as $disorder) {
+        $field_base_name = CHtml::modelName($element) . "[{$side}_disorders][{$disorder->id}]"; ?>
       <tr>
         <td>
           <label><?php echo $disorder->name; ?></label>
@@ -20,9 +19,9 @@
                   array(
                       'id' => $field_base_name . '_affected_1',
                       'value' => 1,
-                      'class' => 'affected-selector'
+                      'class' => 'affected-selector',
                   )
-              )?>
+              ) ?>
             Yes
           </label>
           <label class="inline highlight">
@@ -32,20 +31,21 @@
                   array(
                       'id' => $field_base_name . '_affected_0',
                       'value' => 0,
-                      'class' => 'affected-selector'
+                      'class' => 'affected-selector',
                   )
-              )?>
+              ) ?>
             No
           </label>
           <label class="inline">
               <?php echo CHtml::checkBox(
                   $field_base_name . "[main_cause]",
                   $element->isCviDisorderMainCauseForSide($disorder, $side),
-                  array('class' => 'disorder-main-cause'));?>
+                  array('class' => 'disorder-main-cause')); ?>
             Main cause
           </label>
         </td>
       </tr>
-<?php } ?>
-  </tbody>
-</table>
+    <?php } ?>
+    </tbody>
+  </table>
+</div>

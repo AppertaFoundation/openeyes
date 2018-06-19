@@ -24,7 +24,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
 <div class="element-fields flex-layout full-width ">
 
     <?php echo CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
-  <div class="field-row comorbidities-multi-select">
+  <div class="comorbidities-multi-select">
       <?php echo $form->multiSelectList(
           $element,
           CHtml::modelName($element) . '[items]',

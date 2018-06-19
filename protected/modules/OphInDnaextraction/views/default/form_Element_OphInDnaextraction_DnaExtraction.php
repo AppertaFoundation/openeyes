@@ -26,11 +26,11 @@
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
         echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
         
-        <div class="row field-row">
-            <div class="large-3 column">
+        <div class="row">
+            <div class="cols-3 column">
                 <label></label>
             </div>
-            <div class="large-2 column end">
+            <div class="cols-2 column end">
                  <?php echo CHtml::button('Add new storage', 
                     array(
                         'id'        => 'addNewStoragePopup',

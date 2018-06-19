@@ -30,19 +30,20 @@
     ))?>
         <?php if ($metadata->key == 'city_road_satellite_view') { ?>
         <div class="row">
-            <div class="large-12 column">
-                <div class="alert-box with-icon warning">Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"
-		</div>
+            <div class="cols-12 column">
+                <div class="alert-box with-icon warning">
+                  Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"
+                </div>
             </div>
         </div>
         <?php } ?>
-		<div class="row field-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<label for="<?php echo $metadata->key?>">
 					<?php echo $metadata->name?>
 				</label>
 			</div>
-			<div class="large-3 column end">
+			<div class="cols-3 column end">
 				<?php $this->renderPartial('//admin/_admin_setting_'.strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata))?>
 			</div>
 		</div>

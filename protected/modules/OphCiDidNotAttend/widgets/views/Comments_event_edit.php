@@ -23,14 +23,10 @@ $model_name = CHtml::modelName($element);
 ?>
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
     <div class="cols-11 end flex-layout">
-        <div class="field-row">
         <?php echo $form->textArea($element, 'comment', array('rows' => '5', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true),
             false,
             array('placeholder' => 'Enter comments here')
-        )
-        ?>
-
-        </div>
+        ) ?>
     </div>
 </div>
 

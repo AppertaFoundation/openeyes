@@ -38,11 +38,11 @@
 	echo $form->dropDownList($cbs, 'commissioning_body_id', CHtml::listData(CommissioningBody::model()->findAll($criteria), 'id', 'name'), array('style' => 'margin-bottom:6px;'));
 
 	if ($commissioning_bst) { ?>
-		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="row field-row">
-			<div class="large-2 column">
+		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="row">
+			<div class="cols-2 column">
 				<label for="div_CommissioningBodyService_commissioning_body_service_type_id">Service type:</label>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-5 column end">
 				<?php
 				echo $form->hiddenInput($cbs, 'commissioning_body_service_type_id', $commissioning_bst->id);
 				echo $commissioning_bst->name;
