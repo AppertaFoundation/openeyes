@@ -16,6 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+$correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+?>
 <!-- Show full patient Demographies -->
 <div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
   <div class="flex-layout flex-top">
@@ -81,6 +85,30 @@
 
 <!-- Patient Quickloog popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
 <div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
+    <div class="situational-awareness flex-layout flex-left flex-top">
+
+        <div class="group">
+            <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>
+            <span class="data">L <?php echo $exam_api->getLetterVisualAcuityLeft($patient)?></span>
+<!--            <span class="oe-date"><span class="day">4</span><span class="mth">May</span><span class="yr">2018</span></span>-->
+        </div>
+
+        <div class="group">
+            <?php
+                $tempArr = explode(",",$correspondence_api->getPreOpRefraction($patient));
+                $rightPreOpRefraction = explode(" ",$tempArr[0])[0];
+                $leftPreOpRefraction = explode(" ",$tempArr[0])[0];
+            ?>
+
+            <span class="data">R <?php echo $rightPreOpRefraction?></span>
+            <span class="data">L <?php echo $leftPreOpRefraction?></span>
+        </div>
+
+        <div class="group">
+            <span class="data">CVI Status:  <?php echo explode("(",$this->cviStatus)[0]; ?></span>
+            <span class="oe-date"><?php echo Helper::convertDate2NHS($this->patient->getOphInfo()->cvi_status_date );?></span>
+        </div>
+    </div>
     <div class="flex-layout flex-top">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
