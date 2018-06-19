@@ -202,6 +202,11 @@
                                          alt="Created by: <?php echo $booking->user->fullName . "\n" ?>Last modified by: <?php echo $booking->usermodified->fullName ?>"
                                          title="Created by: <?php echo $booking->user->fullName . "\n" ?>Last modified by: <?php echo $booking->usermodified->fullName ?>"
                                          width="17" height="17"/>
+
+                                    <?php if($booking->operation->complexity !== null && $complexity = "Complexity: " . $booking->operation->getComplexityCaption()):?>
+                                        <img src="<?php echo $assetPath ?>/img/diaryIcons/complexity.png"
+                                             class="complexity <?=$booking->operation->getComplexityCaption();?>" alt="<?=$complexity;?>" title="<?=$complexity;?>"/>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php } ?>
