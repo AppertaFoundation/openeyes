@@ -42,7 +42,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           <?php endif?>
         </td>
       </tr>
-      <tr class="row data-row">
+      <tr class="row">
         <td class="cols-5 column">
           <div class="data-label">
               <?php echo CHtml::encode($element->getAttributeLabel($eye.'_glaucoma_status_id'))?>
@@ -56,7 +56,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           </div>
         </td>
       </tr>
-      <tr class="row data-row">
+      <tr class="row">
         <td class="cols-5 column">
           <div class="data-label">
               <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drop-related_prob_id'))?>
@@ -68,7 +68,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           </div>
         </td>
       </tr>
-      <tr class="row data-row">
+      <tr class="row">
         <td class="cols-5 column">
           <div class="data-label">
               <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drops_id'))?>
@@ -82,7 +82,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
           </div>
         </td>
       </tr>
-      <tr class="row data-row">
+      <tr class="row">
         <td class="cols-5 column">
           <div class="data-label">
               <?php echo CHtml::encode($element->getAttributeLabel($eye.'_surgery_id'))?>

@@ -17,14 +17,10 @@
  */
 ?>
 <div class="sub-element-data">
-    <div class="data-row">
-        <div class="data-value">
-            <?= $element->anticoagulantText(); ?>
-        </div>
-    </div>
-    <div class="data-row">
-        <div class="data-value">
-            <?= $element->alphaBlockerText(); ?>
-        </div>
-    </div>
+  <div class="data-value">
+      <?= $element->anticoagulantText(); ?>
+  </div>
+  <div class="data-value">
+      <?= $element->alphaBlockerText(); ?>
+  </div>
 </div>

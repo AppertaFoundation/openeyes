@@ -104,7 +104,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
     <div class="indent-correct element-data element-eyes">
         <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
           <div class="element-eye <?= $eye_side ?>-eye column">
-            <div class="data-row">
+            <div class="data-group">
               <ul class="dslash-list large-text">
                 <li><?php echo CHtml::encode($element->{'unaided_'.$eye_side.'_va'}.' Unaided'); ?></li>
                 <li><?php echo CHtml::encode($element->{'best_corrected_'.$eye_side.'_va'}.' Best') ?></li>
@@ -122,7 +122,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
       <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
           'element' => $element,
       ))?>
-    <div class="row data-row">
+    <div class="row">
       <div class="cols-4">
         <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
       </div>

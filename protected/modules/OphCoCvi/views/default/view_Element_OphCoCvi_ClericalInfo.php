@@ -19,7 +19,7 @@
 
 <div class="element-data">
   <div class="element-fields row">
-    <div class="large-12 column">
+    <div class="cols-12 column">
       <table>
         <thead>
         <tr>
@@ -37,10 +37,10 @@
           <tr>
             <td><?php echo CHtml::encode($factor['name']) ?>
                 <?php if ($factor['is_comments'] == 1) { ?>
-                  <div class="row data-row"><br/>
-                    <div class="large-4 column large-push-1"
+                  <div class="row"><br/>
+                    <div class="cols-4 column large-push-1"
                          style="font-style: italic;"><?php echo CHtml::encode($factor['label']) ?></div>
-                    <div class="large-6 column large-push-1 end"><?php echo $comments; ?></div>
+                    <div class="cols-6 column large-push-1 end"><?php echo $comments; ?></div>
                   </div>
                 <?php } ?>
             </td>

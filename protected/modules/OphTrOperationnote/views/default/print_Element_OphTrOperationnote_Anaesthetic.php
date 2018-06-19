@@ -26,7 +26,7 @@
                     $columns -= 2;
                 }
             ?>
-			<div class="row data-row columns-<?php echo $columns;?>">
+			<div class="data-group columns-<?php echo $columns;?>">
 				<div class="column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
 					<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
@@ -41,7 +41,6 @@
                                 if(!empty($text)){ $text .= ', '; }
                                 $text .= $anaesthetic_delivery->name;
                             }
-
                             echo $text ? $text : 'None';
                             ?>
                         </div>
@@ -76,8 +75,8 @@
 					</div>
 				<?php }?>
 			</div>
-			<div class="row data-row">
-				<div class="large-12 column">
+			<div class="row">
+				<div class="cols-12 column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
 					<div class="data-value"><?php echo  Yii::app()->format->Ntext($element->anaesthetic_comment)?></div>
 				</div>

@@ -21,10 +21,8 @@
 		<?php if ($element->hasRight()) {
     $this->renderPartial($element->view_view.'_fields', array('side' => 'right', 'element' => $element));
 } else { ?>
-			<div class="data-row">
-				<div class="data-value">Not recorded</div>
-			</div>
-		<?php 
+      <div class="data-value">Not recorded</div>
+		<?php
 }?>
 	</div>
 	<div class="element-eye left-eye column">
@@ -32,10 +30,8 @@
     $this->renderPartial($element->view_view.'_fields', array('side' => 'left', 'element' => $element));
 } else {
     ?>
-			<div class="data-row">
-				<div class="data-value">Not recorded</div>
-			</div>
-		<?php 
+      <div class="data-value">Not recorded</div>
+		<?php
 }?>
 	</div>
 </div>

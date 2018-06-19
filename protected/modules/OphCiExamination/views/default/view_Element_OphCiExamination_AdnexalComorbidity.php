@@ -18,8 +18,7 @@
 ?>
 <div class="element-data element-eyes">
   <div class="element-eye right-eye column">
-    <div class="data-row">
-      <div class="data-value">
+    <div class="data-value">
         <span class="large-text">
           <?php if ($element->hasRight()) {
               echo Yii::app()->format->Ntext($element->right_description);
@@ -28,19 +27,15 @@
           <?php } ?>
         </span>
       </div>
-    </div>
   </div>
   <div class="element-eye left-eye column">
-    <div class="data-row">
-      <div class="data-value">
-        <span class="large-text">
-          <?php if ($element->hasLeft()) {
+    <div class="data-value">
+      <span class="large-text"><?php if ($element->hasLeft()) {
               echo Yii::app()->format->Ntext($element->left_description);
           } else { ?>
             Not recorded
           <?php } ?>
-        </span>
-      </div>
+      </span>
     </div>
   </div>
 </div>

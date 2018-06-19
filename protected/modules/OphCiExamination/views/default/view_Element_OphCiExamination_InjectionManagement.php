@@ -17,13 +17,13 @@
  */
 ?>
 <div class="sub-element-data row">
-	<div class="row data-row">
-		<div class="large-4 column">
+	<div class="row">
+		<div class="cols-4 column">
 			<div class="data-label">
 				<?php echo $element->getAttributeLabel('injection_status_id')?>:
 			</div>
 		</div>
-		<div class="large-8 column">
+		<div class="cols-8 column">
 			<div class="data-value">
 				<?php echo $element->injection_status?>
 			</div>
@@ -31,13 +31,13 @@
 	</div>
 	<?php if ($element->injection_status && $element->injection_status->deferred) {
     ?>
-		<div class="row data-row">
-			<div class="large-4 column">
+		<div class="row">
+			<div class="cols-4 column">
 				<div class="data-label">
 					<?php echo $element->getAttributeLabel('injection_deferralreason_id')?>:
 				</div>
 			</div>
-			<div class="large-8 column end">
+			<div class="cols-8 column end">
 				<div class="data-value">
 					<?= Yii::app()->format->Ntext($element->getInjectionDeferralReason()) ?>
 				</div>

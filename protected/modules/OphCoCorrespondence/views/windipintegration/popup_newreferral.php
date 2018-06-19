@@ -16,27 +16,27 @@
  */
 
 ?>
-<div class="row data-row">
-    <div class="large-3 column right" id="external-referral-help">
+<div class="row">
+    <div class="cols-3 column right" id="external-referral-help">
         <a href="javascript:void(0)" class="windip-help">Problems reaching WinDIP ?</a>
     </div>
 </div>
 <div class="element">
     <div class="element-data">
-        <div class="row data-row">
-            <div class="large-6 column hidden end" id="external-referral-popup-blocked">
+        <div class="row">
+            <div class="cols-6 column hidden end" id="external-referral-popup-blocked">
                 Unable to automatically open WinDip. Please click the button below.
             </div>
         </div>
         <?php if( !$is_new_referral ): ?>
-            <div class="row data-row">
-                <div class="large-6 column" id="external-referral-button">
+            <div class="row">
+                <div class="cols-6 column" id="external-referral-button">
                     <a href="<?=$external_link?>" class="button primary small">click to view</a>
                 </div>
             </div>
         <?php endif; ?>
-        <div class="row data-row">
-            <div class="large-12 column <?php echo $is_new_referral ? 'hidden' : '' ?>" id="external-referral-status">
+        <div class="row">
+            <div class="cols-12 column <?php echo $is_new_referral ? 'hidden' : '' ?>" id="external-referral-status">
                 placeholder for displaying the status information and/or link for the referral in windip.
             </div>
         </div>

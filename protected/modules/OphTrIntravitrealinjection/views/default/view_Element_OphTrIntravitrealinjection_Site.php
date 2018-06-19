@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data">
-  <div class="row data-row">
+  <div class="row">
     <div class="data-value"><?php echo $element->{'site'}->name ?></div>
   </div>
 </div>

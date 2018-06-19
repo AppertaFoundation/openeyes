@@ -4,8 +4,7 @@
       <div class="data-value "><b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b></div>
     </div>
   </div>
-  <div class="row data-row">
-
+  <div class="row">
       <?php
       if ($element->single_document) { ?>
         <div class="cols-12 column">
@@ -47,6 +46,6 @@
       <?php } ?>
   </div>
 <?php } ?>
-    <div class="row data-row">
-        <div class="large-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
+    <div class="row">
+        <div class="cols-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
     </div>

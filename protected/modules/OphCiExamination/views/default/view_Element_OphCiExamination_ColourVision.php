@@ -18,7 +18,7 @@
 
 <div class="element-data element-eyes">
 	<div class="element-eye right-eye column">
-		<div class="data-row">
+		<div class="data-group">
 			<?php if ($element->hasRight()) {
     ?>
 				<table class="element-table">
@@ -49,7 +49,7 @@
 		</div>
 	</div>
 	<div class="element-eye left-eye column">
-		<div class="data-row">
+		<div class="data-group">
 			<?php if ($element->hasLeft()) {
     ?>
 				<table class="element-table">

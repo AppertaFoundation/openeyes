@@ -22,8 +22,7 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-data full-width">
-    <div class="data-row">
-      <div class="data-value flex-layout flex-top">
+    <div class="data-value flex-layout flex-top">
         <table class="last-left large">
           <colgroup>
             <col class="cols-fifth" span="4">
@@ -58,6 +57,5 @@
           </tbody>
         </table>
       </div>
-    </div>
   </section>
 </section>

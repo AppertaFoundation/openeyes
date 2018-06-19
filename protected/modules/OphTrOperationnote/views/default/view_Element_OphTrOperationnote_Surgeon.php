@@ -23,10 +23,9 @@
   </header>
   <div class="element-data full-width">
 
-    <div class="data-row">
+    <div class="data-group">
       <div class="data-value flex-layout flex-top">
         <div class="cols-11">
-
           <div class="cols-11" id="js-listview-info-pro" style="">
             <ul class="dslash-list large-text">
               <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
@@ -45,7 +44,7 @@
             </ul>
           </div>
 
-          <div class="col-6" id="js-listview-info-full" style="display: none">
+          <div class="col-6 data-group" id="js-listview-info-full" style="display: none">
             <table class="last-left">
               <thead>
               <tr>

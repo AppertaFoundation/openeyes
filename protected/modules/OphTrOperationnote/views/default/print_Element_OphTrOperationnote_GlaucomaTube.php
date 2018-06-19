@@ -21,108 +21,107 @@
 	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
 	<div class="row">
 		<div class="large-6 column">
-			<div class="row data-row">
+			<div class="row">
 				<div class="large-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('plate_position_id'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->plate_position->name ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('plate_limbus'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->plate_limbus ?> mm
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('tube_position_id'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->tube_position->name ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('stent'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->stent ? 'Yes' : 'No'; ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('slit'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->slit ? 'Yes' : 'No'; ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('visco_in_ac'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->visco_in_ac ? 'Yes' : 'No'; ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('flow_tested'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo $element->flow_tested ? 'Yes' : 'No'; ?>
 					</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="row">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
 					</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<?php echo Yii::app()->format->Ntext($element->description)?>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="large-6 column">
-			<div class="data-row">
+		<div class="cols-6 column">
+			<div class="data-group">
 				<div class="details">
-				<?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+				<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                                 'idSuffix' => 'GlaucomaTube',
                                 'mode' => 'view',
                                 'width' => 200,

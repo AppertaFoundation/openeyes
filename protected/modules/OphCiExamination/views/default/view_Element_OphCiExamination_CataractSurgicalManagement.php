@@ -17,7 +17,7 @@
  */
 ?>
 <div class="sub-element-data">
-	<div class="data-row">
+	<div class="data-group">
 		<table class="element-table">
 			<tbody>
 				<tr>

@@ -60,8 +60,8 @@ foreach($actions as $action_id => $action){
 ?>
     
 <?php if($banner_text): ?>
-<div class="row data-row">
-    <div class="large-10 correspondence_create_banner column">
+<div class="row">
+    <div class="cols-10 correspondence_create_banner column">
         <div class="data-label">
             <?php echo $banner_text; ?>
         </div>

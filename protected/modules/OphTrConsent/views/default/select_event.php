@@ -36,21 +36,18 @@ $this->moduleNameCssClass .= ' edit';
   <input type="hidden" name="SelectBooking"/>
 
   <div class="field-row">
-    <div class="data-row">
-      <div class="data-value flex-layout">
-        <p>
-        <?php if (count($bookings) > 0) { ?>
+    <div class="data-value flex-layout">
+      <p>
+          <?php if (count($bookings) > 0) { ?>
           Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
         <?php } else { ?>
           There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
         <?php } ?>
-        </p>
+      </p>
     </div>
       <br />
-    </div>
-
-    <div class=" data-row cols-8">
-      <div class="data-value" style="padding-left: 100px">
+    <div class="cols-8">
+      <div class="data-group" style="padding-left: 100px">
         <table class="cols-full last-left">
         <thead>
           <tr>

@@ -19,11 +19,10 @@
 <div class="element-data element-eyes">
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
   <div class="element-eye <?= $eye_side ?>-eye column">
-    <div class="data-row">
-      <div class="data-value">
-          <?php if ($element->hasEye($eye_side)): ?>
-            <table>
-              <thead>
+    <div class="data-group">
+        <?php if ($element->hasEye($eye_side)): ?>
+          <table>
+            <thead>
               <tr>
                 <th class="center cols-3">Area (Central)</th>
                 <th class="center cols-3">Area (Maximal)</th>
@@ -52,7 +51,6 @@
         Not recorded
           <?php endif; ?>
       </div>
-    </div>
   </div>
   <?php endforeach; ?>
 </div>

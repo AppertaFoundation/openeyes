@@ -25,12 +25,12 @@
             ?>
             <?php if ($element->getCombined('right')) {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->unit->name ?>
                     </div>
                 </div>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->getCombined('right') ?>
                     </div>
@@ -38,7 +38,7 @@
                 <?php
             } else {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         Not recorded
                         <?php if ($element->right_unable_to_assess) {
@@ -62,7 +62,7 @@
             <?php
         } else {
             ?>
-            <div class="data-row">
+            <div class="data-group">
                 <div class="data-value">
                     Not recorded
                 </div>
@@ -75,12 +75,12 @@
             ?>
             <?php if ($element->getCombined('left')) {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->unit->name ?>
                     </div>
                 </div>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->getCombined('left') ?>
                     </div>
@@ -88,7 +88,7 @@
                 <?php
             } else {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         Not recorded
                         <?php if ($element->left_unable_to_assess) {
@@ -112,7 +112,7 @@
             <?php
         } else {
             ?>
-            <div class="data-row">
+            <div class="data-group">
                 <div class="data-value">
                     Not recorded
                 </div>

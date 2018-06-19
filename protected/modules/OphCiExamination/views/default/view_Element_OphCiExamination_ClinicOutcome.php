@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data full-width">
-  <div class="data-row">
+  <div class="data-group">
       <?php if($element->status->name !== 'Follow-up') { echo $element->status; } ?>
 
       <?php if ($element->status && $element->status->followup) { ?>
@@ -42,7 +42,7 @@
       } ?>
   </div>
     <?php if ($element->description) { ?>
-      <div class="data-row">
+      <div class="row">
           <?= $element->getAttributeLabel('description') ?>:
           <?= Yii::app()->format->Ntext($element->description); ?>
       </div>

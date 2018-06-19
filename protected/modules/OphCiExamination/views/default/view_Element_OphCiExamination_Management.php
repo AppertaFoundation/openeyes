@@ -17,9 +17,7 @@
  */
 ?>
 <div class="element-data">
-  <div class="data-row">
-    <div class="data-value">
-      <span class="large-text"><?= Yii::app()->format->Ntext($element->comments) ?></span>
-    </div>
+  <div class="data-value">
+    <span class="large-text"><?= Yii::app()->format->Ntext($element->comments) ?></span>
   </div>
 </div>

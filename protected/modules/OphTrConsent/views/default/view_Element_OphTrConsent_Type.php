@@ -17,11 +17,11 @@
  */
  ?>
 <div class="element-data">
-	<div class="row data-row">
-		<div class="large-3 column">
+	<div class="row">
+		<div class="cols-3 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
 		</div>
-		<div class="large-9 column">
+		<div class="cols-9 column">
 			<div class="data-value"><?php echo $element->type ? $element->type->name : 'None'?>
 			</div>
 		</div>

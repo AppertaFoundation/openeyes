@@ -19,7 +19,7 @@
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column">
-        <div class="data-row">
+        <div class="data-group">
             <?php if ($element->hasEye($eye_side)):
                 $eye_abbr = $eye_side == 'right' ? 'R' : 'L';
                 $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;

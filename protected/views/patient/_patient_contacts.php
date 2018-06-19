@@ -38,13 +38,12 @@
       </tbody>
     </table>
       <?php if ($this->checkAccess('OprnEditContact')) { ?>
-        <div class="row data-row">
-
-          <div class="large-2 column">
+        <div class="row">
+          <div class="cols-2 column">
             <label for="contactname" class="align">Add contact:</label>
           </div>
 
-          <div class="large-4 column">
+          <div class="cols-4 column">
               <?php
               $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                   'name' => 'contactname',
@@ -133,7 +132,7 @@
               ?>
           </div>
 
-          <div class="large-4 column">
+          <div class="cols-4 column">
 
 
             <select id="contactfilter" name="contactfilter">
@@ -143,7 +142,7 @@
             </select>
           </div>
 
-          <div class="large-2 column">
+          <div class="cols-2 column">
             <button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
           </div>
         </div>
@@ -260,10 +259,10 @@
             <div class="add_contact_form_errors alert-box alert with-icon hide"></div>
 
             <div class="row field-row">
-              <div class="large-5 column">
+              <div class="cols-5 column">
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
-              <div class="large-7 column text-right">
+              <div class="cols-7 column text-right">
                 <i class="spinner" title="Loading..." style="display: none;"></i>
                 <button class="secondary small btn_save_contact" type="submit">Save</button>
                 <button class="warning small btn_cancel_contact" type="submit">Cancel</button>
@@ -324,10 +323,10 @@
             <div class="edit_contact_form_errors alert-box alert with-icon hide"></div>
 
             <div class="row field-row">
-              <div class="large-5 column">
+              <div class="cols-5 column">
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
-              <div class="large-7 column text-right">
+              <div class="cols-7 column text-right">
                 <button class="secondary small btn_save_editcontact" type="submit">Save</button>
                 <button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
               </div>

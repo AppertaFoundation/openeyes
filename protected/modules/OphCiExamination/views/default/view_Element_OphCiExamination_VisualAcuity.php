@@ -39,8 +39,7 @@ if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye">
           <?php if ($element->hasEye($eye_side)): ?>
-            <div class="data-row">
-              <div class="data-value">
+            <div class="data-value">
                   <?php if ($element->getCombined($eye_side)): ?>
                     <span class="priority-text">
                       <?php echo $element->getCombined($eye_side) ?>
@@ -50,22 +49,16 @@ if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
                   <?php else: ?>
                     Not recorded
                       <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
-                      (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}) {
-                              ?>, eye missing<?php
-                          }
-                          ?>)
+                      (Unable to assess <?php if ($element->{$eye_side . '_eye_missing'}) { ?>,
+                        eye missing<?php } ?>)
                       <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
                       (Eye missing)
                       <?php endif; ?>
                   <?php endif; ?>
               </div>
-            </div>
-
           <?php else: ?>
-            <div class="data-row">
-              <div class="data-value">
-                Not recorded
-              </div>
+            <div class="data-value">
+              Not recorded
             </div>
           <?php endif; ?>
       </div>

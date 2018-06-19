@@ -19,104 +19,104 @@
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
 	<div class="row">
-		<div class="large-6 column">
+		<div class="cols-6 column">
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->conjunctival_flap_type->name?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('stay_suture'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo CHtml::encode($element->stay_suture ? 'Yes' : 'No')?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('site_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo CHtml::encode($element->site->name)?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('size_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->size->name?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('sclerostomy_type_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->sclerostomy_type->name?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_type_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->viscoelastic_type->name?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_removed'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->viscoelastic_removed ? 'Yes' : 'No'?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="large-6 column text-right">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->viscoelastic_flow->name?>
 					</div>
 				</div>
 			</div>
-			<div class="data-row">
+			<div class="data-group">
 				<h4>Details</h4>
 				<div class="details pronounced">
 					<ul>
@@ -127,13 +127,13 @@
 				</div>
 			</div>
 
-			<div class="row data-row">
-				<div class="large-6 column text-right">
+			<div class="row">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						Difficulties
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php if (!$element->difficulties) {?>
 							None
@@ -150,7 +150,7 @@
 				</div>
 			</div>
 
-			<div class="data-row">
+			<div class="data-group">
 				<h4>Complications</h4>
 				<div class="details">
 					<?php if (!$element->complications) {?>
@@ -171,22 +171,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="large-6 column">
-			<div class="data-row">
-				<div class="details">
-					<?php
-                    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'Trabeculectomy',
-                        'side' => $element->eye->getShortName(),
-                        'mode' => 'view',
-                        'width' => 250,
-                        'height' => 250,
-                        'scale' => 0.72,
-                        'model' => $element,
-                        'attribute' => 'eyedraw',
-                    ))?>
+		<div class="cols-6 column">
+      <div class="details">
+					<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+					    'idSuffix' => 'Trabeculectomy',
+              'side' => $element->eye->getShortName(),
+              'mode' => 'view',
+              'width' => 250,
+              'height' => 250,
+              'scale' => 0.72,
+              'model' => $element,
+              'attribute' => 'eyedraw',
+          ))?>
 				</div>
-			</div>
 		</div>
 	</div>
 </section>

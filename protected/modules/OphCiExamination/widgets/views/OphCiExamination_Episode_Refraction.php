@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
+<div class="row">
   <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
 	<div class="cols-6 column">
 		<div class="data-value"><?= $element && $element->hasEye($eye_side) ? $element->getCombined($eye_side) : 'Not recorded' ?></div>

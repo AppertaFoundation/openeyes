@@ -1286,8 +1286,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
                     }
                 }
 
-                return '	<div class="row data-row">
-			<div class="large-12 column">
+                return '	<div class="row">
+			<div class="cols-12 column">
 		<?php
 			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 				\'doodleToolBarArray\' => array('.(!empty($fields['eyedraw_toolbar_doodles']) ? '\''.implode("','", $field['eyedraw_toolbar_doodles']).'\'' : '').'),
@@ -1321,48 +1321,48 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
             case 'Textbox':
             case 'Textarea':
             case 'Textarea with dropdown':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></div></div>
 		</div>';
             case 'Decimal':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
 		</div>';
             case 'Integer':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
 		</div>';
             case 'Date picker':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></div></div>
 		</div>';
             case 'Dropdown list':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/', '', $field['name']).' ? $element->'.preg_replace('/_id$/', '', $field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/', '', $field['name']).' ? $element->'.preg_replace('/_id$/', '', $field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></div></div>
 		</div>';
             case 'Checkbox':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
 		</div>';
             case 'Radio buttons':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/', '', $field['name']).' ? $element->'.preg_replace('/_id$/', '', $field['name']).'->name : \'None\'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/', '', $field['name']).' ? $element->'.preg_replace('/_id$/', '', $field['name']).'->name : \'None\'?'.'></div></div>
 		</div>';
             case 'Boolean':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
 		</div>';
             case 'EyeDraw':
-                return '		<div class="row data-row">
-			<div class="large-12 column">
+                return '		<div class="row">
+			<div class="cols-12 column">
 				<?php
 					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 						\'side\'=>$element->eye->getShortName(),
@@ -1375,14 +1375,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				?>
 			</div>
 		</div>
-		'.(@$field['extra_report'] ? '<div class="row data-row">
-			<div class="large-2 column"><div class="data-label">Report:</div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></div></div>
+		'.(@$field['extra_report'] ? '<div class="row">
+			<div class="cols-2 column"><div class="data-label">Report:</div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></div></div>
 		</div>' : '');
             case 'Multi select':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
-			<div class="large-10 column end"><div class="data-value"><?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
 							None
 						<?php } else {?'.'>
 								<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
@@ -1392,9 +1392,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			</div></div>
 		</div>';
             case 'Slider':
-                return '		<div class="row data-row">
-			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
-			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+                return '		<div class="row">
+			<div class="cols-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="cols-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
 		</div>';
         }
     }

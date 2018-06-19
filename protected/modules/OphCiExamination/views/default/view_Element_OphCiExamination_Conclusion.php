@@ -17,9 +17,7 @@
  */
 ?>
 <div class="element-data">
-	<div class="data-row">
-		<div class="data-value">
-			<?= Yii::app()->format->Ntext($element->description); ?>
-		</div>
-	</div>
+  <div class="data-value">
+      <?= Yii::app()->format->Ntext($element->description); ?>
+  </div>
 </div>

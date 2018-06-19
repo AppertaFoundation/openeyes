@@ -25,7 +25,7 @@
 	*******  Only minimum required DOM and CSS for UI is shown here
 	-->
   <div class="element-data full-width">
-    <div class="data-row">
+    <div class="data-group">
       <?php if ($element->no_risks_date) { ?>
         <div class="data-value flex-layout flex-top">Patient has no known risks.</div>
       <?php } else { ?>

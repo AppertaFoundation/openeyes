@@ -19,10 +19,8 @@
 <div class="element-data eye-divider">
 
   <div class="element-both-eyes">
-    <div class="data-row">
       <div class="data-value flex-layout flex-top">
-
-        <civ class="cols-11">
+        <div class="cols-11">
 
           <div class="cols-11">
             <ul id="js-listview-risks-pro" class="dslash-list">
@@ -67,26 +65,24 @@
             </table>
 
           </div>
-        </civ>
+        </div>
 
         <div>
           <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
         </div>
 
       </div>
-    </div>
       <?php if ($element->comments !== ''): ?>
-        <div class="data-row">
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
-          <div class="data-value"><?php echo $element->textWithLineBreaks('comments') ?></div>
+        <div class="flex-layout">
+          <div class="data-label cols-1"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
+          <div class="data-value cols-11"><?php echo $element->textWithLineBreaks('comments') ?></div>
         </div>
       <?php endif; ?>
   </div>
   <div class="element-eyes">
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
         <div class="element-eye <?= $eye_side ?>-eye">
-          <div class="data-row">
-
+          <div class="data-group">
               <?php if ($element->hasEye($eye_side)): ?>
                 <table class="cols-11 large-text last-left">
                   <colgroup>

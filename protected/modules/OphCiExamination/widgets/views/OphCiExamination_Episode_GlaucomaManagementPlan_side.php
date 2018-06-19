@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
+<div class="row data-group">
   <div class="data-label column cols-3">Target IOP:</div>
   <div class="data-value column cols-9"><?= $plan->{"{$side}_target_iop"}->name ?> mmHg</div>
 </div>

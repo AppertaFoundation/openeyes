@@ -60,7 +60,6 @@ $warnings = $this->patient->getWarnings($clinical);
       <input type="hidden" name="SelectBooking"/>
 
       <div class="field-row">
-        <div class="data-row">
           <div class="data-value flex-layout">
             <p>
                 <?php if (count($operations) > 0): ?>
@@ -71,8 +70,7 @@ $warnings = $this->patient->getWarnings($clinical);
             </p>
           </div>
           <br/>
-        </div>
-        <div class="data-row cols-8">
+        <div class="data-group cols-8">
           <div class="data-value" style="padding-left: 100px">
             <table class="cols-10 last-left">
               <thead>

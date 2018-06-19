@@ -22,9 +22,8 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-data">
-    <div class="data-row">
-      <div class="data-value">
-        <div class="eyedraw flex-layout">
+    <div class="data-value">
+      <div class="eyedraw flex-layout">
           <div class="eyedraw-canvas">
               <?php
               $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
@@ -201,7 +200,6 @@
             ));
             ?>
         </div>
-      </div>
     </div>
   </section>
 </section>
@@ -214,15 +212,12 @@
           <h3 class="element-title"><?php echo CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
         </header>
         <div class="element-data full-width">
-          <div class="data-row">
-            <div class="data-value">
+          <div class="data-value">
               <div class="tile-data-overflow">
-                <div class="data-row">
-                  <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
+                <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
                       <?php echo CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
                   </div>
-                </div>
-                <div class="data-row">
+                <div class="data-group">
                   <h4 class="data-label"><?php echo CHtml::encode($instructions->getAttributeLabel('comments')) ?></h4>
                   <div class="data-value<?php if (!$instructions->comments) { ?> none<?php } ?>">
                       <?php echo CHtml::encode($instructions->comments) ? Yii::app()->format->Ntext($instructions->comments) : 'None' ?>
@@ -230,7 +225,6 @@
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </section>
     <?php endif; ?>
@@ -240,8 +234,7 @@
       <h3 class="element-title">Agent(s)</h3>
     </header>
     <div class="element-data full-width">
-      <div class="data-row">
-        <div class="data-value">
+      <div class="data-value">
           <div class="tile-data-overflow">
               <?php if (!$element->operative_devices) { ?>
                 None
@@ -258,7 +251,6 @@
               <?php } ?>
           </div>
         </div>
-      </div>
     </div>
   </section>
 
@@ -267,8 +259,7 @@
       <h3 class="element-title">Cataract complications</h3>
     </header>
     <div class="element-data full-width">
-      <div class="data-row">
-        <div class="data-value">
+      <div class="data-value">
           <div class="tile-data-overflow">
               <?php if (!$element->complications && !$element->complication_notes) { ?>
                 None
@@ -286,7 +277,6 @@
               <?php } ?>
           </div>
         </div>
-      </div>
     </div>
   </section>
 </div>

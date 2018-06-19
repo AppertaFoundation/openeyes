@@ -70,7 +70,7 @@ if (@$_POST[CHtml::modelName($element)]) {
       <td class="flex-layout flex-top" style="height: auto;">
         <label><?php echo $element->getAttributeLabel($side.'_sft'); ?>:</label>
       </td>
-      <td class="data-row row">
+      <td>
           <?php $tooltip_content = null;
             if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
                 $tooltip_content = "Previous SFT Measurements: <br />";

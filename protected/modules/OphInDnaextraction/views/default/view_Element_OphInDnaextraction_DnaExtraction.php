@@ -26,11 +26,11 @@
 		<?php echo CHtml::link('delete', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
 	</header>
 	<div class="sub-element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
                 <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value">
                     <?php 
                     if(isset($element->storage->box->value)){
@@ -44,21 +44,21 @@
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('extracted_date')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value"><?php echo $element->extracted_date ? $element->NHSDate('extracted_date') : 'None'?></div>
 			</div>
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('extracted_by')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value">
                     <?php
                         if(isset($element->extracted_by->username)){
@@ -72,43 +72,43 @@
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value"><?php echo CHtml::encode($element->comments)?></div>
 			</div>
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('dna_concentration')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value"><?php echo CHtml::encode($element->dna_concentration)?></div>
 			</div>
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
+		<div class="row">
+			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('volume')?>:</div>
 			</div>
-			<div class="large-9 column">
+			<div class="cols-9 column">
 				<div class="data-value"><?php echo CHtml::encode($element->volume)?></div>
 			</div>
 		</div>
 	</div>
     <div class="element-data">
-        <div class="row data-row">
-            <div class="large-3 column">
+        <div class="row">
+            <div class="cols-3 column">
                 <div class="data-label">
                     <?php echo CHtml::encode($element->getAttributeLabel('dna_quality'))?>:
                 </div>
             </div>
-            <div class="large-9 column end">
+            <div class="cols-9 column end">
                 <div class="data-value">
                     <?php echo CHtml::encode($element->dna_quality)?>
                 </div>
@@ -116,13 +116,13 @@
         </div>
     </div>    
     <div class="element-data">
-        <div class="row data-row">
-            <div class="large-3 column">
+        <div class="row">
+            <div class="cols-3 column">
                 <div class="data-label">
                     <?php echo CHtml::encode($element->getAttributeLabel('dna_quantity'))?>:
                 </div>
             </div>
-            <div class="large-9 column end">
+            <div class="cols-9 column end">
                 <div class="data-value">
                     <?php echo CHtml::encode($element->dna_quantity)?>
                 </div>
@@ -130,13 +130,13 @@
         </div>
     </div>    	
     <div class="element-data">
-        <div class="row data-row">
-            <div class="large-3 column">
+        <div class="row">
+            <div class="cols-3 column">
                 <div class="data-label">
                     Volume Remaining:
                 </div>
             </div>
-            <div class="large-9 column end">
+            <div class="cols-9 column end">
                 <div class="volume data-value" data-volume="<?php echo $this->volumeRemaining($element->event_id); ?>">
                     <?php echo CHtml::encode($this->volumeRemaining($element->event_id))?>
                 </div>

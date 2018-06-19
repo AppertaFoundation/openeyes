@@ -19,45 +19,45 @@
 <section class="element patient-info js-toggle-container">
 	<h3 class="element-header">General Practitioner:</h3>
 	<div class="js-toggle-body">
-		<div class="row data-row">
-			<div class="large-4 column">
+		<div class="row">
+			<div class="cols-4 column">
 				<div class="data-label">Name:</div>
 			</div>
-			<div class="large-8 column">
+			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
 			</div>
 		</div>
 		<?php if (Yii::app()->user->checkAccess('admin')) { ?>
-		<div class="row data-row highlight">
-			<div class="large-4 column">
+		<div class="row highlight">
+			<div class="cols-4 column">
 				<div class="data-label">GP Address:</div>
 			</div>
-			<div class="large-8 column">
+			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
 			</div>
 		</div>
-		<div class="row data-row highlight">
-			<div class="large-4 column">
+		<div class="row highlight">
+			<div class="cols-4 column">
 				<div class="data-label">GP Telephone:</div>
 			</div>
-			<div class="large-8 column">
+			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
 			</div>
 		</div>
 		<?php } ?>
-		<div class="row data-row">
-			<div class="large-4 column">
+		<div class="row">
+			<div class="cols-4 column">
 				<div class="data-label">Practice Address:</div>
 			</div>
-			<div class="large-8 column">
+			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->contact->address) ? $this->patient->practice->contact->address->letterLine : 'Unknown'; ?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-4 column">
+		<div class="row">
+			<div class="cols-4 column">
 				<div class="data-label">Practice Telephone:</div>
 			</div>
-			<div class="large-8 column">
+			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
 			</div>
 		</div>

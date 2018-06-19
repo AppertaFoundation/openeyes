@@ -18,7 +18,7 @@
 ?>
 
 <div class="element-data">
-    <div class="row data-row">
+    <div class="row">
         <div class="cols-2">
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
         </div>

@@ -125,7 +125,6 @@ $episode->audit('episode summary', 'view');
         </header>
           <?php if ($widget->collapsible): ?>
             <div class="element-data full-width">
-              <div class="data-row">
                 <div class="data-value flex-layout flex-top">
                   <div class="cols-11"></div>
                   <div>
@@ -133,7 +132,6 @@ $episode->audit('episode summary', 'view');
                        data-list="meds-current"></i>
                   </div>
                 </div>
-              </div>
             </div>
           <?php endif; ?>
         <div class="full-width summary-content">

@@ -19,12 +19,11 @@
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column">
-        <div class="data-row">
+        <div class="data-group">
             <?php if ($element->hasEye($eye_side)): ?>
               <div class="eyedraw flex-layout flex-top flex-left anterior-segment">
                 <div class="eyedraw-canvas">
-                    <?php
-                    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                    <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                         'idSuffix' => $eye_side . '_' . $element->elementType->id,
                         'side' => ($eye_side === 'right') ? 'R' : 'L',
                         'mode' => 'view',

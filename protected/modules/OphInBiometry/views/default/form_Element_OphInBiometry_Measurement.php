@@ -110,12 +110,10 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
             <?php
                 if(count($methodnameRight)){
                     ?>
-                    <div class="data-row">
-                        <div class="data-value">
-                            <?php echo $unitname ?>
-                        </div>
-                    </div>
-                    <div class="data-row">
+                  <div class="data-value">
+                      <?php echo $unitname ?>
+                  </div>
+                    <div class="data-group">
                         <div class="data-value">
                             <?php
                             for ($i = 0; $i < count($methodnameRight); ++$i) {
@@ -128,27 +126,19 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                         </div>
                     </div>
                     <?php
-                } else {
-                    ?>
-                    <div class="data-row">
-                        <div class="data-value">
-                            Not recorded
-                        </div>
-                    </div>
-                    <?php
-                }
-            ?>
+                } else { ?>
+                  <div class="data-value">
+                    Not recorded
+                  </div>
+                <?php } ?>
         </div>
         <div class="element-eye left-eye column">
             <?php
-            if(count($methodnameLeft)){
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php echo $unitname ?>
-                    </div>
-                </div>
-                <div class="data-row">
+            if(count($methodnameLeft)){ ?>
+              <div class="data-value">
+                  <?php echo $unitname ?>
+              </div>
+                <div class="data-group">
                     <div class="data-value">
                         <?php
                         for ($i = 0; $i < count($methodnameLeft); ++$i) {
@@ -161,16 +151,11 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                     </div>
                 </div>
                 <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                    </div>
-                </div>
-                <?php
-            }
-            ?>
+            } else { ?>
+              <div class="data-value">
+                Not recorded
+              </div>
+            <?php } ?>
         </div>
     </div>
 </section>
@@ -237,70 +222,48 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
             <?php
-                if (count($rightNearData)) {
-                    ?>
-                    <div class="data-row">
-                        <div class="data-value">
-                            <?php echo $unitname ?>
-                        </div>
-                    </div>
-                    <div class="data-row">
-                        <div class="data-value">
-
+                if (count($rightNearData)) { ?>
+                  <div class="data-value">
+                      <?php echo $unitname ?>
+                  </div>
+                  <div class="data-value">
                             <?php
                             for ($i = 0; $i < count($rightNearData); ++$i) {
                                 echo $api->getVAvalue($rightNearData[$i]->value, $unitId). " " . $methodnameRight[$i];
                                 if ($i != (count($rightNearData) - 1)) {
                                     echo ", ";
                                 }
-                            }
-                            ?>
+                            } ?>
                         </div>
-                    </div>
                     <?php
-                } else {
-                    ?>
-                    <div class="data-row">
-                        <div class="data-value">
-                            Not recorded
-                        </div>
-                    </div>
-                    <?php
-                }
-            ?>
+                } else { ?>
+                  <div class="data-value">
+                    Not recorded
+                  </div>
+                    <?php } ?>
         </div>
         <div class="element-eye left-eye column">
             <?php
             if (count($leftNearData)) {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $unitname ?>
                     </div>
                 </div>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php
-                        for ($i = 0; $i < count($leftNearData); ++$i) {
-                            echo $api->getVAvalue($leftNearData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
-                            if ($i != (count($leftNearData) - 1)) {
-                                echo ", ";
-                            }
-                        }
-                        ?>
-                    </div>
-                </div>
-                <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                    </div>
-                </div>
-                <?php
-            }
-            ?>
+              <div class="data-value">
+                  <?php for ($i = 0; $i < count($leftNearData); ++$i) {
+                    echo $api->getVAvalue($leftNearData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+                    if ($i != (count($leftNearData) - 1)) {
+                      echo ", ";
+                      }
+                      } ?>
+              </div>
+            <?php } else { ?>
+              <div class="data-value">
+                Not recorded
+              </div>
+                <?php } ?>
         </div>
     </div>
 </section>
@@ -341,15 +304,11 @@ if ($refractfound) {
                     ?>
                 </div>
                 <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                    </div>
-                </div>
-                <?php
-            } ?>
+            } else { ?>
+              <div class="data-value">
+                Not recorded
+              </div>
+                <?php } ?>
         </div>
         <div class="element-eye left-eye column">
             <?php if ($refractelement->hasLeft()) {
@@ -358,15 +317,11 @@ if ($refractfound) {
                     array('side' => 'left', 'element' => $refractelement));
                 ?>
                 <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                    </div>
-                </div>
-                <?php
-            } ?>
+            } else { ?>
+              <div class="data-value">
+                Not recorded
+              </div>
+            <?php } ?>
         </div>
     </div>
 </section>
@@ -378,24 +333,18 @@ if ($refractfound) {
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
-            <div class="data-row">
-                <div class="data-value">
-                    Not recorded
-                </div>
-            </div>
+          <div class="data-value">
+            Not recorded
+          </div>
         </div>
         <div class="element-eye left-eye column">
-            <div class="data-row">
-                <div class="data-value">
-                    Not recorded
-                </div>
-            </div>
+          <div class="data-value">
+            Not recorded
+          </div>
         </div>
     </div>
-        <?php
-    }
-    }
-    ?>
+        <?php }
+    } ?>
     </section>
         <section class="element edit full  eye-divider edit-biometry"
                 data-element-type-id="<?php echo $element->elementType->id ?>"

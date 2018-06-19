@@ -17,8 +17,7 @@
  */
 ?>
 <div class="element-data full-width">
-  <div class="data-row">
-    <div class="data-value">
+  <div class="data-value">
       <div class="cols-11">
         <table class="last-left">
           <thead>
@@ -65,7 +64,6 @@
         </table>
       </div>
     </div>
-  </div>
 </div>
 <input type="hidden" id="et_ophdrprescription_draft" value="<?php echo $element->draft ?>"/>
 <input type="hidden" id="et_ophdrprescription_print" value="<?php echo $element->print ?>"/>
@@ -78,10 +76,8 @@
       <h3 class="element-title">Comments</h3>
     </header>
     <div class="element-data full-width">
-      <div class="data-row">
-        <div class="data-value">
-          <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
-        </div>
+      <div class="data-value">
+        <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
       </div>
     </div>
 <?php } ?>

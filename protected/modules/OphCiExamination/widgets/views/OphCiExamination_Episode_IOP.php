@@ -18,17 +18,13 @@
 ?>
 <div class="element-data element-eyes">
   <div class="element-eye right-eye">
-    <div class="data-row">
-      <div class="data-value">
-          <?= $iop ? $iop->getLetter_reading('right') : 'Not recorded' ?>
-      </div>
+    <div class="data-value">
+        <?= $iop ? $iop->getLetter_reading('right') : 'Not recorded' ?>
     </div>
   </div>
   <div class="element-eye left-eye">
-    <div class="data-row">
-      <div class="data-value">
-          <?= $iop ? $iop->getLetter_reading('left') : 'Not recorded' ?>
-      </div>
+    <div class="data-value">
+        <?= $iop ? $iop->getLetter_reading('left') : 'Not recorded' ?>
     </div>
   </div>
 </div>

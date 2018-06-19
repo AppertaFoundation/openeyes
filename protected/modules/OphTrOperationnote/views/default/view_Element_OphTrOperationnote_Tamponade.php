@@ -24,7 +24,7 @@
   <section class="element-fields full-width">
     <div class="row">
       <div class="cols-6 column end">
-        <div class="row data-row">
+        <div class="row">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('gas_type_id')) ?>
@@ -36,7 +36,7 @@
             </div>
           </div>
         </div>
-        <div class="row data-row">
+        <div class="row">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id')) ?>
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-        <div class="row data-row">
+        <div class="row">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id')) ?>

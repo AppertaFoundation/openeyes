@@ -39,9 +39,7 @@
 <?php else: ?>
   <div class="row">
     <div class="cols-12 column">
-      <div class="data-row">
-        <div class="data-value">(no data)</div>
-      </div>
+      <div class="data-value">(no data)</div>
     </div>
   </div>
 <?php endif; ?>

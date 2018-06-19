@@ -17,12 +17,12 @@
  */
 ?>
 	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('user1_id'))?></div></div>
-			<div class="large-9 column end"><div class="data-value"><?php echo $element->user1 ? $element->user1->fullName : 'Not recorded'?></div></div>
+		<div class="row">
+			<div class="cols-3 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('user1_id'))?></div></div>
+			<div class="cols-9 column end"><div class="data-value"><?php echo $element->user1 ? $element->user1->fullName : 'Not recorded'?></div></div>
 		</div>
-		<div class="row data-row">
-			<div class="large-3 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('user2_id'))?></div></div>
-			<div class="large-9 column end"><div class="data-value"><?php echo $element->user2 ? $element->user2->fullName : 'Not recorded'?></div></div>
+		<div class="row">
+			<div class="cols-3 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('user2_id'))?></div></div>
+			<div class="cols-9 column end"><div class="data-value"><?php echo $element->user2 ? $element->user2->fullName : 'Not recorded'?></div></div>
 		</div>
 	</div>

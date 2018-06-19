@@ -125,7 +125,7 @@ $widgetOptionsJson = json_encode(array(
       <div class="multi-select-free-text-descriptions">
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($descriptions[$id])) { ?>
-                <div class="row data-row" data-option="<?php echo $options[$id] ?>">
+                <div class="row" data-option="<?php echo $options[$id] ?>">
                   <div class="cols-2">
                     <div class="data-label">
                         <?php echo $options[$id] ?>

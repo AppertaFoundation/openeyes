@@ -23,7 +23,7 @@
   </header>
   <div class="element-data full-width">
 
-    <div class="data-row">
+    <div class="data-group">
       <div class="data-value <?php if (!$element->drugs) { ?> none<?php } ?>">
         <div class="tile-data-overflow">
             <?php if (!$element->drugs) { ?>

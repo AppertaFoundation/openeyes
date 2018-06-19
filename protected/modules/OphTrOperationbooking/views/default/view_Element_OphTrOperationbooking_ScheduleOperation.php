@@ -36,9 +36,7 @@
 			<span class="priority-text">
 				<?php if ($element->patient_unavailables) {
                     foreach ($element->patient_unavailables as $unavailable) {?>
-						<div class="data-row">
 							<?php echo Helper::convertDate2NHS($unavailable->start_date); ?> to <?php echo Helper::convertDate2NHS($unavailable->end_date); ?> (<?php echo $unavailable->reason->name ?>).
-						</div>
 					<?php }
 				} else { ?>
 					No known availability restrictions.

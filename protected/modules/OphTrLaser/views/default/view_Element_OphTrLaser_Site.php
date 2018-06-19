@@ -18,12 +18,9 @@
 ?>
 
 <div class="element-data full-width">
-
-  <div class="data-row">
-    <div class="data-value flex-layout flex-top">
+  <div class="data-value flex-layout flex-top">
       <div class="cols-11">
-
-        <div class="cols-11" id="js-listview-info-pro" style="">
+        <div class="data-group" id="js-listview-info-pro" style="">
           <ul class="dslash-list large-text">
             <li><?php echo $element->site ? $element->site->name : 'None' ?></li>
             <li><?php echo $element->laser ? $element->laser->name : 'None' ?></li>
@@ -31,8 +28,7 @@
           </ul>
         </div>
 
-        <div class="col-6" id="js-listview-info-full" style="display: none;">
-
+        <div class="col-6 data-group" id="js-listview-info-full" style="display: none;">
           <table class="last-left">
             <thead>
             <tr>
@@ -50,14 +46,9 @@
             </tbody>
           </table>
         </div>
-
       </div>
-
       <div>
         <i class="oe-i small js-listview-expand-btn expand" data-list="info"></i>
       </div>
-
     </div>
-  </div>
-
 </div>

@@ -45,8 +45,8 @@ $this->moduleNameCssClass .= ' highlight-fields';
 
 if ($this->is_auto) {
     ?>
-<div id="surgeon" class="row data-row">
-	<div class="large-2 column" style="margin-left: 10px;">
+<div id="surgeon" class="row">
+	<div class="cols-2 column" style="margin-left: 10px;">
 		<div class="data-label">Surgeon:
            <b> <?php
             if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
@@ -58,7 +58,6 @@ if ($this->is_auto) {
            </b>
         </div>
 	</div>
-
 </div>
 <?php
 

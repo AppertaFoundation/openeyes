@@ -17,7 +17,7 @@
 ?>
 
 <div class="element-data">
-    <div class="data-row">
+    <div class="data-group">
       <table class="cols-full">
         <tbody>
           <?php foreach (array(

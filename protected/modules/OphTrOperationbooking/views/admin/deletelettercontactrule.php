@@ -27,67 +27,67 @@
 	<?php echo $form->errorSummary($rule); ?>
 	<input type="hidden" name="delete" value="1" />
 	<div class="panel">
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('parent_rule_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->parent ? $rule->parent->treeName : 'None'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('site_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->site ? $rule->site->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('firm_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->firm ? $rule->firm->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('subspecialty_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->subspecialty ? $rule->subspecialty->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('theatre_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->theatre ? $rule->theatre->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('refuse_telephone')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->refuse_telephone ? $rule->refuse_telephone : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('refuse_title')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->refuse_title ? $rule->refuse_title : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="row">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('health_telephone')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->health_telephone ? $rule->health_telephone : 'Not set'?></div>
 			</div>
 		</div>

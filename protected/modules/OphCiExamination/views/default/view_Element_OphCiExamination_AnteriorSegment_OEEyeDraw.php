@@ -69,19 +69,6 @@
       <div class="data-value hidden"><?php echo $element->{$side . '_cortical'}->name ?></div>
     <?php endif; ?>
 
-    <?php
-    /* See OE-4283 */
-    /*
-    <div class="row data-row">
-        <div class="large-4 column">
-            <div class="data-label"><?php echo $element->getAttributeLabel($side.'_pxe')?>:</div>
-        </div>
-        <div class="large-8 column">
-            <div class="data-value"><?php echo $element->{$side.'_pxe'} ? 'Yes' : 'No'?></div>
-        </div>
-    </div>
-    */ ?>
-
     <?php if ($element->{$side . '_phako'}): ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_phako') ?>:</div>
       <div class="data-value"><?php echo $element->{$side . '_phako'} ? 'Yes' : 'No' ?></div>

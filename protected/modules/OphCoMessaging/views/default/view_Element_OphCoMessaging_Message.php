@@ -90,7 +90,7 @@ if (!@$comment) {
   </div>
     <?= $element->comments ? '<hr />' : '' ?>
     <?php foreach ($element->comments as $comment) { ?>
-      <div class="row data-row comment">
+      <div class="row comment">
         <div class="cols-2 column">
           <div class="data-label">@<?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
         </div>
@@ -113,7 +113,7 @@ if (!@$comment) {
           ));
           ?>
           <?php echo $form->textArea($comment, 'comment_text', array('rows' => 6, 'cols' => 80), false, null, array('label' => 2, 'field' => 6)) ?>
-        <div class="row data-row">
+        <div class="row">
           <div class="cols-2 column">&nbsp;</div>
           <div class="cols-4 column end">
             <button class="button small secondary" id="new-comment-cancel">Cancel</button>

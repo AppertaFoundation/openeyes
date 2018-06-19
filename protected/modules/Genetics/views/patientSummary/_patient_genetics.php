@@ -26,11 +26,11 @@
   <div class="js-toggle-body">
     <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
       <?php if ($subject) { ?>
-            <div class="row data-row">
-                <div class="large-4 column">
+            <div class="row">
+                <div class="cols-4 column">
                     <div class="data-label">Genetic database ID:</div>
                 </div>
-                <div class="large-8 column">
+                <div class="cols-8 column">
                      <div class="data-value">
                         <?php echo $subject->id; ?>
                         ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/subject/view/' . $subject->id)) ?> )
@@ -39,11 +39,11 @@
             </div>
           <?php if ($subject->pedigrees) {
             foreach($subject->pedigrees as $pedigree) {  ?>
-            <div class="row data-row">
-                <div class="large-4 column">
+            <div class="row">
+                <div class="cols-4 column">
                     <div class="data-label">Pedigree ID:</div>
                  </div>
-                <div class="large-8 column">
+                <div class="cols-8 column">
                     <div class="data-value">
 
                         <?php echo $pedigree->id ?>
@@ -61,11 +61,11 @@
           <?php }
             } ?>
            
-            <div class="row data-row">
-                <div class="large-4 column">
+            <div class="row">
+                <div class="cols-4 column">
                     <div class="data-label">Diagnosis:</div>
                  </div>
-                <div class="large-8 column">
+                <div class="cols-8 column">
                     <div class="data-value">
                         <?php
                             
@@ -78,16 +78,16 @@
                     </div>
                 </div>
             </div>
-            <div class="row data-row">
-                <div class="large-4 column">
+            <div class="row">
+                <div class="cols-4 column">
                     <div class="data-label"><?php echo $subject->getAttributeLabel('comments') ?>:</div>
                 </div>
-                <div class="large-8 column">
+                <div class="cols-8 column">
                      <div class="data-value"><?php echo Yii::app()->format->ntext($subject->comments) ?></div>
                 </div>
             </div>
       <?php } else { ?>
-        <div class="row data-row">
+        <div class="row">
             
             <div class="data-label column" style="margin-bottom:10px;">
                 <?php echo CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
@@ -99,11 +99,11 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="row data-row">
-              <div class="large-4 column">
+            <div class="row">
+              <div class="cols-4 column">
                 <div class="data-label">DNA Sample Events:</div>
               </div>
-              <div class="large-8 column">
+              <div class="cols-8 column">
                 <div class="data-value">
                     <?php foreach ($events as $event) {
                         echo EventNavigation::SmallIcon($event, '( View )');
@@ -125,11 +125,11 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="row data-row">
-              <div class="large-4 column">
+            <div class="row">
+              <div class="cols-4 column">
                 <div class="data-label">DNA Extraction Events:</div>
               </div>
-              <div class="large-8 column">
+              <div class="cols-8 column">
                 <div class="data-value">
                     <?php foreach ($events as $event) {
                         echo EventNavigation::SmallIcon($event, '( View )');
@@ -151,11 +151,11 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="row data-row">
-              <div class="large-4 column">
+            <div class="row">
+              <div class="cols-4 column">
                 <div class="data-label">Genetic Result Events:</div>
               </div>
-              <div class="large-8 column">
+              <div class="cols-8 column">
                 <div class="data-value">
                     <?php foreach ($events as $event) {
                         echo EventNavigation::SmallIcon($event,'( View )');

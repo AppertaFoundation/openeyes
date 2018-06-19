@@ -78,9 +78,7 @@
 <?php else: ?>
   <div class="row">
     <div class="cols-12 column">
-      <div class="data-row">
-        <div class="data-value">(not recorded)</div>
-      </div>
+      <div class="data-value">(not recorded)</div>
     </div>
   </div>
 <?php endif; ?>
