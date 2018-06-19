@@ -140,3 +140,7 @@ tr.handWritten td {
     top: 120px;
     left: 60px;
 }
+
+div.clearfix {
+    clear: both;
+}
