@@ -206,8 +206,6 @@
                                     <?php if($booking->operation->is_golden_patient):?>
                                         <img class="star golden-patient" src="<?php echo $assetPath ?>/img/diaryIcons/filled_yellow_star.png" alt="Golden Patient" title="Golden Patient" />
                                     <?php endif; ?>
-
-                                    ?>
                                 </td>
                             </tr>
                         <?php } ?>
