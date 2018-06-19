@@ -612,6 +612,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     /**
      * Get firms that been used atleast once in OphTrOperationbooking_Operation_Session table
      * @param Optional variable $subspecialty_id which if given returns a list of firms also by subspecialty
+     * @return array CActiveRecord[] of firms
      */
     public function getFirmsBeenUsed($subspecialty_id = null)
     {

@@ -104,7 +104,7 @@ class TheatreDiaryController extends BaseModuleController
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         $used_firms =  CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']),"id" , "name");
-        $this->render('index', array('wards' => $wards, 'theatres' => $theatres , 'used_firms'=>$used_firms));
+        $this->render('index', array('wards' => $wards, 'theatres' => $theatres , 'used_firms' => $used_firms));
     }
 
     /**
