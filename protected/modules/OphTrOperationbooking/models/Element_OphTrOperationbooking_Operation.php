@@ -37,6 +37,7 @@
  * @property int $preassessment_booking_required
  * @property int $overnight_stay_required_id
  * @property int $complexity
+ * @property tinyint $is_golden_patient
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -123,7 +124,11 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('eye_id, consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, site_id, priority_id, decision_date, comments,comments_rtt, anaesthetist_required, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity', 'safe'),
+            array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
+            array('site_id, anaesthetist_required, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
+            array('status_id, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
+            array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),
@@ -214,7 +219,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'anaesthetic_type' => 'Anaesthetic Type',
             'preassessment_booking_required' => 'Pre-assessment booking required',
             'overnight_stay_required_id' => 'Overnight stay required',
-            'complexity' => 'Complexity'
+            'complexity' => 'Complexity',
+            'is_golden_patient' => 'Suitable as golden patient',
         );
     }
 

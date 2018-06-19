@@ -203,6 +203,10 @@
                                          title="Created by: <?php echo $booking->user->fullName . "\n" ?>Last modified by: <?php echo $booking->usermodified->fullName ?>"
                                          width="17" height="17"/>
 
+                                    <?php if($booking->operation->is_golden_patient):?>
+                                        <img class="star golden-patient" src="<?php echo $assetPath ?>/img/diaryIcons/filled_yellow_star.png" alt="Golden Patient" title="Golden Patient" />
+                                    <?php endif; ?>
+
                                     <?php if($booking->operation->complexity !== null && $complexity = "Complexity: " . $booking->operation->getComplexityCaption()):?>
                                         <img src="<?php echo $assetPath ?>/img/diaryIcons/complexity.png"
                                              class="complexity <?=$booking->operation->getComplexityCaption();?>" alt="<?=$complexity;?>" title="<?=$complexity;?>"/>
