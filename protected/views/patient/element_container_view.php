@@ -24,7 +24,7 @@ if ($element->isIndividual('view')) { ?>
   } else {
       echo 'full priority';
   } ?>
-	view-<?php echo $element->elementType->name ?>"
+	view-<?php echo CHtml::modelName($element->elementType->class_name) ?>"
            data-element-type-id="<?php echo $element->elementType->id ?>"
            data-element-type-class="<?php echo $element->elementType->class_name ?>"
            data-element-type-name="<?php echo $element->elementType->name ?>"
