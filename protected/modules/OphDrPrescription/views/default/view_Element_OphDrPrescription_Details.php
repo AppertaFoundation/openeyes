@@ -33,7 +33,13 @@
         $additional_class .= (($key % 2) == 0) ? 'even' : ' odd';
         ?>
         <tr class="prescription-item<?= $additional_class ?>">
-            <td class="prescription-label"><?php echo $item->drug->tallmanlabel; ?></td>
+            <td class="prescription-label">
+                <?php echo $item->drug->tallmanlabel; ?>
+                <?php if(!is_null($item->comments)): ?>
+                    <br/>
+                    <i><?php echo CHtml::encode($item->comments); ?></i>
+                <?php endif; ?>
+            </td>
             <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
             <td><?php echo $item->route->name ?>
                 <?php if ($item->route_option) {

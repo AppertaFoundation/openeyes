@@ -28,6 +28,7 @@
  * @property Drug $drug
  * @property Prescription $prescription
  * @property OphDrPrescription_ItemTaper[] $tapers
+ * @property string $comments
  */
 class OphDrPrescription_Item extends BaseActiveRecordVersioned
 {
@@ -59,7 +60,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         return array(
             array('drug_id, dose, route_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'required'),
             array('route_option_id', 'validateRouteOption'),
-            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id', 'safe'),
+            array('comments', 'length', 'max'=>256),
+            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id, comments', 'safe'),
             //array('', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -118,7 +120,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             'route_id' => 'Route',
             'route_option_id' => 'Options',
             'dispense_condition_id' => 'Dispense Condition',
-            'dispense_location_id' => 'Dispense Location'
+            'dispense_location_id' => 'Dispense Location',
+            'comments' => 'Comments',
         );
     }
 
