@@ -249,18 +249,24 @@ class DefaultController extends \BaseEventTypeController
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
-            if ($principal = $this->episode->diagnosis) {
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+
+            if ($principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode , $this->episode->diagnosis->id)) {
                 $d = new models\OphCiExamination_Diagnosis();
-                $d->disorder_id = $principal->id;
+                $d->disorder_id = $principal_diagnosis->disorder_id;
                 $d->principal = true;
+                $d->date = $principal_diagnosis->date;
                 $d->eye_id = $this->episode->eye_id;
+
                 $diagnoses[] = $d;
             }
+
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
                 $d = new models\OphCiExamination_Diagnosis();
                 $d->disorder_id = $sd->disorder_id;
                 $d->eye_id = $sd->eye_id;
                 $d->date = $sd->date;
+
                 $diagnoses[] = $d;
             }
 
