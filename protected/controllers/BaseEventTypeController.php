@@ -79,6 +79,7 @@ class BaseEventTypeController extends BaseModuleController
         'eventImage' => self::ACTION_TYPE_VIEW,
         'printCopy' => self::ACTION_TYPE_PRINT,
         'savePDFprint' => self::ACTION_TYPE_PRINT,
+        'image' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -392,7 +393,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        if ($action === 'view') {
+        if($this->getActionType($action) === self::ACTION_TYPE_VIEW) {
             usort($open_child_elements, function ($a, $b) {
                 $a_order = $a->getDisplayOrder('view');
                 $b_order = $b->getDisplayOrder('view');
@@ -743,6 +744,11 @@ class BaseEventTypeController extends BaseModuleController
         $this->initWithEventId(@$_GET['id']);
     }
 
+    protected function initActionImage()
+    {
+        $this->initActionView();
+    }
+
     /**
      * initialise the controller prior to event update action.
      *
@@ -987,30 +993,33 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
 
-        if ($render_as_image) {
-            ob_start();
-            $this->render('view', $viewData);
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            $image = new WKHtmlToImage();
-            $image->setCanvasImagePath($this->event->imageDirectory);
-            $directory = Yii::app()->assetManager->basePath;
-
-            $image->generateImage($directory, 'sample_image', '', $content);
-        } else {
-            $this->render('view', $viewData);
-        }
+        $this->render('view', $viewData);
     }
 
     public function actionImage($id)
     {
+        $this->setOpenElementsFromCurrentEvent('view');
+
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $id,
+        ), $this->extraViewProperties);
+
+
+            $this->layout = '//layouts/event_image';
+            $this->render('image', $viewData);
+
+
+
+        //$this->redirect(array('default/view/' . $id . '?render_as_image=1'));
+
+        /*
         ob_start();
         //$this->render('modules/OphCiExamination/view/');
         /*$ctrl = new \OEModule\OphCiExamination\controllers\DefaultController(4686453);
         $ctrl->beforeAction('view');
         $ctrl->init();
-        $ctrl->actionView(4686453);*/
+        $ctrl->actionView(4686453);* /
 
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
@@ -1036,7 +1045,7 @@ class BaseEventTypeController extends BaseModuleController
 
         Yii::log($content);
         //$image->saveAs('/vagrant/imagetest.png');
-        //echo $image->getError();
+        //echo $image->getError();*/
     }
 
     /**
@@ -1639,6 +1648,10 @@ class BaseEventTypeController extends BaseModuleController
         }
         if ($action == 'savePDFprint') {
             $action = 'print';
+        }
+
+        if($action === 'image') {
+            $action = 'view';
         }
 
         // Get the view names from the model.
