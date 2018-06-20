@@ -105,26 +105,14 @@ function cleanVATicks(ticks, options, charts, axis_index){
 function setOEScapeSize(size_str){
   //This refers to the left and right of the screen, not the eyes
   var left = $('.oes-left-side'),
-    right = $('.oes-right-side'),
-    size, percent;
+    right = $('.oes-right-side');
 
-  switch(size_str){
-    case 'small':
-      size = 500;
-      percent = '30%';
-      break;
-    case 'medium':
-      size = 700;
-      percent = '50%';
-      break;
-    case 'large':
-      size = 900;
-      percent = '70%';
-      break;
-    case 'full':
-      size = null;  // null, when passed to highcharts makes chart fill container
-      break;
-  }
+  var sizes = {
+    'small' : {"min_width":500, 'percent':30},
+    'medium': {"min_width":700, 'percent':50},
+    'large' : {"min_width":900, 'percent':70},
+    'full'  : {"min_width":500, 'percent':100}
+  };
   var highcarts_list = $('.highchart-section');
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
   var reflow = function (){
@@ -135,13 +123,8 @@ function setOEScapeSize(size_str){
     }
   };
   reflow();
-  // fullsize requires some tweaking
-  if(size == null){
-    left.css({"min-width":"500px", "width":"100%"});
-    right.hide();
-  } else {
-    left.css({"min-width": size + "px", "width": percent});
-    right.show();
-  }
+  left.css({"min_width":sizes[size_str].min_width, "width":sizes[size_str].percent+'%'});
+  right.css({"width":(100-sizes[size_str].percent)+'%'});
+  right.toggle(size_str !== 'full');
   reflow();
 }
