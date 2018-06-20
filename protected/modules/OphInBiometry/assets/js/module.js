@@ -787,4 +787,3 @@ function SRKT2 (eyeMeasurements, iolConstants)
 		return returnPower;
 	}
 }
-

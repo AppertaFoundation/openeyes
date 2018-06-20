@@ -16,50 +16,40 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
-<div class="oe-popup-wrap" id="js-delete-event" style="display: none; z-index:100">
-    <div class="oe-popup">
+
+<section class="element">
+    <section class="element-fields full-width">
+
         <?php echo CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
-        <div class="title">
-            <i class="oe-i trash large selected"></i>
-            Delete Event
-        </div>
-        <div class="oe-popup-content delete-event">
-
-            <div class="alert-box warning">
-                <strong>WARNING: This will permanently delete the event and remove it from view.<br>THIS ACTION CANNOT BE UNDONE.</strong>
-                <?php $this->displayErrors(@$errors) ?>
-                <p id="errors"></p>
+        <div id="delete_event">
+            <h3>Delete event</h3>
+            <div class="alert-box alert with-icon">
+                <strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE
+                    UNDONE.</strong>
             </div>
-            <table class="standard row">
-                <tbody>
-                <tr>
-                    <td>Delete:</td>
-                    <td class="flex-layout">
-                        <i class="oe-i-e <?php echo $this->event->eventType->getEventIconCssClass()?>"></i>
-                        <h4><?php echo $this->event->eventType->name ?> <?php echo Helper::convertDate2NHS($this->event->event_date)?></h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Reason for deletion:</td>
-                    <td><?php echo CHtml::textArea('delete_reason', '', array('cols' => 40,'id' => 'js-text-area')) ?></textarea></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="flex-layout row">
-                <h4>Are you sure you want to proceed? </h4>
-                <?php
-                echo CHtml::hiddenField('event_id', $this->event->id); ?>
-                <button type="submit" class="large red hint" id="et_deleteevent" name="et_deleteevent">
-                    Delete event
-                </button>
-                <button type="submit" class="large blue hint cancel-icon-btn" id="et_canceldelete" name="et_canceldelete">
-                    Cancel
-                </button>
+            <?php $this->displayErrors(@$errors) ?>
+            <div style="width:300px; margin-bottom: 0.6em;">
+                <p>Reason for deletion:</p>
+                <?php echo CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
             </div>
+            <p>
+                <strong>Are you sure you want to proceed?</strong>
+            </p>
+            <?php
+            echo CHtml::hiddenField('event_id', $this->event->id); ?>
+            <button type="submit" class="button red" id="et_deleteevent" name="et_deleteevent">
+                Delete event
+            </button>
+            <button type="submit" class="button" id="et_canceldelete" name="et_canceldelete">
+                Cancel
+            </button>
+            <i class="spinner loader" style="display: none;"></i>
+            <?php echo CHtml::endForm(); ?>
         </div>
-    </div>
-    <?php echo CHtml::endForm(); ?>
-</div>
+    </section>
+</section>
 
+<?php $this->endContent() ?>
 

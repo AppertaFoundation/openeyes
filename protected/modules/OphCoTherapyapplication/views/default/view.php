@@ -90,9 +90,3 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
 	<?php $this->renderPartial('emails', array('service' => $service)) ?>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>
-<script>
-    $('#js-delete-event-btn').click(function(event){
-        event.preventDefault();
-        $('#js-delete-event').css('display','');
-    });
-</script>

@@ -17,66 +17,32 @@
  */
 ?>
 
-<div class="oe-popup-wrap" id="js-delete-event" style="display: none; z-index:100">
-    <div class="oe-popup">
-        <?php echo CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
-        <div class="title">
-            <i class="oe-i trash large selected"></i>
-            Delete Event
-        </div>
-        <div class="oe-popup-content delete-event">
+<?php
+$this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
-            <div class="alert-box warning">
-                <strong>WARNING: This will permanently delete the event and remove it from view.<br>THIS ACTION CANNOT BE UNDONE.</strong>
-                <?php $this->displayErrors(@$errors) ?>
-                <p id="errors"></p>
-            </div>
-            <table class="standard row">
-                <tbody>
-                <tr>
-                    <td>Delete:</td>
-                    <td class="flex-layout">
-                        <i class="oe-i-e <?php echo $this->event->eventType->getEventIconCssClass()?>"></i>
-                        <h4><?php echo $this->event->eventType->name ?> <?php echo Helper::convertDate2NHS($this->event->event_date)?></h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Reason for deletion:</td>
-                    <td><?php echo CHtml::textArea('delete_reason', '', array('cols' => 40,'id' => 'js-text-area')) ?></textarea></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="flex-layout row">
-                <h4>Are you sure you want to proceed? </h4>
-                <?php
-                echo CHtml::hiddenField('event_id', $this->event->id); ?>
-                <button type="submit" class="large red hint" id="et_deleteevent" name="et_deleteevent">
-                    Delete event
-                </button>
-                <button type="submit" class="large blue hint cancel-icon-btn" id="et_canceldelete" name="et_canceldelete">
-                    Cancel
-                </button>
-            </div>
+<?php echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>
+    <div id="delete_event">
+        <h3>Delete event</h3>
+        <div class="alert-box alert with-icon">
+            <strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
         </div>
+        <?php $this->displayErrors(@$errors)?>
+        <div style="width:300px; margin-bottom: 0.6em;">
+            <p>Reason for deletion:</p>
+            <?php echo CHtml::textArea('delete_reason', '')?>
+        </div>
+        <p>
+            <strong>Are you sure you want to proceed?</strong>
+        </p>
+        <?php echo CHtml::hiddenField('event_id', $this->event->id); ?>
+        <button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+            Delete event
+        </button>
+        <button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+            Cancel
+        </button>
+        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+        <?php echo CHtml::endForm()?>
     </div>
-    <?php echo CHtml::endForm(); ?>
-</div>
 
-<script>
-    $('#et_canceldelete').click(function(event){
-        event.preventDefault();
-        $('#errors').text("");
-        $('#js-delete-event').css('display','none');
-    });
-
-    $('#et_deleteevent').click(function(event) {
-        var reasonLength = $('#js-text-area').val().length;
-        if(reasonLength > 0){
-            return;
-        } else {
-            $('#errors').text("Please enter the reason for deletion");
-            event.preventDefault();
-        }
-    });
-</script>
-
+<?php $this->endContent()?>

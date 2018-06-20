@@ -39,9 +39,3 @@ if ($this->checkPrintAccess()) {
 	<iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
 <?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent(); ?>
-<script>
-    $('#js-delete-event-btn').click(function(event){
-        event.preventDefault();
-        $('#js-delete-event').css('display','');
-    });
-</script>

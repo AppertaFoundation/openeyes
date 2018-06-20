@@ -78,5 +78,10 @@
             event.preventDefault();
         }
     });
+
+    $('#js-delete-event-btn').click(function(event){
+        $('#js-delete-event').css('display','');
+        return false;
+    });
 </script>
 

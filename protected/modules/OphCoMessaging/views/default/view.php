@@ -49,9 +49,3 @@ if ($this->checkPrintAccess()) {
 <?php $this->renderPartial('//default/delete');?>
 
 <?php $this->endContent();?>
-<script>
-    $('#js-delete-event-btn').click(function(event){
-        event.preventDefault();
-        $('#js-delete-event').css('display','');
-    });
-</script>
