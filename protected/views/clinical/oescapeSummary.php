@@ -112,15 +112,9 @@ $episode->audit('episode summary', 'view');
         });
       }
 
-      ['right', 'left'].forEach(function(eye_side)  {
+      ['right', 'left'].forEach(function (eye_side) {
         var navAxis = charts.VA[eye_side].navigator.xAxis;
-        navAxis.min = limits[eye_side].min;
-        navAxis.max = limits[eye_side].max;
-        navAxis.tickPositions = [limits[eye_side].min, limits[eye_side].max];
-        //This seems to recalculate the values used for the navigation
-        charts.VA[eye_side].redraw();
-        charts.IOP[eye_side].redraw();
-        charts.Med[eye_side].redraw();
+        navAxis.setExtremes(limits[eye_side].min, limits[eye_side].max);
       });
 
 

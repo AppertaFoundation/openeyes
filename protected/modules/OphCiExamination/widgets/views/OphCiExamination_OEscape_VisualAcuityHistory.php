@@ -25,9 +25,11 @@
   <div id="highcharts-VA-left" class="highcharts-VA highcharts-left highchart-section" style="display: none;"></div>
 </div>
 <script type="text/javascript">
+  var full_va_ticks;
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
+    full_va_ticks = va_ticks;
     var axis_index = 0;
     optionsVA['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
     optionsVA['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
