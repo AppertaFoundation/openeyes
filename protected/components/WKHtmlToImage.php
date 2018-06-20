@@ -33,6 +33,7 @@ class WKHtmlToImage extends WKHtmlToX
         $prefix,
         $suffix,
         $html,
+        $options = array(),
         $output_html = false
     ) {
         if(!$output_html) {
@@ -47,7 +48,18 @@ class WKHtmlToImage extends WKHtmlToX
 
         $this->writeFile($html_file, $html);
 
-        $res = $this->execute(escapeshellarg($this->application_path) . ' --width 1920 --disable-smart-width ' . escapeshellarg($html_file) . ' ' . escapeshellarg($image_file) . ' 2>&1');
+        $cmd_str = escapeshellarg($this->application_path);
+        if (array_key_exists('width', $options)) {
+            $cmd_str .= ' --width ' . $options['width'] . ' --disable-smart-width ';
+        }
+
+        if(array_key_exists('quality', $options)) {
+            $cmd_str .= ' --quality ' . $options['quality'];
+        }
+
+        $cmd_str .= ' ' . escapeshellarg($html_file) . ' ' . escapeshellarg($image_file) . ' 2>&1';
+
+        $res = $this->execute($cmd_str);
 
         if (!$this->fileExists($image_file) || $this->fileSize($image_file) == 0) {
             if ($this->fileSize($image_file) == 0) {
