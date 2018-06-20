@@ -1353,6 +1353,18 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterOutcomeFollowUpPeriod($patient, $use_context = false)
     {
+        $follow_up_text = '';
+
+        if ($o = $this->getElementFromLatestVisibleEvent(
+            'models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context)
+        ){
+            if ($o->followup_quantity) {
+                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+            }
+        }
+
         if ($api = \Yii::app()->moduleAPI->get('PatientTicketing')) {
             if ($patient_ticket_followup = $api->getLatestFollowUp($patient)) {
                 if (@$patient_ticket_followup['followup_quantity'] == 1 && @$patient_ticket_followup['followup_period']) {
@@ -1360,18 +1372,13 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                return $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                }
             }
         }
-        if ($o = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_ClinicOutcome',
-            $patient,
-            $use_context)
-        ){
-            if ($o->followup_quantity) {
-                return $o->followup_quantity . ' ' . $o->followup_period;
-            }
-        }
+
+        return $follow_up_text;
     }
 
     /**
