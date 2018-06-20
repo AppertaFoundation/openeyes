@@ -10,7 +10,7 @@ class m180619_032208_create_event_image_table extends OEMigration
                 'id' => 'pk',
                 'event_id' => 'int(10) unsigned NOT NULL',
                 'image_data' => 'mediumblob',
-                'status_id' => 'int(11)  NOT NULL'
+                'status_id' => 'int(11)  NOT NULL',
             ));
 
         $this->createTable('event_image_status', array('id' => 'pk', 'status' => 'varchar(50)'));

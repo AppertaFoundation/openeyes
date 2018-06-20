@@ -87,29 +87,13 @@ class EventImageController extends BaseController
         $eventImage->save();
 
         try {
-            //     return;
             ob_start();
 
             $url = '/' . $event->eventType->class_name . '/default/image/' . $event->id;
             Yii::app()->runController($url);
-            //Yii::app()->runAction('/OphCiExamination/Default/view', array('id' => $event->id));
-            //$event_controller = Yii::app()->createController('/OphCiExamination/Default/view')[0];
-            //Yii::app()->runAction('event/view', array('id' => $event_id, 'render_as_image' => true));
-            //Yii::log($event_controller);
 
-            /*$event_controller->init();
-            $action = new CViewAction($event_controller, 'view');
-            $_GET = array('id' => $event->id, 'render_as_image' => true);
-            $event_controller->beforeAction($action);
-            $event_controller->runAction($action);
-    8/
-            //*/
-
-            // echo file_get_contents('http://127.0.0.1/OphCiExamination/default/view/4686444?render_as_image=1');
-            //$event_controller->actionView($event->id, true);
             $content = ob_get_contents();
             ob_end_clean();
-            Yii::log($content);
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($event->imageDirectory);
@@ -131,7 +115,7 @@ class EventImageController extends BaseController
             $eventImage->status_id = EventImageStatus::model()->find('status = "CREATED"')->id;
 
             if (!$eventImage->save()) {
-                throw new Exception('Could not save event image: ' . print_r($event_image->getErrors(), true));
+                throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
             }
 
         } catch (Exception $ex) {

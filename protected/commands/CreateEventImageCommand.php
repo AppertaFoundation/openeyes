@@ -12,10 +12,12 @@ class CreateEventImageCommand extends CConsoleCommand
     {
         if (isset($args[0])) {
             $event = Event::model()->findByPk($args[0]);
-            if (!$event) {
+            if ($event === null) {
                 throw new InvalidArgumentException('Could not find event with id: "' . $args[0] . '"');
             }
+
             EventImageController::createImageForEvent($event);
+
         } else {
             $event_id = Yii::app()->db->createCommand()
                 ->select('event.id')
@@ -34,18 +36,7 @@ class CreateEventImageCommand extends CConsoleCommand
                 ->queryScalar();
 
             if ($event_id) {
-                //$event = Event::model()->findByPk($event_id);
                 echo 'Creating event image for event ' . $event_id . "\n";
-                //EventImageController::createImageForEvent($event);
-                //$result = file_get_contents('http://127.0.0.1/eventImage/create/' . $event_id);
-
-                //$ch = curl_init();
-                //print_r($config);
-                //curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1/eventImage/create/' . $event_id);
-
-                //echo Yii::app()->params['components']['db']['password'];
-
-                //Yii::log($result);
 
                 $login_page = Yii::app()->params['docman_login_url'];
                 $username = Yii::app()->params['docman_user'];
@@ -70,8 +61,6 @@ class CreateEventImageCommand extends CConsoleCommand
                 if (curl_errno($ch)) {
                     die(curl_error($ch));
                 }
-
-                //preg_match("/YII_CSRF_TOKEN = '(.*)';/", $response, $token);
 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
                 curl_setopt($ch, CURLOPT_POST, true);

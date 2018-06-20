@@ -1005,47 +1005,8 @@ class BaseEventTypeController extends BaseModuleController
             'eventId' => $id,
         ), $this->extraViewProperties);
 
-
-            $this->layout = '//layouts/event_image';
-            $this->render('image', $viewData);
-
-
-
-        //$this->redirect(array('default/view/' . $id . '?render_as_image=1'));
-
-        /*
-        ob_start();
-        //$this->render('modules/OphCiExamination/view/');
-        /*$ctrl = new \OEModule\OphCiExamination\controllers\DefaultController(4686453);
-        $ctrl->beforeAction('view');
-        $ctrl->init();
-        $ctrl->actionView(4686453);* /
-
-        $this->setOpenElementsFromCurrentEvent('view');
-        // Decide whether to display the 'edit' button in the template
-
-        $viewData = array_merge(array(
-            'elements' => $this->open_elements,
-            'eventId' => $id,
-        ), $this->extraViewProperties);
-
-        $this->render('view', $viewData);
-
-        //echo '<html><strong>foobar</strong></html>';
-
-        //$this->forward('view');
-        $content = ob_get_contents();
-        ob_end_clean();
-        //$image = new WkHtmlImage($content);
-        $image = new WKHtmlToImage();
-        $image->setCanvasImagePath($this->event->imageDirectory);
-        $directory = Yii::app()->assetManager->basePath;
-
-        $image->generateImage($directory, 'sample_image', '', $content);
-
-        Yii::log($content);
-        //$image->saveAs('/vagrant/imagetest.png');
-        //echo $image->getError();*/
+        $this->layout = '//layouts/event_image';
+        $this->render('image', $viewData);
     }
 
     /**
