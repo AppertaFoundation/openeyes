@@ -27,7 +27,7 @@
         </div>
     </div>
 </section>
-<section class="element view full priority" style="height: 60px;">
+<section class="element view full priority" style="min-height: 60px;">
     <header class="element-header">
         <h3 class="element-title"><?php echo $element->getAttributeLabel('patient_unavailables') ?></h3>
     </header>
