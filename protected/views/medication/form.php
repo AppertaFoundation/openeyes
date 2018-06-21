@@ -24,7 +24,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         <input type="hidden" name="prescription_item_id" id="prescription_item_id"
                value="<?= $medication->prescription_item_id ?>"/>
 
-        <div class="row">
+        <div class="data-group">
             <div class="<?= $form->columns('label'); ?>">
                 <label for="drug_id">Medication:</label>
             </div>
@@ -116,7 +116,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             )
         ); ?>
 
-        <div class="row">
+        <div class="data-group">
             <div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
             <div class="<?= $form->columns('field') ?>">
                 <label

@@ -36,7 +36,7 @@
 		<h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
 		<?php
     if (count($this->outcome_options) > 1) { ?>
-				<fieldset class="row">
+				<fieldset class="data-group">
 					<div class="cols-2 column">
 						<label for="to_queue_id">To:</label>
 					</div>

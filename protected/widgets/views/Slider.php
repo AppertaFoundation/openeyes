@@ -33,7 +33,7 @@
 	});
 </script>
 
-<div class="row slider">
+<div class="data-group slider">
 	<div class="cols-<?php echo $layoutColumns['label']?> column">
 		<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
 	</div>

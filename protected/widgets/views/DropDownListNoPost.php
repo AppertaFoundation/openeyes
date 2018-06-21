@@ -17,7 +17,7 @@
  */
 ?>
 <?php if (!@$htmlOptions['nowrapper']) {?>
-	<div id="div_<?php echo $id?>" class="row">
+	<div id="div_<?php echo $id?>" class="data-group">
 		<div class="cols-<?php echo $layoutColumns['label'];?> column">
 			<?php if (!@$htmlOptions['nolabel']) {?>
 				<label for="<?php echo $id?>"></label>

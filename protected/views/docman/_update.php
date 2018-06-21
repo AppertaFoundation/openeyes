@@ -54,7 +54,7 @@
 
             <?php foreach($document_targets as $row_index => $target):?>
 
-                <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+                <tr class="index-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                     <td> 
                         <?php echo $target->ToCc; ?>
                         <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>

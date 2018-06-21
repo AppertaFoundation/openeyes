@@ -18,9 +18,9 @@
 ?>
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-6 column">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id'))?>:
@@ -32,7 +32,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('stay_suture'))?>:
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('site_id'))?>:
@@ -56,7 +56,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('size_id'))?>:
@@ -68,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('sclerostomy_type_id'))?>:
@@ -80,7 +80,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_type_id'))?>:
@@ -92,7 +92,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_removed'))?>:
@@ -104,7 +104,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id'))?>:
@@ -127,7 +127,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						Difficulties

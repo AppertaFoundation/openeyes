@@ -42,7 +42,7 @@
 	<?php echo $form->radioBoolean($sequence, 'paediatric')?>
 	<?php echo $form->radioBoolean($sequence, 'anaesthetist')?>
 	<?php echo $form->radioBoolean($sequence, 'general_anaesthetic')?>
-	<fieldset id="OphTrOperationbooking_Operation_Sequence_week_selection" class="row">
+	<fieldset id="OphTrOperationbooking_Operation_Sequence_week_selection" class="data-group">
 		<legend class="cols-2 column">
 			Week selection:
 		</legend>
@@ -71,7 +71,7 @@
 		</div>
 	</fieldset>
 	<?php echo $form->errorSummary($sequence); ?>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-10 large-offset-2 column">
 			<?php echo EventAction::button('Save', 'save', array('level' => 'save'))->toHtml()?>
 			<?php echo EventAction::link('Cancel',

@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div id="div_LetterString_name" class="row">
+<div id="div_LetterString_name" class="data-group">
 	<div class="cols-2 column">
 		<label for="LetterString_name">Body:</label>
 	</div>
@@ -24,9 +24,8 @@
 		<?php echo  CHtml::activeTextArea($model, 'body')?>
 	</div>
 </div>
-<div class="row">
 	<div class="cols-8 large-offset-2 column">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<label for="shortcode">
 					Add shortcode:
@@ -37,5 +36,4 @@
 			</div>
 		</div>
 	</div>
-</div>
 

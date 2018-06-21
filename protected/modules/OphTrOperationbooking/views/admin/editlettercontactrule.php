@@ -38,7 +38,7 @@
 	<?php echo $form->textField($rule, 'refuse_title', array('size' => 90))?>
 	<?php echo $form->textField($rule, 'health_telephone', array('size' => 90))?>
 	<?php if ($rule->children) {?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:

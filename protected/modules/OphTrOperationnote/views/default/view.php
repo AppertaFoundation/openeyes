@@ -44,14 +44,12 @@ if ($this->checkPrintAccess()) {
 <?php } ?>
 
 <?php if ($warnings) { ?>
-  <div class="row">
-    <div class="cols-12 column">
-      <div class="alert-box patient with-icon">
-          <?php foreach ($warnings as $warn) { ?>
-            <strong><?php echo $warn['long_msg']; ?></strong>
-            - <?php echo $warn['details'];
-          } ?>
-      </div>
+  <div class="cols-12 column">
+    <div class="alert-box patient with-icon">
+        <?php foreach ($warnings as $warn) { ?>
+          <strong><?php echo $warn['long_msg']; ?></strong>
+          - <?php echo $warn['details'];
+        } ?>
     </div>
   </div>
 <?php } ?>

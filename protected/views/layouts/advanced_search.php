@@ -37,11 +37,11 @@
 		<h1 class="badge admin">Advanced search</h1>
 
 		<div class="box content admin-content">
-			<div class="row">
-				<aside class="large-2 column sidebar admin">
+			<div class="data-group">
+				<aside class="cols-2 column sidebar admin">
 					<?php $this->renderPartial('//site/advanced_search_sidebar'); ?>
 				</aside>
-				<div class="large-10 column admin">
+				<div class="cols-10 column admin">
 					<?php echo $content; ?>
 				</div>
 			</div>

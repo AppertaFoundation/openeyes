@@ -31,8 +31,8 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
         <script type="text/javascript" src="<?php echo $this->assetFolder?>/<?php echo $this->shortName ?>.js"></script>
     <?php }?>
 
-    <div class="row" id="patient-alert-patientticketing" data-patient-id="<?= $this->patient->id ?>">
-        <div class="large-12 column">
+    <div id="patient-alert-patientticketing" data-patient-id="<?= $this->patient->id ?>">
+        <div class="cols-12 column">
             <?php
             if (isset(Yii::app()->session['patientticket_ticket_in_review'])) {
                 $patient_ticket_in_review = Yii::app()->session['patientticket_ticket_in_review'];
@@ -56,11 +56,11 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
 								</span>
                         </a>
                         <div class="js-toggle-body" <?php if (!$expand) {?>style="display: none;"<?php }?>>
-                            <div class="row">
-                                <div class="large-6 column">
+                            <div class="data-group">
+                                <div class="cols-6 column">
                                     <?php $this->widget($summary_widget, array('ticket' => $ticket)); ?>
                                 </div>
-                                <div class="large-6 column">
+                                <div class="cols-6 column">
                                     <?php
                                     $qs_r = $qs_svc->getQueueSetForTicket($ticket->id);
                                     if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {

@@ -21,7 +21,7 @@
         <?php
         if ($disorder_section->comments_allowed == 1) {
             if ($comments != '') { ?>
-                <fieldset class="row">
+                <fieldset class="data-group">
                     <legend class="cols-4 column">
                         <?php echo $disorder_section->comments_label; ?>
                     </legend>

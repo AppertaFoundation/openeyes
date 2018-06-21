@@ -26,7 +26,7 @@
     </div>
 
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="row">
+    <div class="data-group">
         <div class="cols-6 column end">
             <label>
                 <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:

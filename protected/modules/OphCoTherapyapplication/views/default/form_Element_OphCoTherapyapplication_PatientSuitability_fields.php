@@ -50,7 +50,7 @@ foreach ($treatments as $treatment) {
     array(),
     array_merge($layoutColumns, array('field' => 3))) ?>
 
-<div id="nice_compliance_<?php echo $side ?>" class="row">
+<div id="nice_compliance_<?php echo $side ?>" class="data-group">
   <div class="cols-<?php echo $layoutColumns['label'] ?>">
     <div class="field-label">NICE Compliance:</div>
   </div>

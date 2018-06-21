@@ -38,7 +38,7 @@
 	echo $form->dropDownList($cbs, 'commissioning_body_id', CHtml::listData(CommissioningBody::model()->findAll($criteria), 'id', 'name'), array('style' => 'margin-bottom:6px;'));
 
 	if ($commissioning_bst) { ?>
-		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="row">
+		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="data-group">
 			<div class="cols-2 column">
 				<label for="div_CommissioningBodyService_commissioning_body_service_type_id">Service type:</label>
 			</div>

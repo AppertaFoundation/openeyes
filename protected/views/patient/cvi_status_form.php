@@ -30,7 +30,7 @@
             ),
         )) ?>
 
-        <div class="row">
+        <div class="data-group">
             <div class="<?php echo $form->columns('label'); ?>">
                 <label for="PatientOphInfo_cvi_status_id">Status:</label>
             </div>

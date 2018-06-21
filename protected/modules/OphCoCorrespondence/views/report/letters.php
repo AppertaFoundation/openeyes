@@ -28,7 +28,7 @@
 		))?>
 
 		<input type="hidden" name="report-name" value="Letters" />
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="phrases">
 					Phrases:
@@ -41,7 +41,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label></label>
 			</div>
@@ -50,7 +50,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>
 					Search method:
@@ -64,7 +64,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label></label>
 			</div>
@@ -76,7 +76,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label></label>
 			</div>
@@ -89,7 +89,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label></label>
 			</div>
@@ -102,7 +102,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="OphCoCorrespondence_ReportLetters_start_date">
 					Date from:
@@ -120,7 +120,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="OphCoCorrespondence_ReportLetters_end_date">
 					Date to:
@@ -138,7 +138,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="author_id">
 					Author
@@ -160,7 +160,7 @@
 
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="site_id">
 					Site
@@ -170,10 +170,10 @@
 				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
-        <div class="row">
-            <div class="cols-2 column">
-				<label for="site_id">Status</label>
-			</div>
+    <div class="data-group">
+      <div class="cols-2 column">
+            <label for="site_id">Status</label>
+          </div>
 			<div class="cols-6 column end">
                 <?php
                     $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';

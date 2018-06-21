@@ -46,8 +46,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
 <?php if ($operationNoteList): ?>
 
-  <div class="row" id="div_Element_OphTrOperationnote_ProcedureList_id">
-
+  <div id="div_Element_OphTrOperationnote_ProcedureList_id">
     <div class="cols-5 column end">
         <?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
@@ -148,7 +147,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
   </div>
 
 <?php else: ?>
-  <div class="row" id="div_Element_OphTrOperationnote_ProcedureList_id">
+  <div id="div_Element_OphTrOperationnote_ProcedureList_id">
     <div class="cols-12 column text-center">
       There are no recorded operations for this patient
     </div>

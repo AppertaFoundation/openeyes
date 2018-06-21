@@ -18,7 +18,7 @@
 ?>
 <section class="element-fields lab-results-type">
     <div class="fields-row">
-        <div class="row">
+        <div class="data-group">
             <div class="cols-2 column">
                 <label for="Element_OphInLabResults_Details_result_type_id">Type:</label>
             </div>

@@ -34,10 +34,9 @@ if (!$nowrapper) {?>
 }?>
 
 <?php if (!$nowrapper) {?>
-  <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row hidden">
+  <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="data-group hidden">
 			<div class="cols-<?php echo $layoutColumns['label'];?> column"
-           style="<?=!$showLabel?"display: none;":""?>"
-      >
+           style="<?=!$showLabel?"display: none;":""?>">
 				<label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
 			</div>
 		<div class="cols-<?php echo $layoutColumns['field'];?> column end">
@@ -45,7 +44,7 @@ if (!$nowrapper) {?>
 		</div>
   </div>
 <?php }else{?>
-<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row hidden">
+<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="hidden">
   <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array('style' => 'display: none;'));?>
 </div>
 <?php }?>
@@ -53,7 +52,7 @@ if (!$nowrapper) {?>
 
 
 <?php if (!$nowrapper) {?>
-<div class="row">
+<div class="data-group">
 		<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$showLabel) {?> hidden<?php }?>">
 			<label></label>
 		</div>

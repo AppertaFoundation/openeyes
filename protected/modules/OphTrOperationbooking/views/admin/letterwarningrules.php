@@ -29,7 +29,7 @@
 			<legend>
 				Test:
 			</legend>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::dropDownList('lcr_rule_type_id', '', CHtml::listData(OphTrOperationbooking_Admission_Letter_Warning_Rule_Type::model()->findAll(), 'id', 'name'), array('empty' => '- Rule -'))?>
 				</div>

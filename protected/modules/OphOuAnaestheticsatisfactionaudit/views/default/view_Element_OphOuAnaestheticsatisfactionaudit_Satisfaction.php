@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pain'))?></div>
 		</div>
@@ -25,7 +25,7 @@
 			<div class="data-value"><?php echo $element->pain?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('nausea'))?></div>
 		</div>
@@ -33,7 +33,7 @@
 			<div class="data-value"><?php echo $element->nausea?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('vomited'))?></div>
 		</div>

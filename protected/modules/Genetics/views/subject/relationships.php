@@ -3,7 +3,7 @@ $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applica
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.Genetics.Relationships.js');
 Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
 ?>
-<div class="row">
+<div class="data-group">
     <div class="cols-2 column">
         <label for="genetics_patient_lookup">Relationships:</label>
     </div>

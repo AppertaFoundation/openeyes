@@ -58,16 +58,12 @@
         $columns = 12;
     }
     ?>
-			<div class="row">
-				<div class="large-<?php echo $columns;
-    ?> column large-offset-<?php echo $offset;
-    ?>">
+      <div class="cols-<?php echo $columns; ?> column large-offset-<?php echo $offset; ?>">
 					<div class="alert-box alert injection-warning">
 						<?php echo $msg ?>
 					</div>
 				</div>
-			</div>
-		<?php 
+		<?php
 } ?>
 
 		<?php $this->renderOpenElements($this->action->id, $form)?>

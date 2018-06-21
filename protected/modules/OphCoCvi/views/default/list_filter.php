@@ -25,7 +25,7 @@
         ),
         'enableAjaxValidation' => false,
     ))?>
-    <div class="large-12 column">
+    <div class="cols-12 column">
         <div class="panel box js-toggle-container">
             <h3>Filter CVIs</h3>
             <a href="#" class="toggle-trigger toggle-hide js-toggle">
@@ -34,37 +34,37 @@
                     </span>
             </a>
             <div class=" js-toggle-body">
-                <div class="row">
-                    <div class="column large-3">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="date_from">Date From:</label></div>
-                            <div class="column large-8">
+                <div class="data-group">
+                    <div class="column cols-3">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="date_from">Date From:</label></div>
+                            <div class="column cols-8">
                                 <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
                                        value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="date_to">Date To:</label></div>
-                            <div class="column large-8">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="date_to">Date To:</label></div>
+                            <div class="column cols-8">
                                 <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
                                        value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="column large-3">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="subspecialty_id">Subspecialty:</label></div>
-                            <div class="column large-8">
+                    <div class="column cols-3">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="subspecialty_id">Subspecialty:</label></div>
+                            <div class="column cols-8">
                                 <?php echo CHtml::dropDownList('subspecialty_id',
                                     (array_key_exists('subspecialty_id', $list_filter) ? $list_filter['subspecialty_id'] : null),
                                     Subspecialty::model()->getList(),
                                     array('class' => 'filter-field', 'empty' => 'All specialties',))?>
                             </div>
                             </div>
-                            <div class="row">
-                            <div class="column large-4 text-right"><label for="site_id">Site:</label></div>
-                            <div class="column large-8">
+                            <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="site_id">Site:</label></div>
+                            <div class="column cols-8">
                                 <?php echo CHtml::dropDownList('site_id',
                                     (array_key_exists('site_id', $list_filter) ? $list_filter['site_id'] : null),
                                     Site::model()->getListForCurrentInstitution(),
@@ -72,8 +72,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="column large-1 text-right"><label for="createdby">Created By:</label></div>
-                    <div class="column large-2"><?php
+                    <div class="column cols-1 text-right"><label for="createdby">Created By:</label></div>
+                    <div class="column cols-2"><?php
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                             'id' => 'createdby_auto_complete',
                             'name' => 'createdby_auto_complete',
@@ -130,8 +130,8 @@
                         <?= CHtml::hiddenField('createdby_ids', $this->request->getPost('createdby_ids', ''), array('class' => 'filter-field')); ?>
                     </div>
 
-                    <div class="column large-1 text-right"><label for="consultants">Consultant(s):</label></div>
-                    <div class="column large-2"><?php
+                    <div class="column cols-1 text-right"><label for="consultants">Consultant(s):</label></div>
+                    <div class="column cols-2"><?php
                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                             'id' => 'consultant_auto_complete',
                             'name' => 'consultant_auto_complete',
@@ -188,28 +188,28 @@
                         <?= CHtml::hiddenField('consultant_ids', $this->request->getPost('consultant_ids', ''), array('class' => 'filter-field')); ?>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="column large-3">
-                        <div class="row">
-                            <div class="column large-6 text-right"><label for="show-issued">Show Issued:</label></div>
-                            <div class="column large-6">
+                <div class="data-group">
+                  <div class="column cols-3">
+                        <div class="data-group">
+                            <div class="column cols-6 text-right"><label for="show-issued">Show Issued:</label></div>
+                            <div class="column cols-6">
                                 <?php
                                 $show_issued = array_key_exists('show_issued', $list_filter) ? $list_filter['show_issued'] : false;
                                 echo CHtml::checkBox('show_issued', ($show_issued == 1), array('class' => 'filter-field'));
                                 ?>                            </div>
                         </div>
-                        <div class="row">
-                            <div class="column large-6 text-right"><label for="issue_complete">Complete:</label></div>
-                            <div class="column large-6">
+                        <div class="data-group">
+                            <div class="column cols-6 text-right"><label for="issue_complete">Complete:</label></div>
+                            <div class="column cols-6">
                                 <?php
                                 $issue_complete = array_key_exists('issue_complete', $list_filter) ? $list_filter['issue_complete'] : true;
                                 echo CHtml::checkBox('issue_complete', ($issue_complete == 1), array('class' => 'filter-field'));
                                 ?>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="column large-6 text-right"><label for="issue_incomplete">Incomplete:</label></div>
-                            <div class="column large-6">
+                        <div class="data-group">
+                            <div class="column cols-6 text-right"><label for="issue_incomplete">Incomplete:</label></div>
+                            <div class="column cols-6">
                                 <?php
                                 $issue_incomplete = array_key_exists('issue_incomplete', $list_filter) ? $list_filter['issue_incomplete'] : true;
                                 echo CHtml::checkBox('issue_incomplete', ($issue_incomplete == 1), array('class' => 'filter-field'));
@@ -218,13 +218,11 @@
                         </div>
                     </div>
 
-                <div class="row">
-                    <div class="column large-12 text-right end">
-                        <?php if ($this->isListFiltered()) { ?>
-                            <button id="reset_button" class="warning small" type="submit">Reset</button>
-                        <?php } ?>
-                        <button id="search_button" class="secondary small" type="submit" disabled="true">Search</button></div>
-                </div>
+                  <div class="column cols-12 text-right end">
+                      <?php if ($this->isListFiltered()) { ?>
+                        <button id="reset_button" class="warning small" type="submit">Reset</button>
+                      <?php } ?>
+                    <button id="search_button" class="secondary small" type="submit" disabled="true">Search</button></div>
             </div>
         </div>
     </div>

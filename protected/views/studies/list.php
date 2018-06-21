@@ -2,7 +2,7 @@
 $studies = $model->{$list};
 $name = get_class($model);
 ?>
-<div class="row">
+<div class="data-group">
     <div class="cols-2 column">
         <label><?= $label ?>:</label>
     </div>

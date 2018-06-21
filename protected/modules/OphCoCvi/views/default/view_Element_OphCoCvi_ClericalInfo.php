@@ -37,7 +37,7 @@
           <tr>
             <td><?php echo CHtml::encode($factor['name']) ?>
                 <?php if ($factor['is_comments'] == 1) { ?>
-                  <div class="row"><br/>
+                  <div class="data-group"><br/>
                     <div class="cols-4 column large-push-1"
                          style="font-style: italic;"><?php echo CHtml::encode($factor['label']) ?></div>
                     <div class="cols-6 column large-push-1 end"><?php echo $comments; ?></div>

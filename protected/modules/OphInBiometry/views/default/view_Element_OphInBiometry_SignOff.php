@@ -17,7 +17,7 @@
  */
 ?>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('user1_id'))?></div></div>
 			<div class="cols-9 column end"><div class="data-value"><?php echo $element->user1 ? $element->user1->fullName : 'Not recorded'?></div></div>
 		</div>

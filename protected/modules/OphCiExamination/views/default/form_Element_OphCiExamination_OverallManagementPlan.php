@@ -105,7 +105,7 @@ $label_width = 5;
             data-side="<?= $eye ?>">
           <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <div class="row">
+            <div class="data-group">
               <div class="cols-3 column">
                 <label for="<?= CHtml::modelName($element) . '[' . $eye . '_target_iop_id]' ?>">
                   Target IOP:

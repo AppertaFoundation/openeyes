@@ -103,13 +103,10 @@ foreach ($plate_positions as $pp) {
     </tr>
     </tbody>
   </table>
-  <br/>
-  <div class="row">
-      <?php echo $form->textArea($element, 'description',
+  <br/><?php echo $form->textArea($element, 'description',
           array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true), false,
           array('placeholder' => 'Description')) ?>
-  </div>
-  <div class="row">
+  <div class="data-group">
     <div class="cols-3 column">&nbsp;</div>
     <div class="cols-4 column end">
       <button id="btn-glaucomatube-report" class="ed_report secondary small">Report</button>

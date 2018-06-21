@@ -180,7 +180,7 @@ if (!$reschedule) {
     <div class="highlighter large-text">
         Date/Time currently selected:<?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?>
     </div>
-    <div class="row">
+    <div class="data-group">
         <button type="submit" class="large green hint" id="confirm_slot">Confirm slot</button>
         <button type="button" class="large red hint" id="cancel_scheduling"><?php echo 'Cancel '.($reschedule ? 're-' : '').'scheduling';?></button>
     </div>

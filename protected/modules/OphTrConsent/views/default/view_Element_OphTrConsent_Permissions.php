@@ -17,11 +17,9 @@
  */
  ?>
 <div class="element-data full-width">
-	<div class="row">
-    <div class="data-value">
-        <?php echo $element->images ? $element->images->name : 'None'?>
-      <i class="oe-i info small pad js-has-tooltip"
-         data-tooltip-content="<?php echo CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
-		</div>
-	</div>
+  <div class="data-value">
+      <?php echo $element->images ? $element->images->name : 'None'?>
+    <i class="oe-i info small pad js-has-tooltip"
+       data-tooltip-content="<?php echo CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
+  </div>
 </div>

@@ -24,11 +24,11 @@
 
 <?php if ($element && ($current || $stopped)) { ?>
     <div id="<?= $el_id ?>">
-        <div class="row">
-            <div class="large-2 column label">
+        <div class="data-group">
+            <div class="cols-2 column label">
                 Medications
             </div>
-            <div class="large-10 column data">
+            <div class="cols-10 column data">
                 <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="oe-i history small" aria-hidden="true"></i></a><?php } ?>
                 <?php if (!$current) {?>No current medications.<?php } ?>
             </div>

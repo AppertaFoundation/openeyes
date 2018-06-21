@@ -24,7 +24,7 @@ $layoutColumns = array(
 ); ?>
 
 <div class="element-fields full-width">
-  <div class="row">
+  <div class="data-group">
     <div class="cols-5 column">
         <?php echo $form->textArea($element, 'comments', array(), false, array('cols' => 30), $layoutColumns) ?>
     </div>

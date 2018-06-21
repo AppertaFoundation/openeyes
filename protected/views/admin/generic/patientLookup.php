@@ -1,4 +1,4 @@
-<div class="row">
+<div class="data-group">
   <div class="cols-2 column">
     <label for="patient-search">Patient:</label>
   </div>
@@ -12,7 +12,7 @@
   </div>
 </div>
 <?php if(isset($extras) && $extras): ?>
-<div class="row">
+<div class="data-group">
     <div class="cols-2 column">
         <label for="patient-search">Maiden Name</label>
     </div>
@@ -20,7 +20,7 @@
         <input type="text" id="patient-lookup-extra-maidenname" value="<?= ($model->patient->contact->maiden_name) ? $model->patient->contact->maiden_name : '' ?>" readonly>
     </div>
 </div>
-<div class="row">
+<div class="data-group">
   <div class="cols-2 column">
     <label for="patient-search">Date of Birth</label>
   </div>
@@ -28,7 +28,7 @@
     <input type="text" id="patient-lookup-extra-dob" value="<?= ($model->patient) ? $model->patient->dob : '' ?>" readonly>
   </div>
 </div>
-<div class="row">
+<div class="data-group">
   <div class="cols-2 column">
     <label for="patient-search">Hospital Number</label>
   </div>

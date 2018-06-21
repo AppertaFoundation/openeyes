@@ -20,9 +20,9 @@
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-6 column">
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('power_id'))?>
@@ -34,7 +34,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('blood_reflux'))?>
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('hpmc'))?>
@@ -58,7 +58,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
@@ -70,7 +70,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('complications'))?>

@@ -19,13 +19,12 @@
 <h1 class="badge">Transport</h1>
 
 <div class="box content">
-	<div class="row">
-		<div class="large-12 column">
+  <div class="cols-12 column">
 			<h2>TCIs for today onwards.</h2>
 
 			<div class="box generic transport">
 
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-6 column date-filter">
 						<form id="transport_form" method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/transport/index')?>">
 							<div class="data-group">
@@ -112,5 +111,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
 </div>

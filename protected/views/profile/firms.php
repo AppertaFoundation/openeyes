@@ -38,7 +38,7 @@
 			</tbody>
 		</table>
 	</form>
-<div class="row">
+<div class="data-group">
   <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
     <?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
     <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>

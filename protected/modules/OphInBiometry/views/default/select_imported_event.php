@@ -22,9 +22,8 @@ $assetAliasPath = 'application.modules.OphInBiometry.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
 
-<div class="row">
+<div class="data-group">
   <div class="cols-12 column">
-
     <section class="element">
         <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'biometry-event-select',
@@ -50,11 +49,11 @@ $this->moduleNameCssClass .= ' edit';
             <?php } ?>
         </div>
 
-        <fieldset class="row">
+        <fieldset>
           <div class="cols-12 column end">
               <?php foreach ($imported_events as $imported_event) { ?>
                 <label class="highlight booking">
-										<span class="row">
+										<span class="data-group">
 											<span class="cols-1 column">
 												<input type="radio" value="biometry<?php echo $imported_event->id ?>" name="SelectBiometry"/>
 											</span>

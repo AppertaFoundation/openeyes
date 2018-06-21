@@ -47,7 +47,7 @@
       <tbody>
       <tr>
         <td>
-          <div class="row">
+          <div>
               <?php
               if ($active_check === 'on') {
                   echo $form->checkbox($element, 'city_road', array('nowrapper' => true));
@@ -111,7 +111,7 @@
     </table>
   </div>
 
-  <div class="row flex-layout cols-6 flex-left flex-top">
+  <div class="data-group flex-layout cols-6 flex-left flex-top">
     <div class="cols-6 column">
         <label for="<?php echo get_class($element) . 'reasonForSurgery'; ?>">
             <?php echo $element->getAttributeLabel('reasonForSurgery') ?>:

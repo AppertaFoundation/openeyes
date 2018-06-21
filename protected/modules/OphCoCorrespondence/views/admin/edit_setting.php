@@ -29,15 +29,12 @@
         ),
     ))?>
         <?php if ($metadata->key == 'city_road_satellite_view') { ?>
-        <div class="row">
-            <div class="cols-12 column">
-                <div class="alert-box with-icon warning">
-                  Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"
-                </div>
+          <div class="cols-12 column">
+            <div class="alert-box with-icon warning">
+              Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical Management named "At City Road" and "At Satellite"
             </div>
-        </div>
-        <?php } ?>
-		<div class="row">
+          </div><?php } ?>
+		<div class="data-group">
 			<div class="cols-3 column">
 				<label for="<?php echo $metadata->key?>">
 					<?php echo $metadata->name?>

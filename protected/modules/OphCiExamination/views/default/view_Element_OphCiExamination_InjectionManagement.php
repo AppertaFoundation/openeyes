@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-data row">
-	<div class="row">
+<div class="sub-element-data">
+	<div class="data-group">
 		<div class="cols-4 column">
 			<div class="data-label">
 				<?php echo $element->getAttributeLabel('injection_status_id')?>:
@@ -31,7 +31,7 @@
 	</div>
 	<?php if ($element->injection_status && $element->injection_status->deferred) {
     ?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">
 					<?php echo $element->getAttributeLabel('injection_deferralreason_id')?>:

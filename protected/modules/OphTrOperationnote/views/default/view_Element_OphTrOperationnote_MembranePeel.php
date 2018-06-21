@@ -23,27 +23,22 @@
   </header>
   <section class="element-fields full-width">
       <?php if ($element->membrane_blue) { ?>
-        <div class="row">
-          <div class="cols-2 column">
+        <div class="cols-2 column">
             <div class="data-value">
                 <?php echo CHtml::encode($element->getAttributeLabel('membrane_blue')) ?>
             </div>
           </div>
-        </div>
       <?php } ?>
-
       <?php if ($element->brilliant_blue) { ?>
-        <div class="row">
-          <div class="cols-2 column">
+        <div class="cols-2 column">
             <div class="data-value">
                 <?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue')) ?>
             </div>
           </div>
-        </div>
       <?php } ?>
 
       <?php if ($element->other_dye) { ?>
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('other_dye')) ?>:
@@ -58,7 +53,7 @@
       <?php } ?>
 
       <?php if ($element->comments) { ?>
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:

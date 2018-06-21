@@ -26,25 +26,24 @@
 		<?php echo CHtml::link('delete', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
 	</header>
 	<div class="sub-element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
+        <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
 			</div>
 			<div class="cols-9 column">
 				<div class="data-value">
-                    <?php 
-                    if(isset($element->storage->box->value)){
-                        echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
-                    } else {
-                        echo 'Not set';
-                    }
-                    ?>
-                </div>   
+            <?php
+            if(isset($element->storage->box->value)){
+              echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
+              } else {
+              echo 'Not set';
+              } ?>
+        </div>
 			</div>
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('extracted_date')?>:</div>
 			</div>
@@ -54,25 +53,23 @@
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('extracted_by')?>:</div>
 			</div>
 			<div class="cols-9 column">
 				<div class="data-value">
-                    <?php
-                        if(isset($element->extracted_by->username)){
-                            echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
-                        } else {
-                            echo 'Not set';
-                        }
-                    ?>
-                </div>
+            <?php if(isset($element->extracted_by->username)){
+              echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
+              } else {
+              echo 'Not set';
+            } ?>
+        </div>
 			</div>
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
 			</div>
@@ -82,7 +79,7 @@
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('dna_concentration')?>:</div>
 			</div>
@@ -92,7 +89,7 @@
 		</div>
 	</div>
 	<div class="element-data">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('volume')?>:</div>
 			</div>
@@ -102,7 +99,7 @@
 		</div>
 	</div>
     <div class="element-data">
-        <div class="row">
+        <div class="data-group">
             <div class="cols-3 column">
                 <div class="data-label">
                     <?php echo CHtml::encode($element->getAttributeLabel('dna_quality'))?>:
@@ -116,7 +113,7 @@
         </div>
     </div>    
     <div class="element-data">
-        <div class="row">
+        <div class="data-group">
             <div class="cols-3 column">
                 <div class="data-label">
                     <?php echo CHtml::encode($element->getAttributeLabel('dna_quantity'))?>:
@@ -128,9 +125,9 @@
                 </div>
             </div>
         </div>
-    </div>    	
+    </div>
     <div class="element-data">
-        <div class="row">
+        <div class="data-group">
             <div class="cols-3 column">
                 <div class="data-label">
                     Volume Remaining:

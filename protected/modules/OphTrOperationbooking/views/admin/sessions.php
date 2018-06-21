@@ -23,7 +23,7 @@ $sessions = $sessions['data'];
 <div class="box admin">
 <h2>Filters</h2>
 <form id="admin_sessions_filters" class="panel">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 		</div>
@@ -31,7 +31,7 @@ $sessions = $sessions['data'];
 			<?php echo CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Theatre -'))?>
 		</div>
 		<div class="cols-3 column">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-3 column">
 					<label class="align" for="date_from">From:</label>
 				</div>
@@ -50,7 +50,7 @@ $sessions = $sessions['data'];
 			</div>
 		</div>
 		<div class="cols-3 column">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<label class="align" for="date_to">To:</label>
 				</div>
@@ -69,7 +69,7 @@ $sessions = $sessions['data'];
 			</div>
 		</div>
 		<div class="cols-2 column end">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-3 column">
 					<label class="align" for="sequence_id">Seq:</label>
 				</div>
@@ -79,7 +79,7 @@ $sessions = $sessions['data'];
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('weekday', @$_GET['weekday'], array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'), array('empty' => '- Weekday '))?>
 		</div>
@@ -184,7 +184,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'enableAjaxValidation' => false,
         'htmlOptions' => array('style' => 'display: none;', 'class' => 'panel'),
     ))?>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for=""><?php echo Firm::contextLabel() ?>:</label>
 	</div>
@@ -193,7 +193,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Theatre:</label>
 	</div>
@@ -201,7 +201,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Date:</label>
 	</div>
@@ -220,7 +220,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Start time:</label>
 	</div>
@@ -228,7 +228,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">End time:</label>
 	</div>
@@ -236,7 +236,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Consultant:</label>
 	</div>
@@ -244,7 +244,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Paediatric:</label>
 	</div>
@@ -252,7 +252,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Anaesthetist:</label>
 	</div>
@@ -260,7 +260,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">General anaesthetic:</label>
 	</div>
@@ -268,7 +268,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Available:</label>
 	</div>
@@ -276,7 +276,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Comments:</label>
 	</div>
@@ -284,7 +284,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-10 large-offset-2 column">
 		<?php echo EventAction::button('Update', 'update_inline', null, array('class' => 'small'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

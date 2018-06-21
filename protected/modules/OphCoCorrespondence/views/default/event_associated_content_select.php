@@ -3,8 +3,8 @@ if (empty($patient)) {
     $patient = $this->patient;
 }
 ?>
-<div class="row field-row">
-    <div class="large-2 column">
+<div class="data-group>
+    <div  class="cols-2 column">
         <label>Attachments:</label>
     </div>
     <div class="cols-10 data-group column end">

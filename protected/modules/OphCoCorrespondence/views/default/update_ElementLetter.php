@@ -149,7 +149,7 @@ $patient = Patient::model()->findByPk($patient_id);
                 <?php if ($element->isInternalReferralEnabled()): ?>
 
                   <div
-                      class="row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
+                      class="data-group internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
                     <div class="cols-2 column"></div>
 
                     <div class="cols-10 column">
@@ -256,7 +256,7 @@ $patient = Patient::model()->findByPk($patient_id);
           </div>
         </div>
           <?php if (!$element->document_instance): ?>
-            <div class="row">
+            <div class="data-group">
               <div class="cols-<?php echo $layoutColumns['label']; ?> column">
                   <?php echo $form->dropDownListNoPost('address_target', $element->address_targets,
                       $element->address_target,
@@ -343,7 +343,7 @@ $patient = Patient::model()->findByPk($patient_id);
               </td>
               <td>
                   <?php if (!$element->document_instance): ?>
-                    <div class="row">
+                    <div class="data-group">
                       <div class="cols-<?php echo $layoutColumns['label']; ?> column">
                           <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '',
                               array('empty' => '- Cc -', 'nowrapper' => true)) ?>
@@ -395,7 +395,7 @@ $patient = Patient::model()->findByPk($patient_id);
                         <?php } ?>
                     <?php } else { ?>
                         <?php foreach ($element->enclosures as $i => $item) { ?>
-                        <div class="row collapse in enclosureItem">
+                        <div class="data-group collapse in enclosureItem">
                           <div class="cols-8 column">
                               <?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
                                   array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>

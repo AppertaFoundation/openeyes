@@ -45,7 +45,7 @@ $this->moduleNameCssClass .= ' highlight-fields';
 
 if ($this->is_auto) {
     ?>
-<div id="surgeon" class="row">
+<div id="surgeon">
 	<div class="cols-2 column" style="margin-left: 10px;">
 		<div class="data-label">Surgeon:
            <b> <?php

@@ -125,18 +125,15 @@ $cols = array(
 <h1 class="badge">CVI List</h1>
 <div class="box content">
     <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
-
-    <div class="row">
-        <div class="large-12 column">
-            <div class="box generic">
-                <?php $this->widget('zii.widgets.grid.CGridView', array(
-                    'itemsCssClass' => 'grid',
-                    'dataProvider' => $dp,
-                    'htmlOptions' => array('id' => 'inbox-table'),
-                    'summaryText' => '<small> {start}-{end} of {count} </small>',
-                    'columns' => $cols,
-                )); ?>
-            </div>
-        </div>
+  <div class="cols-12 column">
+    <div class="box generic">
+        <?php $this->widget('zii.widgets.grid.CGridView', array(
+            'itemsCssClass' => 'grid',
+            'dataProvider' => $dp,
+            'htmlOptions' => array('id' => 'inbox-table'),
+            'summaryText' => '<small> {start}-{end} of {count} </small>',
+            'columns' => $cols,
+        )); ?>
     </div>
+  </div>
 </div>

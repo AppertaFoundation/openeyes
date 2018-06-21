@@ -19,10 +19,9 @@
 
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
-		<div class="large-6 column">
-			<div class="row">
-				<div class="large-4 column">
+  <div class="cols-6 column">
+			<div class="data-group">
+				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('plate_position_id'))?>
 					</div>
@@ -33,7 +32,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('plate_limbus'))?>
@@ -45,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('tube_position_id'))?>
@@ -57,7 +56,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('stent'))?>
@@ -69,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('slit'))?>
@@ -81,7 +80,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('visco_in_ac'))?>
@@ -93,7 +92,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('flow_tested'))?>
@@ -105,7 +104,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
@@ -118,7 +117,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="cols-6 column">
+  <div class="cols-6 column">
 			<div class="data-group">
 				<div class="details">
 				<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
@@ -134,5 +133,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
 </section>

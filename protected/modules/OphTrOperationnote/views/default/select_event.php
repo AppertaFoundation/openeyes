@@ -24,14 +24,11 @@ $this->moduleNameCssClass .= ' edit';
 
 <?php
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
-
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<div class="row">
-  <div class="cols-12 column">
-
-    <section class="element">
+<div class="cols-12 column">
+  <section class="element">
         <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'operation-note-select',
             'enableAjaxValidation' => false,
@@ -41,7 +38,6 @@ $warnings = $this->patient->getWarnings($clinical);
         <?php $this->displayErrors($errors) ?>
 
         <?php if ($warnings) { ?>
-          <div class="row">
             <div class="cols-12 column">
               <div class="alert-box patient with-icon">
                   <?php foreach ($warnings as $warn) { ?>
@@ -50,7 +46,6 @@ $warnings = $this->patient->getWarnings($clinical);
                   } ?>
               </div>
             </div>
-          </div>
         <?php } ?>
 
       <header class="element-header">
@@ -119,7 +114,6 @@ $warnings = $this->patient->getWarnings($clinical);
           <?php $this->displayErrors($errors, true) ?>
           <?php $this->endWidget(); ?>
     </section>
-  </div>
 </div>
 <script type="text/javascript">
   $(function () {

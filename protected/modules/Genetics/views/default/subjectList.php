@@ -1,4 +1,4 @@
-<div class="row">
+<div class="data-group">
     <div class="cols-2 column">
         <label>Subjects:</label>
     </div>

@@ -61,7 +61,7 @@ function getLevelColour($risk_level){
 
 <div class="element-fields flex-layout full-width ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<fieldset class="row">
+	<fieldset class="data-group">
 				<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
 			<?php
       if ($diabetes = $this->patient->getDiabetesType()) {

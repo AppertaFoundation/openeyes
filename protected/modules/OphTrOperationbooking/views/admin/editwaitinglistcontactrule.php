@@ -39,7 +39,7 @@
 	<?php echo $form->textField($rule, 'name')?>
 	<?php echo $form->textField($rule, 'telephone', array(), array(), array('field' => 3))?>
 	<?php if ($rule->children) {?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:

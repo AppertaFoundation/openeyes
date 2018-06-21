@@ -19,7 +19,7 @@ $api = Yii::app()->moduleAPI->get('PatientTicketing');
 if ($outcome = $api->getFollowUp($this->ticket->id)) {
     ?>
 
-<fieldset class="row" data-formName="<?=$this->form_name ?>">
+<fieldset class="data-group" data-formName="<?=$this->form_name ?>">
 	<div class="cols-<?= $this->label_width ?> column">
 		<label for="site">Follow-up appointment:</label>
 	</div>

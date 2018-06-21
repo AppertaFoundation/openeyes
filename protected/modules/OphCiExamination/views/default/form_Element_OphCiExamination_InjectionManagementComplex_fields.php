@@ -38,7 +38,7 @@ $el_model_name = CHtml::modelName($element);
       <td><?php echo $form->checkBox($element, $eye . '_no_treatment', array('nowrapper' => true)) ?></td>
     </tr>
     <tr
-        class="row <?php echo $el_model_name ?>_no_treatment_reason_id"
+        class="<?php echo $el_model_name ?>_no_treatment_reason_id"
         id="div_<?php echo $el_model_name . '_' . $eye ?>_no_treatment_reason_id"
         style="<?= (!$no_treatment)? "display: none;":""?>"
     >
@@ -57,7 +57,7 @@ $el_model_name = CHtml::modelName($element);
           )?>
       </td>
     </tr>
-    <tr class="row <?php echo $el_model_name ?>_no_treatment_reason_other"
+    <tr class="<?php echo $el_model_name ?>_no_treatment_reason_other"
         id="div_<?php echo $el_model_name . '_' . $eye ?>_no_treatment_reason_other"
         style="<?=(!$show_no_treatment_reason_other) ? "display: none;":"" ?>"
     >

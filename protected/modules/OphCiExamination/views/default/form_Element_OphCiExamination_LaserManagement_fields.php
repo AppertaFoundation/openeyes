@@ -58,21 +58,19 @@ $model_name = CHtml::modelName($element);
   <tbody>
     <tr>
       <td>
-        <div id="div_<?= $model_name.'_'.$eye; ?>_laser" class="row flex-layout">
+        <div id="div_<?= $model_name.'_'.$eye; ?>_laser" class="flex-layout">
           <div class="column">
             <label for="<?=$model_name.'_'.$eye.'_laser_status_id';?>">
                 <?=$element->getAttributeLabel($eye.'_laser_status_id') ?>:
             </label>
           </div>
           <div class="column">
-            <div class="row">
-                <?= CHtml::activeDropDownList(
-                    $element,
-                    $eye.'_laser_status_id',
-                    CHtml::listData($statuses, 'id', 'name'),
-                    $status_options
-                )?>
-            </div>
+              <?= CHtml::activeDropDownList(
+                  $element,
+                  $eye.'_laser_status_id',
+                  CHtml::listData($statuses, 'id', 'name'),
+                  $status_options
+              )?>
             <span id="<?=$eye?>_laser_booking_hint"
                   class="field-info hint"
                   style="<?= (!$show_booking_hint) ? "style=display:none;": ""?>">
@@ -99,7 +97,7 @@ $model_name = CHtml::modelName($element);
         style="<?= (!$show_deferral)? "display: none":""?>"
     >
       <td>
-        <div class="row flex-layout flex-top">
+        <div class="data-group flex-layout flex-top">
           <div class="column">
             <label for="<?php echo $model_name.'_'.$eye.'_laser_deferralreason_id';?>">
                 <?php echo $element->getAttributeLabel($eye.'_laser_deferralreason_id')?>:
@@ -107,7 +105,7 @@ $model_name = CHtml::modelName($element);
           </div>
           <div class="column end">
               <?php echo CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
-            <div class="row cols-full"
+            <div class="cols-full"
                  id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason_other"
                  style="<?= (!$show_deferral_other)? "display: none":""?>"
             >
@@ -125,7 +123,6 @@ $model_name = CHtml::modelName($element);
     </tr>
   </tbody>
   <tbody id="<?php echo $model_name.'_'.$eye;?>_treatment_fields"
-        class="row"
         style="<?= (!$show_treatment)? "display: none":""?>" >
     <tr>
       <td>

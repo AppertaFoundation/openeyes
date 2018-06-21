@@ -136,11 +136,11 @@ $assetManager = Yii::app()->getAssetManager();
                         $relations = $admin->getModel()->{$type['relation']};
                     }
                     ?>
-                    <div class="row">
+                    <div class="data-group">
                         <div class="cols-2 column">&nbsp;</div>
                         <div class="cols-5 column end"><hr></div>
                     </div>
-                    <div class="row">
+                    <div class="data-group">
                         <div class="cols-2 column">
                             <label>Diagnosis</label>
                         </div>
@@ -191,7 +191,7 @@ $assetManager = Yii::app()->getAssetManager();
                         </div>
                         <div style="padding-bottom:15px;"></div>
                     </div>
-                    <div class="row">
+                    <div class="data-group">
                         <div class="cols-2 column">&nbsp;</div>
                         <div class="cols-5 column end"><hr></div>
                     </div>
@@ -199,7 +199,7 @@ $assetManager = Yii::app()->getAssetManager();
                     break;
                 case 'LinkTo':
                     ?>
-                    <div class="row">
+                    <div class="data-group">
                         <div class="cols-2 column">
                             <label></label>
                         </div>

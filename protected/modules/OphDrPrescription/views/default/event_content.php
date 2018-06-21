@@ -15,7 +15,7 @@
 		<?php $this->renderPartial('//base/_messages'); ?>
 
 		<?php if($this->action->id == 'view' && $this->event->isEventDateDifferentFromCreated()){?>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column" style="margin-left: 10px;">
 					<div class="data-label"><?php echo $this->event->getAttributeLabel('event_date') ?>:</div>
 				</div>

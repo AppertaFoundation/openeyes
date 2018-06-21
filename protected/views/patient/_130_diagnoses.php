@@ -94,7 +94,7 @@
                             'loader' => 'add_ophthalmic_diagnosis_loader',
                         ))?>
 
-						<div class="row hide" id="add_ophthalmic_diagnosis_loader">
+						<div class="hide" id="add_ophthalmic_diagnosis_loader">
 							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> cols-<?php echo $form->layoutColumns['field'];?> column end">
 								<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 									searching...

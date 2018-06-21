@@ -19,8 +19,8 @@
  */
 ?>
 
-<div class="row">
-    <div class="large-3 column">
+<div class="data-group">
+    <div class="cols-3 column">
         <select class="fuzzy_day">
             <option value="00">- Day -</option>
             <?php for ($i = 1;$i <= 31;++$i) {?>
@@ -28,7 +28,7 @@
             <?php }?>
         </select>
     </div>
-    <div class="large-4 column">
+    <div class="cols-4 column">
         <select class="fuzzy_month">
             <option value="00">- Month- </option>
             <?php foreach (array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') as $i => $month) {?>
@@ -36,7 +36,7 @@
             <?php }?>
         </select>
     </div>
-    <div class="large-3 column">
+    <div class="cols-3 column">
         <select class="fuzzy_year">
             <option value="0000">- Year -</option>
             <?php for ($i = date('Y') - 102;$i <= date('Y');++$i) {?>
@@ -44,8 +44,8 @@
             <?php }?>
         </select>
     </div>
-    <div class="large-1 column end">
-                        <span class="js-has-tooltip fa oe-i info small right" style="margin-top:3px"
-                              data-tooltip-content="Day, Month and Year fields are optional."></span>
+    <div class="cols-1 column end">
+      <span class="js-has-tooltip fa oe-i info small right" style="margin-top:3px"
+            data-tooltip-content="Day, Month and Year fields are optional."></span>
     </div>
 </div>

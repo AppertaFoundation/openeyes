@@ -19,7 +19,7 @@
 <section class="element patient-info js-toggle-container">
 	<h3 class="element-header">General Practitioner:</h3>
 	<div class="js-toggle-body">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Name:</div>
 			</div>
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<?php if (Yii::app()->user->checkAccess('admin')) { ?>
-		<div class="row highlight">
+		<div class="data-group highlight">
 			<div class="cols-4 column">
 				<div class="data-label">GP Address:</div>
 			</div>
@@ -36,7 +36,7 @@
 				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
 			</div>
 		</div>
-		<div class="row highlight">
+		<div class="data-group highlight">
 			<div class="cols-4 column">
 				<div class="data-label">GP Telephone:</div>
 			</div>
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Practice Address:</div>
 			</div>
@@ -53,7 +53,7 @@
 				<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->contact->address) ? $this->patient->practice->contact->address->letterLine : 'Unknown'; ?></div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Practice Telephone:</div>
 			</div>

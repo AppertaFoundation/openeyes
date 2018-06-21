@@ -25,7 +25,7 @@
             'label' => 4,
             'field' => 2,
         )); ?>
-    <div class="row">
+    <div class="data-group">
         <div class="cols-8 column">
             <label class="inline highlight">
                 <input type="radio" name="upload_mode" value="single" <?php if($element->single_document_id >0){echo "checked";}?>>Single file
@@ -35,7 +35,7 @@
             </label>
         </div>
     </div>
-    <div class="row" id="single_document_uploader">
+    <div id="single_document_uploader">
         <div class="cols-8 column" id="single_document_id_row">
             <?php $this->generateFileField($element, 'single_document'); ?>
         </div>
@@ -72,7 +72,7 @@
         (Maximum size: <?=$this->getMaxDocumentSize();?> MB)
     </div>
     
-    <div class="row" style="padding-top:10px;">
+    <div style="padding-top:10px;">
         <div class="cols-8 column">
             <label style="font-weight:bold">Comments:</label>
             <?php

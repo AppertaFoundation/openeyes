@@ -29,7 +29,6 @@ $warnings = $this->patient->getWarnings($clinical);
     $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')'?>
 
 <?php if ($warnings) { ?>
-	<div class="row">
 		<div class="cols-12">
 			<div class="alert-box patient with-icon">
 				<?php foreach ($warnings as $warn) {?>
@@ -38,7 +37,6 @@ $warnings = $this->patient->getWarnings($clinical);
 				}?>
 			</div>
 		</div>
-	</div>
 <?php }?>
 
 	<?php if (!$operation->has_gp) {?>

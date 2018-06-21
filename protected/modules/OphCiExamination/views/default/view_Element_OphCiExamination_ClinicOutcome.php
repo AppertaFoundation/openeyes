@@ -42,7 +42,7 @@
       } ?>
   </div>
     <?php if ($element->description) { ?>
-      <div class="row">
+      <div class="data-group">
           <?= $element->getAttributeLabel('description') ?>:
           <?= Yii::app()->format->Ntext($element->description); ?>
       </div>

@@ -17,7 +17,7 @@
  */
  ?>
 <div class="element-data">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-3 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
 		</div>

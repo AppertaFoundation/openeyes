@@ -1,8 +1,8 @@
-<div class="row">
-    <div  class="large-2 column">
+<div class="data-group">
+    <div  class="cols-2 column">
         <label>Attachments:</label>
     </div>
-    <div class="large-10 column end">
+    <div class="cols-10 column end">
         <table id="correspondence_attachments_table">
             <thead>
             <tr>

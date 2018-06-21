@@ -32,7 +32,7 @@
 	<?php echo $form->textField($firm, 'pas_code', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 	<?php echo $form->textField($firm, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 
-	<div id="div_Firm_subspecialty_id" class="row">
+	<div id="div_Firm_subspecialty_id" class="data-group">
 		<div class="cols-2 column">
 			<label for="Firm_subspecialty_id">Subspecialty:</label>
 		</div>
@@ -42,7 +42,7 @@
                 CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
 		</div>
 	</div>
-	<div id="div_Firm_consultant_id" class="row">
+	<div id="div_Firm_consultant_id" class="data-group">
 		<div class="cols-2 column">
 			<label for="Firm_consultant_id">Consultant:</label>
 		</div>
@@ -52,7 +52,7 @@
 		</div>
 	</div>
 
-    <div id="div_Firm_active" class="row">
+    <div id="div_Firm_active" class="data-group">
         <div class="cols-2 column">
             <label for="Firm_can_own_an_episode"><?= ucfirst(Yii::app()->params['service_firm_label']) ?> Enabled:</label>
         </div>
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <div id="div_Firm_active" class="row">
+    <div id="div_Firm_active" class="data-group">
         <div class="cols-2 column">
             <label for="Firm_runtime_selectable"><?= ucfirst(Yii::app()->params['context_firm_label']) ?> Enabled:</label>
         </div>
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <div id="div_Firm_active" class="row">
+    <div id="div_Firm_active" class="data-group">
 		<div class="cols-2 column">
 			<label for="Firm_active">Active:</label>
 		</div>

@@ -18,7 +18,7 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-    <div class="row">
+    <div class="data-group">
         <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,
@@ -56,7 +56,7 @@
             ); ?>
         </div>
     </div>
-    <div class="row">
+    <div class="data-group">
         <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,

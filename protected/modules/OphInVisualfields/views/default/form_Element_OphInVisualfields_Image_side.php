@@ -41,7 +41,7 @@ Yii::app()->clientScript->registerScript(
 ?>
 <div class="element-eye <?= $side ?>-eye column">
     <?php if ($current_field): ?>
-      <div class="row">
+      <div class="data-group">
         <div class="cols-5 column">
             <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
                 array('nowrapper' => true)) ?>

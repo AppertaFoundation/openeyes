@@ -5,12 +5,10 @@
 		</div>
 		<div class="cols-9 column">
 			<ul>
-			<?php
-                $operations_perf = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', array($this->event->id));
-                foreach ($operations_perf->procedures as $procedure) {
-                    echo "<li>{$operations_perf->eye->name} {$procedure->term}</li>";
-                }
-            ?>
+			<?php $operations_perf = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', array($this->event->id));
+			foreach ($operations_perf->procedures as $procedure) {
+			  echo "<li>{$operations_perf->eye->name} {$procedure->term}</li>";
+			  } ?>
 			</ul>
 		</div>
 	</div>
@@ -20,7 +18,7 @@
         $assistant_name = ($assistant = User::model()->findByPk($surgeon_element->assistant_id)) ? $assistant->getFullNameAndTitle() : 'None';
         $supervising_surg_name = ($supervising_surg = User::model()->findByPk($surgeon_element->supervising_surgeon_id)) ? $supervising_surg->getFullNameAndTitle() : 'None';
     ?>
-	<div class="row surgeons">
+	<div class="data-group surgeons">
 		<div class="cols-4 column">
 			<div class="data-label">First Surgeon</div>
 			<div class="data-value"><?php echo $surgeon_name ?></div>

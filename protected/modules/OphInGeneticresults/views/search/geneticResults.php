@@ -27,11 +27,9 @@
           'focus' => '#search',
           'action' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
       )) ?>
-    <div class="large-12 column">
-
-        <div class="row">
-          <div class="large-12 column">
-            <table class="grid">
+    <div class="cols-12 column">
+      <div class="cols-12 column">
+        <table class="grid">
               <thead>
               <tr>
                 <th>Subject Id</th>
@@ -70,7 +68,7 @@
               </tr>
               </tbody>
             </table>
-            <table class="grid">
+        <table class="grid">
               <thead>
               <tr>
                 <th>Result date from</th>
@@ -137,11 +135,10 @@
               </tbody>
 
             </table>
-              <button id="search_tests" class="secondary right" type="submit">
+        <button id="search_tests" class="secondary right" type="submit">
                   Search
               </button>
-          </div>
-        </div>
+      </div>
     </div>
       <?php $this->endWidget() ?>
     <div style="clear:both"></div>

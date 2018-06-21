@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('respiratory_rate_id'))?></div>
 		</div>
@@ -25,7 +25,7 @@
 			<div class="data-value"><?php echo $element->respiratory_rate ? $element->respiratory_rate->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('oxygen_saturation_id'))?></div>
 		</div>
@@ -33,7 +33,7 @@
 			<div class="data-value"><?php echo $element->oxygen_saturation ? $element->oxygen_saturation->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('systolic_id'))?></div>
 		</div>
@@ -41,7 +41,7 @@
 			<div class="data-value"><?php echo $element->systolic ? $element->systolic->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('body_temp_id'))?></div>
 		</div>
@@ -49,7 +49,7 @@
 			<div class="data-value"><?php echo $element->body_temp ? $element->body_temp->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('heart_rate_id'))?></div>
 		</div>
@@ -57,7 +57,7 @@
 			<div class="data-value"><?php echo $element->heart_rate ? $element->heart_rate->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('conscious_lvl_id'))?></div>
 		</div>
@@ -65,7 +65,7 @@
 			<div class="data-value"><?php echo $element->conscious_lvl ? $element->conscious_lvl->name : 'None'?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label">Calculated MEWS</div>
 		</div>

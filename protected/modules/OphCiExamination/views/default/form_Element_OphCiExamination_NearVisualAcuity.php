@@ -76,7 +76,7 @@ $this->endClip('element-title-additional');
 }?>
 				</tbody>
 			</table>
-			<div class="row noReadings"<?php if ($element->right_readings) {
+			<div class="data-group noReadings"<?php if ($element->right_readings) {
     ?> style="display: none;" <?php 
 } ?>>
 				<div class="cols-4 column">
@@ -126,7 +126,7 @@ $this->endClip('element-title-additional');
 }?>
 				</tbody>
 			</table>
-			<div class="row noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
+			<div class="data-group noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
 				<div class="cols-4 column">
 					<div class="field-info">Not recorded</div>
 				</div>

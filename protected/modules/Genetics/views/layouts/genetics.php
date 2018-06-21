@@ -31,11 +31,11 @@
     <div class="container content">
         <h1 class="badge admin">Genetics</h1>
         <div class="box content admin-content">
-            <div class="row">
-                <aside class="large-2 column sidebar admin">
+            <div class="data-group">
+                <aside class="cols-2 column sidebar admin">
                     <?php $this->renderPartial('//../modules/Genetics/views/default/sidebar'); ?>
                 </aside>
-                <div class="large-10 column">
+                <div class="cols-10 column">
                     <?php echo $content; ?>
                 </div>
             </div>

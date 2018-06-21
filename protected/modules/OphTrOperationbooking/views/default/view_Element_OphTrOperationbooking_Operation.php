@@ -324,11 +324,11 @@
         <section class="element">
             <h3 class="element-title highlight">Earliest reasonable offer date</h3>
             <div class="element-data">
-                <div class="cols-12 column">
-                    <div class="data-value">
-                        <?php echo $element->booking->erod->getDescription() ?>
-                    </div>
-                </div>
+              <div class="cols-12 column">
+                        <div class="data-value">
+                            <?php echo $element->booking->erod->getDescription() ?>
+                        </div>
+              </div>
             </div>
         </section>
     <?php } ?>

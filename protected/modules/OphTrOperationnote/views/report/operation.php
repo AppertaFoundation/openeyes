@@ -9,7 +9,7 @@
           'action' => Yii::app()->createUrl('/' . $this->module->id . '/report/downloadReport'),
       )) ?>
     <input type="hidden" name="report-name" value="Operations"/>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
           <?php echo CHtml::label('Surgeon', 'surgeon_id') ?>
       </div>
@@ -39,7 +39,7 @@
           'last' => true,
       ));
       ?>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
           <?php echo CHtml::label('Cataract Complications', 'cat_complications'); ?>
       </div>
@@ -51,7 +51,7 @@
           )); ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
           <?php echo CHtml::label('Date From', 'date_from') ?>
       </div>
@@ -69,7 +69,7 @@
           )) ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
           <?php echo CHtml::label('Date To', 'date_to') ?>
       </div>
@@ -88,7 +88,7 @@
       </div>
     </div>
     <h3>Operation Booking</h3>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -97,7 +97,7 @@
           <?php echo CHtml::label('Comments', 'bookingcomments') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -106,7 +106,7 @@
           <?php echo CHtml::label('Operation booking diagnosis', 'booking_diagnosis') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -115,7 +115,7 @@
           <?php echo CHtml::label('Surgery Date', 'surgerydate') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -126,7 +126,7 @@
     </div>
 
     <h3>Examination</h3>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -135,7 +135,7 @@
           <?php echo CHtml::label('Comorbidities', 'comorbidities') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -144,7 +144,7 @@
           <?php echo CHtml::label('First or Second Eye', 'first_eye') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -153,7 +153,7 @@
           <?php echo CHtml::label('Refraction Values', 'refraction_values') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -162,7 +162,7 @@
           <?php echo CHtml::label('Target Refraction', 'target_refraction') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -171,7 +171,7 @@
           <?php echo CHtml::label('Cataract Surgical Management', 'cataract_surgical_management') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -181,7 +181,7 @@
       </div>
     </div>
     <h3>Operation Note</h3>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -190,7 +190,7 @@
           <?php echo CHtml::label('Cataract Report', 'cataract_report') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -199,7 +199,7 @@
           <?php echo CHtml::label('Cataract Operation Details', 'incision_site') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -208,7 +208,7 @@
           <?php echo CHtml::label('Cataract Complication Notes', 'cataract_complication_notes') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -217,7 +217,7 @@
           <?php echo CHtml::label('Tamponade Used', 'tamponade_used') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -226,7 +226,7 @@
           <?php echo CHtml::label('Anaesthetic Type', 'anaesthetic_type') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -235,7 +235,7 @@
           <?php echo CHtml::label('Anaesthetic Delivery', 'anaesthetic_delivery') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -244,7 +244,7 @@
           <?php echo CHtml::label('Anaesthetic Complications', 'anaesthetic_complications') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -253,7 +253,7 @@
           <?php echo CHtml::label('Anaesthetic Comments', 'anaesthetic_comments') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -262,7 +262,7 @@
           <?php echo CHtml::label('Surgeon', 'surgeon') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -271,7 +271,7 @@
           <?php echo CHtml::label('Surgeon role', 'surgeon_role') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -280,7 +280,7 @@
           <?php echo CHtml::label('Assistant', 'assistant') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -289,7 +289,7 @@
           <?php echo CHtml::label('Assistant role', 'assistant_role') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -298,7 +298,7 @@
           <?php echo CHtml::label('Supervising surgeon', 'supervising_surgeon') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -307,7 +307,7 @@
           <?php echo CHtml::label('Supervising surgeon role', 'supervising_surgeon_role') ?>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -317,7 +317,7 @@
       </div>
     </div>
     <h3>Patient Data</h3>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         &nbsp;
       </div>
@@ -332,7 +332,6 @@
       <ul>
       </ul>
     </div>
-    <div class="row">
       <div class="cols-6 column end">
         <button type="submit" class="classy blue mini display-module-report" name="run"><span
               class="button-span button-span-blue">Display report</span></button>
@@ -341,7 +340,6 @@
         <img class="loader" style="display: none;"
              src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
       </div>
-    </div>
     <div class="reportSummary report curvybox white blueborder" style="display: none; overflow-y:scroll">
     </div>
   </div>

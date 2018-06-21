@@ -22,12 +22,12 @@
     <h2>Secondary Common Ophthalmic Disorder</h2>
 
     <form method="get">
-        <div class="row">
-            <div class="cols-2 column"><label for="subspecialty_id">Parent</label></div>
-            <div class="cols-5 column end">
-                <?php echo CHtml::dropDownList('parent_id', (isset($_GET['parent_id']) ? $_GET['parent_id'] : null), SelectionHelper::listData('CommonOphthalmicDisorder')); ?>
-            </div>
+      <div class="data-group">
+        <div class="cols-2 column"><label for="subspecialty_id">Parent</label></div>
+        <div class="cols-5 column end">
+            <?php echo CHtml::dropDownList('parent_id', (isset($_GET['parent_id']) ? $_GET['parent_id'] : null), SelectionHelper::listData('CommonOphthalmicDisorder')); ?>
         </div>
+      </div>
     </form>
 
     <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">

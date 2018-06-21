@@ -25,7 +25,7 @@
         ),
         'enableAjaxValidation' => false,
     ))?>
-    <div class="large-12 column">
+    <div class="cols-12 column">
         <div class="panel box js-toggle-container">
             <h3></h3>
             <a href="#" class="toggle-trigger toggle-hide js-toggle">
@@ -35,21 +35,20 @@
             </a>
             <div class=" js-toggle-body">
 
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="column large-4">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="date_from">Date From:</label></div>
-                            <div class="column large-8">
+                <div class="data-group" style="margin-bottom:10px;">
+                    <div class="column cols-4">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="date_from">Date From:</label></div>
+                            <div class="column cols-8">
                                 <input type="text" id="date_from" name="date_from" class="datepicker filter-field"
                                        value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" />
                             </div>
                         </div>
                     </div>
-
-                    <div class="column large-4">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="status_id">Invoice Status:</label></div>
-                            <div class="column large-8">
+                    <div class="column cols-4">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="status_id">Invoice Status:</label></div>
+                            <div class="column cols-8">
                                 <?php
                                 echo
                                 CHtml::dropDownList('status_id',(array_key_exists('status_id', $list_filter) ? $list_filter['status_id'] : null),
@@ -61,10 +60,10 @@
                         </div>
                     </div>
 
-                    <div class="column large-4">
-                        <div class="row">
-                            <div class="column large-5 text-right"><label for="optometrist">Optometrist Name:</label></div>
-                            <div class="column large-7">
+                    <div class="column cols-4">
+                        <div class="data-group">
+                            <div class="column cols-5 text-right"><label for="optometrist">Optometrist Name:</label></div>
+                            <div class="column cols-7">
                                 <?php
                                 echo CHtml::textField('optometrist', (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
                                     array(
@@ -79,20 +78,19 @@
                     </div>
                 </div>
 
-                <div class="row" style="margin-bottom:10px;">
-                    <div class="column large-4">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="date_to">Date To:</label></div>
-                            <div class="column large-8">
+                <div class="data-group" style="margin-bottom:10px;">
+                    <div class="column cols-4">
+                        <div class="data-group">
+                            <div class="column cols-4 text-right"><label for="date_to">Date To:</label></div>
+                            <div class="column cols-8">
                                 <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
                                        value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" />
                             </div>
                         </div>
                     </div>
-
-                    <div class="column large-4">
-                        <div class="column large-4  text-right"><label for="patient_number">Patient number:</label></div>
-                        <div class="column large-8"><?php
+                    <div class="column cols-4">
+                        <div class="column cols-4  text-right"><label for="patient_number">Patient number:</label></div>
+                        <div class="column cols-8"><?php
                             echo CHtml::textField('patient_number', (array_key_exists('patient_number', $list_filter) ? $list_filter['patient_number'] : null),
                                 array(
                                     'id'=>'patient_number',
@@ -102,11 +100,11 @@
                         </div>
                     </div>
 
-                    <div class="column large-4">
+                    <div class="column cols-4">
 
-                        <div class="row">
-                            <div class="column large-5 text-right"><label for="goc_number">Optometrist GOC code:</label></div>
-                            <div class="column large-7">
+                        <div class="data-group">
+                            <div class="column cols-5 text-right"><label for="goc_number">Optometrist GOC code:</label></div>
+                            <div class="column cols-7">
                                 <?php
                                 echo CHtml::textField('goc_number',  (array_key_exists('goc_number', $list_filter) ? $list_filter['goc_number'] : null),
                                     array(
@@ -120,8 +118,8 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="column large-12 text-right">
+                <div class="data-group">
+                    <div class="column cols-12 text-right">
                         <?php if ($this->isListFiltered()) { ?>
                             <button id="reset_button" class="warning" type="submit">Reset</button>
                         <?php } ?>

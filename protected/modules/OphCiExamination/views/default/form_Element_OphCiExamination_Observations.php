@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields full-width">
-    <div class="row flex-layout flex-left col-gap">
+    <div class="data-group flex-layout flex-left col-gap">
         <div class="cols-4 data-group">
             <table class="cols-full">
                 <colgroup>

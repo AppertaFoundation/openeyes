@@ -1,5 +1,5 @@
 <div class="element-fields full-width flex-layout flex-top col-gap" xmlns="http://www.w3.org/1999/html">
-    <div class="cols-6">
+    <div class="cols-6 data-group">
       <table>
         <colgroup>
           <col class="cols-5">
@@ -111,7 +111,7 @@
         </tbody>
       </table>
     </div>
-    <div class="cols-6">
+    <div class="cols-6 data-group">
       <table>
         <colgroup>
           <col class="cols-5">
@@ -153,10 +153,8 @@
         <tr>
             <?php $hide_search = strlen($element->la_name) > 0; ?>
           <td>
-            <div class="row">
-              <div class="small-push-6">
-                <a href="#" id="la-search-toggle" class=" <?= $hide_search ? '': ' disabled'?>">Find Local Authority Details</a>
-              </div>
+            <div class="small-push-6">
+              <a href="#" id="la-search-toggle" class=" <?= $hide_search ? '': ' disabled'?>">Find Local Authority Details</a>
             </div>
           </td>
           <td>

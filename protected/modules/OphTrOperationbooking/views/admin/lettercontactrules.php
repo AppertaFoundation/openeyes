@@ -24,7 +24,7 @@
 		</div>
 	</header>
 	<form id="rulestest" class="panel">
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<legend class="cols-1 column align">
 				Test:
 			</legend>

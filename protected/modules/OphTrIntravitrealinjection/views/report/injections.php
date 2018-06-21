@@ -9,7 +9,7 @@
             'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
         ))?>
 			<input type="hidden" name="report-name" value="Injections" />
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::label('Date From', 'date_from') ?>
 				</div>
@@ -27,7 +27,7 @@
                             ))?>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::label('Date To', 'date_to') ?>
 				</div>
@@ -46,7 +46,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::label('Given by', 'given_by_id') ?>
 				</div>
@@ -69,7 +69,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::label('Drugs', 'drug_id') ?>
 				</div>
@@ -78,7 +78,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					<?php echo CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
 				</div>
@@ -87,7 +87,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-2 column">
 					&nbsp;
 				</div>
@@ -100,7 +100,7 @@
 
 			<div class="examinationInformation">
 				<h3>Examination Information</h3>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-2 column">
 						&nbsp;
 					</div>
@@ -110,7 +110,7 @@
 						<?php echo CHtml::label('Pre injection VA', 'pre_va') ?>
 					</div>
 				</div>
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-2 column">
 						&nbsp;
 					</div>
@@ -127,13 +127,11 @@
 			<ul>
 			</ul>
 		</div>
-		<div class="row">
-			<div class="cols-6 column end">
-				<button type="submit" class="classy blue mini display-module-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
-				<button type="submit" class="classy blue mini download-module-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-				<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-			</div>
-		</div>
+    <div class="cols-6 column end">
+      <button type="submit" class="classy blue mini display-module-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
+      <button type="submit" class="classy blue mini download-module-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
+      <img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+    </div>
 		<div class="reportSummary report curvybox white blueborder" style="display: none;">
 		</div>
 	</div>

@@ -17,7 +17,7 @@
 ?>
 <p>Comments</p>
 
-<div class="row">
+<div class="data-group">
 	<?php echo $form->labelEx($model,'comment'); ?>
 	<?php echo $form->textField($model,'comment',array('size'=>60,'maxlength'=>255)); ?>
 	<?php echo $form->error($model,'comment'); ?>

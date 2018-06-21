@@ -1,11 +1,8 @@
 <div class="element-data full-width">
-  <div class="row">
-    <div class="cols-12 column">
-      <div class="data-value "><b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b></div>
-    </div>
+  <div class="cols-12 column">
+    <div class="data-value "><b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b></div>
   </div>
-  <div class="row">
-      <?php
+    <?php
       if ($element->single_document) { ?>
         <div class="cols-12 column">
             <?php
@@ -13,7 +10,6 @@
             ?>
         </div>
       <?php } ?>
-  </div>
 </div>
 
 <?php if (($element->right_document_id) || ($element->left_document_id)) { ?>
@@ -36,7 +32,7 @@
             ?>
         </div>
       <?php } ?>
-
+    
       <?php if ($element->left_document_id) { ?>
         <div id="left-eye">
             <?php
@@ -46,6 +42,4 @@
       <?php } ?>
   </div>
 <?php } ?>
-    <div class="row">
-        <div class="cols-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
-    </div>
+<div class="cols-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>

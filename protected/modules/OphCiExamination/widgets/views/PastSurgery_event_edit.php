@@ -23,7 +23,7 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 $model_name = CHtml::modelName($element);
 ?>
 <div class="element-fields flex-layout full-width">
-  <div class="row cols-10">
+  <div class="data-group cols-10">
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
         <thead>

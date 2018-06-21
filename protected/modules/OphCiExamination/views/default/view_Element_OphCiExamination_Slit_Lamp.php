@@ -22,47 +22,43 @@
           <?php if ($element->hasEye($eye_side)) { ?>
               <table>
                 <tbody>
-                <tr class="row">
-                  <td class="large-6 column data-value">
-
+                <tr class="data-group">
+                  <td class="cols-6 column data-value">
                       <?php echo $element->getAttributeLabel($eye_side.'_allergic_conjunctivitis_id')?>:
                   </td>
-                  <td class="large-5 column data-value">
-                      <?php
-                      echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_allergic_conjunctivitis_id'});
-                      ?>
+                  <td class="cols-5 column data-value">
+                      <?php echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_allergic_conjunctivitis_id'}); ?>
                   </td>
                 </tr>
-                <tr class="row">
-                  <td class="large-6 column data-value">
+                <tr class="data-group">
+                  <td class="cols-6 column data-value">
                       <?php echo $element->getAttributeLabel($eye_side.'_blepharitis_id')?>:
                   </td>
-                  <td class="large-5 column data-value">
+                  <td class="cols-5 column data-value">
                       <?php
                       echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_blepharitis_id'});
                       ?>
                   </td>
                 </tr>
-                <tr class="row">
-                  <td class="large-6 column data-value">
+                <tr class="data-group">
+                  <td class="cols-6 column data-value">
                       <?php echo $element->getAttributeLabel($eye_side.'_dry_eye_id')?>:
                   </td>
-                  <td class="large-5 column data-value">
+                  <td class="cols-5 column data-value">
                       <?php
                       echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->{$eye_side.'_dry_eye_id'});
                       ?>
                   </td>
                 </tr>
-                <tr class="row">
-                  <td class="large-6 column data-value">
+                <tr class="data-group">
+                  <td class="cols-6 column data-value">
                       <?php echo $element->getAttributeLabel('right_cornea_id')?>:
                   </td>
-                  <td class="large-5 column data-value">
+                  <td class="cols-5 column data-value">
                       <?php
                       if($element->right_cornea_id){
                           echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->{$eye_side.'_cornea_id'});
-                      }
-                      ?>
+                      } ?>
                   </td>
                 </tr>
                 </tbody>

@@ -29,7 +29,7 @@
 
 		<input type="hidden" name="report-name" value="Diagnoses" />
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="start_date">
 					Start date:
@@ -47,7 +47,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="end_date">
 					End date:
@@ -65,8 +65,7 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="cols-12 column end">
+    <div class="cols-12 column end">
 				<div class="whiteBox forClinicians">
 					<div class="data_row">
 						<table class="subtleWhite">
@@ -83,7 +82,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 
 		<div id="selected_diagnoses">
 		</div>
@@ -95,7 +93,7 @@
                 'callback' => 'Reports_AddDiagnosis',
         ))?>
 
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 			</div>
 			<div class="cols-9 column end">
@@ -105,7 +103,7 @@
 				</label>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 			</div>
 			<div class="cols-9 column end">

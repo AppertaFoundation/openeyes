@@ -17,12 +17,9 @@
  */
 ?>
 <?php if ($element->{'has' . $side}()) { ?>
-  <div class="row">
     <div>
         <?php echo $element->{strtolower($side) . '_instrument'}->name ?> <?php if ($element->{strtolower($side) . '_dilated'}) { ?>(dilated)<?php } ?>
     </div>
-  </div>
-  <div class="row">
     <ul>
         <?php foreach ($element->{strtolower($side) . '_readings'} as $reading) { ?>
           <li>
@@ -30,13 +27,10 @@
           </li>
         <?php } ?>
     </ul>
-  </div>
     <?php if ($element->{strtolower($side) . '_comments'}) { ?>
-    <div class="row">
       <div>
         (<?php echo Yii::app()->format->Ntext($element->{strtolower($side) . '_comments'}) ?>)
       </div>
-    </div>
     <?php } ?>
 <?php } else { ?>
   <div>Not recorded</div>

@@ -107,7 +107,7 @@ if (@$_POST[CHtml::modelName($element)]) {
       </td>
     </tr>
 
-    <tr class="row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
+    <tr id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
         <?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
       <td class="flex-layout flex-top" style="height: auto;">
           <label><?php echo $element->getAttributeLabel($side.'_fluidtypes'); ?>:</label>
@@ -152,7 +152,7 @@ if (@$_POST[CHtml::modelName($element)]) {
             ); ?>
       </td>
     </tr>
-    <tr class="row">
+    <tr>
         <td class="column cols-9 end">
             <?php echo $form->textArea(
                 $element, $side.'_comments',

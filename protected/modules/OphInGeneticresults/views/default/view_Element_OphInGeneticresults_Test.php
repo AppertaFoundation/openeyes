@@ -19,7 +19,7 @@
 
 <section class="element">
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('id')) ?>
@@ -34,7 +34,7 @@
   </div>
 
     <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('gene_id')) ?>
@@ -49,7 +49,7 @@
   </div>
 
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('method_id')) ?>
@@ -63,7 +63,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('effect_id')) ?>
@@ -77,7 +77,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('exon')) ?>
@@ -91,7 +91,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('base_change_id')) ?>
@@ -105,7 +105,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('base_change')) ?>
@@ -119,7 +119,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change_id')) ?>
@@ -133,7 +133,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('amino_acid_change')) ?>
@@ -147,7 +147,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('genomic_coordinate')) ?>
@@ -161,7 +161,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('genome_version')) ?>
@@ -175,7 +175,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('gene_transcript')) ?>
@@ -189,7 +189,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('assay')) ?>
@@ -203,7 +203,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('homo')) ?>
@@ -217,7 +217,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('result')) ?>
@@ -231,7 +231,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('result_date')) ?>
@@ -245,7 +245,7 @@
     </div>
   </div>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-2 column">
         <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>

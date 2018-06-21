@@ -30,7 +30,7 @@ $element_errors = $element->getErrors();
   <div class="data-group flex-layout">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class=" cols-10 <?php echo $element_errors ? 'highlighted-error' : '' ?>">
-        <thead class="row" style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
+        <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
             <th class="cols-2">
               <button class="button small show-stopped" type="button">show stopped</button>

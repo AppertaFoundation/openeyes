@@ -23,12 +23,10 @@
   </header>
 
   <div class="-element-data">
-    <div class="row">
       <div class="cols-12 column">
         <div class="data-value<?php if (!$element->procedure) { ?> none<?php } ?>">
             <?php echo Yii::app()->format->Ntext($element->comments) ?>
         </div>
       </div>
-    </div>
   </div>
 </section>

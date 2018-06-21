@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label>Ready for second eye?</label>
         </div>
@@ -31,7 +31,7 @@
             <?php endif;?>
         </div>
     </div>
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label>Comment</label>
         </div>

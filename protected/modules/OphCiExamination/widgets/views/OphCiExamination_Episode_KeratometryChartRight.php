@@ -14,18 +14,12 @@
  */
 ?>
 <?php if ($chart->hasData()): ?>
-
-
-    <div class="row">
-        <div class="column cols-12">
-            <div id="keratometry-history-right-chart" class="chart" width="100%" height="500" style="width: 100%; height: 500px"></div>
-        </div>
-    </div>
+  <div class="column cols-12">
+    <div id="keratometry-history-right-chart" class="chart" width="100%" height="500" style="width: 100%; height: 500px"></div>
+  </div>
     <?= $chart->run(); ?>
 <?php else: ?>
-    <div class="row">
-        <div class="cols-12 column">
-          <div class="data-value">(no data)</div>
-        </div>
-    </div>
+  <div class="cols-12 column">
+    <div class="data-value">(no data)</div>
+  </div>
 <?php endif; ?>

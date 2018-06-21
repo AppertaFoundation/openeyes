@@ -51,7 +51,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
     <?php endforeach; ?>
 
 
-  <div class="row">
+  <div class="data-group">
         <div class="cols-6 column">
             <textarea rows="5" cols="40" readonly type="text" id="reason_other_text" name="reason_other"></textarea>
         </div>

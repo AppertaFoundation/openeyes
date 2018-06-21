@@ -31,7 +31,7 @@
         'layoutColumns' => $layoutColumns,
     ));
 ?>
-<div class="row">
+<div class="data-group">
     <div class="cols-<?=$layoutColumns['label'];?> column">
         <label for="<?=CHtml::modelName($model);?>_firm_id">Context:</label>
     </div>

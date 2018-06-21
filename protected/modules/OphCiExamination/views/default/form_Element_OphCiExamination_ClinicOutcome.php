@@ -119,7 +119,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
         <i class="oe-i plus pro-theme"></i>
       </button>
       <div class="flex-layout flex-left flex-top">
-        <div>
+        <div class="data-group">
           <table class="select-options">
             <tbody>
             <tr>
@@ -145,7 +145,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             </tbody>
           </table>
         </div>
-        <div class="follow-up-options-follow-up-only"
+        <div class="follow-up-options-follow-up-only data-group"
              style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>">
           <table>
             <tbody>

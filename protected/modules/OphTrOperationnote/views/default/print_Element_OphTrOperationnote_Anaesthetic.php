@@ -75,12 +75,10 @@
 					</div>
 				<?php }?>
 			</div>
-			<div class="row">
 				<div class="cols-12 column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
 					<div class="data-value"><?php echo  Yii::app()->format->Ntext($element->anaesthetic_comment)?></div>
 				</div>
-			</div>
 		</div>
 	</div>
 </section>

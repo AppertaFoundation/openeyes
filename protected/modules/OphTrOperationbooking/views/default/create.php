@@ -37,7 +37,6 @@ $warnings = $this->patient->getWarnings($clinical);
     ?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 <?php if ($warnings) { ?>
-    <div class="row">
         <div class="cols-12 column">
             <div class="alert-box patient with-icon">
                 <?php foreach ($warnings as $warn) {?>
@@ -46,7 +45,6 @@ $warnings = $this->patient->getWarnings($clinical);
                 }?>
             </div>
         </div>
-    </div>
 <?php }?>
 	<?php
     $this->displayErrors($errors);

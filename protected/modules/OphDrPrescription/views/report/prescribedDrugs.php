@@ -29,9 +29,9 @@
 
     <input type="hidden" name="report-name" value="PrescribedDrugs"/>
 
-    <div class="row">
+    <div class="data-group">
       <div class="cols-6 column">
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column">
             <label for="phrases">Drugs:</label>
           </div>
@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column">
             <label for="phrases">
             </label>
@@ -93,10 +93,10 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="data-group">
           <div class="cols-12 column"></div>
         </div>
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column" style="padding-right:0px;">
             <label for="start_date">
               Date from:
@@ -114,7 +114,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="data-group">
           <div class="cols-2 column">
             <label for="end_date">
               Date to:
@@ -131,10 +131,8 @@
               )) ?>
           </div>
         </div>
-        <div class="row">
-          <div class="cols-12 column"></div>
-        </div>
-        <div class="row">
+        <div class="cols-12 column"></div>
+        <div class="data-group">
           <div class="cols-2 column">
             <label for="author_id">User</label>
           </div>
@@ -159,22 +157,17 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="cols-12 column">
-            <div style="margin-top: 2em;">
-              <button type="submit" class="classy blue mini display-report" name="run"><span
+        <div class="cols-12 column">
+          <div style="margin-top: 2em;">
+            <button type="submit" class="classy blue mini display-report" name="run"><span
                     class="button-span button-span-blue">Display report</span></button>
-              <button type="submit" class="classy blue mini download-report" name="run"><span
+            <button type="submit" class="classy blue mini download-report" name="run"><span
                     class="button-span button-span-blue">Download report</span></button>
-              <img class="loader" style="display: none;"
+            <img class="loader" style="display: none;"
                    src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
-            </div>
           </div>
-
         </div>
-
       </div>
-
       <div class="cols-6 column">
         <div style="" class="panel procedures">
           <table class="plain" id="report-drug-list">

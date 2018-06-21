@@ -19,9 +19,9 @@
 
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-6 column">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('length'))?>:
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:
@@ -57,7 +57,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						Devices Used:
@@ -145,7 +145,7 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:
@@ -159,7 +159,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_power'))?>:
@@ -171,7 +171,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:
@@ -183,7 +183,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_position_id'))?>:
@@ -195,7 +195,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:
@@ -207,7 +207,6 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </section>

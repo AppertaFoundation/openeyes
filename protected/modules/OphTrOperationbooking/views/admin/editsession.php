@@ -35,7 +35,7 @@
 	<?php echo $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Emergency -'))?>
 	<?php echo $form->dropDownList($session, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', array('empty' => '- None -'))?>
 	<?php if ($session->id) {?>
-		<div id="div_OphTrOperationbooking_Operation_Session_date" class="row">
+		<div id="div_OphTrOperationbooking_Operation_Session_date" class="data-group">
 			<div class="cols-2 column">
 				<div class="field-label">Date:</div>
 			</div>
@@ -51,7 +51,7 @@
 	<?php echo $form->textField($session, 'default_admission_time', array('class' => 'time-picker'), array(), array('field' => 2))?>
 	<?php echo $form->textField($session, 'max_procedures', array(), array(), array('field' => 2)); ?>
 	<?php if ($current = $session->getBookedProcedureCount()) { ?>
-		<fieldset id="procedure_count_wrapper" class="row<?php if ($session->max_procedures && $current > $session->max_procedures) { echo ' warn'; }?>">
+		<fieldset id="procedure_count_wrapper" class="data-group <?php if ($session->max_procedures && $current > $session->max_procedures) { echo ' warn'; }?>">
 			<div class="cols-2 column">
 				<div class="field-label">Current Booked Procedures:</div>
 			</div>
@@ -65,7 +65,7 @@
 	<?php echo $form->radioBoolean($session, 'anaesthetist')?>
 	<?php echo $form->radioBoolean($session, 'general_anaesthetic')?>
 	<?php echo $form->radioBoolean($session, 'available')?>
-	<fieldset id="unavailablereason_id_wrapper" class="row"<?php if ($session->available) {?> style="display: none;"<?php } ?>>
+	<fieldset id="unavailablereason_id_wrapper" class="data-group"<?php if ($session->available) {?> style="display: none;"<?php } ?>>
 		<div class="cols-2 column">
 			<label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?php echo $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
 		</div>

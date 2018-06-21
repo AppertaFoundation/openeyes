@@ -17,11 +17,11 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
+	<div class="data-group">
+		<div class="cols-8 column">
 			<h2>Users</h2>
 		</div>
-		<div class="large-4 column">
+		<div class="cols-4 column">
 			<?php
             $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 'id' => 'searchform',
@@ -30,11 +30,9 @@
                 'action' => Yii::app()->createUrl('/admin/users'),
                                 'method' => 'get',
             ))?>
-				<div class="row">
-					<div class="large-12 column">
-                                            <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo !empty($search) ? strip_tags($search) : '';?>" />
+					<div class="cols-12 column">
+            <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo !empty($search) ? strip_tags($search) : '';?>" />
 					</div>
-				</div>
 			<?php $this->endWidget()?>
 		</div>
 	</div>
@@ -66,7 +64,7 @@
 						<td><?php echo $user->last_name?></td>
 						<td><?php echo $user->is_surgeon ? 'Yes' : 'No'?></td>
 						<td><?php
-                            $roles = CHtml::listData($user->roles, 'name', 'name');
+                $roles = CHtml::listData($user->roles, 'name', 'name');
                     if ($roles) {
                         echo CHtml::encode(implode(', ', $roles));
                     } else {

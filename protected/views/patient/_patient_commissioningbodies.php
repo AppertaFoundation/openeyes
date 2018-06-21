@@ -23,7 +23,7 @@
 				<h3 class="element-header"><?= $cbt->name ?>(s):</h3>
 				<div class="js-toggle-body">
 					<?php foreach ($cbs_by_type[$cbt->id] as $cb) { ?>
-						<div class="row">
+						<div class="data-group">
 							<div class="cols-4 column">
 								<div class="data-label"><?= $cb->getTypeShortName() ?>:</div>
 							</div>

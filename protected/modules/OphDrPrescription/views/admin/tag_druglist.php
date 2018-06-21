@@ -18,7 +18,7 @@
 
 $items_count = count($items);
 ?>
-<div class="row" id="div_Tag_drugs">
+<div class="data-group" id="div_Tag_drugs">
   <div class="cols-2 column">
     <label>Drugs tagged</label>
   </div>

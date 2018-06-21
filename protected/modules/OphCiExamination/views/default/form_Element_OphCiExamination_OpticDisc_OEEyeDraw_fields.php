@@ -48,7 +48,7 @@
     <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_diameter'; ?>">
         <?php echo $element->getAttributeLabel($side . '_diameter') ?>:
     </label>
-    <div class="row collapse in">
+    <div class="data-group collapse in">
       <div class="cols-3 column">
           <?php echo CHtml::activeTextField($element, $side . '_diameter',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')) ?>
@@ -63,7 +63,7 @@
     </div>
   </div>
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-  <div class="row">
+  <div class="data-group">
     <div class="cols-6 column end">
       <label>
           <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:

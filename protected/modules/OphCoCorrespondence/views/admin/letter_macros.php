@@ -17,18 +17,14 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="cols-8 column end">
-			<h2>Letter macros</h2>
+  <div class="cols-8 column end">
+    <h2>Letter macros</h2>
+  </div>
+  <div class="cols-4 column end">
+      <?php echo CHtml::htmlButton('Add macro', array('class' => 'button small addLetterMacro'))?>
 		</div>
-	</div>
-	<div class="row">
-		<div class="cols-4 column end">
-			<?php echo CHtml::htmlButton('Add macro', array('class' => 'button small addLetterMacro'))?>
-		</div>
-	</div>
 	<form id="admin_sessions_filters" class="panel">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('type', '', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()), array('empty' => '- Type -'))?>
 			</div>
@@ -73,9 +69,7 @@
       </table>
     </div>
 	</form>
-	<div class="row">
-		<div class="cols-4 column end">
-			<?php echo CHtml::htmlButton('Delete macros', array('class' => 'button small deleteMacros'))?>
-		</div>
-	</div>
+  <div class="cols-4 column end">
+      <?php echo CHtml::htmlButton('Delete macros', array('class' => 'button small deleteMacros'))?>
+  </div>
 </div>

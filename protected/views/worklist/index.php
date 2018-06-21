@@ -12,7 +12,7 @@
 
   <nav class="oe-full-side-panel">
     <p>Automatic Worklists</p>
-    <div class="row">
+    <div class="data-group">
       <?php $this->renderPartial('//site/change_site_and_firm', array('returnUrl' => Yii::app()->request->url, 'mode' => 'static')); ?>
     </div>
     <h3>Filter by Date</h3>

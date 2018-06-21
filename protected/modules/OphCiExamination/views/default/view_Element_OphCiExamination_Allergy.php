@@ -17,7 +17,6 @@
  */
 ?>
 
-<div class="row">
     <div class="cols-full data-group column">
         <table>
             <?php if ($this->patient->allergyAssignments) {
@@ -52,4 +51,3 @@
             </tbody>
         </table>
     </div>
-</div>

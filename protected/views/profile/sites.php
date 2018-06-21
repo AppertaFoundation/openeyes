@@ -37,7 +37,7 @@
     </tbody>
   </table>
 </form>
-<div class="row">
+<div class="data-group">
   <label for="profile_site_id" class="inline">Add site:</label>
     <?php echo CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), array('empty' => '- Select -'))?>
     <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>

@@ -42,7 +42,7 @@
 	<?php echo $form->radioBoolean($rule, 'emphasis')?>
 	<?php echo $form->radioBoolean($rule, 'strong')?>
 	<?php if ($rule->children) {?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:

@@ -28,11 +28,9 @@ $fieldCols = floor(12 - ($labelCols * count($fields))) / count($fields);
 			</label>
 		</div>
 		<div class="cols-<?php echo $fieldCols;?> column end">
-			<div class="row">
-				<div class="cols-<?php echo $layoutColumns['field'];?> column end">
-					<?php echo CHtml::activeDropDownList($element, $field, $datas[$i], $htmlOptions[$i])?>
-				</div>
-			</div>
+      <div class="cols-<?php echo $layoutColumns['field'];?> column end">
+          <?php echo CHtml::activeDropDownList($element, $field, $datas[$i], $htmlOptions[$i])?>
+      </div>
 		</div>
 	<?php }?>
 </div>

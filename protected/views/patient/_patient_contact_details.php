@@ -19,7 +19,7 @@
 <section class="element patient-info js-toggle-container">
 	<h3 class="element-header">Contact details:</h3>
 	<div class="js-toggle-body">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Telephone:</div>
 			</div>
@@ -27,7 +27,7 @@
 				<div class="data-value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Email:</div>
 			</div>
@@ -35,7 +35,7 @@
 				<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-4 column">
 				<div class="data-label">Next of Kin:</div>
 			</div>

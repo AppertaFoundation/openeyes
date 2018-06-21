@@ -17,11 +17,9 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
-			<h2>Per-operative Drugs</h2>
-		</div>
-	</div>
+  <div class="cols-8 column">
+    <h2>Per-operative Drugs</h2>
+  </div>
 	<form id="admin_drugs">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">

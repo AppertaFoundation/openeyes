@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label">
 				<?php echo $element->getAttributeLabel('comments')?>:

@@ -24,7 +24,6 @@
                 Patient telephone number (for bookings questions):
             </td>
             <td>
-
                 <?php
                 if($element->patient_booking_contact_number == "")
                 {

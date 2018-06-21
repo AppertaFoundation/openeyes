@@ -18,7 +18,7 @@
 ?>
 <?php if (!$nowrapper) :?>
 	<div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
-       class="row flex-layout flex-left"
+       class="data-group flex-layout flex-left"
        style="<?=($hidden) ? 'display: none':''?>" >
       <?php if (!$no_label): ?>
         <div class="cols-<?= $layoutColumns['label'] ?> column">

@@ -18,7 +18,7 @@
 ?>
 <div class="element-data">
 	<?php if ($element->comments) {?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div>
 			</div>
@@ -27,7 +27,7 @@
 			</div>
 		</div>
 	<?php }?>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('ready_for_discharge_id'))?></div>
 		</div>

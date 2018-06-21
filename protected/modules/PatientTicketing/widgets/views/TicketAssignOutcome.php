@@ -17,7 +17,7 @@
  */
 ?>
 
-<fieldset class="row" data-formName="<?=$this->form_name ?>">
+<fieldset class="data-group" data-formName="<?=$this->form_name ?>">
 	<div class="cols-<?= $this->label_width ?> column">
 		<label for="site">Outcome:</label>
 	</div>
@@ -27,7 +27,7 @@
 	</div>
 </fieldset>
 <span id="<?= $this->form_name ?>-followup"<?php if ($this->hideFollowUp && !@$this->form_data[$this->form_name]['followup_quantity']) {?> style="display: none;"<?php }?>>
-<fieldset class="row">
+<fieldset class="data-group">
 	<div class="cols-<?= $this->label_width ?> column">
 		<label for="followup_quantity">Follow up:</label>
 	</div>
@@ -39,7 +39,7 @@
         ?>
 	</div>
 </fieldset>
-<fieldset class="row">
+<fieldset class="data-group">
 	<div class="cols-<?= $this->label_width ?> column">
 		<label for="site">Clinic location:</label>
 	</div>

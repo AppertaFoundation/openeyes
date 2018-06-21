@@ -115,7 +115,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <?php foreach ($dropDowns as $key => $data):
                 if ($key === 'doctor_grade_id'):?>
-                  <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade" class="row cols-full">
+                  <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade" class="cols-full">
                     <table class="cols-full column">
                       <tbody>
                       <tr>
@@ -167,7 +167,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                     );
                 endif;
             endforeach;?>
-          <div class="row">
+          <div class="data-group">
             <span class="pcr-risk-div">
               <label class="pro-theme highlighter">
                 PCR Risk <span class="pcr-span">&nbsp;</span> %

@@ -15,7 +15,7 @@
     ));
     ?>
     <input type="hidden" name="return" value="<?=Yii::app()->request->getQuery('return', '')?>">
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label>Subject:</label>
         </div>
@@ -23,7 +23,7 @@
             <?= $pivot->subject->patient->fullName ?>
         </div>
     </div>
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label>Study:</label>
         </div>

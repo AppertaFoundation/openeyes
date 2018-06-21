@@ -96,7 +96,7 @@
   </tr>
   <tr>
     <td>
-      <div class="row flex-layout flex-left cols-full">
+      <div class="data-group flex-layout flex-left cols-full">
         <div class="cols-2">
           <label for="User_qualifications">Display Theme:</label>
         </div>

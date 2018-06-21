@@ -34,10 +34,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			<?php echo Yii::app()->user->getFlash('info.save_message'); ?>
 		</div>
 	<?php } ?>
-	<div class="row">
-		<div class="cols-4 column"><h3>Select a set:</h3></div>
-	</div>
-	<div class="row">
+  <div class="cols-4 column"><h3>Select a set:</h3></div>
+	<div class="data-group">
 		<div class="cols-2 column"><label for="set_name">Saved sets:</label></div>
 		<div class="cols-4 column">
 			<table class="grid">
@@ -59,10 +57,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<div class="cols-6 column end"></div>
 	</div>
 
-	<div class="row">
-		<div class="cols-4 column"><h3>OR Add new:</h3></div>
-	</div>
-	<div class="row">
+  <div class="cols-4 column"><h3>OR Add new:</h3></div>
+	<div class="data-group">
 		<div class="cols-2 column"><label for="set_name">Set name:</label></div>
 		<div class="cols-4 column">
 			<?php echo CHtml::textField('set_name'); ?>

@@ -19,28 +19,28 @@
 
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
-		<div class="large-6 column">
-			<div class="row">
-				<div class="large-6 column text-right">
+	<div class="data-group">
+		<div class="cols-6 column">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('gauge_id')); ?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->gauge->value ?>
 					</div>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')); ?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->pvd_induced ? 'Yes' : 'No'; ?>
 					</div>
@@ -48,13 +48,13 @@
 			</div>
 
 			<?php if ($element->comments) {?>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label">
 							<?php echo CHtml::encode($element->getAttributeLabel('comments')); ?>:
 						</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value">
 							<?= Yii::app()->format->Ntext($element->comments) ?>
 						</div>
@@ -62,7 +62,7 @@
 				</div>
 			<?php }?>
 		</div>
-		<div class="large-6 column">
+		<div class="cols-6 column">
 			<?php
             $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                 'idSuffix' => 'Vitrectomy',

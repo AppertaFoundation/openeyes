@@ -1,5 +1,5 @@
 <div class="data-group">
-  <table class="row">
+  <table>
     <colgroup>
       <col>
       <col class="cols-6">

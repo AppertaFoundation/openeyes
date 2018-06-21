@@ -23,7 +23,7 @@ $sequences = $sequences['data'];
 <div class="box admin">
 	<h2>Filters</h2>
 	<form id="admin_sequences_filters" class="panel">
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-3 column">
 				<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 			</div>
@@ -31,7 +31,7 @@ $sequences = $sequences['data'];
 				<?php echo CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Theatre -'))?>
 			</div>
 			<div class="cols-3 column">
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-3 column">
 						<label class="align" for="date_from">From:</label>
 					</div>
@@ -50,7 +50,7 @@ $sequences = $sequences['data'];
 				</div>
 			</div>
 			<div class="cols-3 column">
-				<div class="row">
+				<div class="data-group">
 					<div class="cols-2 column">
 						<label class="align" for="date_to">To:</label>
 					</div>
@@ -69,7 +69,7 @@ $sequences = $sequences['data'];
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::dropDownList('interval_id', @$_GET['interval_id'], CHtml::listData(OphTrOperationbooking_Operation_Sequence_Interval::model()->findAll(array()), 'id', 'name'), array('empty' => '- Interval -'))?>
 			</div>
@@ -176,7 +176,7 @@ $sequences = $sequences['data'];
         'enableAjaxValidation' => false,
         'htmlOptions' => array('style' => 'display: none;', 'class' => 'panel'),
     ))?>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for=""><?php echo Firm::contextLabel() ?>:</label>
 			</div>
@@ -185,7 +185,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="">Theatre:</label>
 			</div>
@@ -194,7 +194,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="">Start date:</label>
 			</div>
@@ -212,7 +212,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="">End date:</label>
 			</div>
@@ -230,7 +230,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label for="">Start time:</label>
 			</div>
@@ -239,7 +239,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>End time:</label>
 			</div>
@@ -248,7 +248,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Interval:</label>
 			</div>
@@ -257,7 +257,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Weekday:</label>
 			</div>
@@ -266,7 +266,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Consultant:</label>
 			</div>
@@ -275,7 +275,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Paediatric:</label>
 			</div>
@@ -284,7 +284,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Anaesthetist:</label>
 			</div>
@@ -293,7 +293,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>General anaesthetic:</label>
 			</div>
@@ -302,7 +302,7 @@ $sequences = $sequences['data'];
 				<span class="error"></span>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<label>Week selection:</label>
 			</div>
@@ -327,12 +327,10 @@ $sequences = $sequences['data'];
 				</fieldset>
 			</div>
 		</div>
-		<div class="row">
-			<div class="cols-10 large-offset-2 column">
-				<?php echo EventAction::button('Update', 'update_inline', array('colour' => 'green'))->toHtml()?>
-				<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-			</div>
-		</div>
+  <div class="cols-10 large-offset-2 column">
+      <?php echo EventAction::button('Update', 'update_inline', array('colour' => 'green'))->toHtml()?>
+    <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+  </div>
 	<?php $this->endWidget()?>
 </div>
 

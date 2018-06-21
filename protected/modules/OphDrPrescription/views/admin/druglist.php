@@ -25,7 +25,7 @@
     echo CHtml::beginForm('CommonDrugs', 'get', array('id' => 'set_site_subspec_form'));
     ?>
 
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-1 column"><label for="site_id">Site:</label></div>
 		<div class="cols-4 column">
 			<?php

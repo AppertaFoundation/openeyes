@@ -27,7 +27,7 @@ $required_allergy_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-  <div class="row cols-full">
+  <div class="data-group cols-full">
     <div class="<?= $this->isAllergiesSetYes($element) ? ' hidden' : '' ?>"
          id="<?= $model_name ?>_no_allergies_wrapper">
       <label for="<?= $model_name ?>_no_allergies">Confirm patient has no allergies:</label>

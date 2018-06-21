@@ -19,9 +19,9 @@
 
 <section class="element <?php echo $element->elementType->class_name?> row">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-6 column">
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')); ?>:
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('drain_haem')); ?>:
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('deep_suture')); ?>:

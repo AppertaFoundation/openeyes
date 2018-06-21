@@ -16,7 +16,7 @@
 <?php if ($emails): ?>
 	<?php foreach ($emails as $email): ?>
 		<?php if (($files = $email->attachments)): ?>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">Application files:</div>
 				</div>

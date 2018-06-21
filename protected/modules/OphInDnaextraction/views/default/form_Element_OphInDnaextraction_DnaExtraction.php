@@ -26,7 +26,7 @@
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
         echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
         
-        <div class="row">
+        <div class="data-group">
             <div class="cols-3 column">
                 <label></label>
             </div>

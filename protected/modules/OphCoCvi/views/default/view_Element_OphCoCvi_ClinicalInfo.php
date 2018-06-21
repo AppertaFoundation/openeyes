@@ -122,7 +122,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
       <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
           'element' => $element,
       ))?>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-4">
         <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
       </div>

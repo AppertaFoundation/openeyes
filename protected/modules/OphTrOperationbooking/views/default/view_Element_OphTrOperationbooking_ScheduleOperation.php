@@ -34,6 +34,7 @@
     <div class="element-data full-width">
         <div class="cols-10">
 			<span class="priority-text">
+
 				<?php if ($element->patient_unavailables) {
                     foreach ($element->patient_unavailables as $unavailable) {?>
 							<?php echo Helper::convertDate2NHS($unavailable->start_date); ?> to <?php echo Helper::convertDate2NHS($unavailable->end_date); ?> (<?php echo $unavailable->reason->name ?>).

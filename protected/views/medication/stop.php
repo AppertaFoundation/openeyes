@@ -20,7 +20,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 	<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
 	<input type="hidden" name="medication_id">
 	<input type="hidden" name="end_date">
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-<?= $form->columns('label') ?>"><label>Medication:</label></div>
 		<div class="cols-<?= $form->columns('field') ?> data-value drug_name"></div>
 	</div>

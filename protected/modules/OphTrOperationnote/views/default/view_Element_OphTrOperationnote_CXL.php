@@ -23,7 +23,7 @@
     <h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
   </header>
   <div class="element-data">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-title">
             <?php echo CHtml::encode($element->getAttributeLabel('protocol_id')) ?>:
@@ -128,7 +128,7 @@
       </div>
 
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id')) ?>:
@@ -172,7 +172,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('total_exposure_time_id')) ?>:
@@ -221,8 +221,7 @@
 
       </div>
     </div>
-    <div class="row">
-      <div class="cols-9 column">
+    <div class="cols-9 column">
         <h4 class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('cxl_comments')) ?>:
         </h4>
@@ -232,5 +231,4 @@
             ?>
         </div>
       </div>
-    </div>
 </section>

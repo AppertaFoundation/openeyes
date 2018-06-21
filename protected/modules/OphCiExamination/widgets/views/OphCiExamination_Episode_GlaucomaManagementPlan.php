@@ -16,8 +16,8 @@
 
 
 <?php if ($plan): ?>
-  <div class="row">
-    <div class="cols-6 column">
+  <div class="flex-layout">
+    <div class="cols-6 data-group column">
       <table>
         <tbody>
         <tr>
@@ -46,29 +46,26 @@
             <th scope="col">HRT</th>
             <td><?= $plan->hrt->name ?></td>
           </tr>
-            <?php
-        } ?>
+            <?php } ?>
         </tbody>
       </table>
     </div>
-    <div class="cols-6 column">
-        <?php if ($plan->comments) {
-            ?>
+    <div class="cols-6 data-group column">
+        <?php if ($plan->comments) { ?>
           <div class="data-label">Comments:</div>
           <div class="data-value panel comments"><?= Yii::app()->format->nText($plan->comments) ?></div>
-            <?php
-        } ?>
+        <?php } ?>
     </div>
   </div>
 
-  <div class="row">
-    <div class="cols-6 column">
+  <div class="flex-layout">
+    <div class="cols-6 data-group column">
         <?php if ($plan->hasRight()) {
             $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
                 array('plan' => $plan, 'side' => 'right'));
         } ?>
     </div>
-    <div class="cols-6 column">
+    <div class="cols-6 data-group column">
         <?php if ($plan->hasLeft()) {
             $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
                 array('plan' => $plan, 'side' => 'left'));
@@ -76,9 +73,7 @@
     </div>
   </div>
 <?php else: ?>
-  <div class="row">
-    <div class="cols-12 column">
-      <div class="data-value">(not recorded)</div>
-    </div>
+  <div class="cols-12 column">
+    <div class="data-value">(not recorded)</div>
   </div>
 <?php endif; ?>

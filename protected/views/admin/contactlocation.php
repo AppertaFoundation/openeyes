@@ -18,7 +18,7 @@
 ?>
 <div class="box admin">
 	<h2>Contact location</h2>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label">Contact:</div>
 		</div>
@@ -26,7 +26,7 @@
 			<div class="data-value"><?php echo $location->contact->fullName?></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<div class="cols-2 column">
 			<div class="data-label"><?php echo $location->site_id ? 'Site' : 'Institution'?>:</div>
 		</div>

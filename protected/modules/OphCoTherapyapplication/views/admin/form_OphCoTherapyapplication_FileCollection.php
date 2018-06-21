@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="<?php echo $form->columns('field');?>">
-			<div class="field-valuecols">
+			<div class="field-value">
 				<a href="<?php echo Yii::app()->createUrl('/OphCoTherapyapplication/Default/downloadFileCollection', array('id' => $model->id)) ?>">Download zip</a>
 			</div>
 			<ul id="currentFiles" class="current-files">

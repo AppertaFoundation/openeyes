@@ -77,7 +77,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'enableAjaxValidation' => false,
         'htmlOptions' => array('style' => 'display: none;', 'class' => 'panel'),
     ))?>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Firm:</label>
 	</div>
@@ -86,7 +86,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Theatre:</label>
 	</div>
@@ -94,7 +94,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Date:</label>
 	</div>
@@ -113,7 +113,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Start time:</label>
 	</div>
@@ -121,7 +121,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">End time:</label>
 	</div>
@@ -129,7 +129,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Consultant:</label>
 	</div>
@@ -137,7 +137,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Paediatric:</label>
 	</div>
@@ -145,7 +145,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Anaesthetist:</label>
 	</div>
@@ -153,7 +153,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">General anaesthetic:</label>
 	</div>
@@ -161,7 +161,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Available:</label>
 	</div>
@@ -169,7 +169,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-2 column">
 		<label for="">Comments:</label>
 	</div>
@@ -177,7 +177,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-10 large-offset-2 column">
 		<?php echo EventAction::button('Update', 'update_inline', null, array('class' => 'small'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

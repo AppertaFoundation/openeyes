@@ -26,7 +26,7 @@
   <tbody>
   <tr class="col-gap">
     <td>
-      <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row">
+      <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="data-group">
         <div class="cols-2 column">
           <label>Signed By:</label>
         </div>

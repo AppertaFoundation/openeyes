@@ -22,9 +22,9 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-6 column">
-        <div class="row">
+        <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
@@ -36,7 +36,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
                 <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>

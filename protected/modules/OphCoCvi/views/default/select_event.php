@@ -21,10 +21,8 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
 $assetAliasPath = 'application.modules.OphCoCvi.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
-<div class="row">
-  <div class="cols-12 column">
-
-    <section class="element">
+<div class="cols-12 column">
+  <section class="element">
       <header class="element-header">
         <h3 class="element-title">Create CVI</h3>
       </header>
@@ -57,7 +55,6 @@ $this->moduleNameCssClass .= ' edit';
         </div>
       </div>
     </section>
-  </div>
 </div>
 
 <?php $this->endContent(); ?>

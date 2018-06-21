@@ -1,4 +1,4 @@
-<div class="row">
+<div class="data-group">
 	<div class="cols-4 column">
 		<div class="data-label">Priority:
 		</div>
@@ -9,7 +9,7 @@
 		</div>
 	</div>
 </div>
-<div class="row">
+<div class="data-group">
 	<div class="cols-4 column">
 		<div class="data-label">Current Queue:
 		</div>

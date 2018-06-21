@@ -384,7 +384,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         ?>
                         <?php foreach ($_POST['EnclosureItems'] as $key => $value) {
                             ?>
-                        <div class="row collapse in enclosureItem">
+                        <div class="data-group collapse in enclosureItem">
                           <div class="cols-8 column">
                               <?php echo CHtml::textField("EnclosureItems[$key]", $value,
                                   array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?>
@@ -407,7 +407,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
       </div>
     <?php } ?>
 
-  <div class="row">
+  <div class="data-group">
     <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     </div>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column end">

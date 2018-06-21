@@ -37,7 +37,7 @@
     <?php if (!empty($macro_data)):?>
         <?php if (array_key_exists('to', $macro_data)):?>
        
-            <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+            <tr class="index-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                 <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
                 <td>
                     <?php
@@ -109,7 +109,7 @@
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
                 <?php $index = $row_index + $cc_index ?>
-                <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
+                <tr class="index-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
                     <td> Cc <?php echo CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
                     <td>
                         <?php 

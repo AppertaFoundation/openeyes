@@ -105,7 +105,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
     </div>
   </div>
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-  <div class="row">
+  <div class="data-group">
     <div class="cols-6 column end">
       <label for="<?= CHtml::modelName($element) . '_' . $side . '_ed_report'; ?>">
           <?= $element->getAttributeLabel($side . '_ed_report') ?>:

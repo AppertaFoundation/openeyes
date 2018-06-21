@@ -32,7 +32,7 @@
 	<?php echo $form->dropDownList($theatre, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -'))?>
 	<?php echo $form->textField($theatre, 'name')?>
 	<?php echo $form->textField($theatre, 'code', array('size' => 10))?>
-	<div id="div_OphTrOperationbooking_Operation_Theatre_ward_id" class="row">
+	<div id="div_OphTrOperationbooking_Operation_Theatre_ward_id" class="data-group">
 		<div class="cols-2 column"><label for="OphTrOperationbooking_Operation_Theatre_ward_id">Ward:</label>
 		</div>
 		<div class="cols-5 column end">

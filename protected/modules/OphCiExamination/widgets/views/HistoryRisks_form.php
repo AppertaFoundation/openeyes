@@ -20,7 +20,7 @@
 ?>
 
 <div id="<?=$model_name?>_form_wrapper">
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label for="<?=$model_name?>_risk_id">Risk:</label>
         </div>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="row hidden" id="<?= $model_name ?>_other_wrapper">
+    <div class="data-group hidden" id="<?= $model_name ?>_other_wrapper">
         <div class="cols-2 column">
             <label for="<?=$model_name?>_other_risk">Other Risk:</label>
         </div>
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="data-group">
         <div class="cols-2 column">
             <label for="<?= $model_name ?>_comments">Comments:</label>
         </div>

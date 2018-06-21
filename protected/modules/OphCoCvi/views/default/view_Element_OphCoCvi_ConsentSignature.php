@@ -41,7 +41,7 @@
             </tbody>
           </table>
             <?php if (!$element->is_patient) { ?>
-              <div class="row">
+              <div class="data-group">
                 <div class="cols-2">
                   <div
                       class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
@@ -51,7 +51,7 @@
                 </div>
               </div>
             <?php } ?>
-          <div class="row">
+          <div class="data-group">
               <?php if ($element->checkSignature()) { ?>
                 <div class="cols-2">
                   <div class="data-label">Captured Signature</div>
@@ -126,9 +126,4 @@
         <i class="oe-i small js-listview-expand-btn expand" data-list="info"></i>
       </div>
     </div>
-</div>
-<div class="element-data">
-  <div class="row">
-
-  </div>
 </div>
