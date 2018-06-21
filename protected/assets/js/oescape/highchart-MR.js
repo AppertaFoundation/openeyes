@@ -52,14 +52,14 @@ var options_MR = {
   // standard settings
   legend: 		highHelp.chartLegend(),
   navigator: 		highHelp.chartNavigator(),
-  rangeSelector: 	highHelp.chartRangeSelector(0,-55),	// offset from bottom right (x,y) "Show all" button
+  rangeSelector: 	highHelp.chartRangeSelector(-30,-100),	// offset from bottom right (x,y) "Show all" button
 
   yAxis: [{
     // primary y axis
     title: {
       text: 'CRT (um)'
     },
-    opposite: true,
+    opposite: false,
     reversed: false,
   },{
     // secondary y axis
@@ -68,7 +68,7 @@ var options_MR = {
     },
     min: 1,
     max: 150,
-    opposite: false,
+    opposite: true,
   }],
 
   xAxis: {
