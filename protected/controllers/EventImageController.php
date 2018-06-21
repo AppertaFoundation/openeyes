@@ -39,7 +39,7 @@ class EventImageController extends BaseController
      */
     public function actionView($id)
     {
-        $model = $this->loadModel($id);
+        $model = EventImage::model()->find('event_id = :event_id', array(':event_id' => $id));
         header('Content-type: image/png');
         echo $model->image_data;
     }
