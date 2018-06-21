@@ -21,7 +21,7 @@
   <header class="sub-element-header">
     <h3 class="sub-element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <div class="element-data row">
+  <div class="element-data">
     <div class="data-group">
       <div class="cols-6 column">
         <div class="data-group">

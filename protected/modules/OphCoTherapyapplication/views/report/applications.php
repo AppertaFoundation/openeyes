@@ -2,7 +2,7 @@
 	<div class="report-fields">
 		<h2>Therapy application report</h2>
 		<form>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('Consultant', 'firm_id') ?>
 			</div>
@@ -31,7 +31,7 @@
                 <?php endif ?>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('Date From', 'date_from') ?>
 			</div>
@@ -49,7 +49,7 @@
                         ))?>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('Date To', 'date_to') ?>
 			</div>
@@ -69,7 +69,7 @@
 		</div>
 
 		<h3>Submission Information</h3>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('Submission Date', 'submission') ?>
 			</div>
@@ -78,7 +78,7 @@
 			</div>
 		</div>
 		<h3>Injection Information</h3>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('First Injection', 'first_injection') ?>
 			</div>
@@ -86,7 +86,7 @@
 				<?php echo CHtml::checkBox('first_injection'); ?>
 			</div>
 		</div>
-		<div class="row">
+		<div class="data-group">
 			<div class="cols-2 column">
 				<?php echo CHtml::label('Last Injection', 'last_injection') ?>
 			</div>
@@ -94,7 +94,7 @@
 				<?php echo CHtml::checkBox('last_injection'); ?>
 			</div>
 		</div>
-			<div class="row">
+			<div class="data-group">
 				<div class="cols-4 column end">
                     <?php
                     $htmlOptions = array();

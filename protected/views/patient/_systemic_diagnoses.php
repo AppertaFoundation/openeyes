@@ -93,7 +93,7 @@
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-					<fieldset class="diagnosis_eye row">
+					<fieldset class="diagnosis_eye data-group">
 						<legend class="<?php echo $form->columns('label');?>">
 							Side:
 						</legend>

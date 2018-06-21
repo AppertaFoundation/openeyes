@@ -18,7 +18,7 @@
 ?>
 
 <div class="element-data">
-  <div class="element-fields row">
+  <div class="element-fields">
     <div class="cols-12 column">
       <table>
         <thead>

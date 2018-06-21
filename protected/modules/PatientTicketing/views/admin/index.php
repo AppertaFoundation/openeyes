@@ -32,22 +32,17 @@
 
 	<div class="alert-box info" style="display: none;" id="message-box">
 	</div>
-	<div class="row">
-		<div class="column large-4">
-
-			<div class="row">
+	<div class="data-group">
+		<div class="column cols-4">
 			<ul class="queueset-list" id="queue-nav">
-			<?php
-            foreach ($queuesets as $qs) {
-                $this->renderPartial('queue_nav_item', array('queueset' => $qs));
-            }
-            ?>
+			<?php foreach ($queuesets as $qs) {
+			  $this->renderPartial('queue_nav_item', array('queueset' => $qs));
+			} ?>
 			</ul>
-			</div>
-			<div class="row right"><button id="add-queueset" class="secondary small">Add Queue Set</button></div>
-
+			<div class="right">
+        <button id="add-queueset" class="secondary small">Add Queue Set</button>
+      </div>
 		</div>
-
 		<div id="chart" class="column large-8 end orgChart" style="overflow-y: auto;"></div>
 	</div>
 </div>

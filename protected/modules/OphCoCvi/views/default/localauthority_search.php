@@ -16,7 +16,7 @@
  */
 ?>
 
-<div id="local_authority_search_wrapper" class="row <?= $hidden ? ' hidden':''?>">
+<div id="local_authority_search_wrapper" class="<?= $hidden ? ' hidden':''?>">
     <div class="large-push-2 end">
     <?php
         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(

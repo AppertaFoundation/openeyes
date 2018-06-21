@@ -37,11 +37,11 @@ foreach ($model->getDefaultFunctions() as $func) {
 echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => '- Please select -')); ?>
 
 
-<div class="row">
-	<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+<div class="data-group">
+	<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 		<?php echo $form->labelEx($model, 'default_value'); ?>
 	</div>
-	<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
+	<div class="cols-<?php echo $form->layoutColumns['field'];?> column end">
 		<?php
             if ($model->response_type && $model->response_type->datatype == 'bool') {
                 $this->renderPartial('template_OphCoTherapyapplication_DecisionTreeNode_default_value_bool',

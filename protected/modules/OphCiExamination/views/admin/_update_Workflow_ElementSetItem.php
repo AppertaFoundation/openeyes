@@ -17,7 +17,7 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
+	<div class="data-group">
 		<div class="column cols-2">
 			<?php echo CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 		</div>
@@ -50,7 +50,7 @@
         <tr>
           <td colspan="3">
             <div class="grid-view">
-              <div class="row">
+              <div class="data-group">
                 <div class="cols-3 column">
                     <?php echo CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'nameWithParent'), array('empty' => '- Select -'))?>
                 </div>

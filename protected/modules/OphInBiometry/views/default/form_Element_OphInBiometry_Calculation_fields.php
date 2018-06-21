@@ -18,7 +18,7 @@
 </div>
 	<?php //echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(OphInBiometry_Calculation_Formula::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),null,array('label'=>3, 'field'=>6))?>
 	<!--
-	<div class="row">
+	<div class="data-group">
 		<div class="large-8 column">
 			<table name="table" id="iol-table_<?php echo $side?>" align="center" cellspacing="0" width="200" style="margin-top: 10px">
 				<thead>

@@ -31,14 +31,14 @@
           data-element-type-name="<?php echo $element->elementType->name ?>"
           data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-        <div class="flex-layout flex-top row">
+        <div class="flex-layout flex-top data-group">
             <?php $this->renderPartial(
                 $element->view_view,
                 array('element' => $element)
             ); ?>
         </div>
 
-        <div class="flex-layout row">
+        <div class="flex-layout">
           <div class="metadata">
             <div class="info">Examination created by
               <span class="user"><?php echo $element->event->user->fullname ?></span>

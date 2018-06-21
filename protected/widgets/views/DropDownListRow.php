@@ -20,7 +20,7 @@
 $labelCols = $layoutColumns['label'];
 $fieldCols = floor(12 - ($labelCols * count($fields))) / count($fields);
 ?>
-<div id="div_<?php echo CHtml::modelName($element); ?>" class="row">
+<div id="div_<?php echo CHtml::modelName($element); ?>" class="data-group">
 	<?php foreach ($fields as $i => $field) {?>
 		<div class="cols-<?php echo $labelCols;?> column">
 			<label for="<?php echo CHtml::modelName($element).'_'.$field;?>">

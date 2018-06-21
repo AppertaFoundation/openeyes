@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row diagnosis-selection">
+<div class="data-group diagnosis-selection">
 	<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 		<label for="<?php echo "{$class}_{$field}";?>">
 			<?php echo $label?>:

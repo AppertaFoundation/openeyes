@@ -25,7 +25,7 @@
     echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(),
         array('empty' => '- Please select -'), false, array('field' => 3));
     ?>
-  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="row">
+  <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="data-group">
     <legend class="cols-2 column">
       Patient consents to share data:
     </legend>

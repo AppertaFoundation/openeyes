@@ -24,8 +24,8 @@
             <?= CHtml::label('Subspecialty', 'subspecialty_id'); ?>
             <?= CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name')); ?>
             <?= CHtml::hiddenField('item_ids'); ?>
-                <div id="draggablelist-items" class="row">
-                    <div class="large-6 column">
+                <div id="draggablelist-items" class="data-group">
+                    <div class="cols-6 column">
                         <h2>Currently assigned to</h2>
                         <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-enabled', 'items' => $enabled_items)); ?>
                         <div class="right">
@@ -33,7 +33,7 @@
                             <button id="draggablelist-cancel" class="small warning" type="button">Cancel</button>
                         </div>
                     </div>
-                    <div class="large-6 column available-items">
+                    <div class="cols-6 column available-items">
                         <h2>Available items</h2>
                         <?php $this->renderPartial('_postOpComplications_table', array('id' => 'draggablelist-items-available', 'items' => $available_items)); ?>
                     </div>

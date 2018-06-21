@@ -64,7 +64,7 @@ foreach ($l1_opts as $id => $data) {
 
 $layoutColumns = array('label' => 4, 'field' => 8);
 ?>
-<div class="row">
+<div class="data-group">
 	<div class="cols-<?php echo $layoutColumns['label']?> column">
 		<label for="<?php echo get_class($element).'_'.$side.'_diagnosis1_id';?>">
 			<?php echo $element->getAttributeLabel($side.'_diagnosis1_id'); ?>:

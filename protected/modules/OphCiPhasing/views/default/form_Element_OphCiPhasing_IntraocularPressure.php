@@ -17,7 +17,7 @@
  */
 $key = 0;
 ?>
-<div class="element-fields element-eyes row"
+<div class="element-fields element-eyes data-group"
      data-element-type-id="<?php echo $element->elementType->id ?>"
      data-element-type-class="<?php echo $element->elementType->class_name ?>"
      data-element-type-name="<?php echo $element->elementType->name ?>"

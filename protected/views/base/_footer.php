@@ -19,7 +19,7 @@
 
 
 <!--
-<footer class="footer row">
+<footer class="footer data-group">
 	<div class="large-3 medium-3 columns">
 		<div class="info">
 			<a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">Served by <?php echo trim(`hostname`) ?></a>

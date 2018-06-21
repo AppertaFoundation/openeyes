@@ -159,7 +159,7 @@ $model_name = CHtml::modelName($element);
     ?>
     <tr class=" lasertype_other "
         style="<?= (!$show_other) ? 'display: none' : ''?>">
-      <td class="flex-layout row">
+      <td class="flex-layout data-group">
             <div class="column">
               <label for="<?php echo $model_name.'_'.$eye.'_lasertype_other';?>">
                   <?php echo $element->getAttributeLabel($eye.'_lasertype_other'); ?>:

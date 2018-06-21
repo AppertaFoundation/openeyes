@@ -34,7 +34,7 @@
     }
 ?>
 <?php if (!$no_wrapper) { ?>
-<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>_TextSelection" class="row">
+<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>_TextSelection" class="data-group">
 	<div class="cols-<?php echo $layoutColumns['label'];?> column">
 		<label for="<?php echo $htmlOptions['id'];?>">
 			<?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:

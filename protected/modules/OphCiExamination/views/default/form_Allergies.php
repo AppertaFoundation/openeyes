@@ -22,7 +22,7 @@
         <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_Allergy[allergy_loaded]"
                value="1">
         <div id="add_allergy">
-          <div class="allergies_confirm_no row" style="display: none;">
+          <div class="allergies_confirm_no" style="display: none;">
             <div class="allergies">
               <div class="<?php echo $form->columns('label'); ?>">
                 <label for="no_allergies">Confirm patient has no allergies:</label>

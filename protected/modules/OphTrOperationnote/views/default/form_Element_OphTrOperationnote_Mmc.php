@@ -31,7 +31,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
       <?php $form->checkBox($element, 'washed'); ?>
   </div>
   <div id="ophtroperationnote-mmc-injection" class="ophtroperationnote-mmc-application hidden">
-    <div class="row">
+    <div class="data-group">
       <div class="<?= $form->columns() ?>"><label><?= CHtml::encode($element->getAttributeLabel('dose')) ?></label>
       </div>
       <div id="ophtroperationnote-mmc-dose" class="data-value <?= $form->columns('field', true) ?>"></div>

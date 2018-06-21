@@ -18,7 +18,7 @@
     $div_id = @$htmlOptions['div_id'];
     $div_class = isset($htmlOptions['div_class']) ? $htmlOptions['div_class'] : 'eventDetail';
 ?>
-<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> data-group widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
     <div class="cols-<?php echo $layoutColumns['label'];?> column">
         <label for="<?php echo $field?>">
             <?php echo $label; ?>:

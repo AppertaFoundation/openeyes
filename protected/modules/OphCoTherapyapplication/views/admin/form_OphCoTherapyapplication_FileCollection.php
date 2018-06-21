@@ -21,13 +21,13 @@
 <?php	echo $form->textArea($model, 'summary', array(), false, array(), array('field' => 10))?>
 
 <?php	if ($model->files) {?>
-	<div class="row">
-		<div class="<?php echo $form->columns('label');?>">
+	<div class="data-group">
+		<div class="cols-<?php echo $form->columns('label');?>">
 			<div class="field-label">
 				Uploaded files:
 			</div>
 		</div>
-		<div class="<?php echo $form->columns('field');?>">
+		<div class="cols-<?php echo $form->columns('field');?>">
 			<div class="field-value">
 				<a href="<?php echo Yii::app()->createUrl('/OphCoTherapyapplication/Default/downloadFileCollection', array('id' => $model->id)) ?>">Download zip</a>
 			</div>
@@ -63,11 +63,11 @@ function return_bytes($size_str)
 ?>
 
 
-<div id="div_OphCoTherapyapplication_FileCollection_file" class="row">
-	<div class="<?php echo $form->columns('label');?>">
+<div id="div_OphCoTherapyapplication_FileCollection_file" class="data-group">
+	<div class="cols-<?php echo $form->columns('label');?>">
 		<label for="OphCoTherapyapplication_FileCollection_files">File(s):</label>
 	</div>
-	<div class="<?php echo $form->columns('field');?>">
+	<div class="cols-<?php echo $form->columns('field');?>">
 		<div class="data-group">
 			<input
 				type="file"

@@ -57,7 +57,7 @@ foreach ($skin_drugs as $drug) {
   <table>
     <tbody>
     <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id"
-        class="row">
+        class="data-group">
       <td>
         <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id">
             <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
@@ -71,7 +71,7 @@ foreach ($skin_drugs as $drug) {
       </td>
     </tr>
     <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id"
-        class="row">
+        class="data-group">
       <td>
         <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id">
             <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
@@ -204,14 +204,14 @@ foreach ($skin_drugs as $drug) {
         $selected_drug = $element->{$side . '_drug_id'};
     }
     ?>
-    <tr id="div_<?php echo get_class($element); ?>_<?php echo $side ?>_number" class="row">
-      <td class="<?php echo $form->columns('label'); ?>">
+    <tr id="div_<?php echo get_class($element); ?>_<?php echo $side ?>_number" class="data-group">
+      <td class="cols-<?php echo $form->columns('label'); ?>">
         <label for="<?php echo get_class($element); ?>_<?php echo $side ?>_number">
             <?php echo $element->getAttributeLabel($side . '_number'); ?>:
         </label>
       </td>
-      <td class="<?php echo $form->columns('field'); ?>">
-        <div class="row collapse in">
+      <td class="cols-<?php echo $form->columns('field'); ?>">
+        <div class="collapse in">
           <div>
               <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
             <span id="<?php echo $side; ?>_number_history_icon"
@@ -295,7 +295,7 @@ foreach ($skin_drugs as $drug) {
       </td>
     </tr>
     <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time"
-        class="row">
+        class="data-group">
       <td class="<?php echo $form->columns('label'); ?>">
         <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time">
             <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:

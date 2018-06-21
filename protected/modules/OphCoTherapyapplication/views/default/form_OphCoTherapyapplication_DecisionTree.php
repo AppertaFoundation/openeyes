@@ -31,7 +31,7 @@ if ($treatment && $treatment->decisiontree) {
     } ?>>
     <?php if ($decisiontree) { ?>
         <?php foreach ($decisiontree->nodes as $node) { ?>
-        <div class="dt-node row" id="<?php echo $side; ?>_node_<?php echo $node->id ?>" style="display: none;"
+        <div class="dt-node data-group" id="<?php echo $side; ?>_node_<?php echo $node->id ?>" style="display: none;"
              data-defn='<?php echo CJSON::encode($node->getDefinition()); ?>'>
             <?php if ($node->question) { ?>
               <label

@@ -23,7 +23,7 @@ $field = $element->{"{$side}_field"};
 			<div class="cols-6 column"><p>Date</p></div>
 			<div class="cols-6 column"><p><?=date(Helper::NHS_DATE_FORMAT.' H:i:s', strtotime($field->study_datetime)) ?></p></div>
 		</div>
-		<div class=" row">
+		<div class="data-group">
 			<div class="cols-6 column"><p>Strategy</p></div>
 			<div class="cols-6 column"><p><?= CHtml::encode($field->strategy->name) ?></p></div>
 		</div>

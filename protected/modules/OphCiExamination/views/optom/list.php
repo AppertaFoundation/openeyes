@@ -148,8 +148,7 @@ $cols = array(
 
 <h1 class="badge">Optometrist Feedback Manager</h1>
 <div class="box content">
-    <div class="row">
-        <div class="large-12 column">
+  <div class="cols-12 column">
             <div class="box generic">
                 <h1>Optometrist Feedback Manager</h1>
                 <?php $this->renderPartial('/optom/list_filter', array('list_filter' => $list_filter)) ?>
@@ -168,5 +167,4 @@ $cols = array(
                 </div>
             </div>
         </div>
-    </div>
 </div>

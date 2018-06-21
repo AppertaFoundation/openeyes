@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row diagnosis-selection<?php echo !$nowrapper ? ' flex-layout flex-left' : '';?> ">
+<div class="data-group diagnosis-selection<?php echo !$nowrapper ? ' flex-layout flex-left' : '';?> ">
 	<?php if (!$nowrapper && $label) {?>
 		<div class="cols-<?php echo $layoutColumns['label'];?> column">
 			<label for="<?php echo "{$class}_{$field}";?>">
@@ -25,7 +25,7 @@
 		</div>
 	<?php }?>
 	<div class="cols-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
-		<div class="row collapse in flex-layout flex-top">
+		<div class="data-group collapse in flex-layout flex-top">
 			<div class="cols-10 column">
 				<div class="dropdown-row">
 					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ''?>

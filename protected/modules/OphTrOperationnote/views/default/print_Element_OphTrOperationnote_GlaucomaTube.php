@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?>">
 	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
   <div class="cols-6 column">
 			<div class="data-group">

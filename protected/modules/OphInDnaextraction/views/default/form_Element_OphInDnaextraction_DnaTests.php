@@ -38,7 +38,7 @@
 
   <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="dnatests element-fields">
-    <div class="row">
+    <div class="data-group">
       <div class="cols-3 column">
         <label>Tests:</label>
       </div>

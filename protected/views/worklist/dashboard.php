@@ -23,7 +23,7 @@
             No patients in this worklist.
         </div>
         <?php
-        
+
     } else {
         $core_api = new CoreAPI();
         $cols = array(

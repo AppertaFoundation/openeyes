@@ -25,7 +25,7 @@
 	<?php }?>
 
 	<div>
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<div class="cols-3 column">
 				<label for="name">Name:</label>
 			</div>
@@ -33,7 +33,7 @@
 				<?php echo CHtml::textField('name', $queue->name); ?>
 			</div>
 		</fieldset>
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<div class="cols-3 column">
 				<label for="description">Description:</label>
 			</div>
@@ -41,7 +41,7 @@
 				<?php echo CHtml::textArea('description', $queue->description); ?>
 			</div>
 		</fieldset>
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<div class="cols-3 column">
 				<label for="description">Action Label:</label>
 			</div>
@@ -49,7 +49,7 @@
 				<?php echo CHtml::textField('action_label', $queue->action_label); ?>
 			</div>
 		</fieldset>
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<div class="cols-3 column">
 				<label for="report_definition">Report Definition:</label>
 			</div>
@@ -57,7 +57,7 @@
 				<?php echo CHtml::textArea('report_definition', $queue->report_definition); ?>
 			</div>
 		</fieldset>
-		<fieldset class="row">
+		<fieldset class="data-group">
 			<div class="cols-3 column">
 				<label for="assignment_fields">Assignment Fields:</label>
 			</div>

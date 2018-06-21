@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?>">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
 	<div class="data-group">
 		<div class="cols-6 column">

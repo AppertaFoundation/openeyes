@@ -105,7 +105,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     <header class="element-header">
         <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
     </header>
-    <div class="element-fields element-eyes row">
+    <div class="element-fields element-eyes data-group">
         <div class="element-eye right-eye column">
             <?php
                 if(count($methodnameRight)){
@@ -219,7 +219,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     <header class="element-header">
         <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
-    <div class="element-fields element-eyes row">
+    <div class="element-fields element-eyes data-group">
         <div class="element-eye right-eye column">
             <?php
                 if (count($rightNearData)) { ?>
@@ -294,7 +294,7 @@ if ($refractfound) {
         <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
                 strtotime($refract_event_date)); ?>)</h3>
     </header>
-    <div class="element-fields element-eyes row">
+    <div class="element-fields element-eyes data-group">
         <div class="element-eye right-eye column">
             <?php if ($refractelement->hasRight()) {
                 ?>
@@ -331,7 +331,7 @@ if ($refractfound) {
     <header class="element-header">
         <h3 class="element-title">Refraction - (Not Recorded)</h3>
     </header>
-    <div class="element-fields element-eyes row">
+    <div class="element-fields element-eyes data-group">
         <div class="element-eye right-eye column">
           <div class="data-value">
             Not recorded

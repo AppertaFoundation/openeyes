@@ -23,7 +23,7 @@ $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 
 <div class="element-fields full-width flex-layout flex-top">
     <div class="cols-9">
-        <div class="flex-layout row">
+        <div class="flex-layout data-group">
             <?php echo CHtml::link('<button class="large">
                 <i class="oe-i arrow-left-bold medium pad"></i>
                 Previous month</button>',

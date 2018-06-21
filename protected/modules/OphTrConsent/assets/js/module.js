@@ -50,19 +50,19 @@ $(document).ready(function() {
 
 	$('input[id="Element_OphTrConsent_Other_witness_required"]').unbind('click').click(function() {
 		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_witness_name').show().closest('.field-row').show();
+			$('#Element_OphTrConsent_Other_witness_name').show().closest('.data-group').show();
 			$('#Element_OphTrConsent_Other_witness_name').val('').focus();
 		} else {
-			$('#Element_OphTrConsent_Other_witness_name').hide().closest('.field-row').hide();
+			$('#Element_OphTrConsent_Other_witness_name').hide().closest('.data-group').hide();
 		}
 	});
 
 	$('input[id="Element_OphTrConsent_Other_interpreter_required"]').unbind('click').click(function() {
 		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_interpreter_name').show().closest('.field-row').show();
+			$('#Element_OphTrConsent_Other_interpreter_name').show().closest('.data-group').show();
 			$('#Element_OphTrConsent_Other_interpreter_name').val('').focus();
 		} else {
-			$('#Element_OphTrConsent_Other_interpreter_name').hide().closest('.field-row').hide();
+			$('#Element_OphTrConsent_Other_interpreter_name').hide().closest('.data-group').hide();
 		}
 	});
 

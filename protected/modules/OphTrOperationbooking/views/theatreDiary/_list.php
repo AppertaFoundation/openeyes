@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (empty($diary)) {?>
-	<div class="row" id="theatre-search-no-results">
-		<div class="large-12 column">
+	<div id="theatre-search-no-results">
+		<div class="cols-12 column">
 			<div class="alert-box"><strong>No theatre schedules match your search criteria.</strong></div>
 		</div>
 	</div>

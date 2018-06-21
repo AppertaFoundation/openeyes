@@ -22,7 +22,7 @@
     $current_episode = $this->patient->getEpisodeForCurrentSubspecialty();
 ?>
 
-<div class="element-fields element-eyes row">
+<div class="element-fields element-eyes data-group">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">

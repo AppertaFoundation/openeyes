@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?>">
 	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
 	<div class="element-data">
 		<div class="data-group">
@@ -28,7 +28,7 @@
 							<?php echo CHtml::encode($element->getAttributeLabel('power_id'))?>
 						</div>
 					</div>
-					<div class="cols -8 column">
+					<div class="cols-8 column">
 						<div class="data-value">
 							<?php echo $element->power->name ?>
 						</div>

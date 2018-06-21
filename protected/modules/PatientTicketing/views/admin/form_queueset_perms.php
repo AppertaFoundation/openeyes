@@ -30,7 +30,7 @@ $roles = $qs_svc->getQueueSetRoles();
 
 ?>
 
-<div class="row">
+<div class="data-group">
 	<?php
         if (count($roles) > 1) {
             ?>
@@ -53,7 +53,7 @@ $roles = $qs_svc->getQueueSetRoles();
 </div>
 
 
-<div class="row">
+<div class="data-group">
 	<div id="current-users-col" class="column large-6">
 		<h3>Current Users</h3>
 		<ul id="current-users-list">

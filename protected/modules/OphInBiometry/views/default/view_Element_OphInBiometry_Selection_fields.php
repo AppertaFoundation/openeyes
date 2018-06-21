@@ -2,15 +2,11 @@
   <?php
     if (empty($element->{'lens_' . $side})) {
         ?>
-        <div class="row">
-            <div class="cols-12 column">
-                <div class="field-info">
-                    <?php
-                    echo 'No selection has been made - use edit mode to select a lens.';
-                    ?>
-                </div>
-            </div>
+      <div class="cols-12 column">
+        <div class="field-info">
+            <?php echo 'No selection has been made - use edit mode to select a lens.'; ?>
         </div>
+      </div>
         <?php } else {
         if ($this->selectionValues) {
             $data = OphInBiometry_Calculation_Formula::Model()->findAllByAttributes(

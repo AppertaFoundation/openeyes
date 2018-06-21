@@ -35,7 +35,7 @@
             $hidden = '';
         }
     ?>
-    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row <?php echo $hidden; ?>">
+    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="data-group <?php echo $hidden; ?>">
         <div class="cols-2 column">
             <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
         </div>

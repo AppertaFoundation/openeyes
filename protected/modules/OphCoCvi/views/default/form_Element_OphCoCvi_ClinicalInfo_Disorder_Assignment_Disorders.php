@@ -15,7 +15,7 @@
       </h3>
     <div class="collapse-group-content" style="<?=  $is_open ? 'display:block' : 'display:none' ?>">
     <?php if ($disorder_section->disorders) { ?>
-      <div class="element-fields element-eyes row">
+      <div class="element-fields element-eyes data-group">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
         <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
           <div class="active-form">

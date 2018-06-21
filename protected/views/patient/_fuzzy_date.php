@@ -27,7 +27,7 @@ if (isset($date)) {
     $sel_year = date('Y');
 }
 ?>
-<fieldset class="row fuzzy_date <?php echo @$class?>">
+<fieldset class="data-group fuzzy_date <?php echo @$class?>">
 	<legend class="<?php echo $labelColumns;?>">
 		<?php echo $label;?>:
 	</legend>

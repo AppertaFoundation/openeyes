@@ -742,11 +742,11 @@ $(document).ready(function() {
 		id += 1;
 
 		var html = [
-			'<div class="field-row row collapse in enclosureItem">',
-			'		<div class="large-8 column">',
+			'<div class="data-group collapse in enclosureItem">',
+			'		<div class="cols-8 column">',
 			'			<input type="text" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
 			'		</div>',
-			'		<div class="large-4 column end">',
+			'		<div class="cols-4 column end">',
 			'			<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>',
 			'		</div>',
 			'	</div>'

@@ -26,7 +26,7 @@
   <div class="js-toggle-body">
     <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
       <?php if ($subject) { ?>
-            <div class="data-group>
+            <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Genetic database ID:</div>
                 </div>
@@ -39,7 +39,7 @@
             </div>
           <?php if ($subject->pedigrees) {
             foreach($subject->pedigrees as $pedigree) {  ?>
-            <div class="data-group>
+            <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Pedigree ID:</div>
                  </div>
@@ -61,7 +61,7 @@
           <?php }
             } ?>
            
-            <div class="data-group>
+            <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label">Diagnosis:</div>
                  </div>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="data-group>
+            <div class="data-group">
                 <div class="cols-4 column">
                     <div class="data-label"><?php echo $subject->getAttributeLabel('comments') ?>:</div>
                 </div>
@@ -87,7 +87,7 @@
                 </div>
             </div>
       <?php } else { ?>
-        <div class="data-group>
+        <div class="data-group">
             
             <div class="data-label column" style="margin-bottom:10px;">
                 <?php echo CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
@@ -99,7 +99,7 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="data-group>
+            <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">DNA Sample Events:</div>
               </div>
@@ -125,7 +125,7 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="data-group>
+            <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">DNA Extraction Events:</div>
               </div>
@@ -151,7 +151,7 @@
       if ($api) {
           $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
-            <div class="data-group>
+            <div class="data-group">
               <div class="cols-4 column">
                 <div class="data-label">Genetic Result Events:</div>
               </div>

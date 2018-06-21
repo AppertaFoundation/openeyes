@@ -33,7 +33,7 @@
     }
     ?>
 
-    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="row">
+    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="data-group">
 
         <div class="cols-2 column">
             <label for="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id">Context:</label>

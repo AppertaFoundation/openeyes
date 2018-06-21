@@ -21,7 +21,7 @@
 $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id);
 ?>
 <!--
-	<div class="panel panel actions row">
+	<div class="panel panel actions">
 
 		<div class="cols-12 column">
 			<?php if ($this->checkAccess('OprnPrint')) { ?>
@@ -135,15 +135,13 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
       <?php } ?>
       </tbody>
     </table>
-    <div class="row">
-      <button id="search_button" class="green hint cols-full" type="submit">
-          <?php if ($patient_filter) { ?>
+    <button id="search_button" class="green hint cols-full" type="submit">
+        <?php if ($patient_filter) { ?>
             Apply
-          <?php } else { ?>
+        <?php } else { ?>
             Search
-          <?php } ?>
-      </button>
-    </div>
+        <?php } ?>
+    </button>
   </div>
     <?php $this->endWidget() ?>
 </div>
@@ -163,7 +161,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
     <div>
       <h2>Move {{patient_name}}</h2>
       <div>
-        <fieldset class="row">
+        <fieldset class="data-group">
           <div class="cols-2 column">
             <label>From:</label>
           </div>
@@ -171,7 +169,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
             <div>{{current_queue_name}}</div>
           </div>
         </fieldset>
-        <fieldset class="row">
+        <fieldset class="data-group">
           <div class="cols-2 column">
             <label for="to_queue_id">To:</label>
           </div>

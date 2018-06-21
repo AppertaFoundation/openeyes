@@ -19,12 +19,12 @@
 <div class="element-data full-width">
     <div class="cols-10">
         <?php if ($element->patient_booking_contact_number != "") { ?>
-            <div class="large-6 column">
+            <div class="cols-6 column">
                 Patient: <?php echo $element->patient_booking_contact_number; ?>
             </div>
         <?php } ?>
         <?php if ($element->collector_name != "" || $element->collector_contact_number != "") { ?>
-            <div class="large-6 column">
+            <div class="cols-6 column">
                 Person collecting: <?php echo $element->collector_name; ?>
                 - <?php echo $element->collector_contact_number; ?>
             </div>

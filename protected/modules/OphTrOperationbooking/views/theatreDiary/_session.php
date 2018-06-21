@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row hide" id="infoBox_<?php echo $session->id ?>">
-  <div class="large-12 column">
+<div class="hide" id="infoBox_<?php echo $session->id ?>">
+  <div class="cols-12 column">
     <div class="alert-box success with-icon">
       <strong>Session updated!</strong>
     </div>
@@ -339,7 +339,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="data-group">
     <div style="display: none;" data-id="<?php echo $session->id ?>" class="diaryEditMode">
       <i id="loader2_<?php echo $session->id ?>" class="spinner" style="display:none"></i>
 

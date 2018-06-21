@@ -20,7 +20,7 @@
              <?= CHtml::label('Subspecialty', 'subspecialty_id'); ?>
              <?= CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name'), array('empty' => 'Default')); ?>
              <?= CHtml::hiddenField('item_ids'); ?>
-             <div id="draggablelist-items" class="data-group>
+             <div id="draggablelist-items" class="data-group">
                  <div class="cols-6 column">
                      <h2>Enabled items</h2>
                      <?php $this->renderPartial('_episodeSummaries_table', array('id' => 'draggablelist-items-enabled', 'items' => $enabled_items)); ?>

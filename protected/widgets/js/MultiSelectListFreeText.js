@@ -93,7 +93,7 @@ $(document).ready(function() {
 
 			if (selected.data('requires-description')) {
 				descriptions.append(
-					'<div class="row data-row" data-option="' + selected.text() + '">' +
+					'<div class="data-group" data-option="' + selected.text() + '">' +
 						'<div class="cols-2">' +
 							'<div class="data-label">' +
 								selected.text() + ':' +

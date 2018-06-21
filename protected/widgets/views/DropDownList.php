@@ -26,7 +26,7 @@ else:
     $full_dropdown = $full_dropdown?:false;
 ?>
 <div id="div_<?=CHtml::modelName($element)?>_<?=$field?>"
-     class="row cols-full <?php
+     class="data-group cols-full <?php
       echo !@$htmlOptions['vertical']?" flex-layout ":"";
       echo !$stretch?' flex-left ':''
      ?> "

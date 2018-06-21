@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data row">
+<div class="element-data">
 	<ul>
 		<li><?php echo $element->eye ? $element->eye->name : 'Eye no specified'?></li>
                 <?php if (isset($active_check) && ($active_check === 'on')) {

@@ -18,8 +18,8 @@
 ?>
     <div id="patientMergeWrapper" class="container content main-event">
         <div class="element-fields full-width flex-layout flex-top col-gap element">
-            <div class="cols-3 row">
-                <div class="large-3 column large-centered text-right large-offset-9">
+            <div class="cols-3">
+                <div class="cols-3 column large-centered text-right large-offset-9">
                     <section class="box dashboard">
                         <?php
                         echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small'));
@@ -67,8 +67,8 @@
                     </div>
                     <br>
                     <?php $this->renderPartial('//base/_messages')?>
-                    <div id="patientDataConflictConfirmation" class="row" style="display:none">
-                        <div class="large-10 large-offset-1 column alert-box with-icon warning">
+                    <div id="patientDataConflictConfirmation" style="display:none">
+                        <div class="cols-10 large-offset-1 column alert-box with-icon warning">
                             <h2> Personal details are conflicting. </h2>
                             Please confirm you selected the right patients. <br>
                             Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     <div class="cols-full">
-                        <div class="large-3 column text-right large-offset-9" style="text-align: center">
+                        <div class="cols-3 column text-right large-offset-9" style="text-align: center">
                             <input class="no-clear" type="submit" value="Save">
                         </div>
                     </div>
