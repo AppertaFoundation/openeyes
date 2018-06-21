@@ -24,7 +24,7 @@ class CreateEventImageCommand extends CConsoleCommand
                 ->from('event')
                 ->leftJoin('event_image', 'event_image.event_id = event.id')
                 ->leftJoin('event_image_status', 'event_image_status.id = event_image.status_id')
-                ->where('deleted = 0 AND 
+                ->where('deleted = 0 AND episode_id IS NOT NULL AND 
                 (
                   event_image.id IS NULL OR 
                   (
@@ -42,7 +42,6 @@ class CreateEventImageCommand extends CConsoleCommand
                 $username = Yii::app()->params['docman_user'];
                 $password = Yii::app()->params['docman_password'];
                 $image_url = 'http://localhost/eventImage/create/';
-                $inject_autoprint_js = Yii::app()->params['docman_inject_autoprint_js'];
 
                 $ch = curl_init();
 
