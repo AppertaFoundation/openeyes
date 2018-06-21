@@ -658,6 +658,19 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getBestVisualAcuityDate($patient, $side, $use_context = false)
+    {
+        $va = $this->getLatestElement(
+            'models\Element_OphCiExamination_VisualAcuity',
+            $patient,
+            $use_context);
+        if ($va) {
+            \Yii::log(var_export($va->event->event_date, true));
+            return $va->event->event_date;
+        }
+
+    }
+
     /**
      * @param \Event $event
      * @return string
@@ -814,6 +827,18 @@ class OphCiExamination_API extends \BaseAPI
     {
         return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
+
+
+    public function getLetterVisualAcuityDateLeft($patient, $use_context = false)
+    {
+        return ($date = $this->getBestVisualAcuityDate($patient, 'left', $use_context)) ? $date : 'NA';
+    }
+
+    public function getLetterVisualAcuityDateRight($patient, $use_context = false)
+    {
+        return ($date = $this->getBestVisualAcuityDate($patient, 'right', $use_context)) ? $date : 'NA';
+    }
+
 
     /**
      * Abstraction for getting VA from last 6 weeks used for several letter string methods

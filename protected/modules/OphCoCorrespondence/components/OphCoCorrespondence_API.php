@@ -214,6 +214,44 @@ class OphCoCorrespondence_API extends BaseAPI
 
 
     /**
+     * Internal abstraction of getting data from before the most recent op note.
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @param $api
+     * @param $method
+     * @return string|null
+     */
+    private function getPreOpEventDateFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        if($op_event){
+            $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+            $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+            foreach ($events as $event) {
+
+                // take account of event date not containing time so we ensure we get the
+                // exam from BEFORE the op note, not on the same day but after.
+                if ($event->event_date == $op_event->event_date) {
+                    if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                        continue;
+                    }
+                }
+                if ($result = $api->$method($event)) {
+                    return $event->event_date;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get the Pre-Op Visual Acuity - both eyes.
      *
      * @param $patient
@@ -238,6 +276,21 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
             return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
+        }
+    }
+
+
+    /**
+     * Get the Pre-Op Refraction - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getPreOpRefractionDate($patient, $use_context = false)
+    {
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpEventDateFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 
