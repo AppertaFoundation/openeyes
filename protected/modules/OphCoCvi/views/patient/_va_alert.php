@@ -24,8 +24,8 @@
         <a class="button create-cvi hint green"
                 href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
                     array('patient_id' => $this->patient->id)); ?>">
-          <i class="oe-i plus pro-theme"></i>
-          Create Now
+
+          Create CVI
         </a>
       <?php endif; ?>
     <i class="oe-i remove-circle small dismiss_cva_alert dismiss right"></i>
