@@ -46,3 +46,13 @@ $current_episode = @$this->current_episode;
 
     ?>
 </nav>
+
+<div class="oe-event-quickview" id="js-event-quickview" style="display: none;">
+  <div class="event-quickview">
+    <div class="quickview-details">
+      <div class="event-icon"></div>
+      <div class="event-date" id="js-quickview-date"></div>
+    </div>
+    <div class="quickview-screenshots"></div>
+  </div>
+</div>

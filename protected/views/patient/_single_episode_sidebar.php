@@ -101,17 +101,22 @@ if (is_array($ordered_episodes)):
                   }
 
                   $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-
                   $event_name = $event->getEventName();
+                  $event_image = EventImage::model()->find('event_id = :event_id', array(':event_id' => $event->id));
                   ?>
 
               <li id="js-sideEvent<?php echo $event->id ?>"
                   class="event <?php if ($highlight) { ?> selected<?php } ?>"
+                  data-event-id="<?= $event->id ?>"
                   data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
                   data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
                   data-event-date-display="<?= $event->NHSDate('event_date') ?>"
                   data-event-type="<?= $event_name ?>"
-                  data-subspecialty="<?= $subspecialty_name ?>">
+                  data-subspecialty="<?= $subspecialty_name ?>"
+                  data-event-icon='<?= $event->getEventIcon('medium') ?>'
+                  <?php if ($event_image !== null && $event_image->status->status === 'CREATED'): ?>
+                    data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
+                  <?php endif; ?>>
 
                 <div class="tooltip quicklook" style="display: none; ">
                   <div class="event-name"><?php echo $event_name ?></div>
@@ -128,7 +133,8 @@ if (is_array($ordered_episodes)):
                         <?= $event->getEventIcon() ?>
                   </span>
 
-                  <span class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                  <span
+                      class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?>
                   </span>
                   <span class="tag"><?= $tag ?></span>

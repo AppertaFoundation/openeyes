@@ -131,11 +131,35 @@
 
     self.element.on('mouseenter', '.event-type', function (e) {
       var $iconHover = $(e.target);
-      $iconHover.parent().parents('li:first').find('.quicklook').fadeIn('fast');
+      var $li = $iconHover.parent().parents('li:first');
+      $li.find('.quicklook').fadeIn('fast');
+
+      var $screenshots = $('.oe-event-quickview .quickview-screenshots');
+      $screenshots.find('img').hide();
+      $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]').show();
+
+      $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
+      $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
+      $('.oe-event-quickview').stop().fadeIn(50);
     });
+
     self.element.on('mouseleave', '.event-type', function (e) {
       var $iconHover = $(e.target);
       $iconHover.parents('li:first').find('.quicklook').hide();
+      $('.oe-event-quickview').stop().fadeOut(150);
+    });
+
+    // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
+    self.element.find('li.event').each(function () {
+      var $img = $('<img />', {
+        class: 'js-quickview-image',
+        src: $(this).data('event-image-url'),
+        style: 'display: none;',
+        alt: 'No preview available at this time',
+        'data-event-id': $(this).data('event-id'),
+      });
+      var $container = $('.oe-event-quickview .quickview-screenshots');
+      $container.append($img);
     });
   };
 
