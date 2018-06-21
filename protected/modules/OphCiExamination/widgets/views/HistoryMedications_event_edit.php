@@ -17,75 +17,119 @@
 ?>
 
 <?php
-
+/** @var \OEModule\OphCiExamination\models\HistoryMedications $element */
 $model_name = CHtml::modelName($element);
-$route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
-$frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
+$route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
+$frequency_options = array();
+foreach ($element->getFrequencyOptions() as $k=>$v) {
+    $frequency_options[$v->id] = $v->term." (".$v->code.")";
+}
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 $element_errors = $element->getErrors();
+$laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
 ?>
+
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
+<div class="element-fields full-width" id="<?= $model_name ?>_element">
+    <div class="field-row flex-layout">
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+        <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="do_not_save_entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
+        <table class="cols-full entries" id="<?= $model_name ?>_entry_table">
+                <colgroup>
+                    <col class="cols-2">
+                    <col class="cols-5">
+                    <col width="120">
+                    <col width="120">
+                    <col>
+                    <col width="90">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th>Dose/frequency/route</th>
+                    <th><i class="oe-i start small pad"></i>Started</th>
+                    <th><i class="oe-i stop small pad"></i>Stopped</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $row_count = 0;
+                $entries = array_filter($element->entries, function($e){ return $e->end_date === null; });
+                $total_count = count($entries);
+                foreach ($entries as $entry) {
+                    $this->render(
+                        'HistoryMedicationsEntry_event_edit',
+                        array(
+                            'entry' => $entry,
+                            'form' => $form,
+                            'model_name' => $model_name,
+                            'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                            'row_count' => $row_count,
+                            'stop_reason_options' => $stop_reason_options,
+                            'laterality_options' => $laterality_options,
+                            'route_options' => $route_options,
+                            'frequency_options' => $frequency_options,
+                            'removable' => true,
+                            'direct_edit' => false,
+                            'usage_type' => 'OphCiExamination',
+                            'row_type' => '',
+                            'is_last' => ($row_count == $total_count - 1)
+                        )
+                    );
+                    $row_count++;
+                }
+                $closed_entries = array_filter($element->entries, function($e){ return $e->end_date !== null; });
+                ?>
+                <?php if(!empty($closed_entries)): ?>
+                    <tr class="ignore">
+                        <td colspan="6" class="align-left">
+                            <a href="javascript:void(0);" class="hide-stopped"><i class="oe-i collapse small pad-right"></i> <small class="fade">Hide Stopped / Changed</small></a>
+                            <a href="javascript:void(0);" class="show-stopped" style="display: none;"><i class="oe-i collapse small pad-right"></i> <small class="fade">Show Stopped / Changed</small></a>
+                        </td>
+					</tr>
+                <?php endif; ?>
+                <?php
+                foreach ($closed_entries as $entry) {
+                    $this->render(
+                        'HistoryMedicationsEntry_event_edit',
+                        array(
+                            'entry' => $entry,
+                            'form' => $form,
+                            'model_name' => $model_name,
+                            'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                            'row_count' => $row_count,
+                            'stop_reason_options' => $stop_reason_options,
+                            'laterality_options' => $laterality_options,
+                            'route_options' => $route_options,
+                            'frequency_options' => $frequency_options,
+                            'removable' => false,
+                            'direct_edit' => false,
+                            'usage_type' => 'OphCiExamination',
+                            'row_type' => 'closed',
+                            'is_last' => false
+                        )
+                    );
+                    $row_count++;
+                }
+                ?>
+                </tbody>
+            </table>
 
-<div class="element-fields" id="<?= $model_name ?>_element">
-
-    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <button class="button small show-stopped">show stopped</button> <button class="button small hide-stopped" style="display:none;">hide stopped</button>
-    <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
-        <thead>
-        <tr>
-            <th class="date-col">Dates</th>
-            <th>Medication</th>
-            <th>Administration</th>
-            <th>Action(s)</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $row_count = 0;
-        foreach ($element->entries as $entry) {
-            if ($entry->prescription_item_id) {
-                $this->render(
-                    'HistoryMedicationsEntry_prescription_event_edit',
-                    array(
-                        'entry' => $entry,
-                        'form' => $form,
-                        'model_name' => $model_name,
-                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                        'row_count' => $row_count,
-                        'stop_reason_options' => $stop_reason_options
-                    )
-                );
-            } else {
-                $this->render(
-                    'HistoryMedicationsEntry_event_edit',
-                    array(
-                        'entry' => $entry,
-                        'form' => $form,
-                        'model_name' => $model_name,
-                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                        'row_count' => $row_count,
-                        'removable' => true,
-                        'route_options' => $route_options,
-                        'frequency_options' => $frequency_options,
-                        'stop_reason_options' => $stop_reason_options
-                    )
-                );
-            }
-            $row_count++;
-        }
-        ?>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3"></td>
-            <td><button class="button small primary add-entry">Add</button></td>
-        </tr>
-        </tfoot>
-    </table>
+    </div>
+    <div class="flex-layout flex-right">
+        <div class="flex-item-bottom" id="medication-history-popup">
+            <?php $this->widget('MedicationBrowser', [
+                    'fnOnSelected' => 'function(medication){window.HMController.addEntry(medication);}',
+                    'usage_code'=>'DrugHistory'
+            ]); ?>
+        </div>
+    </div>
     <script type="text/template" class="entry-template hidden">
         <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\HistoryMedicationsEntry();
+        $empty_entry = new EventMedicationUse();
         $this->render(
             'HistoryMedicationsEntry_event_edit',
             array(
@@ -95,20 +139,43 @@ $element_errors = $element->getErrors();
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
                 'removable' => true,
+                'direct_edit' => true,
                 'route_options' => $route_options,
                 'frequency_options' => $frequency_options,
-                'stop_reason_options' => $stop_reason_options
+                'stop_reason_options' => $stop_reason_options,
+                'laterality_options' => $laterality_options,
+                'usage_type' => 'OphCiExamination',
+                'row_type' => 'new',
+                'is_last' => false,
+                'is_new' => true
             )
         );
         ?>
     </script>
 </div>
-
-
 <script type="text/javascript">
-  $(document).ready(function() {
-    new OpenEyes.OphCiExamination.HistoryMedicationsController({
-      element: $('#<?=$model_name?>_element')
+    $(document).ready(function () {
+        new OpenEyes.OphCiExamination.HistoryMedicationsController({
+            element: $('#<?=$model_name?>_element'),
+            onInit: function(controller) {
+                registerElementController(controller, "HMController", "MMController");
+            },
+            onAddedEntry: function($row, controller) {
+                if(typeof  controller.MMController !== "undefined") {
+                    $new_row = controller.MMController.addEntry($row.data("medication_data"));
+                    controller.bindEntries($row, $new_row);
+                }
+            }
+        });
+        $(document).on("click", ".alt-display-trigger", function(e){
+           e.preventDefault();
+           $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
+        });
+        window.switch_alternative = function(anchor) {
+            var $wrapper = $(anchor).closest(".alternative-display-element");
+            $wrapper.hide();
+            $wrapper.siblings(".alternative-display-element").show();
+            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
+        };
     });
-  });
 </script>

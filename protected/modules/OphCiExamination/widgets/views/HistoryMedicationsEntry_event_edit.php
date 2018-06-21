@@ -18,7 +18,6 @@
 ?>
 
 <?php
-
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
     list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
 } else {

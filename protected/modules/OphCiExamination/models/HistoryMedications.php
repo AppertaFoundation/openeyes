@@ -14,9 +14,7 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 namespace OEModule\OphCiExamination\models;
-
 /**
  * Class HistoryMedications
  * @package OEModule\OphCiExamination\models
@@ -24,77 +22,19 @@ namespace OEModule\OphCiExamination\models;
  * @property \Event $event
  * @property \User $user
  * @property \User $usermodified
- * @property HistoryMedicationsEntry[] $entries
+ * @property \EventMedicationUse[] $entries
  * @property HistoryMedicationsEntry[] $orderedEntries
  * @property HistoryMedicationsEntry[] $currentOrderedEntries
  * @property HistoryMedicationsEntry[] $stoppedOrderedEntries
  */
-class HistoryMedications extends \BaseEventTypeElement
+class HistoryMedications extends BaseMedicationElement
 {
-    protected $auto_update_relations = true;
-    protected $auto_validate_relations = true;
-
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryMedications';
-    protected $default_from_previous = true;
-
+    public $new_entries = array();
     public function tableName()
     {
         return 'et_ophciexamination_history_medications';
     }
-
-    public function behaviors()
-    {
-        return array(
-            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
-        );
-    }
-
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules()
-    {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
-        return array(
-            array('event_id, entries', 'safe'),
-            array('entries', 'required', 'message' => 'At least one medication must be recorded, or the History Medications element should be removed.')
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'entries' => array(
-                self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-            ),
-            'orderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
-            'currentOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date > NOW() OR end_date is NULL)',
-                'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
-            'stoppedOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date < NOW() AND end_date is NOT NULL)',
-                'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
-        );
-    }
-
     protected function errorAttributeException($attribute, $message)
     {
         if ($attribute === \CHtml::modelName($this) . '_entries') {
@@ -104,7 +44,6 @@ class HistoryMedications extends \BaseEventTypeElement
         }
         return parent::errorAttributeException($attribute, $message);
     }
-
     /**
      * @param HistoryMedications $element
      */
@@ -112,91 +51,40 @@ class HistoryMedications extends \BaseEventTypeElement
     {
         $entries = array();
         foreach ($element->entries as $entry) {
-            $new = new HistoryMedicationsEntry();
+            $new = new \EventMedicationUse();
             $new->loadFromExisting($entry);
             $entries[] = $new;
         }
         $this->entries = $entries;
+        $this->assortEntries();
         $this->originalAttributes = $this->getAttributes();
     }
-
-    /**
-     * Retrieve the entries that are tracking prescription items
-     */
-    public function getPrescriptionEntries()
+    
+    public function getTileSize($action)
     {
-        return array_filter($this->entries, function($entry) {
-            return $entry->prescription_item_id !== null;
-        });
+        return $action === 'view' ? 2 : null;
     }
-
-    /**
-     * @return HistoryMedicationsStopReason[]
-     */
-    public function getStopReasonOptions()
+    public function isIndividual($action)
     {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            if ($entry->stop_reason_id) {
-                $force[] = $entry->stop_reason_id;
-            }
+        return $action !=='view';
+    }
+    public function getDisplayOrder($action, $as_parent = false)
+    {
+        if ($action=='view'){
+            return 25;
         }
-        return HistoryMedicationsStopReason::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
-     * @return \DrugRoute[]
-     */
-    public function getRouteOptions()
-    {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            $force[] = $entry->route_id;
+        else{
+            return parent::getDisplayOrder($action, $as_parent);
         }
-        return \DrugRoute::model()->activeOrPk($force)->findAll();
     }
-
     /**
-     * @return \DrugFrequency[]
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return MedicationManagement the static model class
      */
-    public function getFrequencyOptions()
+    public static function model($className=__CLASS__)
     {
-        $force = array();
-        foreach ($this->entries as $entry) {
-            $force[] = $entry->frequency_id;
-        }
-
-        return \DrugFrequency::model()->activeOrPk($force)->findAll();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasRisks()
-    {
-        foreach ($this->entries as $entry) {
-            if ($entry->hasRisk()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function __toString()
-    {
-        return 'Current: ' . implode(' // ', $this->currentOrderedEntries) .
-            ' Stopped: ' . implode(' // ', $this->stoppedOrderedEntries);
-    }
-
-    /**
-     * @return bool
-     */
-    public function beforeValidate()
-    {
-        $this->entries = array_filter($this->entries, function($e) {
-            return $e->hasRecordableData();
-        });
-
-        return parent::beforeValidate(); // TODO: Change the autogenerated stub
+        return parent::model($className);
     }
 }

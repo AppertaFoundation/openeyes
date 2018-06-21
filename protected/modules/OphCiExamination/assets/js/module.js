@@ -2311,6 +2311,20 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
     }
 });
 
+function registerElementController(controller, name, bindTo) {
+    window[name] = controller;
+    if(typeof window[bindTo] !== 'undefined') {
+        window[bindTo].bindController(controller, name);
+        controller.bindController(window[bindTo], bindTo);
+    }
+}
+
+function unregisterElementController(controller, name, binded_controller) {
+    controller.unbindController(window[binded_controller], binded_controller);
+    window[binded_controller].unbindController(controller, name);
+    delete window[name];
+}
+
 /*
  * @params weight kg
  * @params height meters

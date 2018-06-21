@@ -131,10 +131,25 @@ class MedicationController extends BaseController
 
     public function actionRetrieveDrugRouteOptions($route_id)
     {
+        /*
         $route = DrugRoute::model()->findByPk($route_id);
         echo json_encode(array_map(function($opt) {
             return array('id' => $opt->id, 'name' => $opt->name);
         }, $route->options));
+        */
+        $route = RefMedicationRoute::model()->findByPk($route_id);
+        var_dump($route->term);
+        exit;
+        if(in_array($route->term, ['Eye', 'Ocular', 'Intraocular', 'Intravitreal'])) {
+            echo json_encode([
+                ['id' =>1, 'name' => 'Left'],
+                ['id' =>2, 'name' => 'Right'],
+                ['id' =>3, 'name' => 'Both'],
+            ]);
+        }
+        else {
+            echo json_encode([]);
+        }
     }
 
     public function actionSave()
