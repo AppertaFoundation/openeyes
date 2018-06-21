@@ -393,7 +393,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        if($this->getActionType($action) === self::ACTION_TYPE_VIEW) {
+        if($action === 'view') {
             usort($open_child_elements, function ($a, $b) {
                 $a_order = $a->getDisplayOrder('view');
                 $b_order = $b->getDisplayOrder('view');
