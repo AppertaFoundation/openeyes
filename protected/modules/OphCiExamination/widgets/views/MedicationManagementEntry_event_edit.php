@@ -81,7 +81,7 @@ $is_new = isset($is_new) ? $is_new : false;
                             array('empty' => '-Select-', 'class'=>'admin-route-options laterality cols-2', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
                     </div>
                 </div>
-                <button type="button" class="alt-display-trigger"><i class="oe-i change small"></i></button>
+                <button type="button" class="alt-display-trigger small">Change</button>
             </div>
         </div>
     </td>
@@ -145,7 +145,7 @@ $is_new = isset($is_new) ? $is_new : false;
         </span>
 
         <?php if ($removable) { ?>
-            <i class="oe-i trash"></i>
+            <button class="button small warning remove" type="button">remove</button>
         <?php } ?>
     </td>
 </tr>

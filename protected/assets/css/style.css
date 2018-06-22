@@ -9966,3 +9966,20 @@ body {
 .cols-12, .cols-full {
   width: 100%;
 }
+.inline {
+    display: inline-block;
+}
+.oe-add-select-search .add-options {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0 5px 0 0;
+}
+ul.add-options  {
+    list-style: none;
+}
+.oe-add-select-search .add-options li {
+    display: block;
+    cursor: pointer;
+    padding: 3px 8px 3px 8px;
+    margin: 0 0 2px 0;
+}

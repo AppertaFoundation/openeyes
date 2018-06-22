@@ -83,7 +83,7 @@ $is_new = isset($is_new) ? $is_new : false;
                             array('empty' => '-Select-', 'class'=>'admin-route-options laterality cols-2', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
                     </div>
                 </div>
-                <?php if(!$is_new): ?><button type="button" class="alt-display-trigger"><i class="oe-i change small"></i></button><?php endif; ?>
+                <?php if(!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; ?>
             </div>
         </div>
     </td>
