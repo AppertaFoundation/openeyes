@@ -70,8 +70,8 @@ function displayConflictMessage(){
     var $patientDataConflictConfirmation = $('#patientDataConflictConfirmation'),
         $input = $patientDataConflictConfirmation.find('input'),
         
-        $row = $('<div>', {'class':'row'}),
-        $column = $('<div>',{'class':'large-12 column'}),
+        $row = $('<div>', {'class':'data-group'}),
+        $column = $('<div>',{'class':'cols-12 column'}),
         $dob = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : dob'),
         $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_gender'}).text('Patients have different personal details : gender');
         
