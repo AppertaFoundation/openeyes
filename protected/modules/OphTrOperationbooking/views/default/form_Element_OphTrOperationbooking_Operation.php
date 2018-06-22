@@ -61,7 +61,7 @@
             </table>
         </div>
         <hr class="divider">
-        <div class="flex-layout flex-top col-gap row">
+        <div class="flex-layout flex-top col-gap data-group">
             <div class="cols-half">
                 <table class="cols-full last-left">
                     <tbody>
@@ -108,7 +108,6 @@
                             $options = array(
                                 $this->selectedSiteId => array('selected' => true),
                             );
-
                             echo $form->dropDownList(
                                 $element,
                                 'site_id',
@@ -154,7 +153,7 @@
                     if (Yii::app()->params['ophtroperationbooking_referral_link']) {
                         ?>
                         <tr>
-                            <div class="row field-row">
+                            <div class="data-groupw">
                                 <?php if ($element->canChangeReferral()) { ?>
                                     <td><label for="Element_OphTrOperationbooking_Operation_referral_id"><?= $element->getAttributeLabel('referral_id'); ?></label></td>
                                     <td>
@@ -181,7 +180,7 @@
                                         ?>
                                     </td>
                                     <td>
-                                      <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
+                                        <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
                                     </td>
                                     <?php
                                 } else { ?>
@@ -199,24 +198,71 @@
                     </tbody>
                 </table>
             </div>
-            <div class="cols-4">
-                <?php
-                $html_options = array(
-                    'options' => array(),
-                    'empty' => '- No valid referral available -',
-                    'nowrapper' => true,
-                );
+            <div class="cols-half">
+                <table class="cols-full last-left">
+                    <tbody>
+                    <tr>
+                        <td>
+                            Anaesthetic Type
+                        </td>
+                        <td>
+                            <?php echo $form->checkBoxes(
+                                $element, 'AnaestheticType', 'anaesthetic_type',
+                                null,false, false,
+                                false, false,
+                                array(
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+                                )
+                            ); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Anaesthetic choice is
+                        </td>
+                        <td>
+                            <?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice', null,
+                                false, false, false, false, array('nowrapper' => true)) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Patient needs to stop medication
+                        </td>
+                        <td>
+                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
+                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(),
+                                array_merge($form->layoutColumns, array('field' => 4))) ?>
+                        </td>
 
-                $choices = $this->getReferralChoices();
-                foreach ($choices as $choice) {
-                    if ($active_rtt = $choice->getActiveRTT()) {
-                        if (count($active_rtt) == 1) {
-                            $html_options['options'][(string)$choice->id] = array(
-                                'data-clock-start' => Helper::convertDate2NHS($active_rtt[0]->clock_start),
-                                'data-breach' => Helper::convertDate2NHS($active_rtt[0]->breach),
+                    </tr>
+                    <tr>
+                        <td>
+                            Pre-assessment booking required
+                        </td>
+                        <td>
+                            <?php echo $form->radioBoolean($element, 'preassessment_booking_required', array('nowrapper' => true)); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Overnight Stay required
+                        </td>
+                        <td>
+                            <?php echo $form->radioButtons(
+                                $element,
+                                'overnight_stay_required_id',
+                                'OphTrOperationbooking_Overnight_Stay_Required',
+                                null,
+                                false, false, false, false, array('nowrapper' => true)
                             );
                             ?>
                         </td>
+
+                        <?php if(Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+                        <td><?=$form->checkBox($element, 'is_golden_patient');?></td>
+                        <?php endif; ?>
+
                     </tr>
                     </tbody>
                 </table>
@@ -277,8 +323,6 @@
                     ?>
                 </td>
             </tr>
-
-
             </tbody>
         </table>
     </div>

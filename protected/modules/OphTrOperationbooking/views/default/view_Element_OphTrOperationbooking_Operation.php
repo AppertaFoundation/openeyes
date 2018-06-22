@@ -16,373 +16,263 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element view full priority view-procedures">
-    <header class="element-header">
-        <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?></h3>
-    </header>
-    <div class="element-data full-width">
-        <div class="cols-10">
-            <ul>
-                <?php foreach ($element->procedures as $procedure) {
-                    echo "<li><span class='priority-text'> {$element->eye->adjective} {$procedure->term}</span></li>";
-                } ?>
-            </ul>
+    <section class="element view full priority view-procedures">
+        <header class="element-header">
+            <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?></h3>
+        </header>
+        <div class="element-data full-width">
+            <div class="cols-10">
+                <ul>
+                    <?php foreach ($element->procedures as $procedure) {
+                        echo "<li><span class='priority-text'> {$element->eye->adjective} {$procedure->term}</span></li>";
+                    } ?>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="element view full  view-information">
-    <header class="element-header">
-        <h3 class="element-title">Information</h3>
-    </header>
-    <div class="element-data full-width flex-layout flex-top col-gap">
-        <div class="cols-6">
-            <table class="label-value last-left">
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="data-label">Consultant required?</div>
-                    </td>
-                    <td>
-                        <?php
-                        if ($element->consultant) {
-                            $consultant_name = $element->consultant->ReversedFullName;
-                        } else {
-                            $consultant_name = 'Consultant';
-                        }
-                        ?>
-                        <div class="data-value"><?php echo $element->consultant_required ? "Yes, $consultant_name" : 'No Consultant' ?></div>
-                    </td>
-                </tr>
-                <tr>
-                    <?php if (!is_null($element->senior_fellow_to_do)): ?>
-                        <td>
-                            <div class="data-label">
-                                <?= CHtml::encode($element->getAttributeLabel('senior_fellow_to_do')) ?>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="data-value"><?= $element->senior_fellow_to_do ? 'Yes' : 'No' ?></div>
-                        </td>
-                    <?php endif; ?>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?= CHtml::encode($element->getAttributeLabel('any_grade_of_doctor')) ?>?
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo $element->any_grade_of_doctor ? 'Yes' : 'No' ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">Anaesthetic</div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?= $element->getAnaestheticTypeDisplay(); ?>
-                        </div>
-                    </td>
-                </tr>
-
-                <section class="element element-data">
-                  <table class="cols-10">
+    <section class="element view full  view-information">
+        <header class="element-header">
+            <h3 class="element-title">Information</h3>
+        </header>
+        <div class="element-data full-width flex-layout flex-top col-gap">
+            <div class="cols-6">
+                <table class="label-value last-left">
                     <tbody>
                     <tr>
-                      <td>
-                        <h3 class="data-title">Operation priority</h3>
-                      </td>
-                      <td>
-                        <div class="data-value"><?php echo $element->priority->name ?></div>
-                      </td>
-                    </tr>
-                    <?php if (!empty($element->comments)) { ?>
-                    <tr>
-                      <td>
-                        <h3 class="data-title">Operation Comments</h3>
-                      </td>
-                      <td>
-                        <div class="data-value panel comments">
-                            <?php echo $element->textWithLineBreaks('comments') ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <?php } ?>
-                    <tr class="row">
-                      <td class="large-6 column">
-                        <h3 class="data-title">Admission category:</h3>
-                      </td>
-                      <td>
-                        <div class="data-value">
-                            <?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case' ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="large-6 column">
-                        <h3 class="data-title">Total theatre time (mins):</h3>
-                      </td>
-                      <td>
-                        <div class="data-value">
-                            <?php echo CHtml::encode($element->total_duration) ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <?php if (!is_null($element->special_equipment)): ?>
-                      <tr>
                         <td>
-                          <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></h3>
+                            <div class="data-label">Consultant required?</div>
                         </td>
                         <td>
-                          <div class="data-value"><?= $element->special_equipment ? 'Yes' : 'No' ?></div>
-                            <?php if ($element->special_equipment): ?>
-                              <div class="data-value panel comments">
-                                  <?= Yii::app()->format->nText($element->special_equipment_details) ?>
-                              </div>
-                            <?php endif; ?>
+                            <?php
+                            if ($element->consultant) {
+                                $consultant_name = $element->consultant->ReversedFullName;
+                            } else {
+                                $consultant_name = 'Consultant';
+                            }
+                            ?>
+                            <div class="data-value"><?php echo $element->consultant_required ? "Yes, $consultant_name" : 'No Consultant' ?></div>
                         </td>
-                      </tr>
-                    <?php endif; ?>
-                    </tbody>
-                  </table>
-                </section>
-
-
-                <?php if (!is_null($element->anaesthetist_preop_assessment)): ?>
+                    </tr>
+                    <tr>
+                        <?php if (!is_null($element->senior_fellow_to_do)): ?>
+                            <td>
+                                <div class="data-label">
+                                    <?= CHtml::encode($element->getAttributeLabel('senior_fellow_to_do')) ?>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="data-value"><?= $element->senior_fellow_to_do ? 'Yes' : 'No' ?></div>
+                            </td>
+                        <?php endif; ?>
+                    </tr>
                     <tr>
                         <td>
                             <div class="data-label">
-                                <?= CHtml::encode($element->getAttributeLabel('anaesthetist_preop_assessment')) ?>
+                                <?= CHtml::encode($element->getAttributeLabel('any_grade_of_doctor')) ?>?
                             </div>
                         </td>
                         <td>
                             <div class="data-value">
-                                <?= $element->anaesthetist_preop_assessment ? 'Yes' : 'No' ?>
+                                <?php echo $element->any_grade_of_doctor ? 'Yes' : 'No' ?>
                             </div>
                         </td>
                     </tr>
-                <?php endif ?>
-                <?php if ($element->anaesthetic_choice): ?>
                     <tr>
                         <td>
-                            <div class="data-label">
-                                <?= CHtml::encode($element->getAttributeLabel('anaesthetic_choice_id')) ?>
-                            </div>
+                            <div class="data-label">Anaesthetic</div>
                         </td>
                         <td>
-                            <div class="data-value"><?= $element->anaesthetic_choice->name ?></div>
-                        </td>
-                    </tr>
-                <?php endif ?>
-                <?php if (!is_null($element->stop_medication)): ?>
-                    <tr>
-                        <td>
-                            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></div>
-                        </td>
-                        <td>
-                            <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
-                            <?php if ($element->stop_medication): ?>
-                                <div
-                                        class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
-                            <?php endif ?>
-                        </td>
-                    </tr>
-                <?php endif ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="cols-6">
-            <table class="label-value last-left">
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="data-label">Post Operative Stay Required</div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay' ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">Decision Date</div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo $element->NHSDate('decision_date') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo $element->site->name ?></div>
-                    </td>
-                </tr>
-                <?php if (!is_null($element->fast_track)): ?>
-                    <tr>
-                        <td>
-                            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('fast_track')) ?></div>
-                        </td>
-                        <td>
-                            <div class="data-value"><?php echo $element->fast_track ? 'Yes' : 'No' ?></div>
-                        </td>
-                    </tr>
-                <?php endif ?>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?= CHtml::encode($element->getAttributeLabel('fast_track_discussed_with_patient')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo is_null($element->fast_track_discussed_with_patient) ? 'Not recorded' : ($element->fast_track_discussed_with_patient ? 'Yes' : 'No') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">Operation priority</div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo $element->priority->name ?></div>
-                    </td>
-                </tr>
-                <?php if (!empty($element->comments)) { ?>
-                    <tr>
-                        <td>
-                            <div class="data-label">Operation Comments</div>
-                        </td>
-                        <td>
-                            <div class="data-value panel comments">
-                                <?php echo $element->textWithLineBreaks('comments') ?>
+                            <div class="data-value">
+                                <?= $element->getAnaestheticTypeDisplay(); ?>
                             </div>
                         </td>
                     </tr>
-                <?php } ?>
-                <tr>
-                    <td>
-                        <div class="data-label">Admission category:</div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case' ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">Total theatre time (mins):</div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo CHtml::encode($element->total_duration) ?>
-                        </div>
-                    </td>
-                </tr>
-                <?php if (!is_null($element->special_equipment)): ?>
-                    <tr>
-                        <td>
-                            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></div>
-                        </td>
-                        <td>
-                            <div class="data-value"><?= $element->special_equipment ? 'Yes' : 'No' ?></div>
-                            <?php if ($element->special_equipment): ?>
-                                <div class="data-value panel comments">
-                                    <?= Yii::app()->format->nText($element->special_equipment_details) ?>
-                                </div>
-                            <?php endif ?>
-                        </td>
-                    </tr>
-                <?php endif ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="large-6 column">
-            <?php if ($element->is_golden_patient && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
-                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('is_golden_patient')) ?></h3>
-                <div class="data-value"><?= $element->is_golden_patient ? 'Yes' : 'No' ?></div>
-            <?php endif; ?>
-        </div>
-      </td>
-    </tr>
-    <?php endif; ?>
-    </tbody>
-  </table>
-</div>
-</section>
 
-<section class="element view full  view-information">
-    <header class="element-header">
-        <h3 class="element-title">Comments</h3>
-    </header>
-    <table class="cols-10">
-        <colgroup>
-            <col class="cols-4">
-        </colgroup>
-        <tbody>
-        <?php if (Yii::app()->params['ophtroperationbooking_referral_link']) { ?>
-            <tr>
-                <td>
-                    <h3 class="data-label">Referral</h3>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <?php if ($element->referral) {
-                            echo $element->referral->getDescription();
-                        } else {
-                            echo 'No Referral Set';
-                        } ?>
-                    </div>
-                    <?php if ($rtt = $element->getRTT()) { ?>
-                        <div class="rtt-info">Clock Start -
-                            <?= Helper::convertDate2NHS($rtt->clock_start) ?>
-                            Breach: <?= Helper::convertDate2NHS($rtt->breach) ?>
-                        </div>
+                    <?php if ($element->anaesthetic_choice): ?>
+                        <tr>
+                            <td>
+                                <div class="data-label">
+                                    <?= CHtml::encode($element->getAttributeLabel('anaesthetic_choice_id')) ?>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="data-value"><?= $element->anaesthetic_choice->name ?></div>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+                    <?php if (!is_null($element->stop_medication)): ?>
+                        <tr>
+                            <td>
+                                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></div>
+                            </td>
+                            <td>
+                                <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
+                                <?php if ($element->stop_medication): ?>
+                                    <div
+                                            class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="cols-6">
+                <table class="label-value last-left">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="data-label">Decision Date</div>
+                        </td>
+                        <td>
+                            <div class="data-value">
+                                <?php echo $element->NHSDate('decision_date') ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
+                        </td>
+                        <td>
+                            <div class="data-value"><?php echo $element->site->name ?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="data-label">Operation priority</div>
+                        </td>
+                        <td>
+                            <div class="data-value"><?php echo $element->priority->name ?></div>
+                        </td>
+                    </tr>
+                    <?php if (!empty($element->comments)) { ?>
+                        <tr>
+                            <td>
+                                <div class="data-label">Operation Comments</div>
+                            </td>
+                            <td>
+                                <div class="data-value panel comments">
+                                    <?php echo $element->textWithLineBreaks('comments') ?>
+                                </div>
+                            </td>
+                        </tr>
                     <?php } ?>
-                </td>
-                <td></td>
-            </tr>
-        <?php } ?>
-        <?php if (!empty($element->comments_rtt)) { ?>
-            <tr>
-                <td>
-                    <h3 class="data-title">Operation RTT Comments</h3>
-                </td>
-                <td>
-                    <div class="data-value panel comments">
-                        <?php echo $element->textWithLineBreaks('comments_rtt') ?>
-                    </div>
-                </td>
-                <td></td>
-            </tr>
-        <?php } ?>
-        <?php if ($element->organising_admission_user): ?>
-            <tr>
-                <td>
-                    <h3 class="data-title">
-                        <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
-                    </h3>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <?= $element->organising_admission_user->getReversedFullName() ?>
-                    </div>
-                </td>
-                <td></td>
-            </tr>
-        <?php endif ?>
-        </tbody>
-    </table>
-</section>
+                    <tr>
+                        <td>
+                            <div class="data-label">Admission category:</div>
+                        </td>
+                        <td>
+                            <div class="data-value">
+                                <?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case' ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="data-label">Total theatre time (mins):</div>
+                        </td>
+                        <td>
+                            <div class="data-value">
+                                <?php echo CHtml::encode($element->total_duration) ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php if (!is_null($element->special_equipment)): ?>
+                        <tr>
+                            <td>
+                                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></div>
+                            </td>
+                            <td>
+                                <div class="data-value"><?= $element->special_equipment ? 'Yes' : 'No' ?></div>
+                                <?php if ($element->special_equipment): ?>
+                                    <div class="data-value panel comments">
+                                        <?= Yii::app()->format->nText($element->special_equipment_details) ?>
+                                    </div>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+
+                    <?php if (!is_null($element->preassessment_booking_required)): ?>
+                    <tr>
+                        <td><div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div></td>
+                        <td>
+                            <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
+
+                        </td>
+                    </tr>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="element view full  view-information">
+        <header class="element-header">
+            <h3 class="element-title">Comments</h3>
+        </header>
+        <table class="cols-10">
+            <colgroup>
+                <col class="cols-4">
+            </colgroup>
+            <tbody>
+            <?php if (Yii::app()->params['ophtroperationbooking_referral_link']) { ?>
+                <tr>
+                    <td>
+                        <h3 class="data-label">Referral</h3>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php if ($element->referral) {
+                                echo $element->referral->getDescription();
+                            } else {
+                                echo 'No Referral Set';
+                            } ?>
+                        </div>
+                        <?php if ($rtt = $element->getRTT()) { ?>
+                            <div class="rtt-info">Clock Start -
+                                <?= Helper::convertDate2NHS($rtt->clock_start) ?>
+                                Breach: <?= Helper::convertDate2NHS($rtt->breach) ?>
+                            </div>
+                        <?php } ?>
+                    </td>
+                    <td></td>
+                </tr>
+            <?php } ?>
+            <?php if (!empty($element->comments_rtt)) { ?>
+                <tr>
+                    <td>
+                        <h3 class="data-title">Operation RTT Comments</h3>
+                    </td>
+                    <td>
+                        <div class="data-value panel comments">
+                            <?php echo $element->textWithLineBreaks('comments_rtt') ?>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            <?php } ?>
+            <?php if ($element->organising_admission_user): ?>
+                <tr>
+                    <td>
+                        <h3 class="data-title">
+                            <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
+                        </h3>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?= $element->organising_admission_user->getReversedFullName() ?>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            <?php endif ?>
+            </tbody>
+        </table>
+    </section>
 
 <?php if ($element->booking && !$this->module->isTheatreDiaryDisabled()) { ?>
     <section class="element">
@@ -434,11 +324,9 @@
         <section class="element">
             <h3 class="element-title highlight">Earliest reasonable offer date</h3>
             <div class="element-data">
-                <div class="row">
-                    <div class="cols-12 column">
-                        <div class="data-value">
-                            <?php echo $element->booking->erod->getDescription() ?>
-                        </div>
+                <div class="cols-12 column">
+                    <div class="data-value">
+                        <?php echo $element->booking->erod->getDescription() ?>
                     </div>
                 </div>
             </div>
@@ -446,7 +334,7 @@
     <?php } ?>
 
 
-    <div class="row">
+    <div class="data-group">
         <div class="cols-12 column">
             <div class="metadata">
 				<span class="info">
