@@ -21,7 +21,7 @@
     <div class="oe-popup">
         <?php echo CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
         <div class="title">
-            <i class="oe-i trash large selected"></i>
+            <i class="oe-i trash large selected pro-theme"></i>
             Delete Event
         </div>
         <div class="oe-popup-content delete-event">
