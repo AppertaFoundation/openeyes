@@ -73,7 +73,7 @@ $is_new = isset($is_new) ? $is_new : false;
                         </a>
                     </div>
                     <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
-                        <input class="cols-1 dose" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+                        <input class="cols-1 dose" style="width: 12%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="dose-unit-term cols-1"><?php echo $entry->dose_unit_term; ?></span>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class' => 'frequency cols-4')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'route cols-2')) ?>

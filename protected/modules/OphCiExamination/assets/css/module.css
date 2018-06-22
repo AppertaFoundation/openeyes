@@ -251,6 +251,7 @@ a.stop-medication {
 }
 
 /* line 37, ../sass/components/elements/_history-medications.scss */
+/*
 .laterality {
   background-color: transparent;
   color: #fff;
@@ -260,6 +261,7 @@ a.stop-medication {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
+*/
 /* line 45, ../sass/components/elements/_history-medications.scss */
 .laterality.R {
   background-color: #9fec6d;
@@ -546,4 +548,8 @@ ul.comma-list li:after {
 /* line 13, ../sass/components/_comma-list.scss */
 ul.comma-list li:last-child:after {
   content: "";
+}
+.alternative-display-element select{
+    height:24px;
+    margin: 1px 0;
 }
