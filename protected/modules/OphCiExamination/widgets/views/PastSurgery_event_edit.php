@@ -58,7 +58,8 @@ $model_name = CHtml::modelName($element);
                 $row_count++;
             }
         }
-        foreach ($element->operations as $i => $op) {
+
+        foreach ($this->getMissingRequiredOperation() as $i => $op) {
             $this->render(
                 'PastSurgery_OperationEntry_event_edit',
                 array(
@@ -67,7 +68,27 @@ $model_name = CHtml::modelName($element);
                     'row_count' => ($row_count),
                     'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                     'model_name' => CHtml::modelName($element),
+                    //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
                     'removable' => true,
+                    'required' => true,
+                )
+            );
+            $row_count++;
+        }
+
+
+        foreach ($this->getOperationsArray() as $i => $op) {
+            $this->render(
+                'PastSurgery_OperationEntry_event_edit',
+                array(
+                    'op' => $op['op'],
+                    'form' => $form,
+                    'row_count' => ($row_count),
+                    'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
+                    'model_name' => CHtml::modelName($element),
+                    'removable' => true,
+                    //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
+                    'required' => $op['required']
                 )
             );
             $row_count++;

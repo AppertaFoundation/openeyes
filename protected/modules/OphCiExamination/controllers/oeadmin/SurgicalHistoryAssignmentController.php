@@ -29,7 +29,6 @@
         /**
          * @inheritdoc
          */
-        
         public function accessRules()
         {
             return array(
@@ -93,8 +92,8 @@
         /**
          * @param $id
          * @return \CActiveRecord
+         * @throws \CHttpException
          */
-
         private function loadModel($id)
         {
             $model = SurgicalHistorySet::model()->findByPk($id);
@@ -174,5 +173,4 @@
 
             return $errors;
         }
-
     }

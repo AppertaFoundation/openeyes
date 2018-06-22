@@ -25,9 +25,10 @@ if (!isset($values)) {
         'side_id' => $op->side_id,
         'side_display' => $op->side ? $op->side->adjective : 'None',
         'date' => $op->date,
-        'date_display' => $op->getDisplayDate()
+        'date_display' => $op->getDisplayDate(),
     );
 }
+$required = isset($required) ? $required : false;
 
 if (isset($values['date']) && strtotime($values['date'])) {
     list($sel_year, $sel_month, $sel_day) = explode('-', $values['date']);
@@ -48,16 +49,24 @@ if (isset($values['date']) && strtotime($values['date'])) {
 
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
 
-            <?php echo CHtml::dropDownList(null, '',
-                CHtml::listData(CommonPreviousOperation::model()->findAll(
-                    array('order' => 'display_order asc')), 'id', 'name'),
-                array('empty' => '- Select -', 'class' => $model_name . '_operations'))?>
-            <br />
-            <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Select from above or type',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'class' => 'common-operation',
-                )); ?>
+            <?php if(!$required): ?>
+                <?php echo CHtml::dropDownList(null, '',
+                    CHtml::listData(CommonPreviousOperation::model()->findAll(
+                        array('order' => 'display_order asc')), 'id', 'name'),
+                    array('empty' => '- Select -', 'class' => $model_name . '_operations'))?>
+                <br />
+            <?php endif; ?>
+
+            <?php $html_options = array(
+                    'placeholder' => 'Select from above or type',
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'class' => 'common-operation',
+                );
+                if($required){
+                    $html_options['readonly'] = true;
+                }
+            ?>
+            <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], $html_options); ?>
 
         <?php endif; ?>
 
@@ -102,13 +111,16 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
 
-    <?php if($removable) : ?>
+    <?php if($removable && !$required) : ?>
         <td class="edit-column">
             <button class="button small warning remove">remove</button>
         </td>
-    <?php else: ?>
+    <?php elseif(!$required): ?>
         <td>read only <span class="has-tooltip fa fa-info-circle"
                             data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></span></td>
+    <?php elseif($required): ?>
+        <td>read only <span class="has-tooltip fa fa-info-circle"
+                            data-tooltip-content="<?=$values['operation'];?> is mandatory to collect."></span></td>
     <?php endif; ?>
 
 </tr>

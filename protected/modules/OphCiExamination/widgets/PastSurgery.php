@@ -30,6 +30,29 @@ class PastSurgery extends \BaseEventElementWidget
         return new PastSurgeryElement();
     }
 
+    public function getRequiredOperation()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredSurgicalHistory($this->patient);
+    }
+
+    public function getMissingRequiredOperation()
+    {
+        $current_operations = array_map(function ($e) {
+            return $e->operation;
+        }, $this->element->operations);
+        $missing = [];
+        foreach ($this->getRequiredOperation() as $req_operation) {
+            if (!in_array($req_operation, $current_operations)) {
+                $entry = new PastSurgery_Operation();
+                $entry->operation = $req_operation;
+                $missing[] = $entry;
+            }
+        }
+
+        return $missing;
+    }
+
     /**
      * @param PastSurgeryElement $element
      * @param $data
@@ -37,7 +60,7 @@ class PastSurgery extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\PastSurgery')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\PastSurgery')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -91,9 +114,9 @@ class PastSurgery extends \BaseEventElementWidget
     {
         $res = array_map(
             function ($op) {
-               return array_key_exists('object', $op) ?
-                   (string) $op['object'] :
-                   $this->formatExternalOperation($op);
+                return array_key_exists('object', $op) ?
+                    (string)$op['object'] :
+                    $this->formatExternalOperation($op);
             }, $this->getMergedOperations());
         return implode($this->popupListSeparator, $res);
     }
@@ -105,7 +128,7 @@ class PastSurgery extends \BaseEventElementWidget
     {
         // map the operations that have been recorded as entries in this element
         $operations = array_map(
-            function($op) {
+            function ($op) {
                 return array(
                     'date' => $op->date,
                     'object' => $op
@@ -118,8 +141,26 @@ class PastSurgery extends \BaseEventElementWidget
         }
 
         // merge by sorting by date
-        uasort($operations, function($a , $b) {
+        uasort($operations, function ($a, $b) {
             return $a['date'] >= $b['date'] ? -1 : 1;
+        });
+
+        return $operations;
+    }
+
+    public function getOperationsArray()
+    {
+        $operations = [];
+        foreach ($this->element->operations as $i => $op) {
+            $operations[] = [
+                'op' => $op,
+                'required' => in_array($op->operation, $this->getRequiredOperation()),
+            ];
+        }
+        usort($operations, function($a, $b){
+            if($a['required'] && !$b['required']){
+                return -1;
+            }
         });
 
         return $operations;
@@ -128,7 +169,7 @@ class PastSurgery extends \BaseEventElementWidget
     /**
      * @return array
      */
-    public  function getViewData()
+    public function getViewData()
     {
         return array_merge(parent::getViewData(), array(
             'operations' => $this->getMergedOperations()
