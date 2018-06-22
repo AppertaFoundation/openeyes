@@ -138,7 +138,7 @@ $is_new = isset($is_new) ? $is_new : false;
 
     <td class="edit-column">
         <?php if ($removable) { ?>
-            <button class="button small warning remove">remove</button>
+            <button class="button small warning remove" type="button">remove</button>
         <?php } ?>
     </td>
 </tr>

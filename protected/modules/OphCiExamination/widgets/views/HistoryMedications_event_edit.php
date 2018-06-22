@@ -122,23 +122,17 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 
                 ?>
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="5"></td>
-                        <td><button class="button small primary add-entry">Add</button></td>
-                    </tr>
-                </tfoot>
             </table>
-
+            <div class="flex-layout flex-right">
+                <div class="flex-item-bottom" id="medication-history-popup">
+                    <?php $this->widget('MedicationBrowser', [
+                            'fnOnSelected' => 'function(medication){window.HMController.addEntry(medication);}',
+                            'usage_code'=>'DrugHistory'
+                    ]); ?>
+                </div>
+            </div>
     </div>
-    <div class="flex-layout flex-right">
-        <div class="flex-item-bottom" id="medication-history-popup">
-            <?php $this->widget('MedicationBrowser', [
-                    'fnOnSelected' => 'function(medication){window.HMController.addEntry(medication);}',
-                    'usage_code'=>'DrugHistory'
-            ]); ?>
-        </div>
-    </div>
+    
     <script type="text/template" class="entry-template hidden">
         <?php
         $empty_entry = new EventMedicationUse();

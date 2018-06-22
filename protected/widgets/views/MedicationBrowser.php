@@ -69,8 +69,9 @@ if(Yii::app()->controller->action->getId() == 'ElementForm'){
         </tbody>
     </table>
 </div>
-<button class="button hint green js-add-select-search" type="button" id="<?php echo $this->id."_open_btn"; ?>">
-    <i class="oe-i plus pro-theme"></i>
+
+<button class="button hint small primary  js-add-select-search" type="button" id="<?php echo $this->id."_open_btn"; ?>">
+    Add
 </button>
 <script type="text/javascript">
     $(function(){
