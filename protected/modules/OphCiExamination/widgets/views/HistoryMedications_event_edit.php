@@ -27,6 +27,7 @@ foreach ($element->getFrequencyOptions() as $k=>$v) {
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 $element_errors = $element->getErrors();
 $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
+
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
@@ -57,8 +58,10 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 <tbody>
                 <?php
                 $row_count = 0;
+
                 $entries = array_filter($element->entries, function($e){ return $e->end_date === null; });
                 $total_count = count($entries);
+
                 foreach ($entries as $entry) {
                     $this->render(
                         'HistoryMedicationsEntry_event_edit',
@@ -81,7 +84,9 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     );
                     $row_count++;
                 }
+
                 $closed_entries = array_filter($element->entries, function($e){ return $e->end_date !== null; });
+
                 ?>
                 <?php if(!empty($closed_entries)): ?>
                     <tr class="ignore">
@@ -114,8 +119,15 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     );
                     $row_count++;
                 }
+
                 ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td><button class="button small primary add-entry">Add</button></td>
+                    </tr>
+                </tfoot>
             </table>
 
     </div>
@@ -167,10 +179,12 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 }
             }
         });
+
         $(document).on("click", ".alt-display-trigger", function(e){
            e.preventDefault();
            $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
         });
+
         window.switch_alternative = function(anchor) {
             var $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
