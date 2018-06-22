@@ -24,7 +24,7 @@
                 $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
                         array('side' => 'right', 'element' => $element));
             } else { ?>
-				<div class="data-value">Not recorded</div>
+				<div class="data-value not-recorded">Not recorded</div>
 			<?php } ?>
 		</div>
 		<div class="element-eye left-eye column">
@@ -32,7 +32,7 @@
     $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',
                         array('side' => 'left', 'element' => $element));
             } else { ?>
-				<div class="data-value">Not recorded</div>
+				<div class="data-value not-recorded">Not recorded</div>
 			<?php } ?>
 		</div>
 	</div>

@@ -33,5 +33,5 @@
       </div>
     <?php } ?>
 <?php } else { ?>
-  <div>Not recorded</div>
+  <div class="data-value not-recorded">Not recorded</div>
 <?php } ?>

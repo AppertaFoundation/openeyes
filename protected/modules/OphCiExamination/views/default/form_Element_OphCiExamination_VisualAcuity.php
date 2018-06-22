@@ -22,6 +22,7 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
     'id', 'name');
 $key = 0;
 ?>
+
 <?php
 $this->beginClip('element-title-additional');
 if ($element->isNewRecord) {
@@ -84,7 +85,7 @@ if ($cvi_api) {
             </table>
             <div class="data-group noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
               <div class="cols-4 column">
-                <div class="field-info">Not recorded</div>
+                <div class="data-value not-recorded">Not recorded</div>
               </div>
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',

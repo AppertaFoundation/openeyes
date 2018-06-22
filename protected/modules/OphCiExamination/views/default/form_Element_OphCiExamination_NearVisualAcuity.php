@@ -80,7 +80,7 @@ $this->endClip('element-title-additional');
     ?> style="display: none;" <?php 
 } ?>>
 				<div class="cols-4 column">
-					<div class="field-info">Not recorded</div>
+					<div class="data-value not-recorded">Not recorded</div>
 				</div>
 				<div class="cols-8 column end">
 					<?php echo $form->checkBox($element, 'right_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
@@ -128,7 +128,7 @@ $this->endClip('element-title-additional');
 			</table>
 			<div class="data-group noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
 				<div class="cols-4 column">
-					<div class="field-info">Not recorded</div>
+					<div class="data-value not-recorded">Not recorded</div>
 				</div>
 				<div class="cols-8 column">
 					<?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>

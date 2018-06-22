@@ -42,7 +42,9 @@
                   </td>
                   <?php endif; ?>
               <?php else: ?>
-                <td>Not recorded</td>
+                <td>
+                    <div class="data-value not-recorded">Not recorded</div>
+                </td>
               <?php endif; ?>
           </tr>
           </tbody>

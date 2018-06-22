@@ -36,7 +36,7 @@
                 </div>
               </div>
             <?php else: ?>
-              <div class="data-value">Not recorded</div>
+              <div class="data-value not-recorded">Not recorded</div>
             <?php endif; ?>
         </div>
       </div>
