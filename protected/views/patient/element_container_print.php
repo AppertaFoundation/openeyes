@@ -18,7 +18,7 @@
 ?>
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 	<section
-		class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
+		class="<?php if (@$child) {?>sub-<?php }?>element <?php echo str_replace('_', '-', CHtml::modelName($element->elementType->class_name)) ?>"
 		data-element-type-id="<?php echo $element->elementType->id?>"
 		data-element-type-class="<?php echo $element->elementType->class_name?>"
 		data-element-type-name="<?php echo $element->elementType->name?>"

@@ -17,9 +17,9 @@
  */
 ?>
 <section
-    class="element view full
+    class="element edit full
     <?php if (is_subclass_of($element, 'SplitEventTypeElement')) { echo 'eye-divider'; } ?>
-    <?php echo $element->elementType->class_name ?>
+    <?php echo str_replace('_', '-', CHtml::modelName($element->elementType->class_name)) ?>
     <?php if (@$ondemand) { ?>hidden<?php } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
@@ -30,7 +30,7 @@
         <h4 class="element-title"><?php echo $element->elementType->name; ?></h4>
     </header>
 
-    <?php if ($this->action->id == 'update' && !$element->event_id) { ?>
+    <?php if ($this->action->id === 'update' && !$element->event_id) { ?>
         <div class="alert-box alert">This element is missing and needs to be completed</div>
     <?php } ?>
 

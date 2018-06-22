@@ -17,8 +17,8 @@
  */
 ?>
 <?php
-$section_classes = array('edit-'.CHtml::modelName($element->elementType->class_name));
-$section_classes[] =  'element full';
+$section_classes = array('element full edit');
+$section_classes[] = CHtml::modelName($element->elementType->class_name);
 if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
@@ -33,77 +33,67 @@ $element_Type = $element->getElementType();
 ?>
 
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+    <section
+            class="<?php echo implode(' ', $section_classes); ?>"
+            data-element-type-id="<?php echo $element->elementType->id ?>"
+            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+            data-element-type-name="<?php echo $element->elementType->name ?>"
+            data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
+            data-element-parent-id="<?php
+            if ($element->elementType->isChild()) {
+                echo $element->elementType->parent_element_type_id;
+            } ?>"
+            data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
 
-<section
-    class="<?php echo implode(' ', $section_classes); ?> <?php echo CHtml::modelName($element->elementType->class_name) ?> "
-    data-element-type-id="<?php echo $element->elementType->id?>"
-  data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-  data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
-  data-element-parent-id = "<?php
-  if ($element->elementType->isChild()){
-    echo $element->elementType->parent_element_type_id;
-  } ?>"
-  data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
+            style="min-height: 80px;"
+    >
 
-  style="min-height: 80px;"
->
-
-      <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
-        <header class="element-header">
-		<!-- Element title -->
-          <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
-        </header>
-    <!-- Additional element title information -->
-          <?php if (isset($this->clips['element-title-additional'])) { ?>
-          <div class="element-title-additional">
-              <?php
-              $this->renderClip('element-title-additional');
-              // don't want the header clip to repeat in child elements
-              unset($this->clips['element-title-additional']);
-              ?>
-          </div>
-          <?php } ?>
-    <!-- Element actions -->
-        <div class="element-actions">
-          <!-- order is important for layout because of Flex -->
-            <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
-              <span class="js-duplicate-element">
+        <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
+            <header class="element-header">
+                <!-- Add a element remove flag which is used when saving data -->
+                <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]" value="0">
+                <!-- Element title -->
+                <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
+            </header>
+            <!-- Additional element title information -->
+            <?php if (isset($this->clips['element-title-additional'])) { ?>
+                <div class="element-title-additional">
+                    <?php
+                    $this->renderClip('element-title-additional');
+                    // don't want the header clip to repeat in child elements
+                    unset($this->clips['element-title-additional']);
+                    ?>
+                </div>
+            <?php } ?>
+            <!-- Element actions -->
+            <div class="element-actions">
+                <!-- order is important for layout because of Flex -->
+                <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
+                    <span class="js-duplicate-element">
             <i class="oe-i duplicate"></i>
           </span>
-            <?php } ?>
-      <!-- remove MUST be last element -->
-          <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
-                title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
-                <i class="oe-i remove-circle"></i>
+                <?php } ?>
+                <!-- remove MUST be last element -->
+                <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
+                      title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
+            <i class="oe-i trash-blue"></i>
           </span>
-        </div>
-      <?php } ?>
+            </div>
+        <?php } ?>
 
 
-      <?php echo $content; ?>
+        <?php echo $content; ?>
 
-  </section>
+    </section>
 <?php } else { ?>
-  <section
-      class="<?php echo implode(' ', $section_classes); ?>"
-      data-element-type-id="<?php echo $element->elementType->id ?>"
-      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-      data-element-type-name="<?php echo $element->elementType->name ?>"
-      data-element-display-order="<?php echo $element->elementType->display_order ?>">
+    <section
+            class="<?php echo implode(' ', $section_classes); ?>"
+            data-element-type-id="<?php echo $element->elementType->id ?>"
+            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+            data-element-type-name="<?php echo $element->elementType->name ?>"
+            data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-      <?php echo $content; ?>
+        <?php echo $content; ?>
 
-	</section>
-<?php } else { ?>
-  <section
-      class="<?php echo implode(' ', $section_classes); ?>"
-      data-element-type-id="<?php echo $element->elementType->id ?>"
-      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-      data-element-type-name="<?php echo $element->elementType->name ?>"
-      data-element-display-order="<?php echo $element->elementType->display_order ?>">
-
-      <?php echo $content; ?>
-
-  </section>
+    </section>
 <?php } ?>
