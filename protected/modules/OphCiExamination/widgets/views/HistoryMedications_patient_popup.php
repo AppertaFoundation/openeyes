@@ -38,7 +38,7 @@
                     <?php foreach ($current as $entry) { ?>
                         <tr>
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
-                                <?php if ($entry->prescription_item) { ?>
+                                <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
@@ -54,7 +54,7 @@
                     <?php foreach ($stopped as $entry) { ?>
                         <tr class="stopped-kind" style="display: none;">
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
-                                <?php if ($entry->prescription_item) { ?>
+                                <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
