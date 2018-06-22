@@ -377,6 +377,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 
     if(closeButtons !== null){
         closeButtons.click(function closeAdder() {
+        		adderDiv.find('.selected').removeClass('selected');
             adderDiv.hide();
         });
     }

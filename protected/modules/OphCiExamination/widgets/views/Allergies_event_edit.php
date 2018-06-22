@@ -94,27 +94,19 @@ $required_allergy_ids = array_map(function ($r) {
         <i class="oe-i plus pro-theme"></i>
       </button>
       <!-- select (and search) options for element -->
-      <table class="select-options">
-        <tbody>
-        <tr>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false" id="history-allergy-option">
-                  <?php $allergies = $element->getAllergyOptions();
-                  foreach ($allergies as $allergy) { ?>
-                    <li data-str="<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
-                        <span class="auto-width">
-                          <?php echo $allergy->name; ?>
-                        </span>
-                    </li>
-                  <?php } ?>
-              </ul>
-            </div>
-            <!-- flex-layout -->
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="flex-layout flex-top flex-left">
+        <ul class="add-options cols-full" data-multi="true" data-clickadd="false" id="history-allergy-option">
+            <?php $allergies = $element->getAllergyOptions();
+            foreach ($allergies as $allergy) { ?>
+              <li data-str="<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
+                <span class="auto-width">
+                    <?php echo $allergy->name; ?>
+                </span>
+              </li>
+            <?php } ?>
+        </ul>
+      </div>
+      <!-- flex-layout -->
     </div><!-- oe-add-select-search -->
   </div>
 </div>

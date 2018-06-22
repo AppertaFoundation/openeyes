@@ -114,23 +114,17 @@ $model_name = CHtml::modelName($element);
     <div id="add-prev-surgery" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
       <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
-      <table class="select-options">
-        <tr>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul id="past-surgery-option" class="add-options" data-multi="true" data-clickadd="false">
-                  <?php
-                      $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
-                      foreach ($op_list as $op_item) { ?>
-                          <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
-                            <span class="restrict-width"><?php echo $op_item->name; ?></span>
-                          </li>
-                      <?php } ?>
-              </ul>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <div class="flex-layout flex-top flex-left">
+        <ul id="past-surgery-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
+            <?php
+                     $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
+                     foreach ($op_list as $op_item) { ?>
+                       <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
+                         <span class="restrict-width"><?php echo $op_item->name; ?></span>
+                       </li>
+                     <?php } ?>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -182,7 +176,7 @@ $model_name = CHtml::modelName($element);
             addSurgery,
             adder.find('#show-add-popup'),
             popup.find('.add-icon-btn'),
-            adder.find('#close-btn .add-icon-btn')
+            adder.find('#close-btn, .add-icon-btn')
         );
     });
 

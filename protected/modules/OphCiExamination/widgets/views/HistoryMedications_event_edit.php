@@ -89,7 +89,7 @@ $element_errors = $element->getErrors();
 
       <div id="add-to-medication" class="oe-add-select-search" style="display: none;">
         <!-- icon btns -->
-        <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
+        <div class="close-icon-btn" id="history-medication-close-popup" type="button"><i class="oe-i remove-circle medium"></i></div>
         <div class="select-icon-btn" type="button"><i id="history-medication-select-btn" class="oe-i menu"></i></div>
         <button class="button hint green add-icon-btn" type="button">
           <i class="oe-i plus pro-theme"></i>
@@ -192,6 +192,6 @@ $element_errors = $element->getErrors();
     addMedication,
     $('#add-medication-btn'),
     popup.find('.add-icon-btn'),
-    $('.close-icon-btn, .add-icon-btn')
+    $('#history-medication-close-popup, .add-icon-btn')
   );
 </script>
