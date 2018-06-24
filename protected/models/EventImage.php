@@ -91,8 +91,6 @@ class EventImage extends BaseActiveRecord
             ->order('event.last_modified_date DESC')
             ->queryScalar();
 
-        echo 'event_id:' . $event_id;
-
         if ($event_id === null) {
             return null;
         }
