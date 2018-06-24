@@ -87,6 +87,8 @@ class EventImageController extends BaseController
         $eventImage->save();
 
         try {
+            ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
+
             ob_start();
 
             $url = '/' . $event->eventType->class_name . '/default/image/' . $event->id;
