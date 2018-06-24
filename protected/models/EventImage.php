@@ -65,4 +65,38 @@ class EventImage extends BaseActiveRecord
     {
         return parent::model($className);
     }
+
+
+    /**
+     * Get the latest event that has not had an image generated for it yet.
+     * Events that have failed image generation are skipped.
+     *
+     * @return Event|null
+     */
+    public function getNextEventToImage()
+    {
+        $event_id = Yii::app()->db->createCommand()
+            ->select('event.id')
+            ->from('event')
+            ->leftJoin('event_image', 'event_image.event_id = event.id')
+            ->leftJoin('event_image_status', 'event_image_status.id = event_image.status_id')
+            ->where('deleted = 0 AND episode_id IS NOT NULL AND 
+                (
+                  event_image.id IS NULL OR 
+                  (
+                    event.last_modified_date > event_image.last_modified_date AND 
+                    event_image_status.status IN("NOT_CREATED", "GENERATED")
+                  )
+                )')
+            ->order('event.last_modified_date DESC')
+            ->queryScalar();
+
+        echo 'event_id:' . $event_id;
+
+        if ($event_id === null) {
+            return null;
+        }
+
+        return Event::model()->findByPk($event_id);
+    }
 }
