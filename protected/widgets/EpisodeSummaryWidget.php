@@ -43,4 +43,95 @@ abstract class EpisodeSummaryWidget extends CWidget
     public function run_oescape($widgets_no = 1){
 
     }
+
+    public function getOpnoteEvent(){
+        $opnote_marking = array('right'=>array(), 'left'=>array());
+
+        $marking_list = array(
+            'Phacoemulsification',
+            'Phacoemulsification and Intraocular lens',
+            'Trabeculectomy',
+            'Argon laser trabeculoplasty',
+            'Selective laser trabeculoplasty',
+            'Panretinal photocoagulation',
+            'Cycloablation',
+            'Cyclodialysis cleft repair',
+            'Peripheral iridectomy'
+        );
+
+
+        $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->episode->patient);
+
+        foreach ($events as $event) {
+            if (($proc_list = $event->getElementByClass('Element_OphTrOperationnote_ProcedureList'))) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+                $eye_side = array();
+                switch ($proc_list->eye->name) {
+                    case 'Left':
+                        array_push($eye_side, 'left');
+                        break;
+                    case 'Right':
+                        array_push($eye_side, 'right');
+                        break;
+                    case 'Both':
+                        array_push($eye_side, 'left');
+                        array_push($eye_side, 'right');
+                        break;
+                    default:
+                        break;
+                }
+                foreach ($eye_side as $side){
+                    foreach ($proc_list->procedures as $proc){
+                        if (in_array($proc->term, $marking_list)){
+                            if (empty($opnote_marking[$side])||!in_array($proc->short_format, $opnote_marking[$side])){
+                                $opnote_marking[$side][$proc->short_format] = array();
+                            }
+                            array_push($opnote_marking[$side][$proc->short_format], $timestamp);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $opnote_marking;
+    }
+
+    public function getLaserEvent() {
+        $laser_marking = array('right'=>array(), 'left'=>array());
+
+        $laser_list = array(
+            'Capsulotomy (YAG)',
+            'Cycloablation',
+            'Peripheral iridectomy',
+        );
+
+        $event_laser = EventType::model()->find('class_name=?', array('OphTrLaser'));
+        $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->episode->patient);
+
+        foreach ($events as $event) {
+            $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+            if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ){
+                foreach ($proc_list->left_procedures as $left_procedure) {
+                    if (in_array($left_procedure->term, $laser_list)){
+                        if (empty($laser_marking['left'])||!in_array($left_procedure->short_format, $laser_marking['left'])){
+                            $laser_marking['left'][$left_procedure->short_format] = array();
+                        }
+                        array_push($laser_marking['left'][$left_procedure->short_format], $timestamp);
+                    }
+                }
+                foreach ($proc_list->right_procedures as $right_procedure) {
+                    if (in_array($right_procedure->term, $laser_list)){
+                        if (empty($laser_marking['right'])||!in_array($right_procedure->short_format, $laser_marking['right'])){
+                            $laser_marking['right'][$right_procedure->short_format] = array();
+                        }
+                        array_push($laser_marking['right'][$right_procedure->short_format], $timestamp);
+                    }
+                }
+            }
+        }
+
+        return $laser_marking;
+    }
+
 }

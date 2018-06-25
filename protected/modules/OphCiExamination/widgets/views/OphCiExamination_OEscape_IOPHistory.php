@@ -8,7 +8,8 @@
   $(document).ready(function () {
     var IOP_data = <?= CJavaScript::encode($this->getIOPData()); ?>;
     var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
-    var IOP_marking = <?= CJavaScript::encode($this->getIOPMarkingEvent()); ?>;
+    var IOP_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
+    var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     var sides = ['left', 'right'];
     var chart_IOP = {}, Yaxis = {};
     for (var i in sides) {
@@ -16,6 +17,11 @@
       for($marking_key in IOP_marking[sides[i]]){
         for ($i in IOP_marking[sides[i]][$marking_key]){
           optionsIOP['xAxis']['plotLines'].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
+        }
+      }
+      for($marking_key in laser_marking[sides[i]]){
+        for ($i in laser_marking[sides[i]][$marking_key]){
+          optionsIOP['xAxis']['plotLines'].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
         }
       }
       Yaxis[sides[i]] = setYPlotline(IOP_target, sides[i]);

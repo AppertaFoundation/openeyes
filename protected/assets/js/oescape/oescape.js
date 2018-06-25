@@ -119,13 +119,15 @@ function pruneYTicks(ticks, plotHeight, label_height){
   return new_ticks;
 }
 
-function cleanVATicks(ticks, options, charts, axis_index){
+function cleanVATicks(ticks, options, charts, axis_index, plotLines){
   //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
   //programmatically, please do it
   ticks = pruneYTicks(ticks, charts.right.yAxis[axis_index].height, 12);
   options['yAxis'][axis_index]['tickPositions'] = ticks['tick_position'];
   options['yAxis'][axis_index]['labels'] = setYLabels(ticks['tick_position'], ticks['tick_labels']);
+  options['xAxis']['plotLines'] = plotLines['left'];
   charts.left.update(options);
+  options['xAxis']['plotLines'] = plotLines['right'];
   charts.right.update(options);
   charts.left.redraw();
   charts.right.redraw();
@@ -160,4 +162,17 @@ function setOEScapeSize(size_str){
   right.css({"width":(100-sizes[size_str].percent)+'%'});
   right.toggle(size_str !== 'full');
   reflow();
+}
+
+function setXPlotLine(text_value,date,eye_side){
+  return {
+    className: 'oes-hs-plotline-'+eye_side+'-tight',
+    value: date,
+    label: {
+      text: text_value,
+      rotation: 90,
+      x: 2,
+    },
+    zIndex: 1
+  };
 }

@@ -97,16 +97,3 @@ function setYPlotline(target_value, eye_side){
   };
 }
 
-function setXPlotLine(text_value,date,eye_side){
-  return {
-    className: 'oes-hs-plotline-'+eye_side+'-tight',
-    value: date,
-    label: {
-      text: text_value,
-      rotation: 90,
-      x: 2,
-    },
-    zIndex: 1
-  };
-}
-
