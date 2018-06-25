@@ -33,8 +33,9 @@
     optionsVA['chart']['height'] = 800;
     <?php } ?>
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
-    var IOP_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
+    var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
+
     var sides = ['left', 'right'];
     var chart_VA = {};
     var plotLines = {};
@@ -42,18 +43,8 @@
     for (var i in sides) {
       optionsVA['xAxis']['plotLines'] = [];
       plotLines[sides[i]] = [];
-      for($marking_key in IOP_marking[sides[i]]){
-        for ($i in IOP_marking[sides[i]][$marking_key]){
-          optionsVA['xAxis']['plotLines'].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
-          plotLines[sides[i]].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
-      for($marking_key in laser_marking[sides[i]]){
-        for ($i in laser_marking[sides[i]][$marking_key]){
-          optionsVA['xAxis']['plotLines'].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
-          plotLines[sides[i]].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
+      setMarkingEvents(optionsVA, opnote_marking, plotLines, sides[i]);
+      setMarkingEvents(optionsVA, laser_marking, plotLines, sides[i]);
       chart_VA[sides[i]] = new Highcharts.chart('highcharts-VA-'+sides[i], optionsVA);
       drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
     }

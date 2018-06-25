@@ -51,7 +51,7 @@
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
     var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
-    var IOP_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
+    var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     var sides = ['left', 'right'];
     var chart_MR = {};
@@ -60,18 +60,8 @@
       changeSetting(injections_data, sides[i]);
       options_MR['xAxis']['plotLines'] = [];
       plotLines[sides[i]] = [];
-      for($marking_key in IOP_marking[sides[i]]){
-        for ($i in IOP_marking[sides[i]][$marking_key]){
-          options_MR['xAxis']['plotLines'].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
-          plotLines[sides[i]].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
-      for($marking_key in laser_marking[sides[i]]){
-        for ($i in laser_marking[sides[i]][$marking_key]){
-          options_MR['xAxis']['plotLines'].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
-          plotLines[sides[i]].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
+      setMarkingEvents(options_MR, opnote_marking, plotLines, sides[i]);
+      setMarkingEvents(options_MR, laser_marking, plotLines, sides[i]);
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
     }

@@ -8,22 +8,14 @@
   $(document).ready(function () {
     var IOP_data = <?= CJavaScript::encode($this->getIOPData()); ?>;
     var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
-    var IOP_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
+    var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
     var sides = ['left', 'right'];
     var chart_IOP = {}, Yaxis = {};
     for (var i in sides) {
       optionsIOP['xAxis']['plotLines'] = [];
-      for($marking_key in IOP_marking[sides[i]]){
-        for ($i in IOP_marking[sides[i]][$marking_key]){
-          optionsIOP['xAxis']['plotLines'].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
-      for($marking_key in laser_marking[sides[i]]){
-        for ($i in laser_marking[sides[i]][$marking_key]){
-          optionsIOP['xAxis']['plotLines'].push(setXPlotLine($marking_key,laser_marking[sides[i]][$marking_key][$i], sides[i] ));
-        }
-      }
+      setMarkingEvents(optionsIOP, opnote_marking, null, sides[i]);
+      setMarkingEvents(optionsIOP, laser_marking, null, sides[i]);
       Yaxis[sides[i]] = setYPlotline(IOP_target, sides[i]);
       optionsIOP['yAxis']['plotLines'] = [Yaxis[sides[i]]];
       chart_IOP[sides[i]] = Highcharts.chart('highcharts-IOP-'+sides[i], optionsIOP);

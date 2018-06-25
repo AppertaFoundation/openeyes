@@ -176,3 +176,14 @@ function setXPlotLine(text_value,date,eye_side){
     zIndex: 1
   };
 }
+
+function setMarkingEvents(options, data, plotLines, side){
+    for(key in data[side]){
+      for (j in data[side][key]){
+        options['xAxis']['plotLines'].push(setXPlotLine(key,data[side][key][j], side));
+        if (plotLines){
+          plotLines[side].push(setXPlotLine(key,data[side][key][j], side));
+        }
+      }
+    }
+}
