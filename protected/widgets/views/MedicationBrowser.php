@@ -70,9 +70,10 @@ if(Yii::app()->controller->action->getId() == 'ElementForm'){
     </table>
 </div>
 
-<button class="button hint small primary  js-add-select-search" type="button" id="<?php echo $this->id."_open_btn"; ?>">
+<button class="button hint small primary  js-add-select-search pull-right" type="button" id="<?php echo $this->id."_open_btn"; ?>">
     Add
 </button>
+<div class="clearfix"></div>
 <script type="text/javascript">
     $(function(){
         var browser = new OpenEyes.UI.MedicationBrowser({
