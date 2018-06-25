@@ -124,7 +124,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
             <th>
               <input id="systemic-diagonses-search-field"
                      class="search"
-                     placeholder="Search for Drug"
+                     placeholder="Search for Diagnoses"
                      type="text">
             </th>
           </tr>

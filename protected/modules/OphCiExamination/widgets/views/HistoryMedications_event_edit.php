@@ -124,7 +124,7 @@ $element_errors = $element->getErrors();
               <th>
                 <input id="history-medication-search-field"
                        class="search"
-                       placeholder="Search for Drug"
+                       placeholder="Search for Medications"
                        type="text">
               </th>
             </tr>
