@@ -114,7 +114,7 @@ if (is_array($ordered_episodes)):
                   data-event-type="<?= $event_name ?>"
                   data-subspecialty="<?= $subspecialty_name ?>"
                   data-event-icon='<?= $event->getEventIcon('medium') ?>'
-                  <?php if ($event_image !== null && $event_image->status->status === 'CREATED'): ?>
+                  <?php if ($event_image !== null && $event_image->status->name === 'CREATED'): ?>
                     data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
                   <?php endif; ?>>
 
