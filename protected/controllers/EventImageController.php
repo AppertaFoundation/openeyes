@@ -89,7 +89,7 @@ class EventImageController extends BaseController
         $eventImage = EventImage::model()->find('event_id = :event_id',
             array(':event_id' => $event->id)) ?: new EventImage();
         $eventImage->event_id = $event->id;
-        $eventImage->status_id = EventImageStatus::model()->find('status = "GENERATING"')->id;
+        $eventImage->status_id = EventImageStatus::model()->find('name = "GENERATING"')->id;
         $eventImage->save();
 
         try {
@@ -120,14 +120,14 @@ class EventImageController extends BaseController
 
             $eventImage->event_id = $event->id;
             $eventImage->image_data = file_get_contents($output_image);
-            $eventImage->status_id = EventImageStatus::model()->find('status = "CREATED"')->id;
+            $eventImage->status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
 
             if (!$eventImage->save()) {
                 throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
             }
 
         } catch (Exception $ex) {
-            $eventImage->status_id = EventImageStatus::model()->find('status = "FAILED"')->id;
+            $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
             $eventImage->save();
             throw $ex;
         }

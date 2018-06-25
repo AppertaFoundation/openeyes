@@ -13,15 +13,15 @@ class m180619_032208_create_event_image_table extends OEMigration
                 'status_id' => 'int(11)  NOT NULL',
             ));
 
-        $this->createTable('event_image_status', array('id' => 'pk', 'status' => 'varchar(50)'));
+        $this->createTable('event_image_status', array('id' => 'pk', 'name' => 'varchar(50)'));
 
         $this->addForeignKey('event_image_event_id_fk', 'event_image', 'event_id', 'event', 'id');
         $this->addForeignKey('event_image_status_id_fk', 'event_image', 'status_id', 'event_image_status', 'id');
 
-        $this->insert('event_image_status', array('status' => 'NOT_CREATED'));
-        $this->insert('event_image_status', array('status' => 'CREATED'));
-        $this->insert('event_image_status', array('status' => 'FAILED'));
-        $this->insert('event_image_status', array('status' => 'GENERATING'));
+        $this->insert('event_image_status', array('name' => 'NOT_CREATED'));
+        $this->insert('event_image_status', array('name' => 'CREATED'));
+        $this->insert('event_image_status', array('name' => 'FAILED'));
+        $this->insert('event_image_status', array('name' => 'GENERATING'));
     }
 
     public function safeDown()

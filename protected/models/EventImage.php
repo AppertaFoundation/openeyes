@@ -85,7 +85,7 @@ class EventImage extends BaseActiveRecord
                   event_image.id IS NULL OR 
                   (
                     event.last_modified_date > event_image.last_modified_date AND 
-                    event_image_status.status IN("NOT_CREATED", "GENERATED")
+                    event_image_status.name IN ("NOT_CREATED", "GENERATED")
                   )
                 )')
             ->order('event.last_modified_date DESC')
