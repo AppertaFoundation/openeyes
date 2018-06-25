@@ -64,8 +64,7 @@
       setMarkingEvents(options_MR, laser_marking, plotLines, sides[i]);
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
+      cleanVATicks(va_ticks, options_MR, chart_MR[sides[i]], axis_index);
     }
-
-    cleanVATicks(va_ticks, options_MR, chart_MR, axis_index, plotLines);
   });
 </script>

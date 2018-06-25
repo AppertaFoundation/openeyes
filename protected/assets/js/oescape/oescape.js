@@ -119,18 +119,14 @@ function pruneYTicks(ticks, plotHeight, label_height){
   return new_ticks;
 }
 
-function cleanVATicks(ticks, options, charts, axis_index, plotLines){
+function cleanVATicks(ticks, options, charts, axis_index){
   //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
   //programmatically, please do it
-  ticks = pruneYTicks(ticks, charts.right.yAxis[axis_index].height, 12);
+  ticks = pruneYTicks(ticks, charts.yAxis[axis_index].height, 12);
   options['yAxis'][axis_index]['tickPositions'] = ticks['tick_position'];
   options['yAxis'][axis_index]['labels'] = setYLabels(ticks['tick_position'], ticks['tick_labels']);
-  options['xAxis']['plotLines'] = plotLines['left'];
-  charts.left.update(options);
-  options['xAxis']['plotLines'] = plotLines['right'];
-  charts.right.update(options);
-  charts.left.redraw();
-  charts.right.redraw();
+  charts.update(options);
+  charts.redraw();
 }
 
 /**

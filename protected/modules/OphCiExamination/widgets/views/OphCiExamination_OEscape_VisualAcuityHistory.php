@@ -47,7 +47,7 @@
       setMarkingEvents(optionsVA, laser_marking, plotLines, sides[i]);
       chart_VA[sides[i]] = new Highcharts.chart('highcharts-VA-'+sides[i], optionsVA);
       drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
+      cleanVATicks(va_ticks, optionsVA, chart_VA[sides[i]], axis_index);
     }
-    cleanVATicks(va_ticks, optionsVA, chart_VA, axis_index, plotLines);
   });
 </script>
