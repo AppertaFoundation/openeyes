@@ -224,6 +224,9 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
   margin-left: 0px;
   margin-right: 0px;
 }
+.OEModule_OphCiExamination_models_HistoryMedications table tr.fade{
+    opacity: 1;
+}
 /* line 14, ../sass/components/elements/_history-medications.scss */
 .OEModule_OphCiExamination_models_HistoryMedications table th.date-col {
   min-width: 300px;
