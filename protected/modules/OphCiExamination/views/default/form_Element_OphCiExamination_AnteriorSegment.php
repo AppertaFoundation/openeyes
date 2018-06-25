@@ -56,12 +56,3 @@
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AnteriorSegment.js",
     CClientScript::POS_HEAD); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
-
-<style>
-  .OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
-    padding-top: 111px;
-    left: -15px;
-  }
-</style>
-
-
