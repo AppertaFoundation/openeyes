@@ -8,8 +8,7 @@ class EventImageController extends BaseController
     public function filters()
     {
         return array(
-            'accessControl', // perform access control for CRUD operations
-            'postOnly + delete', // we only allow deletion via POST request
+            'accessControl',
         );
     }
 
@@ -45,8 +44,9 @@ class EventImageController extends BaseController
     }
 
     /**
-     * @param $id
-     * @throws Exception
+     * @param int $id Creates an event image for the vent with the given ID
+     * @throws CHttpException Thrown if the image cannot be found
+     * @throws Exception Thrown if an issue occurs when generating the image
      */
     public function actionCreate($id)
     {
@@ -59,9 +59,11 @@ class EventImageController extends BaseController
     }
 
     /**
-     * @param $id
-     * @return EventImage
-     * @throws CHttpException
+     * Loads the model with the given ID
+     *
+     * @param int $id The ID to find
+     * @return EventImage The image that is found
+     * @throws CHttpException Thrown if an EvebtImage with the given ID cannot be found
      */
     public function loadModel($id)
     {
@@ -75,8 +77,12 @@ class EventImageController extends BaseController
 
 
     /**
-     * @param Event $event
-     * @throws Exception
+     * Creates an EventImage for the given event.
+     * An EventImage record is created whether the actual image generation is successful or not.
+     * The "status" of the EventIMage will be "CREATED" if the image is created successfully, "FAILED" if an error occurs, and "GENERATING" if an error occurs that cannot be caught (e.g. a
+     *
+     * @param Event $event The event to create the image for
+     * @throws Exception Thrown if an error occurs when generating the event
      */
     public static function createImageForEvent($event)
     {
