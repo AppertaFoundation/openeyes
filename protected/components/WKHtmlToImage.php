@@ -4,7 +4,7 @@
  * OpenEyes.
  *
  *
- * Copyright OpenEyes Foundation, 2017
+ * Copyright OpenEyes Foundation, 2018
  *
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -28,6 +28,18 @@ class WKHtmlToImage extends WKHtmlToX
     }
 
 
+    /**
+     * Generates an image from the given HTML
+     *
+     * @param string $imageDirectory The directory the image will be placed in
+     * @param string $prefix THe prefix of the ouput file
+     * @param string $suffix The suffix of the output file (extension will always be .png
+     * @param string $html The HTML to render
+     * @param array $options Custom options, including heigh twidth etc
+     * @param bool $output_html Whether to return the HTML that was rendered or not
+     * @return bool True if the image was generated, otherwise false
+     * @throws Exception Throw nif an error occurs
+     */
     public function generateImage(
         $imageDirectory,
         $prefix,
@@ -72,10 +84,5 @@ class WKHtmlToImage extends WKHtmlToX
         $this->deleteFile($html_file);
 
         return true;
-    }
-
-    public function setCustomTag($tag_name, $value)
-    {
-        $this->custom_tags[$tag_name] = $value;
     }
 }
