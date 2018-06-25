@@ -5,7 +5,7 @@ class CreateEventImageCommand extends CConsoleCommand
 {
     public function getHelp()
     {
-        return 'Closes all currently open user activity hotlist items.';
+        return 'Creates the preview image for the given event ID, or creates the preview image for the latest event without an image if no event ID is specified';
     }
 
     public function run($args)
