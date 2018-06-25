@@ -31,7 +31,7 @@
                 <?php $this->displayErrors(@$errors) ?>
                 <p id="errors"></p>
             </div>
-            <table class="standard row">
+            <table class="row">
                 <tbody>
                 <tr>
                     <td>Delete:</td>
