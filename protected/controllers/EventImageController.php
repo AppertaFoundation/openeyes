@@ -111,12 +111,12 @@ class EventImageController extends BaseController
                 array('width' => 1250, 'quality' => 85));
             $input_image = $directory . '/event_' . $event->id . '.png';
             $output_image = $directory . '/event_' . $event->id . '_small.png';
-            $cmd_str = 'convert ' . $input_image . ' -geometry 540x -sharpen 0x1.0 ' . $output_image;
 
-            $res = shell_exec($cmd_str);
-            if (!file_exists($output_image)) {
-                throw new Exception('Unable to generate image ' . $res);
-            }
+            $imagick = new \Imagick($input_image);
+            $width = 540;
+            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.65);
+            $imagick->writeImage($output_image);
 
             $eventImage->event_id = $event->id;
             $eventImage->image_data = file_get_contents($output_image);
@@ -125,6 +125,9 @@ class EventImageController extends BaseController
             if (!$eventImage->save()) {
                 throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
             }
+
+            $image->deleteFile($input_image);
+            $image->deleteFile($output_image);
 
         } catch (Exception $ex) {
             $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
