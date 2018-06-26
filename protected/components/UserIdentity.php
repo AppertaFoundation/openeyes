@@ -275,7 +275,10 @@ class UserIdentity extends CUserIdentity
                     $user->email = $info['mail'][0];
                 }
             }
-            if (!$user->save()) {
+
+            // using isModelDirty() because
+            // $user->saveOnlyIfDirty()->save() returns false if the model wasn't dirty => model wasn't saved
+            if ($user->isModelDirty() && !$user->save()) {
                 $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(), true));
                 throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(), true));
             }
