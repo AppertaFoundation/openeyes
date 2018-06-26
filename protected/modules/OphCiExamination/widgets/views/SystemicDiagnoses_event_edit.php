@@ -101,7 +101,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
           <td>
             <div class="flex-layout flex-top flex-left">
               <ul class="add-options" data-multi="true" data-clickadd="false" id="systemic-diagonses-option">
-                  <?php $systemicDiagnoses = [];
+                  <?php
                   foreach (CommonSystemicDisorder::getDisorders() as $disorder) { ?>
                       <li data-str="<?php echo $disorder->term ?>" data-id="<?php echo $disorder->id?>">
                         <span class="auto-width">
