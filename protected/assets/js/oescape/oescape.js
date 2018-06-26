@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-
-
 // setup resize buttons
   // buttons have data-area attribute: small, medium, large and full
   $('.js-oes-area-resize').click(function( e ){
@@ -44,6 +42,41 @@ $(document).ready(function () {
 
 });
 
+
+var OEScape = {
+  toolTipFormatters: {
+    VA: function(dataPoint){
+      var pos = dataPoint.y;
+      var nearestTickIndex = 0;
+      var ticks = OEScape.full_va_ticks;
+      for (var ii = 0; ii < ticks.tick_position.length; ii++){
+        if(ticks.tick_position[ii] <= pos){
+          nearestTickIndex = ii;
+        } else {
+          break;
+        }
+      }
+
+      return OEScape.toolTipFormatters.EpochSeriesValue(
+        dataPoint.x,
+        dataPoint.series.name,
+        ticks.tick_labels[nearestTickIndex]
+      );
+    },
+    Default: function(dataPoint){
+      return this.EpochSeriesValue(dataPoint.x, dataPoint.series.name, dataPoint.y);
+    },
+    EpochSeriesValue: function(epoch_date, series_name, value){
+      return  '<div>' + OEScape.epochToDateStr(epoch_date) +'<br/>'
+        + series_name + ': ' + value;
+    },
+  },
+  epochToDateStr: function(epoch){
+    var date = new Date(epoch);
+    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  },
+  full_va_ticks: {'tick_position':[0], 'tick_labels':['error']},
+};
 
 function addSeries(chart, title, data, options){
   chart.addSeries(Object.assign({

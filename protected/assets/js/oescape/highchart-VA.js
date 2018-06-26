@@ -23,18 +23,7 @@ var optionsVA = {
     shared: false,
     useHtml: true,
     formatter: function(){
-      var pos = this.y;
-      var nearestTickIndex = 0;
-      for (var ii = 0; ii < full_va_ticks.tick_position.length; ii++){
-        if(full_va_ticks.tick_position[ii] <= pos){
-          nearestTickIndex = ii;
-        } else {
-          break;
-        }
-      }
-      var date = new Date(this.x);
-      return '<div>' + date.getDate() + '\/' + (date.getMonth() + 1) + '\/' + date.getFullYear() +'<br/>'
-        + this.series.name +': '+ full_va_ticks.tick_labels[nearestTickIndex] + '</div>';
+      return OEScape.toolTipFormatters.VA(this);
     },
   },
 

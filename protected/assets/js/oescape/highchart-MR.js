@@ -54,6 +54,17 @@ var options_MR = {
   navigator: 		highHelp.chartNavigator(),
   rangeSelector: 	highHelp.chartRangeSelector(-30,-100),	// offset from bottom right (x,y) "Show all" button
 
+  tooltip: {
+    useHtml: true,
+    formatter: function(){
+      if(this.series.name.startsWith('(VA)')) {
+        return OEScape.toolTipFormatters.VA(this);
+      } else {
+        return OEScape.toolTipFormatters.Default(this);
+      }
+    }
+  },
+
   yAxis: [{
     // primary y axis
     title: {
@@ -150,6 +161,7 @@ function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_dat
   addSeries(chart_MR, '(VA)'+axis_type+'  ('+eye_side_label+')', VA_data[eye_side], VA_options);
   addSeries(chart_MR, 'CRT ('+eye_side_label+')',  CRT_data[eye_side], CRT_options);
   addSeries(chart_MR, 'VA > 5 lines',  VA_lines_data[eye_side], VA_lines_options);
+
   var i = 0;
   for ( var injection_name in injections_data[eye_side]) {
     var injections_options = {

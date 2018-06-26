@@ -44,6 +44,7 @@
     var va_axis = <?= CJavaScript::encode($this->getVaAxis()); ?>;
     options_MR['yAxis'][axis_index]['title']['text'] = "VA ("+va_axis+")";
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
+    OEScape.full_va_ticks = va_ticks;
     options_MR['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
     options_MR['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
