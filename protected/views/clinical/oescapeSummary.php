@@ -52,7 +52,7 @@ $episode->audit('episode summary', 'view');
             'episode' => $episode,
             'event_type' => $summaryItem->event_type,
         )); ?>
-        <?php $widget->run_oescape();  }
+        <?php $widget->run_oescape(count($summaryItems));  }
     } ?>
   </div>
 </div>

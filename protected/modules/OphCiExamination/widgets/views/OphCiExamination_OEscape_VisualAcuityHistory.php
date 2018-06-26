@@ -31,6 +31,9 @@
     var axis_index = 0;
     optionsVA['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
     optionsVA['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
+    <?php if ($widget_no == 1) {?>
+    optionsVA['chart']['height'] = 800;
+    <?php } ?>
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var sides = ['left', 'right'];
     var chart_VA = {};

@@ -81,6 +81,8 @@ var options_MR = {
     },
     offset: xAxisOffset,   	// this moves the chart up to allow for the banners and other flags
     tickPixelInterval: 50,  // if this is too high the last tick isn't shown (default 100) but depends on chart width
+    startOnTick: true,
+    endOnTick: true
   },
 
   plotOptions: {

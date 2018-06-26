@@ -40,7 +40,7 @@ abstract class EpisodeSummaryWidget extends CWidget
 
     }
 
-    public function run_oescape(){
+    public function run_oescape($widgets_no = 1){
 
     }
 }

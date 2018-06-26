@@ -54,15 +54,15 @@ var optionsVA = {
     title: {
       text: '',
     },
-
     crosshair: {
       snap:false,
     },
-
     labels: {
       y:25				// move labels below ticks
     },
     tickPixelInterval: 100,  // if this is too high the last tick isn't shown (default 100)
+    startOnTick: true,
+    endOnTick: true
   },
 
   yAxis: [{
