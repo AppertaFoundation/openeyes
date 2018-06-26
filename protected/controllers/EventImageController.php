@@ -38,9 +38,43 @@ class EventImageController extends BaseController
      */
     public function actionView($id)
     {
+        // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
         $model = EventImage::model()->find('event_id = :event_id', array(':event_id' => $id));
+        $fileModTime = strtotime($model->last_modified_date);
+        $headers = $this->getRequestHeaders();
+
         header('Content-type: image/png');
-        echo $model->image_data;
+        header('Cache-Control: public');
+        header('Pragma:');
+        // Check if the client is validating his cache and if it is current.
+        if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $fileModTime)) {
+            // Client's cache IS current, so we just respond '304 Not Modified'.
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
+        } else {
+            // Image not cached or cache outdated, we respond '200 OK' and output the image.
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
+
+            header('Content-transfer-encoding: binary');
+            header('Content-length: ' . strlen($model->image_data));
+            echo $model->image_data;
+        }
+    }
+
+    private function getRequestHeaders()
+    {
+        if (function_exists("apache_request_headers")) {
+            if ($headers = apache_request_headers()) {
+                return $headers;
+            }
+        }
+
+        $headers = array();
+        // Grab the IF_MODIFIED_SINCE header
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            $headers['If-Modified-Since'] = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
+        }
+
+        return $headers;
     }
 
     /**
