@@ -69,12 +69,11 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Need split event files.
-     *
      * @TODO: determine if this should be defined by controller property
      *
-     * @param CAction $action
-     *
+     * @param $action
      * @return bool
+     * @throws \CHttpException
      */
     protected function beforeAction($action)
     {
@@ -86,8 +85,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Applies workflow and filtering to the element retrieval.
-     *
-     * @return BaseEventTypeElement[]
+     * @return \BaseEventTypeElement[]
+     * @throws \CException
      */
     protected function getEventElements()
     {
@@ -320,13 +319,14 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Override action value when action is step to be update.
      *
-     * @param BaseEventTypeElement                $element
-     * @param string                              $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     * @param array                               $view_data
-     * @param bool                                $return
-     * @param bool                                $processOutput
+     * @param \BaseEventTypeElement $element
+     * @param string $action
+     * @param \BaseCActiveBaseEventTypeCActiveForm $form
+     * @param array $data
+     * @param array $view_data
+     * @param bool $return
+     * @param bool $processOutput
+     * @throws \Exception
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
@@ -1184,9 +1184,25 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
 
+            $et_name = models\HistoryRisks::model()->getElementTypeName();
             foreach ($missing_risks as $missing_risk) {
-                $et_name = models\HistoryRisks::model()->getElementTypeName();
                 $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+            }
+        }
+
+        if(isset($data['OEModule_OphCiExamination_models_PastSurgery'])){
+            $past_surgeries = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PastSurgery');
+            if ($past_surgeries) {
+                $et_name = models\PastSurgery::model()->getElementTypeName();
+                foreach ($past_surgeries->operations as $ps_key => $past_surgery) {
+                    if($ps_errors = $past_surgery->getErrors()){
+
+echo "TODO: handle error in " . __FILE__ . " :: Line" . __LINE__;
+
+                        //$errors[$et_name. "_$ps_key"][$et_name . "_$ps_key"][] = 'Operation ('.($ps_key + 1).'): ' . implode(', ', $ps_errors);
+                    }
+                }
+die;
             }
         }
 

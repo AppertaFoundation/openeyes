@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\PastSurgery_Operation;
+
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('PastSurgery.js') ?>"></script>
 <?php
@@ -27,6 +29,7 @@ $model_name = CHtml::modelName($element);
         <thead>
         <tr>
             <th>Operation</th>
+            <th>Checked status</th>
             <th>Side</th>
             <th>Date</th>
             <th>Action</th>
@@ -35,30 +38,8 @@ $model_name = CHtml::modelName($element);
         <tbody>
         <?php
         $row_count = 0;
-        foreach ($operations as $i => $op) {
-            if (!array_key_exists('object', $op)) {
-                $this->render(
-                    'PastSurgery_OperationEntry_event_edit',
-                    array(
-                        'values' => array(
-                            'op' => $op,
-                            'operation' => $op['operation'],
-                            'form' => $form,
-                            'model_name' => CHtml::modelName($element),
-                            'side' => $op['side'],
-                            'date' => $op['date'],
 
-                        ),
-                        'removable' => false,
-                        'row_count' => ($row_count),
-                        'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
-                        'model_name' => CHtml::modelName($element),
-                    )
-                );
-                $row_count++;
-            }
-        }
-
+        // these are the missing but required to collect operations
         foreach ($this->getMissingRequiredOperation() as $i => $op) {
             $this->render(
                 'PastSurgery_OperationEntry_event_edit',
@@ -71,12 +52,13 @@ $model_name = CHtml::modelName($element);
                     //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
                     'removable' => true,
                     'required' => true,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                 )
             );
             $row_count++;
         }
 
-
+        //$operations : operations that have been recorded as entries in this element + operations from op note
         foreach ($this->getOperationsArray() as $i => $op) {
             $this->render(
                 'PastSurgery_OperationEntry_event_edit',
@@ -88,7 +70,8 @@ $model_name = CHtml::modelName($element);
                     'model_name' => CHtml::modelName($element),
                     'removable' => true,
                     //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
-                    'required' => $op['required']
+                    'required' => $op['required'],
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                 )
             );
             $row_count++;
@@ -122,8 +105,10 @@ $model_name = CHtml::modelName($element);
                 'side_id' => '{{side_id}}',
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
-                'date_display' => '{{date_display}}'
-            )
+                'date_display' => '{{date_display}}',
+                'had_operation' => (string) PastSurgery_Operation::$PRESENT,
+            ),
+            'posted_not_checked' => false,
         )
     );
     ?>

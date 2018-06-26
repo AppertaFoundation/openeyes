@@ -101,6 +101,18 @@ class PastSurgery extends \BaseEventTypeElement
         );
     }
 
+    public function beforeSave()
+    {
+        $entries = $this->operations;
+        foreach ($entries as $key=>$entry) {
+            if($entry->had_operation == PastSurgery_Operation::$NOT_CHECKED) {
+                unset($entries[$key]);
+            }
+        }
+        $this->operations = $entries;
+        return parent::beforeSave();
+    }
+
     /**
      * individual operation validation
      */
@@ -109,7 +121,7 @@ class PastSurgery extends \BaseEventTypeElement
         foreach ($this->operations as $i => $operation) {
             if (!$operation->validate()) {
                 foreach ($operation->getErrors() as $fld => $err) {
-                    $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
+                 //   $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }

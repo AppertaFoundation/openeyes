@@ -81,6 +81,7 @@ class PastSurgery extends \BaseEventElementWidget
                 $op_entry->operation = $operation['operation'];
                 $op_entry->side_id = $operation['side_id'];
                 $op_entry->date = $operation['date'];
+                $op_entry->had_operation = array_key_exists('had_operation', $operation) ? $operation['had_operation'] : null;
                 $operations[] = $op_entry;
             }
             $element->operations = $operations;
@@ -157,10 +158,14 @@ class PastSurgery extends \BaseEventElementWidget
                 'required' => in_array($op->operation, $this->getRequiredOperation()),
             ];
         }
+
         usort($operations, function($a, $b){
             if($a['required'] && !$b['required']){
                 return -1;
+            } else if(!$a['required'] && $b['required']){
+                return 1;
             }
+            return 0;
         });
 
         return $operations;
@@ -174,5 +179,16 @@ class PastSurgery extends \BaseEventElementWidget
         return array_merge(parent::getViewData(), array(
             'operations' => $this->getMergedOperations()
         ));
+    }
+
+    /**
+     * @param $row
+     * @return bool
+     */
+    public function postedNotChecked($row)
+    {
+        return \Helper::elementFinder(
+                \CHtml::modelName($this->element) . ".entries.$row.had_operation", $_POST)
+            == PastSurgery_Operation::$NOT_CHECKED;
     }
 }
