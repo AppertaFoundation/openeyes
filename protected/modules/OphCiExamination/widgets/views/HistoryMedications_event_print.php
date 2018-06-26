@@ -15,36 +15,76 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<br>
-<div class="element-data row clearfix">
-    <div class="row">
-        <div class=" large-2 column">
-            <label>Current:</label>
-        </div>
-        <div class="large-10 column end">
-            <?php foreach ($element->currentOrderedEntries as $entry): ?>
-                <div class="row">
-                    <div class="large-12 column">
-                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
+<?php $el_id = CHtml::modelName($element) . '_element'; ?>
+<?php $visible_sections = ['current_entries' => 'Current', "closed_entries" => "Stopped"]; ?>
+
+<section class="element view-Eye-Medications tile "
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Eye Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <header class=" element-header">
+    <h3 class="element-title">Eye medications</h3>
+  </header>
+    <?php foreach ($visible_sections as $key=>$section_name): ?>
+    <?php $entries = array_filter($element->$key, function($e){ return in_array($e->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
+        <?php if(!empty($entries)): ?>
+        <div class="label"><?php echo $section_name; ?>:</div>
+        <div class="element-data">
+            <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col width="55px">
+                                <col width="85px">
+                            </colgroup>
+                            <tbody>
+                            <?php foreach ($entries as $entry): ?>
+                                <?php echo $this->render('HistoryMedicationsEntry_event_view', ['entry' => $entry]); ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="large-2 column">
-            <label>Stopped:</label>
-        </div>
-        <div class="large-10 column end">
-            <?php foreach ($element->stoppedOrderedEntries as $entry): ?>
-                <div class="row">
-                    <div class="large-12 column">
-                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</section>
+
+<section class=" element view-Systemic-Medications tile"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Systemic Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order + 1 ?>">
+  <header class=" element-header">
+    <h3 class="element-title">Systemic Medications</h3>
+  </header>
+    <?php foreach ($visible_sections as $key=>$section_name): ?>
+        <?php $entries = array_filter($element->$key, function($e){ return !in_array($e->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
+        <?php if(!empty($entries)): ?>
+            <div class="label"><?php echo $section_name; ?>:</div>
+            <div class="element-data">
+                <div class="data-value">
+                    <div class="tile-data-overflow">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col width="55px">
+                                <col width="85px">
+                            </colgroup>
+                            <tbody>
+                            <?php foreach ($entries as $entry): ?>
+                                <?php echo $this->render('HistoryMedicationsEntry_event_view', ['entry' => $entry]); ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-</div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</section>
+
 
