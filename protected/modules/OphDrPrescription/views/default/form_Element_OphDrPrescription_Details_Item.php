@@ -74,7 +74,7 @@
 	<td class="prescriptionItemActions">
 		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Commment</a>
 	</td>
-	<td>
+	<td class="dispense_condition_location">
 		<?php
             echo CHtml::dropDownList('prescription_item['.$key.'][dispense_condition_id]',$item->dispense_condition_id,CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array('condition'=>"active or id='".$item->dispense_condition_id."'",'order' => 'display_order')), 'id', 'name'), array('class'=>'dispenseCondition', 'empty'=>'-- Please select --'));
             if($item->dispense_condition)
