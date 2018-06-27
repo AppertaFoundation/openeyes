@@ -27,7 +27,7 @@ if ($element->elementType->name!="Clinic Outcome"):
   <i class="oe-i plus pro-theme"></i>
 </button>
 <?php endif; ?>
-<table class="select-options">
+<table class="select-options cols-full">
   <tbody>
   <tr>
       <?php
@@ -42,7 +42,7 @@ if ($element->elementType->name!="Clinic Outcome"):
       foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
     <td>
       <div class="flex-layout flex-top flex-left">
-        <ul class="add-options" data-multi="false" data-clickadd="false">
+        <ul class="add-options cols-full" data-multi="false" data-clickadd="false">
             <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
               <li data-str="<?php echo (string)$option->slug; ?>">
                 <span class="restrict-width"><?php echo (string)$option->slug; ?></span>

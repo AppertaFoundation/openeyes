@@ -20,8 +20,7 @@
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
         <div class="element-eye <?=$eye_side?>-eye column <?=$page_side?> side"
-             data-side="<?=$eye_side?>"
-        >
+             data-side="<?=$eye_side?>" >
             <div class="active-form field-row flex-layout"
                  style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
               <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -29,7 +28,7 @@
                   <?php echo $form->textArea($element, $eye_side.'_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
               </div>
               <div class="flex-item-bottom">
-                <button class="button hint green js-add-select-search" type="button">
+                <button class="button hint green js-add-select-search" id="add-examination-adnexal" type="button">
                   <i class="oe-i plus pro-theme"></i>
                 </button>
                 <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
@@ -47,7 +46,7 @@
         </div>
         <script type="text/javascript">
             $(function () {
-               var side = $('.edit-<?=CHtml::modelName($element)?> .<?=$eye_side?>-eye');
+               var side = $('.<?= str_replace('_', '-', CHtml::modelName($element))?> .<?=$eye_side?>-eye');
                var popup = side.find('#add-to-adnexal');
                var adnexText = side.find('#<?=CHtml::modelName($element)?>_<?=$eye_side?>_description');
 
