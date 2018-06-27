@@ -89,8 +89,8 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <?php
-            $lDate =  $exam_api->getLetterVisualAcuityDateLeft($patient);
-            $rDate =  $exam_api->getLetterVisualAcuityDateRight($patient);
+            $lDate =  $exam_api->getLetterVisualAcuityDate($patient, 'left');
+            $rDate =  $exam_api->getLetterVisualAcuityDate($patient, 'right');
             if($lDate == $rDate){?>
             <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>
             <span class="data">L <?php echo $exam_api->getLetterVisualAcuityLeft($patient)?></span>
@@ -105,13 +105,13 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <?php
-                $tempArr = explode(",",$correspondence_api->getPreOpRefraction($patient));
-                $rightPreOpRefraction = explode(" ",$tempArr[0])[0];
-                $leftPreOpRefraction = explode(" ",$tempArr[0])[0];
+                $preOpRefractionBothEyes = explode(",",$correspondence_api->getPreOpRefraction($patient));
+                $rightPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
+                $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
             ?>
             <span class="data">R <?php echo $rightPreOpRefraction?></span>
             <span class="data">L <?php echo $leftPreOpRefraction?></span>
-            <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
+            <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefraction($patient, false, true))?></span>
         </div>
 
         <div class="group">

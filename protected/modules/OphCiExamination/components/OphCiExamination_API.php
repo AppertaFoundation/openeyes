@@ -645,31 +645,23 @@ class OphCiExamination_API extends \BaseAPI
      * @param Patient $patient
      * @param string $side
      * @param boolean $use_context
+     * @param boolean $getBestVisualAcuityDate
      * @return models\OphCiExamination_VisualAcuity_Reading
      */
-    public function getBestVisualAcuity($patient, $side, $use_context = false)
+    public function getBestVisualAcuity($patient, $side, $use_context = false , $getBestVisualAcuityDate = false)
     {
         $va = $this->getLatestElement(
             'models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context);
         if ($va) {
+            if($getBestVisualAcuityDate){
+                return $va->event->event_date;
+            }
             return $va->getBestReading($side);
         }
     }
 
-    public function getBestVisualAcuityDate($patient, $side, $use_context = false)
-    {
-        $va = $this->getLatestElement(
-            'models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context);
-        if ($va) {
-            \Yii::log(var_export($va->event->event_date, true));
-            return $va->event->event_date;
-        }
-
-    }
 
     /**
      * @param \Event $event
@@ -829,15 +821,11 @@ class OphCiExamination_API extends \BaseAPI
     }
 
 
-    public function getLetterVisualAcuityDateLeft($patient, $use_context = false)
+    public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
     {
-        return ($date = $this->getBestVisualAcuityDate($patient, 'left', $use_context)) ? $date : 'NA';
+        return ($date = $this->getBestVisualAcuity($patient, $side, $use_context, true)) ? $date : 'NA';
     }
 
-    public function getLetterVisualAcuityDateRight($patient, $use_context = false)
-    {
-        return ($date = $this->getBestVisualAcuityDate($patient, 'right', $use_context)) ? $date : 'NA';
-    }
 
 
     /**
