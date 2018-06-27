@@ -77,23 +77,15 @@ $comments = $side . '_comments';
     <div class="close-icon-btn">
       <i class="oe-i remove-circle medium"></i>
     </div>
-    <table class="select-options">
-      <tbody>
-      <tr>
-        <td>
-          <div class="flex-layout flex-top flex-left">
-            <ul class="add-options" data-multi="false" data-clickadd="true">
-                <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
-                  <li data-str="<?php echo $id; ?>">
-                    <span class="auto-width"><?php echo $instrument; ?></span>
-                  </li>
-                <?php endforeach; ?>
-            </ul>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="flex-layout flex-top flex-left">
+      <ul class="add-options cols-full" data-multi="false" data-clickadd="true">
+          <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
+            <li data-str="<?php echo $id; ?>">
+              <span class="auto-width"><?php echo $instrument; ?></span>
+            </li>
+          <?php endforeach; ?>
+      </ul>
+    </div>
   </div>
 </div>
 
@@ -115,7 +107,7 @@ $comments = $side . '_comments';
 </script>
 <script type="text/javascript">
     $(function () {
-        var side = $('.edit-<?=CHtml::modelName($element)?> .<?=$side?>-eye');
+        var side = $('.<?=  str_replace('_', '-', CHtml::modelName($element)) ?> .<?=$side?>-eye');
         var popup = side.find('#add-to-IOP');
 
         function addIOPReading(selected){
