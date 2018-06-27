@@ -33,7 +33,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$commentFld = $('#' + this.options.modelName + '_comments');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
-        this.$popupSelector = $('#family-history-popup');
+        this.$popupSelector = $('#add-family-history-popup');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
     }
@@ -75,7 +75,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$table.removeClass('hidden');
             }
           controller.$table.show();
-          controller.addEntry();
         });
 
         this.$table.on('click', 'i.trash', function(e) {
@@ -104,13 +103,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-
+        data['relative_id'] = this.$popupSelector.find('ul.relative').find('.selected').data('id');
+        data['relative_display'] = this.$popupSelector.find('ul.relative').find('.selected').data('str');
+        data['side_id'] = this.$popupSelector.find('ul.side').find('.selected').data('id');
+        data['side_display'] = this.$popupSelector.find('ul.side').find('.selected').data('str');
+        data['condition_id'] = this.$popupSelector.find('ul.condition').find('.selected').data('id');
+        data['condition_display'] = this.$popupSelector.find('ul.condition').find('.selected').data('str');
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        return Mustache.render(
+
+        var newRow =  Mustache.render(
           template = this.templateText,
           data
         );
-
+        var row_tem = $(newRow);
+      if (data['relative_display'] === 'Other') {
+        row_tem.find('.other_relative_wrapper').show();
+      }
+      if (data['condition_display'] === 'Other') {
+        row_tem.find('.other_condition_wrapper').show();
+      }
+        return row_tem;
     };
 
     /**
@@ -142,7 +154,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     FamilyHistoryController.prototype.addEntry = function()
     {
         this.hideNoHistory();
-        this.$table.find('tbody').append(this.createRow());
+        var row = this.createRow();
+        this.$table.find('tbody').append(row);
         $('.flex-item-bottom').find('.selected').removeClass('selected');
     };
 
