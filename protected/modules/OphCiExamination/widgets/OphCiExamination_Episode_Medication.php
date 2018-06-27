@@ -83,6 +83,10 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                     $med['high'] = $latest_date;
                 }
             }
+            uasort($medication_list[$side], function ($item1, $item2){
+                if ($item1['low'] == $item2['low']) return 0;
+                return $item1['low'] < $item2['low'] ? -1 : 1;
+            });
         }
 
         return $medication_list;
