@@ -21,7 +21,7 @@
     <?php $this->beginWidget('CActiveForm', array(
         'id' => 'cvi-filter',
         'htmlOptions' => array(
-            'class' => 'row',
+            'class' => 'data-group',
         ),
         'enableAjaxValidation' => false,
     ))?>

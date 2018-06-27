@@ -42,7 +42,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
             'queueset_id' => $queueset->getId(),
         ],
         'htmlOptions' => array(
-            'class' => 'row',
+            'class' => 'data-group',
         ),
         'enableAjaxValidation' => false,
     )); ?>

@@ -327,11 +327,11 @@ $(document).ready(function(){
         }
         
         if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').is(':visible') && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
-            var $row = $('<div>', {'class':'row check-warning'}),
-                $column = $('<div>',{'class':'large-12 column'}),
+            var $row = $('<div>', {'class':'data-group check-warning'}),
+                $column = $('<div>',{'class':'cols-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
-                if( $('#patientMergeWrapper').find('.row.check-warning').length < 1 ){
+                if( $('#patientMergeWrapper').find('.data-group.check-warning').length < 1 ){
                     $row.append( $column.append($checkbox) );
                     $('#patientDataConflictConfirmation').before($row);
                 }
