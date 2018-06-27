@@ -26,6 +26,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $side_id
  * @property string $operation
  * @property string $date
+ * @property string $had_operation
  *
  * @property \Eye $side
  * @property PastSurgery $element
@@ -92,6 +93,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         return array(
             'operation' => 'Operation',
             'date' => 'Date',
+            'had_operation' => 'Had operation'
         );
     }
 

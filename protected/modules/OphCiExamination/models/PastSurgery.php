@@ -93,11 +93,7 @@ class PastSurgery extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id'),
-            'orderedOperations' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\PastSurgery_Operation',
-                'element_id',
-                'order' => 'orderedOperations.date desc, orderedOperations.last_modified_date'),
+            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id', 'order' => 'operations.date desc, operations.last_modified_date'),
         );
     }
 
@@ -121,7 +117,7 @@ class PastSurgery extends \BaseEventTypeElement
         foreach ($this->operations as $i => $operation) {
             if (!$operation->validate()) {
                 foreach ($operation->getErrors() as $fld => $err) {
-                 //   $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError('operations_' . ($i), 'Operation ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }
@@ -142,6 +138,7 @@ class PastSurgery extends \BaseEventTypeElement
             $op->operation = $prev->operation;
             $op->side_id = $prev->side_id;
             $op->date = $prev->date;
+            $op->had_operation = $prev->had_operation;
             $operations[] = $op;
         }
         $this->operations = $operations;

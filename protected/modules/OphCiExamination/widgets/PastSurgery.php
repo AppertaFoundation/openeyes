@@ -128,13 +128,16 @@ class PastSurgery extends \BaseEventElementWidget
     protected function getMergedOperations()
     {
         // map the operations that have been recorded as entries in this element
-        $operations = array_map(
-            function ($op) {
-                return array(
-                    'date' => $op->date,
-                    'object' => $op
+        $operations = [];
+
+        foreach($this->element->operations as $_operation){
+            if($_operation->had_operation){
+                $operations[] = array(
+                    'date' => $_operation->date,
+                    'object' => $_operation
                 );
-            }, $this->element->operations);
+            }
+        }
 
         // append operations from op note
         if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
@@ -152,23 +155,19 @@ class PastSurgery extends \BaseEventElementWidget
     public function getOperationsArray()
     {
         $operations = [];
+        $required = [];
+        $required_operation_list = $this->getRequiredOperation();
+
         foreach ($this->element->operations as $i => $op) {
-            $operations[] = [
-                'op' => $op,
-                'required' => in_array($op->operation, $this->getRequiredOperation()),
-            ];
+            if(in_array($op->operation, $required_operation_list)){
+                $operations[] = ['op' => $op, 'required' => true, ];
+            } else {
+                $required[] = ['op' => $op, 'required' => false, ];
+            }
         }
 
-        usort($operations, function($a, $b){
-            if($a['required'] && !$b['required']){
-                return -1;
-            } else if(!$a['required'] && $b['required']){
-                return 1;
-            }
-            return 0;
-        });
-
-        return $operations;
+        // append $required to the end of $operations
+        return array_merge($operations, $required);
     }
 
     /**
@@ -188,7 +187,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".entries.$row.had_operation", $_POST)
+                \CHtml::modelName($this->element) . ".operation.$row.had_operation", $_POST)
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }

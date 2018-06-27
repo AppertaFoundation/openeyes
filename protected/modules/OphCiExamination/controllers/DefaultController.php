@@ -1190,23 +1190,6 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        if(isset($data['OEModule_OphCiExamination_models_PastSurgery'])){
-            $past_surgeries = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_PastSurgery');
-            if ($past_surgeries) {
-                $et_name = models\PastSurgery::model()->getElementTypeName();
-                foreach ($past_surgeries->operations as $ps_key => $past_surgery) {
-                    if($ps_errors = $past_surgery->getErrors()){
-
-echo "TODO: handle error in " . __FILE__ . " :: Line" . __LINE__;
-
-                        //$errors[$et_name. "_$ps_key"][$et_name . "_$ps_key"][] = 'Operation ('.($ps_key + 1).'): ' . implode(', ', $ps_errors);
-                    }
-                }
-die;
-            }
-        }
-
-
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
