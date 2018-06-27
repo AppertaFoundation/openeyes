@@ -34,7 +34,7 @@
         <div class="element-data">
             <div class="data-value">
                     <div class="tile-data-overflow">
-                        <table>
+                        <table style="width:100%">
                             <colgroup>
                                 <col>
                                 <col width="55px">
@@ -68,7 +68,7 @@
             <div class="element-data">
                 <div class="data-value">
                     <div class="tile-data-overflow">
-                        <table>
+                        <table style="width:100%">
                             <colgroup>
                                 <col>
                                 <col width="55px">
