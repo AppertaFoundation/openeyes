@@ -76,7 +76,7 @@ class EventAction
 
     public function toHtml()
     {
-        $this->htmlOptions['class'] .= ' button';
+        $this->htmlOptions['class'] .= ' button header-tab';
         $label = CHtml::encode($this->label);
 
         if ($this->options['level'] === 'save') {
@@ -86,7 +86,7 @@ class EventAction
             $content = '<i class="oe-i trash"></i>';
             $label = $content;
             $this->htmlOptions['class'] .= ' header-tab icon red';
-            $this->htmlOptions['id']= 'js-delete-event-btn';
+            $this->htmlOptions['id'] = 'js-delete-event-btn';
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' red';
