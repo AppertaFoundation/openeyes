@@ -17,7 +17,10 @@
  */
 ?>
 <?php if (@$htmlOptions['nowrapper']) { ?>
-    <?php echo CHtml::textField($name, $value, $htmlOptions) ?>
+    <div id="div_<?php echo CHtml::modelName($element) ?>_<?= $field ?>"
+        <?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;" <?php } ?> >
+        <?php echo CHtml::textField($name, $value, $htmlOptions) ?>
+    </div>
 <?php } else { ?>
   <div id="div_<?php echo CHtml::modelName($element) ?>_<?= $field ?>"
        class="data-group flex-layout flex-left cols-full"<?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;"<?php } ?> >

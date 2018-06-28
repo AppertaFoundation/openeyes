@@ -16,129 +16,154 @@
  */
 ?>
 <script type="text/javascript" src="<?=$this->getJsPublishedPath("SocialHistory.js")?>"></script>
-<div class="element-fields">
-  <div class="flex-layout flex-top">
-    <div class="flex-layout cols-4">
-        <?= $form->dropDownList(
-            $element,
-            'occupation_id',
-            CHtml::listData($element->occupation_options, 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 4, 'field' => 4, 'full_dropdown' => true)
-        );
-        ?>
-    </div>
-    <div class="flex-layout cols-4"
-    >
-        <?= $form->textField(
-            $element,
-            'type_of_job',
-            array(
-                'hide' => ($element->occupation_id !== 7),//Hide if the type is not other
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'style' => 'width: 100%'
-            ),
-            null,
-            array('label' => 4, 'field' => 5)
-        );
-        ?>
-    </div>
-    <div class="flex-layout flex-left cols-4 flex-top">
-      <div class="cols-4">
-          <?= $form->labelEx($element,$element->getAttributeLabel('driving_statuses'))?>
-      </div>
-      <div class="cols-8">
+<div class="element-fields flex-layout full-width">
+  <table class="cols-10 last-left">
+    <colgroup>
+      <col class="cols-2">
+      <col class="cols-4">
+      <col class="cols-2">
+      <col class="cols-4">
+    </colgroup>
+    <tbody>
+      <tr>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('occupation_id'))?>
+        </td>
+        <td>
+            <?= $form->dropDownList(
+                $element,
+                'occupation_id',
+                CHtml::listData($element->occupation_options, 'id', 'name'),
+                array('empty' => '- Select -', 'nowrapper' => true),
+                false,
+                array('label' => 4, 'field' => 4, 'full_dropdown' => true)
+            );
+            ?>
+            <?= $form->textField(
+                $element,
+                'type_of_job',
+                array(
+                    'hide' => ($element->occupation_id !== 7),//Hide if the type is not other
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'style' => 'width: 100%',
+                    'nowrapper' => true
+                ),
+                null,
+                array('label' => 4, 'field' => 5)
+            );
+            ?>
+        </td>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('driving_statuses'))?>
+        </td>
+        <td>
           <?= $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[driving_statuses]',
-              'driving_statuses',
-              'id',
-              CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-              array(),
-              array('empty' => '- Select -', 'nowrapper' => true),//'label' => $element->getAttributeLabel('driving_statuses')),
-              false,
-              false,
-              null,
-              false,
-              false, // various attributes we don't care about
-              array('stretch' => true)
-          );
-          ?>
-      </div>
-    </div>
-  </div>
-  <div class="flex-layout">
-    <div class="flex-layout cols-4">
-        <?= $form->dropDownList(
-            $element,
-            'smoking_status_id',
-            CHtml::listData($element->smoking_status_options, 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 4, 'field' => 4, 'full_dropdown' => true)
-        );
-        ?>
-    </div>
-    <div class="flex-layout cols-4">
-        <?= $form->dropDownList(
-            $element,
-            'accommodation_id',
-            CHtml::listData($element->accommodation_options, 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 4, 'field' => 5, 'full_dropdown' => true)
-        );
-        ?>
-    </div>
-    <div class="cols-4">
-        <?= $form->dropDownList(
-            $element,
-            'carer_id',
-            CHtml::listData($element->carer_options, 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 4, 'field' => 8, 'full_dropdown' => true)
-        );
-        ?>
-    </div>
-  </div>
-  <div class="flex-layout flex-left">
-    <div class="cols-4">
-        <?= $form->textField(
-            $element,
-            'alcohol_intake',
-            array(
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'append-text' => 'units/week',
-                'style' => 'width: 100%;'
-            ),
-            null,
-            array('label' => 4, 'field' => 4, 'append-text' => 4, 'stretch' => false)
-        );
-        ?>
-    </div>
-    <div class="cols-4">
-        <?= $form->dropDownList(
-            $element,
-            'substance_misuse_id',
-            CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 4, 'field' => 5, 'full_dropdown' => true)
-        );?>
-    </div>
-    <div class="cols-4 flex-top">
-        <?=
-                  $form->textArea(
-                      $element,
-                      'comments',
-                      array('rows' => '1', 'cols' => '80', 'class' => 'autosize'),
-                      false,
-                      array('placeholder' => 'Enter comments here'),
-                      array('label' => 4, 'field' => 8)
-                  );
-          ?>
-    </div>
-  </div>
+                $element,
+                CHtml::modelName($element) . '[driving_statuses]',
+                'driving_statuses',
+                'id',
+                CHtml::listData($element->driving_statuses_options, 'id', 'name'),
+                array(),
+                array('empty' => '- Select -', 'nowrapper' => true),//'label' => $element->getAttributeLabel('driving_statuses')),
+                false,
+                false,
+                null,
+                false,
+                false, // various attributes we don't care about
+                array('stretch' => true)
+            ); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('smoking_status_id'))?>
+        </td>
+        <td>
+            <?= $form->dropDownList(
+                $element,
+                'smoking_status_id',
+                CHtml::listData($element->smoking_status_options, 'id', 'name'),
+                array('empty' => '- Select -', 'nowrapper' => true),
+                false,
+                array('label' => 4, 'field' => 4, 'full_dropdown' => true)
+            );
+            ?>
+        </td>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('accommodation_id'))?>
+        </td>
+        <td>
+            <?= $form->dropDownList(
+                $element,
+                'accommodation_id',
+                CHtml::listData($element->accommodation_options, 'id', 'name'),
+                array('empty' => '- Select -', 'nowrapper' => true),
+                false,
+                array('label' => 4, 'field' => 5, 'full_dropdown' => true)
+            );
+            ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('alcohol_intake'))?>
+        </td>
+        <td>
+            <?= $form->textField(
+                $element,
+                'alcohol_intake',
+                array(
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'append-text' => 'units/week',
+                    'style' => 'width: 100%;',
+                    'nowrapper' => true
+                ),
+                null,
+                array('label' => 4, 'field' => 4, 'append-text' => 4, 'stretch' => false)
+            );
+            ?>
+        </td>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('carer_id'))?>
+        </td>
+        <td>
+            <?= $form->dropDownList(
+                $element,
+                'carer_id',
+                CHtml::listData($element->carer_options, 'id', 'name'),
+                array('empty' => '- Select -', 'nowrapper' => true),
+                false,
+                array('label' => 4, 'field' => 8, 'full_dropdown' => true)
+            );
+            ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->labelEx($element,$element->getAttributeLabel('substance_misuse_id'))?>
+        </td>
+        <td>
+            <?= $form->dropDownList(
+                $element,
+                'substance_misuse_id',
+                CHtml::listData($element->substance_misuse_options, 'id', 'name'),
+                array('empty' => '- Select -', 'nowrapper' => true),
+                false,
+                array('label' => 4, 'field' => 5, 'full_dropdown' => true)
+            );?>
+        </td>
+        <td colspan="2">
+            <?= $form->textArea(
+                $element,
+                'comments',
+                array('rows' => '1', 'cols' => '80', 'class' => 'autosize','nowrapper' => true),
+                false,
+                array('placeholder' => 'Enter comments here'),
+                array('label' => 4, 'field' => 8)
+            );
+            ?>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
