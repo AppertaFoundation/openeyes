@@ -57,7 +57,7 @@ $principals = $this->episode->patient->episodes;
               <tr>
                 <td>
                     <?= $principal->diagnosis->term ?>
-                  <span class="js-has-tooltip oe-i info"
+                  <span class="js-has-tooltip oe-i info small"
                         data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
