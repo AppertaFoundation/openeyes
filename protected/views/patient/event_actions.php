@@ -18,7 +18,5 @@
 ?>
 <div class="buttons-right">
   <i class="spinner" title="Loading..." style="display: none;"></i>
-    <?php foreach ($this->event_actions as $action) { ?>
-        <?php echo $action->toHtml(); ?>
-    <?php } ?>
+    <?php foreach ($this->event_actions as $action) { ?><?php echo $action->toHtml(); ?><?php } ?>
 </div>
