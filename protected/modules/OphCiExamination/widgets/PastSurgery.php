@@ -116,7 +116,7 @@ class PastSurgery extends \BaseEventElementWidget
         $res = array_map(
             function ($op) {
                 return array_key_exists('object', $op) ?
-                    (string)$op['object'] :
+                    $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($op);
             }, $this->getMergedOperations());
         return implode($this->popupListSeparator, $res);
@@ -125,13 +125,13 @@ class PastSurgery extends \BaseEventElementWidget
     /**
      * @return array
      */
-    protected function getMergedOperations()
+    protected function getMergedOperations($include_no = false)
     {
         // map the operations that have been recorded as entries in this element
         $operations = [];
 
         foreach($this->element->operations as $_operation){
-            if($_operation->had_operation){
+            if($_operation->had_operation || $include_no){
                 $operations[] = array(
                     'date' => $_operation->date,
                     'object' => $_operation
@@ -176,7 +176,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function getViewData()
     {
         return array_merge(parent::getViewData(), array(
-            'operations' => $this->getMergedOperations()
+            'operations' => $this->getMergedOperations($include_no = true),
         ));
     }
 

@@ -140,9 +140,10 @@ class PastSurgery_Operation extends \BaseEventTypeElement
     /**
      * @return string
      */
-    public function getDisplayOperation()
+    public function getDisplayOperation($present_prefix = true)
     {
-        return '<strong>' . $this->getDisplayHasOperation() . ':</strong> ' . ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
+        $display_has_operation = $present_prefix ? ('<strong>' . $this->getDisplayHasOperation() . ':</strong> ') : '';
+        return  $display_has_operation . ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
     }
 
     /**
