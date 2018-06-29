@@ -138,7 +138,7 @@ $(document).ready(function(){
 			removeElement(parent);
 	});
 
-  $(this).on('click', '.js-tiles-collapse-btn', function () {
+	$(this).on('click', '.js-tiles-collapse-btn', function () {
 		var $tileGroup = $(this).closest('.element-tile-group');
 		var showGroup = $tileGroup.hasClass('collapse');
 		$tileGroup.find('.element.tile .element-data').toggle(showGroup);
@@ -154,24 +154,28 @@ $(document).ready(function(){
 		} else {
 			$tileGroup.find('.js-data-hidden-state').remove();
 		}
-  });
+	});
 
-  $(this).on('click', '.js-add-comments', function (e) {
-    e.preventDefault();
+  $(this).on('click', '.js-add-comments', function () {
     var button = $(this);
     var container = $($(this).data('comment-container'));
     button.hide();
     container.show();
-    container.find('textarea, input').andSelf().focus();
-  });
-
-  $(this).on('blur', '.js-comment-field', function() {
+    container.find('.js-comment-field').focus();
+    container.on('blur', 'input, textarea', function () {
       if ($(this).val().trim() === '') {
-      	var button = $($(this).data('comment-button'));
-      	var container = $(this).closest('.js-comment-container');
         button.show();
         container.hide();
+        container.off('blur, click');
       }
+    });
+
+    container.on('click', '.js-remove-add-comments', function() {
+      container.find('.js-comment-field').andSelf().val(null);
+    	container.hide();
+      container.off('blur, click');
+      button.show();
+    });
   });
 
   // Tile Data Overflow

@@ -54,15 +54,17 @@ $comments = $side . '_comments';
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments" class="js-comment-container field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
+  <div id="iop-<?php echo $side; ?>-comments"
+       class="js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(
               'class' => 'js-comment-field',
               'rows' => 1,
               'placeholder' => 'Comments',
               'style' => 'overflow-x: hidden; word-wrap: break-word;',
-              'data-comment-button' => '#iop-' . $side .'-comment-button'
+              'data-comment-button' => '#iop-' . $side . '-comment-button',
           )) ?>
+    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
   </div>
 </div>
 <div class="add-data-actions flex-item-bottom">
@@ -79,7 +81,8 @@ $comments = $side . '_comments';
     </div>
     <div class="flex-layout flex-top flex-left">
       <ul class="add-options cols-full" data-multi="false" data-clickadd="true">
-          <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
+          <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()
+              ->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
             <li data-str="<?php echo $id; ?>">
               <span class="auto-width"><?php echo $instrument; ?></span>
             </li>
@@ -106,23 +109,23 @@ $comments = $side . '_comments';
     ?>
 </script>
 <script type="text/javascript">
-    $(function () {
-        var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
-        var popup = side.find('#add-to-IOP');
+  $(function () {
+      var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
+      var popup = side.find('#add-to-IOP');
 
-        function addIOPReading(selected){
-            selected.removeClass('selected');
-        }
+    function addIOPReading(selected) {
+      selected.removeClass('selected');
+    }
 
-        setUpAdder(
-            popup,
-            'return',
-            addIOPReading,
-            side.find('.js-add-select-search'),
-            null,
-            popup.find('.select-icon-btn, .close-icon-btn')
-        );
-    });
+    setUpAdder(
+      popup,
+      'return',
+      addIOPReading,
+      side.find('.js-add-select-search'),
+      null,
+      popup.find('.select-icon-btn, .close-icon-btn')
+    );
+  });
 </script>
 
 

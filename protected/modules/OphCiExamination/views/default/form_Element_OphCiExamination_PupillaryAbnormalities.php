@@ -20,7 +20,8 @@
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
-        <div class="active-form flex-layout" <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+        <div class="active-form flex-layout"
+             <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table class="cols-10">
             <tbody>
@@ -62,7 +63,7 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="js-comment-container"
+              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="flex-layout flex-left js-comment-container"
                   style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;">
                   <?php
                   echo $form->textArea(
@@ -77,6 +78,7 @@
                       )
                   )
                   ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
               </td>
             </tr>
             </tbody>

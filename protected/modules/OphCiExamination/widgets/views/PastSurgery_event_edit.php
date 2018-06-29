@@ -26,63 +26,61 @@ $model_name = CHtml::modelName($element);
   <div class="data-group cols-10">
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
-        <thead>
-        <tr>
-            <th class="cols-3">Procedures</th>
-            <th>Right</th>
-            <th>Left</th>
-            <th>Both</th>
-            <th>None</th>
-            <th>Date</th>
-            <th>Notes</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $row_count = 0;
-
-        // these are the missing but required to collect operations
-        foreach ($this->getMissingRequiredOperation() as $i => $op) {
-            $this->render(
-                'PastSurgery_OperationEntry_event_edit',
-                array(
-                    'op' => $op,
-                    'form' => $form,
-                    'row_count' => ($row_count),
-                    'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
-                    'model_name' => CHtml::modelName($element),
-                    //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
-                    'removable' => true,
-                    'required' => true,
-                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
-                )
-            );
-            $row_count++;
-        }
-
-        //$operations : operations that have been recorded as entries in this element + operations from op note
-        foreach ($this->getOperationsArray() as $i => $op) {
-            $this->render(
-                'PastSurgery_OperationEntry_event_edit',
-                array(
-                    'op' => $op['op'],
-                    'form' => $form,
-                    'row_count' => ($row_count),
-                    'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
-                    'model_name' => CHtml::modelName($element),
-                    'removable' => true,
-                    //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
-                    'required' => $op['required'],
-                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
-                )
-            );
-            $row_count++;
-        }
-        ?>
-        </tbody>
+      <thead>
+      <tr>
+        <th class="cols-3">Procedures</th>
+        <th>Right</th>
+        <th>Left</th>
+        <th>Both</th>
+        <th>None</th>
+        <th>Date</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <?php
+      $row_count = 0;
+      foreach ($element->operations as $i => $op) {
+          $this->render(
+              'PastSurgery_OperationEntry_event_edit',
+              array(
+                  'op' => $op,
+                  'form' => $form,
+                  'row_count' => ($row_count),
+                  'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
+                  'model_name' => CHtml::modelName($element),
+                  'removable' => true,
+              )
+          );
+          $row_count++;
+      }
+      foreach ($operations as $i => $op) {
+          if (!array_key_exists('object', $op)) {
+              $this->render(
+                  'PastSurgery_OperationEntry_event_edit',
+                  array(
+                      'values' => array(
+                          'op' => $op,
+                          'operation' => $op['operation'],
+                          'form' => $form,
+                          'model_name' => CHtml::modelName($element),
+                          'side' => $op['side'],
+                          'date' => $op['date'],
+                      ),
+                      'removable' => false,
+                      'row_count' => ($row_count),
+                      'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
+                      'model_name' => CHtml::modelName($element),
+                  )
+              );
+              $row_count++;
+          }
+      }
+      ?>
+      </tbody>
     </table>
-    <div id="<?= $model_name ?>-comments" class="field-row-pad-top js-comment-container"
+    <div id="<?= $model_name ?>-comments" class="field-row-pad-top js-comment-container flex-layout flex-left"
          style="<?= $element->comments ? '' : 'display: none;' ?>">
       <br/>
         <?php echo $form->textArea(
@@ -97,10 +95,11 @@ $model_name = CHtml::modelName($element);
             )
         )
         ?>
+      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
     </div>
   </div>
-  <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery" >
 
+  <div class="flex-item-bottom" id="add-to-past-surgery">
     <button id="<?= $model_name ?>-comment-button" class="button js-add-comments"
             data-comment-container="#<?= $model_name ?>-comments"
             style="<?= $element->comments ? 'display: none;' : '' ?>" type="button">
@@ -117,18 +116,18 @@ $model_name = CHtml::modelName($element);
       <div class="flex-layout flex-top flex-left">
         <ul id="past-surgery-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
             <?php
-                     $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
-                     foreach ($op_list as $op_item) { ?>
-                       <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
-                         <span class="restrict-width"><?php echo $op_item->name; ?></span>
-                       </li>
-                     <?php } ?>
+            $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
+            foreach ($op_list as $op_item) { ?>
+              <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
+                <span class="restrict-width"><?php echo $op_item->name; ?></span>
+              </li>
+            <?php } ?>
         </ul>
       </div>
     </div>
   </div>
 </div>
-<script type="text/template" id="<?= CHtml::modelName($element).'_operation_template' ?>" class="hidden">
+<script type="text/template" id="<?= CHtml::modelName($element) . '_operation_template' ?>" class="hidden">
     <?php
     $empty_operation = new \OEModule\OphCiExamination\models\PastSurgery_Operation();
     $this->render(
@@ -151,33 +150,34 @@ $model_name = CHtml::modelName($element);
                 'had_operation' => (string) PastSurgery_Operation::$PRESENT,
             ),
             'posted_not_checked' => false,
+
         )
     );
     ?>
 </script>
 <script type="text/javascript">
-    $(function () {
-        var controller;
-        $(document).ready(function() {
-            controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
-        });
-
-
-        var adder = $('#add-to-past-surgery');
-        var popup = adder.find('#add-prev-surgery');
-
-        function addSurgery(selection){
-            controller.addEntry();
-        }
-
-        setUpAdder(
-            popup,
-            'multi',
-            addSurgery,
-            adder.find('#show-add-popup'),
-            popup.find('.add-icon-btn'),
-            adder.find('#close-btn, .add-icon-btn')
-        );
+  $(function () {
+    var controller;
+    $(document).ready(function () {
+      controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
     });
+
+
+    var adder = $('#add-to-past-surgery');
+    var popup = adder.find('#add-prev-surgery');
+
+    function addSurgery(selection) {
+      controller.addEntry();
+    }
+
+    setUpAdder(
+      popup,
+      'multi',
+      addSurgery,
+      adder.find('#show-add-popup'),
+      popup.find('.add-icon-btn'),
+      adder.find('#close-btn, .add-icon-btn')
+    );
+  });
 
 </script>
