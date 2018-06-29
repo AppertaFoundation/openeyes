@@ -110,7 +110,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
         $(controller.options.searchInput).on('keyup', function () {
-          controller.initialiseSearch();
+          controller.popupSearch();
         });
 
         controller.$element.on('change', 'select.condition-secondary-to', function(){
@@ -185,7 +185,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    DiagnosesController.prototype.initialiseSearch = function () {
+    DiagnosesController.prototype.popupSearch = function () {
       var controller = this;
       if (controller.searchRequest !== null) {
         controller.searchRequest.abort();

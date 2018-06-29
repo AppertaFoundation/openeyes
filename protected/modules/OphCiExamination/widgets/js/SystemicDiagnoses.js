@@ -89,7 +89,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       $(controller.options.searchInput).on('keyup', function () {
 
-        controller.initialiseSearch();
+        controller.popupSearch();
       });
 
     };
@@ -140,7 +140,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    SystemicDiagnosesController.prototype.initialiseSearch = function () {
+    SystemicDiagnosesController.prototype.popupSearch = function () {
       var controller = this;
       if (controller.searchRequest !== null) {
         controller.searchRequest.abort();

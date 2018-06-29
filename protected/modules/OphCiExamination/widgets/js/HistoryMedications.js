@@ -162,7 +162,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
 
     $(controller.options.medicationSearchInput).on('keyup', function () {
-      controller.initialiseSearch();
+      controller.popupSearch();
     });
   };
 
@@ -201,7 +201,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.setDatepicker();
   };
 
-  HistoryMedicationsController.prototype.initialiseSearch = function()
+  HistoryMedicationsController.prototype.popupSearch = function()
   {
     var controller = this;
     if (controller.medicationSearchRequest !== null) {
