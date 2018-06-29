@@ -39,7 +39,7 @@
         </tbody>
       </table>
         <?php } else { ?>
-          <div class="data-value">
+          <div class="data-value not-recorded">
             <span class="large-text">None given</span>
           </div>
         <?php } ?>

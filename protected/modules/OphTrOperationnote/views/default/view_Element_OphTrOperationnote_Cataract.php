@@ -141,7 +141,7 @@
                   <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde'))?>:</div>
                 </td>
                 <td>
-                  <div class="data-value">
+                  <div class="data-value <?= $element->phaco_cde == "" ? 'not-recorded' : ''?>">
                       <?= $element->phaco_cde == "" ? 'not recorded' : CHtml::encode($element->phaco_cde) ?>
                   </div>
                 </td>

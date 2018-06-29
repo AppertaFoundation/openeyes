@@ -43,7 +43,7 @@
 			<?php 
 } else {
     ?>
-				<div class="data-value">None given</div>
+				<div class="data-value not-recorded">None given</div>
 			<?php 
 }?>
 		</div>
@@ -74,7 +74,7 @@
 			<?php 
 } else {
     ?>
-				<div class="data-value">None given</div>
+				<div class="data-value not-recorded">None given</div>
 			<?php 
 }?>
 		</div>
