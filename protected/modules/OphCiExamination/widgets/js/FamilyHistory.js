@@ -103,12 +103,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-        data['relative_id'] = this.$popupSelector.find('ul.relative').find('.selected').data('id');
-        data['relative_display'] = this.$popupSelector.find('ul.relative').find('.selected').data('str');
-        data['side_id'] = this.$popupSelector.find('ul.side').find('.selected').data('id');
-        data['side_display'] = this.$popupSelector.find('ul.side').find('.selected').data('str');
-        data['condition_id'] = this.$popupSelector.find('ul.condition').find('.selected').data('id');
-        data['condition_display'] = this.$popupSelector.find('ul.condition').find('.selected').data('str');
+        data['relative_id'] = this.$popupSelector.find('ul.relative .selected').data('id');
+        data['relative_display'] = this.$popupSelector.find('ul.relative .selected').data('str');
+        data['side_id'] = this.$popupSelector.find('ul.side .selected').data('id');
+        data['side_display'] = this.$popupSelector.find('ul.side .selected').data('str');
+        data['condition_id'] = this.$popupSelector.find('ul.condition .selected').data('id');
+        data['condition_display'] = this.$popupSelector.find('ul.condition .selected').data('str');
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
 
         var newRow =  Mustache.render(
