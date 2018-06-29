@@ -38,25 +38,28 @@ $is_hidden = function () use ($element) {
           <td>Type</td>
           <td>
               <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
-                  false, false, false, false, array(),array('field'=>12)); ?>
+                  false, false, false, false, array(), array('field' => 12)); ?>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container" <?php if($is_hidden()): ?>style="display: none;"<?php endif; ?>>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
+            <?php if ($is_hidden()): ?>style="display: none;"<?php endif; ?>>
           <td>LA Delivery Methods</td>
           <td>
-            <div >
+            <div>
                 <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', '',
                     false, false, false, false); ?>
-            </div >
+            </div>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container" <?php if($is_hidden()): ?>style="display: none;"<?php endif; ?>>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
+            <?php if ($is_hidden()): ?>style="display: none;"<?php endif; ?>>
           <td>
             Given by:
           </td>
           <td>
-            <fieldset id="<?php echo CHtml::modelName($element).'_anaesthetist_id'?>" >
-                <?php  echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id, false, false, false, false, array('nowrapper'=>true)); ?>
+            <fieldset id="<?php echo CHtml::modelName($element) . '_anaesthetist_id' ?>">
+                <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
+                    false, false, false, false, array('nowrapper' => true)); ?>
 
             </fieldset>
           </td>
@@ -126,7 +129,9 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?= (bool)$element->anaesthetic_comment ? '' : 'display: none' ?>" class="js-comment-container" data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
+            <?php if (!$element->anaesthetic_comment): ?>style="display: none;"<?php endif ?>
+            class="js-comment-container"
+            data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
           <td>
             Comments
           </td>
@@ -137,7 +142,6 @@ $is_hidden = function () use ($element) {
                       'rows' => 4,
                       'cols' => 40,
                       'class' => 'js-comment-field',
-
                   )) ?>
           </td>
         </tr>
@@ -147,7 +151,8 @@ $is_hidden = function () use ($element) {
   </div>
   <div class="add-data-actions flex-item-bottom">
     <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button" class="button js-add-comments"
-            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container">
+            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+            <?php if ($element->anaesthetic_comment): ?>style="visibility: hidden;"<?php endif; ?>>
       <i class="oe-i comments small-icon"></i>
     </button>
   </div>

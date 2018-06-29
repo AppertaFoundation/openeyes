@@ -105,7 +105,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
   </div>
   <div class="add-data-actions flex-item-bottom">
     <button id="outcomes-comment-button" class="button js-add-comments" data-comment-container="#outcomes-comments"
-            style="<?= $element->description ? 'display: none;' : '' ?>" type="button">
+            <?php if ($element->description): ?>style="visibility: hidden;"<?php endif; ?> type="button">
       <i class="oe-i comments small-icon"></i>
     </button>
 

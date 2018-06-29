@@ -37,12 +37,13 @@ if (!isset($values)) {
 ?>
 <tr data-key="<?= $row_count ?>">
   <td>
-    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>" />
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
       <?php
       echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
       echo CHtml::hiddenField($field_prefix . '[other]', $values['other']); ?>
-    <label class="risk-display" data-id="<?= $values['risk_id']?>" data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display'];?></label>
-    <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['other']?:'none'?>">
+    <label class="risk-display" data-id="<?= $values['risk_id'] ?>"
+           data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display']; ?></label>
+    <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['other'] ?: 'none' ?>">
         <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>
@@ -68,15 +69,18 @@ if (!isset($values)) {
   </td>
   <td>
     <button
-        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-        class="button js-add-comments" style="display: <?php if ($values['comments']): ?>none<?php endif; ?>"
-        data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comments">
+        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button" type="button"
+        class="button js-add-comments" <?php if ($values['comments']): ?>style="visibility: hidden;"<?php endif; ?>
+        data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
       <i class="oe-i comments small-icon"></i>
     </button>
-    <input type="text" class="js-comment-field js-comment-container" name="<?= $field_prefix ?>[comments]"
-           value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"
-           data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-           <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>/>
+    <span class="js-comment-container" id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+          <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>
+          data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+      <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"
+             value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
+      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+    </span>
   </td>
     <?php if ($removable) : ?>
       <td>

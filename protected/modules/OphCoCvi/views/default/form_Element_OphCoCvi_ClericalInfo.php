@@ -49,7 +49,7 @@ if ($this->checkClericalEditAccess()) {
                   <div class="cols-full ">
                     <button
                         id="<?= $comment_button_id ?>" type="button"
-                        class="button js-add-comments" style="display: <?php if ($comments): ?>none<?php endif; ?>"
+                        class="button js-add-comments" <?php if ($comments): ?>style="visibility: hidden;"<?php endif; ?>
                         data-comment-container="#<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>">
                       <i class="oe-i comments small-icon"></i>
                     </button>

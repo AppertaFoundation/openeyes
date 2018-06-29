@@ -157,7 +157,7 @@ $(document).ready(function(){
 	});
 
   $(this).on('click', '.js-add-comments', function () {
-    $(this).hide();
+    $(this).css('visibility', 'hidden');
     var $container = $($(this).data('comment-container'));
     $container.show();
     $container.find('.js-comment-field').focus();
@@ -167,7 +167,7 @@ $(document).ready(function(){
     if ($(this).val().trim() === '') {
       var $container = $(this).closest('.js-comment-container');
     	var $button = $($container.data('comment-button'));
-      $button.show();
+      $button.css('visibility', 'visible');
       $container.hide();
     }
   });
@@ -177,7 +177,7 @@ $(document).ready(function(){
     $container.find('.js-comment-field').val(null);
     $container.hide();
     var $button = $($container.data('comment-button'));
-    $button.show();
+    $button.css('visibility', 'visible');
   });
 
   // Tile Data Overflow

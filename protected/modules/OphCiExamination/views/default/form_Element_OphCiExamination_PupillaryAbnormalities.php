@@ -87,7 +87,7 @@
             <button id="pupils-<?= $eye_side ?>-comment_button"
                     class="button js-add-comments"
                     data-comment-container="#pupils-<?= $eye_side ?>-comments"
-                    style="display: <?= !$element->{$eye_side . '_comments'} ?: 'none' ?>;"
+                    <?php if ($element->{$eye_side . '_comments'}): ?>style="visibility: hidden;"<?php endif; ?>
                     type="button">
               <i class="oe-i comments small-icon"></i>
             </button>

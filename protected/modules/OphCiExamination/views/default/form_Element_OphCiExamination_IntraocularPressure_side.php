@@ -56,7 +56,7 @@ $comments = $side . '_comments';
   </table>
   <div id="iop-<?php echo $side; ?>-comments"
        class="js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>
-  data-comment-button="#iop-<?= $side ?>-comment-button">
+       data-comment-button="#iop-<?= $side ?>-comment-button">
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(
               'class' => 'js-comment-field',
@@ -69,7 +69,8 @@ $comments = $side . '_comments';
 </div>
 <div class="add-data-actions flex-item-bottom">
   <button id="iop-<?php echo $side; ?>-comment-button" type="button" class="button js-add-comments"
-          data-comment-container="#iop-<?php echo $side; ?>-comments" <?= $element->$comments ? 'style="display: none;"' : ''; ?>>
+          data-comment-container="#iop-<?php echo $side; ?>-comments"
+          <?php if ($element->$comments): ?>style="visibility: hidden;"<?php endif; ?>>
     <i class="oe-i comments small-icon"></i>
   </button>
   <button type="button" class="button hint green js-add-select-search">

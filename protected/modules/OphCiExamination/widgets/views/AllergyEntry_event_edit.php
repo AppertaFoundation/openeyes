@@ -70,7 +70,7 @@ if (!isset($values)) {
           <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
                   class="button js-add-comments"
                   data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-                  type="button" <?php if ($values['comments']): ?>style="display: none"<?php endif; ?>>
+                  type="button" <?php if ($values['comments']): ?>style="visibility: hidden;"<?php endif; ?>>
             <i class="oe-i comments small-icon"></i>
           </button>
           <span class="js-comment-container" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"

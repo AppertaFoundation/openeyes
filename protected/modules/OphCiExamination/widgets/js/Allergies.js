@@ -162,10 +162,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.addEntry = function () {
         this.$table.find('tbody').append(this.createRow());
         $('.flex-item-bottom').find('.selected').removeClass('selected');
-        this.$table.find('tbody tr:last').on('click', '.js-add-comments', function (e) {
-            $(e.target).hide();
-            $(e.target).siblings('input').show();
-        });
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
     };

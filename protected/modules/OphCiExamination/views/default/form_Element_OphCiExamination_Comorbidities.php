@@ -57,7 +57,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
   </div>
   <button id="<?= CHtml::modelName($element) ?>_comment_button" class="button js-add-comments"
           data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>" type="button"
-          <?php if ($element->comments): ?>style="display: none"<?php endif; ?>>
+          <?php if ($element->comments): ?>style="visibility: hidden;"<?php endif; ?>>
     <i class="oe-i comments small-icon"></i>
   </button>
 </div>
