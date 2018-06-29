@@ -74,9 +74,9 @@ if (!isset($values)) {
             <i class="oe-i comments small-icon"></i>
           </button>
           <span class="js-comment-container" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-                <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>>
+                <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>
+                data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
               <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
-                  'data-comment-button' => '#' . CHtml::getIdByName($field_prefix . '[comments]') . '_button',
                   'class' => 'js-comment-field',
               )) ?>
             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>

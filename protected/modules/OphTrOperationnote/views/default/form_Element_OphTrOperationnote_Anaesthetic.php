@@ -126,7 +126,7 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?= (bool)$element->anaesthetic_comment ? '' : 'display: none' ?>" class="js-comment-container">
+            style="<?= (bool)$element->anaesthetic_comment ? '' : 'display: none' ?>" class="js-comment-container" data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
           <td>
             Comments
           </td>
@@ -137,7 +137,7 @@ $is_hidden = function () use ($element) {
                       'rows' => 4,
                       'cols' => 40,
                       'class' => 'js-comment-field',
-                      'data-comment-button' => '#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button',
+
                   )) ?>
           </td>
         </tr>

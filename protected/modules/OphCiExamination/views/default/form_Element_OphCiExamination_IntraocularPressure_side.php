@@ -55,14 +55,14 @@ $comments = $side . '_comments';
     </tbody>
   </table>
   <div id="iop-<?php echo $side; ?>-comments"
-       class="js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
+       class="js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>
+  data-comment-button="#iop-<?= $side ?>-comment-button">
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(
               'class' => 'js-comment-field',
               'rows' => 1,
               'placeholder' => 'Comments',
               'style' => 'overflow-x: hidden; word-wrap: break-word;',
-              'data-comment-button' => '#iop-' . $side . '-comment-button',
           )) ?>
     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
   </div>

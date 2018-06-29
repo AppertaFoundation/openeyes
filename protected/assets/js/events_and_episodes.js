@@ -132,11 +132,11 @@ $(document).ready(function(){
 		}
 	});
 
-	$(this).on('click', '.js-remove-element', function (e) {
-			e.preventDefault();
-			var parent = $(this).parent().parent();
-			removeElement(parent);
-	});
+  $(this).on('click', '.js-remove-element', function (e) {
+    e.preventDefault();
+    var parent = $(this).parent().parent();
+    removeElement(parent);
+  });
 
 	$(this).on('click', '.js-tiles-collapse-btn', function () {
 		var $tileGroup = $(this).closest('.element-tile-group');
@@ -157,25 +157,27 @@ $(document).ready(function(){
 	});
 
   $(this).on('click', '.js-add-comments', function () {
-    var button = $(this);
-    var container = $($(this).data('comment-container'));
-    button.hide();
-    container.show();
-    container.find('.js-comment-field').focus();
-    container.on('blur', 'input, textarea', function () {
-      if ($(this).val().trim() === '') {
-        button.show();
-        container.hide();
-        container.off('blur, click');
-      }
-    });
+    $(this).hide();
+    var $container = $($(this).data('comment-container'));
+    $container.show();
+    $container.find('.js-comment-field').focus();
+  });
 
-    container.on('click', '.js-remove-add-comments', function() {
-      container.find('.js-comment-field').andSelf().val(null);
-    	container.hide();
-      container.off('blur, click');
-      button.show();
-    });
+  $(this).on('blur', '.js-comment-field', function () {
+    if ($(this).val().trim() === '') {
+      var $container = $(this).closest('.js-comment-container');
+    	var $button = $($container.data('comment-button'));
+      $button.show();
+      $container.hide();
+    }
+  });
+
+  $(this).on('click', '.js-remove-add-comments', function () {
+    var $container = $(this).closest('.js-comment-container');
+    $container.find('.js-comment-field').val(null);
+    $container.hide();
+    var $button = $($container.data('comment-button'));
+    $button.show();
   });
 
   // Tile Data Overflow

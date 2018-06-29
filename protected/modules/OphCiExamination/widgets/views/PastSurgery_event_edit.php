@@ -81,7 +81,7 @@ $model_name = CHtml::modelName($element);
       </tbody>
     </table>
     <div id="<?= $model_name ?>-comments" class="field-row-pad-top js-comment-container flex-layout flex-left"
-         style="<?= $element->comments ? '' : 'display: none;' ?>">
+         style="<?= $element->comments ? '' : 'display: none;' ?>" data-comment-button="#<?= $model_name ?>-comment-button">
       <br/>
         <?php echo $form->textArea(
             $element,
@@ -91,7 +91,6 @@ $model_name = CHtml::modelName($element);
             array(
                 'class' => 'autosize js-comment-field',
                 'placeholder' => $element->getAttributeLabel('comments'),
-                'data-comment-button' => '#' . $model_name . '-comment-button',
             )
         )
         ?>

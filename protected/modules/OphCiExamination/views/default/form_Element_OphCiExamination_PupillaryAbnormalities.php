@@ -64,7 +64,8 @@
             </tr>
             <tr>
               <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="flex-layout flex-left js-comment-container"
-                  style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;">
+                  style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;"
+                  data-comment-button="#pupils-<?= $eye_side ?>-comment_button">
                   <?php
                   echo $form->textArea(
                       $element,
@@ -74,7 +75,6 @@
                       array(
                           'class' => 'js-comment-field',
                           'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
-                          'data-comment-button' => '#pupils-' . $eye_side . '-comment_button',
                       )
                   )
                   ?>

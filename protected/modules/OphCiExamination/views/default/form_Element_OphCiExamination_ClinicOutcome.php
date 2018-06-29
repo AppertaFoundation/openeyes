@@ -45,7 +45,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
       )) ?>
 
     <div id="outcomes-comments" class="flex-layout flex-left js-comment-container"
-         style="<?= $element->description ? '' : 'display: none;' ?>">
+         style="<?= $element->description ? '' : 'display: none;' ?>" data-comment-button="#outcomes-comment-button">
         <?php echo $form->textArea(
             $element,
             'description',
@@ -54,7 +54,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             array(
                 'class' => 'autosize js-comment-field',
                 'placeholder' => $element->getAttributeLabel('description'),
-                'data-comment-button' => '#outcomes-comment-button',
             )
         ) ?>
       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>

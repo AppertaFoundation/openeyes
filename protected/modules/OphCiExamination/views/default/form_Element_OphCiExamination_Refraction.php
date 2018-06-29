@@ -75,14 +75,13 @@
             </div>
 
             <div id="refraction-<?= $eye_side ?>-comments" class="flex-layout flex-left js-comment-container"
-                 style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
+                 style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#refraction-<?= $eye_side ?>-comment-button">
                 <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
                     array(
                         'rows' => 1,
                         'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
                         'class' => 'cols-full js-comment-field',
                         'style' => 'overflow-wrap: break-word; height: 24px;',
-                        'data-comment-button' => '#refraction-' .  $eye_side . '-comment-button',
                     )) ?>
               <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
             </div>

@@ -55,12 +55,12 @@ if ($this->checkClericalEditAccess()) {
                     </button>
                     <span class="js-comment-container"
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
-                          <?php if (!$comments): ?>style="display: none;"<?php endif; ?>>
+                          <?php if (!$comments): ?>style="display: none;"<?php endif; ?>
+                          data-comment-button="#<?= $comment_button_id ?>">
                         <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
                             'class' => 'js-comment-field',
                             'rows' => 2,
                             'placeholder' => 'Comments',
-                            'data-comment-button' => '#' . $comment_button_id,
                         )); ?>
                       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                     </span>
