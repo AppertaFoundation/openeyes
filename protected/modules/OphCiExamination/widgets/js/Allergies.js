@@ -125,18 +125,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param data
      * @returns {*}
      */
-    AllergiesController.prototype.createRow = function (data) {
-        if (data === undefined)
-            data = {};
-        var selected_option = $('#history-allergy-option').find('.selected');
+    AllergiesController.prototype.createRows = function(allergies)
+    {
+        if (allergies === undefined)
+            allergies = {};
         var newRows = [];
         var template = this.templateText;
         var tableSelector = this.tableSelector;
-        selected_option.each(function (e) {
-          data = {};
+        $(allergies).each(function (e) {
+          var data = {};
           data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
-          data['allergy_id'] = $(this).data('id');
-          data['allergy_display'] = $(this).data('str');
+          data['allergy_id'] = this['id'];
+          data['allergy_display'] = this['label'];
           newRows.push( Mustache.render(
              template,
             data ));
@@ -159,8 +159,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Add a family history section if its valid.
      */
-    AllergiesController.prototype.addEntry = function () {
-        this.$table.find('tbody').append(this.createRow());
+    AllergiesController.prototype.addEntry = function(allergies)
+    {
+        this.$table.find('tbody').append(this.createRows(allergies));
         $('.flex-item-bottom').find('.selected').removeClass('selected');
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();

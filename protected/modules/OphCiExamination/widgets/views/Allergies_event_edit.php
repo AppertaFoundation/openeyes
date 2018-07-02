@@ -91,20 +91,6 @@ $required_allergy_ids = array_map(function ($r) {
       <button class="button hint green add-icon-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
-      <!-- select (and search) options for element -->
-      <div class="flex-layout flex-top flex-left">
-        <ul class="add-options cols-full" data-multi="true" data-clickadd="false" id="history-allergy-option">
-            <?php $allergies = $element->getAllergyOptions();
-            foreach ($allergies as $allergy) { ?>
-              <li data-str="<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
-                <span class="auto-width">
-                    <?php echo $allergy->name; ?>
-                </span>
-              </li>
-            <?php } ?>
-        </ul>
-      </div>
-      <!-- flex-layout -->
     </div><!-- oe-add-select-search -->
   </div>
 </div>
@@ -144,22 +130,18 @@ $required_allergy_ids = array_map(function ($r) {
       });
     });
 
-    var popup = $('#add-to-allergies');
-
-    function addAllergy() {
-      //this just gets it's own data
-      allergyController.addEntry();
-      allergyController.showTable();
-    }
-
-    setUpAdder(
-      popup,
-      'multi',
-      addAllergy,
-      $('#add-allergy-btn'),
-      popup.find('.add-icon-btn'),
-      $('.close-icon-btn, .add-icon-btn')
-    );
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-allergy-btn'),
+      multiSelect: true,
+      items: <?= CJSON::encode(array_map(function ($allergy) {
+            return ['label' => $allergy->name, 'id' => $allergy->id];
+        }, $element->getAllergyOptions())) ?>,
+      onReturn: function (adderDialog, selectedItems) {
+        allergyController.addEntry(selectedItems);
+        allergyController.showTable();
+        return true;
+      }
+    });
   });
 
 </script>
