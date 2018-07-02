@@ -83,7 +83,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 			<?php echo CHtml::link('images', '#', array('class' => 'foster_images_link')); ?>
 			):
 		</label>
-		<?php echo CHtml::activeDropDownList($element, $side.'_van_herick_id', array(0 => 'NR') + CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Van_Herick::model()->findAll(), 'id', 'name'), array('class' => 'inline clearWithEyedraw')); ?>
+		<?php echo CHtml::activeDropDownList($element, $side.'_van_herick_id', array(0 => 'NR') + CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Van_Herick::model()->findAll(), 'id', 'name'), array('class' => 'inline clearWithEyedraw')); ?>
 		<div data-side="<?php echo $side?>" class="foster_images_dialog"
 			title="Foster Images">
 			<img usemap="#<?php echo $side ?>_foster_images_map"

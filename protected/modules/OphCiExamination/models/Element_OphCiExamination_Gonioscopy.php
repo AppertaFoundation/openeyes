@@ -36,8 +36,8 @@ namespace OEModule\OphCiExamination\models;
  * @property OphCiExamination_Gonioscopy_Description $right_gonio_tem
  * @property OphCiExamination_Gonioscopy_Description $right_gonio_nas
  * @property OphCiExamination_Gonioscopy_Description $right_gonio_inf
- * @property OphCiExamination_Gonioscopy_Van_Herick $left_van_herick
- * @property OphCiExamination_Gonioscopy_Van_Herick $right_van_herick
+ * @property OphCiExamination_Van_Herick $left_van_herick
+ * @property OphCiExamination_Van_Herick $right_van_herick
  * @property string $left_eyedraw
  * @property string $right_eyedraw
  * @property string $left_ed_report
@@ -133,8 +133,8 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 'right_gonio_tem' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_tem_id'),
                 'right_gonio_nas' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_nas_id'),
                 'right_gonio_inf' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Description', 'right_gonio_inf_id'),
-                'left_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Van_Herick', 'left_van_herick_id'),
-                'right_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Van_Herick', 'right_van_herick_id'),
+                'left_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Van_Herick', 'left_van_herick_id'),
+                'right_van_herick' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Van_Herick', 'right_van_herick_id'),
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
         );
     }
