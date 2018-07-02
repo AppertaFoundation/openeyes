@@ -31,7 +31,8 @@
              data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
              data-no-results-text="No previous management recorded"
              data-limit="1"
-             data-template-id="previous-management-template">Loading previous management information ...</div>
+             data-template-id="previous-management-template">Loading previous management information ...
+        </div>
       </div>
     </div>
   </div>
@@ -39,39 +40,50 @@
     <button class="button hint green js-add-select-search" type="button" id="show-add-to-history">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <!-- popup to add to element is click -->
-    <div id="add-to-history" class="oe-add-select-search auto-width" style="bottom: -124px; display: none;">
-      <?php $this->renderPartial('OEModule.OphCiExamination.views.default._attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
-    </div>
   </div>
 </div>
 <script type="text/html" id="previous-management-template">
-    <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="js-has-tooltip fa oe-i info small" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+  <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span
+        class="js-has-tooltip fa oe-i info small"
+        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
 </script>
+
+<?php
+$itemSets = array();
+foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+    $items = array();
+
+    foreach ($attribute->getAttributeOptions() as $option) {
+        $items[] = ['label' => (string)$option->slug];
+    }
+
+    $itemSets[] = $items;
+}
+?>
 <script type="text/javascript" id="history-add-to-dialog">
-    $(function () {
-        var popup = $('#add-to-history');
-        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
+  $(function () {
+    var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
 
-        function setText(){
-            popup.find('.selected').each(function () {
-                inputText.val(inputText.val() ?
-                    inputText.val()+$(this).attr('data-str') : $(this).attr('data-str')
-                );
-            });
-            inputText.trigger('oninput');
-            popup.find('.selected').removeClass('selected');
-        }
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#show-add-to-history'),
+      itemSets: <?= CJSON::encode($itemSets) ?>,
+      liClass: 'restrict-width',
+      onReturn: function (adderDialog, selectedItems) {
 
-        setUpAdder(
-            popup,
-            'single',
-            setText,
-            $('#show-add-to-history'),
-            popup.find('.add-icon-btn'),
-            popup.find('.close-icon-btn')
-        );
+        $(selectedItems).each(function (key, item) {
+          inputText.val(inputText.val() ?
+            inputText.val() + item['label'] : item['label']
+          );
+          console.log(item);
+        });
+
+        inputText.trigger('oninput');
+
+        return true;
+      }
     });
+
+  });
 
 </script>
 

@@ -94,17 +94,17 @@ $required_risk_ids = array_map(function ($r) {
         <ul id="history-risks-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
             <?php
             $exist_risks = array();
-            foreach ($element->entries as $entry){
-              array_push($exist_risks,$entry->risk_id);
-              }
-              foreach ($risks_options as $risk_item) {
-              if (!in_array($risk_item->id, $exist_risks)) {
-                ?>
-                <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
-                  <span class="restrict-width"><?php echo $risk_item->name; ?></span>
-                </li>
-              <?php }
-              } ?>
+            foreach ($element->entries as $entry) {
+                array_push($exist_risks, $entry->risk_id);
+            }
+            foreach ($risks_options as $risk_item) {
+                if (!in_array($risk_item->id, $exist_risks)) {
+                    ?>
+                  <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
+                    <span class="restrict-width"><?php echo $risk_item->name; ?></span>
+                  </li>
+                <?php }
+            } ?>
         </ul>
       </div>
     </div>

@@ -34,7 +34,7 @@
    * @private
    */
   AdderDialog._defaultOptions = {
-    items: [],
+    itemSets: [],
     openButton: null,
     onOpen: null,
     onClose: null,
@@ -42,8 +42,10 @@
     onReturn: null,
     onAdd: null,
     multiSelect: false,
+    deselectOnReturn: true,
     id: null,
     popupClass: 'oe-add-select-search auto-width',
+    liClass: 'auto-width',
     width: 440,
   };
 
@@ -61,21 +63,23 @@
     var $closeButton = $('<div />', {class: 'close-icon-btn'}).append($('<i />', {class: 'oe-i remove-circle medium'}));
     this.content.append($closeButton);
     $closeButton.click(function () {
-      AdderDialog.this.close();
+      dialog.close();
     });
 
     var $addButton = $('<button />', {
       class: 'button hint green add-icon-btn',
       type: 'button'
     }).append($('<i />', {class: 'oe-i plus pro-theme'}));
-    this.content.append($closeButton);
-    this.setClose($(this.content).find('.close-icon-btn'));
 
+    this.content.append($addButton);
+
+    this.setClose($(this.content).find('.close-icon-btn'));
     this.setOpen(this.options.openButton);
 
     this.content.insertAfter(this.options.openButton);
     this.popup = this.options.openButton.siblings('.oe-add-select-search');
     this.generateContent();
+    this.popup.hide();
 
     this.popup.find('.close-icon-btn').click(function () {
       dialog.close();
@@ -96,8 +100,8 @@
       });
     }
 
-    this.popup.on('click', '.add-icon-btn', function() {
-      if(dialog.options.onReturn) {
+    this.popup.on('click', '.add-icon-btn', function () {
+      if (dialog.options.onReturn) {
         var selectedItems = dialog.getSelectedItems();
         var result = dialog.options.onReturn(dialog, selectedItems);
         if (result) {
@@ -106,30 +110,44 @@
       } else {
         dialog.close();
       }
+
+      if(dialog.options.deselectOnReturn) {
+        dialog.popup.find('li').removeClass('selected');
+      }
     });
   };
 
   AdderDialog.prototype.generateContent = function () {
-    if (this.options.items) {
-      this.generateItemList();
+    var dialog = this;
+    if (this.options.itemSets) {
+      var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
+
+
+      $(this.options.itemSets).each(function () {
+        var $list = dialog.generateItemList(this);
+        $list.appendTo($container);
+      });
     }
   };
 
-  AdderDialog.prototype.getSelectedItems = function() {
-    return this.popup.find('li.selected').map(function() {
-      return {'id': $(this).data('id'), 'label': $(this).data('label') };
+  AdderDialog.prototype.getSelectedItems = function () {
+    return this.popup.find('li.selected').map(function () {
+      return {'id': $(this).data('id'), 'label': $(this).data('label')};
     }).get();
   };
 
-  AdderDialog.prototype.generateItemList = function () {
-    var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
-    var $list = $('<ul />', {class: 'add-options cols-full'}).appendTo($container);
+  AdderDialog.prototype.generateItemList = function (items) {
 
-    this.options.items.forEach(function (item) {
+    var dialog = this;
+    var $list = $('<ul />', {class: 'add-options cols-full'});
+
+    items.forEach(function (item) {
       var $listItem = $('<li />', {'data-label': item['label'], 'data-id': item['id']});
-      $('<span />', {class: 'auto-width'}).text(item['label']).appendTo($listItem);
+      $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
       $listItem.appendTo($list);
     });
+
+    return $list;
   };
 
   AdderDialog.prototype.positionFixedPopup = function ($anchorElement) {
