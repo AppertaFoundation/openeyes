@@ -183,7 +183,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $method
      * @return string|null
      */
-    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method, $getPreOpRefractionDate = false)
+    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
     {
         if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             return null;
@@ -204,10 +204,45 @@ class OphCoCorrespondence_API extends BaseAPI
                     }
                 }
                 if ($result = $api->$method($event)) {
-                    if($getPreOpRefractionDate){
-                        return $event->event_date;
-                    }
                     return $result;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+ * Internal abstraction of getting data from before the most recent op note.
+ *
+ * @param $patient
+ * @param bool $use_context
+ * @param $api
+ * @param $method
+ * @return date|null
+ */
+    private function getPreOpDateFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        if($op_event){
+            $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+            $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+            foreach ($events as $event) {
+
+                // take account of event date not containing time so we ensure we get the
+                // exam from BEFORE the op note, not on the same day but after.
+                if ($event->event_date == $op_event->event_date) {
+                    if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                        continue;
+                    }
+                }
+                if ($result = $api->$method($event)) {
+                    return $event->event_date;
                 }
             }
         }
@@ -237,15 +272,24 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpRefraction($patient, $use_context = false, $getPreOpRefractionDate = false)
+    public function getPreOpRefraction($patient, $use_context = false)
     {
-        if($getPreOpRefractionDate){
-            if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
-                return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent', true);
-            }
-        }
         if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
             return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
+        }
+    }
+
+    /**
+     * Get the Pre-Op Refraction - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getPreOpRefractionDate($patient, $use_context = false)
+    {
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpDateFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 

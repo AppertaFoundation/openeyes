@@ -107,11 +107,11 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             <?php
                 $preOpRefractionBothEyes = explode(",",$correspondence_api->getPreOpRefraction($patient));
                 $rightPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
-                $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
+                $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[1])[1];
             ?>
             <span class="data">R <?php echo $rightPreOpRefraction?></span>
             <span class="data">L <?php echo $leftPreOpRefraction?></span>
-            <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefraction($patient, false, true))?></span>
+            <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
         </div>
 
         <div class="group">

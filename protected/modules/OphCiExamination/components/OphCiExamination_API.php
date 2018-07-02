@@ -645,19 +645,15 @@ class OphCiExamination_API extends \BaseAPI
      * @param Patient $patient
      * @param string $side
      * @param boolean $use_context
-     * @param boolean $getBestVisualAcuityDate
      * @return models\OphCiExamination_VisualAcuity_Reading
      */
-    public function getBestVisualAcuity($patient, $side, $use_context = false , $getBestVisualAcuityDate = false)
+    public function getBestVisualAcuity($patient, $side, $use_context = false)
     {
         $va = $this->getLatestElement(
             'models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context);
         if ($va) {
-            if($getBestVisualAcuityDate){
-                return $va->event->event_date;
-            }
             return $va->getBestReading($side);
         }
     }
@@ -823,7 +819,11 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
     {
-        return ($date = $this->getBestVisualAcuity($patient, $side, $use_context, true)) ? $date : 'NA';
+        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
+
+        $date2 = $best->element->event->event_date;
+
+        return ($date2 ? $date2 : 'NA');
     }
 
 
