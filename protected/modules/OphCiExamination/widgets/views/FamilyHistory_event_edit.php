@@ -152,7 +152,7 @@
 
        setUpAdder(
          popup,
-         'multi',
+         'single',
          addFamilyHistory,
          adder.find('.js-add-new-row'),
          popup.find('.add-icon-btn'),

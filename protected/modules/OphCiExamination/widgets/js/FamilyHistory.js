@@ -103,12 +103,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-        data['relative_id'] = this.$popupSelector.find('ul.relative .selected').data('id');
-        data['relative_display'] = this.$popupSelector.find('ul.relative .selected').data('str');
-        data['side_id'] = this.$popupSelector.find('ul.side .selected').data('id');
-        data['side_display'] = this.$popupSelector.find('ul.side .selected').data('str');
-        data['condition_id'] = this.$popupSelector.find('ul.condition .selected').data('id');
-        data['condition_display'] = this.$popupSelector.find('ul.condition .selected').data('str');
+        var list = ['relative', 'side', 'condition'];
+        for (i in list){
+            var selected_item = this.$popupSelector.find('ul.'+list[i]+' .selected');
+            data[list[i]+'_id'] =  selected_item.data('id');
+            data[list[i]+'_display'] =  selected_item.data('str');
+        }
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
 
         var newRow =  Mustache.render(
