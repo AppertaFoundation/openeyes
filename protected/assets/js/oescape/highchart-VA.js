@@ -64,8 +64,8 @@ var optionsVA = {
       y:25				// move labels below ticks
     },
     tickPixelInterval: 100,  // if this is too high the last tick isn't shown (default 100)
-    startOnTick: true,
-    endOnTick: true
+    startOnTick: false, //If the charts are forced to start and end on ticks they can't align properly
+    endOnTick: false
   },
 
   yAxis: [{
