@@ -17,6 +17,12 @@
  */
 ?>
 
+<?php
+// Strip whitespace between HTML tags to prevent gaps between tabs
+ob_start(function ($buffer) {
+    return preg_replace('/>\s+</', '><', $buffer);
+}); ?>
+
 <?php if ($this->event): ?>
   <?php echo $this->event->getEventIcon('medium'); ?>
 <?php endif; ?>
@@ -32,3 +38,4 @@
   </button>
 <?php endif; ?>
 
+<?php ob_get_flush() ?>
