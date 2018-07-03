@@ -87,7 +87,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 <div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
     <div class="situational-awareness flex-layout flex-left flex-top">
 
-        <div class="group">
+        <div class="group" style="display: <?= $exam_api->getLetterVisualAcuityRight($patient) ? 'block' : 'none' ?>">
             <?php
             $lDate =  $exam_api->getLetterVisualAcuityDate($patient, 'left');
             $rDate =  $exam_api->getLetterVisualAcuityDate($patient, 'right');
@@ -102,16 +102,24 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             <span class="oe-date"><?php echo Helper::convertDate2NHS($lDate);?></span>
             <?php } ?>
         </div>
+        <div class="group" style="display: <?= $exam_api->getLetterVisualAcuityRight($patient) ? 'none' : 'block' ?>">
+                <span class="data-value not-available">Not Available</span>
+        </div>
 
         <div class="group">
             <?php
-                $preOpRefractionBothEyes = explode(",",$correspondence_api->getPreOpRefraction($patient));
-                $rightPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
-                $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[1])[1];
-            ?>
+                if($correspondence_api->getPreOpRefraction($patient) != null){
+                    $preOpRefractionBothEyes = explode(",",$correspondence_api->getPreOpRefraction($patient));
+                    $rightPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
+                    $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[1])[1];
+
+             ?>
             <span class="data">R <?php echo $rightPreOpRefraction?></span>
             <span class="data">L <?php echo $leftPreOpRefraction?></span>
             <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
+            <?php } else { ?>
+                    <span class="data-value not-available">Not Available</span>
+            <?php }?>
         </div>
 
         <div class="group">

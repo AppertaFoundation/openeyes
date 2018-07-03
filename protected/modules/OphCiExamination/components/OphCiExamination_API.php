@@ -820,10 +820,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
     {
         $best = $this->getBestVisualAcuity($patient, $side, $use_context);
-
-        $date2 = $best->element->event->event_date;
-
-        return ($date2 ? $date2 : 'NA');
+        return ($best ? $best->element->event->event_date : 'NA');
     }
 
 
