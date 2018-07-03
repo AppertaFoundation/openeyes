@@ -32,7 +32,6 @@ $required_diagnoses_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
-
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
     <thead>
@@ -84,7 +83,7 @@ $required_diagnoses_ids = array_map(function ($r) {
     ?>
     </tbody>
   </table>
-  <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup">
+  <div class="flex-item-bottom" id="systemic-diagnoses-popup">
     <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
       <i class="oe-i plus pro-theme"></i>
     </button>

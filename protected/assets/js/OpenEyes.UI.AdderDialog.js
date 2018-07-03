@@ -128,6 +128,7 @@
    * Creates the menu items for the popup, depending on what items are required
    * @param {object} content The DOM reference to the content of the popup
    */
+
   AdderDialog.prototype.generateMenu = function (content) {
     var dialog = this;
 
@@ -329,6 +330,33 @@
    * @param {string} text The term to search with
    */
   AdderDialog.prototype.runItemSearch = function (text) {
+    var dialog = this;
+
+    if (this.searchRequest !== null) {
+      this.searchRequest.abort();
+    }
+
+    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+      term: text,
+      code: this.options.searchOptions.code,
+      ajax: 'ajax'
+    }, function (results) {
+      dialog.searchRequest = null;
+      var no_data = !$(results).length;
+
+      dialog.searchResultList.empty();
+      dialog.searchResultList.toggle(!no_data);
+      dialog.noSearchResultsWrapper.toggle(no_data);
+
+      $(results).each(function (index, result) {
+        var item = $("<li />", {'data-label': result['value'], 'data-id': result['id']})
+          .append($('<span />', {class: 'auto-width'}).text(result['value']));
+        dialog.searchResultList.append(item);
+      });
+    });
+  };
+
+  AdderDialog.prototype.onSearchKeyUp = function (text) {
     var dialog = this;
 
     if (this.searchRequest !== null) {
