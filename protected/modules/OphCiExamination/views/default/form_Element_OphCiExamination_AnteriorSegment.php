@@ -16,6 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<style>
+  .OEModule-OphCiExamination-models-Element-OphCiExamination-AnteriorSegment .ed-fields-container {
+    padding-top: 111px;
+  }
+</style>
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
@@ -56,3 +61,4 @@
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AnteriorSegment.js",
     CClientScript::POS_HEAD); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
+
