@@ -1,24 +1,3 @@
-$(".foster_images_dialog").dialog({
-    autoOpen: false,
-    modal: true,
-    resizable: false,
-    width: 480
-});
-
-$(this).delegate('a.foster_images_link', 'click', function(e) {
-    var side = $(this).closest('[data-side]').attr('data-side');
-    $('.foster_images_dialog[data-side="'+side+'"]').dialog('open');
-    e.preventDefault();
-});
-$('body').delegate('.foster_images_dialog area', 'click', function() {
-    var value = $(this).attr('data-vh');
-    var side = $(this).closest('[data-side]').attr('data-side');
-    $('.foster_images_dialog[data-side="'+side+'"]').dialog('close');
-    $('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+side+'_van_herick_id option').attr('selected', function () {
-        return ($(this).text() == value + '%');
-    });
-});
-
 /**
  * OpenEyes
  *
@@ -43,42 +22,65 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     function VanHerickController(options) {
         this.options = $.extend(true, {}, VanHerickController._defaultOptions, options);
-        this.modelName = this.options.modelName;
-        this.$element = $('#' + this.modelName);
-        this.img_link_selector = this.options.img_link_selector;
+        this.$element = this.options.element;
+        this.imgLinkClass = this.options.imgLinkClass;
+        this.imgContainer = $('.' + this.imgLinkClass);
+        this.imgContainerClass = this.options.imgContainerClass;
 
+        this.initialise();
         this.initialiseTriggers();
-
     }
 
     VanHerickController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_VanHerick',
+        element: undefined,
         dropdown: '_van_herick_id',
-        img_container_class: 'foster_images_dialog',
-        img_link_selector: '.foster_images_link',
+        imgContainerClass: 'js-foster_images_dialog',
+        imgLinkClass: 'js-foster_images_link',
+    };
+
+    VanHerickController.prototype.initialise = function () {
+        // in case if the user removes then re-adds the element
+        $('.' + this.imgContainerClass + '.ui-dialog-content').closest('.ui-dialog').remove();
+
+        this.initialiseDialog();
     };
 
     VanHerickController.prototype.initialiseTriggers = function () {
 
         var controller = this;
+        var $dialog = $("." + controller.imgContainerClass);
 
+        this.$element.on('click', '.' + this.imgLinkClass, function () {
+            let side = $(this).closest('.element-eye').data('side');
 
-        this.$element.on('click', this.img_link_selector, function(){
-console.log( $(this));
-            controller.initialiseDialog( $(this).closest('.element-eye').data('side') );
+            $dialog.data('side', side);
+            $dialog.dialog('open');
+        });
+
+        $('.' + this.imgContainerClass).on('click', 'map area', function () {
+            var value = $(this).data('vh');
+            var side = $dialog.data('side');
+            var $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
+
+            $dropdown.find('option').attr('selected', function () {
+                return ($(this).text() == value + '%');
+            });
         });
     };
 
-    VanHerickController.prototype.initialiseDialog = function (side) {
+    VanHerickController.prototype.initialiseDialog = function () {
         var controller = this;
 
-        console.log(".foster_images_dialog." + side);
-        $(".foster_images_dialog." + side).dialog({
-            autoOpen: true,
-            modal: true,
-            resizable: false,
-            width: 480
-        });
+        //@TODO: OK, this is BAD, but didn't find any workaround - let me know if can fix it!
+        // Without setTimeout the .dialog('open') won't work : cannot call methods on dialog prior to initialization; attempted to call method 'open'
+        setTimeout(function(){
+            $("." + controller.imgContainerClass).dialog({
+                autoOpen: false,
+                modal: true,
+                resizable: false,
+                width: 480
+            })
+        },50);
     };
 
     exports.VanHerickController = VanHerickController;

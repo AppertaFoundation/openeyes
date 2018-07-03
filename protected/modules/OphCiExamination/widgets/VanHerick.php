@@ -14,8 +14,7 @@
  */
 namespace OEModule\OphCiExamination\widgets;
 
-use OEModule\OphCiExamination\models\Allergies as AllergiesElement;
-use OEModule\OphCiExamination\models\AllergyEntry;
+use OEModule\OphCiExamination\models\OphCiExamination_Van_Herick;
 
 class VanHerick extends \BaseEventElementWidget
 {
@@ -39,5 +38,9 @@ class VanHerick extends \BaseEventElementWidget
         if  (!is_a($element, 'OEModule\OphCiExamination\models\VanHerick')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
+    }
+
+    public function getVanHerickValues(){
+        return \CHtml::listData(OphCiExamination_Van_Herick::model()->findAll(), 'id', 'name');
     }
 }

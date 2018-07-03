@@ -16,42 +16,27 @@
  */
 
 ?>
-<script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
+
 <?php
     $model_name = CHtml::modelName($element);
 ?>
-
+<script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
 <div class="element-fields element-eyes row" id="<?= $model_name ?>_element">
 
         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-        <div class="element-eye right-eye column side right<?php if (!$element->hasRight()) {
-            ?> inactive<?php
-        }?>" data-side="right">
+
+        <div class="element-eye right-eye column side left<?=!$element->hasRight() ? ' inactive': '';?>" data-side="right">
+
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
-
 
                 <div class="van_herick field-row">
                     <label for="<?php echo CHtml::modelName($element).'_right_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('right_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', '#', array('class' => 'foster_images_link')); ?>):
-                    <?php echo CHtml::activeDropDownList($element, 'right_van_herick_id', array(0 => 'NR') + CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Van_Herick::model()->findAll(), 'id', 'name'), array('class' => 'inline clearWithEyedraw')); ?>
+                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                         <?php echo CHtml::activeDropDownList($element, 'right_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
-                    <div data-side="right" class="foster_images_dialog right"
-                         title="Foster Images">
-                        <img usemap="#right_foster_images_map"
-                             src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
-                        <map name="right_foster_images_map">
-                            <area data-vh="5" shape="rect" coords="0,0,225,225" />
-                            <area data-vh="15" shape="rect" coords="0,225,225,450" />
-                            <area data-vh="25" shape="rect" coords="0,450,225,675" />
-                            <area data-vh="30" shape="rect" coords="225,0,450,225" />
-                            <area data-vh="75" shape="rect" coords="225,225,450,450" />
-                            <area data-vh="100" shape="rect" coords="225,450,450,675" />
-                        </map>
-                    </div>
                 </div>
-
             </div>
             <div class="inactive-form">
                 <div class="add-side">
@@ -61,30 +46,16 @@
                 </div>
             </div>
         </div>
-        <div class="element-eye right-eye column side left<?php if (!$element->hasLeft()) {
-            ?> inactive<?php
-        }?>" data-side="left">
+
+        <div class="element-eye left-eye column side right<?=!$element->hasLeft() ? ' inactive': '';?>" data-side="left">
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
                 <div class="van_herick field-row">
                     <label for="<?php echo CHtml::modelName($element).'_left_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('left_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', '#', array('class' => 'foster_images_link')); ?>):
-                        <?php echo CHtml::activeDropDownList($element, 'left_van_herick_id', array(0 => 'NR') + CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Van_Herick::model()->findAll(), 'id', 'name'), array('class' => 'inline clearWithEyedraw')); ?>
+                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                        <?php echo CHtml::activeDropDownList($element, 'left_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
-                    <div data-side="left" class="foster_images_dialog left"
-                         title="Foster Images">
-                        <img usemap="#left_foster_images_map"
-                             src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
-                        <map name="left_foster_images_map">
-                            <area data-vh="5" shape="rect" coords="0,0,225,225" />
-                            <area data-vh="15" shape="rect" coords="0,225,225,450" />
-                            <area data-vh="25" shape="rect" coords="0,450,225,675" />
-                            <area data-vh="30" shape="rect" coords="225,0,450,225" />
-                            <area data-vh="75" shape="rect" coords="225,225,450,450" />
-                            <area data-vh="100" shape="rect" coords="225,450,450,675" />
-                        </map>
-                    </div>
                 </div>
             </div>
             <div class="inactive-form">
@@ -95,10 +66,26 @@
                 </div>
             </div>
         </div>
+
+    <div class="js-foster_images_dialog dialog-content" title="Foster Images">
+        <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
+        <map name="foster_images_map">
+            <area data-vh="5" shape="rect" coords="0,0,225,225" />
+            <area data-vh="15" shape="rect" coords="0,225,225,450" />
+            <area data-vh="25" shape="rect" coords="0,450,225,675" />
+            <area data-vh="30" shape="rect" coords="225,0,450,225" />
+            <area data-vh="75" shape="rect" coords="225,225,450,450" />
+            <area data-vh="100" shape="rect" coords="225,450,450,675" />
+        </map>
     </div>
+
+</div>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        new OpenEyes.OphCiExamination.VanHerickController();
+        new OpenEyes.OphCiExamination.VanHerickController({
+            element: $('#<?=$model_name?>_element')
+        });
     });
 </script>
+
