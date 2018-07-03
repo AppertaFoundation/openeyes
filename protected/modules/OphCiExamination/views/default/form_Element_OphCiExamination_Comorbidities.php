@@ -55,9 +55,12 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           'style' => $element->comments ? '' : 'display: none;',
       )) ?>
   </div>
-  <button id="<?= CHtml::modelName($element) ?>_comment_button" class="button js-add-comments"
-          data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>" type="button"
-          <?php if ($element->comments): ?>style="visibility: hidden;"<?php endif; ?>>
+  <button id="<?= CHtml::modelName($element) ?>_comment_button"
+          class="button js-add-comments"
+          data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>"
+          type="button"
+          <?php if ($element->comments): ?>style="visibility: hidden;"<?php endif; ?>
+  >
     <i class="oe-i comments small-icon"></i>
   </button>
 </div>

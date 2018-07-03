@@ -67,10 +67,13 @@ $comments = $side . '_comments';
     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
   </div>
 </div>
-<div class="add-data-actions flex-item-bottom">
-  <button id="iop-<?php echo $side; ?>-comment-button" type="button" class="button js-add-comments"
+<div class="flex-item-bottom">
+  <button id="iop-<?php echo $side; ?>-comment-button"
+          type="button"
+          class="button js-add-comments"
           data-comment-container="#iop-<?php echo $side; ?>-comments"
-          <?php if ($element->$comments): ?>style="visibility: hidden;"<?php endif; ?>>
+          <?php if ($element->$comments): ?>style="visibility: hidden;"<?php endif; ?>
+  >
     <i class="oe-i comments small-icon"></i>
   </button>
   <button type="button" class="button hint green js-add-select-search">

@@ -75,9 +75,12 @@ $label_width = 5;
         <td><?= $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false,
                 array('label' => $label_width, 'field' => $field_width)) ?></td>
         <td>
-          <button id="<?= CHtml::modelName($element) ?>_comment_button" type="button" class="button js-add-comments"
+          <button id="<?= CHtml::modelName($element) ?>_comment_button"
+                  type="button"
+                  class="button js-add-comments"
                   data-comment-container="#<?= CHtml::modelName($element) ?>_comment_container"
-                  <?php if ($element->comments): ?>style="display: none;"<?php endif; ?>>
+                  <?php if ($element->comments): ?>style="display: none;"<?php endif; ?>
+          >
             <i class="oe-i comments small-icon"></i>
           </button>
         </td>

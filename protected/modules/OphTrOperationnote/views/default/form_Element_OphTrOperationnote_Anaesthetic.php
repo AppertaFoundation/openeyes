@@ -149,10 +149,12 @@ $is_hidden = function () use ($element) {
       </table>
     </div>
   </div>
-  <div class="add-data-actions flex-item-bottom">
-    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button" class="button js-add-comments"
+  <div class="flex-item-bottom">
+    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
+            class="button js-add-comments"
             data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            <?php if ($element->anaesthetic_comment): ?>style="visibility: hidden;"<?php endif; ?>>
+            <?php if ($element->anaesthetic_comment): ?>style="visibility: hidden;"<?php endif; ?>
+    >
       <i class="oe-i comments small-icon"></i>
     </button>
   </div>
