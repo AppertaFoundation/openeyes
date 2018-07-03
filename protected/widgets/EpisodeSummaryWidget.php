@@ -100,12 +100,6 @@ abstract class EpisodeSummaryWidget extends CWidget
     public function getLaserEvent() {
         $laser_marking = array('right'=>array(), 'left'=>array());
 
-        $laser_list = array(
-            'Capsulotomy (YAG)',
-            'Cycloablation',
-            'Peripheral iridectomy',
-        );
-
         $event_laser = EventType::model()->find('class_name=?', array('OphTrLaser'));
         $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->episode->patient);
 
@@ -113,20 +107,16 @@ abstract class EpisodeSummaryWidget extends CWidget
             $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
             if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ){
                 foreach ($proc_list->left_procedures as $left_procedure) {
-                    if (in_array($left_procedure->term, $laser_list)){
-                        if (empty($laser_marking['left'])||!in_array($left_procedure->short_format, $laser_marking['left'])){
-                            $laser_marking['left'][$left_procedure->short_format] = array();
-                        }
-                        array_push($laser_marking['left'][$left_procedure->short_format], $timestamp);
+                    if (empty($laser_marking['left'])||!in_array($left_procedure->short_format, $laser_marking['left'])){
+                        $laser_marking['left'][$left_procedure->short_format] = array();
                     }
+                    array_push($laser_marking['left'][$left_procedure->short_format], $timestamp);
                 }
                 foreach ($proc_list->right_procedures as $right_procedure) {
-                    if (in_array($right_procedure->term, $laser_list)){
-                        if (empty($laser_marking['right'])||!in_array($right_procedure->short_format, $laser_marking['right'])){
-                            $laser_marking['right'][$right_procedure->short_format] = array();
-                        }
-                        array_push($laser_marking['right'][$right_procedure->short_format], $timestamp);
+                    if (empty($laser_marking['right'])||!in_array($right_procedure->short_format, $laser_marking['right'])){
+                        $laser_marking['right'][$right_procedure->short_format] = array();
                     }
+                    array_push($laser_marking['right'][$right_procedure->short_format], $timestamp);
                 }
             }
         }
