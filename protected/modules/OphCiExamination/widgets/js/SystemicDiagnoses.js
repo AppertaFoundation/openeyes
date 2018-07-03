@@ -18,205 +18,128 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-(function(exports) {
+(function (exports) {
 
-    function SystemicDiagnosesController(options) {
-        this.options = $.extend(true, {}, SystemicDiagnosesController._defaultOptions, options);
+  function SystemicDiagnosesController(options) {
+    this.options = $.extend(true, {}, SystemicDiagnosesController._defaultOptions, options);
 
-        this.$element = this.options.element;
-        this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
-        this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
-        this.$popupSelector = $('#systemic-diagnoses-popup');
-        this.searchRequest = null;
-        this.initialiseTriggers();
-        this.initialiseDatepicker();
+    this.$element = this.options.element;
+    this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
+    this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
+    this.$popupSelector = $('#systemic-diagnoses-popup');
+    this.searchRequest = null;
+    this.initialiseTriggers();
+    this.initialiseDatepicker();
+  }
+
+  SystemicDiagnosesController._defaultOptions = {
+    modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
+    element: undefined,
+    code: 'systemic',
+    addButtonSelector: '#add-history-systemic-diagnoses',
+    findSource: '/medication/finddrug',
+    searchSource: '/disorder/autocomplete',
+  };
+
+  SystemicDiagnosesController.prototype.initialiseTriggers = function () {
+    var controller = this;
+
+    // removal button for table entries
+    controller.$table.on('click', 'i.trash', function (e) {
+      e.preventDefault();
+      $(e.target).parents('tr').remove();
+    });
+
+    // setup current table row behaviours
+    controller.$table.find('tbody tr').each(function () {
+      controller.initialiseRow($(this));
+
+    });
+  };
+  SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
+    var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
+    for (var i = 0; i < row_count; i++) {
+      var datepicker_name = '#systemic-diagnoses-datepicker-' + i;
+      var datepicker = $(this.$table).find(datepicker_name);
+      if (datepicker.length != 0) {
+        pickmeup(datepicker_name, {
+          format: 'Y-m-d',
+          hide_on_select: true,
+          default_date: false
+        });
+      }
     }
+  };
 
-    SystemicDiagnosesController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
-        element: undefined,
-        code: 'systemic',
-        addButtonSelector: '#add-history-systemic-diagnoses',
-        findSource: '/medication/finddrug',
-        searchSource: '/disorder/autocomplete',
-        selectOptions: '#systemic-diagnoses-select-options',
-        selectItems: '#systemic-diagonses-option',
-        searchOptions: '.systemic-diagonses-search-options',
-        searchInput: '#systemic-diagonses-search-field',
-        searchResult: '#systemic-diagonses-search-results'
-    };
-
-    SystemicDiagnosesController.prototype.initialiseTriggers = function()
-    {
-        var controller = this;
-
-        // removal button for table entries
-        controller.$table.on('click', 'i.trash', function(e) {
-            e.preventDefault();
-            $(e.target).parents('tr').remove();
-        });
-
-        // setup current table row behaviours
-        controller.$table.find('tbody tr').each(function() {
-            controller.initialiseRow($(this));
-
-        });
-      controller.$element.on('click','#systemic-diagonses-search-btn',  function (e) {
-        if ($(this).hasClass('selected')) {
-          return;
-        }
-        $(this).addClass('selected');
-        $('#systemic-diagonses-select-btn').removeClass('selected');
-
-        $(controller.options.searchOptions).show();
-        $(controller.options.selectOptions).find('.selected').removeClass('selected');
-        $(controller.options.selectOptions).hide();
+  SystemicDiagnosesController.prototype.setDatepicker = function () {
+    var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key') - 1;
+    var datepicker_name = '#systemic-diagnoses-datepicker-' + row_count;
+    var datepicker = $(this.$table).find(datepicker_name);
+    if (datepicker.length != 0) {
+      pickmeup(datepicker_name, {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
       });
+    }
+  };
 
-      controller.$element.on('click','#systemic-diagonses-select-btn', function () {
-        if ($(this).hasClass('selected')) {
-          return;
-        }
+  SystemicDiagnosesController.prototype.initialiseRow = function ($row) {
+    var controller = this;
+    var $radioButtons = $row.find('input[type=radio]');
 
-        $(this).addClass('selected');
-        $('#systemic-diagonses-search-btn').removeClass('selected');
+    $row.on('change', '.fuzzy-date select', function (e) {
+      var $fuzzyFieldset = $(this).closest('fieldset');
+      var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
+      $fuzzyFieldset.find('input[type="hidden"]').val(date);
+    });
+    var DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
+      'inputField': $row.find('.diagnoses-search-autocomplete'),
+      'fieldPrefix': $row.closest('section').data('element-type-class')
+    });
+    $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
+    // radio buttons
+    $radioButtons.on('change', function (e) {
+      $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
+    });
+  };
 
-        $(controller.options.selectOptions).show();
-        $(controller.options.searchOptions).hide();
-        $(controller.options.searchInput).val('');
-        $(controller.options.searchResult).empty();
-      });
+  SystemicDiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
+    var res = fieldset.find('select.fuzzy_year').val();
+    var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
+    res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
+    var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
+    res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
 
-      $(controller.options.searchInput).on('keyup', function () {
+    return res;
+  };
 
-        controller.popupSearch();
-      });
+  SystemicDiagnosesController.prototype.createRow = function (selectedOptions) {
+    var newRows = [];
+    var template = this.templateText;
+    var element = this.$element;
 
-    };
-    SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
-      var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
-      for (var i=0; i<row_count;i++){
-          var datepicker_name = '#systemic-diagnoses-datepicker-'+i;
-          var datepicker= $(this.$table).find(datepicker_name);
-          if (datepicker.length!=0){
-              pickmeup(datepicker_name, {
-                  format: 'Y-m-d',
-                  hide_on_select: true,
-                default_date: false
-              });
-              }}
-    };
+    $(selectedOptions).each(function (index, option) {
+      data = {};
+      data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+      data['disorder_id'] = option['id'];
+      data['disorder_display'] = option['label'];
+      newRows.push(Mustache.render(
+        template,
+        data));
+    });
 
-    SystemicDiagnosesController.prototype.setDatepicker = function () {
-        var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-        var datepicker_name = '#systemic-diagnoses-datepicker-'+row_count;
-        var datepicker= $(this.$table).find(datepicker_name);
-        if (datepicker.length!=0){
-            pickmeup(datepicker_name, {
-                format: 'Y-m-d',
-              hide_on_select: true,
-              default_date: false
-            });
-        }};
+    return newRows;
+  };
 
-    SystemicDiagnosesController.prototype.initialiseRow = function($row)
-    {
-        var controller = this;
-        var $radioButtons = $row.find('input[type=radio]');
+  SystemicDiagnosesController.prototype.addEntry = function (selectedItems) {
+    var rows = this.createRow(selectedItems);
+    for (var i in rows) {
+      this.$table.find('tbody').append(rows[i]);
+      this.initialiseRow(this.$table.find('tbody tr:last'));
+      this.setDatepicker();
+    }
+  };
 
-        $row.on('change', '.fuzzy-date select', function(e) {
-            var $fuzzyFieldset = $(this).closest('fieldset');
-            var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
-            $fuzzyFieldset.find('input[type="hidden"]').val(date);
-        });
-        var DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
-            'inputField': $row.find('.diagnoses-search-autocomplete'),
-            'fieldPrefix': $row.closest('section').data('element-type-class')
-        });
-        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
-      // radio buttons
-        $radioButtons.on('change', function(e){
-          $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
-        });
-    };
-
-    SystemicDiagnosesController.prototype.popupSearch = function () {
-      var controller = this;
-      if (controller.searchRequest !== null) {
-        controller.searchRequest.abort();
-      }
-      controller.searchRequest = $.getJSON(controller.options.searchSource, {
-        term: $(controller.options.searchInput).val(),
-        code: controller.options.code,
-        ajax: 'ajax'
-      }, function (ui) {
-        controller.searchRequest = null;
-        $(controller.options.searchResult).empty();
-        var no_data = !$(ui).length;
-        $(controller.options.searchResult).toggle(!no_data);
-        $('#systemic-diagonses-search-no-results').toggle(no_data);
-        for (var i in ui){
-          var span = "<span class='auto-width'>"+ui[i]['value']+"</span>";
-          var item = $("<li>")
-            .attr('data-str', ui[i]['value'])
-            .attr('data-id', ui[i]['id']);
-          item.append(span);
-          $(controller.options.searchResult).append(item);
-        }
-      });
-    };
-
-    SystemicDiagnosesController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
-        var res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
-    };
-
-    SystemicDiagnosesController.prototype.createRow = function()
-    {
-        var controller = this;
-        var selected_options = [];
-        var newRows = [];
-        var template = this.templateText;
-        var element = this.$element;
-        $(controller.options.selectItems).find('.selected').each(function (e) {
-          selected_options.push(this);
-        });
-        $(controller.options.searchResult).find('.selected').each(function (e) {
-          selected_options.push(this);
-        });
-
-        for (var i in selected_options) {
-            data = {};
-            data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-            data['disorder_id'] = $(selected_options[i]).data('id');
-            data['disorder_display'] = $(selected_options[i]).data('str');
-            newRows.push( Mustache.render(
-            template,
-            data ));
-        }
-
-        return newRows;
-    };
-
-    SystemicDiagnosesController.prototype.addEntry = function()
-    {
-        var rows = this.createRow();
-      for(var i in rows){
-        this.$table.find('tbody').append(rows[i]);
-        this.initialiseRow(this.$table.find('tbody tr:last'));
-        this.setDatepicker();
-      }
-
-      $(this.options.selectOptions).find('.selected').removeClass('selected');
-      $(this.options.searchInput).val('');
-      $(this.options.searchResult).empty();
-    };
-
-    exports.SystemicDiagnosesController = SystemicDiagnosesController;
+  exports.SystemicDiagnosesController = SystemicDiagnosesController;
 })(OpenEyes.OphCiExamination);

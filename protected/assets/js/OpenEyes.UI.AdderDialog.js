@@ -4,10 +4,11 @@
 
   function AdderDialog(options) {
 
+    this.searchRequest = null;
+
     EventEmitter.call(this);
     this.options = $.extend(true, {}, AdderDialog._defaultOptions, options);
     this.create();
-    this.bindEvents();
   }
 
   Util.inherits(EventEmitter, AdderDialog);
@@ -46,7 +47,7 @@
     id: null,
     popupClass: 'oe-add-select-search auto-width',
     liClass: 'auto-width',
-    width: 440,
+    searchOptions: null,
   };
 
   /**
@@ -59,31 +60,35 @@
   AdderDialog.prototype.create = function () {
     var dialog = this;
 
-    this.content = $('<div />', {class: this.options.popupClass, id: this.options.id});
-    var $closeButton = $('<div />', {class: 'close-icon-btn'}).append($('<i />', {class: 'oe-i remove-circle medium'}));
-    this.content.append($closeButton);
-    $closeButton.click(function () {
-      dialog.close();
-    });
+    var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
+    var $closeButton = $('<div />', {class: 'close-icon-btn'})
+      .append($('<i />', {class: 'oe-i remove-circle medium'}));
+    content.append($closeButton);
 
     var $addButton = $('<button />', {
       class: 'button hint green add-icon-btn',
       type: 'button'
     }).append($('<i />', {class: 'oe-i plus pro-theme'}));
 
-    this.content.append($addButton);
+    if (this.options.searchOptions) {
+      this.searchWrapper = $('<div />', {class: 'search-options'});
+      this.searchWrapper.appendTo(content);
+      this.generateSearch();
+      if (this.options.itemSets) {
+        this.generateMenu(content);
+      }
+    }
 
-    this.setClose($(this.content).find('.close-icon-btn'));
-    this.setOpen(this.options.openButton);
+    content.append($addButton);
 
-    this.content.insertAfter(this.options.openButton);
+    this.setOpenButton(this.options.openButton);
+    this.setCloseButton($(content).find('.close-icon-btn'));
+    this.setAddButton($addButton);
+
+    content.insertAfter(this.options.openButton);
     this.popup = this.options.openButton.siblings('.oe-add-select-search');
     this.generateContent();
     this.popup.hide();
-
-    this.popup.find('.close-icon-btn').click(function () {
-      dialog.close();
-    });
 
     if (this.options.onSelect) {
       this.popup.on('clicl', 'li', this.options.onSelect);
@@ -99,35 +104,74 @@
         }
       });
     }
-
-    this.popup.on('click', '.add-icon-btn', function () {
-      if (dialog.options.onReturn) {
-        var selectedItems = dialog.getSelectedItems();
-        var result = dialog.options.onReturn(dialog, selectedItems);
-        if (result) {
-          dialog.close();
-        }
-      } else {
-        dialog.close();
-      }
-
-      if(dialog.options.deselectOnReturn) {
-        dialog.popup.find('li').removeClass('selected');
-      }
-    });
   };
 
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
+
     if (this.options.itemSets) {
+      this.selectWrapper = $('<div />', {class: 'select-options'});
+      this.selectWrapper.appendTo(this.popup);
       var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
-
-
+      $container.appendTo(this.selectWrapper);
       $(this.options.itemSets).each(function () {
         var $list = dialog.generateItemList(this);
         $list.appendTo($container);
       });
     }
+  };
+
+  AdderDialog.prototype.generateMenu = function (content) {
+    var dialog = this;
+
+    var $selectButton = $('<div />', {class: 'select-icon-btn'})
+      .append($('<i />', {class: 'oe-i menu selected'}));
+
+    var $searchButton = $('<div />', {class: 'search-icon-btn'})
+      .append($('<i />', {class: 'oe-i search'}));
+
+    $selectButton.appendTo(content);
+    $searchButton.appendTo(content);
+
+    $selectButton.click(function () {
+      $(this).find('i').addClass('selected');
+      $searchButton.find('i').removeClass('selected');
+
+      dialog.searchWrapper.hide();
+      dialog.selectWrapper.show();
+      dialog.selectWrapper.find('li').removeClass('selected');
+    });
+
+    $searchButton.click(function () {
+      $(this).find('i').addClass('selected');
+      $selectButton.find('i').removeClass('selected');
+
+      dialog.searchWrapper.show();
+      dialog.selectWrapper.hide();
+      dialog.searchWrapper.find('li').removeClass('selected');
+    });
+  };
+
+  AdderDialog.prototype.generateSearch = function () {
+    var dialog = this;
+
+    var $searchInput = $('<input />', {
+      class: 'search cols-full js-search-autocomplete',
+      placeholder: 'search',
+      type: 'text'
+    });
+    $searchInput.appendTo(this.searchWrapper);
+
+    $searchInput.on('keyup', function () {
+      dialog.onSearchKeyUp($(this).val());
+    });
+
+    this.noSearchResultsWrapper = $('<span />').text('No results found');
+    this.noSearchResultsWrapper.appendTo(this.searchWrapper);
+
+    this.searchResultList = $('<ul />', {class: 'add-options js-search-results', style: 'display: none;'});
+    this.searchResultList.appendTo(this.searchWrapper);
+    this.searchWrapper.hide();
   };
 
   AdderDialog.prototype.getSelectedItems = function () {
@@ -182,42 +226,6 @@
   };
 
   /**
-   * Binds common dialog event handlers.
-   * @name OpenEyes.UI.Dialog#create
-   * @method
-   * @private
-   */
-  AdderDialog.prototype.bindEvents = function () {
-    this.content.on({
-      dialogclose: this.onDialogClose.bind(this),
-      dialogopen: this.onDialogOpen.bind(this)
-    });
-  };
-
-
-  /**
-   * Sets the dialog title.
-   * @name OpenEyes.UI.Dialog#setTitle
-   * @method
-   * @public
-   */
-  AdderDialog.prototype.setTitle = function (title) {
-    $(this.content).find('.title').val(title);
-  };
-
-  /**
-   * Calculates and sets the dialog dimensions.
-   * @name OpenEyes.UI.Dialog#setDimensions
-   * @method
-   * @private
-   */
-  AdderDialog.prototype.setDimensions = function () {
-    var dimensions = this.getDimensions();
-    this.instance.option('width', dimensions.width);
-    this.instance.option('height', dimensions.height);
-  };
-
-  /**
    * Opens (shows) the dialog.
    * @name OpenEyes.UI.Dialog#open
    * @method
@@ -238,37 +246,38 @@
     this.popup.hide();
   };
 
-  /**
-   * Destroys the dialog. Removes all elements from the DOM and detaches all
-   * event handlers.
-   * @name OpenEyes.UI.Dialog#destroy
-   * @fires OpenEyes.UI.Dialog#destroy
-   * @method
-   * @public
-   *
-   */
-  AdderDialog.prototype.destroy = function () {
-    this.content.remove();
-
-    /**
-     * Emitted after the dialog has been destroyed and completed removed from the DOM.
-     *
-     * @event OpenEyes.UI.Dialog#destroy
-     */
-    this.emit('destroy');
-  };
-
-  AdderDialog.prototype.setClose = function (closeButton) {
+  AdderDialog.prototype.setCloseButton = function (closeButton) {
     var dialog = this;
     closeButton.click(function () {
       dialog.close();
     });
   };
 
-  AdderDialog.prototype.setOpen = function (openButton) {
+  AdderDialog.prototype.setOpenButton = function (openButton) {
     var dialog = this;
     openButton.click(function () {
       dialog.open();
+    });
+  };
+
+  AdderDialog.prototype.setAddButton = function ($addButton) {
+
+    var dialog = this;
+
+    $addButton.click(function () {
+      if (dialog.options.onReturn) {
+        var selectedItems = dialog.getSelectedItems();
+        var result = dialog.options.onReturn(dialog, selectedItems);
+        if (result) {
+          dialog.close();
+        }
+      } else {
+        dialog.close();
+      }
+
+      if (dialog.options.deselectOnReturn) {
+        dialog.popup.find('li').removeClass('selected');
+      }
     });
   };
 
@@ -313,6 +322,33 @@
     if (this.options.destroyOnClose) {
       this.destroy();
     }
+  };
+
+  AdderDialog.prototype.onSearchKeyUp = function (text) {
+    var dialog = this;
+
+    if (this.searchRequest !== null) {
+      this.searchRequest.abort();
+    }
+
+    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+      term: text,
+      code: this.options.searchOptions.code,
+      ajax: 'ajax'
+    }, function (results) {
+      dialog.searchRequest = null;
+      var no_data = !$(results).length;
+
+      dialog.searchResultList.empty();
+      dialog.searchResultList.toggle(!no_data);
+      dialog.noSearchResultsWrapper.toggle(no_data);
+
+      $(results).each(function (index, result) {
+        var item = $("<li />", {'data-label': result['value'], 'data-id': result['id']})
+          .append($('<span />', {class: 'auto-width'}).text(result['value']));
+        dialog.searchResultList.append(item);
+      });
+    });
   };
 
   exports.AdderDialog = AdderDialog;

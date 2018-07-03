@@ -74,7 +74,6 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
           inputText.val(inputText.val() ?
             inputText.val() + item['label'] : item['label']
           );
-          console.log(item);
         });
 
         inputText.trigger('oninput');
