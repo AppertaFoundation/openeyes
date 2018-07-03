@@ -120,20 +120,18 @@ $required_diagnoses_ids = array_map(function ($r) {
     ?>
 </script>
 <script type="text/javascript">
-  var systemicDiagnosesController;
   $(document).ready(function () {
-    systemicDiagnosesController = new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+    var systemicDiagnosesController = new OpenEyes.OphCiExamination.SystemicDiagnosesController({
       element: $('#<?=$model_name?>_element')
     });
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-history-systemic-diagnoses'),
-      multiSelect: true,
-      itemSets: <?= CJSON::encode([
-            array_map(function ($disorder) {
-                return ['label' => $disorder->term, 'id' => $disorder->id];
-            }, CommonSystemicDisorder::getDisorders()),
-        ]) ?>,
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($disorder) {
+              return ['label' => $disorder->term, 'id' => $disorder->id];
+          }, CommonSystemicDisorder::getDisorders())
+      ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         systemicDiagnosesController.addEntry(selectedItems);
         return true;
@@ -144,5 +142,4 @@ $required_diagnoses_ids = array_map(function ($r) {
       }
     });
   });
-
 </script>

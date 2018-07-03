@@ -66,7 +66,9 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#show-add-to-history'),
-      itemSets: <?= CJSON::encode($itemSets) ?>,
+      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
+        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+      }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
 

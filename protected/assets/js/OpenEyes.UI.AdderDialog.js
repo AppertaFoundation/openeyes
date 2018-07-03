@@ -42,7 +42,6 @@
     onSelect: null,
     onReturn: null,
     onAdd: null,
-    multiSelect: false,
     deselectOnReturn: true,
     id: null,
     popupClass: 'oe-add-select-search auto-width',
@@ -91,11 +90,11 @@
     this.popup.hide();
 
     if (this.options.onSelect) {
-      this.popup.on('clicl', 'li', this.options.onSelect);
+      this.popup.on('click', 'li', this.options.onSelect);
     } else {
       this.popup.on('click', 'li', function () {
         if (!$(this).hasClass('selected')) {
-          if (!dialog.options.multiSelect) {
+          if (!$(this).closest('ul').data('multiselect')) {
             $(this).parent('ul').find('li').removeClass('selected');
           }
           $(this).addClass('selected');
@@ -109,13 +108,15 @@
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
 
+    console.log(this.options.itemSets);
+
     if (this.options.itemSets) {
       this.selectWrapper = $('<div />', {class: 'select-options'});
       this.selectWrapper.appendTo(this.popup);
       var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
       $container.appendTo(this.selectWrapper);
-      $(this.options.itemSets).each(function () {
-        var $list = dialog.generateItemList(this);
+      $(this.options.itemSets).each(function (index, itemSet) {
+        var $list = dialog.generateItemList(itemSet);
         $list.appendTo($container);
       });
     }
@@ -180,12 +181,11 @@
     }).get();
   };
 
-  AdderDialog.prototype.generateItemList = function (items) {
-
+  AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
-    var $list = $('<ul />', {class: 'add-options cols-full'});
+    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
 
-    items.forEach(function (item) {
+    itemSet.items.forEach(function (item) {
       var $listItem = $('<li />', {'data-label': item['label'], 'data-id': item['id']});
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
       $listItem.appendTo($list);

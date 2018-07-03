@@ -84,14 +84,6 @@ $required_allergy_ids = array_map(function ($r) {
        style="display: <?php echo $element->no_allergies_date ? 'none' : ''; ?>">
     <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
           class="oe-i plus pro-theme"></i></button>
-    <!-- popup to add to element is click -->
-    <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
-      <!-- icon btns -->
-      <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
-      <button class="button hint green add-icon-btn" type="button">
-        <i class="oe-i plus pro-theme"></i>
-      </button>
-    </div><!-- oe-add-select-search -->
   </div>
 </div>
 
@@ -132,10 +124,11 @@ $required_allergy_ids = array_map(function ($r) {
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-allergy-btn'),
-      multiSelect: true,
-      itemSets: <?= CJSON::encode([array_map(function ($allergy) {
-            return ['label' => $allergy->name, 'id' => $allergy->id];
-        }, $element->getAllergyOptions())]) ?>,
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($allergy) {
+              return ['label' => $allergy->name, 'id' => $allergy->id];
+          }, $element->getAllergyOptions())
+      ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         allergyController.addEntry(selectedItems);
         allergyController.showTable();
