@@ -26,6 +26,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
 <?php $assetManager->registerScriptFile('js/print.js')?>
 <?php $assetManager->registerScriptFile('js/buttons.js')?>
+<?php $assetManager->registerScriptFile('js/comments.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.EventEmitter.js')?>
