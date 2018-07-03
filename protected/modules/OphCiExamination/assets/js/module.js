@@ -1284,7 +1284,7 @@ $(document).ready(function() {
 
         /* Visual Acuity readings event binding */
 
-        $('#event-content').on('change', '.OEModule-OphCiExamination-models-Element-OphCiExamination-VisualAcuity .va-selector', function(){
+        $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
 
             var $section =  $(this).closest('section');
             var $cviAlert = $section.find('.cvi-alert');
@@ -1311,7 +1311,7 @@ $(document).ready(function() {
         });
 
         // Dismiss alert box
-        $('#event-content').on('click', '.OEModule-OphCiExamination-models-Element-OphCiExamination-VisualAcuity .dismiss_cva_alert', function(){
+        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .dismiss_cva_alert', function(){
             var $section = $(this).closest('section');
 
             if( $('.ophciexamination.column.event.view').length ) {
@@ -2146,7 +2146,7 @@ function OphCiExamination_AddFinding(finding_id, label) {
         $('#OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings_further_findings_assignment').val(finding_id).trigger('change');
         OphCiExamination_RefreshCommonOphDiagnoses();
     };
-    if($('.OEModule-OphCiExamination-models-Element-OphCiExamination-FurtherFindings').length > 0) {
+    if($('.OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings').length > 0) {
         updateFindings();
     } else {
         var el = $("[data-element-type-class='OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']");

@@ -107,7 +107,7 @@ $comments = $side . '_comments';
 </script>
 <script type="text/javascript">
     $(function () {
-        var side = $('.<?=  str_replace('_', '-', CHtml::modelName($element)) ?> .<?=$side?>-eye');
+        var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
         var popup = side.find('#add-to-IOP');
 
         function addIOPReading(selected){

@@ -17,6 +17,7 @@
  */
 ?>
 <?php
+
 $section_classes = array('element full edit');
 $section_classes[] = CHtml::modelName($element->elementType->class_name);
 if ($this->isRequired($element)) {
@@ -80,7 +81,6 @@ $element_Type = $element->getElementType();
           </span>
             </div>
         <?php } ?>
-
 
         <?php echo $content; ?>
 

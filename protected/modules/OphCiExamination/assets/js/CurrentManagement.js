@@ -85,7 +85,7 @@ $(document).ready(function() {
 	$('.event.edit').on('change click', [
 		'#OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_target_iop_id',
 		'#OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_target_iop_id',
-		'.OEModule-OphCiExamination-models-Element-OphCiExamination-IntraocularPressure',
+		'.OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure',
 		'#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right button.delete',
 		'#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left button.delete'
 	].join(','), function() {
