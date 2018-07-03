@@ -153,23 +153,22 @@
                 array('label' => 4, 'field' => 5, 'full_dropdown' => true)
             );?>
         </td>
-        <td colspan="2">
-            <?= $form->textArea(
-                $element,
-                'comments',
-                array('rows' => '1', 'cols' => '80', 'class' => 'autosize','nowrapper' => true),
-                false,
-                array('placeholder' => 'Enter comments here'),
-                array('label' => 4, 'field' => 8)
-            );
-            ?>
+        <td colspan="2" style="display: <?php if(!$element->comments){echo 'none';} ?>">
+          <textarea id="<?= $model_name ?>_comments"
+                    name="<?= $model_name ?>[comments]"
+                    class="js-input-comments cols-10"
+                    placeholder="Enter comments here" autocomplete="off" rows="1"
+                    style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?>
+          </textarea><i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"
+                        data-input="#add-social-history-popup .js-add-comments"></i>
         </td>
       </tr>
     </tbody>
   </table>
   <div class="add-data-actions flex-item-bottom " id="add-social-history-popup">
-
-    <button class="button  js-add-comments" type="button" data-input="comments-social-history" style="">
+    <button class="button js-add-comments"
+            type="button" data-input="#<?= $model_name ?>_comments"
+            style="display: <?php if($element->comments){echo 'none';} ?>">
       <i class="oe-i comments small-icon "></i>
     </button>
     <button class="button hint green js-add-select-search"  type="button">

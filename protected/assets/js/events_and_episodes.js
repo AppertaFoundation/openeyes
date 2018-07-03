@@ -156,6 +156,15 @@ $(document).ready(function(){
 		}
 	});
 
+  $(this).on('blur', '.js-comment-field', function() {
+      if ($(this).val().trim() === '') {
+      	var button = $($(this).data('comment-button'));
+      	var container = $(this).closest('.js-comment-container');
+        button.show();
+        container.hide();
+      }
+  });
+
   // Tile Data Overflow
   $('.element.tile').each(function () {
     var h = $(this).find('.data-value').height();

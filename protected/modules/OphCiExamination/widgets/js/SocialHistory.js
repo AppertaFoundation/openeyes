@@ -37,6 +37,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         })
       }
 
+      $('.js-remove-add-comments').on('click', function (e) {
+        e.preventDefault();
+        $(this).parent().hide();
+        var container = $($(this).data('input'));
+        container.show();
+      });
+
+      $('.js-add-comments').on('click', function (e) {
+        e.preventDefault();
+        var button = $(this);
+        var container = $($(this).data('input'));
+        container.val('');
+        button.hide();
+        container.parent().show();
+        container.find('textarea, input').andSelf().focus();
+      });
+
     };
 
     SocialHistoryController.prototype.addEntry = function() {

@@ -104,7 +104,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (data === undefined)
             data = {};
         var list = ['relative', 'side', 'condition'];
-        for (i in list){
+        for (var i in list){
             var selected_item = this.$popupSelector.find('ul.'+list[i]+' .selected');
             data[list[i]+'_id'] =  selected_item.data('id');
             data[list[i]+'_display'] =  selected_item.data('str');
