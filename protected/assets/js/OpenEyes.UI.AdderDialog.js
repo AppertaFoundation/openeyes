@@ -2,6 +2,11 @@
 
   'use strict';
 
+  /**'
+   *
+   * @param {object} options
+   * @constructor
+   */
   function AdderDialog(options) {
 
     this.searchRequest = null;
@@ -14,24 +19,18 @@
   Util.inherits(EventEmitter, AdderDialog);
 
   /**
-   * The default dialog options. Custom options will be merged with these.
-   * @name OpenEyes.UI.Dialog#_defaultOptions
-   * @property {mixed} [content=null] - Content to be displayed in the dialog.
-   * This option accepts multiple types, including strings, DOM elements, jQuery instances, etc.
-   * @property {boolean} [destroyOnClose=true] - Destroy the dialog when it is closed?
-   * @property {string|null} [url=null] - A URL string to load the dialog content in via an
-   * AJAX request.
-   * @property {object|null} [data=null] - Request data used when loading dialog content
-   * via an AJAX request.
-   * @property {string|null} [iframe=null] - A URL string to load the dialog content
-   * in via an iFrame.
-   * @property {string|null} [title=null] - The dialog title.
-   * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
-   * the main dialog container.
-   * @property {boolean} [constrainToViewport=false] - Constrain the dialog dimensions
-   * so that it is never displayed outside of the window viewport?
-   * @property {integer|string} [width=400] - The dialog width.
-   * @property {integer|string} [height=auto] - The dialog height.
+   * The default AdderDialog options. Custom options will be merged with these.
+   * @name OpenEyes.UI.AdderDialog#_defaultOptions
+   * @property {OpenEyes.UI.AdderDialog.ItemSet[]} [itemSets=null] - The lists of items that the user can select from
+   * @property {object} [openButton=null] - The DOM handle for the button used to open the popup
+   * @property {Function} [onOpen=null] - A callback to be called when the popup is opened
+   * @property {Function} [onClose=null] - A callback to be called when the popup is closed
+   * @property {Function} [onSelect=null] - A callback to be called when an item is selected
+   * @property {Function} [onReturn=null] - A callback to be called when the add button is clicked
+   * @property {boolean} [deselectOnReturn=true] - Whether all items should be deselected when the popup is added
+   * @property {string} [id=null] - The ID of the popup div
+   * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
+   * @property {string} [liClass='auto-width'] - The class to use for the items
    * @private
    */
   AdderDialog._defaultOptions = {
@@ -41,7 +40,6 @@
     onClose: null,
     onSelect: null,
     onReturn: null,
-    onAdd: null,
     deselectOnReturn: true,
     id: null,
     popupClass: 'oe-add-select-search auto-width',
@@ -50,11 +48,8 @@
   };
 
   /**
-   * Creates and stores the dialog container, and creates a new jQuery UI
-   * instance on the container.
-   * @name OpenEyes.UI.Dialog#create
-   * @method
-   * @private
+   * Creates and stores the adder dialog container
+   * @name OpenEyes.UI.AdderDialog#create
    */
   AdderDialog.prototype.create = function () {
     var dialog = this;
@@ -105,10 +100,12 @@
     }
   };
 
+  /**
+   * Creates the content to be used for the dialog
+   * @name OpenEyes.UI.AdderDialog#generateContent
+   */
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
-
-    console.log(this.options.itemSets);
 
     if (this.options.itemSets) {
       this.selectWrapper = $('<div />', {class: 'select-options'});
@@ -122,6 +119,10 @@
     }
   };
 
+  /**
+   * Creates the menu items for the popup, depending on what items are required
+   * @param {object} content The DOM reference to the content of the popup
+   */
   AdderDialog.prototype.generateMenu = function (content) {
     var dialog = this;
 
@@ -153,6 +154,10 @@
     });
   };
 
+  /**
+   * Generates the search content for the popup
+   * @name OpenEyes.UI.AdderDialog#generateSearch
+   */
   AdderDialog.prototype.generateSearch = function () {
     var dialog = this;
 
@@ -164,7 +169,7 @@
     $searchInput.appendTo(this.searchWrapper);
 
     $searchInput.on('keyup', function () {
-      dialog.onSearchKeyUp($(this).val());
+      dialog.runItemSearch($(this).val());
     });
 
     this.noSearchResultsWrapper = $('<span />').text('No results found');
@@ -175,12 +180,22 @@
     this.searchWrapper.hide();
   };
 
+  /**
+   * Gets all items that are currently selected in the popup
+   * @name OpenEyes.UI.AdderDialog#getSelectedItems
+   * @returns {Array} A n array of ids and labels of the selected items
+   */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
       return {'id': $(this).data('id'), 'label': $(this).data('label')};
     }).get();
   };
 
+  /**
+   * Generates the item lists for an item set and returns that list
+   * @param {OpenEyes.UI.AdderDialog.ItemSet} itemSet The set of items to generate the list for
+   * @returns {jQuery|HTMLElement} The generated HTML list
+   */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
     var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
@@ -194,6 +209,10 @@
     return $list;
   };
 
+  /**
+   * Positions the popup relative to the given anchor
+   * @param {jQuery, HTMLElement} $anchorElement The element to anchor the popup to
+   */
   AdderDialog.prototype.positionFixedPopup = function ($anchorElement) {
     var dialog = this;
 
@@ -227,25 +246,32 @@
 
   /**
    * Opens (shows) the dialog.
-   * @name OpenEyes.UI.Dialog#open
-   * @method
-   * @public
+   * @name OpenEyes.UI.AdderDialog#open
    */
   AdderDialog.prototype.open = function () {
     this.popup.show();
     this.positionFixedPopup(this.options.openButton);
+    if (this.options.onOpen) {
+      this.options.onOpen();
+    }
   };
 
   /**
    * Closes (hides) the dialog.
-   * @name OpenEyes.UI.Dialog#close
-   * @method
-   * @public
+   * @name OpenEyes.UI.AdderDialog#close
    */
   AdderDialog.prototype.close = function () {
     this.popup.hide();
+
+    if (this.options.onClose) {
+      this.popup.onClose();
+    }
   };
 
+  /**
+   * Sets which button will be used to close the popup
+   * @param {jQuery|HTMLElement} closeButton
+   */
   AdderDialog.prototype.setCloseButton = function (closeButton) {
     var dialog = this;
     closeButton.click(function () {
@@ -253,6 +279,10 @@
     });
   };
 
+  /**
+   * Sets which button will be used to open the popup
+   * @param {jQuery|HTMLElement} openButton
+   */
   AdderDialog.prototype.setOpenButton = function (openButton) {
     var dialog = this;
     openButton.click(function () {
@@ -260,6 +290,10 @@
     });
   };
 
+  /**
+   * Sets which button will be used to add items in the popup
+   * @param {jQuery|HTMLElement} $addButton
+   */
   AdderDialog.prototype.setAddButton = function ($addButton) {
 
     var dialog = this;
@@ -281,50 +315,11 @@
     });
   };
 
-  /** Event handlers */
-
   /**
-   * Emit the 'open' event after the dialog has opened.
-   * @name OpenEyes.UI.Dialog#onDialogOpen
-   * @fires OpenEyes.UI.Dialog#open
-   * @method
-   * @private
+   * Performs a search using the given text
+   * @param {string} text The term to search with
    */
-  AdderDialog.prototype.onDialogOpen = function () {
-    /**
-     * Emitted after the dialog has opened.
-     *
-     * @event OpenEyes.UI.Dialog#open
-     */
-    this.emit('open');
-  };
-
-  /**
-   * Emit the 'close' event after the dialog has closed, and optionally destroy
-   * the dialog.
-   * @name OpenEyes.UI.Dialog#onDialogClose
-   * @fires OpenEyes.UI.Dialog#close
-   * @method
-   * @private
-   */
-  AdderDialog.prototype.onDialogClose = function () {
-    /**
-     * Emitted after the dialog has closed.
-     *
-     * @event OpenEyes.UI.Dialog#close
-     */
-    this.emit('close');
-
-    if (typeof enableButtons === 'function') {
-      enableButtons();
-    }
-
-    if (this.options.destroyOnClose) {
-      this.destroy();
-    }
-  };
-
-  AdderDialog.prototype.onSearchKeyUp = function (text) {
+  AdderDialog.prototype.runItemSearch = function (text) {
     var dialog = this;
 
     if (this.searchRequest !== null) {
