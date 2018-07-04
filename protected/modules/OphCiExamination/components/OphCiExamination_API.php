@@ -869,6 +869,18 @@ class OphCiExamination_API extends \BaseAPI
         return ($best = $this->getBestVisualAcuity($patient,'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
 
+    public function getLetterVAMehtodName($patient, $side, $use_context = false){
+
+       $method_name =  ($best = $this->getBestVisualAcuity($patient, $side, $use_context)) ? $this->getMethodName($best->method_id) : null;
+       if($method_name == 'Unaided'){
+           return 'ua';
+       } else if($method_name == 'Pinhole'){
+           return 'ph';
+       } else {
+           return 'rx';
+       }
+    }
+
     /**
      * Get the latest VA for the Right eye form examination event,
      * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.

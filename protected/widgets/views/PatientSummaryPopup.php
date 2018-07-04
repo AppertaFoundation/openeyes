@@ -93,13 +93,15 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             $rDate =  $exam_api->getLetterVisualAcuityDate($patient, 'right');
             if($lDate == $rDate){?>
             <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>
+            <span class="data"><?php echo $exam_api->getLetterVAMehtodName($patient, 'right')?></span>
             <span class="data">L <?php echo $exam_api->getLetterVisualAcuityLeft($patient)?></span>
-            <span class="oe-date"><?php echo Helper::convertDate2NHS($rDate);?></span>
+            <span class="data"><?php echo $exam_api->getLetterVAMehtodName($patient, 'left')?></span>
+            <span class="oe-date" style="text-align: left;"><?php echo Helper::convertDate2NHS($rDate);?></span>
             <?php } else {?>
             <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>
             <span class="oe-date"><?php echo Helper::convertDate2NHS($rDate);?></span>
             <span class="data">L <?php echo $exam_api->getLetterVisualAcuityLeft($patient)?></span>
-            <span class="oe-date"><?php echo Helper::convertDate2NHS($lDate);?></span>
+            <span class="oe-date" style="text-align: left"><?php echo Helper::convertDate2NHS($lDate);?></span>
             <?php } ?>
         </div>
         <div class="group" style="display: <?= $exam_api->getLetterVisualAcuityRight($patient) ? 'none' : 'block' ?>">
@@ -116,7 +118,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
              ?>
             <span class="data">R <?php echo $rightPreOpRefraction?></span>
             <span class="data">L <?php echo $leftPreOpRefraction?></span>
-            <span class="oe-date"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
+            <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
             <?php } else { ?>
                     <span class="data-value not-available">Not Available</span>
             <?php }?>
