@@ -160,14 +160,14 @@
                     placeholder="Enter comments here" autocomplete="off" rows="1"
                     style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?>
           </textarea><i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"
-                        data-input="#add-social-history-popup .js-add-comments"></i>
+                        data-comment-button="#add-social-history-popup .js-add-comments"></i>
         </td>
       </tr>
     </tbody>
   </table>
   <div class="add-data-actions flex-item-bottom " id="add-social-history-popup">
     <button class="button js-add-comments"
-            type="button" data-input="#<?= $model_name ?>_comments"
+            type="button" data-comment-container="#<?= $model_name ?>_comments"
             style="display: <?php if($element->comments){echo 'none';} ?>">
       <i class="oe-i comments small-icon "></i>
     </button>
