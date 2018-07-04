@@ -39,7 +39,7 @@ a.stop-medication {
 }
 
 /* line 37, ../sass/components/elements/_history-medications.scss */
-/*
+
 .laterality {
   background-color: transparent;
   color: #fff;
@@ -49,7 +49,7 @@ a.stop-medication {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-*/
+
 /* line 45, ../sass/components/elements/_history-medications.scss */
 .laterality.R {
   background-color: #9fec6d;

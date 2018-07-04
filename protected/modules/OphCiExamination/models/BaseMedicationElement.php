@@ -69,13 +69,13 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 \EventMedicationUse::class,
                 array('id' => 'event_id'),
                 'through' => 'event',
-                'order' => 'entries.start_date_string_YYYYMMDD ASC, entries.end_date_string_YYYYMMDD ASC, entries.last_modified_date'
+                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
             ),
             'current_entries' => array(
                 self::HAS_MANY,
                 \EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "usage_type = 'OphCiExamination' AND (current_entries.end_date_string_YYYYMMDD > NOW() OR current_entries.end_date_string_YYYYMMDD is NULL)",
+                'on' => "usage_type = 'OphCiExamination' AND (current_entries.end_date_string_YYYYMMDD > NOW() OR ( current_entries.end_date_string_YYYYMMDD is NULL OR current_entries.end_date_string_YYYYMMDD = ''))",
                 'through' => 'event',
                 'order' => 'current_entries.start_date_string_YYYYMMDD DESC, current_entries.end_date_string_YYYYMMDD DESC, current_entries.last_modified_date'
             ),
@@ -83,7 +83,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 self::HAS_MANY,
                 \EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "usage_type = 'OphCiExamination' AND (closed_entries.end_date_string_YYYYMMDD < NOW() AND closed_entries.end_date_string_YYYYMMDD is NOT NULL)",
+                'on' => "usage_type = 'OphCiExamination' AND (closed_entries.end_date_string_YYYYMMDD < NOW() AND ( closed_entries.end_date_string_YYYYMMDD is NOT NULL OR closed_entries.end_date_string_YYYYMMDD != '') )",
                 'through'=>'event',
                 'order' => 'closed_entries.start_date_string_YYYYMMDD ASC, closed_entries.end_date_string_YYYYMMDD ASC, closed_entries.last_modified_date'
             ),
