@@ -77,7 +77,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 array('id' => 'event_id'),
                 'on' => "usage_type = 'OphCiExamination' AND (current_entries.end_date_string_YYYYMMDD > NOW() OR current_entries.end_date_string_YYYYMMDD is NULL)",
                 'through' => 'event',
-                'order' => 'current_entries.start_date_string_YYYYMMDD ASC, current_entries.end_date_string_YYYYMMDD ASC, current_entries.last_modified_date'
+                'order' => 'current_entries.start_date_string_YYYYMMDD DESC, current_entries.end_date_string_YYYYMMDD DESC, current_entries.last_modified_date'
             ),
             'closed_entries' => array(
                 self::HAS_MANY,
