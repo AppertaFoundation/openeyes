@@ -887,7 +887,7 @@ $(document).ready(function() {
       e.preventDefault();
     });
 
-    $(this).delegate('.addReading, .addNearReading', 'click', function(e) {
+    $(this).delegate('.addNearReading', 'click', function(e) {
         var side = $(this).closest('.side').attr('data-side');
         if($(this).hasClass('addNearReading')){
             OphCiExamination_NearVisualAcuity_addReading(side);
@@ -1689,9 +1689,9 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
 }
 
 function OphCiExamination_VisualAcuity_init() {
-    // ensure tooltip works when loading for an edit
+  // ensure tooltip works when loading for an edit
     $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity .side').each(function() {
-        $(this).find('tr.visualAcuityReading').each(function() {
+      $(this).find('tr.visualAcuityReading').each(function() {
             OphCiExamination_VisualAcuity_ReadingTooltip($(this));
         });
     });

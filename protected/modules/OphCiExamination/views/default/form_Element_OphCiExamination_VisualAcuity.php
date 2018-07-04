@@ -145,9 +145,11 @@ if ($cvi_api) {
         var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
         var va_value = $(popup).find('#visual-acuity-value-option .selected');
         var va_method = $(popup).find('#visual-acuity-method-option .selected');
+        OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
         var newRow = tableSelector.find('tbody tr:last');
         newRow.find('.va-selector').val(va_value.data('id'));
         newRow.find('.method_id').val(va_method.data('id'));
+        OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
       }
 
       setUpAdder(
@@ -158,7 +160,6 @@ if ($cvi_api) {
         popup.find('.add-icon-btn'),
         adder.find('#<?= $eye_side ?>-close-btn, .add-icon-btn')
       );
-
     });
   </script>
     <?php endforeach; ?>
@@ -198,6 +199,5 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
             $first = false;
             echo $index;
         } ?> ];
-
   });
 </script>
