@@ -704,10 +704,12 @@ class OphCoCorrespondence_API extends BaseAPI
 
             $empty_lines = "\n";
             $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
-            $count = $meta_data ? $meta_data->value : 4;
-            for ($x = 0; $x < $count; $x++) {
-                $empty_lines .= "\n";
-            }
+
+            $count = $meta_data ? $meta_data->value : 0;
+                if (is_numeric($count))
+                for ($x = 0; $x < $count; $x++) {
+                    $empty_lines .= "\n";
+                }
             return "Yours sincerely". $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
 
