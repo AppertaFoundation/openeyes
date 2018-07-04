@@ -65,6 +65,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $dropdown.find('option').attr('selected', function () {
                 return ($(this).text() == value + '%');
             });
+
+            $dialog.dialog('close');
+
         });
     };
 
