@@ -22,26 +22,23 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
     'id', 'name');
 $key = 0;
 ?>
-
-<?php
-$this->beginClip('element-title-additional');
-if ($element->isNewRecord) {
-    ?>
-    <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-        CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
-            'id', 'name'), array('class' => 'inline'));
-    ?>
-    <?php
-} ?>
-<?php if ($element->unit->information) {
-    ?>
-  <div class="info">
-    <small><em><?php echo $element->unit->information ?></em></small>
+<div class="element-both-eyes">
+  <div class="flex-layout flex-center">
+      <?php if ($element->isNewRecord) { ?>
+        <span class="data-label">VA Scale &nbsp;&nbsp;</span>
+          <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+              CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                  'id', 'name'), array('class' => 'inline'));
+          ?>
+      <?php } ?>
+      <?php if ($element->unit->information) { ?>
+        <div class="info">
+          <small><em><?php echo $element->unit->information ?></em></small>
+        </div>
+      <?php } ?>
   </div>
-    <?php
-}
-$this->endClip('element-title-additional');
-?>
+</div>
+
 <?php
 // CVI alert
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
@@ -57,8 +54,7 @@ if ($cvi_api) {
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div
-          class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
           data-side="<?= $eye_side ?>">
         <div class="active-form data-group flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -95,11 +91,40 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="add-data-actions flex-item-bottom">
+          <div class="flex-item-bottom" id="<?= $eye_side ?>-add-reading">
             <button class="button hint green addReading" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- oe-add-select-search -->
+
+            <div id="<?= $eye_side ?>-add-visual-acuity" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+              <div id="<?= $eye_side ?>-close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+              <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
+              <table class="select-options">
+                <tbody>
+                <tr>
+                  <td>
+                    <ul id="visual-acuity-value-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
+                        <?php foreach ($values as $id=>$item) { ?>
+                              <li data-str="<?php echo $item; ?>" data-id="<?= $id; ?>">
+                                <span class="restrict-width"><?php echo $item; ?></span>
+                              </li>
+                        <?php } ?>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul id="visual-acuity-method-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
+                        <?php foreach ($methods as $id=>$item) { ?>
+                          <li data-id="<?= $id ?>" data-str="<?php echo $item; ?>">
+                            <span class="restrict-width"><?php echo $item; ?></span>
+                          </li>
+                        <?php } ?>
+                    </ul>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <!--flex bottom-->
         </div>
@@ -112,6 +137,30 @@ if ($cvi_api) {
           </div>
         </div>
       </div>
+  <script type="text/javascript">
+    $(function () {
+      var adder = $('#<?= $eye_side ?>-add-reading');
+      var popup = $('#<?= $eye_side ?>-add-visual-acuity');
+      function addVA() {
+        var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
+        var va_value = $(popup).find('#visual-acuity-value-option .selected');
+        var va_method = $(popup).find('#visual-acuity-method-option .selected');
+        var newRow = tableSelector.find('tbody tr:last');
+        newRow.find('.va-selector').val(va_value.data('id'));
+        newRow.find('.method_id').val(va_method.data('id'));
+      }
+
+      setUpAdder(
+        popup,
+        'multi',
+        addVA,
+        adder.find('.addReading'),
+        popup.find('.add-icon-btn'),
+        adder.find('#<?= $eye_side ?>-close-btn, .add-icon-btn')
+      );
+
+    });
+  </script>
     <?php endforeach; ?>
 </div>
 <script id="visualacuity_reading_template" type="text/html">
@@ -136,7 +185,6 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath . '/components/chosen/');
 
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath . '/components/chosen/') . '/chosen.jquery.min.js');
-
 ?>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -150,5 +198,6 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
             $first = false;
             echo $index;
         } ?> ];
+
   });
 </script>
