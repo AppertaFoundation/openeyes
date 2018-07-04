@@ -25,5 +25,9 @@ class m180702_122324_create_van_herick_tables extends \OEMigration
 	{
 		$this->dropOETable('et_ophciexamination_van_herick', true);
         $this->renameTable('ophciexamination_van_herick', 'ophciexamination_gonioscopy_van_herick');
+        $this->renameTable('ophciexamination_van_herick_version', 'ophciexamination_gonioscopy_van_herick_version');
+
+        $event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryScalar();
+        $this->delete('element_type', 'name = :name AND event_type_id = :event_type_id', [':name' => 'Van Herick', ':event_type_id' => $event_type_id, ]);
 	}
 }
