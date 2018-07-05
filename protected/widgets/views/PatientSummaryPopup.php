@@ -110,15 +110,10 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <?php
-                if($correspondence_api->getPreOpRefraction($patient) != null){
-                    $preOpRefractionBothEyes = explode(",",$correspondence_api->getPreOpRefraction($patient));
-                    $rightPreOpRefraction = explode(" ",$preOpRefractionBothEyes[0])[0];
-                    $leftPreOpRefraction = explode(" ",$preOpRefractionBothEyes[1])[1];
-
-             ?>
-            <span class="data">R <?php echo $rightPreOpRefraction?></span>
-            <span class="data">L <?php echo $leftPreOpRefraction?></span>
-            <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getPreOpRefractionDate($patient))?></span>
+                if($correspondence_api->getLastRefraction($patient, 'left') != null){?>
+            <span class="data">R <?php echo $correspondence_api->getLastRefraction($patient, 'left')?></span>
+            <span class="data">L <?php echo $correspondence_api->getLastRefraction($patient, 'right')?></span>
+            <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient))?></span>
             <?php } else { ?>
                     <span class="data-value not-available">Not Available</span>
             <?php }?>

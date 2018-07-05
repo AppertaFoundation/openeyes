@@ -160,6 +160,36 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * Get the Latest Refraction - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getLastRefraction(\Patient $patient, $side, $use_context = false){
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+            return Yii::app()->format->text($element->getCombined($side));
+        }
+        return null;
+    }
+
+    /**
+     * Get the Latest Refraction Date - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getLastRefractionDate(\Patient $patient, $use_context = false){
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+            return $element->created_date;
+        }
+        return null;
+    }
+
     /*
      * Operated Eye (left/right) from last operation note
      * @param $patient
@@ -276,20 +306,6 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
             return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
-        }
-    }
-
-    /**
-     * Get the Pre-Op Refraction - both eyes.
-     *
-     * @param $patient
-     * @param $use_context
-     * @return string|null
-     */
-    public function getPreOpRefractionDate($patient, $use_context = false)
-    {
-        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
-            return $this->getPreOpDateFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 
