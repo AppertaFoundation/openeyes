@@ -152,6 +152,7 @@ $is_hidden = function () use ($element) {
   <div class="flex-item-bottom">
     <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
             class="button js-add-comments"
+            type="button"
             data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
             <?php if ($element->anaesthetic_comment): ?>style="visibility: hidden;"<?php endif; ?>
     >
