@@ -70,12 +70,12 @@
     <div class="js-foster_images_dialog dialog-content" title="Foster Images">
         <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
         <map name="foster_images_map">
-            <area data-vh="5" shape="rect" coords="0,0,225,225" />
-            <area data-vh="15" shape="rect" coords="0,225,225,450" />
-            <area data-vh="25" shape="rect" coords="0,450,225,675" />
-            <area data-vh="30" shape="rect" coords="225,0,450,225" />
-            <area data-vh="75" shape="rect" coords="225,225,450,450" />
-            <area data-vh="100" shape="rect" coords="225,450,450,675" />
+            <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
+            <area data-vh="Grade 1 (6-15%)" shape="rect" coords="0,225,225,450" />
+            <area data-vh="Grade 1 (16-25%)" shape="rect" coords="0,450,225,675" />
+            <area data-vh="Grade 2 (26-30%)" shape="rect" coords="225,0,450,225" />
+            <area data-vh="Grade 3 (31-75%)" shape="rect" coords="225,225,450,450" />
+            <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
         </map>
     </div>
 

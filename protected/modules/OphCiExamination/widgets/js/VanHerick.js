@@ -63,7 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
 
             $dropdown.find('option').attr('selected', function () {
-                return ($(this).text() == value + '%');
+                return ($(this).text() === value);
             });
 
             $dialog.dialog('close');
