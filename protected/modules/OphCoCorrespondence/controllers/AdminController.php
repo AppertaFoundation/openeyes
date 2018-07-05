@@ -248,7 +248,6 @@ class AdminController extends \ModuleAdminController
 
         $criteria = new CDbCriteria();
         $criteria->addInCondition('id', @$_POST['id']);
-
         if (LetterMacro::model()->deleteAll($criteria)) {
             echo '1';
         } else {
