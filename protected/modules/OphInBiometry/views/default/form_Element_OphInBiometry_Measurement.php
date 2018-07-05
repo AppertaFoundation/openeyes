@@ -127,7 +127,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                     </div>
                     <?php
                 } else { ?>
-                  <div class="data-value">
+                  <div class="data-value not-recorded">
                     Not recorded
                   </div>
                 <?php } ?>
@@ -152,7 +152,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                 </div>
                 <?php
             } else { ?>
-              <div class="data-value">
+              <div class="data-value not-recorded">
                 Not recorded
               </div>
             <?php } ?>
@@ -237,7 +237,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                         </div>
                     <?php
                 } else { ?>
-                  <div class="data-value">
+                  <div class="data-value not-recorded">
                     Not recorded
                   </div>
                     <?php } ?>
@@ -260,7 +260,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                       } ?>
               </div>
             <?php } else { ?>
-              <div class="data-value">
+              <div class="data-value not-recorded">
                 Not recorded
               </div>
                 <?php } ?>
@@ -305,7 +305,7 @@ if ($refractfound) {
                 </div>
                 <?php
             } else { ?>
-              <div class="data-value">
+              <div class="data-value not-recorded">
                 Not recorded
               </div>
                 <?php } ?>
@@ -318,7 +318,7 @@ if ($refractfound) {
                 ?>
                 <?php
             } else { ?>
-              <div class="data-value">
+              <div class="data-value not-recorded">
                 Not recorded
               </div>
             <?php } ?>
@@ -333,12 +333,12 @@ if ($refractfound) {
     </header>
     <div class="element-fields element-eyes data-group">
         <div class="element-eye right-eye column">
-          <div class="data-value">
+          <div class="data-value not-recorded">
             Not recorded
           </div>
         </div>
         <div class="element-eye left-eye column">
-          <div class="data-value">
+          <div class="data-value not-recorded">
             Not recorded
           </div>
         </div>

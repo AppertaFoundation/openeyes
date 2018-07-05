@@ -17,8 +17,8 @@
  */
 ?>
 	<div class="cols-6 column">
-		<div class="data-value"><?php echo $cct && $cct->hasRight() ? $cct->right_value.' &micro;m ('.$cct->right_method->name.')' : 'Not recorded'?></div>
+		<div class="data-value <?php echo $cct && $cct->hasRight() ? '' : 'not-recorded'?>"><?php echo $cct && $cct->hasRight() ? $cct->right_value.' &micro;m ('.$cct->right_method->name.')' : 'Not recorded'?></div>
 	</div>
 	<div class="cols-6 column">
-		<div class="data-value"><?php echo $cct && $cct->hasLeft() ? $cct->left_value.' &micro;m ('.$cct->left_method->name.')' : 'Not recorded'?></div>
+		<div class="data-value <?php echo $cct && $cct->hasLeft() ? '' : 'not-recorded'?>"><?php echo $cct && $cct->hasLeft() ? $cct->left_value.' &micro;m ('.$cct->left_method->name.')' : 'Not recorded'?></div>
 	</div>

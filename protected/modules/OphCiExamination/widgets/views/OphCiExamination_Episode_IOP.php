@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="element-eye left-eye">
-    <div class="data-value">
+    <div class="data-value <?= $iop ? '' : 'not-recorded' ?>">
         <?= $iop ? $iop->getLetter_reading('left') : 'Not recorded' ?>
     </div>
   </div>

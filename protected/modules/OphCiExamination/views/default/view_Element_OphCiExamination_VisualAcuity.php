@@ -57,7 +57,7 @@ if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
                   <?php endif; ?>
               </div>
           <?php else: ?>
-            <div class="data-value">
+            <div class="data-value not-recorded">
               Not recorded
             </div>
           <?php endif; ?>

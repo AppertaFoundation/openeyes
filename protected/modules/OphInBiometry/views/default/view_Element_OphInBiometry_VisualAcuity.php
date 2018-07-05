@@ -39,7 +39,7 @@
             } else {
                 ?>
                 <div class="data-group">
-                    <div class="data-value">
+                    <div class="data-value not-recorded">
                         Not recorded
                         <?php if ($element->right_unable_to_assess) {
                             ?>
@@ -63,7 +63,7 @@
         } else {
             ?>
             <div class="data-group">
-                <div class="data-value">
+                <div class="data-value not-recorded">
                     Not recorded
                 </div>
             </div>
@@ -89,7 +89,7 @@
             } else {
                 ?>
                 <div class="data-group">
-                    <div class="data-value">
+                    <div class="data-value not-recorded">
                         Not recorded
                         <?php if ($element->left_unable_to_assess) {
                             ?>
@@ -113,7 +113,7 @@
         } else {
             ?>
             <div class="data-group">
-                <div class="data-value">
+                <div class="data-value not-recorded">
                     Not recorded
                 </div>
             </div>

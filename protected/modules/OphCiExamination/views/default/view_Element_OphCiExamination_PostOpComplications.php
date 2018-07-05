@@ -34,7 +34,9 @@
                   <?php endforeach; ?>
               </table>
             <?php else: ?>
+            <div class="data-value not-recorded">
               Not recorded
+            </div>
             <?php endif; ?>
         </div>
       </div>

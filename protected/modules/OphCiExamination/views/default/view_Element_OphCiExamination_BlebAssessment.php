@@ -48,7 +48,9 @@
               </tbody>
             </table>
           <?php else: ?>
-        Not recorded
+            <div class="data-value not-recorded">
+                Not recorded
+            </div>
           <?php endif; ?>
       </div>
   </div>
