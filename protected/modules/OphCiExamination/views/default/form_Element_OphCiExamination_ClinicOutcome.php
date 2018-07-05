@@ -44,7 +44,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
       )) ?>
 
-    <div id="outcomes-comments" class="flex-layout flex-left js-comment-container"
+    <div id="outcomes-comments" class="flex-layout flex-left comment-group js-comment-container"
          style="<?= $element->description ? '' : 'display: none;' ?>" data-comment-button="#outcomes-comment-button">
         <?php echo $form->textArea(
             $element,

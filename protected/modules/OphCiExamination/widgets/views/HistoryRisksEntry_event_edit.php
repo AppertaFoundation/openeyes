@@ -74,7 +74,7 @@ if (!isset($values)) {
         data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
       <i class="oe-i comments small-icon"></i>
     </button>
-    <span class="js-comment-container" id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+    <span class="comment-group js-comment-container" id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
           <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>
           data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
       <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"

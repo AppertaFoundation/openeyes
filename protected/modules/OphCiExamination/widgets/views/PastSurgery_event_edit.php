@@ -80,7 +80,7 @@ $model_name = CHtml::modelName($element);
       ?>
       </tbody>
     </table>
-    <div id="<?= $model_name ?>-comments" class="field-row-pad-top js-comment-container flex-layout flex-left"
+    <div id="<?= $model_name ?>-comments" class="field-row-pad-top comment-group js-comment-container flex-layout flex-left"
          style="<?= $element->comments ? '' : 'display: none;' ?>"
          data-comment-button="#<?= $model_name ?>-comment-button">
       <br/>

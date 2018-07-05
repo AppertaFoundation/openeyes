@@ -55,7 +55,7 @@ $comments = $side . '_comments';
     </tbody>
   </table>
   <div id="iop-<?php echo $side; ?>-comments"
-       class="js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>
+       class="comment-group js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>
        data-comment-button="#iop-<?= $side ?>-comment-button">
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(

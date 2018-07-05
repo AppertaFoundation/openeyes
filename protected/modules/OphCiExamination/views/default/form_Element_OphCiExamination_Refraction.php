@@ -74,7 +74,7 @@
                     )) ?>
             </div>
 
-            <div id="refraction-<?= $eye_side ?>-comments" class="flex-layout flex-left js-comment-container"
+            <div id="refraction-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
                  style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>" data-comment-button="#refraction-<?= $eye_side ?>-comment-button">
                 <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
                     array(

@@ -87,7 +87,7 @@ $label_width = 5;
       </tr>
       </tbody>
     </table>
-    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="flex-layout flex-left js-comment-container"
+    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="flex-layout flex-left comment-group js-comment-container"
          <?php if (!$element->comments): ?>style="display: none;"<?php endif; ?> data-comment-button="#<?= CHtml::modelName($element) ?>_comment_button">
         <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
             array(

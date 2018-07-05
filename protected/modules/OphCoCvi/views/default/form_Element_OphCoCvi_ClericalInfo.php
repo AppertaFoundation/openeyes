@@ -53,7 +53,7 @@ if ($this->checkClericalEditAccess()) {
                         data-comment-container="#<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>">
                       <i class="oe-i comments small-icon"></i>
                     </button>
-                    <span class="js-comment-container"
+                    <span class="comment-group js-comment-container"
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
                           <?php if (!$comments): ?>style="display: none;"<?php endif; ?>
                           data-comment-button="#<?= $comment_button_id ?>">

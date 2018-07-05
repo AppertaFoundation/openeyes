@@ -63,9 +63,10 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="flex-layout flex-left js-comment-container"
+              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="js-comment-container"
                   style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;"
                   data-comment-button="#pupils-<?= $eye_side ?>-comment_button">
+                <div class="flex-layout flex-left comment-group">
                   <?php
                   echo $form->textArea(
                       $element,
@@ -79,6 +80,7 @@
                   )
                   ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                </div>
               </td>
             </tr>
             </tbody>

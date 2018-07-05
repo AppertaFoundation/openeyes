@@ -130,7 +130,7 @@ $is_hidden = function () use ($element) {
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
             <?php if (!$element->anaesthetic_comment): ?>style="display: none;"<?php endif ?>
-            class="js-comment-container"
+            class="comment-group js-comment-container"
             data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
           <td>
             Comments
