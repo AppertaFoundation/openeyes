@@ -102,7 +102,7 @@ $model_name = CHtml::modelName($element);
   <div class="flex-item-bottom" id="add-to-past-surgery">
     <button id="<?= $model_name ?>-comment-button" class="button js-add-comments"
             data-comment-container="#<?= $model_name ?>-comments"
-            <?php if ($element->commentsstyle): ?>style="visibility: hidden"<?php endif; ?> type="button">
+            <?php if ($element->comments): ?>style="visibility: hidden"<?php endif; ?> type="button">
       <i class="oe-i comments small-icon"></i>
     </button>
 
