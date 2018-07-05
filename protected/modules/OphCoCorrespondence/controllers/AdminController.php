@@ -239,8 +239,14 @@ class AdminController extends \ModuleAdminController
 
     public function actionDeleteLetterMacros()
     {
-        $criteria = new CDbCriteria();
+        if(!isset($_POST['id'])) {
+            return null;
+        }
+        //Make all the macro ids null that is equal to the macro id
+        // that is being deleted in the document instance data table
+        DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
 
+        $criteria = new CDbCriteria();
         $criteria->addInCondition('id', @$_POST['id']);
 
         if (LetterMacro::model()->deleteAll($criteria)) {
