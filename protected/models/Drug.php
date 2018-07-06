@@ -143,10 +143,11 @@ class Drug extends BaseActiveRecordVersioned
 
     /**
      * @param $subspecialty_id
+     * @param $raw - to returns array with more values
      *
      * @return array
      */
-    public function listBySubspecialtyWithCommonMedications($subspecialty_id)
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
     {
         $criteria = new CDbCriteria();
         $criteria->compare('subspecialty_id', $subspecialty_id);
@@ -160,6 +161,7 @@ class Drug extends BaseActiveRecordVersioned
                 'label' => $drug->name,
                 'value' => $drug->name,
                 'id' => $drug->id,
+                'tags' => array_map(function($t) { return $t->id;}, $drug->tags)
             );
         }
 
@@ -168,12 +170,13 @@ class Drug extends BaseActiveRecordVersioned
                 'label' => $common_medication_drug->medication_drug->name,
                 'value' => $common_medication_drug->medication_drug->name,
                 'id' => $common_medication_drug->medication_drug->id.'@@M',
+                'tags' => array_map(function($t) { return $t->id;}, $common_medication_drug->medication_drug->tags)
             );
         }
 
         asort($return);
 
-        return CHtml::listData($return, 'id', 'label');
+        return $raw ? $return : CHtml::listData($return, 'id', 'label');
     }
 
     /**
