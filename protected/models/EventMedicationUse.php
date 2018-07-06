@@ -100,7 +100,7 @@ class EventMedicationUse extends BaseElement
 
     public function copiedFields()
     {
-        return ['usage_type', 'usage_subtype', 'ref_medication_id', 'start_date_string_YYYYMMDD', 'end_date_stringYYYYMMDD', 'first_prescribed_med_use_id',
+        return ['usage_type', 'usage_subtype', 'ref_medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
                 'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
                 'dose', 'copied_from_med_use_id', 'dose_unit_term'];
 	}
