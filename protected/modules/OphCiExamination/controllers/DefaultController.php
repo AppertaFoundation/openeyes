@@ -331,6 +331,30 @@ class DefaultController extends \BaseEventTypeController
         $this->actionUpdate($id);
     }
 
+    public function renderOpenElements($action, $form = null, $date = null)
+    {
+        if ($action !== 'view') {
+            parent::renderOpenElements($action, $form, $date);
+
+            return;
+        }
+
+        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
+
+        $elements = $this->getElements($action);
+        $elements = array_filter($elements, function ($element) {
+            return !in_array(get_class($element), array(
+                models\Element_OphCiExamination_History::class,
+                models\PastSurgery::class,
+                models\SystemicDiagnoses::class,
+                models\Element_OphCiExamination_Diagnoses::class,
+                models\HistoryMedications::class,
+            ), true);
+        });
+
+        $this->renderElements($elements, $action, $form, $date);
+    }
+
     /**
      * Override action value when action is step to be update.
      *

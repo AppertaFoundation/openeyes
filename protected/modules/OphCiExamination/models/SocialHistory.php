@@ -232,24 +232,4 @@ class SocialHistory extends \BaseEventTypeElement
         }
         return implode(' <br /> ', $res);
     }
-
-    public function getTileSize($action)
-    {
-        return $action === 'view' ? 1 : null;
-    }
-
-    public function isIndividual($action)
-    {
-        return $action!=='view';
-    }
-
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view'){
-            return 40;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
-    }
 }

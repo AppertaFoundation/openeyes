@@ -183,24 +183,4 @@ class FamilyHistory extends \BaseEventTypeElement
             return implode(' <br /> ', $this->entries);
         }
     }
-
-    public function getTileSize($action)
-    {
-        return $action === 'view' ? 1 : null;
-    }
-
-    public function isIndividual($action)
-    {
-        return $action!=='view';
-    }
-
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view'){
-            return 35;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
-    }
 }

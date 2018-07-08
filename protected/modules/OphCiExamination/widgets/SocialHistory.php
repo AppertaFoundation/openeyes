@@ -46,17 +46,4 @@ class SocialHistory extends \BaseEventElementWidget
         // takes care of it. But it does mean that the element is not entire reflective of the POSTed data
         // that is passed into this method.
     }
-
-    /**
-     * Determine the view file to use
-     */
-    protected function getView()
-    {
-        if ($this->mode === static::$EVENT_VIEW_MODE) {
-            // manually overridden/set
-            return 'FamilySocialHistory_event_view';
-        } else{
-            return parent::getView();
-        }
-    }
 }

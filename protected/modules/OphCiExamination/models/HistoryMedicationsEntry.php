@@ -356,7 +356,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getStartDateDisplay(){
         $res = array();
         if ($this->start_date) {
-            $res[] = \Helper::formatFuzzyDate($this->start_date);
+            $res[] = \Helper::convertMySQL2HTML($this->start_date);
         }
         return implode(' ', $res);
     }

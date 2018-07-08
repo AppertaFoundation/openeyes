@@ -307,12 +307,10 @@ class BaseEventTypeController extends BaseModuleController
     public function getElements($action='edit')
     {
         $elements = array();
-        $element_name = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
                 if ($element->getElementType()) {
                     $elements[] = $element;
-                    $element_name[] = $element->getElementType()->class_name;
                 }
             }
         }

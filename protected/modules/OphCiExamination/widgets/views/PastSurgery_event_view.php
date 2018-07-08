@@ -18,38 +18,44 @@ $widget = $this;
 ?>
 <div class="element-data">
   <div class="data-value">
-          <div class="tile-data-overflow">
-            <table>
-              <colgroup>
-                <col>
-                <col width="55px">
-                <col width="85px">
-              </colgroup>
-              <tbody>
-              <?php if (!$operations || sizeof($operations)==0) { ?>
-                <p>No ophthalmic diagnoses recorded.</p>
-              <?php } else {
-                  foreach ($operations as $operation) {?>
-                    <tr>
-                <td><?= array_key_exists('object',
-                        $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
-                      <td>
-                    <?php $side = array_key_exists('side',
-                        $operation) ? $operation['side'] : (array_key_exists('object',
-                        $operation) ? $operation['object']->side : ''); ?>
-                        <span class="oe-eye-lat-icons">
-                          <i class="oe-i laterality <?php echo $side == 'Right' || $side == 'Both' || $side == 'Bilateral' ? 'R' : 'NA' ?> small pad"></i>
-                          <i class="oe-i laterality <?php echo $side == 'Left' || $side == 'Both' || $side == 'Bilateral' ? 'L' : 'NA' ?> small pad"></i>
-                        </span>
-                      </td>
-                <td><?= array_key_exists('object',
-                        $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
-                    </tr>
-            <?php }
+    <div class="tile-data-overflow">
+        <?php if (!$operations || count($operations) === 0) { ?>
+          <div class="data-value">No procedures recorded.</div>
+        <?php } else { ?>
+      <table>
+        <colgroup>
+          <col>
+          <col width="55px">
+          <col width="85px">
+        </colgroup>
+        <tbody> <?php foreach ($operations as $operation) { ?>
+          <tr>
+            <td>
+                <?= array_key_exists('object',
+                    $operation) ? $operation['object']->operation : $operation['operation']; ?>
+            </td>
+              <?php if (array_key_exists('side', $operation) ||
+                  (array_key_exists('object', $operation) && $operation['object']->side)): ?>
+                <td>
+                    <?php $side = array_key_exists('side', $operation) ?
+                        $operation['side'] : (array_key_exists('object',
+                            $operation) ? $operation['object']->side : ''); ?>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $side == 'Right' || $side == 'Both' || $side == 'Bilateral' ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $side == 'Left' || $side == 'Both' || $side == 'Bilateral' ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
+                </td>
+              <?php endif; ?>
+            <td>
+                <?= array_key_exists('object',
+                    $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?>
+            </td>
+          </tr>
+        <?php }
         } ?>
-              </tbody>
-            </table>
-      <?= CHtml::encode($element->comments) ?>
-          </div>
-        </div>
+        </tbody>
+      </table>
+        <?= CHtml::encode($element->comments) ?>
+    </div>
+  </div>
 </div>
