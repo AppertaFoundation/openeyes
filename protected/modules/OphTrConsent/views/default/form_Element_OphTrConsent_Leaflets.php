@@ -38,75 +38,44 @@ Yii::log($model_name);
     </tbody>
   </table>
   <div class="add-data-actions flex-item-bottom" id="consent-form-leaflets-popup" style="display:">
-    <button class="button hint green js-add-select-search" id="add-leaflet-btn" type="button"><i
-          class="oe-i plus pro-theme"></i></button>
-    <!-- popup to add to element is click -->
-    <div id="add-to-leaflets" class="oe-add-select-search" style="display: none;">
-      <!-- icon btns -->
-      <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
-      <div class="select-icon-btn" type="button"><i class="oe-i menu selected"></i></div>
-      <button class="button hint green add-icon-btn" type="button">
-        <i class="oe-i plus pro-theme"></i>
-      </button>
-      <!-- select (and search) options for element -->
-      <table class="select-options">
-        <tbody>
-        <tr>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false" id="consent-form-leaflet-option">
-                  <?php $leaflets = OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues);
-                  foreach ($leaflets as $leaflet) { ?>
-                    <li data-str="<?php echo $leaflet->name ?>" data-id="<?php echo $leaflet->id ?>">
-                        <span class="auto-width">
-                          <?php echo $leaflet->name; ?>
-                        </span>
-                    </li>
-                  <?php } ?>
-              </ul>
-            </div>
-            <!-- flex-layout -->
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div><!-- oe-add-select-search -->
+    <button class="button hint green js-add-select-search" id="add-leaflet-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
   </div>
 </div>
 
 <script type="text/javascript">
   $(function () {
-    var popup = $('#add-to-leaflets');
     var $table = $('#Element_OphTrConsent_Leaflets_entry_table');
     $table.on('click', 'i.trash', function (e) {
       e.preventDefault();
       $(e.target).parents('tr').remove();
     });
 
-    function addLeafLet() {
-      var selected_option = $('#consent-form-leaflet-option').find('.selected');
-      var leaflet_id = selected_option.data('id');
-      var leaflet_display = selected_option.data('str');
-      var $tr = $("<tr>"),
-        $td = $("<td>"),
-        $td_action = $("<td>", {"class": "right"}),
-        $i_remove = $("<i>", {"class": "oe-i trash"}),
-        $hidden = $("<input>", {"type": "hidden", "name": "OphTrConsent_Leaflet[]", "value": leaflet_id});
-      $td.text(leaflet_display);
-      $td.append($hidden);
-      $td_action.append($i_remove);
-
-      $table.find('tbody').append($tr.append($td).append($td_action));
-      $('.flex-item-bottom').find('.selected').removeClass('selected');
-    }
-
-    setUpAdder(
-      popup,
-      'return',
-      addLeafLet,
-      $('#add-leaflet-btn'),
-      null,
-      $('.close-icon-btn, .add-icon-btn')
-    );
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-leaflet-btn'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($leaflet) {
+              return ['label' => $leaflet->name, 'id' => $leaflet->id];
+          },
+              OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues)
+          )) ?>, {multiSelect: true})],
+      onReturn: function (dialog, selectedItems) {
+        $.each(selectedItems, function (key, item) {
+          var leaflet_id = item['id'];
+          var leaflet_display = item['label'];
+          var $tr = $("<tr>"),
+            $td = $("<td>"),
+            $td_action = $("<td>", {"class": "right"}),
+            $i_remove = $("<i>", {"class": "oe-i trash"}),
+            $hidden = $("<input>", {"type": "hidden", "name": "OphTrConsent_Leaflet[]", "value": leaflet_id});
+          $td.text(leaflet_display);
+          $td.append($hidden);
+          $td_action.append($i_remove);
+          $table.find('tbody').append($tr.append($td).append($td_action));
+        });
+        return true;
+      }
+    });
   })
 </script>
