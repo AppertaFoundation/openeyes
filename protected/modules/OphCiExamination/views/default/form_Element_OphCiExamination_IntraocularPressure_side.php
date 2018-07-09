@@ -80,21 +80,6 @@ $comments = $side . '_comments';
   <button type="button" class="button hint green js-add-select-search">
     <i class="oe-i plus pro-theme"></i>
   </button>
-  <div id="add-to-IOP" class="oe-add-select-search" style="display: none;">
-    <div class="close-icon-btn">
-      <i class="oe-i remove-circle medium"></i>
-    </div>
-    <div class="flex-layout flex-top flex-left">
-      <ul class="add-options cols-full" data-multi="false" data-clickadd="true">
-          <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()
-              ->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
-            <li data-str="<?php echo $id; ?>">
-              <span class="auto-width"><?php echo $instrument; ?></span>
-            </li>
-          <?php endforeach; ?>
-      </ul>
-    </div>
-  </div>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element) . '_reading_template_' . $side ?>" class="hidden">
@@ -116,20 +101,18 @@ $comments = $side . '_comments';
 <script type="text/javascript">
   $(function () {
     var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
-    var popup = side.find('#add-to-IOP');
 
-    function addIOPReading(selected) {
-      selected.removeClass('selected');
-    }
-
-    setUpAdder(
-      popup,
-      'return',
-      addIOPReading,
-      side.find('.js-add-select-search'),
-      null,
-      popup.find('.select-icon-btn, .close-icon-btn')
-    );
+    new OpenEyes.UI.AdderDialog({
+      id: 'add-to-iop',
+      openButton: side.find('.js-add-select-search'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($instrument) {
+              return ['label' => $instrument->name, 'id' => $instrument->id];
+          },
+              OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+      ) ?>)],
+      returnOnSelect: true,
+    });
   });
 </script>
 
