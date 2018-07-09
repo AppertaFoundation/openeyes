@@ -26,12 +26,18 @@ namespace OEModule\OphCiExamination\models;
  * @property int $side_id
  * @property string $operation
  * @property string $date
+ * @property string $had_operation
  *
  * @property \Eye $side
  * @property PastSurgery $element
  */
 class PastSurgery_Operation extends \BaseEventTypeElement
 {
+
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -59,11 +65,12 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('operation', 'required'),
-            array('date, side_id, operation', 'safe'),
+            array('date, side_id, operation, had_operation', 'safe'),
             array('date', 'OEFuzzyDateValidatorNotFuture'),
+            array('had_operation', 'required', 'message' => 'Checked Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, date, operation', 'safe', 'on' => 'search'),
+            array('id, date, operation, had_operation', 'safe', 'on' => 'search'),
         );
     }
 
@@ -86,6 +93,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         return array(
             'operation' => 'Operation',
             'date' => 'Date',
+            'had_operation' => 'Had operation'
         );
     }
 
@@ -104,6 +112,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('operation', $this->operation, true);
         $criteria->compare('date', $this->date);
+        $criteria->compare('had_operation', $this->had_operation, true);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -118,12 +127,23 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         return \Helper::formatFuzzyDate($this->date);
     }
 
+    public function getDisplayHasOperation()
+    {
+        if ($this->had_operation === (string) static::$PRESENT) {
+            return 'Present';
+        } elseif ($this->had_operation === (string) static::$NOT_PRESENT) {
+            return 'Not present';
+        }
+        return 'Not checked';
+    }
+
     /**
      * @return string
      */
-    public function getDisplayOperation()
+    public function getDisplayOperation($present_prefix = true)
     {
-        return ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
+        $display_has_operation = $present_prefix ? ('<strong>' . $this->getDisplayHasOperation() . ':</strong> ') : '';
+        return  $display_has_operation . ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
     }
 
     /**

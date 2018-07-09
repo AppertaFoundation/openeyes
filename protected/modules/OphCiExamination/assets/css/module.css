@@ -503,6 +503,11 @@ table .fuzzy-date .column {
 table input.other-type-input {
   margin-top: 3px;
 }
+/* line 41, ../sass/components/_tables.scss */
+table tr td.past-surgery-entry.has-operation {
+  padding-left: 0px;
+  padding-right: 0px;
+}
 
 /* line 18, ../sass/components/_admin.scss */
 #admin_workflow_steps .selectable {
