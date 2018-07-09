@@ -40,6 +40,7 @@
     onClose: null,
     onSelect: null,
     onReturn: null,
+    returnOnSelect: false,
     deselectOnReturn: true,
     id: null,
     popupClass: 'oe-add-select-search auto-width',
@@ -86,6 +87,10 @@
 
     if (this.options.onSelect) {
       this.popup.on('click', 'li', this.options.onSelect);
+    } else if (this.options.returnOnSelect) {
+      this.popup.on('click', 'li', function () {
+        dialog.return();
+      });
     } else {
       this.popup.on('click', 'li', function () {
         if (!$(this).hasClass('selected')) {
@@ -299,20 +304,24 @@
     var dialog = this;
 
     $addButton.click(function () {
-      if (dialog.options.onReturn) {
-        var selectedItems = dialog.getSelectedItems();
-        var result = dialog.options.onReturn(dialog, selectedItems);
-        if (result) {
-          dialog.close();
-        }
-      } else {
-        dialog.close();
-      }
-
-      if (dialog.options.deselectOnReturn) {
-        dialog.popup.find('li').removeClass('selected');
-      }
+      dialog.return();
     });
+  };
+
+  AdderDialog.prototype.return = function () {
+    if (this.options.onReturn) {
+      var selectedItems = this.getSelectedItems();
+      var result = this.options.onReturn(this, selectedItems);
+      if (result) {
+        this.close();
+      }
+    } else {
+      this.close();
+    }
+
+    if (this.options.deselectOnReturn) {
+      this.popup.find('li').removeClass('selected');
+    }
   };
 
   /**
