@@ -24,12 +24,12 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property string $name
  */
-class OphCiExamination_Gonioscopy_Van_Herick extends \BaseActiveRecordVersioned
+class OphCiExamination_Van_Herick extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_Gonioscopy_Van_Herick the static model class
+     * @return OphCiExamination_Van_Herick the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -41,7 +41,7 @@ class OphCiExamination_Gonioscopy_Van_Herick extends \BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophciexamination_gonioscopy_van_herick';
+        return 'ophciexamination_van_herick';
     }
 
     public function defaultScope()

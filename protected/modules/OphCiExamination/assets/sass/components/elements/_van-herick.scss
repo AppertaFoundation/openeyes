@@ -14,25 +14,11 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 
-
-@import "elements/intraocular-pressure";
-@import "elements/diagnoses";
-@import "elements/dilation";
-@import "elements/_family-history";
-@import "elements/_allergies";
-@import "elements/gonioscopy";
-@import "elements/optic-disc";
-@import "elements/anterior-segment";
-@import "elements/posterior-pole";
-@import "elements/visual-acuity";
-@import "elements/comorbidities";
-@import "elements/current-management";
-@import "elements/pcr";
-@import "elements/surgical-lids";
-@import "elements/history-medications";
-@import "elements/van-herick";
-
-.autoreport-display {
-  line-height: 1;
-  margin-bottom: 2px;
+.#{$OE_MODEL_PREFIX}VanHerick
+{
+  .dialog-content{
+    img{
+      display:none;
+    }
+  }
 }

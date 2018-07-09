@@ -1899,7 +1899,7 @@ class OphCiExamination_API extends \BaseAPI
 
         if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestVisibleEvent(
-                'models\Element_OphCiExamination_Gonioscopy',
+                'models\VanHerick',
                 $patient,
                 $use_context
         ))) {

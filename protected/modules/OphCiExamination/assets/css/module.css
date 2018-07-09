@@ -280,7 +280,12 @@ a.stop-medication {
   background-color: #747782;
 }
 
-/* line 34, ../sass/components/_elements.scss */
+/* line 20, ../sass/components/elements/_van-herick.scss */
+.OEModule_OphCiExamination_models_VanHerick .dialog-content img {
+  display: none;
+}
+
+/* line 35, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
   margin-bottom: 2px;
