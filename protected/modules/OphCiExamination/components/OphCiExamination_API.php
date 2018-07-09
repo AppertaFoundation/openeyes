@@ -1353,6 +1353,18 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterOutcomeFollowUpPeriod($patient, $use_context = false)
     {
+        $follow_up_text = '';
+
+        if ($o = $this->getElementFromLatestVisibleEvent(
+            'models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context)
+        ){
+            if ($o->followup_quantity) {
+                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+            }
+        }
+
         if ($api = \Yii::app()->moduleAPI->get('PatientTicketing')) {
             if ($patient_ticket_followup = $api->getLatestFollowUp($patient)) {
                 if (@$patient_ticket_followup['followup_quantity'] == 1 && @$patient_ticket_followup['followup_period']) {
@@ -1360,18 +1372,13 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                return $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                }
             }
         }
-        if ($o = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_ClinicOutcome',
-            $patient,
-            $use_context)
-        ){
-            if ($o->followup_quantity) {
-                return $o->followup_quantity . ' ' . $o->followup_period;
-            }
-        }
+
+        return $follow_up_text;
     }
 
     /**
@@ -2750,6 +2757,24 @@ class OphCiExamination_API extends \BaseAPI
         ) {
             return $bp->pulse;
         }
+    }
+
+    public function getPrincipalOphtalmicDiagnosis(\Episode $episode, $disorder_id = null)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = 'JOIN et_ophciexamination_diagnoses et ON t.element_diagnoses_id = et.`id`';
+        $criteria->join .= ' JOIN event ON event.id = et.`event_id`';
+        $criteria->join .= ' JOIN episode ON event.`episode_id` = episode.id';
+        $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
+        $criteria->addCondition("patient_id = :patient_id");
+        $criteria->addCondition("episode_id = :episode_id");
+        $criteria->addCondition("t.disorder_id = :disorder_id");
+        $criteria->params=['patient_id' => $episode->patient_id , 'disorder_id' => $disorder_id , 'episode_id' => $episode->id];
+        $criteria->order="t.created_date desc";
+
+        $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
+        return $value;
+
     }
     
     

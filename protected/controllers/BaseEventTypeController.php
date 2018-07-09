@@ -1863,6 +1863,7 @@ class BaseEventTypeController extends BaseModuleController
 
         $pdf = $this->event->getPDF($pdf_route);
 
+
         header('Content-Type: application/pdf');
         header('Content-Length: '.filesize($pdf));
 

@@ -190,8 +190,8 @@ $config = array(
         // format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
         // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
         'docman_filename_format' => 'format1',
-        // set this to none if you want to suppress XML output
-        'docman_xml_format' => 'none',
+        // set this to false if you want to suppress XML output
+        'docman_generate_xml' => false,
         'contact_labels' => array(
                         'Staff',
                         'Consultant Ophthalmologist',

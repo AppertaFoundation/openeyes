@@ -26,16 +26,16 @@
             .$ticket->patient->getHSCICName()
             .' ('.($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()).')'; ?></a></td>
 	<td <?php if ($ticket->priority) {
-    ?>style="color: <?= $ticket->priority->colour ?>"<?php 
+    ?>style="color: <?= $ticket->priority->colour ?>"<?php
 }?>><?= $ticket->priority ? $ticket->priority->name : '-' ?></td>
 	<td><?= Helper::convertDate2NHS($ticket->created_date)?></td>
 	<td><?= $ticket->getTicketFirm() ?></td>
 	<td><?= $ticket->user->getFullName() ?></td>
 	<td>
-        <div class="clamp10"><?= $ticket->report ? $ticket->report : '-'; ?></div>
+        <div class="clamp5"><?= $ticket->report ? $ticket->report : '-'; ?></div>
     </td>
 	<td class="forceNoWrap">
-        <div class="clamp10"><?= nl2br($ticket->getNotes()) ?></div>
+        <div class="clamp5"><?= nl2br($ticket->getNotes()) ?></div>
     </td>
 	<!-- Ownership functionality not required at the moment.
 	<td><?= $ticket->assignee ? $ticket->assignee->getFullName() : '-'?></td>

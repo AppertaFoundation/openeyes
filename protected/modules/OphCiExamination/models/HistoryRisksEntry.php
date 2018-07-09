@@ -68,7 +68,7 @@ class HistoryRisksEntry extends \BaseElement
         return array(
             array('element_id, risk_id, other, has_risk, comments', 'safe'),
             array('risk_id', 'required'),
-            array('has_risk', 'required', 'message'=>'Checked Status cannot be blank'),
+            array('has_risk', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, risk_id, other, has_risk, comments', 'safe', 'on' => 'search'),

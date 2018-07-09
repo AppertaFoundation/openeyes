@@ -69,7 +69,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('disorder', 'required'),
-            array('has_disorder', 'required', 'message'=>'Checked Status cannot be blank'),
+            array('has_disorder', 'required', 'message'=>'Status cannot be blank'),
             array('date, side_id, disorder, has_disorder', 'safe'),
             array('date', 'OEFuzzyDateValidatorNotFuture'),
             // The following rule is used by search().

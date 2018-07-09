@@ -38,10 +38,9 @@
         'element' => $element,
         'durations' => true,
     ))?>
-	<?php echo $form->radioBoolean($element, 'consultant_required')?>
+    <?php echo $form->radioButtons($element, 'complexity', Element_OphTrOperationbooking_Operation::$complexity_captions) ?>
+    <?php echo $form->radioBoolean($element, 'consultant_required')?>
 	<?php echo $form->dropDownList($element, 'named_consultant_id', CHtml::listData(User::model()->findAll(array('condition' => 'is_consultant = 1 and is_surgeon=1', 'order' => 'last_name, first_name')), 'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 3));?>
-	<?php echo $form->radioBoolean($element, 'senior_fellow_to_do')?>
-	<?php echo $form->radioBoolean($element, 'any_grade_of_doctor')?>
 
     <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
         false, false, false, false,
@@ -118,6 +117,7 @@
 	<?php $form->textArea($element, 'special_equipment_details', array(), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
     <?php echo $form->radioBoolean($element, 'preassessment_booking_required'); ?>
     <?php echo $form->radioButtons($element, 'overnight_stay_required_id', 'OphTrOperationbooking_Overnight_Stay_Required'); ?>
+    <?php echo $form->checkBox($element, 'is_golden_patient');?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<?php echo $form->textArea($element, 'comments_rtt', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<div class="row field-row">

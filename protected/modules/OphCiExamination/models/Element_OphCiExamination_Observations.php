@@ -53,7 +53,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
             array('blood_pressure_systolic', 'numerical','min'=>0, 'max'=>400),
             array('blood_pressure_diastolic', 'numerical','min'=>0, 'max'=>400),
             array('o2_sat', 'numerical','min'=>0, 'max'=>100),
-            array('blood_glucose', 'numerical', 'min'=>0.0, 'max'=>10.0),
+            array('blood_glucose', 'numerical', 'min'=>0.0, 'max'=>50.0),
             array('hba1c', 'numerical', 'min'=>0, 'max'=>1000),
             array('height', 'numerical', 'min'=>0.0, 'max'=>250.0),
             array('weight', 'numerical', 'min'=>0.0, 'max'=>250.0),
@@ -88,7 +88,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 			'blood_pressure' => 'Blood pressure',
 			'blood_pressure_systolic' => 'Blood p. systolic',
 			'blood_pressure_diastolic' => 'Blood p. diastolic',
-			'o2_sat' => 'O2 Sat',
+			'o2_sat' => 'O2 Sat (air)',
 			'blood_glucose' => 'Blood Glucose',
 			'hba1c' => 'HbA1c',
 			'height' => 'Height',
@@ -149,9 +149,9 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 	{
 		return parent::model($className);
 	}
-    
+
     /*
-     * Calculate BMI 
+     * Calculate BMI
      * @params $weight weight in kg
      * @params $height height in centimeters
      * @return float
@@ -160,7 +160,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
     {
         $height_meter = $height / 100;
         $result = $weight / ($height_meter * $height_meter);
-        
+
         return number_format((float)$result, 2, '.', '');
     }
 }

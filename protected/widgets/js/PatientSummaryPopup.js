@@ -35,7 +35,6 @@
     }
 
     function init() {
-
         container = $('#patient-popup-container');
         popup = $('#patient-summary-popup');
         popupOverflow = popup.find('.oe-popup-overflow');
@@ -55,6 +54,7 @@
 
                 if (needsScroll === undefined) {
                     setScrollingProperties();
+                    updateScrollingCss();
                 }
 
                 // Re-define the transitions on the popup to be none.
@@ -107,6 +107,7 @@
         // hide when hovering over the popup contents.
         container.on({
             mouseenter: function() {
+                updateScrollingCss();
                 clearTimeout(hoverTimer);
                 // We use a timer to prevent the popup from displaying unintentionally.
                 hoverTimer = setTimeout(popup.trigger.bind(popup, 'show'), 100);
@@ -128,25 +129,18 @@
         if (trackedHeight > 415) {
             popupOverflow.addClass('limit');
             needsScroll = true;
-            popupOverflowAlert.show();
         } else {
             popupOverflow.removeClass('limit');
             needsScroll = false;
-            popupOverflowAlert.hide();
         }
     }
 
     function updateScrollingCss() {
         if (needsScroll) {
-            if (stuck) {
                 popupOverflow.addClass('scroll');
                 popupOverflowAlert.hide();
-            } else {
-                popupOverflow.removeClass('scroll');
-                popupOverflowAlert.show();
             }
         }
-    }
 
     /**
      * This is a naive method that simply adds to the recorded height

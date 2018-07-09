@@ -119,7 +119,7 @@ class MedicationController extends BaseAdminController
                 'relation_field_id' => 'id',
                 'label' => 'Tags',
                 'htmlOptions' => array(
-                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
+                    'autocomplete_url' => $this->createUrl('/oeadmin/drug/tagsAutocomplete')
                 )
             ),
         ));

@@ -23,7 +23,6 @@
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'settingsform',
         'enableAjaxValidation' => false,
-        'focus' => '#username',
         'layoutColumns' => array(
             'label' => 2,
             'field' => 5,
@@ -47,6 +46,6 @@
 				<?php $this->renderPartial('//admin/_admin_setting_'.strtolower(str_replace(' ', '_', $metadata->field_type->name)), array('metadata' => $metadata))?>
 			</div>
 		</div>
-		<?php echo $form->formActions()?>
+		<?php echo $form->formActions(['cancel-uri' => '/OphCoCorrespondence/admin/letterSettings/settings'])?>
 	<?php $this->endWidget()?>
 </div>

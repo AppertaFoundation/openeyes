@@ -574,10 +574,12 @@ class BaseActiveRecord extends CActiveRecord
      */
     protected function afterFind()
     {
-        $this->originalAttributes = $this->getAttributes();
         if (isset($this->active)) {
             $this->active = (bool) $this->active;
         }
+
+        $this->originalAttributes = $this->getAttributes();
+
         parent::afterFind();
     }
 

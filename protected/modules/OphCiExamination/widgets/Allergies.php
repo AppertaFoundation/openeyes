@@ -104,6 +104,16 @@ class Allergies extends \BaseEventElementWidget
         return $missing;
     }
 
+    public function isAllergiesSetYes($element){
+
+        foreach ($element->entries as $entry){
+            if($entry->has_allergy === AllergyEntry::$PRESENT){
+                return true;
+            }
+        }
+        return false;
+
+    }
     /**
      * @param $row
      * @return bool

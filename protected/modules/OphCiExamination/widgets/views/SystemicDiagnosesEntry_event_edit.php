@@ -26,7 +26,7 @@ if (!isset($values)) {
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
         'has_disorder' => $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
-        'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
+        'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'N/A',
         'date' => $diagnosis->date,
         'date_display' => $diagnosis->getDisplayDate(),
     );
@@ -86,7 +86,7 @@ if (!isset($values)) {
     <td>
         <div class="sides-radio-group">
             <label class="inline">
-                <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> None
+                <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> N/A
             </label>
 
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>

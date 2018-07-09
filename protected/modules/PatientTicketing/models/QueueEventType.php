@@ -29,7 +29,7 @@ namespace OEModule\PatientTicketing\models;
  *
  * The followings are the available model relations:
  * @property \OEModule\PatientTicketing\models\Queue $queue
- * @property EventType $event_type_id
+ * @property EventType event_type
  */
 class QueueEventType extends \BaseActiveRecordVersioned
 {
