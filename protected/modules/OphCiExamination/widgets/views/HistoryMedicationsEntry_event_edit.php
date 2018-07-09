@@ -37,9 +37,15 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
+if(is_object($entry->refMedication) && !$entry->refMedication->will_copy) {
+    $ignore = " ignore";
+}
+else {
+    $ignore = "";
+}
 ?>
 
-<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' fade' : '' ?>">
+<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' fade' : '' ?><?= $ignore ?>">
 
     <td>
       <span class="medication-display">

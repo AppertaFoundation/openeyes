@@ -21,6 +21,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property int $will_ccopy
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
@@ -51,6 +52,7 @@ class RefMedication extends BaseActiveRecordVersioned
 			array('source_type, source_subtype, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255),
 			array('deleted_date, last_modified_date, created_date', 'safe'),
+			array('will_copy', 'numeric'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -95,6 +97,7 @@ class RefMedication extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+            'will_copy' => 'Will copy'
 		);
 	}
 
