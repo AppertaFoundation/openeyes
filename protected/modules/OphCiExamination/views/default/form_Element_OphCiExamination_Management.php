@@ -34,40 +34,41 @@
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-to-management" class="oe-add-select-search auto-width" style="display: none;">
-        <?php $this->renderPartial('_attributes',
-            array('element' => $element, 'field' => 'comments', 'form' => $form)) ?>
-    </div>
   </div>
 </div>
+<?php
+$itemSets = array();
+foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+    $itemSet = array_map(function ($attr) {
+        return ['id' => $attr['slug'], 'label' => $attr['label']];
+    }, $attribute->getAttributeOptions());
+    $itemSets[] = $itemSet;
+}
+?>
 
 <script type="text/javascript">
   $(function () {
-    var managementDiv =
-      $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Management\']');
-    var popup = managementDiv.find('#add-to-management');
+    var managementDiv = $('section[data-element-type-class=\'<?= CHtml::modelName($element) ?>\']');
 
-    function setManagementText() {
-      var inputText = managementDiv.find(
-        '#OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments'
-      );
+    new OpenEyes.UI.AdderDialog({
+      openButton: managementDiv.find('.js-add-select-search'),
+      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
+        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+      }),
+      liClass: 'restrict-width',
+      onReturn: function (adderDialog, selectedItems) {
+        var inputText = managementDiv.find(
+          '#<?= CHtml::modelName($element) ?>_comments'
+        );
 
-      popup.find('.selected').each(function (e) {
-        var selectedStr = $(this).attr('data-str');
-        if (selectedStr == null)return;
-        inputText.val(inputText.val() ? inputText.val() + selectedStr : selectedStr);
-        $(this).removeClass('selected');
-      });
-      inputText.trigger('oninput');
-    }
+        var text = $.map(selectedItems, function (item) {
+          return item['label'];
+        }).join(' ');
 
-    setUpAdder(
-      popup,
-      'multi',
-      setManagementText,
-      managementDiv.find('.js-add-select-search'),
-      popup.find('.add-icon-btn'),
-      popup.find('.close-icon-btn')
-    )
+        inputText.val(inputText.val() ? inputText.val() + text : text);
+        inputText.trigger('oninput');
+        return true;
+      },
+    });
   });
 </script>
