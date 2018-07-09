@@ -109,6 +109,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.selectMedication($(this).parents('td'), {
               value: $option.val(),
               label: $option.text(),
+              name: $option.data('tallmanlabel'),
               type: 'd', // only have pre-selected drugs available at the moment.
               tags: tags.split(',')
           })

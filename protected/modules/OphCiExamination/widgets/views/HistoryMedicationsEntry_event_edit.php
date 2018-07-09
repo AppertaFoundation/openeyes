@@ -80,7 +80,10 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             }
 
             foreach($select_options as $select_option){
-                $html_options['options'][$select_option['id']] = ['data-tags' => implode(',', $select_option['tags'])];
+                $html_options['options'][$select_option['id']] = [
+                        'data-tags' => implode(',', $select_option['tags']),
+                        'data-tallmanlabel' => $select_option['name'],
+                ];
             }
 
             if($this->getFirm()){

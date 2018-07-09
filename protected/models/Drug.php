@@ -156,12 +156,14 @@ class Drug extends BaseActiveRecordVersioned
 
         $return = array();
 
+        //@TODO: should be consistent with protected/controllers/MedicationController.php actionFindDrug()
         foreach ($drugs as $drug) {
             $return[] = array(
                 'label' => $drug->name,
                 'value' => $drug->name,
+                'name' => $drug->tallmanlabel,
                 'id' => $drug->id,
-                'tags' => array_map(function($t) { return $t->id;}, $drug->tags)
+                'tags' => array_map(function($t) { return $t->id;}, $drug->tags),
             );
         }
 
@@ -169,8 +171,9 @@ class Drug extends BaseActiveRecordVersioned
             $return[] = array(
                 'label' => $common_medication_drug->medication_drug->name,
                 'value' => $common_medication_drug->medication_drug->name,
+                'name' => $common_medication_drug->medication_drug->name, // these should be handled somehow different...
                 'id' => $common_medication_drug->medication_drug->id.'@@M',
-                'tags' => array_map(function($t) { return $t->id;}, $common_medication_drug->medication_drug->tags)
+                'tags' => array_map(function($t) { return $t->id;}, $common_medication_drug->medication_drug->tags),
             );
         }
 
