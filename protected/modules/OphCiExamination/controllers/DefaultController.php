@@ -205,6 +205,12 @@ class DefaultController extends \BaseEventTypeController
         }
 
         Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
+
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.InputFieldValidation.js', \CClientScript::POS_END);
     }
 
     /**
@@ -243,17 +249,26 @@ class DefaultController extends \BaseEventTypeController
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
-            if ($principal = $this->episode->diagnosis) {
-                $d = new models\OphCiExamination_Diagnosis();
-                $d->disorder_id = $principal->id;
-                $d->principal = true;
-                $d->eye_id = $this->episode->eye_id;
-                $diagnoses[] = $d;
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+
+            if($this->episode->diagnosis) {
+                if ($principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id)) {
+                    $d = new models\OphCiExamination_Diagnosis();
+                    $d->disorder_id = $principal_diagnosis->disorder_id;
+                    $d->principal = true;
+                    $d->date = $principal_diagnosis->date;
+                    $d->eye_id = $this->episode->eye_id;
+
+                    $diagnoses[] = $d;
+                }
             }
+
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
                 $d = new models\OphCiExamination_Diagnosis();
                 $d->disorder_id = $sd->disorder_id;
                 $d->eye_id = $sd->eye_id;
+                $d->date = $sd->date;
+
                 $diagnoses[] = $d;
             }
 
@@ -723,8 +738,8 @@ class DefaultController extends \BaseEventTypeController
     protected function setComplexAttributes_Element_OphCiExamination_Diagnoses($element, $data, $index)
     {
         $diagnoses = array();
-        $diagnosis_eyes = array();
         $model_name = \CHtml::modelName($element);
+        $diagnosis_eyes = [];
 
         if (isset($data[$model_name])) {
             foreach ($data[$model_name] as $key => $value) {
@@ -734,13 +749,17 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-        if (is_array(@$data['selected_diagnoses'])) {
-            foreach ($data['selected_diagnoses'] as $i => $disorder_id) {
-                $diagnosis = new models\OphCiExamination_Diagnosis();
-                $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
-                $diagnosis->disorder_id = $disorder_id;
-                $diagnosis->principal = (@$data['principal_diagnosis'] == $disorder_id);
-                $diagnoses[] = $diagnosis;
+        if( isset($data[$model_name]) ){
+            $diagnoses_data = $data[$model_name];
+            if( isset($diagnoses_data['disorder_id']) ){
+                foreach ($diagnoses_data['disorder_id'] as $i => $disorder_id) {
+                    $diagnosis = new models\OphCiExamination_Diagnosis();
+                    $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
+                    $diagnosis->disorder_id = $disorder_id;
+                    $diagnosis->principal = (@$data['principal_diagnosis'] == $disorder_id);
+                    $diagnosis->date = isset($diagnoses_data['date'][$i]) ? $diagnoses_data['date'][$i] : null;
+                    $diagnoses[] = $diagnosis;
+                }
             }
         }
         $element->diagnoses = $diagnoses;
@@ -924,14 +943,23 @@ class DefaultController extends \BaseEventTypeController
             unset($data[$model_name]['force_validation']);
         }
 
-        $eyes = isset($data[$model_name]) ? array_values($data[$model_name]) : array();
+        $diagnosis_eyes = [];
 
-        if (!empty($data['selected_diagnoses'])) {
-            foreach ($data['selected_diagnoses'] as $i => $disorder_id) {
+        if (isset($data[$model_name])) {
+            foreach ($data[$model_name] as $key => $value) {
+                if (preg_match('/^eye_id_[0-9]+$/', $key)) {
+                    $diagnosis_eyes[] = $value;
+                }
+            }
+        }
+
+        if (!empty($data[$model_name]['disorder_id'])) {
+            foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
                 $diagnoses[] = array(
-                    'eye_id' => $eyes[$i],
+                    'eye_id' => $diagnosis_eyes[$i],
                     'disorder_id' => $disorder_id,
                     'principal' => (@$data['principal_diagnosis'] == $disorder_id),
+                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
                 );
             }
         }

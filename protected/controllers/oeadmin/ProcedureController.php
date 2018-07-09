@@ -22,6 +22,11 @@
 class ProcedureController extends BaseAdminController
 {
     /**
+     * @var holds the Admin() object as the generic admin view refers $this->admin
+     */
+    public $admin;
+
+    /**
      * @var string
      */
     public $layout = 'admin';
@@ -64,7 +69,8 @@ class ProcedureController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(Procedure::model(), $this);
+        //$this->admin as for generic view calls $this->admin
+        $this->admin = $admin = new Admin(Procedure::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }

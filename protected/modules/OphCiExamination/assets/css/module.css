@@ -21,19 +21,19 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1518423280');
+  background-image: url('../img/watermark.png?1522058822');
 }
 /* line 21, ../sass/components/_event.scss */
 .event .event-content.auto {
-  background-image: url('../img/watermark-auto.png?1518423280');
+  background-image: url('../img/watermark-auto.png?1522058822');
 }
 /* line 25, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1518423280');
+  background-image: url('../img/medium.png?1522058822');
 }
 /* line 27, ../sass/components/_event.scss */
 .event .event-title.auto {
-  background-image: url('../img/medium-auto.png?1518423280');
+  background-image: url('../img/medium-auto.png?1522058822');
 }
 
 /* line 33, ../sass/components/_event.scss */
@@ -96,12 +96,16 @@ section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExami
 }
 
 /* line 5, ../sass/components/elements/_allergies.scss */
-section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td {
-  vertical-align: bottom;
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tbody tr {
+  height: 50px;
 }
-/* line 8, ../sass/components/elements/_allergies.scss */
+/* line 11, ../sass/components/elements/_allergies.scss */
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td {
+  vertical-align: middle;
+}
+/* line 14, ../sass/components/elements/_allergies.scss */
 section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td:not(.edit-column) {
-  width: 40%;
+  width: 30%;
 }
 
 /* line 18, ../sass/components/elements/_gonioscopy.scss */
@@ -170,7 +174,7 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
 /* line 18, ../sass/components/elements/_current-management.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan .past_iop {
   height: 28px;
-  background: url('../img/past_icon.png?1518423280') no-repeat right top;
+  background: url('../img/past_icon.png?1522058822') no-repeat right top;
 }
 
 /* line 1, ../sass/components/elements/_pcr.scss */
@@ -284,7 +288,7 @@ a.stop-medication {
 
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
-  background: url('../img/cross.gif?1518423280') no-repeat center center;
+  background: url('../img/cross.gif?1522058822') no-repeat center center;
   height: 110px;
   margin: 0 0 10px 0;
   position: relative;
@@ -294,7 +298,7 @@ a.stop-medication {
   /* line 17, ../sass/components/_gonio-cross.scss */
   .gonio-cross {
     -webkit-print-color-adjust: exact;
-    background: url('../img/cross.gif?1518423280') no-repeat center center !important;
+    background: url('../img/cross.gif?1522058822') no-repeat center center !important;
   }
 }
 /* line 27, ../sass/components/_gonio-cross.scss */

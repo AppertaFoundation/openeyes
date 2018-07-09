@@ -235,11 +235,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
           for (var name in res) {
+              var $input = $row.find('[name$="[' + name +']"]');
               if (name === 'dose') {
-                  $row.find('[name$="[' + name +']"]').attr('placeholder', res['dose_unit']);
+                  $input.attr('placeholder', res['dose_unit']);
+                  $input.addClass('numbers-only');
+                  if(res['dose_unit'] === 'mg'){
+                      $input.addClass('decimal');
+                  } else if(!res['dose_unit']){
+                      $input.removeClass('numbers-only decimal');
+                  }
+
+                  $input.val('');
                   $row.find('[name$="[units]"]').val(res['dose_unit']);
               } else {
-                  $row.find('[name$="[' + name +']"]').val(res[name]).change();
+                  $input.val(res[name]).change();
               }
           }
       });

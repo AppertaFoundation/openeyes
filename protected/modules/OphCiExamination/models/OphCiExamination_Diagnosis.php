@@ -26,6 +26,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $disorder_id
  * @property int $eye_id
  * @property bool $principal
+ * @property string $date
  */
 class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
@@ -54,7 +55,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     {
         return array(
                 array('element_diagnoses_id,disorder_id,eye_id', 'required'),
-                array('element_diagnoses_id,disorder_id,eye_id,principal', 'safe'),
+                array('element_diagnoses_id,disorder_id,eye_id,principal,date', 'safe'),
                 array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -63,6 +64,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     {
         return array(
             'eye_id' => 'Eye',
+            'date' => 'Date',
         );
     }
 
@@ -72,7 +74,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'element_diagnoses' => array(self::BELONGS_TO, 'Element_OphCiExamination_Diagnoses', 'element_diagnoses_id'),
+            'element_diagnoses' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses', 'element_diagnoses_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );
@@ -121,5 +123,13 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         }
 
         return $term;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisplayDate()
+    {
+        return \Helper::formatFuzzyDate($this->date);
     }
 }

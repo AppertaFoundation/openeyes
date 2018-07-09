@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 ?>
 
 <?php
@@ -23,8 +24,9 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'has_disorder' => $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
-        'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
+        'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'N/A',
         'date' => $diagnosis->date,
         'date_display' => $diagnosis->getDisplayDate(),
     );
@@ -37,11 +39,13 @@ if (!isset($values)) {
         $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
     }
 
+    $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
+
+    $mandatory = !$removable;
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
-    <td style="width:290px;">
-
+<tr data-key="<?=$row_count?>" class="<?=$model_name ?>_row" style="height:50px; <?= ($values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_PRESENT && !$mandatory) ? 'display: none;' : '' ?>">
+    <td style="width:270px;">
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 
         <input type="text"
@@ -52,17 +56,37 @@ if (!isset($values)) {
                     data-saved-diagnoses='<?php echo json_encode(array(
                             'id' => $values['id'],
                             'name' => $values['disorder_display'],
-                            'disorder_id' => $values['disorder_id'])); ?>'
+                            'disorder_id' => $values['disorder_id']), JSON_HEX_APOS); ?>'
 
                <?php endif; ?>
         >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
     </td>
 
+    <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
+        <?php
+
+            $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
+            $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
+
+            if($removable) {
+                echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
+                echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
+            }
+            else {
+                echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+                    SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
+                    SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
+                    SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
+                ],['empty' => '- Select -']);
+            }
+        ?>
+    </td>
+
     <td>
         <div class="sides-radio-group">
             <label class="inline">
-                <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> None
+                <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> N/A
             </label>
 
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>

@@ -40,6 +40,11 @@ class Allergies extends \BaseEventTypeElement
     public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
     protected $default_from_previous = true;
 
+    protected $errorExceptions = array(
+        'OEModule_OphCiExamination_models_Allergies_entries' => 'OEModule_OphCiExamination_models_Allergies_entry_table'
+
+    );
+
     public function tableName()
     {
         return 'et_ophciexamination_allergies';
@@ -84,6 +89,25 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * If an allergy is "not checked", do not store in db
+     */
+
+    public function beforeSave()
+    {
+        $entries = $this->entries;
+        foreach ($entries as $key=>$entry) {
+            if($entry->has_allergy == AllergyEntry::$NOT_CHECKED) {
+                unset($entries[$key]);
+            }
+        }
+        $this->entries = $entries;
+        return parent::beforeSave();
+    }
+
+
+    /**
      * check either confirmation of no allergies or at least one allergy entry
      */
     public function afterValidate()
@@ -93,6 +117,7 @@ class Allergies extends \BaseEventTypeElement
         }
         return parent::afterValidate();
     }
+
 
     /**
      * Check for auditable changes
@@ -146,6 +171,19 @@ class Allergies extends \BaseEventTypeElement
         return OphCiExaminationAllergy::model()->activeOrPk($force)->findAll();
     }
 
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_entries') {
+            if (preg_match('/^(\d+)\s\-\sChecked\sStatus/', $message, $match) === 1) {
+                return $attribute .'_' . ($match[1]-1) . '_allergy_has_allergy';
+            }
+            elseif (preg_match('/^(\d+)\s\-\sAllergy/', $message, $match) === 1) {
+                return $attribute .'_' . ($match[1]-1) . '_allergy_id';
+            }
+        }
+        return parent::errorAttributeException($attribute, $message);
+    }
+
     /**
      * @return string
      */
@@ -154,7 +192,14 @@ class Allergies extends \BaseEventTypeElement
         if ($this->no_allergies_date) {
             return 'Patient has no known allergies';
         } else {
-            return implode(' // ', $this->entries);
+            $entries = $this->entries;
+            usort($entries, function ($a, $b){
+               if($a->has_allergy == $b->has_allergy) {
+                   return 0;
+               }
+               return $a->has_allergy < $b->has_allergy ? 1 : -1;
+            });
+            return implode(' // ', $entries);
         }
     }
 
