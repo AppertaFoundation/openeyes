@@ -19,7 +19,7 @@
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
         <?php if ($element->hasRight()) {
-            echo "Grade: {$element->right_van_herick->name}";
+            echo "{$element->right_van_herick->name}";
         } else {
             ?>
             <div class="data-row">
@@ -30,7 +30,7 @@
     </div>
     <div class="element-eye left-eye column">
         <?php if ($element->hasLeft()) {
-            echo "Grade: {$element->left_van_herick->name}";
+            echo "{$element->left_van_herick->name}";
         } else {
             ?>
             <div class="data-row">
