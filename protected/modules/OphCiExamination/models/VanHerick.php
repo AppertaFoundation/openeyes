@@ -73,9 +73,6 @@ class VanHerick extends \SplitEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, left_van_herick_id, right_van_herick_id, eye_id', 'safe'),
-            array('left_van_herick_id', 'numerical', 'integerOnly' => true),
-            array('right_van_herick_id', 'numerical', 'integerOnly' => true),
-            array('left_van_herick_id, right_van_herick_id', 'required'),
         );
     }
 

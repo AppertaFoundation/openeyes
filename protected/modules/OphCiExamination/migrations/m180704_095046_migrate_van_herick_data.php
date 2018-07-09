@@ -17,6 +17,7 @@ class m180704_095046_migrate_van_herick_data extends CDbMigration
             $van_herick_element->event_id = $gonioscopy->event_id;
             $van_herick_element->left_van_herick_id = $gonioscopy->left_van_herick_id;
             $van_herick_element->right_van_herick_id =  $gonioscopy->right_van_herick_id;
+            $van_herick_element->eye_id =  $gonioscopy->eye_id;
 
             if($van_herick_element->save()){
 
