@@ -142,9 +142,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
     {
-        if (Yii::app()->params['fife']) {
-            $element->witness_required = true;
-        }
         if ($action == 'create') {
             if ($this->booking_operation) {
                 $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
