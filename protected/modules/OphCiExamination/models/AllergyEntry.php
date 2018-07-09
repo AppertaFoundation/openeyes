@@ -106,7 +106,7 @@ class AllergyEntry extends \BaseElement
         $criteria->compare('allergy_id', $this->allergy_id, true);
         $criteria->compare('other', $this->other, true);
         $criteria->compare('comments', $this->comments, true);
-        $criteria->compare('has_allergy', $this->comments, true);
+        $criteria->compare('has_allergy', $this->has_allergy, true);
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
