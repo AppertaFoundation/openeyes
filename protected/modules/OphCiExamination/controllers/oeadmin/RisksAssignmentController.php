@@ -99,6 +99,7 @@ class RisksAssignmentController extends \ModuleAdminController
      * Updates a particular model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
+     * @throws CHttpException
      */
     public function actionUpdate($id)
     {
@@ -112,8 +113,6 @@ class RisksAssignmentController extends \ModuleAdminController
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
-
-                $existing_entry_ids = array_map(function ($entry) {return $entry->id;}, $risk_set->ophciexamination_risks_entry);
 
                 $posted_entry_ids = array();
                 foreach($risks as $risk){
@@ -234,6 +233,18 @@ class RisksAssignmentController extends \ModuleAdminController
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
+    }
+
+    /**
+     * Returns the consultants by subspecialty
+     * @param null $subspecialty_id
+     */
+    public function actionGetFirmsBySubspecialty($subspecialty_id = null)
+    {
+        $firms = \Firm::model()->getList($subspecialty_id);
+        echo \CJSON::encode($firms);
+
+        \Yii::app()->end();
     }
 
 }

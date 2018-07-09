@@ -257,14 +257,14 @@ return array(
         ),
     ),
     array(
-        'name' => 'How to choose a lens (1)',
-        'id' => 'biometry-point-to-lens',
+        'name' => 'Choose a lens',
+        'id' => 'biometry-point-to-lens-button',
         'auto' => true,
         'url_pattern' => '|^/OphInBiometry/default/view/|i',
         'position' => 90,
         'steps' => array(
             array(
-                'element' => "li a:contains('Edit')",
+                'element' => "a.button:contains('Choose Lens')",
                 'title' => 'TIP:',
                 'content' => "When you want to select a lens for surgery, Click this button",
                 'placement' => 'auto',

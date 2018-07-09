@@ -27,7 +27,7 @@ class DefaultController extends \BaseModuleController
 {
     public $layout = '//layouts/main';
     public $renderPatientPanel = false;
-    protected $page_size = 10;
+    protected $page_size = 20;
     public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
     public static $TICKET_SERVICE = 'PatientTicketing_Ticket';
@@ -256,9 +256,10 @@ class DefaultController extends \BaseModuleController
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
         $queueset = $qs_svc->getQueueSetForQueue($q->id);
 
-        if (!$this->checkQueueSetProcessAccess($queueset)) {
+        //anyone can process
+        /*if (!$this->checkQueueSetProcessAccess($queueset)) {
             throw new \CHttpException(403, 'Not authorised to take ticket');
-        }
+        }*/
 
         $template_vars = array('queue_id' => $id, 'patient_id' => null);
         $p = new \CHtmlPurifier();

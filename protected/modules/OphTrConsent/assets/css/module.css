@@ -21,11 +21,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1516964537');
+  background-image: url('../img/watermark.png?1529682475');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1516964537');
+  background-image: url('../img/medium.png?1529682475');
 }
 
 /* line 18, ../sass/components/_elements.scss */
@@ -35,4 +35,9 @@
 /* line 20, ../sass/components/_elements.scss */
 .element ul.procedures li {
   margin: 0;
+}
+
+/* line 17, ../sass/components/_print.scss */
+.logo {
+  float: right;
 }

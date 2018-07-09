@@ -89,12 +89,13 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                   <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
 
                   <?php
-                        /* Dose should be numerical but we already have entries in DB like "half a tablet - 125mg",
-                           so in this way we can force numbers for only new records and for only on the input box
-                           note: type="number" inputs will not display text like "1 drop(s)"
-                        */
-                        $input_type = ($entry->isNewRecord || is_numeric($entry->dose)) ? 'numberField' : 'textField';
-                        echo CHtml::$input_type("{$field_prefix}[dose]", $entry->dose, ['placeholder' => $entry->units]);
+                        $attributes['placeholder'] = $entry->units;
+                        $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
+                        if($entry->units == 'mg'){
+                            $attributes['class'] .= " decimal";
+                        }
+
+                        echo CHtml::textField("{$field_prefix}[dose]", $entry->dose, $attributes);
                   ?>
 
               </div>

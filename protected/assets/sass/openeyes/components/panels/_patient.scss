@@ -261,6 +261,11 @@
 				font-size: 11px;
 				padding: 5px;
 			}
+			&.surgical-history{
+				div:first-child{
+					padding:5px 0 5px 5px;
+				}
+			}
 		}
 		.label {
 			color: #b57e0d;

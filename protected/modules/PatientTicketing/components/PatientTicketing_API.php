@@ -86,6 +86,7 @@ class PatientTicketing_API extends \BaseAPI
                             if (@isset($ticket_field['value']['outcome'])) {
                                 if ($ticket_outcome_option = TicketAssignOutcomeOption::model()->findByPk((int) $ticket_field['value']['outcome'])) {
                                     if ($ticket_outcome_option->followup == 1) {
+                                        $ticket_field['value']['assignment_date'] = $queue_assignment->assignment_date;
                                         return $ticket_field['value'];
                                     }
                                 }

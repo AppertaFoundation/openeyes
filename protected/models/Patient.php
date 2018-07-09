@@ -1293,15 +1293,18 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * @return SecondaryDiagnosis[]
+     *
+     * @param bool $present Whether to return present diagnoses
      */
-    public function getSystemicDiagnoses()
+    public function getSystemicDiagnoses($present = true)
     {
         $criteria = new CDbCriteria();
         $criteria->compare('patient_id', $this->id);
         $criteria->join = 'join disorder on t.disorder_id = disorder.id and specialty_id is null';
         $criteria->order = 'date asc';
 
-        return SecondaryDiagnosis::model()->findAll($criteria);
+        $model = $present ? SecondaryDiagnosis::model() : SecondaryDiagnosisNotPresent::model();
+        return $model->findAll($criteria);
     }
 
     /**

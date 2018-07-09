@@ -297,18 +297,8 @@ var docman = (function() {
                     other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
                 }
 
-                $.when( this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param),this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param) ).done(function ( v1, v2 ) {
-                    if(selected_type[1] === 'Gp'){
-                        if(!docman.isContactTypeAdded("PATIENT")){
-                            docman.createNewRecipientEntry('PATIENT');
-                        }
-                    } else {
-                        // anyone else is the Recipient other than GP than a cc goes to GP
-                        if(!docman.isContactTypeAdded("GP")){
-                            docman.createNewRecipientEntry('GP');
-                        }
-                    }
-                });
+                this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
+                this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
 
             } else if(contact_id == 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');

@@ -119,9 +119,9 @@
                 </div>
               </div>
                 <?php if ($this->operations) { ?>
-                  <div class="row">
+                  <div class="row surgical-history">
                     <div class="large-2 column label">
-                      POH
+                      Surgical History
                     </div>
                     <div class="large-10 column data">
                         <?php echo $this->operations; ?>

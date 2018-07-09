@@ -38,7 +38,9 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
         <?php echo $form->dropDownList($macro, 'subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty')?>
         <?php echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true), array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm'), $macro->type != 'firm')?>
         <?php echo $form->textField($macro, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-        <?php echo $form->radioButtons($macro, 'recipient_id', CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), null, false, false, false, false, array('empty' => 'None', 'empty-after' => true))?>
+        <?php echo $form->radioButtons($macro, 'recipient_id', $recipients_data + $none_option,
+                (!$macro->recipient_id ? '0' : null), false, false, false, false, array('empty' => 'None','labelOptions' => $label_options, 'empty-after' => true));
+        ?>
         <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right'))?>
         <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right'))?>
         <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right'))?>

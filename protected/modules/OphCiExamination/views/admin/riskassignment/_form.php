@@ -22,11 +22,14 @@
 <?php
     echo $form->textField($model, "name");
     echo "<br>";
+?>
 
-    $options = CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "subspecialty_id", $options, array('empty' => '-- select --'));
-    $options = CHtml::listData(\Firm::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "firm_id", $options, array('empty' => '-- select --'));
+<?php
+$this->widget('application.widgets.SubspecialtyFirmPicker', [
+    'model' => $model
+]);
+?>
+    <?php
     echo "<br>";
 
     $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll(), 'id', 'name');
@@ -37,7 +40,6 @@
 ?>
 
 <div id="risks" class="field-row">
-
         <?php
         $columns = array(
             array(
@@ -144,13 +146,15 @@
                 data
             );
             $table.find('tbody').append($row);
-
+            $table.find('td.empty').closest('tr').hide();
         });
 
         $($table).on('click','.remove_risk_entry', function(e){
             $(this).closest('tr').remove();
+            if($table.find('tbody tr').length <= 1){
+                $table.find('td.empty').closest('tr').show();
+            }
         });
-
     });
 
 </script>

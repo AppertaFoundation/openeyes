@@ -87,8 +87,10 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         // will receive user inputs.
         return array(
                 array('eye_id, left_eyedraw, left_description, left_ed_report, right_eyedraw, right_description, right_ed_report', 'safe'),
-                array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
+                array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
+                array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
+                array('left_ed_report', 'requiredIfNoComments', 'side' => 'left', 'comments_attribute' => 'description'),
+                array('right_ed_report', 'requiredIfNoComments', 'side' => 'right', 'comments_attribute' => 'description'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, left_eyedraw, left_description, left_ed_report, right_eyedraw, right_description, right_ed_report, eye_id', 'safe', 'on' => 'search'),

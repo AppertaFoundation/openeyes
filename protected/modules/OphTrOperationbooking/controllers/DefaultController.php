@@ -28,6 +28,7 @@ class DefaultController extends OphTrOperationbookingEventController
     protected $operation_required = false;
     /** @var Element_OphTrOperation_Operation $operation */
     protected $operation = null;
+    protected $contact_details = null;
 
     protected $show_element_sidebar = false;
 
@@ -126,6 +127,7 @@ class DefaultController extends OphTrOperationbookingEventController
         parent::initWithEventId($id);
 
         $this->operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id));
+        $this->contact_details = Element_OphTrOperationbooking_ContactDetails::model()->find('event_id=?', array($this->event->id));
         if ($this->operation_required && !$this->operation) {
             throw new CHttpException(500, 'Operation not found');
         }
@@ -573,6 +575,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 'patient' => $this->patient,
                 'firm' => $this->episode->firm,
                 'emergencyList' => false,
+                'contact_details' => $this->contact_details
             ),
             true
         );

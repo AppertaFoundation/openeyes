@@ -38,7 +38,6 @@ return array(
                 'Commissioning body service types' => '/admin/commissioning_body_service_types',
                 'Event deletion requests' => '/admin/eventDeletionRequests',
                 'Custom episode summaries' => '/admin/episodeSummaries',
-                'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
                 'Findings' => '/admin/managefindings',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',

@@ -343,8 +343,14 @@ class OphCoCorrespondence_API extends BaseAPI
             if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
+
+                        $correspondence_name = $service->fullName;
+                        if (method_exists($service, 'getCorrespondenceName')) {
+                            $correspondence_name = $service->correspondenceName;
+                        }
+
                         $data['cc'][$k]['contact_type'] = 'DRSS';
-                        $data['cc'][$k]['contact_name'] = $service->getFullName();
+                        $data['cc'][$k]['contact_name'] = implode(',', $correspondence_name);
                         $data['cc'][$k]['contact_id'] = $service->contact->id;
                         $data['cc'][$k]['address'] = $service->getLetterAddress(array(
                                         'include_name' => false,
@@ -370,19 +376,19 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     private function getMacroData($patient_id, $macro_id)
     {
-        if(!$patient_id){
+        if (!$patient_id) {
             $patient_id = @$_GET['patient_id'];
         }
-        if(!$macro_id){
+        if (!$macro_id) {
             $macro_id = @$_GET['macro_id'];
         }
 
         if (!$patient = Patient::model()->findByPk($patient_id)) {
-            throw new Exception('Patient not found: '.$patient_id);
+            throw new Exception('Patient not found: ' . $patient_id);
         }
 
         if (!$macro = LetterMacro::model()->findByPk($macro_id)) {
-            throw new Exception('Macro not found: '.$macro_id);
+            throw new Exception('Macro not found: ' . $macro_id);
         }
 
         $data = array();
@@ -392,13 +398,13 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($macro->recipient && $macro->recipient->name == 'Patient') {
             $contact = $patient;
             if ($patient->date_of_death) {
-                echo json_encode(array('error'=>'DECEASED'));
+                echo json_encode(array('error' => 'DECEASED'));
                 return;
             }
         }
 
         if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['sel_address_target'] = get_class($contact).$contact->id;
+            $data['sel_address_target'] = get_class($contact) . $contact->id;
         }
 
         if (isset($contact)) {
@@ -409,10 +415,9 @@ class OphCoCorrespondence_API extends BaseAPI
                 'delimiter' => "\n",
             ));
 
-            if($address){
+            if ($address) {
                 $data['address'] = $address;
-            }
-            else {
+            } else {
                 $data['alert'] = "The contact does not have a valid address.";
                 $data['address'] = 'No valid address!';
             }
@@ -459,10 +464,10 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if($commissioningbodytype && $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype)) {
+            if ($commissioningbodytype && $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype)) {
                 $drss = null;
-                foreach($commissioningbody->services as $service) {
-                    if($service->type->shortname == 'DRSS') {
+                foreach ($commissioningbody->services as $service) {
+                    if ($service->type->shortname == 'DRSS') {
                         $cc['text'][] = $service->getLetterAddress(array(
                             'include_name' => true,
                             'include_label' => true,
@@ -475,14 +480,19 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        $data['cc'] = implode("\n",$cc['text']);
+        $data['cc'] = implode("\n", $cc['text']);
         $data['date'] = date('Y-m-d');
         $data['site_id'] = Yii::app()->session['selected_site_id'];
-        $data['footer'] = "Yours sincerely\n\n\n\n\n".User::model()->findByPk(Yii::app()->user->id)->fullName."\n".User::model()->findByPk(Yii::app()->user->id)->role."\n";
+        $empty_lines = "\n";
+        $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
+        $count = $meta_data ? $meta_data->value : 4;
+        for ($x = 0; $x < $count; $x++) {
+            $empty_lines .= "\n";
+        }
+        $data['footer'] = "Yours sincerely" . $empty_lines . User::model()->findByPk(Yii::app()->user->id)->fullName . "\n" . User::model()->findByPk(Yii::app()->user->id)->role . "\n";
         //.(ui.item.consultant?"Consultant: "+ui.item.consultant:'')
         return $data;
     }
-
     /***
      * Creates the new letter
      *
@@ -640,7 +650,13 @@ class OphCoCorrespondence_API extends BaseAPI
 
             $full_name = trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications);
 
-            return "Yours sincerely\n\n\n\n\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
+            $empty_lines = "\n";
+            $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
+            $count = $meta_data ? $meta_data->value : 4;
+            for ($x = 0; $x < $count; $x++) {
+                $empty_lines .= "\n";
+            }
+            return "Yours sincerely". $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
 
         return null;

@@ -2,7 +2,7 @@
 if (!empty($logo['headerLogo'])) { ?>
     
 <div class="letter-logo">
-		<img src="<?php echo $logo['headerLogo']; ?>" alt="letterhead_logo" style="height:100px" />
+		<img src="<?php echo $logo['headerLogo']; ?>" alt="letterhead_logo" style="height:<?= $size ?>px" />
 	</div>
 <?php 
 } if (!empty($logo['secondaryLogo'])) {?>

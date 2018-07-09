@@ -35,6 +35,43 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
+
+    public function actionLetterSettings()
+    {
+        $this->render('/admin/letter_settings',array(
+            'settings' => OphCoCorrespondenceLetterSettings::model()->findAll(),
+        ));
+    }
+
+    public function actionEditSetting()
+    {
+        if (!$metadata = OphCoCorrespondenceLetterSettings::model()->find('`key`=?', array(@$_GET['key']))) {
+            $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
+        }
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            foreach (OphCoCorrespondenceLetterSettings::model()->findAll() as $metadata) {
+                if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
+                    if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+                        $setting = new OphCoCorrespondenceLetterSettingValue();
+                        $setting->key = $metadata->key;
+                    }
+                    $setting->value = @$_POST[$metadata->key];
+                    if (!$setting->save()) {
+                        $errors = $setting->errors;
+                    } else {
+                        $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
+                    }
+                }
+            }
+        }
+
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+    }
+
+
     public function getUniqueEpisodeStatuses($macros)
     {
         $statuses = array();
@@ -184,20 +221,33 @@ class AdminController extends \ModuleAdminController
             Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
         }
 
+        $letter_type_gp_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'GP'))->queryScalar();
+        $letter_type_patient_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'Patient'))->queryScalar();
         $this->render('_macro', array(
             'macro' => $macro,
             'init_method' => $init_method,
             'associated_content' => $associated_content_saved,
             'errors' => $errors,
+            'none_option' => ['0' => $macro->letter_type->name === 'Internal Referral' ? 'Internal Referral' : 'None'],
+            'recipients_data' => \CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+            'label_options' => [
+                $letter_type_gp_id => $macro->letter_type->name === 'Internal Referral' ? 'display:none' : '',
+                $letter_type_patient_id => $macro->letter_type->name === 'Internal Referral' ? 'display:none' : ''
+            ],
         ));
     }
 
     public function actionDeleteLetterMacros()
     {
+        if(!isset($_POST['id'])) {
+            return null;
+        }
+        //Make all the macro ids null that is equal to the macro id
+        // that is being deleted in the document instance data table
+        DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
+
         $criteria = new CDbCriteria();
-
         $criteria->addInCondition('id', @$_POST['id']);
-
         if (LetterMacro::model()->deleteAll($criteria)) {
             echo '1';
         } else {

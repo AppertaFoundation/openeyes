@@ -189,6 +189,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public function getList($subspecialty_id = null, $include_id = null)
     {
+        return CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed($subspecialty_id), "id", "name");
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')
             ->from('firm f')
@@ -216,10 +217,11 @@ class Firm extends BaseActiveRecordVersioned
 
     /**
      * @param $include_non_subspecialty boolean defaults to false
+     * @param $only_used_firms boolean defaults to false used to determine if return only firms that been used already
      *
      * @return array
      */
-    public function getListWithSpecialties($include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($include_non_subspecialty = false, $subspecialty_id = null, $only_used_firms = false)
     {
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
 
@@ -232,6 +234,10 @@ class Firm extends BaseActiveRecordVersioned
 
         if($subspecialty_id){
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
+        }
+
+        if($only_used_firms){
+            $command->join('ophtroperationbooking_operation_session session',' f.id = session.firm_id');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();

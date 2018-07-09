@@ -74,6 +74,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
             'recipient' => array(self::BELONGS_TO, 'LetterRecipient', 'recipient_id'),
+            'letter_type' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
         );
     }
 

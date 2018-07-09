@@ -120,6 +120,13 @@ class Admin
     protected $subListParent = array();
 
     /**
+     * Contains extra buttons next to save and cancel
+     *
+     * @var array
+     */
+    protected $extraButtons = array();
+
+    /**
      * @param $filters
      */
     public function setFilterFields($filters)
@@ -414,6 +421,23 @@ class Admin
     {
         $this->subListParent = $subListParent;
     }
+
+    /**
+     * Add extra button (next to 'save' and 'cancel'...)
+     * e.g.: array('cancel-uri' => 'url' )
+     * @param array $button
+     */
+    public function addExtraButton(array $button)
+    {
+        $this->extraButtons = $button;
+    }
+
+    public function getExtraButton()
+    {
+        return $this->extraButtons;
+    }
+
+
 
     /**
      * @param BaseActiveRecord    $model

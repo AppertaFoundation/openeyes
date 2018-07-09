@@ -58,8 +58,8 @@ function updateCorrespondence(macro_id)
                 obj.val('');
                 
                 //set letter type
-                $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id);
                 $('.internal-referrer-wrapper').slideUp();
+                $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id).trigger('change');
                 resetInternalReferralFields();
 
 				$('#attachments_content_container').html(data.associated_content);
@@ -795,7 +795,7 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
-            if( typeof docman !== "undefined" ){
+            if( typeof docman !== "undefined" && !$('#macro_id').val()){
 
                 //add GP to recipients
                 if( !docman.isContactTypeAdded("GP") ){
