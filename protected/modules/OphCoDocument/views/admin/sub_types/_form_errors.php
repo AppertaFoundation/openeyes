@@ -15,30 +15,26 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
-return array(
-
-    'params' => array(
-        'OphCoDocument' => array(
-            'allowed_file_types' => array(
-                'pdf'   => 'application/pdf',
-                'jpg'   => 'image/jpeg',
-                'jpeg'  => 'image/jpeg',
-                'png'   => 'image/png',
-                'gif'   => 'image/gif',
-                'mp4'   => 'video/mp4',
-                'mpeg4' => 'video/mp4',
-                'ogg'   => 'video/ogg',
-		'mov'	=> 'video/quicktime',
-            )
-        ),
-        'admin_structure' => array(
-            'Document' => array(
-                'Document sub type settings' => array(
-                    'module' => 'OphCoDocument',
-                    'uri' => '/OphCoDocument/oeadmin/DocumentSubTypesSettings',
-                    ),
-            ),
-        )
-    )
-);
+?>
+<?php if (isset($errors) && !empty($errors)) {
+    ?>
+    <div class="alert-box alert with-icon">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach ($errors as $field => $errs) {
+                ?>
+                <?php foreach ($errs as $err) {
+                    ?>
+                    <li>
+                        <?php echo $err ?>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+            }
+            ?>
+        </ul>
+    </div>
+    <?php
+} ?>
