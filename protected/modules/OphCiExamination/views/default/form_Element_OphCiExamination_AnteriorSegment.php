@@ -17,7 +17,7 @@
  */
 ?>
 <style>
-  .OEModule-OphCiExamination-models-Element-OphCiExamination-AnteriorSegment .ed-fields-container {
+  .OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
     padding-top: 111px;
   }
 </style>
