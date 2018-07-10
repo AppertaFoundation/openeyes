@@ -209,4 +209,23 @@ foreach ($this->patient->episodes as $ep) {
             $('.close-icon-btn, .add-icon-btn')
         );
     });
+
+    $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
+
+    var popup = $('#add-to-ophthalmic-diagnoses');
+
+    function addOphthalmicDiagoses() {
+      diagnosesController.addEntry();
+    }
+
+    setUpAdder(
+      popup,
+      'multi',
+      addOphthalmicDiagoses,
+      $('#add-ophthalmic-diagnoses'),
+      popup.find('.add-icon-btn'),
+      $('.close-icon-btn, .add-icon-btn')
+    );
+  });
+
 </script>
