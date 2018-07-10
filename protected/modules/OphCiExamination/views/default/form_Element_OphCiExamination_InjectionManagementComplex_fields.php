@@ -202,18 +202,34 @@ $el_model_name = CHtml::modelName($element);
 
       </td><td></td>
     </tr>
-    <tr>
-      <td>
-          <?= $form->textArea(
-              $element,
-              $eye . '_comments',
-              array(),
-              false,
-              array('placeholder' => 'Enter comments'),
-              array('label' => 3, 'field' => 9)
-          ) ?>
-      </td><td></td>
-    </tr>
     </tbody>
   </table>
+
+  <div class="flex-layout flex-right comment-group">
+      <span class="js-comment-container cols-full flex-layout"
+            id="<?= CHtml::modelName($element) . '_' . $eye ?>_comment_container"
+            <?php if (!$element->{$eye . '_comments'}): ?>style="display: none;"<?php endif; ?>
+            data-comment-button="#<?= CHtml::modelName($element) . '_' . $eye ?>_comment_button">
+            <?php echo $form->textArea(
+                $element, $eye . '_comments',
+                array('nowrapper' => true),
+                false,
+                array(
+                    'class' => 'js-comment-field',
+                    'placeholder' => 'Enter comments',
+                )
+            ) ?>
+        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </span>
+    <button
+        id="<?= CHtml::modelName($element) . '_' . $eye ?>_comment_button"
+        type="button"
+        class="button js-add-comments"
+        <?php if ($element->{$eye . '_comments'}): ?>style="visibility: hidden;"<?php endif; ?>
+        data-comment-container="#<?= CHtml::modelName($element) . '_' . $eye ?>_comment_container">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+  </div>
+
 </div>
+
