@@ -154,7 +154,7 @@ if ($cvi_api) {
 
       setUpAdder(
         popup,
-        'multi',
+        'single',
         addVA,
         adder.find('.addReading'),
         popup.find('.add-icon-btn'),
