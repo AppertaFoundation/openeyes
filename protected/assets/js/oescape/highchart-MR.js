@@ -10,7 +10,7 @@ var drugs = [];	// drug banners
 var bannersOffset = 45 * drugs.length; 			// offset xAxis to allow space for drug banners
 var xAxisOffset ; 			// allow for the '>5' flags
 var flagYoffset = -40; 							// drug flags are positioned relative to xAxis
-var total_height = 800;
+var total_height = 900;
 var eye_side = 'right';
 var eye_side_label = 'R';
 var octImgStack;
@@ -52,7 +52,7 @@ var options_MR = {
   // standard settings
   legend: 		highHelp.chartLegend(),
   navigator: 		highHelp.chartNavigator(),
-  rangeSelector: 	highHelp.chartRangeSelector(-30,-100),	// offset from bottom right (x,y) "Show all" button
+  rangeSelector: 	highHelp.chartRangeSelector(-30,-60),	// offset from bottom right (x,y) "Show all" button
 
   tooltip: {
     useHtml: true,
@@ -93,7 +93,7 @@ var options_MR = {
     offset: xAxisOffset,   	// this moves the chart up to allow for the banners and other flags
     tickPixelInterval: 50,  // if this is too high the last tick isn't shown (default 100) but depends on chart width
     startOnTick: false, //If the charts are forced to start and end on ticks they can't align properly
-    endOnTick: false
+    endOnTick: false,
     plotLines: []
   },
 
@@ -135,8 +135,8 @@ function changeSetting(enter_drugs, side) {
   xAxisOffset = bannersOffset + 10; 			// allow for the '>5' flags
   eye_side = side;
   eye_side_label = (eye_side=='right')?'R':'L';
-  options_MR['yAxis'][0]['height'] =  total_height - bannersOffset - 280;
-  options_MR['yAxis'][1]['height'] =  total_height - bannersOffset - 280;
+  options_MR['yAxis'][0]['height'] =  total_height - bannersOffset - 350;
+  options_MR['yAxis'][1]['height'] =  total_height - bannersOffset - 350;
   options_MR['title']['text']="Retinal thickness-Visual acuity ("+side+" Eye)";
   options_MR['chart']['className'] = 'oes-chart-mr-'+eye_side;
 }
