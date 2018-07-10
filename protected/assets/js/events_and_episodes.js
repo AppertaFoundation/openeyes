@@ -134,7 +134,7 @@ $(document).ready(function(){
 
   $(this).on('click', '.js-remove-element', function (e) {
     e.preventDefault();
-    var parent = $(this).parent().parent();
+    var parent = $(this).closest('.element');
     removeElement(parent);
   });
 
