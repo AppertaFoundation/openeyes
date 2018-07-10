@@ -62,7 +62,7 @@
 						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2'))?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->report2)?></div>
+						<div class="data-value"><?php echo CHtml::encode($element->report2) . '<br>'. CHtml::encode($element->comments)?></div>
 					</div>
 				</div>
 				<div class="row data-row">

@@ -25,7 +25,8 @@
     array_merge($form->layoutColumns, array('field' => 3))) ?>
 <?php echo $form->dropDownList($element, 'incision_type_id', 'OphTrOperationnote_IncisionType',
     array('empty' => '- Please select -', 'textAttribute' => 'data-value'), false, array('field' => 4)) ?>
-<?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6)) ?>
+<?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6 , 'readonly'=> true)) ?>
+<?php echo $form->textArea($element, 'comments' , array(), false, array('rows' => 3))?>
 <?php
     if(isset(Yii::app()->modules["OphInBiometry"])){
         echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
@@ -50,6 +51,7 @@
         <div class="large-3 column">
             <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
         </div>
+
         <div class="large-2 column end">
             <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
                    name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
