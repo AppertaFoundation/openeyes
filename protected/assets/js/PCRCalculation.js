@@ -5,14 +5,10 @@
  * @returns {*|jQuery|HTMLElement}
  */
 function getPcrContainer(ev) {
-  var isRight = (ev.target.id.indexOf('right') > -1),
-    $container = $('#ophCiExaminationPCRRiskLeftEye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .left-eye');
+    var side = $('#Element_OphTrOperationnote_ProcedureList_eye_id').find('input[name="Element_OphTrOperationnote_ProcedureList[eye_id]"]:checked').val() == 1 ? 'left' : 'right';
+    $container = $('#ophCiExaminationPCRRisk' + side.charAt(0).toUpperCase() + side.substr(1) + 'Eye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .' + side + '-eye');
 
-  if (isRight) {
-    $container = $('#ophCiExaminationPCRRiskRightEye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .right-eye');
-  }
-
-  return $container;
+    return $container;
 }
 
 /**
