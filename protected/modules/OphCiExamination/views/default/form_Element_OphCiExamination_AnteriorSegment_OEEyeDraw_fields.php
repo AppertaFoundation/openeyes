@@ -18,33 +18,51 @@
 ?>
 <div class="data-group">
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="cols-12 column autoreport-display">
-        <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"></span>
-    </div>
+  <div class="cols-12 column autoreport-display">
+    <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>" class="data-value"></span>
+  </div>
 </div>
 <div class="data-group">
     <?php
-        $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawDefault();
-        echo $form->hiddenField($element, $side.'_nuclear_id', array(
-            'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawMapping()),
-            'data-eyedraw-default' => $default ? $default->id : ''));
+    $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawDefault();
+    echo $form->hiddenField($element, $side . '_nuclear_id', array(
+        'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawMapping()),
+        'data-eyedraw-default' => $default ? $default->id : '',
+    ));
 
     $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawDefault();
-    echo $form->hiddenField($element, $side.'_cortical_id', array(
+    echo $form->hiddenField($element, $side . '_cortical_id', array(
         'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawMapping()),
-        'data-eyedraw-default' => $default ? $default->id : ''));
+        'data-eyedraw-default' => $default ? $default->id : '',
+    ));
     ?>
-    <div class="cols-12 column end">
-        <?php echo CHtml::activeTextArea(
-            $element,
-            $side . '_description',
-            array(
-                'rows' => '1',
-                'class' => 'cols-12',
-                'placeholder' => $element->getAttributeLabel($side . '_description'),
-                'nowrapper' => true
-            )
-        ) ?>
-    </div>
+
+  <div class="flex-layout flex-right">
+      <span class="js-comment-container cols-full flex-layout"
+            id="<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>"
+            <?php if (!$element->{$side . '_description'}): ?>style="display: none;"<?php endif; ?>
+            data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
+            <?php echo $form->textArea(
+                $element, $side . '_description',
+                array('nowrapper' => true),
+                false,
+                array(
+                    'rows' => 1,
+                    'class' => 'js-comment-field',
+                    'placeholder' => $element->getAttributeLabel($side . '_description'),
+                )
+            ) ?>
+        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </span>
+    <button
+        id="<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>"
+        type="button"
+        class="button js-add-comments"
+        <?php if ($element->{$side . '_description'}): ?>style="visibility: hidden;"<?php endif; ?>
+        data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+  </div>
+
 </div>
 
