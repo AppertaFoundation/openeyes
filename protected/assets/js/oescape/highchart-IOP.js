@@ -54,6 +54,8 @@ var optionsIOP = {
     opposite: true,
     reversed: false,
     min:0,
+    max:70,
+    tickPixelInterval: 10
   },
 
   xAxis: {
@@ -78,6 +80,7 @@ function drawIOPSeries(chart, data, eye_side){
   var series_option = {
     type:'line',
     colorIndex:(eye_side=='right')?11:21,			// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
+    zIndex: 1
   };
 
   addSeries(chart, 'IOP ('+eye_side + ')', data, series_option);
@@ -85,15 +88,15 @@ function drawIOPSeries(chart, data, eye_side){
 
 function setYPlotline(target_value, eye_side){
   return {
-    className: 'oes-hs-plotline-'+eye_side,
-      value: target_value[eye_side],
+    className: 'oes-hs-plotline-' + eye_side,
+    value: target_value[eye_side],
     label: {
-    text: 'Target IOP ('+eye_side+')',
+      text: 'Target IOP (' + eye_side + ')',
       align: 'left',
       y: -5,
       x: 0
-  },
-    zIndex:1,
+    },
+    zIndex: 10,
   };
 }
 
