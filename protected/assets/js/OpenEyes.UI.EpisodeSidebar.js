@@ -132,7 +132,7 @@
     self.element.on('mouseenter', '.event-type', function (e) {
       var $iconHover = $(e.target);
       var $li = $iconHover.parent().parents('li:first');
-      $li.find('.quicklook').fadeIn('fast');
+      $li.find('.quicklook').fadeTo(150, 100);
 
       var $screenshots = $('.oe-event-quickview .quickview-screenshots');
       $screenshots.find('img').hide();
@@ -140,13 +140,13 @@
 
       $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
       $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
-      $('.oe-event-quickview').stop().fadeIn(50);
+      $('.oe-event-quickview').stop().fadeTo(50, 100);
     });
 
     self.element.on('mouseleave', '.event-type', function (e) {
       var $iconHover = $(e.target);
       $iconHover.parents('li:first').find('.quicklook').hide();
-      $('.oe-event-quickview').stop().fadeOut(150);
+      $('.oe-event-quickview').stop().fadeTo(150, 0);
     });
 
     // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
