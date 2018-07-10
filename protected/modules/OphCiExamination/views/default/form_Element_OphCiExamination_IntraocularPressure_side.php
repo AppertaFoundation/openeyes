@@ -55,7 +55,8 @@ $comments = $side . '_comments';
     </tbody>
   </table>
   <div id="iop-<?php echo $side; ?>-comments"
-       class="comment-group js-comment-container field-row-pad-top flex-layout flex-left" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>
+       class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
+       style="<?php if (!$element->$comments): ?>display: none;<?php endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
           array(
@@ -72,7 +73,7 @@ $comments = $side . '_comments';
           type="button"
           class="button js-add-comments"
           data-comment-container="#iop-<?php echo $side; ?>-comments"
-          <?php if ($element->$comments): ?>style="visibility: hidden;"<?php endif; ?>
+          style="<?php if ($element->$comments): ?>visibility: hidden;<?php endif; ?>"
   >
     <i class="oe-i comments small-icon"></i>
   </button>
@@ -114,8 +115,8 @@ $comments = $side . '_comments';
 </script>
 <script type="text/javascript">
   $(function () {
-      var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
-      var popup = side.find('#add-to-IOP');
+    var side = $('.<?= CHtml::modelName($element) ?> .<?=$side?>-eye');
+    var popup = side.find('#add-to-IOP');
 
     function addIOPReading(selected) {
       selected.removeClass('selected');

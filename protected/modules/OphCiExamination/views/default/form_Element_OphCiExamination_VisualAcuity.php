@@ -79,7 +79,8 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div class="data-group noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
+            <div class="data-group noReadings"
+                style="<?php if ($element->{$eye_side . '_readings'}) { ?>display: none;<?php } ?>">
               <div class="cols-4 column">
                 <div class="data-value not-recorded">Not recorded</div>
               </div>

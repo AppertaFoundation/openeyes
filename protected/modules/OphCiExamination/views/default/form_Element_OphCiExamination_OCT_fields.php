@@ -86,7 +86,7 @@ if (@$_POST[CHtml::modelName($element)]) {
             array()) ?>
       <span class="field-info">&micro;m</span>
       <i class="oe-i info small-icon js-has-tooltip"
-         <?php if (!$tooltip_content): ?>style="visibility: hidden;"<?php endif; ?>
+         style="<?php if (!$tooltip_content): ?>visibility: hidden;<?php endif; ?>"
          data-tooltip-content="<?php echo $tooltip_content; ?>">
       </i>
     </td>
@@ -111,7 +111,7 @@ if (@$_POST[CHtml::modelName($element)]) {
   </tr>
 
   <tr id="<?php echo CHtml::modelName($element) . '_' . $side; ?>_fluid_fields"
-      <?php if ($hide_fluid) { ?>style="display: none;"<?php } ?>
+      style="<?php if ($hide_fluid) { ?>display: none;<?php } ?>"
   >
     <td class="flex-layout flex-top" style="height: auto;">
       <label><?php echo $element->getAttributeLabel($side . '_fluidtypes'); ?>:</label>
@@ -141,9 +141,9 @@ if (@$_POST[CHtml::modelName($element)]) {
         ?>
     </td>
   </tr>
-  <tr id="tr_Element_OphCiExamination_OCT_<?= $side ?>_fluidstatus_id" <?php if ($hide_fluid) {
-      echo ' style="display: none;"';
-  } ?> >
+  <tr id="tr_Element_OphCiExamination_OCT_<?= $side ?>_fluidstatus_id"
+      style="<?php if ($hide_fluid) { ?>display: none;<?php } ?>"
+  >
     <td class="flex-layout flex-top" style="height: auto;">
       <label><?php echo $element->getAttributeLabel($side . '_fluidstatus_id'); ?>:</label>
     </td>
@@ -165,7 +165,7 @@ if (@$_POST[CHtml::modelName($element)]) {
 <div class="flex-layout flex-right comment-group">
       <span class="js-comment-container cols-full flex-layout"
             id="<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>"
-            <?php if (!$element->{$side . '_comments'}): ?>style="display: none;"<?php endif; ?>
+            style="<?php if (!$element->{$side . '_comments'}): ?>display: none;<?php endif; ?>"
             data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
             <?php echo $form->textArea(
                 $element, $side . '_comments',
@@ -183,7 +183,7 @@ if (@$_POST[CHtml::modelName($element)]) {
       id="<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>"
       type="button"
       class="button js-add-comments"
-      <?php if ($element->{$side . '_comments'}): ?>style="visibility: hidden;"<?php endif; ?>
+      style="<?php if ($element->{$side . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
       data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>">
     <i class="oe-i comments small-icon"></i>
   </button>

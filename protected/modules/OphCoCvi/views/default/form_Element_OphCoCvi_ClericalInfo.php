@@ -47,15 +47,16 @@ if ($this->checkClericalEditAccess()) {
                   $comment_button_id = CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_button'; ?>
                 <td>
                   <div class="cols-full ">
-                    <button
-                        id="<?= $comment_button_id ?>" type="button"
-                        class="button js-add-comments" <?php if ($comments): ?>style="visibility: hidden;"<?php endif; ?>
+                    <button id="<?= $comment_button_id ?>"
+                        type="button"
+                        class="button js-add-comments"
+                        style="<?php if ($comments): ?>visibility: hidden;<?php endif; ?>"
                         data-comment-container="#<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>">
                       <i class="oe-i comments small-icon"></i>
                     </button>
                     <span class="comment-group js-comment-container"
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
-                          <?php if (!$comments): ?>style="display: none;"<?php endif; ?>
+                          style="<?php if (!$comments): ?>display: none;<?php endif; ?>"
                           data-comment-button="#<?= $comment_button_id ?>">
                         <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
                             'class' => 'js-comment-field',

@@ -79,7 +79,7 @@ $label_width = 5;
                   type="button"
                   class="button js-add-comments"
                   data-comment-container="#<?= CHtml::modelName($element) ?>_comment_container"
-                  <?php if ($element->comments): ?>style="display: none;"<?php endif; ?>
+                  style="<?php if ($element->comments): ?>display: none;<?php endif; ?>"
           >
             <i class="oe-i comments small-icon"></i>
           </button>
@@ -87,8 +87,10 @@ $label_width = 5;
       </tr>
       </tbody>
     </table>
-    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="flex-layout flex-left comment-group js-comment-container"
-         <?php if (!$element->comments): ?>style="display: none;"<?php endif; ?> data-comment-button="#<?= CHtml::modelName($element) ?>_comment_button">
+    <div id="<?= CHtml::modelName($element) ?>_comment_container"
+         class="flex-layout flex-left comment-group js-comment-container"
+         style="<?php if (!$element->comments): ?>display: none<?php endif; ?>;"
+         data-comment-button="#<?= CHtml::modelName($element) ?>_comment_button">
         <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
             array(
                 'rows' => 1,

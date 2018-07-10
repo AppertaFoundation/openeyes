@@ -21,7 +21,7 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
         <div class="active-form flex-layout"
-             <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+             style="<?php if (!$element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table class="cols-10">
             <tbody>
@@ -89,14 +89,15 @@
             <button id="pupils-<?= $eye_side ?>-comment_button"
                     class="button js-add-comments"
                     data-comment-container="#pupils-<?= $eye_side ?>-comments"
-                    <?php if ($element->{$eye_side . '_comments'}): ?>style="visibility: hidden;"<?php endif; ?>
+                    style="<?php if ($element->{$eye_side . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
                     type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
           </div>
 
         </div>
-        <div class="inactive-form" <?php if ($element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+        <div class="inactive-form"
+             style="<?php if ($element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>

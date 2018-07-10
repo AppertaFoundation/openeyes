@@ -59,7 +59,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           class="button js-add-comments"
           data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>"
           type="button"
-          <?php if ($element->comments): ?>style="visibility: hidden;"<?php endif; ?>
+          style="<?php if ($element->comments): ?>visibility: hidden;<?php endif; ?>"
   >
     <i class="oe-i comments small-icon"></i>
   </button>

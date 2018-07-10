@@ -71,12 +71,13 @@ if (!isset($values)) {
                   class="button js-add-comments"
                   data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
                   type="button"
-                  <?php if ($values['comments']): ?>style="visibility: hidden;"<?php endif; ?>
+                  style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
           >
             <i class="oe-i comments small-icon"></i>
           </button>
-          <span class="comment-group js-comment-container" id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-                <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>
+          <span class="comment-group js-comment-container"
+                id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+                style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
                 data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
               <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
                   'class' => 'js-comment-field',

@@ -42,7 +42,7 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
-            <?php if ($is_hidden()): ?>style="display: none;"<?php endif; ?>>
+            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
             <div>
@@ -52,7 +52,8 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
-            <?php if ($is_hidden()): ?>style="display: none;"<?php endif; ?>>
+            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>"
+        >
           <td>
             Given by:
           </td>
@@ -129,7 +130,7 @@ $is_hidden = function () use ($element) {
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            <?php if (!$element->anaesthetic_comment): ?>style="display: none;"<?php endif ?>
+            style="<?php if (!$element->anaesthetic_comment): ?>display: none;<?php endif ?>"
             class="comment-group js-comment-container"
             data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
           <td>
@@ -154,7 +155,7 @@ $is_hidden = function () use ($element) {
             class="button js-add-comments"
             type="button"
             data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            <?php if ($element->anaesthetic_comment): ?>style="visibility: hidden;"<?php endif; ?>
+            style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
     >
       <i class="oe-i comments small-icon"></i>
     </button>

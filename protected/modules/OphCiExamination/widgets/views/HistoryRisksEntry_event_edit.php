@@ -69,13 +69,16 @@ if (!isset($values)) {
   </td>
   <td>
     <button
-        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button" type="button"
-        class="button js-add-comments" <?php if ($values['comments']): ?>style="visibility: hidden;"<?php endif; ?>
+        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+        type="button"
+        class="button js-add-comments"
+        style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
         data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
       <i class="oe-i comments small-icon"></i>
     </button>
-    <span class="comment-group js-comment-container" id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-          <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>
+    <span class="comment-group js-comment-container"
+          id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+          style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
           data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
       <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"
              value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
