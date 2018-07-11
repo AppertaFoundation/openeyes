@@ -138,6 +138,24 @@ $(document).ready(function(){
 			removeElement(parent);
 	});
 
+  $(this).on('click', '.js-tiles-collapse-btn', function () {
+		var $tileGroup = $(this).closest('.element-tile-group');
+		var showGroup = $tileGroup.hasClass('collapse');
+		$tileGroup.find('.element.tile .element-data').toggle(showGroup);
+		$tileGroup.toggleClass('expand');
+		$tileGroup.toggleClass('collapse');
+
+		if(!showGroup) {
+			$tileGroup.find('.element').each(function() {
+				var rowCount = $(this).find('tr').length;
+				var $countDisplay = $('<span />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
+				$(this).find('.element-title').append($countDisplay);
+			});
+		} else {
+			$tileGroup.find('.js-data-hidden-state').remove();
+		}
+  });
+
   $(this).on('click', '.js-add-comments', function (e) {
     e.preventDefault();
     var button = $(this);
