@@ -24,9 +24,7 @@ $widget = $this;
         <?php } else { ?>
       <table>
         <colgroup>
-          <col>
-          <col width="55px">
-          <col width="85px">
+          <col class="cols-7">
         </colgroup>
         <tbody> <?php foreach ($operations as $operation) { ?>
           <tr>

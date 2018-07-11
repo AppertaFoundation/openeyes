@@ -29,7 +29,7 @@ class PastOphthalmicSurgery extends PastSurgery
         $operations = parent::getMergedOperations();
 
         return array_filter($operations, function ($operation) {
-            return array_key_exists('side', $operation);
+            return isset($operation['side']) || (isset($operation['object']) && $operation['object']->side);
         });
     }
 }
