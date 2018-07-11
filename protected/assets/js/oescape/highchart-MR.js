@@ -24,7 +24,7 @@ var options_MR = {
       load: function() {
         highHelp.drawBanners(this,Object.keys(drugs[eye_side]));
       },
-      redraw: function(e){
+      redraw: function(){
         if ($(this['renderTo']).hasClass('highcharts-right')){
           side = 'right';
         } else {
@@ -129,6 +129,7 @@ var options_MR = {
   series: []
 };
 
+/* exported changeSetting */
 function changeSetting(enter_drugs, side) {
   drugs = enter_drugs;
   bannersOffset = 45 * Object.keys(drugs[side]).length; 			// offset xAxis to allow space for drug banners
@@ -141,6 +142,7 @@ function changeSetting(enter_drugs, side) {
   options_MR['chart']['className'] = 'oes-chart-mr-'+eye_side;
 }
 
+/* exported drawMRSeries */
 function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_data, axis_type){
   var VA_options = {
     type: 'line',
@@ -176,11 +178,12 @@ function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_dat
   }
 }
 
+/* exported setImgStack */
 function setImgStack(container,img_id_prefix, initID, callBack) {
   octImgStack = new initStack(container, img_id_prefix, initID, callBack);
   options_MR['plotOptions']['series']['point'] = {
     events: {
-      mouseOver: function( e ){
+      mouseOver: function(){
         octImgStack.setImg( this.oct, this.side ); // link chart points to OCTs
       }
     }
