@@ -61,6 +61,18 @@ class MedicationManagement extends BaseMedicationElement
 		);
 	}
 
+    public function relations()
+    {
+        return array(
+            'entries' => array(
+                self::HAS_MANY,
+                MedicationManagementEntry::class,
+                array('id' => 'element_id'),
+                'order' => 'entries.start_date DESC, entries.end_date DESC'
+            ),
+        );
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
