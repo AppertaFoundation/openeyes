@@ -39,6 +39,13 @@ class DefaultController extends BaseEventTypeController
 
     protected $pdf_output;
 
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(),[
+            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
+        ]);
+    }
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */

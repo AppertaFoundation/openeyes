@@ -70,12 +70,11 @@
 
         $row_count = 0; //in case $read_only_diagnoses is an empty array
         foreach ($read_only_diagnoses as $row_count => $values) {
-            $this->renderPartial('DiagnosesEntry_event_edit_readonly', [ 'values' => $values ]);
+            $this->renderPartial('DiagnosesEntry_event_edit_readonly', ['values' => $values]);
         }
 
         $row = $row_count + 1;
         foreach ($element->diagnoses as $row_count => $diagnosis) {
-
             $row_count = $row + $row_count;
             $this->renderPartial(
                 'DiagnosesEntry_event_edit',
@@ -130,10 +129,10 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#OphCiExamination_diagnoses').data('controller', new OpenEyes.OphCiExamination.DiagnosesController({
             element: $('#<?=$model_name?>_element'),
-            subspecialtyRefSpec:'<?=$firm->subspecialty->ref_spec;?>'
+            subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
         }));
 
         // would be better to do this from within the controller via a signal, but this a quick solution

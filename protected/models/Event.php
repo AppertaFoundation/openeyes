@@ -33,6 +33,7 @@
  * @property string $event_date
  * @property string $created_date
  * @property string $last_modified_date
+ * @property string $pas_visit_id
  *
  * The followings are the available model relations:
  * @property Episode   $episode
@@ -97,11 +98,12 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date', 'required'),
-            array('parent_id', 'safe'),
+            array('parent_id, pas_visit_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
+            array('pas_visit_id', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, episode_id, event_type_id, created_date, event_date, parent_id', 'safe', 'on' => 'search'),
+            array('id, episode_id, event_type_id, created_date, event_date, parent_id, pas_visit_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
         );
     }
@@ -182,6 +184,7 @@ class Event extends BaseActiveRecordVersioned
             'episode_id' => 'Episode',
             'created_user_id' => 'User',
             'event_type_id' => 'Event Type',
+            'pas_visit_id' => 'PAS Visit Id',
         );
     }
 

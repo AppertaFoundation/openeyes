@@ -119,7 +119,7 @@
                 </div>
               </div>
                 <?php if ($this->operations) { ?>
-                  <div class="row">
+                  <div class="row surgical-history">
                     <div class="large-2 column label">
                       Surgical History
                     </div>

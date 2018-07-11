@@ -320,7 +320,7 @@ class DefaultController extends BaseEventTypeController
         return parent::beforeAction($action);
     }
 
-    protected function afterAction($action){
+    public function afterAction($action){
         
 
             return parent::afterAction($action);

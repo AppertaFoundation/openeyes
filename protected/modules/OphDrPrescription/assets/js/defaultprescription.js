@@ -142,7 +142,7 @@ function addRepeat() {
     key: getNextKey(),
     patient_id: OE_patient_id
   }, function (data) {
-    $('#prescription_items').append(data);
+    $('#prescription_items tbody').append(data);
     decorateRows();
     markUsed();
     applyFilter();
@@ -158,7 +158,7 @@ function addSet(set_id) {
       patient_id: OE_patient_id,
       set_id: set_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
       markUsed();
       applyFilter();
@@ -171,7 +171,7 @@ function addSet(set_id) {
       $('#set_name').val(data.drugsetName);
       $('#subspecialty_id').val(data.drugsetSubspecialtyId);
       clear_prescription();
-      $('#prescription_items').append(data.tableRows);
+      $('#prescription_items tbody').append(data.tableRows);
       decorateRows();
       markUsed();
       applyFilter();
@@ -188,7 +188,7 @@ function addItem(label, item_id) {
       patient_id: OE_patient_id,
       drug_id: item_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
     });
   } else {
@@ -196,7 +196,7 @@ function addItem(label, item_id) {
       key: getNextKey(),
       drug_id: item_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
     });
   }
@@ -355,4 +355,24 @@ function goBack() {
   window.history.back();
 }
 
+// Add comments to item
+$('#prescription_items').delegate('a.addComment:not(.processing)', 'click', function () {
+    var row = $(this).closest('tr');
+    var key = row.attr('data-key');
+    var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
 
+    // Insert comments row
+    var odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
+    var new_row = $('<tr data-key="' + key + '" class="prescription-comments ' + odd_even + '"></tr>');
+    new_row.append($('<td class="prescription-label"><span>Comments:</span></td><td colspan="5"><textarea name="prescription_item['+key+'][comments]"></textarea></td>'), $('<td class="prescriptionItemActions"><a class="removeComment" href="#">Remove</a></td>'));
+    last_row.after(new_row);
+
+    return false;
+});
+
+// Remove comments from item
+$('#prescription_items').delegate('a.removeComment', 'click', function () {
+    var row = $(this).closest('tr');
+    row.remove();
+    return false;
+});

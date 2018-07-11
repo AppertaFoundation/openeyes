@@ -104,10 +104,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.initialiseSearch($row.find('input.search'));
 
       $row.on('change', controller.options.drugSelectSelector, function(e) {
+          var $option = $(this).find('option:selected'),
+              tags = "" + $option.data('tags');
           controller.selectMedication($(this).parents('td'), {
-              value: $(this).val(),
-              label: $(this).find('option:selected').text(),
-              type: 'd' // only have pre-selected drugs available at the moment.
+              value: $option.val(),
+              label: $option.text(),
+              name: $option.data('tallmanlabel'),
+              type: 'd', // only have pre-selected drugs available at the moment.
+              tags: tags.split(',')
           })
       });
 
@@ -232,15 +236,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
           for (var name in res) {
+              var $input = $row.find('[name$="[' + name +']"]');
               if (name === 'dose') {
-                  $row.find('[name$="[' + name +']"]').attr('placeholder', res['dose_unit']);
+                  $input.attr('placeholder', res['dose_unit']);
+                  $input.addClass('numbers-only');
                   if(res['dose_unit'] === 'mg'){
-                      $row.find('[name$="[' + name +']"]').addClass("decimal");
+                      $input.addClass('decimal');
+                  } else if(!res['dose_unit']){
+                      $input.removeClass('numbers-only decimal');
                   }
-                  $row.find('[name$="[' + name +']"]').val("");
+
+                  $input.val('');
                   $row.find('[name$="[units]"]').val(res['dose_unit']);
               } else {
-                  $row.find('[name$="[' + name +']"]').val(res[name]).change();
+                  $input.val(res[name]).change();
               }
           }
       });

@@ -72,7 +72,7 @@
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][duration_id]', $item->duration_id, CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'), array('empty' => '-- Select --'))?>
 	</td>
 	<td class="prescriptionItemActions">
-		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>
+		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Commment</a>
 	</td>
 	<td>
 		<?php
@@ -132,3 +132,14 @@
         ++$count;
     }
 ?>
+
+<?php if(!is_null($item->comments)): ?>
+<tr data-key="<?php echo $key; ?>" class="prescription-comments">
+    <td class="prescription-label"><span>Comments:</span></td>
+    <td colspan="5">
+        <textarea name="prescription_item[<?php echo $key; ?>][comments]"><?php echo CHtml::encode($item->comments); ?></textarea>
+    </td>
+    <td class="prescriptionItemActions"><a class="removeComment" href="#">Remove</a></td>
+    <td></td>
+</tr>
+<?php endif; ?>

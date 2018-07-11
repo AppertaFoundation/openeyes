@@ -120,7 +120,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         echo "Identifying dynamic file URLs...\n";
         $error_message = null;
 
-        $curl = curl_init(static::$base_url . '/organisation-data-service/data-downloads/gp-data');
+        $curl = curl_init(static::$base_url . '/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data');
         curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -140,7 +140,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
             throw new Exception($error_message, static::$DOWNLOAD_FAILED);
         }
 
-        $curl = curl_init(static::$base_url . '/organisation-data-service/data-downloads/other-nhs');
+        $curl = curl_init(static::$base_url . '/services/organisation-data-service/data-downloads/other-nhs-organisations');
         curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -179,9 +179,9 @@ class ProcessHscicDataCommand extends CConsoleCommand
             else {
                 switch ((string) $k) {
                     case 'url':
-                        if (preg_match('~href="(.*?\/media\/.*?\/' . $v . '.*?)"~', $output, $match) ) {
+                        if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match) ) {
                             echo "Found match for $v: $match[1]\n";
-                            $struct[$k] = $match[1] . '.zip';
+                            $struct[$k] = $match[1];
                         } else {
                             throw new Exception("Could not find match for $v", static::$DOWNLOAD_FAILED);
                         }
@@ -1003,6 +1003,7 @@ EOH;
         curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
         curl_setopt($curl, CURLOPT_FILE, $file_handler);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_exec($curl);
 
         if (curl_errno($curl)) {

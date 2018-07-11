@@ -69,12 +69,11 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Need split event files.
-     *
      * @TODO: determine if this should be defined by controller property
      *
-     * @param CAction $action
-     *
+     * @param $action
      * @return bool
+     * @throws \CHttpException
      */
     protected function beforeAction($action)
     {
@@ -86,8 +85,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Applies workflow and filtering to the element retrieval.
-     *
-     * @return BaseEventTypeElement[]
+     * @return \BaseEventTypeElement[]
+     * @throws \CException
      */
     protected function getEventElements()
     {
@@ -249,18 +248,26 @@ class DefaultController extends \BaseEventTypeController
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
-            if ($principal = $this->episode->diagnosis) {
-                $d = new models\OphCiExamination_Diagnosis();
-                $d->disorder_id = $principal->id;
-                $d->principal = true;
-                $d->eye_id = $this->episode->eye_id;
-                $diagnoses[] = $d;
+            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+
+            if($this->episode->diagnosis) {
+                if ($principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id)) {
+                    $d = new models\OphCiExamination_Diagnosis();
+                    $d->disorder_id = $principal_diagnosis->disorder_id;
+                    $d->principal = true;
+                    $d->date = $principal_diagnosis->date;
+                    $d->eye_id = $this->episode->eye_id;
+
+                    $diagnoses[] = $d;
+                }
             }
+
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
                 $d = new models\OphCiExamination_Diagnosis();
                 $d->disorder_id = $sd->disorder_id;
                 $d->eye_id = $sd->eye_id;
                 $d->date = $sd->date;
+
                 $diagnoses[] = $d;
             }
 
@@ -327,13 +334,14 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Override action value when action is step to be update.
      *
-     * @param BaseEventTypeElement                $element
-     * @param string                              $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     * @param array                               $view_data
-     * @param bool                                $return
-     * @param bool                                $processOutput
+     * @param \BaseEventTypeElement $element
+     * @param string $action
+     * @param \BaseCActiveBaseEventTypeCActiveForm $form
+     * @param array $data
+     * @param array $view_data
+     * @param bool $return
+     * @param bool $processOutput
+     * @throws \Exception
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
@@ -1204,12 +1212,11 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
 
+            $et_name = models\HistoryRisks::model()->getElementTypeName();
             foreach ($missing_risks as $missing_risk) {
-                $et_name = models\HistoryRisks::model()->getElementTypeName();
                 $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
             }
         }
-
 
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];

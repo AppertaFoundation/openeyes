@@ -18,6 +18,22 @@
 ?>
 <?php
 $copy = $data['copy'];
+
+$header_text = null;
+$footer_text = null;
+
+$allowed_tags='<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
+
+$header_param = Yii::app()->params['prescription_boilerplate_header'];
+if(!is_null($header_param)) {
+    $header_text = strip_tags($header_param, $allowed_tags);
+}
+
+$footer_param = Yii::app()->params['prescription_boilerplate_footer'];
+if(!is_null($footer_param)) {
+    $footer_text = strip_tags($footer_param, $allowed_tags);
+}
+
 ?>
 
 <h1>
@@ -35,6 +51,11 @@ $firm = $element->event->episode->firm;
 $consultantName = $firm->consultant ? $firm->consultant->fullName : 'None';
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
+
+<?php if(!is_null($header_text)): ?>
+    <div class="clearfix"><?=$header_text?></div>
+<?php endif; ?>
+
 <table class="borders prescription_header">
 	<tr>
 		<th>Patient Name</th>
@@ -124,6 +145,16 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 					</tr>
 					<?php
 				}
+
+				if(!is_null($item->comments)) { ?>
+
+                    <tr class="prescriptionComments">
+                        <td class="prescriptionLabel">Comments:</td>
+                        <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
+                    </tr>
+
+                <?php
+				}
 			}
 			?>
 			</tbody>
@@ -191,7 +222,6 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	</tr>
 </table>
 
-<?php if ((!$data['copy']) && (Yii::app()->params['require_prescription_signature'] == 'on')) {?>
-	<p>Doctor's Signature:</p>
-<?php }?>
-
+<?php if(!is_null($footer_text)): ?>
+    <div><?=$footer_text?></div>
+<?php endif; ?>

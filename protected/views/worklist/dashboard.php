@@ -41,7 +41,7 @@
                     'header' => 'Name',
 //                    'urlExpression' => '$data->patient->generateEpisodeLink()',
                     'urlExpression' => function($data) use ($core_api) {
-                        return $core_api->generateEpisodeLink($data->patient);
+                        return $core_api->generateEpisodeLink($data->patient, ['worklist_patient_id' => $data->id]);
                     },
                     'labelExpression' => '$data->patient->getHSCICName()',
                 ),

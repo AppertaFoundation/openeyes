@@ -26,7 +26,7 @@ namespace OEModule\PASAPI\resources;
  */
 class PatientAppointment extends BaseResource
 {
-    protected static $resource_type = 'PatientAppointment';
+    public static $resource_type = 'PatientAppointment';
     /**
      * Class of model that is stored internally for this resource.
      *

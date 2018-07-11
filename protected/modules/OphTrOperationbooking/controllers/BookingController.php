@@ -190,7 +190,7 @@ class BookingController extends OphTrOperationbookingEventController
             'operation' => $operation,
             'schedule_options' => $schedule_options,
             'firm' => $firm,
-            'firmList' => Firm::model()->listWithSpecialties,
+            'firmList' => Firm::model()->getListWithSpecialties(false,null,true),
             'date' => $date,
             'selectedDate' => @$selectedDate,
             'sessions' => $operation->getFirmCalendarForMonth($firm, $date, $schedule_options),

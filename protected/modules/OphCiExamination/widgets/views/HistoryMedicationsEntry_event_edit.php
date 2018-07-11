@@ -70,14 +70,26 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
-        <?php $hide_search = strlen($entry->getMedicationDisplay()) > 0; ?>
-        <?= $this->getFirm() ?
-        CHtml::dropDownList(
-            $field_prefix . '[drug_select]',
-            '',
-            Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
-            ($hide_search ? array('empty' => '- Select -', 'style' => 'display: none;') : array('empty' => '- Select -'))
-        ) : ''; ?>
+
+        <?php
+            $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
+            $html_options = ['empty' => '- Select -'];
+            $hide_search = strlen($entry->getMedicationDisplay()) > 0;
+            if($hide_search){
+                $html_options['style'] = 'display: none;';
+            }
+
+            foreach($select_options as $select_option){
+                $html_options['options'][$select_option['id']] = [
+                        'data-tags' => implode(',', $select_option['tags']),
+                        'data-tallmanlabel' => $select_option['name'],
+                ];
+            }
+
+            if($this->getFirm()){
+                echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
+            }
+        ?>
         <input type="text" name="<?= $field_prefix ?>[medication_search]" value="<?= $entry->getMedicationDisplay() ?>" class="search" placeholder="Type to search" <?= $hide_search ? 'style="display: none;"': '' ?>/>
     </td>
     <td>
@@ -89,9 +101,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                   <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
 
                   <?php
-
                         $attributes['placeholder'] = $entry->units;
-                        $attributes['class'] = "input-validate numbers-only";
+                        $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
                         if($entry->units == 'mg'){
                             $attributes['class'] .= " decimal";
                         }
