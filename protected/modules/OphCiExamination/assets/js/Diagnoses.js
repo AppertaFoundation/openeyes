@@ -216,7 +216,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                             newExternalDiagnoses[diagnosis].sides.push(diagnosesBySource[source][i][1]);
                         }
                     } else {
-                        newExternalDiagnoses[diagnosis] = {sides: [diagnosesBySource[source][i][1]]}
+                        newExternalDiagnoses[diagnosis] = {sides: [diagnosesBySource[source][i][1]]};
                     }
                 }
             }
@@ -252,7 +252,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var controller = this;
 
-        for (diagnosisCode in controller.externalDiagnoses) {
+        for (let diagnosisCode in controller.externalDiagnoses) {
             if (controller.externalDiagnoses.hasOwnProperty(diagnosisCode)) {
                 this.updateExternalDiagnosis(diagnosisCode, controller.externalDiagnoses[diagnosisCode].sides);
             }
