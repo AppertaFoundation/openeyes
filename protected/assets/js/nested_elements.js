@@ -16,35 +16,38 @@
  */
 
 function showActiveChildElements() {
-	$('#active_elements .active_child_elements').each(function() {
-		if($('.element', this).length) {
-			$(this).show();
-		} else {
-			$(this).hide();
-		}
-	});
+    $('#active_elements .active_child_elements').each(function () {
+        if ($('.element', this).length) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
 }
 
 function addElement(element, animate, is_child, previous_id, params, callback) {
-	if (typeof (animate) === 'undefined')
-		animate = true;
-	if (typeof (is_child) === 'undefined')
-		is_child = false;
-	if (typeof (previous_id) === 'undefined')
-		previous_id = 0;
-	if (typeof (params) === 'undefined')
-		params = {};
+    if (typeof (animate) === 'undefined')
+        animate = true;
+    if (typeof (is_child) === 'undefined')
+        is_child = false;
+    if (typeof (previous_id) === 'undefined')
+        previous_id = 0;
+    if (typeof (params) === 'undefined')
+        params = {};
 
-	var element_type_id = $(element).data('element-type-id');
-	var element_type_class = $(element).data('element-type-class');
-	var display_order = $(element).data('element-display-order');
-	// If the element has a flag element removed show it instead
+    var element_type_id = $(element).data('element-type-id');
+    var element_type_class = $(element).data('element-type-class');
+    var display_order = $(element).data('element-display-order');
+    // If the element has a flag element removed show it instead
     // of creating a new one and set the flag's value to 0
-    if($('input[name="'+ element_type_class + "[element_removed]"+'"]').length){
-        $("." +element_type_class).show();
+    if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
+        $("." + element_type_class).show();
         var names = element_type_class + "[element_removed]";
-        $('input[name="'+names+'"]').val(0);
-    }else {
+        $('input[name="' + names + '"]').val(0);
+        if (callback) {
+            callback();
+        }
+    } else if (is_child && !$('.' + element_type_class).length) {
 
         var core_params = {
             id: element_type_id,
@@ -162,195 +165,196 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 }
 
 function removeElement(element, is_child) {
-	if (typeof(is_child) == 'undefined') {
-		is_child = false;
-	}
+    if (typeof(is_child) == 'undefined') {
+        is_child = false;
+    }
 
-	var element_type_class = $(element).data('element-type-class');
-	var element_type_id = $(element).data('element-type-id');
-	var element_type_name = $(element).data('element-type-name');
-	var display_order = $(element).data('element-display-order');
+    var element_type_class = $(element).data('element-type-class');
+    var element_type_id = $(element).data('element-type-id');
+    var element_type_name = $(element).data('element-type-name');
+    var display_order = $(element).data('element-display-order');
 
-	if (is_child) {
-		var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
-	} else {
-		var container = $('.optional-elements-list');
-	}
+    if (is_child) {
+        var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
+    } else {
+        var container = $('.optional-elements-list');
+    }
 
-	// If the element has element removed flag hide it instead of removing it
-	// And set the flag values to 1
-	if($('input[name="'+ element_type_class + "[element_removed]"+'"]').length) {
+    // If the element has element removed flag hide it instead of removing it
+    // And set the flag values to 1
+    // And set the flag values to 1
+    if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
         $(element).hide();
         var names = element_type_class + "[element_removed]";
         $('input[name="' + names + '"]').val(1);
     } else {
-		$(element).remove();
-	}
-	var element = '<li data-element-type-class="'+element_type_class+'" data-element-type-id="'+element_type_id+'" data-element-type-name="'+element_type_name+'" data-element-display-order="'+display_order+'"><a href="#">'+element_type_name+'</a></li>';
+        $(element).remove();
+    }
+    var element = '<li data-element-type-class="' + element_type_class + '" data-element-type-id="' + element_type_id + '" data-element-type-name="' + element_type_name + '" data-element-display-order="' + display_order + '"><a href="#">' + element_type_name + '</a></li>';
 
-	var insert_before = $(container).find('li').first();
+    var insert_before = $(container).find('li').first();
 
-	while (parseInt(insert_before.data('element-display-order')) < parseInt(display_order)) {
-		insert_before = insert_before.next();
-	}
+    while (parseInt(insert_before.data('element-display-order')) < parseInt(display_order)) {
+        insert_before = insert_before.next();
+    }
 
-	if (insert_before.length) {
-		insert_before.before(element);
-	} else {
-		$(container).append(element);
-	}
+    if (insert_before.length) {
+        insert_before.before(element);
+    } else {
+        $(container).append(element);
+    }
 
-	showActiveChildElements();
+    showActiveChildElements();
 
-	// Update sticky elements to cope with change in page size
-	OpenEyes.UI.StickyElements.refresh();
+    // Update sticky elements to cope with change in page size
+    OpenEyes.UI.StickyElements.refresh();
 
-	// Update text macros (if defined)
-	if(typeof updateTextMacros == 'function') {
-		updateTextMacros();
-	}
+    // Update text macros (if defined)
+    if (typeof updateTextMacros == 'function') {
+        updateTextMacros();
+    }
 
-	$('.js-active-elements').trigger('ElementRemoved', [ element_type_class ]);
-  	if (typeof(getOEEyeDrawChecker) === 'function') {
+    $('.js-active-elements').trigger('ElementRemoved', [element_type_class]);
+    if (typeof(getOEEyeDrawChecker) === 'function') {
         var checker = getOEEyeDrawChecker();
         checker.resync();
-	}
+    }
 }
 
 function moveToElement(element) {
-	var offTop = element.offset().top - 130;
-	$('html, body').scrollTop(offTop);
-	var $title = $('.element-title', element);
-	if (!$title.length) {
-		$title = $('.sub-element-title', element);
-	}
-	$title.effect('pulsate', {
-		times : 2
-	}, 600);
+    var offTop = element.offset().top - 130;
+    $('html, body').scrollTop(offTop);
+    var $title = $('.element-title', element);
+    if (!$title.length) {
+        $title = $('.sub-element-title', element);
+    }
+    $title.effect('pulsate', {
+        times: 2
+    }, 600);
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-	/**
-	 * Show/hide activechildelements containers (necessary in order to deal with padding)
-	 */
-	showActiveChildElements();
+    /**
+     * Show/hide activechildelements containers (necessary in order to deal with padding)
+     */
+    showActiveChildElements();
 
-	/**
-	 * Autoadjust height of textareas
-	 */
-	$('#event-content textarea.autosize:visible').autosize();
+    /**
+     * Autoadjust height of textareas
+     */
+    $('#event-content textarea.autosize:visible').autosize();
 
-	/**
-	 * Add all optional elements
-	 */
-	$('.optional-elements').delegate('.add-all', 'click', function(e) {
-		if($(this).closest('.element').length) {
-			$(this).closest('.element').find('.inactive_child_elements .element').each(function() {
-				$(this).addClass('clicked');
-				addElement(this, true, true);
-			});
-		}
-		else {
-			$('.optional-elements-list li').each(function() {
-				$(this).addClass('clicked');
-				addElement(this, false);
-			});
-		}
-		e.preventDefault();
-	});
+    /**
+     * Add all optional elements
+     */
+    $('.optional-elements').delegate('.add-all', 'click', function (e) {
+        if ($(this).closest('.element').length) {
+            $(this).closest('.element').find('.inactive_child_elements .element').each(function () {
+                $(this).addClass('clicked');
+                addElement(this, true, true);
+            });
+        }
+        else {
+            $('.optional-elements-list li').each(function () {
+                $(this).addClass('clicked');
+                addElement(this, false);
+            });
+        }
+        e.preventDefault();
+    });
 
-	/**
-	 * Add an optional element
-	 */
-	$('.optional-elements-list').delegate('li', 'click', function(e) {
-		if (!$(this).hasClass('clicked')) {
-			$(this).addClass('clicked');
-			addElement(this);
-		}
-		e.preventDefault();
-	});
+    /**
+     * Add an optional element
+     */
+    $('.optional-elements-list').delegate('li', 'click', function (e) {
+        if (!$(this).hasClass('clicked')) {
+            $(this).addClass('clicked');
+            addElement(this);
+        }
+        e.preventDefault();
+    });
 
-	/**
-	 * View previous elements
-	 */
-	$('.js-active-elements').delegate('.viewPrevious', 'click', function(e) {
-    e.preventDefault();
-		if ($(this).hasClass('subElement')) {
-			var elementType = 'sub-element';
-		} else {
-			var elementType = 'element';
-		}
+    /**
+     * View previous elements
+     */
+    $('.js-active-elements').delegate('.viewPrevious', 'click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('subElement')) {
+            var elementType = 'sub-element';
+        } else {
+            var elementType = 'element';
+        }
 
-		var element = $(this).closest('.' + elementType);
+        var element = $(this).closest('.' + elementType);
 
-		var dialog = new OpenEyes.UI.Dialog({
-			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
-      data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
-			width: 1070,
-      title: 'Previous '+element.data('element-type-name')+' Elements',
-			autoOpen: true
-		});
+        var dialog = new OpenEyes.UI.Dialog({
+            url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
+            data: {element_type_id: element.data('element-type-id'), patient_id: OE_patient_id},
+            width: 1070,
+            title: 'Previous ' + element.data('element-type-name') + ' Elements',
+            autoOpen: true
+        });
 
-    $(dialog.content).on('click', '.copy_element', function(dialog, element, event) {
-				var element_id = $(event.target).data('element-id');
-			 	$(element).addClass('clicked');
-				$(element).find('> .element-fields').css('opacity', '0.5');
-				$(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
-				dialog.close();
-				addElement(element, false, (elementType == 'sub-element'), element_id);
-		}.bind(undefined, dialog, element));
-	});
+        $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
+            var element_id = $(event.target).data('element-id');
+            $(element).addClass('clicked');
+            $(element).find('> .element-fields').css('opacity', '0.5');
+            $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
+            dialog.close();
+            addElement(element, false, (elementType == 'sub-element'), element_id);
+        }.bind(undefined, dialog, element));
+    });
 
-	/**
-	 * Remove all optional elements
-	 */
-	$('.optional-elements').delegate('.remove-all', 'click', function(e) {
-		if($(this).closest('.element').length) {
-			$(this).closest('.element').find('.sub-elements.active .sub-element:not(.required)').each(function() {
-				removeElement(this, true);
-			});
-		} else {
-			$('.js-active-elements .sub-element:not(.required)').each(function() {
-				removeElement(this, true);
-			});
-			$('.js-active-elements .element:not(.required)').each(function() {
-				removeElement(this);
-			});
-		}
-		e.preventDefault();
-	});
+    /**
+     * Remove all optional elements
+     */
+    $('.optional-elements').delegate('.remove-all', 'click', function (e) {
+        if ($(this).closest('.element').length) {
+            $(this).closest('.element').find('.sub-elements.active .sub-element:not(.required)').each(function () {
+                removeElement(this, true);
+            });
+        } else {
+            $('.js-active-elements .sub-element:not(.required)').each(function () {
+                removeElement(this, true);
+            });
+            $('.js-active-elements .element:not(.required)').each(function () {
+                removeElement(this);
+            });
+        }
+        e.preventDefault();
+    });
 
-	/**
-	 * Remove an optional element
-	 */
-	$('#event-content').on('click', '.js-remove-element', function(e) {
-		if (!$(this).parents('.elements.active').length && !$(this).hasClass('disabled')) {
-			var element = $(this).closest('.element');
-			removeElement(element);
-		}
-		e.preventDefault();
-	});
+    /**
+     * Remove an optional element
+     */
+    $('#event-content').on('click', '.js-remove-element', function (e) {
+        if (!$(this).parents('.elements.active').length && !$(this).hasClass('disabled')) {
+            var element = $(this).closest('.element');
+            removeElement(element);
+        }
+        e.preventDefault();
+    });
 
-	/**
-	 * Remove a child element
-	 */
-	$('#event-content').on('click','.js-remove-child-element', function(e) {
-        if(!$(this).hasClass('disabled')){
+    /**
+     * Remove a child element
+     */
+    $('#event-content').on('click', '.js-remove-child-element', function (e) {
+        if (!$(this).hasClass('disabled')) {
             var element = $(this).closest('.sub-element');
             removeElement(element, true);
         }
-		e.preventDefault();
-	});
+        e.preventDefault();
+    });
 
-	/**
-	 * Add optional child element
-	 */
-	$('#event-content').on('click', '.sub-elements-list li', function(e) {
-		if (!$(this).hasClass('clicked')) {
-			$(this).addClass('clicked');
-			addElement(this, true, true);
-		}
-		e.preventDefault();
-	});
+    /**
+     * Add optional child element
+     */
+    $('#event-content').on('click', '.sub-elements-list li', function (e) {
+        if (!$(this).hasClass('clicked')) {
+            $(this).addClass('clicked');
+            addElement(this, true, true);
+        }
+        e.preventDefault();
+    });
 });

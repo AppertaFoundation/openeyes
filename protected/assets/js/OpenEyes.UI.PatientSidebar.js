@@ -1,3 +1,4 @@
+
 /**
  * OpenEyes
  *
@@ -115,6 +116,7 @@
             }
         });
 
+
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
         self.$element.on('click', 'a', function(e) {
@@ -143,13 +145,41 @@
      * @param data
      * @param callback
      */
+
+    /**
+     * Get sidebar items where elements are already created , but where the sidebar might not be selected
+     * @param $item
+     * @returns {Array}
+     */
+    PatientSidebar.prototype.getSidebarItemsForExistingElements = function($item) {
+        let existingItems = [];
+        let sidebarChildren = $item.parent().find('ul');
+        $.each(sidebarChildren.children(), function (index, item) {
+            if ($('section[data-element-type-name="' + $(item).find('a').text() + '"]').length) {
+                existingItems.push(item);
+            }
+        });
+        return existingItems;
+    };
+
+    PatientSidebar.prototype.markSidebarItems = function(items){
+       items.forEach(function(item){
+           $(item).find('a').addClass('selected');
+       });
+    };
+
     PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
     {
         var self = this;
+
         if (!$item.hasClass('selected')) {
+            self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+
             if ($item.parent().hasClass('child')) {
                 // child element, need to ensure parent loaded first.
                 var $parent = $item.parents('li:last').find('a:first');
+
+
                 if (!$parent.hasClass('selected')) {
                     $parent.addClass('selected');
                     // construct a callback to run this method with the original target,
