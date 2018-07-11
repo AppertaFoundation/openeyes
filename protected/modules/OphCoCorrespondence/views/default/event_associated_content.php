@@ -163,7 +163,7 @@
 
                             if ($events->eventType->name === "Document") {
                                 $document_model = Element_ophcodocument_document::model()->findByAttributes(["event_id" => $events->id]);
-                                $event_type_name = $document_model->sub_type->name;
+                                $event_type_name = isset($document_model->sub_type) ? $document_model->sub_type->name : '';
                             }
                             return CHtml::encode($event_type_name . ' - ' . Helper::convertDate2NHS($events->event_date));
 
