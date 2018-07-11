@@ -47,8 +47,10 @@ $widget = $this;
                 </td>
               <?php endif; ?>
             <td>
+              <div class="oe-date">
                 <?= array_key_exists('object',
-                    $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?>
+                    $operation) ? $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+              </div>
             </td>
           </tr>
         <?php }

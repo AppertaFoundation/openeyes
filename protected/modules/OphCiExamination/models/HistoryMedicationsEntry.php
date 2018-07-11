@@ -353,19 +353,14 @@ class HistoryMedicationsEntry extends \BaseElement
         return implode(' ', $res);
     }
 
-    public function getStartDateDisplay(){
-        $res = array();
-        if ($this->start_date) {
-            $res[] = \Helper::convertMySQL2HTML($this->start_date);
-        }
-        return implode(' ', $res);
+    public function getStartDateDisplay()
+    {
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
     }
-    public function getStopDateDisplay(){
-        $res = array();
-        if ($this->end_date) {
-            $res[] = \Helper::formatFuzzyDate($this->end_date);
-        }
-        return implode(' ', $res);
+
+    public function getStopDateDisplay()
+    {
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
     }
 
     public function getStopReasonDisplay(){

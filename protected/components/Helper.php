@@ -119,6 +119,23 @@ class Helper
     }
 
     /**
+     * Generates the string representation of a fuzzy date (fuzzy dates are strings of the format
+     * yyyy-mm-dd, where mm and dd can be 00 to indicate not being set).
+     *
+     * @param string $value The fuzzy date to convert
+     * @return string The output HTML
+     */
+    public static function convertFuzzyDate2HTML($value)
+    {
+        $year = (integer)substr($value, 0, 4);
+        $monthIndex = (integer)substr($value, 5, 2);
+        $mon = $monthIndex !== 0 ? DateTime::createFromFormat('!m', $monthIndex)->format('M') : '';
+        $day = (integer)substr($value, 8, 2) ?: '';
+
+        return "<span class='day'>$day</span><span class='mth'>$mon</span><span class='yr'>$year</span>";
+    }
+
+    /**
      * Convert mysql format datetime to JS timestamp (milliseconds since unix epoch).
      *
      * @param string $value

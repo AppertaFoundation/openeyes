@@ -151,7 +151,7 @@ Yii::app()->clientScript->registerScriptFile($assetPath . '/js/HistoryMedication
                     if ($entry['route_id'] != 1) { ?>
                       <tr>
                         <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td class="oe-date"><?= $entry->getStartDateDisplay() ?></td>
+                        <td><?= $entry->getStartDateDisplay() ?></td>
                       </tr>
                     <?php }
                 } ?>
