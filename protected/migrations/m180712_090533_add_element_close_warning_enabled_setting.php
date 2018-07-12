@@ -9,7 +9,7 @@ class m180712_090533_add_element_close_warning_enabled_setting extends CDbMigrat
             'display_order' => 22,
             'field_type_id' => 3,
             'key' => 'element_close_warning_enabled',
-            'name' => 'Element close warning enabled',
+            'name' => 'Require Confirmation to close elements',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             'default_value' => 'off'
         ));
