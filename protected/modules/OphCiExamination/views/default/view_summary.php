@@ -53,7 +53,7 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
           $StoppedEyeMedications = array_filter($medicationsElement->stoppedOrderedEntries, $filterEyeMedication);
           ?>
           <?php if (!$currentEyeMedications) { ?>
-            No current medications.
+            No medications recorded during this encounter
               <?php if ($StoppedEyeMedications) { ?>
               <br/>
               Stopped Medications:
@@ -136,7 +136,7 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
     <div class="element-data">
       <div class="data-value">
           <?php if (!$medicationsElement || !$medicationsElement->orderedEntries) { ?>
-            No current medications.
+            No medications recorded during this encounter
           <?php } else { ?>
             <div class="tile-data-overflow">
               <table>

@@ -25,7 +25,7 @@ $principals = $this->episode->patient->episodes;
   <div class="data-value">
     <div class="tile-data-overflow">
         <?php if (!$element->id) { ?>
-        <div class="data-value">No diagnoses recorded.</div>
+        <div class="data-value">No diagnoses recorded during this encounter</div>
         <?php } else { ?>
       <table>
         <colgroup>

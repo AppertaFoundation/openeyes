@@ -26,7 +26,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
     <div class="tile-data-overflow">
         <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
             <div class="data-value">
-              No diagnoses recorded
+              No diagnoses recorded during this encounter
             </div>
         <?php } else { ?>
           <table>
