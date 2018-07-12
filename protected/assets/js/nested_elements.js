@@ -47,7 +47,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
         if (callback) {
             callback();
         }
-    } else if (is_child && !$('.' + element_type_class).length) {
+    } else if (!$('.' + element_type_class).length) {
 
         var core_params = {
             id: element_type_id,
@@ -337,6 +337,7 @@ $(document).ready(function () {
             });
             dialog.on('ok', function () {
                 removeElement(element);
+                event_sidebar.removeElement(e.target);
             }.bind(this));
             dialog.open();
         }
@@ -356,6 +357,7 @@ $(document).ready(function () {
             });
             dialog.on('ok', function () {
                 removeElement(element, true);
+                event_sidebar.removeElement(e.target);
             }.bind(this));
             dialog.open();
         }

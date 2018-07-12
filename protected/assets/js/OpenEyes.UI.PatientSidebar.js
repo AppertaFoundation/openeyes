@@ -91,13 +91,13 @@
         self.$elementContainer = $(document).find(self.options.element_container_selector);
 
         // couple of hooks to keep the menu in sync with the elements on the page.
-        self.$elementContainer.on('click', '.js-remove-element', function(e) {
-            self.removeElememt(e.target);
-        });
+       // self.$elementContainer.on('click', '.js-remove-element', function(e) {
+           // self.removeElement(e.target);
+       // });
 
-        self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
-            self.removeElememt(e.target);
-        });
+     //  self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
+        //    self.removeElement(e.target);
+      //  });
 
         // expand or collapse the menu for the given menu item
         self.$element.on('click', 'a .icon', function(e) {
@@ -223,7 +223,7 @@
     /**
      * Called when an element is removed from the form to update the menu appropriately.
      */
-    PatientSidebar.prototype.removeElememt = function(element) {
+    PatientSidebar.prototype.removeElement = function(element) {
         var self = this;
         var elementTypeClass = $(element).parents('section:first').data('element-type-class');
 
