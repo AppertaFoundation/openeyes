@@ -8,7 +8,6 @@ var optionsVA = {
   },
 
   credits: 		{ enabled: false },  // highcharts url (logo) removed
-  scrollbar: 		{ enabled: false },
 
   exporting: false,
 
@@ -27,14 +26,7 @@ var optionsVA = {
     },
   },
 
-  navigator: {
-    enabled: true,
-    xAxis: {
-      labels : {
-        enabled: false,
-      }
-    }
-  },
+  navigator: highHelp.chartNavigator(),
 
   rangeSelector: 	highHelp.chartRangeSelector(-42,-5),	// offset from bottom right (x,y) "Show all" button
 
@@ -61,11 +53,11 @@ var optionsVA = {
       snap:false,
     },
     labels: {
-      y:25				// move labels below ticks
+      y:25			// move labels below ticks
     },
     tickPixelInterval: 100,  // if this is too high the last tick isn't shown (default 100)
     startOnTick: false, //If the charts are forced to start and end on ticks they can't align properly
-    endOnTick: false
+    endOnTick: false,
   },
 
   yAxis: [{
@@ -75,16 +67,6 @@ var optionsVA = {
     opposite: true,
     reversed: false,
     labels: {
-    },
-
-  },{
-    title: {
-      text: ''
-    },
-    opposite: true,
-    reversed: false,
-    labels: {
-      format: '{value} dB',
     }
   }]
 };
