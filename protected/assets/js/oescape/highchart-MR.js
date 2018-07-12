@@ -52,7 +52,7 @@ var options_MR = {
   // standard settings
   legend: 		highHelp.chartLegend(),
   navigator: 		highHelp.chartNavigator(),
-  rangeSelector: 	highHelp.chartRangeSelector(-30,-60),	// offset from bottom right (x,y) "Show all" button
+  rangeSelector: 	highHelp.chartRangeSelector(-25,-60),	// offset from bottom right (x,y) "Show all" button
 
   tooltip: {
     useHtml: true,
@@ -142,7 +142,15 @@ function changeSetting(enter_drugs, side) {
   options_MR['chart']['className'] = 'oes-chart-mr-'+eye_side;
 }
 
-/* exported drawMRSeries */
+/**
+ * Draw series for MR oescape, including the line series, flag series and injection series
+ * @param chart_MR
+ * @param VA_data
+ * @param CRT_data
+ * @param VA_lines_data
+ * @param injections_data
+ * @param axis_type
+ */
 function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_data, axis_type){
   var VA_options = {
     type: 'line',
@@ -178,7 +186,13 @@ function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_dat
   }
 }
 
-/* exported setImgStack */
+/**
+ * Set the MR images stack in the right side according to the left side's point data.
+ * @param container
+ * @param img_id_prefix
+ * @param initID
+ * @param callBack
+ */
 function setImgStack(container,img_id_prefix, initID, callBack) {
   octImgStack = new initStack(container, img_id_prefix, initID, callBack);
   options_MR['plotOptions']['series']['point'] = {
