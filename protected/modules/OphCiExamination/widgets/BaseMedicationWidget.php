@@ -48,9 +48,11 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
+        /*
         if(array_key_exists("do_not_save_entries", $data)) {
             $element->do_not_save_entries = (bool)$data['do_not_save_entries'];
         }
+        */
 
         if  (!is_a($element, static::$elementClass)) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);

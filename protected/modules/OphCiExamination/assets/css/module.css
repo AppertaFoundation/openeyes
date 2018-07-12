@@ -21,19 +21,19 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1522058822');
+  background-image: url('../img/watermark.png?1531293797');
 }
 /* line 21, ../sass/components/_event.scss */
 .event .event-content.auto {
-  background-image: url('../img/watermark-auto.png?1522058822');
+  background-image: url('../img/watermark-auto.png?1531293797');
 }
 /* line 25, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1522058822');
+  background-image: url('../img/medium.png?1531293797');
 }
 /* line 27, ../sass/components/_event.scss */
 .event .event-title.auto {
-  background-image: url('../img/medium-auto.png?1522058822');
+  background-image: url('../img/medium-auto.png?1531293797');
 }
 
 /* line 33, ../sass/components/_event.scss */
@@ -174,7 +174,7 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
 /* line 18, ../sass/components/elements/_current-management.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan .past_iop {
   height: 28px;
-  background: url('../img/past_icon.png?1522058822') no-repeat right top;
+  background: url('../img/past_icon.png?1531293797') no-repeat right top;
 }
 
 /* line 1, ../sass/components/elements/_pcr.scss */
@@ -224,9 +224,6 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
   margin-left: 0px;
   margin-right: 0px;
 }
-.OEModule_OphCiExamination_models_HistoryMedications table tr.fade{
-    opacity: 1;
-}
 /* line 14, ../sass/components/elements/_history-medications.scss */
 .OEModule_OphCiExamination_models_HistoryMedications table th.date-col {
   min-width: 300px;
@@ -253,38 +250,6 @@ a.stop-medication {
   color: #cf0d27;
 }
 
-/* line 37, ../sass/components/elements/_history-medications.scss */
-/*
-.laterality {
-  background-color: transparent;
-  color: #fff;
-  font-size: 9px;
-  padding: 2px 4px 2px 4px;
-  margin-right: 5ch;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-}
-*/
-/* line 45, ../sass/components/elements/_history-medications.scss */
-.laterality.R {
-  background-color: #9fec6d;
-  color: #747782;
-  margin-left: 0px;
-  margin-right: 4ch;
-}
-/* line 51, ../sass/components/elements/_history-medications.scss */
-.laterality.L {
-  background-color: #fe6767;
-  margin-left: 4ch;
-  margin-right: 0px;
-}
-/* line 56, ../sass/components/elements/_history-medications.scss */
-.laterality.B {
-  margin-right: 2ch;
-  margin-left: 2ch;
-  background-color: #747782;
-}
-
 /* line 34, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
@@ -293,7 +258,7 @@ a.stop-medication {
 
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
-  background: url('../img/cross.gif?1522058822') no-repeat center center;
+  background: url('../img/cross.gif?1531293797') no-repeat center center;
   height: 110px;
   margin: 0 0 10px 0;
   position: relative;
@@ -303,7 +268,7 @@ a.stop-medication {
   /* line 17, ../sass/components/_gonio-cross.scss */
   .gonio-cross {
     -webkit-print-color-adjust: exact;
-    background: url('../img/cross.gif?1522058822') no-repeat center center !important;
+    background: url('../img/cross.gif?1531293797') no-repeat center center !important;
   }
 }
 /* line 27, ../sass/components/_gonio-cross.scss */
@@ -551,8 +516,4 @@ ul.comma-list li:after {
 /* line 13, ../sass/components/_comma-list.scss */
 ul.comma-list li:last-child:after {
   content: "";
-}
-.alternative-display-element select{
-    height:24px;
-    margin: 1px 0;
 }

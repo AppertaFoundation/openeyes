@@ -4,9 +4,7 @@ class m180709_092247_add_table_medication_management_entry extends OEMigration
 {
 	public function up()
 	{
-        $this->dropOETable('ophciexamination_medication_management_entry', true);
-
-	    $this->createOETable('ophciexamination_medication_management_entry', [
+        $this->createOETable('ophciexamination_medication_management_entry', [
 	        'id' => 'pk',
             'element_id' => 'int not null',
             'ref_medication_id' => 'int not null',

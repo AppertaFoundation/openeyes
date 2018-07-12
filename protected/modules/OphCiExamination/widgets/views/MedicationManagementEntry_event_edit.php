@@ -38,21 +38,26 @@ $is_new = isset($is_new) ? $is_new : false;
 <tr
     data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= ($is_new || $entry->group == 'new') ? " new" : ""?><?= $row_type == 'closed' ? ' fade ignore' : '' ?>"
+    class="<?=$field_prefix ?>_row <?= ($is_new || $entry->group == 'new') ? " new" : ""?><?= $row_type == 'closed' ? ' fade ignore' : '' ?>"
 >
 
     <td>
-      <span class="medication-display">
-        <span class="medication-name">
-            <?php if($row_type == 'closed'): ?><i class="oe-i stop small"></i><?php endif; ?>
-            <?= $entry->getMedicationDisplay() ?>
-        </span>
-      </span>
-      <?php if ($entry->originallyStopped) { ?>
+      <div class="medication-display alternative-display-inline">
+        <div class="medication-name alternative-display-element textual">
+            <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                <?php if($row_type == 'closed'): ?><i class="oe-i stop small"></i><?php endif; ?>
+                <?= $entry->getMedicationDisplay() ?>
+            </a>
+        </div>
+          <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+                <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />
+          </div>
+      </div>
+      <?php /* if ($entry->originallyStopped) { ?>
         <i class="oe-i stop small pad"></i>
-      <?php } ?>
+      <?php } */ ?>
 
-        <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
+        <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
         <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
@@ -81,7 +86,7 @@ $is_new = isset($is_new) ? $is_new : false;
                             array('empty' => '-Select-', 'class'=>'admin-route-options laterality cols-2', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
                     </div>
                 </div>
-                <button type="button" class="alt-display-trigger small">Change</button>
+                <button style="display: none" type="button" class="alt-display-trigger small">Change</button>
             </div>
         </div>
     </td>
@@ -104,7 +109,7 @@ $is_new = isset($is_new) ? $is_new : false;
 
             <?php } ?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-            <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
+            <?php /*<input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" /> */ ?>
     </td>
     <td>
       <?php if($row_type == "closed" && !is_null($entry->end_date)): ?>

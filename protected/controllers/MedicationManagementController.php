@@ -68,6 +68,7 @@
                 }
 
                 $ret_data[] = array_merge($med->getAttributes(), [
+                        'label' => $med->preferred_term,
                         'dose_unit_term' => $ref_med_set->default_dose_unit_term,
                         'dose' => $ref_med_set->default_dose,
                         'default_form' => $ref_med_set->default_form,

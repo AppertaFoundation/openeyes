@@ -8,7 +8,7 @@ if(Yii::app()->controller->action->getId() == 'ElementForm'){
 
 ?>
 
-<div id="<?php echo $this->id; ?>" class="oe-add-select-search auto-width" style="display: none; height: 250px; position: absolute; bottom: 0; right: 0">
+<div id="<?php echo $this->id; ?>" class="oe-add-select-search auto-width medication-browser" style="display: none; height: 250px; position: absolute; bottom: 0; right: 0">
     <div class="close-icon-btn main-close-btn">
         <i class="oe-i remove-circle medium"></i>
     </div>

@@ -23,7 +23,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('table.entries');
-    this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.fields = [
       'medication_name',
@@ -149,6 +148,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var key = $(e.target).closest("tr").attr("data-key");
       $(e.target).parents('tr').remove();
       controller.options.onRemovedEntry($(e.target).closest("tr"), controller);
+    });
+
+    // adding entries
+    controller.$element.on('click', controller.options.addButtonSelector, function(e) {
+      e.preventDefault();
+      controller.addEntry();
     });
 
     // setup current table row behaviours
@@ -289,6 +294,37 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               $icon.attr("data-value", 0);
               $icon.css('opacity','0.5');
               $input.val(0);
+          }
+      });
+
+      $row.find(".js-medication-search-autocomplete").autocomplete({
+          minLength: 2,
+          delay: 700,
+          source: '/MedicationManagement/findRefMedications?ref_set_id=29',
+          /*
+          source: function (request, response) {
+              $.ajax({
+                  'url': '/MedicationManagement/findRefMedications',
+                  'type':'GET',
+                  'data':{'term': request.term, 'ref_set_id': 29},
+                  'beforeSend': function(){
+                  },
+                  'success':function(data) {
+                      data = $.parseJSON(data);
+                      response(data);
+                  }
+              });
+          },
+            */
+          select: function(event, ui){
+              console.log(ui.item);
+              $row.find(".medication-name .textual-display").text(ui.item.preferred_term);
+              switch_alternative($(event.target));
+              $row.find(".dose-unit-term").text(ui.item.dose_unit_term === null ? "" : ui.item.dose_unit_term);
+              $row.find(".dose").val(ui.item.dose);
+              $row.find(".frequency").val(ui.item.frequency_id);
+              $row.find(".route").val(ui.item.route_id);
+              $row.find(".ref_medication_id").val(ui.item.id);
           }
       });
   };

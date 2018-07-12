@@ -64,6 +64,9 @@ class MedicationManagement extends BaseMedicationElement
     public function relations()
     {
         return array(
+            'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
+            'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
             'entries' => array(
                 self::HAS_MANY,
                 MedicationManagementEntry::class,

@@ -92,16 +92,15 @@ $element_errors = $element->getErrors();
 
     </div>
     <div class="flex-layout flex-right">
-        <div class="flex-item-bottom" id="medication-history-popup">
-            <?php $this->widget('MedicationBrowser', [
-                'fnOnSelected' => 'function(medication){window.MMController.addEntry(medication);}',
-                'usage_code'=>'DrugManagement'
-            ]); ?>
+        <div class="flex-item-bottom">
+            <button class="button hint small primary js-add-select-search pull-right" type="button" id="MedicationManagemenet_open_btn">
+                Add
+            </button>
         </div>
     </div>
     <script type="text/template" class="entry-template hidden">
         <?php
-        $empty_entry = new EventMedicationUse();
+        $empty_entry = new \OEModule\OphCiExamination\models\MedicationManagementEntry();
 
         $this->render(
             'MedicationManagementEntry_event_edit',
@@ -150,17 +149,21 @@ $element_errors = $element->getErrors();
             initRowsFromHistoryElement: function() {
                 <?php if(!$this->isPostedEntries()): ?>
                 $.each(window.HMController.$table.find("tbody").find("tr").not(".ignore"), function(i, e){
-                     var $row = $(e);
+                    var $row = $(e);
                     var data = window.HMController.getRowData($row);
+                    console.log(data);
                     data.bound_entry = $row;
                     data.is_new = 0;
                     var newrow = window.MMController.createRow(data);
                     var $newrow = $(newrow);
                     $newrow.removeClass("new");
 
+                    // Don't hide
+                    /*
                     if($row.hasClass("fade")) {
                         $newrow.addClass("hidden");
                     }
+                    */
 
                     $newrow.find(".trash").remove();
                     $newrow.appendTo(window.MMController.$table.find("tbody"));

@@ -102,4 +102,14 @@
                 'continue' => 'Continue'
             );
         }
+
+        public function getMedicationDisplay($short = false)
+        {
+            return $this->ref_medication_id ? ($short ? $this->refMedication->short_term : $this->refMedication->preferred_term) : '';
+        }
+
+        public function routeOptions()
+        {
+            return \RefMedicationLaterality::model()->findAll();
+        }
     }
