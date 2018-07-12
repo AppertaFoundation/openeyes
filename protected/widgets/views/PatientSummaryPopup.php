@@ -43,8 +43,6 @@
     </button>
 
     <div class="panel patient-popup" id="patient-summary-popup">
-        <!-- Overflow alert -->
-        <div class="oe-popup-overflow-alert">+ &nbsp; click to view all data</div>
         <!-- Help hint -->
         <span
             class="help-hint"
