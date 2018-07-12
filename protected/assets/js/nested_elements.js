@@ -313,16 +313,20 @@ $(document).ready(function () {
     $('#event-content').on('click', '.js-remove-element', function (e) {
         if (!$(this).parents('.elements.active').length && !$(this).hasClass('disabled')) {
             var element = $(this).closest('.element');
-            var dialog = new OpenEyes.UI.Dialog.Confirm({
-                content: "Are you sure that you wish to close the " + element.data('element-type-name') +
-                " element? All data in this element " +
-                (element.find('.sub-elements').children().length !== 0 ? " and any child elements" : "") +
-                " will be lost"
-            });
-            dialog.on('ok', function () {
+            if (element_close_warning_enabled === 'on') {
+                var dialog = new OpenEyes.UI.Dialog.Confirm({
+                    content: "Are you sure that you wish to close the " + element.data('element-type-name') +
+                    " element? All data in this element " +
+                    (element.find('.sub-elements').children().length !== 0 ? " and any child elements" : "") +
+                    " will be lost"
+                });
+                dialog.on('ok', function () {
+                    removeElement(element);
+                }.bind(this));
+                dialog.open();
+            } else {
                 removeElement(element);
-            }.bind(this));
-            dialog.open();
+            }
         }
         e.preventDefault();
     });
