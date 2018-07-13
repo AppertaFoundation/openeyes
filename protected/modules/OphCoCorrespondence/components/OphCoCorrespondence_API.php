@@ -186,7 +186,7 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastRefractionDate(\Patient $patient, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
         if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
-            return $element->created_date;
+            return $element->event->event_date;
         }
         return null;
     }

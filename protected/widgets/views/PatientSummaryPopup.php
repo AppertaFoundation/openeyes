@@ -93,9 +93,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             $rDate =  $exam_api->getLetterVisualAcuityDate($patient, 'right');
             if($lDate == $rDate){?>
             <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>
-            <span class="data"><?php echo $exam_api->getLetterVAMehtodName($patient, 'right')?></span>
+            <span class="data"><?php echo $exam_api->getLetterVAMethodName($patient, 'right')?></span>
             <span class="data">L <?php echo $exam_api->getLetterVisualAcuityLeft($patient)?></span>
-            <span class="data"><?php echo $exam_api->getLetterVAMehtodName($patient, 'left')?></span>
+            <span class="data"><?php echo $exam_api->getLetterVAMethodName($patient, 'left')?></span>
             <span class="oe-date" style="text-align: left;"><?php echo Helper::convertDate2NHS($rDate);?></span>
             <?php } else {?>
             <span class="data">R <?php echo $exam_api->getLetterVisualAcuityRight($patient)?></span>

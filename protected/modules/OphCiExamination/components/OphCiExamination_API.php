@@ -869,7 +869,7 @@ class OphCiExamination_API extends \BaseAPI
         return ($best = $this->getBestVisualAcuity($patient,'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
 
-    public function getLetterVAMehtodName($patient, $side, $use_context = false){
+    public function getLetterVAMethodName($patient, $side, $use_context = false){
         $best = $this->getBestVisualAcuity($patient, $side, $use_context);
        $method_name =  $best ? $this->getMethodName($best->method_id) : null;
        if($method_name == 'Unaided'){
