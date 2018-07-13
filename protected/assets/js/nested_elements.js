@@ -340,17 +340,22 @@ $(document).ready(function () {
     $('#event-content').on('click', '.js-remove-element', function (e) {
         if (!$(this).parents('.elements.active').length && !$(this).hasClass('disabled')) {
             var element = $(this).closest('.element');
-            var dialog = new OpenEyes.UI.Dialog.Confirm({
-                content: "Are you sure that you wish to close the " + element.data('element-type-name') +
-                " element? All data in this element " +
-                (element.find('.sub-elements').children().length !== 0 ? " and any child elements" : "") +
-                " will be lost"
-            });
-            dialog.on('ok', function () {
+            if (element_close_warning_enabled === 'on') {
+                var dialog = new OpenEyes.UI.Dialog.Confirm({
+                    content: "Are you sure that you wish to close the " + element.data('element-type-name') +
+                    " element? All data in this element " +
+                    (element.find('.sub-elements').children().length !== 0 ? " and any child elements" : "") +
+                    " will be lost"
+                });
+                dialog.on('ok', function () {
+                    removeElement(element);
+                    event_sidebar.removeElement(e.target);
+                }.bind(this));
+                dialog.open();
+            } else {
                 removeElement(element);
                 event_sidebar.removeElement(e.target);
-            }.bind(this));
-            dialog.open();
+            }
         }
         e.preventDefault();
     });
@@ -361,6 +366,7 @@ $(document).ready(function () {
     $('#event-content').on('click', '.js-remove-child-element', function (e) {
         if (!$(this).hasClass('disabled')) {
             var element = $(this).closest('.sub-element');
+            if (element_close_warning_enabled === 'on') {
             var dialog = new OpenEyes.UI.Dialog.Confirm({
                 content: "Are you sure that you wish to close the " +
                 element.data('element-type-name') +
@@ -371,6 +377,10 @@ $(document).ready(function () {
                 event_sidebar.removeElement(e.target);
             }.bind(this));
             dialog.open();
+        } else {
+                removeElement(element, true);
+                event_sidebar.removeElement(e.target);
+            }
         }
         e.preventDefault();
     });
