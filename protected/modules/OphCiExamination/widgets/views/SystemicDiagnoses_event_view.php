@@ -22,13 +22,13 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
 ?>
 
 <div class="element-data">
-  <div class="data-value">
-    <div class="tile-data-overflow">
-        <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
-            <div class="data-value">
-              No diagnoses recorded during this encounter
-            </div>
-        <?php } else { ?>
+    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
+      <div class="data-value not-recorded">
+        No diagnoses recorded during this encounter
+      </div>
+    <?php } else { ?>
+      <div class="data-value">
+        <div class="tile-data-overflow">
           <table>
             <colgroup>
               <col>
@@ -84,7 +84,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
             <?php } ?>
             </tbody>
           </table>
-        <?php } ?>
-    </div>
-  </div>
+        </div>
+      </div>
+    <?php } ?>
 </div>

@@ -42,20 +42,22 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
       <h3 class="element-title">Eye Medications</h3>
     </header>
     <div class="element-data">
-      <div class="data-value">
-          <?php
+        <?php
 
-          $filterEyeMedication = function ($med) {
-              return $med['route_id'] == 1;
-          };
+        $filterEyeMedication = function ($med) {
+            return $med['route_id'] == 1;
+        };
 
-          $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
-          $StoppedEyeMedications = array_filter($medicationsElement->stoppedOrderedEntries, $filterEyeMedication);
-          ?>
-          <?php if (!$currentEyeMedications) { ?>
-            No medications recorded during this encounter
-              <?php if ($StoppedEyeMedications) { ?>
-              <br/>
+        $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
+        $stoppedEyeMedications = array_filter($medicationsElement->stoppedOrderedEntries, $filterEyeMedication);
+        ?>
+        <?php if (!$currentEyeMedications) { ?>
+            <?php if (!$stoppedEyeMedications) { ?>
+            <div class="data-value not-recorded">
+              No medications recorded during this encounter
+            </div>
+            <?php } else { ?>
+            <div class="data-value">
               Stopped Medications:
               <table>
                 <colgroup>
@@ -64,31 +66,7 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
                   <col width="85px">
                 </colgroup>
                 <tbody>
-                <?php foreach ($StoppedEyeMedications as $entry) { ?>
-                  <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                      <span class="oe-eye-lat-icons">
-                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
-                      </span>
-                    </td>
-                    <td><?= $entry->getStartDateDisplay() ?></td>
-                  </tr>
-                <?php } ?>
-                </tbody>
-              </table>
-              <?php } ?>
-          <?php } else { ?>
-            <div class="tile-data-overflow">
-              <table>
-                <colgroup>
-                  <col>
-                  <col width="55px">
-                  <col width="85px">
-                </colgroup>
-                <tbody>
-                <?php foreach ($currentEyeMedications as $entry) { ?>
+                <?php foreach ($stoppedEyeMedications as $entry) { ?>
                   <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?php $laterality = $entry->getLateralityDisplay(); ?>
@@ -103,17 +81,41 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
                 </tbody>
               </table>
             </div>
-          <?php } ?>
+            <?php } ?>
+        <?php } else { ?>
+      <div class="data-value">
+        <div class="tile-data-overflow">
+          <table>
+            <colgroup>
+              <col>
+              <col width="55px">
+              <col width="85px">
+            </colgroup>
+            <tbody>
+            <?php foreach ($currentEyeMedications as $entry) { ?>
+              <tr>
+                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                  <span class="oe-eye-lat-icons">
+                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
+                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
+                      </span>
+                </td>
+                <td><?= $entry->getStartDateDisplay() ?></td>
+              </tr>
+            <?php } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
+          <?php } ?>
     </div>
   </section>
-
 
   <div class="collapse-tile-group">
     <i class="oe-i small collapse js-tiles-collapse-btn" data-group="tile-group-exam-eyes"></i>
   </div>
 </div>
-
 
 <div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
 
@@ -134,10 +136,12 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
       <h3 class="element-title">Systemic Medications</h3>
     </header>
     <div class="element-data">
-      <div class="data-value">
-          <?php if (!$medicationsElement || !$medicationsElement->orderedEntries) { ?>
+        <?php if (!$medicationsElement || !$medicationsElement->orderedEntries) { ?>
+          <div class="data-value not-recorded">
             No medications recorded during this encounter
-          <?php } else { ?>
+          </div>
+        <?php } else { ?>
+          <div class="data-value">
             <div class="tile-data-overflow">
               <table>
                 <colgroup>
@@ -155,8 +159,8 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
                 </tbody>
               </table>
             </div>
-          <?php } ?>
-      </div>
+          </div>
+        <?php } ?>
     </div>
   </section>
 

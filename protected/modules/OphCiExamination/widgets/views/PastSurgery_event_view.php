@@ -20,7 +20,7 @@ $widget = $this;
   <div class="data-value">
     <div class="tile-data-overflow">
         <?php if (!$operations || count($operations) === 0) { ?>
-          <div class="data-value">No procedures recorded during this encounter</div>
+          <div class="data-value not-recorded">No procedures recorded during this encounter</div>
         <?php } else { ?>
       <table>
         <colgroup>

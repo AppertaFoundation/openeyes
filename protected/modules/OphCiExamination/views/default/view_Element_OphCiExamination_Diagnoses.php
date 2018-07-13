@@ -22,11 +22,11 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 $principals = $this->episode->patient->episodes;
  ?>
 <div class="element-data">
+        <?php if (!$element->id) { ?>
+        <div class="data-value not-recorded">No diagnoses recorded during this encounter</div>
+        <?php } else { ?>
   <div class="data-value">
     <div class="tile-data-overflow">
-        <?php if (!$element->id) { ?>
-        <div class="data-value">No diagnoses recorded during this encounter</div>
-        <?php } else { ?>
       <table>
         <colgroup>
           <col>
@@ -94,8 +94,8 @@ $principals = $this->episode->patient->episodes;
         <?php } ?>
         </tbody>
       </table>
-      <?php } ?>
     </div>
   </div>
+      <?php } ?>
 </div>
 
