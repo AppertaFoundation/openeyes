@@ -25,71 +25,75 @@
     array_merge($form->layoutColumns, array('field' => 3))) ?>
 <?php echo $form->dropDownList($element, 'incision_type_id', 'OphTrOperationnote_IncisionType',
     array('empty' => '- Please select -', 'textAttribute' => 'data-value'), false, array('field' => 4)) ?>
-<?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6)) ?>
+<?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6, 'readonly' => true)) ?>
+<?php echo $form->textArea($element, 'comments', array(), false, array('rows' => 1,)) ?>
 <?php
-    if(isset(Yii::app()->modules["OphInBiometry"])){
-        echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
-            'condition' => ($element->iol_type_id > 0)?'active=1 or id='.$element->iol_type_id:'active=1',
-            'order' => 'display_name',
-        )), 'id', 'display_name'),
-            array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
-    }else {
-        echo $form->dropDownList($element, 'iol_type_id', array(
-            CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
-                'condition' => 'private=0',
-                'order' => 'display_order asc',
-            )), 'id', 'name'),
-            CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
-                'condition' => 'private=1',
-                'order' => 'display_order',
-            )), 'id', 'name'),
-        ),
-            array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4));
-    }?>
-    <div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row field-row">
-        <div class="large-3 column">
-            <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
-        </div>
-        <div class="large-2 column end">
-            <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
-                   name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
-                   value="<?php echo $element->iol_power; ?>">
-        </div>
-        <div class="large-3 column">
-            <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
-        </div>
-        <div class="large-2 column end">
-            <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
-                   name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
-                   value="<?php echo $element->predicted_refraction; ?>">
-        </div>
+if (isset(Yii::app()->modules["OphInBiometry"])) {
+    echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
+        'condition' => ($element->iol_type_id > 0) ? 'active=1 or id=' . $element->iol_type_id : 'active=1',
+        'order' => 'display_name',
+    )), 'id', 'display_name'),
+        array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
+} else {
+    echo $form->dropDownList($element, 'iol_type_id', array(
+        CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
+            'condition' => 'private=0',
+            'order' => 'display_order asc',
+        )), 'id', 'name'),
+        CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
+            'condition' => 'private=1',
+            'order' => 'display_order',
+        )), 'id', 'name'),
+    ),
+        array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4));
+} ?>
+<div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row field-row">
+    <div class="large-3 column">
+        <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
     </div>
+
+    <div class="large-2 column end">
+        <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
+               name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
+               value="<?php echo $element->iol_power; ?>">
+    </div>
+    <div class="large-3 column">
+        <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
+    </div>
+    <div class="large-2 column end">
+        <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
+               name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
+               value="<?php echo $element->predicted_refraction; ?>">
+    </div>
+</div>
 <?php
-    //var_dump($element); //, 'iol_position_id'
+//var_dump($element); //, 'iol_position_id'
 ?>
 
 <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
     array(
         'empty' => '- Please select -',
-        'options'=>array(
-            8=>array('disabled'=>'disabled'),
+        'options' => array(
+            8 => array('disabled' => 'disabled'),
         )
     ),
     $element->iol_hidden, array('field' => 4)
-    ) ?>
+) ?>
 <?php
-    echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
-        $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
-        array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)); ?>
+echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
+    $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
+    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)); ?>
 
 <div id="div_Element_OphTrOperationnote_Cataract_phaco_cde" class="row field-row">
     <div class="large-3 column">
-        <label for="Element_OphTrOperationnote_Cataract_phaco_cde">Phaco CDE:</label>		</div>
+        <label for="Element_OphTrOperationnote_Cataract_phaco_cde">Phaco CDE:</label></div>
     <div class="large-2 column">
-        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>">
+        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]"
+               id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde ?>">
     </div>
     <div class="large-1 column end">
-        <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></span>
+        <span class="has-tooltip fa fa-info-circle"
+              data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></span>
     </div>
 </div>
 
@@ -97,5 +101,11 @@
     CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(array('order' => 'display_order asc')),
         'id', 'name'), null, array('empty' => '- Complications -', 'label' => 'Complications'), false, false, null,
     false, false, array('field' => 4)) ?>
-<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 6)) ?>
+<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 1)) ?>
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
+<script>
+    $(document).ready(function () {
+        $('#Element_OphTrOperationnote_Cataract_comments').autosize();
+		$('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
+    });
+</script>
