@@ -106,5 +106,6 @@ echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevic
 <script>
     $(document).ready(function () {
         $('#Element_OphTrOperationnote_Cataract_comments').autosize();
+			  $('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
     });
 </script>
