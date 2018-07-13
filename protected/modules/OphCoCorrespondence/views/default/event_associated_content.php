@@ -159,12 +159,7 @@
                         'attachment_events',
                         ' ',
                         CHtml::listData($events, 'id', function ($events) {
-                            $event_type_name = $events->eventType->name;
-                            if ($events->eventType->name === "Document") {
-                                $document_model = Element_OphCoDocument_Document::model()->findByAttributes(["event_id" => $events->id]);
-                                $event_type_name = isset($document_model->sub_type) ? $document_model->sub_type->name : '';
-                            }
-                            return CHtml::encode($event_type_name . ' - ' . Helper::convertDate2NHS($events->event_date));
+                            return CHtml::encode($this->getEventSubType($events) . ' - ' . Helper::convertDate2NHS($events->event_date));
 
                         }), array('empty' => '- Select -'));
                     ?>
