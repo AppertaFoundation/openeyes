@@ -37,7 +37,7 @@ Yii::log($model_name);
     <?php } ?>
     </tbody>
   </table>
-  <div class="flex-item-bottom" id="consent-form-leaflets-popup" style="display:">
+  <div class="add-data-actions flex-item-bottom" id="consent-form-leaflets-popup" style="display:">
     <button class="button hint green js-add-select-search" id="add-leaflet-btn" type="button"><i
           class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
