@@ -101,10 +101,11 @@ echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevic
     CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(array('order' => 'display_order asc')),
         'id', 'name'), null, array('empty' => '- Complications -', 'label' => 'Complications'), false, false, null,
     false, false, array('field' => 4)) ?>
-<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 6)) ?>
+<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 1)) ?>
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
 <script>
     $(document).ready(function () {
         $('#Element_OphTrOperationnote_Cataract_comments').autosize();
+		$('#Element_OphTrOperationnote_Cataract_complication_notes').autosize();
     });
 </script>
