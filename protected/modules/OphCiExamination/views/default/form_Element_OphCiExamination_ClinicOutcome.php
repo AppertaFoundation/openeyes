@@ -103,7 +103,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
         </div>
       <?php } ?>
   </div>
-  <div class="flex-item-bottom">
+  <div class="add-data-actions flex-item-bottom">
     <button id="outcomes-comment-button" class="button js-add-comments" data-comment-container="#outcomes-comments"
             style="<?= $element->description ? 'display: none;' : '' ?>" type="button">
       <i class="oe-i comments small-icon"></i>

@@ -20,7 +20,7 @@
   <div class="cols-7">
       <?php echo $form->textArea($element, 'description', array('class' => 'cols-full', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))?>
   </div>
-  <div class="flex-item-bottom">
+  <div class="add-data-actions flex-item-bottom">
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>

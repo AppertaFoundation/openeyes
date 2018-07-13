@@ -82,7 +82,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         ?>
         </tbody>
     </table>
-  <div class="flex-item-bottom" id="systemic-diagnoses-popup">
+  <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup">
     <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
       <i class="oe-i plus pro-theme"></i>
     </button>

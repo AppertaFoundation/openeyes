@@ -27,7 +27,7 @@
               <div class="cols-11 flex-layout">
                   <?php echo $form->textArea($element, $eye_side.'_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
               </div>
-              <div class="flex-item-bottom">
+              <div class="add-data-actions flex-item-bottom">
                 <button class="button hint green js-add-select-search" id="add-examination-adnexal" type="button">
                   <i class="oe-i plus pro-theme"></i>
                 </button>

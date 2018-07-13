@@ -82,7 +82,7 @@ $element_errors = $element->getErrors();
     </table>
   </div>
   <div class="flex-layout flex-right">
-    <div class="flex-item-bottom" id="medication-history-popup">
+    <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
       <button class="button hint green js-add-select-search" id="add-medication-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>

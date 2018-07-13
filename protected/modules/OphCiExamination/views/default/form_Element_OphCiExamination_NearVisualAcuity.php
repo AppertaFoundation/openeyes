@@ -87,7 +87,7 @@ $this->endClip('element-title-additional');
 					<?php echo $form->checkBox($element, 'right_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
-			<div class="flex-item-bottom">
+			<div class="add-data-actions flex-item-bottom">
 				<button class="button hint green addNearReading" type="button">
           <i class="oe-i plus pro-theme"></i>
 				</button>
@@ -135,7 +135,7 @@ $this->endClip('element-title-additional');
 					<?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
-			<div class="flex-item-bottom">
+			<div class="add-data-actions  flex-item-bottom">
 				<button class="button hint green addNearReading" type="button">
           <i class="oe-i plus pro-theme"></i>
         </button>

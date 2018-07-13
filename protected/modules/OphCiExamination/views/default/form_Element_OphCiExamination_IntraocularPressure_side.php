@@ -65,7 +65,7 @@ $comments = $side . '_comments';
           )) ?>
   </div>
 </div>
-<div class="flex-item-bottom">
+<div class="add-data-actions flex-item-bottom">
   <button id="iop-<?php echo $side; ?>-comment-button" type="button" class="button js-add-comments"
           data-comment-container="#iop-<?php echo $side; ?>-comments" <?= $element->$comments ? 'style="display: none;"' : ''; ?>>
     <i class="oe-i comments small-icon"></i>

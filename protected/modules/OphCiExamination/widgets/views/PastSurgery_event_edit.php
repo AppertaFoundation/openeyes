@@ -99,7 +99,7 @@ $model_name = CHtml::modelName($element);
         ?>
     </div>
   </div>
-  <div class="flex-item-bottom" id="add-to-past-surgery" >
+  <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery" >
 
     <button id="<?= $model_name ?>-comment-button" class="button js-add-comments"
             data-comment-container="#<?= $model_name ?>-comments"

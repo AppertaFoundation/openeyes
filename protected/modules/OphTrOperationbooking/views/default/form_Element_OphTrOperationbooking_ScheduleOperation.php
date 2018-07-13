@@ -59,7 +59,7 @@
                 ?>
         </table>
     </div>
-    <div class="flex-item-bottom">
+    <div class="add-data-actions flex-item-bottom">
         <button class="button hint green addUnavailable"><i class="oe-i plus pro-theme "></i></button>
     </div>
 </div>

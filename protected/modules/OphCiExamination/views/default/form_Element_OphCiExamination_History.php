@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="flex-item-bottom">
+  <div class="add-data-actions flex-item-bottom">
     <button class="button hint green js-add-select-search" type="button" id="show-add-to-history">
       <i class="oe-i plus pro-theme"></i>
     </button>

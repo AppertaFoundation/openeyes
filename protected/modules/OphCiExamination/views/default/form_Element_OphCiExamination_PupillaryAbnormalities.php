@@ -81,7 +81,7 @@
             </tr>
             </tbody>
           </table>
-          <div class="flex-item-bottom">
+          <div class="add-data-actions flex-item-bottom">
             <button id="pupils-<?= $eye_side ?>-comment_button"
                     class="button js-add-comments"
                     data-comment-container="#pupils-<?= $eye_side ?>-comments"

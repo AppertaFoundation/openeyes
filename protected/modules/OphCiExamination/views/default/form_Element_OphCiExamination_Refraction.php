@@ -87,7 +87,7 @@
             </div>
           </div>
 
-          <div class="flex-item-bottom">
+          <div class="add-data-actions flex-item-bottom">
 
             <button id="refraction-<?= $eye_side ?>-comment-button"
                     class="button js-add-comments" data-comment-container="#refraction-<?= $eye_side ?>-comments"
