@@ -26,10 +26,7 @@
 <?php echo $form->dropDownList($element, 'incision_type_id', 'OphTrOperationnote_IncisionType',
     array('empty' => '- Please select -', 'textAttribute' => 'data-value'), false, array('field' => 4)) ?>
 <?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6, 'readonly' => true)) ?>
-<?php echo $form->textArea($element, 'comments', array(), false, array(
-    'rows' => 1,
-    'style' => "overflow: hidden; word-wrap: break-word; resize: none;",
-)) ?>
+<?php echo $form->textArea($element, 'comments', array(), false, array('rows' => 1,)) ?>
 <?php
 if (isset(Yii::app()->modules["OphInBiometry"])) {
     echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
