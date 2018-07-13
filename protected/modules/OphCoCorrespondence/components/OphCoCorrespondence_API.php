@@ -164,6 +164,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * Get the Latest Refraction - both eyes.
      *
      * @param $patient
+     * @param $side - The side is used to define the refraction to be extracted.
      * @param $use_context
      * @return string|null
      */

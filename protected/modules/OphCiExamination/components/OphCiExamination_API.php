@@ -870,8 +870,8 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     public function getLetterVAMehtodName($patient, $side, $use_context = false){
-
-       $method_name =  ($best = $this->getBestVisualAcuity($patient, $side, $use_context)) ? $this->getMethodName($best->method_id) : null;
+        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
+       $method_name =  $best ? $this->getMethodName($best->method_id) : null;
        if($method_name == 'Unaided'){
            return 'ua';
        } else if($method_name == 'Pinhole'){
