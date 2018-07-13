@@ -37,12 +37,12 @@ if ($this->isHiddenInUI($element)) {
 
 	<?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
 		<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
-
+            <!-- Add a element remove flag which is used when saving data -->
+            <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]"value="0">
 		<!-- Element title -->
 		<?php if (!@$child) {?>
 			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-            <!-- Add a element remove flag which is used when saving data -->
-            <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]"value="0">
+
 		<?php }else{?>
 			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
 		<?php }?>
