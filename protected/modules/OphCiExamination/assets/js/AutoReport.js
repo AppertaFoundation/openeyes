@@ -49,7 +49,7 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
         var diagnoses = this.drawing.diagnosis();
         var sidedDiagnoses = Array();
         for (var i = 0; i < diagnoses.length; i++) {
-            sidedDiagnoses.push([diagnoses[i], this.side])
+            sidedDiagnoses.push([diagnoses[i], this.side]);
         }
         OpenEyes.OphCiExamination.Diagnosis.setForSource(sidedDiagnoses, this.$container);
     };

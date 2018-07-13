@@ -18,25 +18,14 @@
 
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
-        <?php if ($element->hasRight()) {
-            echo "{$element->right_van_herick->name}";
-        } else {
-            ?>
-            <div class="data-row">
-                <div class="data-value">Not recorded</div>
-            </div>
-            <?php
-        }?>
+        <div class="data-row">
+            <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not recorded';?></div>
+        </div>
     </div>
+
     <div class="element-eye left-eye column">
-        <?php if ($element->hasLeft()) {
-            echo "{$element->left_van_herick->name}";
-        } else {
-            ?>
-            <div class="data-row">
-                <div class="data-value">Not recorded</div>
-            </div>
-            <?php
-        }?>
+        <div class="data-row">
+            <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not recorded';?></div>
+        </div>
     </div>
 </div>

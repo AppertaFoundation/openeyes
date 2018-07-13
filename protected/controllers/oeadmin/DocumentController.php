@@ -16,29 +16,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-return array(
+// OphCoDocument_Sub_Types
+class DocumentController extends BaseAdminController
+{
+    /**
+     * @var string
+     */
+    public $layout = 'admin';
 
-    'params' => array(
-        'OphCoDocument' => array(
-            'allowed_file_types' => array(
-                'pdf'   => 'application/pdf',
-                'jpg'   => 'image/jpeg',
-                'jpeg'  => 'image/jpeg',
-                'png'   => 'image/png',
-                'gif'   => 'image/gif',
-                'mp4'   => 'video/mp4',
-                'mpeg4' => 'video/mp4',
-                'ogg'   => 'video/ogg',
-		'mov'	=> 'video/quicktime',
-            )
-        ),
-        'admin_structure' => array(
-            'Document' => array(
-                'Document sub type settings' => array(
-                    'module' => 'OphCoDocument',
-                    'uri' => '/OphCoDocument/oeadmin/DocumentSubTypesSettings',
-                    ),
-            ),
-        )
-    )
-);
+    /**
+     * @var int
+     */
+
+    public function actionList()
+    {
+        $model = OphCoDocument_Sub_Types::model();
+        $document_sub_types = $model->findAll();
+        $this->render('//admin/document_sub_types' , $document_sub_types);
+    }
+
+}
