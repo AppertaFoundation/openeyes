@@ -20,7 +20,7 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('FamilyHistory.js') ?>"></script>
 <div class="element-fields flex-layout full-width">
   <?php $model_name = CHtml::modelName($element); ?>
-    <div class= "row"
+    <div class="row"
          style="display: <?= count($element->entries) ? ' none' : ''?>"
          id="<?=$model_name?>_no_family_history_wrapper">
       <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
