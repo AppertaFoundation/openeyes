@@ -240,10 +240,11 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           <ul class="management-summaries">
               <?php $summaries = $exam_api->getManagementSummaries($patient);
               foreach ($summaries as $summary) {
-                  if ($summary["comments"] !== '' || $summary["service"] !== '') { ?>
+                  if (isset($summary["comments"]) && trim($summary["comments"]) !== ''
+                      && isset($summary["service"]) && trim($summary["service"]) !== '') { ?>
                       <li>
-                          <h6><?php echo $summary["service"]?></h6>
-                          <p><?php echo $summary["comments"]?></p>
+                          <h6><?php echo $summary["service"] ?></h6>
+                          <p><?php echo $summary["comments"] ?></p>
                       </li>
                   <?php }
               } ?>

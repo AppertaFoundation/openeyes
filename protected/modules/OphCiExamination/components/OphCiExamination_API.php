@@ -1134,14 +1134,11 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getManagementSummaries($patient, $use_context = false)
     {
-        if ($management_summaries = $this->getElements(
-            'models\Element_OphCiExamination_Management',
-            $patient,
-            $use_context)
-        ) {
+        $management_summaries = $this->getElements('models\Element_OphCiExamination_Management',$patient,$use_context);
+        if ($management_summaries) {
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
-                $summary [] = array('service' => $service, 'comments' => $summaries->comments);
+                $summary[] = array('service' => $service, 'comments' => $summaries->comments);
             }
             return $summary;
         }
