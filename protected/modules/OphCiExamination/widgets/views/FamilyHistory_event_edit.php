@@ -20,14 +20,18 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('FamilyHistory.js') ?>"></script>
 <div class="element-fields flex-layout full-width">
   <?php $model_name = CHtml::modelName($element); ?>
-    <div class= row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
+    <div class= "row"
+         style="display: <?= count($element->entries) ? ' none' : ''?>"
+         id="<?=$model_name?>_no_family_history_wrapper">
       <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
         <?php echo CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
     </div>
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' :''?>">
+  <table id="<?= $model_name ?>_entry_table"
+         style="display:  <?= !count($element->entries) ? 'none' :''?>"
+         class="cols-10">
       <thead>
       <tr>
           <th>Relative</th>
@@ -61,11 +65,12 @@
       </tbody>
   </table>
 
-  <div class="add-data-actions flex-item-bottom" id="add-family-history-popup" style="display: <?= $element->no_family_history_date ? 'none' : 'block' ?>">
-    <button class="button hint green js-add-new-row" type="button">
+    <button class="button hint green js-add-new-row"
+            id="add-family-history-button"
+            style="display: <?= $element->no_family_history_date ? 'none' : 'block' ?>"
+            type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-  </div>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element).'_entry_template' ?>" class="hidden">
@@ -101,8 +106,7 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-
-       var adder = $('#add-family-history-popup');
+       new OpenEyes.OphCiExamination.FamilyHistoryController();
        var templateText = $('#'+<?= CJSON::encode(CHtml::modelName($element).'_entry_template') ?>).text();
       <?php
         $relative_options = $element->getRelativeOptions();
@@ -112,7 +116,7 @@
 
        new OpenEyes.UI.AdderDialog({
          id: 'add-family-history',
-         openButton: adder.find('.js-add-new-row'),
+         openButton: $('#add-family-history-button'),
          itemSets: [
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
              array_map(function ($relative_item) {
@@ -151,8 +155,7 @@
            }
            $('#OEModule_OphCiExamination_models_FamilyHistory_entry_table').find('tbody').append(row_tem);
            return 1;
-         },
-         returnOnSelect: false
+         }
        });
     });
 </script>

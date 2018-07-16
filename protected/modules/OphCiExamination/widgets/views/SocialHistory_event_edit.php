@@ -158,8 +158,9 @@
             style="display: <?php if(!$element->comments){echo 'none';} ?>">
           <textarea id="<?= $model_name ?>_comments"
                     name="<?= $model_name ?>[comments]"
-                    class="js-comment-container cols-10"
-                    placeholder="Enter comments here" autocomplete="off" rows="1"
+                    class="js-comment-field cols-10"
+                    placeholder="Enter comments here"
+                    autocomplete="off" rows="1"
                     style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
           <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </td>
@@ -168,7 +169,8 @@
   </table>
   <div class="add-data-actions flex-item-bottom " id="add-social-history-popup">
     <button class="button js-add-comments"
-            type="button" data-comment-container="#<?= $model_name ?>_entry_table .js-comment-container"
+            type="button"
+            data-comment-container="#<?= $model_name ?>_entry_table .js-comment-container"
             style="visibility: <?php if($element->comments){echo 'hidden';} ?>">
       <i class="oe-i comments small-icon "></i>
     </button>

@@ -27,7 +27,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
-        this.$popupSelector = $('#add-family-history-popup');
+        this.$popupSelector = $('#add-family-history-button');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
     }
@@ -39,7 +39,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     FamilyHistoryController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-
         this.$table.on('click', 'i.trash', function(e) {
             e.preventDefault();
             $(this).closest('tr').remove();
@@ -55,6 +54,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               controller.$popupSelector.show();
             }
         });
+
+      this.$popupSelector.on('click', function(e) {
+        e.preventDefault();
+        controller.hideNoHistory();
+        if (controller.$table.hasClass('hidden')){
+          controller.$table.removeClass('hidden');
+        }
+        controller.$table.show();
+      });
     };
 
     /**
