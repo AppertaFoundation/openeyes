@@ -349,6 +349,8 @@ class DefaultController extends \BaseEventTypeController
                 models\SystemicDiagnoses::class,
                 models\Element_OphCiExamination_Diagnoses::class,
                 models\HistoryMedications::class,
+                models\FamilyHistory::class,
+                models\SocialHistory::class,
             ), true);
         });
 

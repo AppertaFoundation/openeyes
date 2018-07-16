@@ -13,11 +13,12 @@ use OEModule\OphCiExamination\models;
 $historyElement = $this->event->getElementByClass(models\Element_OphCiExamination_History::class);
 
 // Find the elements for each tile, or create dummy elements so they will still render, but without any data
-$pastOphthalmicSurgeryElement = $this->event->getElementByClass(models\PastSurgery::class) ?: new models\PastSurgery();
-$pastSystemicSurgeryElement = $this->event->getElementByClass(models\PastSurgery::class) ?: new models\PastSurgery();
+$pastSurgeryElement = $this->event->getElementByClass(models\PastSurgery::class) ?: new models\PastSurgery();
 $systemicDiagnosesElement = $this->event->getElementByClass(models\SystemicDiagnoses::class) ?: new models\SystemicDiagnoses();
 $diagnosesElement = $this->event->getElementByClass(models\Element_OphCiExamination_Diagnoses::class) ?: new models\Element_OphCiExamination_Diagnoses();
 $medicationsElement = $this->event->getElementByClass(models\HistoryMedications::class) ?: new models\HistoryMedications();
+$familyHistoryElement = $this->event->getElementByClass(models\FamilyHistory::class) ?: new models\FamilyHistory();
+$socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::class) ?: new models\SocialHistory();
 ?>
 
 <?php if ($historyElement): ?>
@@ -27,11 +28,7 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
 <div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
 
-    <?php
-    $pastOphthalmicSurgeryElement->widgetClass = 'OEModule\OphCiExamination\widgets\PastOphthalmicSurgery';
-    $pastOphthalmicSurgeryElement->getElementType()->name = 'Eye Procedures';
-    $this->renderElement($pastOphthalmicSurgeryElement, $action, $form, $data);
-    ?>
+    <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
 
   <section class="element view-Eye-Medications tile"
            data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
@@ -121,11 +118,33 @@ $medicationsElement = $this->event->getElementByClass(models\HistoryMedications:
 
     <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
 
-    <?php
-    $pastSystemicSurgeryElement->widgetClass = 'OEModule\OphCiExamination\widgets\PastSystemicSurgery';
-    $pastSystemicSurgeryElement->getElementType()->name = 'Systemic Procedures';
-    $this->renderElement($pastSystemicSurgeryElement, $action, $form, $data);
-    ?>
+  <section class="element tile view-family-social-history">
+    <header class="element-header">
+      <h3 class="element-title">Family-Social</h3>
+    </header>
+    <div class="element-data">
+        <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
+        if (!$entries) { ?>
+            <div class="data-value not-recorded">
+              No family or social history recorded during this encounter
+            </div>
+        <?php } else { ?>
+          <div class="data-value">
+            <div class="tile-data-overflow">
+              <table class="last-left">
+                <tbody>
+                <?php foreach ($entries as $entry) { ?>
+                  <tr>
+                    <td><?= $entry ?></td>
+                  </tr>
+                <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <?php } ?>
+    </div>
+  </section>
 
   <section class=" element view-Systemic-Medications tile"
            data-element-type-id="<?php echo $medicationsElement->elementType->id ?>"
