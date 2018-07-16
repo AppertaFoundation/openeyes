@@ -18,7 +18,6 @@
 ?>
 <?php
 $model_name = CHtml::modelName($element);
-Yii::log($model_name);
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
