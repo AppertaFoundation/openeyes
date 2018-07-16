@@ -237,9 +237,19 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <div class="subtitle">Management Summaries</div>
 
-        <ul class="management-summaries">
+          <ul class="management-summaries">
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              foreach ($summaries as $summary) {
+                  if ($summary["comments"] !== '' || $summary["service"] !== '') { ?>
 
-        </ul>
+                      <li>
+                          <h6><?php echo $summary["service"] ?></h6>
+                          <p><?php echo $summary["comments"] !== '' ? $summary["comments"] : 'No Comments Found' ?></p>
+                      </li>
+                  <?php }
+              } ?>
+
+          </ul>
 
       </div><!-- .popup-overflow -->
 

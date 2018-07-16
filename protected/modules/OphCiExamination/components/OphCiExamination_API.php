@@ -1124,6 +1124,33 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * retrieves all the patient summary comments
+     *
+     * @param \Patient $patient
+     * @param $use_context
+     *
+     * @return array
+     */
+
+    public function getManagementSummaries($patient, $use_context = false)
+    {
+        if ($management_summaries = $this->getElements(
+            'models\Element_OphCiExamination_Management',
+            $patient,
+            $use_context)
+        ) {
+            foreach ($management_summaries as $summaries) {
+                $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
+                $temp [] = array('service' => $service, 'comments' => $summaries->comments);
+            }
+            return $temp;
+        }
+        $temp [] = array('service' => '', 'comments' => '');
+        return $temp;
+    }
+
+
+    /**
      * return the adnexal comorbidity for the patient episode on the given side. This is from the most recent examination that
      * has an adnexal comorbidity element.
      *
