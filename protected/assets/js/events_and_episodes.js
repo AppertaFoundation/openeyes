@@ -141,14 +141,20 @@ $(document).ready(function(){
 	$(this).on('click', '.js-tiles-collapse-btn', function () {
 		var $tileGroup = $(this).closest('.element-tile-group');
 		var showGroup = $tileGroup.hasClass('collapse');
-		$tileGroup.find('.element.tile .element-data').toggle(showGroup);
+		$tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(showGroup);
 		$tileGroup.toggleClass('expand');
 		$tileGroup.toggleClass('collapse');
 
 		if(!showGroup) {
 			$tileGroup.find('.element').each(function() {
+
+				// Skip titles that already have a count from Tile Data Overflow
+				if($(this).find('small').length) {
+					return true;
+				}
+
 				var rowCount = $(this).find('tr').length;
-				var $countDisplay = $('<span />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
+				var $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
 				$(this).find('.element-title').append($countDisplay);
 			});
 		} else {
@@ -188,7 +194,7 @@ $(document).ready(function(){
         // and then set the title to show total data count
 
         var title = $('.element-title', this);
-        title.html(title.text() + ' <small>(' + trCount + ')</small>');
+        title.html(title.text() + ' <small>[' + trCount + ']</small>');
       }
     }
   });
