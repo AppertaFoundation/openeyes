@@ -111,7 +111,6 @@
    */
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
-
     if (this.options.itemSets) {
       this.selectWrapper = $('<div />', {class: 'select-options'});
       this.selectWrapper.appendTo(this.popup);

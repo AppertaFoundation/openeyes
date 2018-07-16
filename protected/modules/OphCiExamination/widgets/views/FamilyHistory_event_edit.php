@@ -65,46 +65,6 @@
     <button class="button hint green js-add-new-row" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-family-history" class="oe-add-select-search auto-width" style="display:none;">
-      <!-- icon btns -->
-      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <button class="button hint green add-icon-btn" type="button">
-        <i class="oe-i plus pro-theme"></i>
-      </button><!-- select (and search) options for element -->
-      <table class="select-options">
-        <thead>
-        <tr>
-          <th>Relative</th>
-          <th>Side</th>
-          <th>Condition</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <?php
-          $relative_options = $element->getRelativeOptions();
-          $side_options = $element->getSideOptions();
-          $condition_options = $element->getConditionOptions();
-          $options_list = array('relative'=>$relative_options, 'side'=>$side_options, 'condition'=>$condition_options);
-          foreach ($options_list as $key=>$options) { ?>
-            <td><!-- flex layout only required IF I have more than 1 <ul> list (see Refraction in Examination) -->
-              <div class="flex-layout flex-top flex-left">
-                <div>
-                  <ul class="add-options  <?= $key ?>" data-multi="false" data-clickadd="false">
-                      <?php foreach ($options as $option_item) { ?>
-                        <li data-str="<?= $option_item->name ?>" data-id="<?= $option_item->id?>">
-                          <span class="auto-width"><?= $option_item->name ?></span>
-                        </li>
-                      <?php } ?>
-                  </ul>
-                </div>
-              </div> <!-- flex-layout -->
-            </td>
-          <?php } ?>
-        </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 </div>
 
@@ -141,22 +101,58 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-       var controller =  new OpenEyes.OphCiExamination.FamilyHistoryController();
 
        var adder = $('#add-family-history-popup');
-       var popup = adder.find('#add-family-history');
+       var templateText = $('#'+<?= CJSON::encode(CHtml::modelName($element).'_entry_template') ?>).text();
+      <?php
+        $relative_options = $element->getRelativeOptions();
+        $side_options = $element->getSideOptions();
+        $condition_options = $element->getConditionOptions();
+        ?>
 
-       function addFamilyHistory() {
-         controller.addEntry();
-       }
-
-       setUpAdder(
-         popup,
-         'single',
-         addFamilyHistory,
-         adder.find('.js-add-new-row'),
-         popup.find('.add-icon-btn'),
-         adder.find('.close-icon-btn')
-       );
+       new OpenEyes.UI.AdderDialog({
+         id: 'add-family-history',
+         openButton: adder.find('.js-add-new-row'),
+         itemSets: [
+           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+             array_map(function ($relative_item) {
+                 return ['label' => $relative_item->name, 'id' => $relative_item->id];
+             }, $relative_options)
+         ) ?>),
+           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+               array_map(function ($side_item) {
+                   return ['label' => $side_item->name, 'id' => $side_item->id];
+               }, $side_options)
+           ) ?>),
+           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+               array_map(function ($condition_item) {
+                   return ['label' => $condition_item->name, 'id' => $condition_item->id];
+               }, $condition_options)
+           ) ?>)
+         ],
+         onReturn: function (adderDialog, selectedItems) {
+           data = {};
+           var list = ['relative', 'side', 'condition'];
+           for (var i in list){
+             data[list[i]+'_id'] =  selectedItems[i]['id'];
+             data[list[i]+'_display'] =  selectedItems[i]['label'];
+           }
+           data['row_count'] = OpenEyes.Util.getNextDataKey('#OEModule_OphCiExamination_models_FamilyHistory_entry_table tbody tr', 'key');
+           var newRow =  Mustache.render(
+             template = templateText,
+             data
+           );
+           var row_tem = $(newRow);
+           if (data['relative_display'] === 'Other') {
+             row_tem.find('.other_relative_wrapper').show();
+           }
+           if (data['condition_display'] === 'Other') {
+             row_tem.find('.other_condition_wrapper').show();
+           }
+           $('#OEModule_OphCiExamination_models_FamilyHistory_entry_table').find('tbody').append(row_tem);
+           return 1;
+         },
+         returnOnSelect: false
+       });
     });
 </script>
