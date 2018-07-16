@@ -43,8 +43,8 @@ $element_errors = $element->getErrors();
             <colgroup>
                 <col class="cols-2">
                 <col class="cols-5">
-                <col width="120">
-                <col width="120">
+                <col>
+                <col>
                 <col>
                 <col>
                 <col>
@@ -54,7 +54,7 @@ $element_errors = $element->getErrors();
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
                 <th>Started</th>
-                <th colspan="2">Stopped (reason)</th>
+                <th>Stopped (reason)</th>
                 <th>Cont.</th>
                 <th>Presc.</th>
                 <th></th>
