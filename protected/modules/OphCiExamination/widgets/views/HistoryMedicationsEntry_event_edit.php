@@ -79,7 +79,7 @@ else {
                         </a>
                     </div>
                     <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
-                        <input class="cols-1 dose" style="width: 12%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+                        <input class="cols-1 dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="dose-unit-term cols-1"><?php echo $entry->dose_unit_term; ?></span>
                         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class' => 'frequency cols-4')) ?>
                         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'route cols-2')) ?>
@@ -101,10 +101,18 @@ else {
         <?php endif; ?>
         <fieldset class="row field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
             <?php if (!$entry->start_date||$removable) { ?>
-                <input id="<?= $model_name ?>_datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
-                       value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"
-                       style="width:80px" placeholder="yyyy-mm-dd">
-                <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+            
+                
+                <?php
+
+                $start_date = is_null($entry->start_date ? $entry->start_date : date('Y-m-d') );
+
+                $start_sel_year = substr($start_date, 0, 4);
+                $start_sel_month = substr($start_date, 4, 2);
+                $tart_sel_day = substr($start_date, 6, 2);
+                ?>
+
+                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
             <?php } else { ?>
                 <i class="oe-i start small pad"></i>
                 <?=Helper::formatFuzzyDate($entry->start_date) ?>
@@ -122,23 +130,27 @@ else {
       <?php else: ?>
 
           <span class="fuzzy-date end_date_wrapper <?php echo (!$chk_stop || $row_type == "closed" ? ' hidden' : ''); ?>">
-                <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" class="end-date" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
+              <?php
+                $end_sel_year = substr($entry->end_date, 0, 4);
+                $end_sel_month = substr($entry->end_date, 4, 2);
+                $end_sel_day = substr($entry->end_date, 6, 2);
+              ?>
+              <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+              <?php /*
+              <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
                 <i class="oe-i remove-circle small pad-left meds-stop-cancel-btn"></i>
+            */ ?>
           </span>
+          <?php if($row_type == "closed"): ?>
+              <div>
+                  <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+              </div>
+          <?php else: ?>
+              <div>
+                  <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
+              </div>
+          <?php endif; ?>
        <a href="javascript:void(0);" class="meds-stop-btn">stopped?</a>
-      <?php endif; ?>
-  </td>
-
-  <td>
-      <?php if($row_type == "closed"): ?>
-          <div>
-              <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-              <input type="hidden" name="<?= $field_prefix ?>[stop_reason_id]" class="stop-reason" value="<?= $entry->stop_reason_id ?>" />
-          </div>
-      <?php else: ?>
-          <div>
-              <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
-          </div>
       <?php endif; ?>
   </td>
 

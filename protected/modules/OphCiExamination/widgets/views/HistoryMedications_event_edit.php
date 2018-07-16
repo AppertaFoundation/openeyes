@@ -39,10 +39,9 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
         <table class="cols-full entries" id="<?= $model_name ?>_entry_table">
                 <colgroup>
                     <col class="cols-2">
-                    <col class="cols-5">
-                    <col width="120">
-                    <col width="120">
-                    <col>
+                    <col class="cols-4">
+                    <col width="cols-3">
+                    <col width="cols-3">
                     <col width="90">
                 </colgroup>
                 <thead>
@@ -51,7 +50,6 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     <th>Dose/frequency/route</th>
                     <th><i class="oe-i start small pad"></i>Started</th>
                     <th><i class="oe-i stop small pad"></i>Stopped</th>
-                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
