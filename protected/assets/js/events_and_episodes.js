@@ -138,29 +138,29 @@ $(document).ready(function(){
     removeElement(parent);
   });
 
-	$(this).on('click', '.js-tiles-collapse-btn', function () {
-		var $tileGroup = $(this).closest('.element-tile-group');
-		var showGroup = $tileGroup.hasClass('collapse');
-		$tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(showGroup);
-		$tileGroup.toggleClass('expand');
-		$tileGroup.toggleClass('collapse');
+  $(this).on('click', '.js-tiles-collapse-btn', function () {
+    var $tileGroup = $(this).closest('.element-tile-group');
+    var showGroup = $tileGroup.hasClass('collapse');
+    $tileGroup.toggleClass('collapse');
+    $tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(showGroup);
+    $(this).toggleClass('expand collapse');
 
-		if(!showGroup) {
-			$tileGroup.find('.element').each(function() {
+    if (!showGroup) {
+      $tileGroup.find('.element').each(function () {
 
-				// Skip titles that already have a count from Tile Data Overflow
-				if($(this).find('small').length) {
-					return true;
-				}
+        // Skip titles that already have a count from Tile Data Overflow
+        if ($(this).find('small').length) {
+          return true;
+        }
 
-				var rowCount = $(this).find('tr').length;
-				var $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
-				$(this).find('.element-title').append($countDisplay);
-			});
-		} else {
-			$tileGroup.find('.js-data-hidden-state').remove();
-		}
-	});
+        var rowCount = $(this).find('tr').length;
+        var $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
+        $(this).find('.element-title').append($countDisplay);
+      });
+    } else {
+      $tileGroup.find('.js-data-hidden-state').remove();
+    }
+  });
 
   // Tile Data Overflow
   $('.element.tile').each(function () {
