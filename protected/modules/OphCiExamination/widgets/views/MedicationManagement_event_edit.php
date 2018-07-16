@@ -42,7 +42,7 @@ $element_errors = $element->getErrors();
         <table class="cols-full entries" id="<?= $model_name ?>_entry_table">
             <colgroup>
                 <col class="cols-2">
-                <col class="cols-5">
+                <col class="cols-4">
                 <col>
                 <col>
                 <col>
@@ -53,10 +53,15 @@ $element_errors = $element->getErrors();
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
-                <th>Started</th>
-                <th>Stopped (reason)</th>
-                <th>Cont.</th>
-                <th>Presc.</th>
+                <th>Started  <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                              data-tooltip-content="Day, Month and Year fields are optional."></span></th>
+                <th>Stopped (reason)
+                 <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                              data-tooltip-content="Day, Month and Year fields are optional."></span></th>
+                <th>C<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                              data-tooltip-content="Test"></span></th>
+                <th>P<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                              data-tooltip-content="Test"></span></th>
                 <th></th>
             </tr>
             </thead>
