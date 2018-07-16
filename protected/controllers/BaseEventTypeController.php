@@ -1201,9 +1201,11 @@ class BaseEventTypeController extends BaseModuleController
 
 
         /**
-         * Check if the element has the element removed flag set and if its not set to 0
+         * Check if the element has data , but not the element removed flag
+         * or if the element has removed flag set and if its not set to 0
          */
-        if (isset($data[$f_key]["element_removed"])&& !$data[$f_key]["element_removed"]) {
+        if ((isset($data[$f_key]) && !isset($data[$f_key]["element_removed"])) ||
+            (isset($data[$f_key]["element_removed"]) && !$data[$f_key]["element_removed"])) {
             $keys = array_keys($data[$f_key]);
             if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
                 // there is more than one element of this type
