@@ -1141,12 +1141,12 @@ class OphCiExamination_API extends \BaseAPI
         ) {
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
-                $temp [] = array('service' => $service, 'comments' => $summaries->comments);
+                $summary [] = array('service' => $service, 'comments' => $summaries->comments);
             }
-            return $temp;
+            return $summary;
         }
-        $temp [] = array('service' => '', 'comments' => '');
-        return $temp;
+        $summary [] = array('service' => '', 'comments' => '');
+        return $summary;
     }
 
 
