@@ -118,7 +118,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
-
+/*
     var datepicker= $(this.$table).find(name);
     if (datepicker.length!=0){
       pickmeup(name, {
@@ -129,7 +129,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       datepicker.on("pickmeup-change", function(e){$(e.target).trigger("change");});
     }
-
+*/
   };
 
   /**

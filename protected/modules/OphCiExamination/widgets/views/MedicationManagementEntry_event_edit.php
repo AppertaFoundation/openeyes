@@ -119,24 +119,32 @@ $is_new = isset($is_new) ? $is_new : false;
       <?php else: ?>
 
           <span class="fuzzy-date end_date_wrapper <?php echo (!$chk_stop || $row_type == "closed" ? ' hidden' : ''); ?>">
-                <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
+              <?php
+                $end_sel_year = substr($entry->end_date, 0, 4);
+                $end_sel_month = substr($entry->end_date, 4, 2);
+                $end_sel_day = substr($entry->end_date, 6, 2);
+              ?>
+              <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+              <?php /*
+              <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
                 <i class="oe-i remove-circle small pad-left meds-stop-cancel-btn"></i>
+            */ ?>
           </span>
-       <a href="javascript:void(0);" class="meds-stop-btn">stop</a>
+          <?php if($row_type == "closed"): ?>
+              <div>
+                  <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
+              </div>
+          <?php else: ?>
+              <div>
+                  <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
+              </div>
+          <?php endif; ?>
+
+          <a href="javascript:void(0);" class="meds-stop-btn">stop</a>
       <?php endif; ?>
   </td>
 
-    <td>
-      <?php if($row_type == "closed"): ?>
-          <div>
-              <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-          </div>
-      <?php else: ?>
-          <div>
-              <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
-          </div>
-      <?php endif; ?>
-    </td>
+
 
     <td>
          <span class="icon-switch btn-prescribe">
