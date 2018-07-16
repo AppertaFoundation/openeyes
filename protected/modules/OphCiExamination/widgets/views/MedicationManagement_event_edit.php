@@ -46,15 +46,17 @@ $element_errors = $element->getErrors();
                 <col width="120">
                 <col width="120">
                 <col>
-                <col width="90">
+                <col>
+                <col>
             </colgroup>
             <thead>
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
-                <th><i class="oe-i start small pad"></i>Started</th>
-                <th><i class="oe-i stop small pad"></i>Stopped</th>
-                <th></th>
+                <th>Started</th>
+                <th colspan="2">Stopped (reason)</th>
+                <th>Cont.</th>
+                <th>Presc.</th>
                 <th></th>
             </tr>
             </thead>
@@ -187,14 +189,5 @@ $element_errors = $element->getErrors();
                 $tbody.find("tr.new").last().addClass("divider");
             }
         });
-
-
-        // TODO resolve name conflict
-
-        /*window.switch_alternative = function(anchor) {
-            var $wrapper = $(anchor).closest(".alternative-display-element");
-            $wrapper.hide();
-            $wrapper.siblings(".alternative-display-element").show();
-        };*/
     });
 </script>

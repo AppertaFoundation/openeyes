@@ -46,6 +46,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element.data("controller_instance", this);
 
     this.options.onInit(this);
+
+      window.switch_alternative = window.switch_alternative || function(anchor) {
+          var $wrapper = $(anchor).closest(".alternative-display-element");
+          $wrapper.hide();
+          $wrapper.siblings(".alternative-display-element").show();
+      };
+
   }
 
   HistoryMedicationsController._defaultOptions = {
@@ -95,21 +102,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * Setup datepicker
    */
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
-    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
     for (var i=0; i < row_count; i++){
+        console.log('#'+this.options.modelName+'_datepicker_1_'+i);
       this.constructDatepicker('#'+this.options.modelName+'_datepicker_1_'+i);
       this.constructDatepicker('#'+this.options.modelName+'_datepicker_2_'+i);
     }
   };
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
-    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+      console.log('#'+this.options.modelName+'_datepicker_1_'+row_count);
     this.constructDatepicker('#'+this.options.modelName+'_datepicker_1_'+row_count);
     this.constructDatepicker('#'+this.options.modelName+'_datepicker_2_'+row_count);
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
-      /*
+
     var datepicker= $(this.$table).find(name);
     if (datepicker.length!=0){
       pickmeup(name, {
@@ -120,7 +129,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       datepicker.on("pickmeup-change", function(e){$(e.target).trigger("change");});
     }
-      */
+
   };
 
   /**
@@ -301,23 +310,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           minLength: 2,
           delay: 700,
           source: '/MedicationManagement/findRefMedications?ref_set_id=29',
-          /*
-          source: function (request, response) {
-              $.ajax({
-                  'url': '/MedicationManagement/findRefMedications',
-                  'type':'GET',
-                  'data':{'term': request.term, 'ref_set_id': 29},
-                  'beforeSend': function(){
-                  },
-                  'success':function(data) {
-                      data = $.parseJSON(data);
-                      response(data);
-                  }
-              });
-          },
-            */
           select: function(event, ui){
-              console.log(ui.item);
               $row.find(".medication-name .textual-display").text(ui.item.preferred_term);
               switch_alternative($(event.target));
               $row.find(".dose-unit-term").text(ui.item.dose_unit_term === null ? "" : ui.item.dose_unit_term);
@@ -679,7 +672,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     $row.find(".rgroup").val("new");
 
-    $row.prependTo(this.$table.find('tbody'));
+    $row.appendTo(this.$table.find('tbody'));
     this.initialiseRow($row);
 
       if (typeof medication !== 'undefined') {

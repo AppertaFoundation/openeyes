@@ -126,7 +126,7 @@ $is_new = isset($is_new) ? $is_new : false;
       <?php endif; ?>
   </td>
 
-  <td>
+    <td>
       <?php if($row_type == "closed"): ?>
           <div>
               <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
@@ -136,21 +136,24 @@ $is_new = isset($is_new) ? $is_new : false;
               <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
           </div>
       <?php endif; ?>
-  </td>
+    </td>
 
     <td>
-        <span class="icon-switch btn-prescribe">
-            <i class="oe-i drug-rx medium-icon pad-left js-has-tooltip" data-tooltip-content="New Prescription" data-value="<?php echo isset($entry->chk_prescribe) ? $entry->chk_prescribe : 0; ?>" <?php if(isset($entry->chk_prescribe) && $entry->chk_prescribe == 1){ echo 'style="opacity: 1"'; } ?>></i>
-            <input type="hidden" name="<?= $field_prefix ?>[chk_prescribe]" value="<?php echo isset($entry->chk_prescribe) ? $entry->chk_prescribe : 0; ?>" />
+         <span class="icon-switch btn-prescribe">
+            <input type="checkbox" name="<?= $field_prefix ?>[chk_prescribe]" <?php echo isset($entry->chk_prescribe) ? "checked" : ""; ?> />
         </span>
 
+    </td>
+
+    <td>
         <span class="icon-switch btn-continue">
-            <i class="oe-i direction-right-circle medium-icon js-has-tooltip" data-tooltip-content="Continue" data-value="<?php echo isset($entry->continue) ? $entry->continue : 0; ?>" <?php if(isset($entry->continue) && $entry->continue == 1){ echo 'style="opacity: 1"'; } ?>></i>
-            <input type="hidden" name="<?= $field_prefix ?>[continue]" value="<?php echo isset($entry->continue) ? $entry->continue : 0; ?>" />
+            <input type="checkbox" name="<?= $field_prefix ?>[continue]" <?php echo isset($entry->continue) ? "checked" : ""; ?> />
         </span>
+    </td>
 
+    <td>
         <?php if ($removable) { ?>
-            <button class="button small warning remove" type="button">remove</button>
+            <button class="button small warning remove" type="button">Remove</button>
         <?php } ?>
     </td>
 </tr>
