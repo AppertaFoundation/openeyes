@@ -37,7 +37,7 @@ class AuditController extends BaseController
     public function beforeAction($action)
     {
         $userid = Yii::app()->session['user']->id;
-        if (($userid != 2103) and ($userid != 122) and ($userid != 613) and ($userid != 1330) and ($userid != 1) and ($userid !=8364) and ($userid !=7971)) {
+        if (($userid != 2103) and ($userid != 122) and ($userid != 1) and ($userid !=8364) and ($userid !=7971)) {
             return false;
         }
 
