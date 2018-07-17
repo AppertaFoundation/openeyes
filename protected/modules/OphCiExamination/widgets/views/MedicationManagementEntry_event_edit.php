@@ -17,28 +17,40 @@
 ?>
 
 <?php
-if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
-}else {
-    $start_sel_day = $start_sel_month = null;
-    $start_sel_year = date('Y');
+
+/** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $entry */
+
+if (isset($entry->start_date) && !is_null($entry->start_date)) {
+    $start_date = $entry->start_date;
 }
-if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
+else {
+    $start_date = date('Ymd');
+}
+
+$start_sel_year = substr($start_date, 0, 4);
+$start_sel_month = substr($start_date, 4, 2);
+$start_sel_day = substr($start_date, 6, 2);
+
+if (isset($entry->end_date) && !is_null($entry->end_date)) {
+
+    $end_sel_year = substr($entry->end_date, 0, 4);
+    $end_sel_month = substr($entry->end_date, 4, 2);
+    $end_sel_day = substr($entry->end_date, 6, 2);
+
 } else {
     $end_sel_day = $end_sel_month = null;
     $end_sel_year = date('Y');
 }
-$chk_continue =  isset($entry->chk_continue) ? $entry->chk_continue : false;
-$chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
-$chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
+$continue =  isset($entry->continue) ? $entry->continue : false;
+$prescribe = isset($entry->prescribe) ? $entry->prescribe : ($row_type == "prescribed");
+$stop = isset($entry->stop) ? $entry->stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 ?>
 
 <tr
     data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    class="<?=$field_prefix ?>_row <?= ($is_new || $entry->group == 'new') ? " new" : ""?><?= $row_type == 'closed' ? ' fade ignore' : '' ?>"
+    class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $row_type == 'closed' ? ' fade ignore' : '' ?>"
 >
 
     <td>
@@ -90,81 +102,61 @@ $is_new = isset($is_new) ? $is_new : false;
         </div>
     </td>
     <td>
-        <?php if(!$direct_edit): ?>
-            <?php if(!is_null($entry->start_date)): ?>
-                <i class="oe-i start small pad"></i>&nbsp;<?=Helper::formatFuzzyDate($entry->start_date) ?>
-            <?php endif; ?>
-        <?php endif; ?>
-        <fieldset class="field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
-            <?php if (!$entry->start_date||$removable) { ?>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'hidden'; }?>>
+                <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                </a>
+            </div>
+            <fieldset class="field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
+                <?php if (!$entry->start_date||$removable) { ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date ?>" />
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                <?php } else { ?>
 
-                <?php
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
 
-                $start_date = is_null($entry->start_date ? $entry->start_date : date('Y-m-d') );
-
-                $start_sel_year = substr($start_date, 0, 4);
-                $start_sel_month = substr($start_date, 4, 2);
-                $tart_sel_day = substr($start_date, 6, 2);
-                ?>
-
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-            <?php } else { ?>
-                <i class="oe-i start small pad"></i>
-                <?=Helper::formatFuzzyDate($entry->start_date) ?>
-                <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
-
-            <?php } ?>
-            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-            <?php /*<input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" /> */ ?>
+                <?php } ?>
+            </fieldset>
+        </div>
     </td>
     <td>
-      <?php if($row_type == "closed" && !is_null($entry->end_date)): ?>
-          <i class="oe-i stop small pad"></i>
-          <?=Helper::formatFuzzyDate($entry->end_date) ?>
-
-      <?php else: ?>
-
-          <span class="fuzzy-date end_date_wrapper <?php echo (!$chk_stop || $row_type == "closed" ? ' hidden' : ''); ?>">
-              <?php
-                $end_sel_year = substr($entry->end_date, 0, 4);
-                $end_sel_month = substr($entry->end_date, 4, 2);
-                $end_sel_day = substr($entry->end_date, 6, 2);
-              ?>
-              <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-              <?php /*
-              <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
-                <i class="oe-i remove-circle small pad-left meds-stop-cancel-btn"></i>
-            */ ?>
-          </span>
-          <?php if($row_type == "closed"): ?>
-              <div>
-                  <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-              </div>
-          <?php else: ?>
-              <div>
-                  <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
-              </div>
-          <?php endif; ?>
-
-          <a href="javascript:void(0);" class="meds-stop-btn">stop</a>
-      <?php endif; ?>
-  </td>
-
-
-
-    <td>
-         <span class="icon-switch btn-prescribe">
-            <input type="checkbox" name="<?= $field_prefix ?>[chk_prescribe]" <?php echo isset($entry->chk_prescribe) ? "checked" : ""; ?> />
-        </span>
-
+        <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual">
+                <a class="textual-display meds-stop-btn" href="javascript:void(0);" onclick="switch_alternative(this);">
+                <?php if(!is_null($entry->end_date)): ?>
+                    <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?><?php echo !is_null($entry->stop_reason_id) ? ' ('.$entry->stopReason->name.')' : ''; ?>
+                <?php else: ?>
+                    stop
+                <?php endif; ?>
+                </a>
+            </div>
+            <div class="alternative-display-element"  <?php if(is_null($entry->end_date)) {echo 'style="display: none;"'; } ?>>
+                <span class="fuzzy-date end_date_wrapper" >
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+                </span>
+                <div>
+                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$stop ? ' hidden' : ''))) ?>
+                </div>
+            </div>
+        </div>
     </td>
 
     <td>
         <span class="icon-switch btn-continue">
-            <input type="checkbox" name="<?= $field_prefix ?>[continue]" <?php echo isset($entry->continue) ? "checked" : ""; ?> />
+            <input type="checkbox" name="<?= $field_prefix ?>[continue]" <?php echo $entry->continue == 1 ? "checked" : ""; ?> />
         </span>
     </td>
 
+    <td>
+         <span class="icon-switch btn-prescribe">
+            <input type="checkbox" name="<?= $field_prefix ?>[prescribe]" <?php echo $entry->prescribe == 1 ? "checked" : ""; ?> />
+        </span>
+
+    </td>
     <td>
         <?php if ($removable) { ?>
             <button class="button small warning remove" type="button">Remove</button>

@@ -32,6 +32,9 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      * @var bool
      */
     public $do_not_save_entries = false;
+
+    public static $entry_class = \EventMedicationUse::class;
+
     /**
      * @inheritdoc
      */
@@ -97,6 +100,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             )
         );
     }
+
     /**
      * @inheritdoc
      */
@@ -275,6 +279,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 }
             }
         }
+
         parent::afterValidate();
     }
     private function getPrescriptionDetails()

@@ -707,9 +707,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         res = fieldset.find('select.fuzzy_year').val();
         var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
+        res += '' + ((month < 10) ? '0' + month.toString() : month.toString());
         var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
+        res += '' + ((day < 10) ? '0' + day.toString() : day.toString());
 
         return res;
     };

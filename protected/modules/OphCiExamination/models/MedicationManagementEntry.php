@@ -46,8 +46,8 @@
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                array('element_id, ref_medication_id, start_date', 'required'),
-                array('ref_medication_id, form_id, laterality, route_id, frequency_id, duration, stop_reason_id, stop, prescribe', 'numerical', 'integerOnly'=>true),
+                array('ref_medication_id, start_date', 'required'),
+                array('ref_medication_id, form_id, laterality, route_id, frequency_id, duration, stop_reason_id, stop, prescribe, continue', 'numerical', 'integerOnly'=>true),
                 array('dose', 'numerical'),
                 array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
                 array('dose_unit_term', 'length', 'max'=>45),
@@ -99,7 +99,8 @@
                 'created_user_id' => 'Created User',
                 'created_date' => 'Created Date',
                 'stop' => 'Stop',
-                'continue' => 'Continue'
+                'continue' => 'Continue',
+                'prescribe' => 'Prescribe'
             );
         }
 

@@ -53,20 +53,15 @@ $element_errors = $element->getErrors();
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
-                <th>Started  <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
-                              data-tooltip-content="Day, Month and Year fields are optional."></span></th>
-                <th>Stopped (reason)
-                 <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
-                              data-tooltip-content="Day, Month and Year fields are optional."></span></th>
-                <th>C<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
-                              data-tooltip-content="Test"></span></th>
-                <th>P<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
-                              data-tooltip-content="Test"></span></th>
+                <th>Started<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
+                <th>Stopped (reason)<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
+                <th>C<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Continue"></span></th>
+                <th>P<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px" data-tooltip-content="Prescribe"></span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-                <?php if($this->isPostedEntries() && !empty($element->entries)) {
+                <?php if($this->isPostedEntries() || !empty($element->entries)) {
                     $row_count = 0;
                     $total_count = count($element->entries);
                     foreach ($element->entries as $key=>$entry) {
@@ -83,10 +78,10 @@ $element_errors = $element->getErrors();
                                     'laterality_options' => $laterality_options,
                                     'route_options' => $route_options,
                                     'frequency_options' => $frequency_options,
-                                    'direct_edit' => $entry->group === "new",
-                                    'usage_type' => $entry->usage_type,
-                                    'row_type' => $entry->group,
-                                    'removable' => $entry->group === "new",
+                                    'direct_edit' => false,
+                                    'usage_type' => /* $entry->usage_type */ 'UTYPE',
+                                    'row_type' => /*$entry->group */ 'group',
+                                    'removable' => /* $entry->group === "new" */ "old",
                                     'is_last' => ($row_count == $total_count - 1)
                                 )
                             );

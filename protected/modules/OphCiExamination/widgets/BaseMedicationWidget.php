@@ -38,7 +38,8 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
     protected function getNewElement()
     {
-        return new static::$elementClass();
+        $class = static::$elementClass;
+        return new $class;
     }
 
     /**
@@ -57,6 +58,8 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
         if  (!is_a($element, static::$elementClass)) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
+
+        /** @var BaseMedicationElement $element */
 
         // pre-cache current entries so any entries that remain in place will use the same db row
         $entries_by_id = array();
@@ -77,33 +80,37 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     if($entry->laterality != $entry_data['laterality']) {
                         $entry->end_date = date('Y-m-d');
                         $entries[] = $entry;
-                        $entry = new \EventMedicationUse();
+                        $class = $element::$entry_class;
+                        $entry = new $class;
                         $entry_data['id'] = null;
                     }
                 }
                 else {
-                    $entry = new \EventMedicationUse();
+                    $class = $element::$entry_class;
+                    $entry = new $class;
                 }
 
                 foreach (array_merge(
                              array_keys($entry->getAttributes()),
-                             ['is_copied_from_previous_event', 'group', 'chk_continue', 'chk_prescribe', 'chk_stop'])
+                             ['is_copied_from_previous_event', 'group', 'continue', 'prescribe', 'stop'])
                          as $k) {
-                    if(array_key_exists($k, $entry_data)) {
+                    if(array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
+                        if(in_array($k, ['continue', 'prescribe', 'stop'])) {
+                            $entry_data[$k] = (int)($entry_data[$k] == "on");
+                        }
                         $entry->$k =  $entry_data[$k];
                     }
                 }
 
                 if ($entry_data['start_date'] !== ''){
-                    list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
-                    $entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
+                    $entry->start_date = $entry_data['start_date'];
                 }
                 else {
                     $entry->start_date = null;
                 }
+
                 if (isset($entry_data['end_date']) && $entry_data['end_date'] !== ''){
-                    list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
-                    $entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
+                    $entry->end_date = $entry_data['end_date'];
                 }
                 else {
                     $entry->end_date = null;
@@ -111,7 +118,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
                 $entries[] = $entry;
 
-                if($entry->chk_prescribe) {
+                if($entry->prescribe) {
                     $entry->setScenario("to_be_prescribed");
                     $to_prescription[] = $entry;
                 }

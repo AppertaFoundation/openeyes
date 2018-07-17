@@ -36,7 +36,11 @@ namespace OEModule\OphCiExamination\models;
  */
 class MedicationManagement extends BaseMedicationElement
 {
+    public $do_not_save_entries = false;
+
     public $widgetClass = 'OEModule\OphCiExamination\widgets\MedicationManagement';
+
+    public static $entry_class = MedicationManagementEntry::class;
 
 	/**
 	 * @return string the associated database table name
@@ -70,7 +74,7 @@ class MedicationManagement extends BaseMedicationElement
             'entries' => array(
                 self::HAS_MANY,
                 MedicationManagementEntry::class,
-                array('id' => 'element_id'),
+                array('element_id' => 'id'),
                 'order' => 'entries.start_date DESC, entries.end_date DESC'
             ),
         );
@@ -100,5 +104,34 @@ class MedicationManagement extends BaseMedicationElement
     public function getContainer_create_view()
     {
         return '//patient/element_container_form';
+    }
+
+    protected function saveEntries()
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("element_id = :element_id");
+        $criteria->params['element_id'] = $this->id;
+        $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
+        $saved_ids = array();
+        foreach ($this->entries as $entry) {
+            /** @var MedicationManagementEntry $entry */
+            $entry->element_id = $this->id;
+            if(!$entry->save()) {
+                foreach ($entry->errors as $err) {
+                    $this->addError('entries', implode(', ', $err));
+                }
+                return false;
+            }
+            $saved_ids[] = $entry->id;
+        }
+        foreach ($orig_entries as $entry) {
+            if(!in_array($entry->id, $saved_ids)) {
+                $entry->delete();
+            }
+        }
+        if(count($this->entries_to_prescribe) > 0) {
+            $this->generatePrescriptionEvent();
+        }
+        return true;
     }
 }
