@@ -55,8 +55,8 @@ $element_errors = $element->getErrors();
                 <th>Dose/frequency/route</th>
                 <th>Started<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
                 <th>Stopped (reason)<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
-                <th>C<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Continue"></span></th>
-                <th>P<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px" data-tooltip-content="Prescribe"></span></th>
+                <th>Cnt</th>
+                <th>Rx</th>
                 <th></th>
             </tr>
             </thead>

@@ -91,14 +91,15 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                 }
 
                 foreach (array_merge(
-                             array_keys($entry->getAttributes()),
-                             ['is_copied_from_previous_event', 'group', 'continue', 'prescribe', 'stop'])
+                             $entry->attributeNames(),
+                             ['is_copied_from_previous_event', 'group'])
                          as $k) {
                     if(array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
+
                         if(in_array($k, ['continue', 'prescribe', 'stop'])) {
-                            $entry_data[$k] = (int)($entry_data[$k] == "on");
+                             $entry_data[$k] = $entry_data[$k] == "on" ? 1 : 0;
                         }
-                        $entry->$k =  $entry_data[$k];
+                        $entry->setAttribute($k, $entry_data[$k]);
                     }
                 }
 
