@@ -21,7 +21,7 @@
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
-<div class="element-fields">
+<div class="element-fields js-side" data-side="<?=$element->eye?>">
     <div class="row eyedraw-row cataract" data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
         <div class="fixed column">
             <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(

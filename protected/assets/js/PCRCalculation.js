@@ -4,10 +4,9 @@
  * @param ev
  * @returns {*|jQuery|HTMLElement}
  */
-function getPcrContainer() {
-    var side = $('#Element_OphTrOperationnote_ProcedureList_eye_id').find('input[name="Element_OphTrOperationnote_ProcedureList[eye_id]"]:checked').val() == 1 ? 'left' : 'right';
-    $container = $('#ophCiExaminationPCRRisk' + side.charAt(0).toUpperCase() + side.substr(1) + 'Eye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .' + side + '-eye');
-
+function getPcrContainer(ev) {
+        var side = $(ev.target).closest('.js-side').attr('data-side');
+        $container = $('#ophCiExaminationPCRRisk' + side.charAt(0).toUpperCase() + side.substr(1) + 'Eye, section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .' + side + '-eye');
     return $container;
 }
 
@@ -22,7 +21,7 @@ function setFundalView(ev, pcrEl) {
     pcrEl = ev.data;
   }
 
-  var $container = getPcrContainer();
+  var $container = getPcrContainer(ev);
   if ($(ev.target).find(':selected').data('value') === 'No view') {
     $container.find(pcrEl).val('Y');
   } else {
@@ -137,7 +136,7 @@ function setPcrBrunescent(ev, pcrEl) {
     pcrEl = ev.data.pcr;
   }
 
-  var $container = getPcrContainer();
+  var $container = getPcrContainer(ev);
   var $cataractDrop = $(ev.target);
 
   var isRight = (ev.target.id.indexOf('right') > -1);
@@ -164,7 +163,7 @@ function setPcrPxf(ev, pcrEl) {
     pcrEl = ev.data.pcr;
   }
 
-  var $container = getPcrContainer();
+  var $container = getPcrContainer(ev);
   var $related = $(ev.data.related);
 
   if (ev.target.checked || $related.is(':checked')) {
@@ -186,8 +185,10 @@ function setPcrPupil(ev, pcrEl) {
     pcrEl = ev.data;
   }
 
-  var $container = getPcrContainer();
+  var $container = getPcrContainer(ev);
+  console.log($container);
   $container.find(pcrEl).val($(ev.target).val());
+
   $(pcrEl).trigger('change');
 
 }

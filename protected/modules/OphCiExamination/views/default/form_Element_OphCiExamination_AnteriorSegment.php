@@ -19,7 +19,7 @@
 
 <div class="element-fields element-eyes row" style="overflow: inherit;">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
+	<div class="element-eye right-eye js-side column side left<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right" style="border-right: 1px solid white;">
 		<div class="active-form">
@@ -46,7 +46,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="element-eye right-eye column side right<?php if (!$element->hasLeft()) {
+	<div class="element-eye right-eye js-side column side right<?php if (!$element->hasLeft()) {
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
