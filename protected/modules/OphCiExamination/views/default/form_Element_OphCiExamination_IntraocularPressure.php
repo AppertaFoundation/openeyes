@@ -41,5 +41,5 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
           </div>
         </div>
       </div>
-    <?php endforeach;?>
+    <?php endforeach; ?>
 </div>
