@@ -79,7 +79,7 @@ class BaseEventTypeController extends BaseModuleController
         'eventImage' => self::ACTION_TYPE_VIEW,
         'printCopy' => self::ACTION_TYPE_PRINT,
         'savePDFprint' => self::ACTION_TYPE_PRINT,
-        'image' => self::ACTION_TYPE_VIEW,
+        'createImage' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -744,11 +744,6 @@ class BaseEventTypeController extends BaseModuleController
         $this->initWithEventId(@$_GET['id']);
     }
 
-    protected function initActionImage()
-    {
-        $this->initActionView();
-    }
-
     /**
      * initialise the controller prior to event update action.
      *
@@ -945,7 +940,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @throws CHttpException
      */
-    public function actionView($id, $render_as_image = false)
+    public function actionView($id)
     {
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
@@ -994,19 +989,6 @@ class BaseEventTypeController extends BaseModuleController
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
 
         $this->render('view', $viewData);
-    }
-
-    public function actionImage($id)
-    {
-        $this->setOpenElementsFromCurrentEvent('view');
-
-        $viewData = array_merge(array(
-            'elements' => $this->open_elements,
-            'eventId' => $id,
-        ), $this->extraViewProperties);
-
-        $this->layout = '//layouts/event_image';
-        $this->render('image', $viewData);
     }
 
     /**
@@ -1611,7 +1593,7 @@ class BaseEventTypeController extends BaseModuleController
             $action = 'print';
         }
 
-        if($action === 'image') {
+        if($action === 'createImage') {
             $action = 'view';
         }
 
@@ -2450,5 +2432,131 @@ class BaseEventTypeController extends BaseModuleController
         if (!$hotlistItem->save()) {
             throw new Exception('UserHotListItem failed validation ' . print_r($hotlistItem->errors, true));
         };
+    }
+
+
+    public function actionCreateImage($id)
+    {
+        $this->initActionView();
+        $eventImage = $this->stubEventImage();
+
+        try {
+            $content = $this->getEventAsHtml();
+
+            $image = new WKHtmlToImage();
+            $image->setCanvasImagePath($this->event->getImageDirectory());
+
+            $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
+                array('width' => 1250, 'quality' => 85));
+
+            $input_image = $this->event->getImagePath('preview');
+            $output_image = $this->event->getImagePath('preview_small');
+            $imagick = new \Imagick($input_image);
+            $this->resizeImage($imagick);
+            $imagick->writeImage($output_image);
+
+            $eventImage->event_id = $this->event->id;
+            $eventImage->image_data = file_get_contents($output_image);
+            $eventImage->status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
+
+            if (!$eventImage->save()) {
+                throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
+            }
+
+            if (!$this->keepWorkingFiles()) {
+                $image->deleteFile($input_image);
+                $image->deleteFile($output_image);
+            }
+
+        } catch (Exception $ex) {
+            $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
+            $eventImage->save();
+            throw $ex;
+        }
+    }
+
+    protected function getPreviewImageWidth()
+    {
+        return 520;
+    }
+
+    protected function resizeImage($imagick)
+    {
+        $width = $this->getPreviewImageWidth();
+        $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+        $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
+    }
+
+    protected function keepWorkingFiles()
+    {
+        return true;
+    }
+
+    /**
+     * @param Event $event
+     * @return string
+     */
+    protected function getEventAsHtml()
+    {
+        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
+        ob_start();
+
+        $this->setOpenElementsFromCurrentEvent('view');
+
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $this->event->id,
+        ), $this->extraViewProperties);
+
+        $this->layout = '//layouts/event_image';
+        $this->render('image', $viewData);
+
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
+    }
+
+    public function getPreviewImagePath($page = null)
+    {
+        if ($page === null) {
+            return $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview.png';
+        } else {
+            return $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $page . '.png';
+        }
+    }
+
+    /**
+     * @param $event
+     */
+    protected function removeEventImages()
+    {
+        foreach (EventImage::model()->findAll('event_id = :event_id',
+            array(':event_id' => $this->event->id)) as $eventImage) {
+            $eventImage->delete();
+        }
+
+        for ($imageCount = 0; ; ++$imageCount) {
+            $filename = $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $imageCount . '.png';
+            if (file_exists($filename)) {
+                @unlink($filename);
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param $event
+     * @return EventImage
+     */
+    protected function stubEventImage()
+    {
+        $eventImage = new EventImage();
+        $eventImage->event_id = $this->event->id;
+        $eventImage->status_id = EventImageStatus::model()->find('name = "GENERATING"')->id;
+        $eventImage->save();
+
+        return $eventImage;
     }
 }

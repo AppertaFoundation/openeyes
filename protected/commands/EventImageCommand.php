@@ -3,7 +3,6 @@
 
 class EventImageCommand extends CConsoleCommand
 {
-    private static $image_url = 'http://localhost/eventImage/create/';
 
     private $curlConnection = null;
 
@@ -34,7 +33,7 @@ class EventImageCommand extends CConsoleCommand
                 $this->createImageForEvent($e);
             }
         } else {
-            $count = isset($args[0]) ? (int)$args[0] : 1;
+            $count = isset($args[0]) ? (int)$args[0] : INF;
             $this->createEventImages($count);
         }
         $this->closeCurlConnection();
@@ -106,8 +105,9 @@ class EventImageCommand extends CConsoleCommand
 
     public function createImageForEvent($event)
     {
-        echo 'Curling URL "' . self::$image_url . $event->id . "\"\n";
-        curl_setopt($this->curlConnection, CURLOPT_URL, self::$image_url . $event->id);
+        $url = 'http://localhost/' . $event->eventType->class_name . '/default/createImage/' . $event->id;
+        echo 'Curling URL "' . $url . "\"\n";
+        curl_setopt($this->curlConnection, CURLOPT_URL, $url);
         $content = curl_exec($this->curlConnection);
         $http_code = curl_getinfo($this->curlConnection, CURLINFO_HTTP_CODE);
         echo 'Result: ' . $http_code . "\n";
