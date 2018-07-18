@@ -1131,21 +1131,25 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array
      */
-
     public function getManagementSummaries($patient, $use_context = false)
     {
         $management_summaries = $this->getElements('models\Element_OphCiExamination_Management',$patient,$use_context);
         if ($management_summaries) {
+            $summary = [];
+            $summmary_dates = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
-                $summary[] = array('service' => $service, 'comments' => $summaries->comments);
+                $created_date = date_format(date_create($summaries->event->event_date),"d.m.Y");
+                if(!array_key_exists($service, $summary)){
+                    $summary[$service] = $summaries->comments;
+                    $summary_with_dates[$service." [".$created_date."]"] = $summaries->comments;
+                }
             }
-            return $summary;
+            return $summary_with_dates;
         }
-        $summary [] = array('service' => '', 'comments' => '');
+        $summary = [];
         return $summary;
     }
-
 
     /**
      * return the adnexal comorbidity for the patient episode on the given side. This is from the most recent examination that

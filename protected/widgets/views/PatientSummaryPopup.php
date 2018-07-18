@@ -239,14 +239,13 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
           <ul class="management-summaries">
               <?php $summaries = $exam_api->getManagementSummaries($patient);
-              foreach ($summaries as $summary) {
-                  if (isset($summary["comments"]) && trim($summary["comments"]) !== ''
-                      && isset($summary["service"]) && trim($summary["service"]) !== '') { ?>
+              foreach ($summaries as $service => $comments) {
+                   ?>
                       <li>
-                          <h6><?php echo $summary["service"] ?></h6>
-                          <p><?php echo $summary["comments"] ?></p>
+                          <h6><?php echo $service ?></h6>
+                          <p><?php echo $comments ?></p>
                       </li>
-                  <?php }
+                  <?php
               } ?>
 
           </ul>
