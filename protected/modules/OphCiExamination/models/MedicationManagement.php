@@ -80,6 +80,39 @@ class MedicationManagement extends BaseMedicationElement
         );
     }
 
+    /**
+     * @return MedicationManagementEntry[]
+     */
+
+    public function getContinuedEntries()
+    {
+        return array_filter($this->entries, function($e){
+            return $e->continue == 1;
+        });
+    }
+
+    /**
+     * @return MedicationManagementEntry[]
+     */
+
+    public function getStoppedEntries()
+    {
+        return array_filter($this->entries, function($e){
+            return $e->stop == 1;
+        });
+    }
+
+    /**
+     * @return MedicationManagementEntry[]
+     */
+
+    public function getPrescribedEntries()
+    {
+        return array_filter($this->entries, function($e){
+            return $e->prescribe == 1;
+        });
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -116,6 +149,11 @@ class MedicationManagement extends BaseMedicationElement
         foreach ($this->entries as $entry) {
             /** @var MedicationManagementEntry $entry */
             $entry->element_id = $this->id;
+
+            if(!is_null($entry->end_date)) {
+                $entry->stop = 1;
+            }
+
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
@@ -133,5 +171,11 @@ class MedicationManagement extends BaseMedicationElement
             $this->generatePrescriptionEvent();
         }
         return true;
+    }
+
+    public function generatePrescriptionEvent()
+    {
+        // TODO!!!!
+        return;
     }
 }

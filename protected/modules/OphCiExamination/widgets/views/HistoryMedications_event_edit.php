@@ -89,8 +89,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 <?php if(!empty($closed_entries)): ?>
                     <tr class="ignore">
                         <td colspan="6" class="align-left">
-                            <a href="javascript:void(0);" class="hide-stopped">Hide Stopped / Changed</a>
-                            <a href="javascript:void(0);" class="show-stopped" style="display: none;">Show Stopped / Changed</a>
+                            <a href="javascript:void(0);" class="hide-stopped" style="display: none;">Hide Stopped / Changed</a>
+                            <a href="javascript:void(0);" class="show-stopped">Show Stopped / Changed</a>
                         </td>
 					</tr>
                 <?php endif; ?>

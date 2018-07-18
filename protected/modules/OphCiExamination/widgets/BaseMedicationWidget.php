@@ -18,6 +18,7 @@
 namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\BaseMedicationElement;
+use OEModule\OphCiExamination\models\MedicationManagementEntry;
 
 abstract class BaseMedicationWidget extends \BaseEventElementWidget
 {
@@ -97,10 +98,15 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     if(array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
 
                         if(in_array($k, ['continue', 'prescribe', 'stop'])) {
-                             $entry_data[$k] = $entry_data[$k] == "on" ? 1 : 0;
+                             continue;
                         }
                         $entry->setAttribute($k, $entry_data[$k]);
                     }
+                }
+
+                if(is_a($entry, MedicationManagementEntry::class)) {
+                    $entry->continue = isset($entry_data['continue']) && $entry_data['continue'] == 'on' ? 1 : 0;
+                    $entry->prescribe = isset($entry_data['prescribe']) && $entry_data['prescribe'] == 'on' ? 1 : 0;
                 }
 
                 if ($entry_data['start_date'] !== ''){
@@ -119,7 +125,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
 
                 $entries[] = $entry;
 
-                if($entry->prescribe) {
+                if(in_array('prescribe', $entry->attributeNames()) && $entry->prescribe) {
                     $entry->setScenario("to_be_prescribed");
                     $to_prescription[] = $entry;
                 }

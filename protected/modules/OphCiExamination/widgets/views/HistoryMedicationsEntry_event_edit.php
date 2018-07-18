@@ -45,7 +45,7 @@ else {
 }
 ?>
 
-<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' fade' : '' ?><?= $ignore ?>">
+<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $ignore ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
       <span class="medication-display">
@@ -89,7 +89,7 @@ else {
                             array('empty' => '-Select-', 'class'=>'admin-route-options laterality cols-2', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
                     </div>
                 </div>
-                <?php if(!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; ?>
+                <?php /* if(!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; */ ?>
             </div>
         </div>
     </td>

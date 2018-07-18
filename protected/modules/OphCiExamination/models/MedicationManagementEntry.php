@@ -113,4 +113,38 @@
         {
             return \RefMedicationLaterality::model()->findAll();
         }
+
+        public function getAdministrationDisplay()
+        {
+            $res = array();
+            foreach (array('dose', 'dose_unit_term', 'refMedicationLaterality', 'route', 'frequency') as $k) {
+                if ($this->$k) {
+                    $res[] = $this->$k;
+                }
+            }
+            return implode(' ', $res);
+        }
+
+        private function explodeDate($date_str)
+        {
+            return substr($date_str, 0, 4)."-".substr($date_str, 4, 2)."-".substr($date_str, 6, 2);
+        }
+
+        public function getDatesDisplay()
+        {
+            $res = array();
+            if ($this->start_date) {
+                $res[] = \Helper::formatFuzzyDate($this->explodeDate($this->start_date));
+            }
+            if ($this->end_date) {
+                if (count($res)) {
+                    $res[] = '-';
+                }
+                $res[] = \Helper::formatFuzzyDate($this->explodeDate($this->end_date));
+            }
+            if ($this->stop_reason_id) {
+                $res[] = "({$this->stopReason->name})";
+            }
+            return implode(' ', $res);
+        }
     }

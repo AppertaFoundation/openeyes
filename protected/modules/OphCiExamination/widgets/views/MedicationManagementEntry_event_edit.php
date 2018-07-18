@@ -38,7 +38,8 @@ if (isset($entry->end_date) && !is_null($entry->end_date)) {
     $end_sel_day = substr($entry->end_date, 6, 2);
 
 } else {
-    $end_sel_day = $end_sel_month = null;
+    $end_sel_day = date('d');
+    $end_sel_month = date('m');
     $end_sel_year = date('Y');
 }
 $continue =  isset($entry->continue) ? $entry->continue : false;
@@ -123,7 +124,6 @@ $is_new = isset($is_new) ? $is_new : false;
         </div>
     </td>
     <td>
-        <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
         <div class="alternative-display inline">
             <div class="alternative-display-element textual">
                 <a class="textual-display meds-stop-btn" href="javascript:void(0);" onclick="switch_alternative(this);">
@@ -134,14 +134,16 @@ $is_new = isset($is_new) ? $is_new : false;
                 <?php endif; ?>
                 </a>
             </div>
-            <div class="alternative-display-element"  <?php if(is_null($entry->end_date)) {echo 'style="display: none;"'; } ?>>
+            <fieldset class="alternative-display-element"  style="display: none;">
+                <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
                 <span class="fuzzy-date end_date_wrapper" >
                     <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
                 </span>
                 <div>
-                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$stop ? ' hidden' : ''))) ?>
+                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-8 stop-reason')) ?>
+                    <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a>
                 </div>
-            </div>
+            </fieldset>
         </div>
     </td>
 

@@ -139,7 +139,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
 
     // if there aren't any stopped medications, then the filter is irrelevant
-    if (!this.$table.find('tr.fade').length) {
+    if (!this.$table.find('tr.stopped').length) {
       this.$element.find('.show-stopped').hide();
       this.$element.find('.hide-stopped').hide();
     } else {
@@ -220,7 +220,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var $bound_row = $this_row.data('bound_entry');
           controller.setRowAsStopped($this_row);
             if(typeof $bound_row !== "undefined" && typeof controller.MMController !== "undefined") {
-               controller.MMController.setRowAsStopped($bound_row)
+               controller.MMController.setRowAsStopped($bound_row);
             }
       });
 
@@ -323,32 +323,33 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.setRowAsStopped = function ($row) {
-      var $stop_reason = $row.find('.stop-reason');
-      var $end_date_wrapper =  $row.find('.end_date_wrapper');
-      $stop_reason.removeClass("hidden");
-      $end_date_wrapper.removeClass("hidden");
-      $end_date_wrapper.find('input').val(new Date().toISOString().substr(0, 10));
-      $row.find('.meds-stop-btn').hide();
-      $row.find(".btn-prescribe").hide();
+      var $cnt_input = $row.find(".btn-continue input");
+      $cnt_input.attr("data-prev-state", $cnt_input.prop("checked") ? '1' : '0');
+      $cnt_input.prop("checked", false).attr("disabled", "disabled");
 
-      $icon = $row.find(".btn-prescribe").find("i");
-      $input = $row.find(".btn-prescribe").find("input");
-
-      $icon.attr("data-value", 0);
-      $icon.css('opacity','0.5');
-      $input.val(0);
+      var $rx_input = $row.find(".btn-prescribe input");
+      $rx_input.attr("data-prev-state", $rx_input.prop("checked") ? '1' : '0');
+      $rx_input.prop("checked", false).attr("disabled", "disabled");
   };
 
   HistoryMedicationsController.prototype.cancelStopped = function($row) {
       var $stop_reason = $row.find('.stop-reason');
       var $end_date_wrapper =  $row.find('.end_date_wrapper');
 
-      $end_date_wrapper.addClass("hidden");
-      $end_date_wrapper.find('input').val('');
+      $end_date_wrapper.find('select').val('');
+      $stop_reason.val("");
 
-      $stop_reason.val("").addClass("hidden");
-      $row.find('.meds-stop-btn').show();
-      $row.find(".btn-prescribe").show();
+      $row.find(".end.date").val("");
+
+      var $cnt_input = $row.find(".btn-continue input");
+      var state = $cnt_input.attr("data-prev-state");
+      $cnt_input.attr("data-prev-state", $cnt_input.prop("checked") ? '1' : '0');
+      $cnt_input.prop("checked", state === "1").removeAttr("disabled");
+
+      var $rx_input = $row.find(".btn-prescribe input");
+      state = $rx_input.attr("data-prev-state");
+      $rx_input.attr("data-prev-state", $rx_input.prop("checked") ? '1' : '0');
+      $rx_input.prop("checked", state === "1").removeAttr("disabled");
   };
 
   HistoryMedicationsController.prototype.copyRow = function($origin, $target, old_values)
@@ -576,7 +577,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
   {
-      risksMap = [];
+      var risksMap = [];
       for (var i in risks) {
           if (risks.hasOwnProperty(i)) {
               risksMap.push({id: risks[i], comments: [drugName]})
@@ -716,14 +717,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryMedicationsController.prototype.showStopped = function()
     {
-        this.$table.find('tr.fade').show();
+        this.$table.find('tr.stopped').show();
         this.$element.find('.show-stopped').hide();
         this.$element.find('.hide-stopped').show();
     };
 
     HistoryMedicationsController.prototype.hideStopped = function()
     {
-        this.$table.find('tr.fade').hide();
+        this.$table.find('tr.stopped').hide();
         this.$element.find('.show-stopped').show();
         this.$element.find('.hide-stopped').hide();
     };
