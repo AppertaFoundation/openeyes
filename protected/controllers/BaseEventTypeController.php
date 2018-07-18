@@ -2438,7 +2438,7 @@ class BaseEventTypeController extends BaseModuleController
     public function actionCreateImage($id)
     {
         $this->initActionView();
-        $eventImage = $this->createEventImage();
+        $eventImage = $this->saveEventImage('GENERATING');
 
         try {
             $content = $this->getEventAsHtml();
@@ -2530,6 +2530,7 @@ class BaseEventTypeController extends BaseModuleController
             $eventImage->delete();
         }
 
+        // Remove old working files, if they exist
         for ($imageCount = 0; ; ++$imageCount) {
             $filename = $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $imageCount . '.png';
             if (file_exists($filename)) {
@@ -2540,7 +2541,7 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
-    protected function saveEventImage($status, array $options)
+    protected function saveEventImage($status, array $options = [])
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_id', $this->event->id);
@@ -2569,5 +2570,51 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         return $eventImage;
+    }
+
+    protected function savePdfImage($pdf_path)
+    {
+        $pdf_imagick = new Imagick();
+        $pdf_imagick->readImage($pdf_path);
+        $pdf_imagick->setImageFormat('png');
+
+        $output_path = $this->getPreviewImagePath();
+
+        if (!$pdf_imagick->writeImages($output_path, false)) {
+            throw new Exception();
+        }
+
+        $result = $this->savePdfPage(null);
+        if (!$result) {
+            for ($page = 0; ; ++$page) {
+                $result = $this->savePdfPage($page);
+                if(!$result) {
+                    break;
+                }
+            }
+        }
+    }
+
+    protected function savePdfPage($page)
+    {
+        $pagePreviewPath = $this->getPreviewImagePath($page);
+        if (!file_exists($pagePreviewPath)) {
+            return false;
+        }
+
+        $imagickPage = new Imagick();
+        $imagickPage->readImage($pagePreviewPath);
+        $this->resizeImage($imagickPage);
+
+        if ($imagickPage->getImageAlphaChannel()) {
+            $imagickPage->setImageAlphaChannel(11);
+            $imagickPage->setImageBackgroundColor('white');
+            $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+        }
+        $imagickPage->writeImage($pagePreviewPath);
+
+        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page]);
+
+        return true;
     }
 }

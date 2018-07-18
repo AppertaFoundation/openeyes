@@ -456,6 +456,7 @@ class DefaultController extends BaseEventTypeController
 
             switch ($document->mimetype) {
                 case 'application/pdf':
+                    $this->savePdfImage($document->getPath());
                     break;
                 case 'image/jpeg':
                 case 'image/png':
@@ -464,6 +465,9 @@ class DefaultController extends BaseEventTypeController
                     $imagick->readImage($document->getPath());
                     $this->resizeImage($imagick);
                     $output_path = $this->event->getImagePath('preview_' . $side_id);
+                    if(!file_exists(dirname($output_path))) {
+                        mkdir(dirname($output_path));
+                    }
                     $imagick->writeImage($output_path);
                     $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $side_id));
                     break;

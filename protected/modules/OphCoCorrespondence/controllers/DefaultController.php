@@ -959,48 +959,7 @@ class DefaultController extends BaseEventTypeController
         $this->removeEventImages();
 
         $this->actionPDFPrint($id, false);
-
         $pdf_path = $this->getPdfPath($this->event);
-
-        $pdf_imagick = new Imagick();
-        $pdf_imagick->readImage($pdf_path);
-        $pdf_imagick->setImageFormat('png');
-
-        $output_path = $this->getPreviewImagePath();
-
-        if (!$pdf_imagick->writeImages($output_path, false)) {
-            throw new Exception();
-        }
-
-        for ($page = 0; ; ++$page) {
-
-            $pagePreviewPath = $this->getPreviewImagePath($page);
-            if (!file_exists($pagePreviewPath)) {
-                break;
-            }
-
-            $imagickPage = new Imagick();
-            $imagickPage->readImage($pagePreviewPath);
-            $this->resizeImage($imagickPage);
-
-            if ($imagickPage->getImageAlphaChannel()) {
-                $imagickPage->setImageAlphaChannel(11);
-                $imagickPage->setImageBackgroundColor('white');
-                $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
-            }
-            $imagickPage->writeImage($pagePreviewPath);
-
-            $eventImage = EventImage::model()->find('event_id = :event_id AND (page IS NULL OR page = :page)',
-                array(':event_id' => $this->event->id, ':page' => $page)) ?: new EventImage();
-            $eventImage->event_id = $this->event->id;
-            $eventImage->page = $page;
-            $eventImage->image_data = file_get_contents($pagePreviewPath);
-            $eventImage->status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-
-            if (!$eventImage->save()) {
-                throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
-            }
-
-        }
+        $this->savePdfImage($pdf_path);
     }
 }
