@@ -436,4 +436,46 @@ class DefaultController extends BaseEventTypeController
         return $tmpfname;
     }
 
+    public function actionCreateImage($id)
+    {
+        $this->initActionView();
+        $this->removeEventImages();
+
+        /* @var Element_OphCoDocument_Document $element */
+        $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
+
+        /* @var ProtectedFile $document */
+        foreach ([
+                     Eye::LEFT => $element->left_document,
+                     Eye::RIGHT => $element->right_document,
+                     null => $element->single_document,
+                 ] as $side_id => $document) {
+            if (!$document) {
+                continue;
+            }
+
+            switch ($document->mimetype) {
+                case 'application/pdf':
+                    break;
+                case 'image/jpeg':
+                case 'image/png':
+                case 'image/gif':
+                    $imagick = new Imagick();
+                    $imagick->readImage($document->getPath());
+                    $this->resizeImage($imagick);
+                    $output_path = $this->event->getImagePath('preview_' . $side_id);
+                    $imagick->writeImage($output_path);
+                    $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $side_id));
+                    break;
+                case 'video/mp4':
+                case 'video/ogg':
+                case 'video/quicktime':
+                    break;
+                default:
+                    // If the mime type isn't recognised, then use a preview of the entire event
+                    parent::actionCreateImage($id);
+            }
+        }
+
+    }
 }

@@ -2438,7 +2438,7 @@ class BaseEventTypeController extends BaseModuleController
     public function actionCreateImage($id)
     {
         $this->initActionView();
-        $eventImage = $this->stubEventImage();
+        $eventImage = $this->createEventImage();
 
         try {
             $content = $this->getEventAsHtml();
@@ -2449,23 +2449,15 @@ class BaseEventTypeController extends BaseModuleController
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
                 array('width' => 1250, 'quality' => 85));
 
-            $input_image = $this->event->getImagePath('preview');
-            $output_image = $this->event->getImagePath('preview_small');
-            $imagick = new \Imagick($input_image);
+            $image_path = $this->event->getImagePath('preview');
+            $imagick = new \Imagick($image_path);
             $this->resizeImage($imagick);
-            $imagick->writeImage($output_image);
+            $imagick->writeImage($image_path);
 
-            $eventImage->event_id = $this->event->id;
-            $eventImage->image_data = file_get_contents($output_image);
-            $eventImage->status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-
-            if (!$eventImage->save()) {
-                throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
-            }
+            $this->saveEventImage('CREATED', ['image_path' => $image_path]);
 
             if (!$this->keepWorkingFiles()) {
-                $image->deleteFile($input_image);
-                $image->deleteFile($output_image);
+                $image->deleteFile($image_path);
             }
 
         } catch (Exception $ex) {
@@ -2483,8 +2475,10 @@ class BaseEventTypeController extends BaseModuleController
     protected function resizeImage($imagick)
     {
         $width = $this->getPreviewImageWidth();
-        $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
-        $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
+        if ($width > $imagick->getImageWidth()) {
+            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
+        }
     }
 
     protected function keepWorkingFiles()
@@ -2546,16 +2540,33 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
-    /**
-     * @param $event
-     * @return EventImage
-     */
-    protected function stubEventImage()
+    protected function saveEventImage($status, array $options)
     {
-        $eventImage = new EventImage();
+        $criteria = new CDbCriteria();
+        $criteria->compare('event_id', $this->event->id);
+        if (isset($options['page'])) {
+            $criteria->addCondition('(page IS NULL OR page = :page)');
+            $criteria->params[':page'] = $options['page'];
+        }
+
+        if (isset($options['eye_id'])) {
+            $criteria->addCondition('(eye_id IS NULL OR eye_id = :eye_id)');
+            $criteria->params[':eye_id'] = $options['eye_id'];
+        }
+
+        $eventImage = EventImage::model()->find($criteria) ?: new EventImage();
         $eventImage->event_id = $this->event->id;
-        $eventImage->status_id = EventImageStatus::model()->find('name = "GENERATING"')->id;
-        $eventImage->save();
+        if(isset($options['image_path'])) {
+            $eventImage->image_data = file_get_contents($options['image_path']);
+        }
+
+        $eventImage->eye_id = @$options['eye_id'];
+        $eventImage->page = @$options['page'];
+        $eventImage->status_id = EventImageStatus::model()->find('name = ?', array($status))->id;
+
+        if (!$eventImage->save()) {
+            throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
+        }
 
         return $eventImage;
     }
