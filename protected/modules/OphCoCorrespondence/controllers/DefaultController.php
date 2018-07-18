@@ -140,6 +140,11 @@ class DefaultController extends BaseEventTypeController
         parent::actionView($id);
     }
 
+    public function actionImage($id)
+    {
+        $this->actionPDFPrint($id, false);
+    }
+
     public function actionUpdate($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -563,9 +568,10 @@ class DefaultController extends BaseEventTypeController
      * TODO: need to check audit trail!
      *
      * @param $id
+     * @param boolean $returnContent
      * @throws Exception
      */
-    public function actionPDFPrint($id)
+    public function actionPDFPrint($id, $returnContent = true)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
@@ -637,18 +643,26 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_output->IncludeJS($script);
         }
 
-        $pdf_path = $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
 
+        $pdf_path = $this->getPdfPath($event);
+
+        Yii::log($pdf_path);
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
-
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf_path));
-
-        readfile($pdf_path);
+        if ($returnContent) {
+            header('Content-Type: application/pdf');
+            header('Content-Length: ' . filesize($pdf_path));
+            readfile($pdf_path);
+        } else {
+            echo $pdf_path;
+        }
         //@unlink($pdf_path);
+    }
 
+    public function getPdfPath($event)
+    {
+        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
     }
 
     /**

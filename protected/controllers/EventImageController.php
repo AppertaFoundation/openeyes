@@ -1,7 +1,12 @@
 <?php
 
+/**
+ * Class EventImageController
+ */
 class EventImageController extends BaseController
 {
+    private static $KEEP_WORKING_FILES = true;
+
     /**
      * @return array action filters
      */
@@ -26,7 +31,7 @@ class EventImageController extends BaseController
                 'users' => array('@'),
             ),
             array(
-                'deny',  // deny all users
+                'deny',
                 'users' => array('*'),
             ),
         );
@@ -35,11 +40,21 @@ class EventImageController extends BaseController
     /**
      * Displays a particular model.
      * @param integer $id the ID of the model to be displayed
+     * @param integer $page The page number for multi image events
      */
-    public function actionView($id)
+    public function actionView($id, $page=null)
     {
         // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
-        $model = EventImage::model()->find('event_id = :event_id', array(':event_id' => $id));
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('event_id = :event_id');
+        $criteria->params[':event_id'] = $id;
+        if($page !== null)
+        {
+            $criteria->addCondition('page = :page');
+            $criteria->params[':page'] = $page;
+        }
+
+        $model = EventImage::model()->find($criteria);
         $fileModTime = strtotime($model->last_modified_date);
         $headers = $this->getRequestHeaders();
 
@@ -60,6 +75,9 @@ class EventImageController extends BaseController
         }
     }
 
+    /**
+     * @return array|false
+     */
     private function getRequestHeaders()
     {
         if (function_exists("apache_request_headers")) {
@@ -89,7 +107,7 @@ class EventImageController extends BaseController
             throw new CHttpException(404, 'Could not find event ' . $id);
         }
 
-        self::createImageForEvent($event);
+        $this->createImageForEvent($event);
     }
 
     /**
@@ -118,38 +136,42 @@ class EventImageController extends BaseController
      * @param Event $event The event to create the image for
      * @throws Exception Thrown if an error occurs when generating the event
      */
-    public static function createImageForEvent($event)
+    public function createImageForEvent($event)
     {
-        $eventImage = EventImage::model()->find('event_id = :event_id',
-            array(':event_id' => $event->id)) ?: new EventImage();
-        $eventImage->event_id = $event->id;
-        $eventImage->status_id = EventImageStatus::model()->find('name = "GENERATING"')->id;
-        $eventImage->save();
+        switch ($event->eventType->class_name) {
+            case 'OphCoCorrespondence':
+                $this->createImageForPdfEvent($event);
+                break;
+            case 'OphCoDocument':
+                $this->createImageForImageEvent($event);
+                break;
+            default:
+                $this->createImageForHtmlEvent($event);
+                break;
+        }
+    }
+
+    /**
+     * @param Event $event
+     * @throws Exception
+     */
+    public function createImageForHtmlEvent($event)
+    {
+        $eventImage = $this->stubEventImageForEvent($event);
 
         try {
-            ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
-
-            ob_start();
-
-            $url = '/' . $event->eventType->class_name . '/default/image/' . $event->id;
-            Yii::app()->runController($url);
-
-            $content = ob_get_contents();
-            ob_end_clean();
+            $content = $this->getEventAsHtml($event);
 
             $image = new WKHtmlToImage();
-            $image->setCanvasImagePath($event->imageDirectory);
-            $directory = Yii::app()->assetManager->basePath;
+            $image->setCanvasImagePath($event->getImageDirectory());
 
-            $image->generateImage($directory, 'event_' . $event->id, '', $content,
+            $image->generateImage($event->getImageDirectory(), 'preview', '', $content,
                 array('width' => 1250, 'quality' => 85));
-            $input_image = $directory . '/event_' . $event->id . '.png';
-            $output_image = $directory . '/event_' . $event->id . '_small.png';
 
+            $input_image = $event->getImagePath('preview');
+            $output_image = $event->getImagePath('preview_small');
             $imagick = new \Imagick($input_image);
-            $width = 540;
-            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
-            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.65);
+            $this->resizeImage($imagick);
             $imagick->writeImage($output_image);
 
             $eventImage->event_id = $event->id;
@@ -160,8 +182,11 @@ class EventImageController extends BaseController
                 throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
             }
 
-            $image->deleteFile($input_image);
-            $image->deleteFile($output_image);
+            if (!self::$KEEP_WORKING_FILES) {
+                $image->deleteFile($input_image);
+                $image->deleteFile($output_image);
+            }
+
 
         } catch (Exception $ex) {
             $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
@@ -169,4 +194,151 @@ class EventImageController extends BaseController
             throw $ex;
         }
     }
+
+    protected function getPreviewImageWidth()
+    {
+        return 520;
+    }
+
+    protected function resizeImage($imagick)
+    {
+        $width = $this->getPreviewImageWidth();
+        $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+        $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
+    }
+
+
+    /**
+     * @param Event $event
+     * @return string
+     */
+    protected function getImageDirectoryForEvent($event)
+    {
+        return $event->getImageDirectory();
+    }
+
+    /**
+     * @param Event $event
+     * @return string
+     */
+    protected function getEventAsHtml($event)
+    {
+        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
+        ob_start();
+        $url = '/' . $event->eventType->class_name . '/default/image/' . $event->id;
+        Yii::app()->runController($url);
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
+    }
+
+    /**
+     * @param Event $event
+     *
+     * @throws Exception
+     */
+    public function createImageForPdfEvent($event)
+    {
+        $this->removeImagesForEvent($event);
+
+        ob_start();
+        $url = '/' . $event->eventType->class_name . '/default/image/' . $event->id;
+        Yii::app()->runController($url);
+        $pdf_path = ob_get_contents();
+        ob_end_clean();
+
+        $pdf_imagick = new Imagick();
+        $pdf_imagick->readImage($pdf_path);
+        $pdf_imagick->setImageFormat('png');
+
+        $output_path = $this->getImagePath($event);
+
+        if (!$pdf_imagick->writeImages($output_path, false)) {
+            throw new Exception();
+        }
+
+        for ($page = 0; ; ++$page) {
+
+            $pagePreviewPath = $this->getImagePath($event, $page);
+            if (!file_exists($pagePreviewPath)) {
+                break;
+            }
+
+            $imagickPage = new Imagick();
+            $imagickPage->readImage($pagePreviewPath);
+            $this->resizeImage($imagickPage);
+
+            if ($imagickPage->getImageAlphaChannel()) {
+                $imagickPage->setImageAlphaChannel(11);
+                $imagickPage->setImageBackgroundColor('white');
+                $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+            }
+            $imagickPage->writeImage($pagePreviewPath);
+
+            $eventImage = EventImage::model()->find('event_id = :event_id AND (page IS NULL OR page = :page)',
+                array(':event_id' => $event->id, ':page' => $page)) ?: new EventImage();
+            $eventImage->event_id = $event->id;
+            $eventImage->page = $page;
+            $eventImage->image_data = file_get_contents($pagePreviewPath);
+            $eventImage->status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
+
+            if (!$eventImage->save()) {
+                throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
+            }
+
+        }
+    }
+
+    public function getImagePath($event, $page = null)
+    {
+        if ($page === null) {
+            return $event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview.png';
+        } else {
+            return $event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $page . '.png';
+        }
+    }
+
+    /**
+     * @param $event
+     */
+    public function createImageForImageEvent($event)
+    {
+    }
+
+    /**
+     * @param $event
+     */
+    protected function removeImagesForEvent($event)
+    {
+        foreach (EventImage::model()->findAll('event_id = :event_id',
+            array(':event_id' => $event->id)) as $eventImage) {
+            $eventImage->delete();
+        }
+
+        for ($imageCount = 0; ; ++$imageCount) {
+            $filename = $event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $imageCount . '.png';
+            if (file_exists($filename)) {
+                @unlink($filename);
+            } else {
+                break;
+            }
+        }
+
+    }
+
+    /**
+     * @param $event
+     * @return EventImage
+     */
+    protected function stubEventImageForEvent($event)
+    {
+        $eventImage = new EventImage();
+        $eventImage->event_id = $event->id;
+        $eventImage->status_id = EventImageStatus::model()->find('name = "GENERATING"')->id;
+        $eventImage->save();
+
+        return $eventImage;
+    }
+
 }
