@@ -47,18 +47,11 @@ abstract class EpisodeSummaryWidget extends CWidget
     public function getOpnoteEvent(){
         $opnote_marking = array('right'=>array(), 'left'=>array());
 
-        $marking_list = array(
-            'Phacoemulsification',
-            'Phacoemulsification and Intraocular lens',
-            'Trabeculectomy',
-            'Argon laser trabeculoplasty',
-            'Selective laser trabeculoplasty',
-            'Panretinal photocoagulation',
-            'Cycloablation',
-            'Cyclodialysis cleft repair',
-            'Peripheral iridectomy'
-        );
-
+        $marking_list = array();
+        $subspecialty = Subspecialty::model()->findByAttributes(array('name'=>'Glaucoma'));
+        foreach (Procedure::model()->getListBySubspecialty($subspecialty->id, false) as $proc_id => $name) {
+            array_push($marking_list, $name);
+        }
 
         $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
         $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->episode->patient);
@@ -84,7 +77,7 @@ abstract class EpisodeSummaryWidget extends CWidget
                 foreach ($eye_side as $side){
                     foreach ($proc_list->procedures as $proc){
                         if (in_array($proc->term, $marking_list)){
-                            if (empty($opnote_marking[$side])||!in_array($proc->short_format, $opnote_marking[$side])){
+                            if (empty($opnote_marking[$side])||!array_key_exists($proc->short_format, $opnote_marking[$side])){
                                 $opnote_marking[$side][$proc->short_format] = array();
                             }
                             array_push($opnote_marking[$side][$proc->short_format], $timestamp);
@@ -107,20 +100,19 @@ abstract class EpisodeSummaryWidget extends CWidget
             $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
             if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ){
                 foreach ($proc_list->left_procedures as $left_procedure) {
-                    if (empty($laser_marking['left'])||!in_array($left_procedure->short_format, $laser_marking['left'])){
+                    if (empty($laser_marking['left'])||!array_key_exists($left_procedure->short_format, $laser_marking['left'])){
                         $laser_marking['left'][$left_procedure->short_format] = array();
                     }
                     array_push($laser_marking['left'][$left_procedure->short_format], $timestamp);
                 }
                 foreach ($proc_list->right_procedures as $right_procedure) {
-                    if (empty($laser_marking['right'])||!in_array($right_procedure->short_format, $laser_marking['right'])){
+                    if (empty($laser_marking['right'])||!array_key_exists($right_procedure->short_format, $laser_marking['right'])){
                         $laser_marking['right'][$right_procedure->short_format] = array();
                     }
                     array_push($laser_marking['right'][$right_procedure->short_format], $timestamp);
                 }
             }
         }
-
         return $laser_marking;
     }
 
