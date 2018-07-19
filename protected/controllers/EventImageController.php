@@ -52,6 +52,7 @@ class EventImageController extends BaseController
             $criteria->addCondition('page = :page');
             $criteria->params[':page'] = $page;
         }
+        $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
 
         $model = EventImage::model()->find($criteria);
         $fileModTime = strtotime($model->last_modified_date);
