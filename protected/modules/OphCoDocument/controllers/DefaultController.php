@@ -436,6 +436,13 @@ class DefaultController extends BaseEventTypeController
         return $tmpfname;
     }
 
+
+    /**
+     * Creates a preview event image for the event with the given ID
+     *
+     * @param int $id The ID of the vent to genreate a preview image for
+     * @throws Exception
+     */
     public function actionCreateImage($id)
     {
         try {
@@ -456,14 +463,14 @@ class DefaultController extends BaseEventTypeController
 
                 switch ($document->mimetype) {
                     case 'application/pdf':
-                        $this->savePdfImage($document->getPath());
+                        $this->createPdfPreviewImages($document->getPath(), $eye);
                         break;
                     case 'image/jpeg':
                     case 'image/png':
                     case 'image/gif':
                         $imagick = new Imagick();
                         $imagick->readImage($document->getPath());
-                        $this->resizeImage($imagick);
+                        $this->scaleImageForThumbnail($imagick);
                         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
                         $imagick->writeImage($output_path);
                         $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
@@ -472,27 +479,29 @@ class DefaultController extends BaseEventTypeController
                     case 'video/ogg':
                     case 'video/quicktime':
                         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+
+                        // Use ffmpeg to generate a thumbnail of the video
                         $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' 2>&1';
                         Yii::log('Executing command: ' . $command);
                         $result = shell_exec($command);
                         Yii::log('Result: ' . $result);
 
+                        // Resize the thumbnail
                         $imagick = new Imagick();
                         $imagick->readImage($output_path);
-                        $this->resizeImage($imagick);
+                        $this->scaleImageForThumbnail($imagick);
                         if (!$imagick->writeImage($output_path)) {
-                            throw new Exception();
+                            throw new Exception('An error occurred when resizing the video thumbnail');
                         }
-                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
 
+                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
                         break;
                     default:
                         // If the mime type isn't recognised, then use a preview of the entire event
                         parent::actionCreateImage($id);
                 }
             }
-        }
-        catch(Exception $ex) {
+        } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }

@@ -949,6 +949,8 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Creates a preview event image for the given event id
+     *
      * @param integer $id The event UD
      *
      * @throws Exception
@@ -964,7 +966,11 @@ class DefaultController extends BaseEventTypeController
 
             $this->actionPDFPrint($id, false);
             $pdf_path = $this->getPdfPath($this->event);
-            $this->savePdfImage($pdf_path);
+            $this->createPdfPreviewImages($pdf_path);
+
+            if (!$this->keepPreviewImageTempFiles()) {
+                @unlink($pdf_path);
+            }
 
         } catch (Exception $ex) {
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);

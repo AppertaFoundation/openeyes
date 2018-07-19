@@ -2435,9 +2435,16 @@ class BaseEventTypeController extends BaseModuleController
     }
 
 
+    /**
+     * Creates the preview image for the event with the given ID
+     *
+     * @param integer $id The ID of the event to image
+     * @throws Exception
+     */
     public function actionCreateImage($id)
     {
         $this->initActionView();
+        // Stub an EventImage record so other threads don't try to create the same image
         $eventImage = $this->saveEventImage('GENERATING');
 
         try {
@@ -2445,50 +2452,66 @@ class BaseEventTypeController extends BaseModuleController
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
-
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
                 array('width' => 1250, 'quality' => 85));
 
             $image_path = $this->event->getImagePath('preview');
             $imagick = new \Imagick($image_path);
-            $this->resizeImage($imagick);
+            $this->scaleImageForThumbnail($imagick);
             $imagick->writeImage($image_path);
 
             $this->saveEventImage('CREATED', ['image_path' => $image_path]);
 
-            if (!$this->keepWorkingFiles()) {
+            if (!$this->keepPreviewImageTempFiles()) {
                 $image->deleteFile($image_path);
             }
 
         } catch (Exception $ex) {
+            // Store an error entry,so that no attempts are made to generate the image again until the errors are fixed
             $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
             $eventImage->save();
             throw $ex;
         }
     }
 
-    protected function getPreviewImageWidth()
+    /**
+     * Gets the maximum width to be used for the preview image
+     *
+     * @return int
+     */
+    protected function getMaxPreviewImageWidth()
     {
         return 520;
     }
 
-    protected function resizeImage($imagick)
+    /**
+     * Scales down the input image if it is larger than the maximum width
+     *
+     * @param $imagick
+     */
+    protected function scaleImageForThumbnail($imagick)
     {
-        $width = $this->getPreviewImageWidth();
+        $width = $this->getMaxPreviewImageWidth();
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
         }
     }
 
-    protected function keepWorkingFiles()
+    /**
+     * Returns a value indicating whether temporary files should be deleted
+     *
+     * @return bool
+     */
+    protected function keepPreviewImageTempFiles()
     {
-        return true;
+        return false;
     }
 
     /**
-     * @param Event $event
-     * @return string
+     * Renders the event and returns the resullting HTML
+     *
+     * @return string The output HTML
      */
     protected function getEventAsHtml()
     {
@@ -2511,15 +2534,22 @@ class BaseEventTypeController extends BaseModuleController
         return $content;
     }
 
+    /**
+     * Gets the image path that will be used to store a temporary preview image
+     *
+     * @param array $options  Additional options, including the page number, and eye
+     * @return string The path of the image
+     */
     public function getPreviewImagePath(array $options = array())
     {
         $filename = 'preview';
-        if (isset($options['page'])) {
-            $filename .= '-' . $options['page'];
-        }
 
         if (isset($options['eye'])) {
             $filename .= '-' . $options['eye'];
+        }
+
+        if (isset($options['page'])) {
+            $filename .= '-' . $options['page'];
         }
 
         $path = $this->event->getImagePath($filename);
@@ -2532,16 +2562,22 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
-     * @param $event
+     * Removes all preview images for this event
      */
     protected function removeEventImages()
     {
-        foreach (EventImage::model()->findAll('event_id = :event_id',
-            array(':event_id' => $this->event->id)) as $eventImage) {
-            $eventImage->delete();
-        }
+        EventImage::model()->deleteAll('event_id = ?', $this->event->id);
     }
 
+    /**
+     * Saves a new EventImage record with the given status, and other options
+     * Without additional options, only a stub will be created
+     *
+     * @param 0string $status The name of the status to use. Can be one of 'GENERATING', 'NOT_CREATED', 'FAILED' or 'COMPLETE'
+     * @param array $options Additional options, including the page, eye_id, image_path, and error message
+     * @return EventImage The created EventImage record
+     * @throws Exception
+     */
     protected function saveEventImage($status, array $options = [])
     {
         $criteria = new CDbCriteria();
@@ -2561,7 +2597,7 @@ class BaseEventTypeController extends BaseModuleController
         if(isset($options['image_path'])) {
             $eventImage->image_data = file_get_contents($options['image_path']);
 
-            if (!$this->keepWorkingFiles()) {
+            if (!$this->keepPreviewImageTempFiles()) {
                 @unlink($options['image_path']);
             }
         }
@@ -2581,26 +2617,30 @@ class BaseEventTypeController extends BaseModuleController
         return $eventImage;
     }
 
-    protected function savePdfImage($pdf_path)
+    /**
+     * Creates preview images for all pages of the given PDF file
+     *
+     * @param string $pdf_path The path for the PDF file
+     * @param int|null $eye The eye ID the PDF is for
+     * @throws Exception
+     */
+    protected function createPdfPreviewImages($pdf_path, $eye = null)
     {
         $pdf_imagick = new Imagick();
         $pdf_imagick->readImage($pdf_path);
         $pdf_imagick->setImageFormat('png');
 
-        $output_path = $this->getPreviewImagePath();
-
-        if(!file_exists(dirname($output_path))) {
-            mkdir(dirname($output_path));
-        }
-
+        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
         if (!$pdf_imagick->writeImages($output_path, false)) {
-            throw new Exception();
+            throw new Exception('An error occurred when attempting to convert eh PDF file to images');
         }
 
-        $result = $this->savePdfPage(null);
+        // Try to save the PDF as though it only has one page
+        $result = $this->savePdfPreviewAsEventImage(null, $eye);
         if (!$result) {
+            // If nothing was saved, then it has multiple pages
             for ($page = 0; ; ++$page) {
-                $result = $this->savePdfPage($page);
+                $result = $this->savePdfPreviewAsEventImage($page, $eye);
                 if(!$result) {
                     break;
                 }
@@ -2608,25 +2648,40 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
-    protected function savePdfPage($page)
+    /**
+     * Attempts to create the EventImage record for the given page
+     *
+     * @param int|null $page The page number of the PDF
+     * @param int|null $eye The eye side if it exists
+     * @return bool True if the page exists, otherwise false
+     * @throws ImagickException Thrown if the layers can't be merged
+     * @throws Exception
+     */
+    protected function savePdfPreviewAsEventImage($page, $eye)
     {
-        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page]);
+        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye]);
+        Yii::log($pagePreviewPath);
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
 
         $imagickPage = new Imagick();
         $imagickPage->readImage($pagePreviewPath);
-        $this->resizeImage($imagickPage);
+        $this->scaleImageForThumbnail($imagickPage);
 
+        // Sometimes the PDf has a transparent background, which should be replaced with white
         if ($imagickPage->getImageAlphaChannel()) {
             $imagickPage->setImageAlphaChannel(11);
             $imagickPage->setImageBackgroundColor('white');
             $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
-        $imagickPage->writeImage($pagePreviewPath);
 
-        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page]);
+        $imagickPage->writeImage($pagePreviewPath);
+        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
+
+        if(!$this->keepPreviewImageTempFiles()) {
+            @unlink($pagePreviewPath);
+        }
 
         return true;
     }
