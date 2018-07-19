@@ -104,7 +104,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
     for (var i=0; i < row_count; i++){
-        console.log('#'+this.options.modelName+'_datepicker_1_'+i);
       this.constructDatepicker('#'+this.options.modelName+'_datepicker_1_'+i);
       this.constructDatepicker('#'+this.options.modelName+'_datepicker_2_'+i);
     }
@@ -112,7 +111,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-      console.log('#'+this.options.modelName+'_datepicker_1_'+row_count);
     this.constructDatepicker('#'+this.options.modelName+'_datepicker_1_'+row_count);
     this.constructDatepicker('#'+this.options.modelName+'_datepicker_2_'+row_count);
   };
@@ -154,8 +152,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // removal button for table entries
     controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
       e.preventDefault();
-      var key = $(e.target).closest("tr").attr("data-key");
-      $(e.target).parents('tr').remove();
+      // var key = $(e.target).closest("tr").attr("data-key");
+      var $row = $(e.target).parents('tr');
+      $row.data('bound_entry').remove();
+      $row.remove();
       controller.options.onRemovedEntry($(e.target).closest("tr"), controller);
     });
 
@@ -229,7 +229,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var $bound_row = $this_row.data('bound_entry');
           controller.cancelStopped($this_row);
           if(typeof $bound_row !== "undefined" && typeof controller.MMController !== "undefined") {
-              controller.MMController.cancelStopped($bound_row)
+              controller.MMController.cancelStopped($bound_row);
           }
       });
 
@@ -275,16 +275,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   cancelButton: 'No'
               });
               confirm.on("ok", function(){
-                  $target = $row.closest("tbody");
-                  $newrow = controller.copyRow($row, $target, true).insertAfter($row).addClass("donotsplit");
-                  new_laterality = $lat.val() == 1 ? 2 : 1;
+                  var $target = $row.closest("tbody");
+                  var $newrow = controller.copyRow($row, $target, true).insertAfter($row).addClass("donotsplit");
+                  var new_laterality = $lat.val() == 1 ? 2 : 1;
                   $newrow.find(".laterality").val(new_laterality);
               });
               confirm.open();
           }
       });
 
-      $row.on("change", ".dose, .frequency, .route, .laterality, .stop-reason, .end-date", function(e) {
+      $row.on("change", ".dose, .frequency, .route, .laterality, .stop-reason, .end-date, .fuzzy-date select", function(e) {
           controller.updateBoundEntry($row);
           if($(e.target).hasClass("route") && typeof $row.data('bound_entry') !== 'undefined') {
               controller.updateRowRouteOptions($row.data('bound_entry'));
@@ -318,6 +318,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               $row.find(".frequency").val(ui.item.frequency_id);
               $row.find(".route").val(ui.item.route_id);
               $row.find(".ref_medication_id").val(ui.item.id);
+              $row.find("input.medication-name").val(ui.item.preferred_term);
+              controller.updateBoundEntry($row, function ($bound_row, bound_controller) {
+                  $bound_row.find(".medication-display .alternative-display-element").not(".textual").hide();
+              });
           }
       });
   };
@@ -366,7 +370,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.moveRow = function($origin, $target)
   {
-      $newrow = this.copyRow($origin, $target);
+      var $newrow = this.copyRow($origin, $target);
       $origin.remove();
       return $newrow;
   };
@@ -383,15 +387,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var rc = $row.attr("data-key");
       var obj = {};
       $.each(this.fields, function(i, field){
-          var $element = $("[name='OEModule_OphCiExamination_models_HistoryMedications[entries]["+rc+"]["+field+"]']");
+          var $element = $row.find("[name$='[entries]["+rc+"]["+field+"]']");
           if(typeof old_values !== "undefined" && old_values) {
               var oldval = $element.attr("data-oldvalue");
               obj[field] = typeof oldval !== "undefined" ? oldval : $element.val();
           }
           else {
-              obj[field] =  $element.val()
+              obj[field] =  $element.val();
           }
       });
+
+      console.log(obj);
 
       return obj;
   };
@@ -403,7 +409,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $.each(this.fields, function(i, field){
           if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
               if(typeof data[field] !== "undefined") {
-                  $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
+                  var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
                   $input.val(data[field]);
               }
           }
@@ -425,7 +431,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $row2.data("bound_entry", $row1);
   };
 
-  HistoryMedicationsController.prototype.updateBoundEntry = function ($row)
+  HistoryMedicationsController.prototype.updateBoundEntry = function ($row, callback)
   {
       var $bound_entry = $row.data("bound_entry");
       if(typeof $bound_entry === "undefined") {
@@ -435,6 +441,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var controller = $bound_entry.closest(".element-fields").data("controller_instance");
       controller.setRowData($bound_entry, data);
       controller.syncTextualDisplay($bound_entry);
+      controller.updateFuzzySelect($bound_entry);
+
+      if(callback !== undefined) {
+          callback($bound_entry, controller);
+      }
   };
 
   HistoryMedicationsController.prototype.switchRowToTextualDisplay = function($row)
@@ -608,6 +619,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
+    HistoryMedicationsController.prototype.updateFuzzySelect = function($row)
+    {
+        $row.find(".fuzzy-date").each(function(i, fieldset) {
+            var $hidden_input = $(fieldset).find("input[type=hidden]");
+            if($hidden_input.length > 0) {
+                var date = $hidden_input.val();
+                if(date !== "") {
+                    $(fieldset).find(".fuzzy_year").val(date.substr(0, 4));
+                    $(fieldset).find(".fuzzy_month").val(parseInt(date.substr(4, 2)));
+                    $(fieldset).find(".fuzzy_day").val(parseInt(date.substr(6, 2)));
+                }
+            }
+        });
+    };
+
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
@@ -665,8 +691,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
 
-  HistoryMedicationsController.prototype.addEntry = function(medication)
+  HistoryMedicationsController.prototype.addEntry = function(medication, do_callback)
   {
+      if(do_callback === undefined) {
+          do_callback = true;
+      }
+
     var row = this.createRow();
     var $row = $(row);
     $row.data("medication_data", medication);
@@ -693,7 +723,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $row.find(".route").trigger("change");
       }
 
-    this.options.onAddedEntry($row, this);
+      if(do_callback) {
+          this.options.onAddedEntry($row, this);
+      }
 
     return $row;
   };
@@ -706,7 +738,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryMedicationsController.prototype.dateFromFuzzyFieldSet = function(fieldset)
     {
-        res = fieldset.find('select.fuzzy_year').val();
+        var res = fieldset.find('select.fuzzy_year').val();
         var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
         res += '' + ((month < 10) ? '0' + month.toString() : month.toString());
         var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());

@@ -176,12 +176,13 @@ $element_errors = $element->getErrors();
                 });
                 <?php endif; ?>
                 window.HMController.setDoNotSaveEntries(true);
-                this.onAddedEntry();
+                //this.onAddedEntry();
             },
-            onAddedEntry: function() {
-                $tbody = window.MMController.$table.find("tbody");
-                $tbody.find("tr.divide").removeClass("divider");
-                $tbody.find("tr.new").last().addClass("divider");
+            onAddedEntry: function($row, controller) {
+                if(typeof controller.HMController !== "undefined") {
+                    $new_row = controller.HMController.addEntry($row.data("medication_data"), false);
+                    controller.bindEntries($row, $new_row);
+                }
             },
             onRemovedEntry: function($row, controller) {
                 $tbody = window.MMController.$table.find("tbody");

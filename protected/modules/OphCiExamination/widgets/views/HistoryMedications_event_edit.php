@@ -165,8 +165,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 registerElementController(controller, "HMController", "MMController");
             },
             onAddedEntry: function($row, controller) {
-                if(typeof  controller.MMController !== "undefined") {
-                    $new_row = controller.MMController.addEntry($row.data("medication_data"));
+                if(typeof controller.MMController !== "undefined") {
+                    $new_row = controller.MMController.addEntry($row.data("medication_data"), false);
                     controller.bindEntries($row, $new_row);
                 }
             }

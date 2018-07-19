@@ -19,16 +19,28 @@
 
 <?php
 
-if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
-}else {
-    $start_sel_day = $start_sel_month = null;
-    $start_sel_year = date('Y');
+/** @var EventMedicationUse $entry */
+
+if (isset($entry->start_date) && !is_null($entry->start_date)) {
+    $start_date = $entry->start_date;
 }
-if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
+else {
+    $start_date = date('Ymd');
+}
+
+$start_sel_year = substr($start_date, 0, 4);
+$start_sel_month = substr($start_date, 4, 2);
+$start_sel_day = substr($start_date, 6, 2);
+
+if (isset($entry->end_date) && !is_null($entry->end_date)) {
+
+    $end_sel_year = substr($entry->end_date, 0, 4);
+    $end_sel_month = substr($entry->end_date, 4, 2);
+    $end_sel_day = substr($entry->end_date, 6, 2);
+
 } else {
-    $end_sel_day = $end_sel_month = null;
+    $end_sel_day = date('d');
+    $end_sel_month = date('m');
     $end_sel_year = date('Y');
 }
 
@@ -48,21 +60,23 @@ else {
 <tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $ignore ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
-      <span class="medication-display">
-        <span class="medication-name">
-            <?php if($row_type == 'closed'): ?><i class="oe-i stop small"></i><?php endif; ?>
-            <?= $entry->getMedicationDisplay() ?>
-        </span>
-      </span>
-      <?php if ($entry->originallyStopped) { ?>
-        <i class="oe-i stop small pad"></i>
-      <?php } ?>
+        <div class="medication-display alternative-display-inline">
+            <div class="medication-name alternative-display-element textual">
+                <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?= $entry->getMedicationDisplay() ?>
+                </a>
+            </div>
+            <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+                <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />
+            </div>
+        </div>
 
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
         <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
     </td>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
@@ -94,33 +108,24 @@ else {
         </div>
     </td>
     <td>
-        <?php if(!$direct_edit): ?>
-            <?php if(!is_null($entry->start_date)): ?>
-                <i class="oe-i start small pad"></i>&nbsp;<?=Helper::formatFuzzyDate($entry->start_date) ?>
-            <?php endif; ?>
-        <?php endif; ?>
-        <fieldset class="row field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
-            <?php if (!$entry->start_date||$removable) { ?>
-            
-                
-                <?php
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'hidden'; }?>>
+                <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                </a>
+            </div>
+            <fieldset class="field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
+                <?php if (!$entry->start_date||$removable) { ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date ?>" />
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                <?php } else { ?>
 
-                $start_date = is_null($entry->start_date ? $entry->start_date : date('Y-m-d') );
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
 
-                $start_sel_year = substr($start_date, 0, 4);
-                $start_sel_month = substr($start_date, 4, 2);
-                $tart_sel_day = substr($start_date, 6, 2);
-                ?>
-
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-            <?php } else { ?>
-                <i class="oe-i start small pad"></i>
-                <?=Helper::formatFuzzyDate($entry->start_date) ?>
-                <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
-
-            <?php } ?>
-            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-            <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
+                <?php } ?>
+            </fieldset>
+        </div>
     </td>
     <td>
       <?php if($row_type == "closed" && !is_null($entry->end_date)): ?>

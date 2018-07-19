@@ -58,7 +58,6 @@ $is_new = isset($is_new) ? $is_new : false;
       <div class="medication-display alternative-display-inline">
         <div class="medication-name alternative-display-element textual">
             <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
-                <?php if($row_type == 'closed'): ?><i class="oe-i stop small"></i><?php endif; ?>
                 <?= $entry->getMedicationDisplay() ?>
             </a>
         </div>
@@ -75,6 +74,7 @@ $is_new = isset($is_new) ? $is_new : false;
         <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
     </td>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
@@ -103,7 +103,6 @@ $is_new = isset($is_new) ? $is_new : false;
         </div>
     </td>
     <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <div class="alternative-display inline">
             <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'hidden'; }?>>
                 <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
