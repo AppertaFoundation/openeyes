@@ -646,6 +646,11 @@ class DefaultController extends BaseEventTypeController
                 $complications[] = OphTrOperationnote_CataractComplications::model()->findByPk($c_id);
             }
         }
+
+        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])){
+            $element->setEye( \Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']) );
+        }
+
         $element->complications = $complications;
 
         $devices = array();
