@@ -113,6 +113,17 @@ class MedicationManagement extends BaseMedicationElement
         });
     }
 
+    /**
+     * @return MedicationManagementEntry[]
+     */
+
+    public function getOtherEntries()
+    {
+        return array_filter($this->entries, function($e){
+            return $e->prescribe == 0 && $e->stop == 0 && $e->continue == 0;
+        });
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

@@ -28,5 +28,4 @@ class MedicationManagement extends BaseMedicationWidget
     {
         return true; //TODO idk
     }
-
 }

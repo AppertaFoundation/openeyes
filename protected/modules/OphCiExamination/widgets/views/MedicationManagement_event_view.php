@@ -73,4 +73,22 @@
             </div>
         </div>
     </div>
+    <div class="row prescribed-kind">
+        <div class="large-2 column">
+            <label style="white-space: nowrap;">Other:</label>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value prescribed">
+                <?php if (!empty($entries = $element->getOtherEntries())) { ?>
+                    <ul class="comma-list">
+                        <?php foreach ($entries as $entry) { ?>
+                            <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
+                        <?php } ?>
+                    </ul>
+                <?php } else { ?>
+                    No medications.
+                <?php } ?>
+            </div>
+        </div>
+    </div>
 </div>

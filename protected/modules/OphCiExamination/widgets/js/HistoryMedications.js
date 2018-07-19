@@ -156,7 +156,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       e.preventDefault();
       // var key = $(e.target).closest("tr").attr("data-key");
       var $row = $(e.target).parents('tr');
-      $row.data('bound_entry').remove();
+      if($row.data('bound_entry') !== undefined) {
+          $row.data('bound_entry').remove();
+      }
       $row.remove();
       controller.options.onRemovedEntry($(e.target).closest("tr"), controller);
     });
