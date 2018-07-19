@@ -955,11 +955,20 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
-        $this->initActionView();
-        $this->removeEventImages();
+        try {
+            $this->initActionView();
+            $this->removeEventImages();
 
-        $this->actionPDFPrint($id, false);
-        $pdf_path = $this->getPdfPath($this->event);
-        $this->savePdfImage($pdf_path);
+            $this->initActionView();
+            $this->removeEventImages();
+
+            $this->actionPDFPrint($id, false);
+            $pdf_path = $this->getPdfPath($this->event);
+            $this->savePdfImage($pdf_path);
+
+        } catch (Exception $ex) {
+            $this->saveEventImage('FAILED');
+            throw $ex;
+        }
     }
 }
