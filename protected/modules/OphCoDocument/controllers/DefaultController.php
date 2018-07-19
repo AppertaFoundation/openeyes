@@ -438,48 +438,63 @@ class DefaultController extends BaseEventTypeController
 
     public function actionCreateImage($id)
     {
-        $this->initActionView();
-        $this->removeEventImages();
+        try {
+            $this->initActionView();
+            $this->removeEventImages();
 
-        /* @var Element_OphCoDocument_Document $element */
-        $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
+            /* @var Element_OphCoDocument_Document $element */
+            $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
+            /* @var ProtectedFile $document */
+            foreach ([
+                         Eye::LEFT => $element->left_document,
+                         Eye::RIGHT => $element->right_document,
+                         null => $element->single_document,
+                     ] as $eye => $document) {
+                if (!$document) {
+                    continue;
+                }
 
-        /* @var ProtectedFile $document */
-        foreach ([
-                     Eye::LEFT => $element->left_document,
-                     Eye::RIGHT => $element->right_document,
-                     null => $element->single_document,
-                 ] as $side_id => $document) {
-            if (!$document) {
-                continue;
-            }
+                switch ($document->mimetype) {
+                    case 'application/pdf':
+                        $this->savePdfImage($document->getPath());
+                        break;
+                    case 'image/jpeg':
+                    case 'image/png':
+                    case 'image/gif':
+                        $imagick = new Imagick();
+                        $imagick->readImage($document->getPath());
+                        $this->resizeImage($imagick);
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+                        $imagick->writeImage($output_path);
+                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
+                        break;
+                    case 'video/mp4':
+                    case 'video/ogg':
+                    case 'video/quicktime':
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+                        $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' 2>&1';
+                        Yii::log('Executing command: ' . $command);
+                        $result = shell_exec($command);
+                        Yii::log('Result: ' . $result);
 
-            switch ($document->mimetype) {
-                case 'application/pdf':
-                    $this->savePdfImage($document->getPath());
-                    break;
-                case 'image/jpeg':
-                case 'image/png':
-                case 'image/gif':
-                    $imagick = new Imagick();
-                    $imagick->readImage($document->getPath());
-                    $this->resizeImage($imagick);
-                    $output_path = $this->event->getImagePath('preview_' . $side_id);
-                    if(!file_exists(dirname($output_path))) {
-                        mkdir(dirname($output_path));
-                    }
-                    $imagick->writeImage($output_path);
-                    $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $side_id));
-                    break;
-                case 'video/mp4':
-                case 'video/ogg':
-                case 'video/quicktime':
-                    break;
-                default:
-                    // If the mime type isn't recognised, then use a preview of the entire event
-                    parent::actionCreateImage($id);
+                        $imagick = new Imagick();
+                        $imagick->readImage($output_path);
+                        $this->resizeImage($imagick);
+                        if (!$imagick->writeImage($output_path)) {
+                            throw new Exception();
+                        }
+                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
+
+                        break;
+                    default:
+                        // If the mime type isn't recognised, then use a preview of the entire event
+                        parent::actionCreateImage($id);
+                }
             }
         }
-
+        catch(Exception $ex) {
+            $this->saveEventImage('FAILED');
+            throw $ex;
+        }
     }
 }

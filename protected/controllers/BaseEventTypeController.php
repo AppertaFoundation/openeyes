@@ -2475,7 +2475,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function resizeImage($imagick)
     {
         $width = $this->getPreviewImageWidth();
-        if ($width > $imagick->getImageWidth()) {
+        if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
         }
@@ -2511,13 +2511,24 @@ class BaseEventTypeController extends BaseModuleController
         return $content;
     }
 
-    public function getPreviewImagePath($page = null)
+    public function getPreviewImagePath(array $options = array())
     {
-        if ($page === null) {
-            return $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview.png';
-        } else {
-            return $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $page . '.png';
+        $filename = 'preview';
+        if (isset($options['page'])) {
+            $filename .= '-' . $options['page'];
         }
+
+        if (isset($options['eye'])) {
+            $filename .= '-' . $options['eye'];
+        }
+
+        $path = $this->event->getImagePath($filename);
+
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path));
+        }
+
+        return $path;
     }
 
     /**
@@ -2528,16 +2539,6 @@ class BaseEventTypeController extends BaseModuleController
         foreach (EventImage::model()->findAll('event_id = :event_id',
             array(':event_id' => $this->event->id)) as $eventImage) {
             $eventImage->delete();
-        }
-
-        // Remove old working files, if they exist
-        for ($imageCount = 0; ; ++$imageCount) {
-            $filename = $this->event->getImageDirectory() . DIRECTORY_SEPARATOR . 'preview-' . $imageCount . '.png';
-            if (file_exists($filename)) {
-                @unlink($filename);
-            } else {
-                break;
-            }
         }
     }
 
@@ -2580,6 +2581,10 @@ class BaseEventTypeController extends BaseModuleController
 
         $output_path = $this->getPreviewImagePath();
 
+        if(!file_exists(dirname($output_path))) {
+            mkdir(dirname($output_path));
+        }
+
         if (!$pdf_imagick->writeImages($output_path, false)) {
             throw new Exception();
         }
@@ -2597,7 +2602,7 @@ class BaseEventTypeController extends BaseModuleController
 
     protected function savePdfPage($page)
     {
-        $pagePreviewPath = $this->getPreviewImagePath($page);
+        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page]);
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
