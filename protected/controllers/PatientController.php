@@ -44,7 +44,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -524,6 +524,30 @@ class PatientController extends BaseController
             'noEpisodes' => false,
         ));
     }
+
+    public function actionLightningViewer($id)
+    {
+        if (!$this->patient = Patient::model()->findByPk($id)) {
+            throw new SystemException('Patient not found: '.$id);
+        }
+
+        $this->fixedHotlist = false;
+        $this->layout = '//layouts/events_and_episodes';
+        $episodes = $this->patient->episodes;
+
+        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+        $this->title = 'Lightning Viewer';
+
+        $this->render('lightning_viewer', array(
+            'title' => empty($episodes) ? '' : 'Episode summary',
+            'episodes' => $episodes,
+            'site' => $site,
+            'noEpisodes' => false,
+        ));
+
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
