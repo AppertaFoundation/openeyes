@@ -269,6 +269,20 @@
                     </td>
                     <td></td>
                 </tr>
+            <?php endif; ?>
+            <?php if ($element->is_golden_patient  && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+                <tr>
+                    <td>
+                        <h3 class="data-title">
+                            <?= CHtml::encode($element->getAttributeLabel('is_golden_patient')) ?>
+                        </h3>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?= $element->is_golden_patient ? 'Yes' : 'No' ?>
+                        </div>
+                    </td>
+                </tr>
             <?php endif ?>
             </tbody>
         </table>
@@ -344,8 +358,8 @@
                     at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
 				</span>
                 <span class="info">
-					Operation scheduling last modified by <span
-                            class="user"><?php echo $element->booking->usermodified->fullname ?></span>
+					Operation scheduling last modified by
+                           <span class="user"><?php echo $element->booking->usermodified->fullname ?></span>
 					on <?php echo $element->booking->NHSDate('last_modified_date') ?>
                     at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
 				</span>
