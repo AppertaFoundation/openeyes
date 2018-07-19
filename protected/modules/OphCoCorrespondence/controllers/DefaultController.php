@@ -967,7 +967,7 @@ class DefaultController extends BaseEventTypeController
             $this->savePdfImage($pdf_path);
 
         } catch (Exception $ex) {
-            $this->saveEventImage('FAILED');
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }
     }

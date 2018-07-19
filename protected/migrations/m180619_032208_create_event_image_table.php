@@ -13,6 +13,7 @@ class m180619_032208_create_event_image_table extends OEMigration
                 'page' => 'int(10) unsigned',
                 'image_data' => 'mediumblob',
                 'status_id' => 'int(11) NOT NULL',
+                'message' => 'text',
             ));
 
         $this->createOETable('event_image_status',

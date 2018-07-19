@@ -2560,11 +2560,19 @@ class BaseEventTypeController extends BaseModuleController
         $eventImage->event_id = $this->event->id;
         if(isset($options['image_path'])) {
             $eventImage->image_data = file_get_contents($options['image_path']);
+
+            if (!$this->keepWorkingFiles()) {
+                @unlink($options['image_path']);
+            }
         }
 
         $eventImage->eye_id = @$options['eye_id'];
         $eventImage->page = @$options['page'];
         $eventImage->status_id = EventImageStatus::model()->find('name = ?', array($status))->id;
+
+        if(isset($options['message'])) {
+            $eventImage->message = $options['message'];
+        }
 
         if (!$eventImage->save()) {
             throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));

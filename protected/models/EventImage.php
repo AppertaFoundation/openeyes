@@ -10,6 +10,7 @@
  * @property integer $status_id
  * @property integer $eye_id
  * @property integer $page
+ * @property string $message
  * @property int $last_modified_user_id
  * @property string $last_modified_date
  * @property int $created_user_id
@@ -41,7 +42,7 @@ class EventImage extends BaseActiveRecord
             array('event_id, status_id', 'required'),
             array('status_id, page, eye_id', 'numerical', 'integerOnly' => true),
             array('event_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('image_data, last_modified_date, created_date', 'safe'),
+            array('image_data, message, last_modified_date, created_date', 'safe'),
         );
     }
 

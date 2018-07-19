@@ -493,7 +493,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
         catch(Exception $ex) {
-            $this->saveEventImage('FAILED');
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }
     }
