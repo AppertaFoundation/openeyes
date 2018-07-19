@@ -412,7 +412,7 @@ abstract class BaseResource
             }
             if (property_exists($this, $tag) && @$defn['choices']) {
                 if ($this->$tag && !in_array($this->$tag, $defn['choices'])) {
-                    $this->addError("Invalid value '{$this->$tag}' for {$tag}'");
+                    $this->addError("Invalid value '{$this->$tag}' for '{$tag}'");
                 }
             }
             if (isset($defn['resource']) && property_exists($this, $tag)) {

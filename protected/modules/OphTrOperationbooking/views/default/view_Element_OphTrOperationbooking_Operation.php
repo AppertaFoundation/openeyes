@@ -211,7 +211,7 @@
             <?php endif ?>
         </div>
         <div class="large-6 column">
-            <?php if ($element->is_golden_patient): ?>
+            <?php if ($element->is_golden_patient && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
                 <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('is_golden_patient')) ?></h3>
                 <div class="data-value"><?= $element->is_golden_patient ? 'Yes' : 'No' ?></div>
             <?php endif ?>

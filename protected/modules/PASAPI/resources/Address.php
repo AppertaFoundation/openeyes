@@ -49,6 +49,8 @@ class Address extends BaseResource
         switch ($addr_type) {
             case 'HOME':
                 return \AddressType::model()->find('name=?', array('Home'))->id;
+            case 'CORR':
+                return \AddressType::model()->find('name=?', array('Correspondence'))->id;
         }
 
         return;

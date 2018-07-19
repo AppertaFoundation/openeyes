@@ -2415,7 +2415,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->ophciexamination_risks_entry){
                 foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
-                    $required[] = $ophciexamination_risks->ophciexamination_risk;
+                    $risk = $ophciexamination_risks->ophciexamination_risk;
+                    $required[$risk->id] = $risk;
                 }
             }
         }
@@ -2458,7 +2459,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->allergy_set_entries){
                 foreach($set->allergy_set_entries as $allergy_entry){
-                    $required[] = $allergy_entry->ophciexaminationAllergy;
+                    $allergy = $allergy_entry->ophciexaminationAllergy;
+                    $required[$allergy->id] = $allergy;
                 }
             }
         }
@@ -2502,7 +2504,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->disorder;
+                    $disorder = $entry->disorder;
+                    $required[$disorder->id] = $disorder;
                 }
             }
         }
@@ -2546,14 +2549,13 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->operation;
+                    $operation = $entry->operation;
+                    $required[$operation->id] = $operation;
                 }
             }
         }
 
         return $required;
-
-
     }
 
 

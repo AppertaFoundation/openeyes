@@ -74,7 +74,7 @@
                   'entry' => $entry,
                   'form' => $form,
                   'model_name' => $model_name,
-                  'removable' => true,
+                  'removable' => !in_array($entry->allergy_id, $required_allergy_ids),
                   'allergies' => $element->getAllergyOptions(),
                   'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
                   'row_count' => $row_count,
