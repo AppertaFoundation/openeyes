@@ -88,11 +88,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.bindController = function(controller, name) {
     this[name] = controller;
+    this.boundController = controller;
     this.options.onControllerBinded(controller, name);
   };
 
     HistoryMedicationsController.prototype.unbindController = function(controller, name) {
         delete this[name];
+        delete this.boundController;
         $.each(this.$table.find("tbody").children("tr"), function(i, e){
            $.removeData($(e), "bound_entry");
         });
@@ -219,8 +221,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var $this_row = $(e.target).closest('tr');
           var $bound_row = $this_row.data('bound_entry');
           controller.setRowAsStopped($this_row);
-            if(typeof $bound_row !== "undefined" && typeof controller.MMController !== "undefined") {
-               controller.MMController.setRowAsStopped($bound_row);
+            if(typeof $bound_row !== "undefined" && typeof controller.boundController !== "undefined") {
+                controller.boundController.setRowAsStopped($bound_row);
             }
       });
 
@@ -228,8 +230,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var $this_row = $(e.target).closest('tr');
           var $bound_row = $this_row.data('bound_entry');
           controller.cancelStopped($this_row);
-          if(typeof $bound_row !== "undefined" && typeof controller.MMController !== "undefined") {
-              controller.MMController.cancelStopped($bound_row);
+          if(typeof $bound_row !== "undefined" && typeof controller.boundController !== "undefined") {
+              controller.boundController.cancelStopped($bound_row);
           }
       });
 
@@ -327,6 +329,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.setRowAsStopped = function ($row) {
+
+      $row.find(".end-date-column").find(".alternative-display-element").show();
+      $row.find(".end-date-column").find(".alternative-display-element.textual").hide();
+
       var $cnt_input = $row.find(".btn-continue input");
       $cnt_input.attr("data-prev-state", $cnt_input.prop("checked") ? '1' : '0');
       $cnt_input.prop("checked", false).attr("disabled", "disabled");
@@ -337,6 +343,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.cancelStopped = function($row) {
+
+
+      $row.find(".end-date-column").find(".alternative-display-element").hide();
+      $row.find(".end-date-column").find(".alternative-display-element.textual").show();
+
       var $stop_reason = $row.find('.stop-reason');
       var $end_date_wrapper =  $row.find('.end_date_wrapper');
 

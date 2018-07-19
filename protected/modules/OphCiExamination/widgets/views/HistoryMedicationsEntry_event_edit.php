@@ -127,41 +127,33 @@ else {
             </fieldset>
         </div>
     </td>
-    <td>
-      <?php if($row_type == "closed" && !is_null($entry->end_date)): ?>
-          <i class="oe-i stop small pad"></i>
-          <?=Helper::formatFuzzyDate($entry->end_date) ?>
-            <input type="hidden" name="<?= $field_prefix ?>[end_date]" class="end-date" value="<?= $entry->end_date ?>" />
-      <?php else: ?>
-
-          <span class="fuzzy-date end_date_wrapper <?php echo (!$chk_stop || $row_type == "closed" ? ' hidden' : ''); ?>">
-              <?php
-                $end_sel_year = substr($entry->end_date, 0, 4);
-                $end_sel_month = substr($entry->end_date, 4, 2);
-                $end_sel_day = substr($entry->end_date, 6, 2);
-              ?>
-              <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-              <?php /*
-              <input id="<?= $model_name ?>_datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
-                <i class="oe-i remove-circle small pad-left meds-stop-cancel-btn"></i>
-            */ ?>
-          </span>
-          <?php if($row_type == "closed"): ?>
-              <div>
-                  <?php echo !is_null($entry->stop_reason_id) ? $entry->stopReason->name : ''; ?>
-              </div>
-          <?php else: ?>
-              <div>
-                  <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full stop-reason'.(!$chk_stop ? ' hidden' : ''))) ?>
-              </div>
-          <?php endif; ?>
-       <a href="javascript:void(0);" class="meds-stop-btn">stopped?</a>
-      <?php endif; ?>
+    <td class="end-date-column">
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual">
+                <a class="textual-display meds-stop-btn" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?php if(!is_null($entry->end_date)): ?>
+                        <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?><?php echo !is_null($entry->stop_reason_id) ? ' ('.$entry->stopReason->name.')' : ''; ?>
+                    <?php else: ?>
+                        stop
+                    <?php endif; ?>
+                </a>
+            </div>
+            <fieldset class="alternative-display-element"  style="display: none;">
+                <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+                <span class="fuzzy-date end_date_wrapper" >
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+                </span>
+                <div>
+                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-8 stop-reason')) ?>
+                    <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a>
+                </div>
+            </fieldset>
+        </div>
   </td>
 
     <td class="edit-column">
         <?php if ($removable) { ?>
-            <button class="button small warning remove" type="button">remove</button>
+            <button class="button small warning remove" type="button">Remove</button>
         <?php } ?>
     </td>
 </tr>

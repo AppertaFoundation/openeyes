@@ -178,4 +178,9 @@ class MedicationManagement extends BaseMedicationElement
         // TODO!!!!
         return;
     }
+
+    public function loadFromExisting($element)
+    {
+        return;
+    }
 }
