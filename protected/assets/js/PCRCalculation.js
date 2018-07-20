@@ -6,6 +6,12 @@
  */
 function getPcrContainer(ev) {
     var side = $(ev.target).closest('.js-side').attr('data-side');
+
+    //for future debugging
+    if(!side){
+        console.log(ev);
+    }
+
     $container = $('.js-pcr-' + side.toLowerCase()).parent();
     return $container;
 }
