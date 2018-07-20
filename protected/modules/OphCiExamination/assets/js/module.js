@@ -826,7 +826,9 @@ $(document).ready(function() {
         if(near === 'near'){
             suffix = 'NearVisualAcuity';
         }
-        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
+
+        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true, true);
+
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
         if (el.length) {
             el.addClass('clicked');
