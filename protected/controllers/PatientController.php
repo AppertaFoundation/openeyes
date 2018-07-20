@@ -525,27 +525,120 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionLightningViewer($id)
+    public function actionLightningViewer($id, $document_type = null)
     {
         if (!$this->patient = Patient::model()->findByPk($id)) {
-            throw new SystemException('Patient not found: '.$id);
+            throw new SystemException('Patient not found: ' . $id);
         }
 
         $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
-        $episodes = $this->patient->episodes;
-
-        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-
         $this->title = 'Lightning Viewer';
 
-        $this->render('lightning_viewer', array(
-            'title' => empty($episodes) ? '' : 'Episode summary',
-            'episodes' => $episodes,
-            'site' => $site,
-            'noEpisodes' => false,
-        ));
+        /* @var array(string => Event[]) $eventTypeMap */
+        $eventTypeMap = array();
 
+        $documentGroups = ['Letters' => []];
+
+        /* @var EventType $eventType */
+        foreach (EventType::model()->findAll() as $eventType) {
+            $eventTypeMap[$eventType->name] = array();
+            $api = $eventType->getApi();
+            if ($api) {
+                $eventTypeMap[$eventType->name] += $eventType->getApi()->getEvents($this->patient);
+            }
+        }
+
+        /* @var OphCoDocument_Sub_Types $documentTyoe */
+        foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
+            $events = array();
+
+            /* @var Event $documentEvent */
+            foreach ($eventTypeMap['Document'] as $documentEvent) {
+                /* @var Element_OphCoDocument_Document $documentElement */
+                $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
+                if ($documentElement->sub_type->id === $documentType->id) {
+                    $events[] = $documentEvent;
+                }
+            }
+
+            if ($documentType->name === 'Referral Letter') {
+                $documentGroups['Letters'] += $events;
+            } else {
+                $documentGroups[$documentType->name] = $events;
+            }
+        }
+
+        foreach ($eventTypeMap as $eventType => $events) {
+            switch ($eventType) {
+                case 'OCT':
+                case 'Ultrasound':
+                    $documentGroups[$eventType] += $events;
+                    break;
+                case 'Biometry':
+                    $documentGroups['Biometry Report'] += $events;
+                    break;
+                case 'Correspondence':
+                    $documentGroups['Letters'] += $events;
+                    break;
+                default:
+                    $documentGroups[$eventType] = $events;
+                    break;
+            }
+        }
+
+        if (!$document_type || !isset($documentGroups[$document_type])) {
+            $document_type = 'Letters';
+        }
+        $selectedDocuments = $documentGroups[$document_type];
+
+        $documentChunks = array();
+
+        if (count($selectedDocuments) > 0) {
+            usort($selectedDocuments, function ($a, $b) {
+                return $a->event_date < $b->event_date ? -1 : 1;
+            });
+
+            $chunkCount = 6;
+            $documentChunks = array_chunk($selectedDocuments, ceil(count($selectedDocuments) / $chunkCount));
+
+            for ($i = 1; $i < count($documentChunks); ++$i) {
+                //$chunk = $documentChunks[$i];
+                while(count($documentChunks[$i]) > 0) {
+
+                    $lastPreviousChunkEvent = end($documentChunks[$i - 1]);
+                    if (!$lastPreviousChunkEvent) {
+                        break;
+                    }
+
+                    $earliestEvent = $documentChunks[$i][0];
+                    if (!$earliestEvent) {
+                        break;
+                    }
+
+                    if ((new DateTime($earliestEvent->event_date))->format('Y') ===
+                        (new DateTime($lastPreviousChunkEvent->event_date))->format('Y')) {
+                        $documentChunks[$i - 1][] = $earliestEvent;
+                        $documentChunks[$i - 1][] = $earliestEvent;
+                        array_shift($documentChunks[$i]);
+                    } else {
+                        break;
+                    }
+                }
+
+                if(count($documentChunks[$i]) === 0)
+                {
+                    array_splice($documentChunks, $i, 1);
+                    --$i;
+                }
+            }
+        }
+
+        $this->render('lightning_viewer', array(
+            'selectedDocumentType' => $document_type,
+            'documentGroups' => $documentGroups,
+            'documentChunks' => $documentChunks
+        ));
     }
 
     /**
