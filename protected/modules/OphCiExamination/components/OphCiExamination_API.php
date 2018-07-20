@@ -2549,6 +2549,7 @@ class OphCiExamination_API extends \BaseAPI
         return $required;
     }
 
+
     /**
      * Returns the required Operations for Surgical History Element
      *
@@ -2561,7 +2562,6 @@ class OphCiExamination_API extends \BaseAPI
         $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
         $firm = \Firm::model()->findByPk($firm_id);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
@@ -2573,24 +2573,19 @@ class OphCiExamination_API extends \BaseAPI
                     '(gender = :gender OR gender IS NULL)'
             ),
         );
-
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
-
         $sets = models\SurgicalHistorySet::model()->findAll($criteria);
-
         $required = array();
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $operation = $entry->operation;
-                    $required[$operation->id] = $operation;
+                    $required[] = $entry->operation;
                 }
             }
         }
-
         return $required;
     }
 
