@@ -193,6 +193,7 @@ class MedicationManagement extends BaseMedicationElement
         $criteria->params['class_name'] = 'OphDrPrescription';
         $prescription_event_type = \EventType::model()->findAll($criteria);
         $prescription->event_type_id = $prescription_event_type[0]->id;
+        $prescription->event_date = $this->event->event_date;
         if(!$prescription->save()) {
             \Yii::trace(print_r($prescription->errors, true));
         }

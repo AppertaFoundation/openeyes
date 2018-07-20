@@ -58,6 +58,7 @@ return array(
             'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
             'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
             'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
+            'Medication Management drug sets' => '/OphCiExamination/admin/MedicationManagementSets',
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
