@@ -67,6 +67,7 @@ var optionsMeds = {
         crop: false,
         overflow: 'justify',
         padding:0,				// needs to be 0, or else SVG rect shows up with the CSS
+        allowOverlap: true,
         formatter: function () {
 
           if (this.y == this.point.low) {

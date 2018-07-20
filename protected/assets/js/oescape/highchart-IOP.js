@@ -64,6 +64,7 @@ var optionsIOP = {
 
     crosshair: {
       snap:false,
+      zIndex: 0
     },
 
     labels: {
@@ -80,7 +81,7 @@ function drawIOPSeries(chart, data, eye_side){
   var series_option = {
     type:'line',
     colorIndex:(eye_side=='right')?11:21,			// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
-    zIndex: 1
+    zIndex: 2
   };
 
   addSeries(chart, 'IOP ('+eye_side + ')', data, series_option);
@@ -96,7 +97,7 @@ function setYPlotline(target_value, eye_side){
       y: -5,
       x: 0
     },
-    zIndex: 10,
+    zIndex: 1,
   };
 }
 
