@@ -17,14 +17,16 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-  <div class="cols-11 flex-layout">
-      <?php echo $form->textArea($element,
-          'description',
-          array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true),
-          false,
-          array('placeholder' => 'Enter comments here')
-      ) ?>
-    <div class="cols-5">
+  <div class="cols-10 flex-layout col-gap">
+    <div class="cols-half">
+        <?php echo $form->textArea($element,
+            'description',
+            array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
+            false,
+            array('placeholder' => 'Enter comments here')
+        ) ?>
+    </div>
+    <div class="cols-half">
       <div class="data-label">Previous Management</div>
       <div class="data-value">
         <div class="inline-previous-element"
