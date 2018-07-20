@@ -57,7 +57,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                 <?php
                 $row_count = 0;
 
-                $entries = array_filter($element->entries, function($e){ return $e->end_date === null; });
+                $entries = array_filter($element->entries, function($e){ return $e->end_date === null || $e->end_date === ''; });
                 $total_count = count($entries);
 
                 foreach ($entries as $entry) {
@@ -83,7 +83,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     $row_count++;
                 }
 
-                $closed_entries = array_filter($element->entries, function($e){ return $e->end_date !== null || $e->end_date !== ''; });
+                $closed_entries = array_filter($element->entries, function($e){ return $e->end_date !== null && $e->end_date !== ''; });
 
                 ?>
                 <?php if(!empty($closed_entries)): ?>

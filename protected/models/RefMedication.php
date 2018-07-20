@@ -70,7 +70,7 @@ class RefMedication extends BaseActiveRecordVersioned
 			'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'ref_medication_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'refSets' => array(self::MANY_MANY, RefSet::class, array('ref_set_id' => 'id'), 'through' => 'ref_medication_set'),
+			'refSets' => array(self::MANY_MANY, RefSet::class, 'ref_medication_set(ref_medication_id, ref_set_id)'),
 			'refMedicationsSearchIndexes' => array(self::HAS_MANY, RefMedicationsSearchIndex::class, 'ref_medication_id'),
 		);
 	}
@@ -165,5 +165,22 @@ class RefMedication extends BaseActiveRecordVersioned
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+    /**
+     * @return bool
+     */
+
+    public function getToBeCopiedIntoMedicationManagement()
+    {
+        $med_sets = array_map(function($e){ return $e->ref_set_id; }, \OEModule\OphCiExamination\models\MedicationManagementRefSet::model()->findAll());
+
+        foreach ($this->refSets as $refSet) {
+            if(in_array($refSet->id, $med_sets)) {
+                return true;
+            }
+        }
+
+        return false;
 	}
 }

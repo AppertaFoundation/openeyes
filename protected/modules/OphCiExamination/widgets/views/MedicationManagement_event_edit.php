@@ -149,7 +149,7 @@ $element_errors = $element->getErrors();
                 }
             },
             initRowsFromHistoryElement: function() {
-                <?php if(!$this->isPostedEntries() && !$this->element->getIsNewRecord()): ?>
+                <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
                 $.each(window.HMController.$table.find("tbody").find("tr").not(".ignore"), function(i, e){
                     var $row = $(e);
                     var data = window.HMController.getRowData($row);
