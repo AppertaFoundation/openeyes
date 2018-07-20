@@ -65,17 +65,10 @@ var optionsMeds = {
         enabled: true,
         inside: false,			// move labels outside of the column area
         crop: false,
-        overflow: 'justify',
         padding:0,				// needs to be 0, or else SVG rect shows up with the CSS
         allowOverlap: true,
         formatter: function () {
-
-          if (this.y == this.point.low) {
-            return this.series.name;
-          } else {
-            return '';		// because of the padding this is still drawn (css hides it)
-          }
-
+          return this.series.name;
         },
       },
       showInLegend:false, 	// no legend
