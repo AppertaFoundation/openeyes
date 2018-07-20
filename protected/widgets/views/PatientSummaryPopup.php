@@ -121,7 +121,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <span class="data">CVI Status:  <?php echo explode("(",$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"><?php echo Helper::convertDate2NHS($this->patient->getOphInfo()->cvi_status_date );?></span>
+            <span class="oe-date"> <?php echo explode("(",$this->cviStatus)[2]; ?></span>
         </div>
     </div>
     <div class="flex-layout flex-top">
@@ -181,12 +181,6 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
           </div><!-- data -->
         </div>
         <!-- group -->
-        <div class="group">
-          <div class="label">CVI Status</div>
-          <div class="data">
-              <?php echo $this->cviStatus; ?>
-          </div>
-        </div>
         <!-- group-->
       </div><!-- popup-overflow -->
 
