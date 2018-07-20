@@ -38,12 +38,14 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
     var element_type_id = $(element).data('element-type-id');
     var element_type_class = $(element).data('element-type-class');
     var display_order = $(element).data('element-display-order');
+    var $input = $('input[name="element_removed[' + element_type_class + ']"]');
+    var container;
+
     // If the element has a flag element removed show it instead
     // of creating a new one and set the flag's value to 0
-    if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
+    if ($input.length) {
         $("." + element_type_class).show();
-        var names = element_type_class + "[element_removed]";
-        $('input[name="' + names + '"]').val(0);
+        $input.val(0);
         markElementChilds(element_type_class , 0);
         if (callback) {
             callback();
@@ -67,7 +69,6 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
                 new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
             }
 
-            var container = undefined;
             if (is_child) {
                 if ($(element).data('container-selector')) {
                     container = $($(element).data('container-selector')).find('.sub-elements.active');
@@ -168,38 +169,43 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 function markElementChilds(element , element_remove_value) {
     $(element).find('.sub-elements.active').children().each(function () {
         let child_name = $(this).data('element-type-class');
-        $('input[name="' + child_name + "[element_removed]" + '"]').val(element_remove_value);
+        $('input[name="element_removed[' + child_name +' ]"]').val(element_remove_value);
     });
 }
 
-function removeElement(element, is_child) {
-    if (typeof(is_child) == 'undefined') {
+function removeElement(element, is_child, force) {
+    if (typeof(is_child) === undefined) {
         is_child = false;
+    }
+
+    if(force === undefined){
+        force = false;
     }
 
     var element_type_class = $(element).data('element-type-class');
     var element_type_id = $(element).data('element-type-id');
     var element_type_name = $(element).data('element-type-name');
     var display_order = $(element).data('element-display-order');
+    var $input = $('input[name="' + 'element_removed[' + element_type_class + ']' + '"]');
+    var container;
 
     if (is_child) {
-        var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
+        container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
     } else {
-        var container = $('.optional-elements-list');
+        container = $('.optional-elements-list');
         markElementChilds(element , 1);
     }
 
     // If the element has element removed flag hide it instead of removing it
     // And set the flag values to 1
-    // And set the flag values to 1
-    if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
+
+    if ($input.length && !force) {
         $(element).hide();
-        var names = element_type_class + "[element_removed]";
-        $('input[name="' + names + '"]').val(1);
+        $input.val(1);
     } else {
         $(element).remove();
     }
-    var element = '<li data-element-type-class="' + element_type_class + '" data-element-type-id="' + element_type_id + '" data-element-type-name="' + element_type_name + '" data-element-display-order="' + display_order + '"><a href="#">' + element_type_name + '</a></li>';
+    element = '<li data-element-type-class="' + element_type_class + '" data-element-type-id="' + element_type_id + '" data-element-type-name="' + element_type_name + '" data-element-display-order="' + display_order + '"><a href="#">' + element_type_name + '</a></li>';
 
     var insert_before = $(container).find('li').first();
 
