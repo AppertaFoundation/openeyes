@@ -32,7 +32,7 @@ sort($documentTypes);
       <div class="change-timeline">
         <ul>
             <?php foreach ($documentTypes as $documentType) {
-              $events = $documentGroups[$documentType];
+                $events = $documentGroups[$documentType];
                 if (count($events) === 0) {
                     continue;
                 }
@@ -50,56 +50,51 @@ sort($documentTypes);
       </div>
     </div>
 
-    <!-- timeline -->
     <div class="timeline">
       <table>
         <tbody>
         <tr>
-            <?php for ($i = count($documentChunks) - 1; $i >= 0; --$i) {
-                $chunk = $documentChunks[$i];
-                if (count($chunk) === 0) {
+            <?php foreach ($documentChunks as $year => $events) {
+                if (count($events) === 0) {
                     continue;
                 }
-
-                $latestEvent = end($chunk);
-                $earliestEvent = reset($chunk);
-
-                $earliestYear = (new DateTime($earliestEvent->event_date))->format('Y');
-                $latestYear = (new DateTime($latestEvent->event_date))->format('Y');
                 ?>
               <td class="date-divider">
-                  <?= $earliestYear === $latestYear ? $earliestYear : $latestYear . '-' . $earliestYear ?>
+                  <?= $year ?>
                 <i class="oe-i small collapse js-timeline-date"></i>
               </td>
             <?php } ?>
         </tr>
         <tr>
             <?php
-            for ($i = count($documentChunks) - 1; $i >= 0; --$i) {
-                $chunk = $documentChunks[$i];
-                if (count($chunk) === 0) {
+            foreach ($documentChunks as $year => $events) {
+                if (count($events) === 0) {
                     continue;
                 }
                 ?>
               <td>
-                <div id="js-icon-1" class="icon-group">
-                    <?php foreach ($chunk as $event) { ?>
-                      <span id="lqv_0" class="icon-event" data-lightning="sent,23 Nov 2016,Ms Angela Glasby,2016-11-23"><i
-                            class="oe-i-e <?= $event->eventType->getEventIconCssClass() ?>"></i></span>
+                <div class="icon-group">
+                    <?php foreach ($events as $event) { ?>
+                      <span class="icon-event js-lightning-view-icon"
+                            data-event-id="<?= $event->id ?>"
+                            data-event-image-url="<?= Yii::app()->createUrl('/eventImage/view/',
+                                array('id' => $event->id)) ?>"
+                      >
+                        <i class="oe-i-e <?= $event->eventType->getEventIconCssClass() ?>"></i>
+                      </span>
                     <?php } ?>
-                  <div style="display: none;"><?= count($chunk) ?></div>
+                  <div style="display: none;"><?= count($events) ?></div>
               </td>
             <?php } ?>
         </tr>
         </tbody>
       </table>
-    </div><!-- timeline -->
+    </div>
 
-  </div><!-- lightning-timeline -->
+  </div>
 
   <div class="flex-layout flex-left flex-top">
 
-    <!-- js generated content -->
     <div class="oe-lightning-meta">
       <div class="letter-type">Letter sent</div>
       <div class="date">5 Mar 2016</div>
@@ -110,10 +105,27 @@ sort($documentTypes);
       </div>
     </div>
 
-
-    <div class="oe-lightning-quick-view">
-      <img src="../assets/img/_letters/2016-3-5.png" alt="_demo_letter">
-    </div>
-
+    <div class="oe-lightning-quick-view js-lightning-view-image-container"></div>
   </div>
 </main>
+
+<script>
+  $(function () {
+    $('.js-lightning-view-icon').each(function () {
+      var $img = $('<img />', {
+        src: $(this).data('event-image-url'),
+        class: 'js-lightning-image-preview',
+        style: 'display: none;',
+        alt: 'No preview available at this time',
+        'data-event-id': $(this).data('event-id'),
+      });
+
+      $img.appendTo('.js-lightning-view-image-container');
+    });
+
+    $(this).on('mouseover', '.js-lightning-view-icon', function () {
+      $('.js-lightning-image-preview').hide();
+      $('.js-lightning-image-preview[data-event-id="' + $(this).data('event-id') + '"]').show();
+    });
+  });
+</script>

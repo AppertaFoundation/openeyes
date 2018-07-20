@@ -596,48 +596,22 @@ class PatientController extends BaseController
 
         if (count($selectedDocuments) > 0) {
             usort($selectedDocuments, function ($a, $b) {
-                return $a->event_date < $b->event_date ? -1 : 1;
+                return $a->event_date > $b->event_date ? -1 : 1;
             });
 
-            $chunkCount = 6;
-            $documentChunks = array_chunk($selectedDocuments, ceil(count($selectedDocuments) / $chunkCount));
-
-            for ($i = 1; $i < count($documentChunks); ++$i) {
-                //$chunk = $documentChunks[$i];
-                while(count($documentChunks[$i]) > 0) {
-
-                    $lastPreviousChunkEvent = end($documentChunks[$i - 1]);
-                    if (!$lastPreviousChunkEvent) {
-                        break;
-                    }
-
-                    $earliestEvent = $documentChunks[$i][0];
-                    if (!$earliestEvent) {
-                        break;
-                    }
-
-                    if ((new DateTime($earliestEvent->event_date))->format('Y') ===
-                        (new DateTime($lastPreviousChunkEvent->event_date))->format('Y')) {
-                        $documentChunks[$i - 1][] = $earliestEvent;
-                        $documentChunks[$i - 1][] = $earliestEvent;
-                        array_shift($documentChunks[$i]);
-                    } else {
-                        break;
-                    }
+            foreach ($selectedDocuments as $event) {
+                $year = (new DateTime($event->event_date))->format('Y');
+                if (!isset($documentChunks[$year])) {
+                    $documentChunks[$year] = array();
                 }
-
-                if(count($documentChunks[$i]) === 0)
-                {
-                    array_splice($documentChunks, $i, 1);
-                    --$i;
-                }
+                $documentChunks[$year][] = $event;
             }
         }
 
         $this->render('lightning_viewer', array(
             'selectedDocumentType' => $document_type,
             'documentGroups' => $documentGroups,
-            'documentChunks' => $documentChunks
+            'documentChunks' => $documentChunks,
         ));
     }
 
