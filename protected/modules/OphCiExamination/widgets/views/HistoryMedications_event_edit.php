@@ -103,7 +103,7 @@ $element_errors = $element->getErrors();
                 <ul class="add-options" data-multi="true" data-clickadd="false" id="history-medication-option">
                     <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());
                     foreach ($medications as $id=>$medication) { ?>
-                      <li data-str="<?php echo $medication ?>" data-id="<?php echo $id?>">
+                      <li data-str="<?php echo $medication ?>" data-drug-id="<?php echo $id?>">
                         <span class="auto-width">
                           <?php echo $medication; ?>
                         </span>

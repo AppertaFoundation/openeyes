@@ -221,7 +221,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var span = "<span class='auto-width'>"+ui[i]['name']+"</span>";
         var item = $("<li>")
           .attr('data-str', ui[i]['name'])
-          .attr('data-id', ui[i]['value']);
+          .attr('data-medication-drug-id', ui[i]['value']);
         item.append(span);
         $(controller.options.medicationSearchResult).append(item);
       }
@@ -355,7 +355,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     for (var i in selected_option) {
       data = {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      data['medication_drug_id'] = $(selected_option[i]).data('id');
+      data['drug_id'] = $(selected_option[i]).data('drug-id');
+      data['medication_drug_id'] = $(selected_option[i]).data('medication-drug-id');
       data['medication_name'] = $(selected_option[i]).data('str');
       newRows.push( Mustache.render(
         template,
