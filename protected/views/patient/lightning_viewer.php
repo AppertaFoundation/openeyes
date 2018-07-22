@@ -91,7 +91,9 @@ sort($documentTypes);
   </div>
 
   <div class="flex-layout flex-left flex-top">
-    <div class="oe-lightning-meta">
+    <div class="oe-lightning-meta js-lightning-meta">
+      <div class="letter-type js-lightning-preview-type"></div>
+      <div class="date oe-date js-lightning-date"></div>
       <div class="help">
         swipe to scan | click to lock
       </div>
@@ -105,6 +107,8 @@ sort($documentTypes);
                    data-event-id="<?= $event->id ?>"
                    data-image-count="<?= count($eventImages) ?>"
                    data-paged="<?= isset($eventImages[0]) && $eventImages[0]->page !== null ?>"
+                   data-preview-type="<?= $selectedDocumentType ?>"
+                   data-date="<?= CHtml::encode(Helper::convertDate2HTML($event->event_date)) ?>"
                    style="display: none">
                   <?php
 
@@ -136,7 +140,11 @@ sort($documentTypes);
       var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
       $preview.show();
 
-      if($preview.data('paged')) {
+      var $meta = $('.js-lightning-meta');
+      $meta.find('.js-lightning-preview-type').text($preview.data('preview-type'));
+      $meta.find('.js-lightning-date').html($preview.data('date'));
+
+      if ($preview.data('paged')) {
         $preview.find('.js-lightning-image-preview-page').hide();
         $preview.find('.js-lightning-image-preview-page').first().show();
       } else {
