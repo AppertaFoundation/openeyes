@@ -102,4 +102,18 @@ class EventImage extends BaseActiveRecord
 
         return Event::model()->findByPk($event_id);
     }
+
+    public function getImageUrl()
+    {
+        $options = array('id' => $this->event_id);
+        if ($this->eye_id !== null) {
+            $options['eye'] = $this->eye_id;
+        }
+
+        if ($this->page !== null) {
+            $options['page'] = $this->page;
+        }
+
+        return Yii::app()->createUrl('//eventIMage/view', $options);
+    }
 }

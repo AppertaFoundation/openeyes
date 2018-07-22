@@ -73,8 +73,6 @@ sort($documentTypes);
                     <?php foreach ($events as $event) { ?>
                       <span class="icon-event js-lightning-view-icon"
                             data-event-id="<?= $event->id ?>"
-                            data-event-image-url="<?= Yii::app()->createUrl('/eventImage/view/',
-                                array('id' => $event->id)) ?>"
                       >
                         <i class="oe-i-e <?= $event->eventType->getEventIconCssClass() ?>"></i>
                       </span>
@@ -99,188 +97,155 @@ sort($documentTypes);
       </div>
     </div>
     <div class="oe-lightning-quick-view js-lightning-view-image-container">
+        <?php foreach ($documentChunks as $year => $events) {
+            foreach ($events as $event) {
+                $eventImages = EventImage::model()->findAll('event_id = ?', array($event->id));
+                ?>
+              <div class="js-lightning-image-preview flex-layout"
+                   data-event-id="<?= $event->id ?>"
+                   data-image-count="<?= count($eventImages) ?>"
+                   data-paged="<?= isset($eventImages[0]) && $eventImages[0]->page !== null ?>"
+                   style="display: none">
+                  <?php
+
+                  foreach ($eventImages as $eventImage) { ?>
+                    <img class="js-lightning-image-preview-page"
+                         src="<?= $eventImage->getImageUrl() ?>"
+                         style="width: 520px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
+                         alt="No preview available at this time"
+                         <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
+                    />
+                  <?php } ?>
+              </div>
+            <?php }
+        } ?>
     </div>
 
   </div>
 </main>
 
 <script>
+  $('.js-lightning-image-preview').first().show();
+
   $(function () {
-      $('.js-lightning-view-icon').each(function () {
-        var $img = $('<img />', {
-          src: $(this).data('event-image-url'),
-          class: 'js-lightning-image-preview',
-          style: 'display: none; width: 520px;',
-          alt: 'No preview available at this time',
-          'data-event-id': $(this).data('event-id'),
 
-        });
+    var selectedEventId = null;
 
-        $img.appendTo('.js-lightning-view-image-container');
-      });
+    function changePreview(event_id) {
+      $('.js-lightning-image-preview').hide();
+      var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+      $preview.show();
 
-      $('.js-lightning-image-preview').first().show();
-
-      function changePreview(event_id) {
-        $('.js-lightning-image-preview').hide();
-        $('.js-lightning-image-preview[data-event-id="' + event_id + '"]').show();
+      if($preview.data('paged')) {
+        $preview.find('.js-lightning-image-preview-page').hide();
+        $preview.find('.js-lightning-image-preview-page').first().show();
+      } else {
+        $preview.find('.js-lightning-image-preview-page').show();
       }
+      return $preview;
+    }
 
-      $(this).on('mouseover', '.js-lightning-view-icon', function () {
+    function changePreviewPage(event_id, page) {
+      var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+      if (page !== null) {
+        $preview.find('.js-lightning-image-preview-page').hide();
+        $preview.find('.js-lightning-image-preview-page[data-page-number="' + page + '"]').show();
+      }
+    }
+
+    $(this).on('mouseover', '.js-lightning-view-icon', function () {
+      if (selectedEventId === null) {
         changePreview($(this).data('event-id'));
-      });
+      }
+    });
 
-      $(this).on('mouseout', '.js-lightning-view-icon', function () {
-        $('.icon-event').removeClass('js-hover');
-      });
+    $(this).on('mouseout', '.js-lightning-view-icon', function () {
+      $('.icon-event').removeClass('js-hover');
+    });
 
-      $(this).on('mousemove', '.js-lightning-image-preview', function (e) {
-        var parentOffset = $(this).parent().offset();
-        //or $(this).offset(); if you really just want the current element's offset
-        var relX = e.pageX - parentOffset.left;
-        //var relY = e.pageY - parentOffset.top;
-        var percentage = relX / $(this).width();
-        console.log(relX + ':' + percentage);
+    $(this).on('click', '.js-lightning-view-icon', function () {
+      var event_id = $(this).data('event-id');
+      if (selectedEventId === event_id) {
+        deselectDocuemnt();
+      }
+      else {
+        deselectDocuemnt();
+        selectDocument(event_id);
+      }
+    });
 
-        var $icons = $('.js-lightning-view-icon');
-        var index = Math.floor($icons.length * percentage);
-        console.log(index);
-        var $icon = $icons.eq(index);
+    function selectDocument(event_id) {
+      $('.js-lightning-view-icon[data-event-id="' + event_id + '"]').addClass('selected');
+      selectedEventId = event_id;
+      changePreview(selectedEventId);
+    }
+
+    function deselectDocuemnt() {
+      $('.js-lightning-view-icon').removeClass('selected');
+      selectedEventId = null;
+    }
+
+    $(this).on('mousemove', '.js-lightning-image-preview', function (e) {
+      var parentOffset = $(this).parent().offset();
+      var relX = e.pageX - parentOffset.left;
+
+      var xPercentage = relX / $(this).width();
+
+      var $icons = $('.js-lightning-view-icon');
+      var xIndex = Math.floor($icons.length * xPercentage);
+      var $icon = $icons.eq(xIndex);
+
+      var $preview;
+
+      if (selectedEventId === null) {
         $('.icon-event').removeClass('js-hover');
         $icon.addClass('js-hover');
-        changePreview($icon.data('event-id'));
-      });
-
-      var optionsDisplayed = false;
-
-      // handles touch
-      $('.js-lightning-options-btn').click(changeOptions);
-
-      // enchance with mouseevents through DOM wrapper
-      $('.js-lightning-options')
-        .mouseenter(showOptions)
-        .mouseleave(hideOptions);
-
-      // controller
-      function changeOptions() {
-        if (!optionsDisplayed) {
-          showOptions()
-        } else {
-          hideOptions()
-        }
+        $preview = changePreview($icon.data('event-id'));
+      } else {
+        $preview = $('.js-lightning-image-preview[data-event-id="' + selectedEventId + '"]');
       }
 
-      function showOptions() {
-        $('.js-change-timeline').show();
-        $('.js-lightning-options-btn').addClass('active');
-        optionsDisplayed = true;
+      if ($preview.data('paged')) {
+        var relY = e.pageY - parentOffset.top;
+        var yPercentage = relY / $(this).height();
+        var page = Math.floor($(this).data('image-count') * yPercentage);
+        changePreviewPage($preview.data('event-id'), page);
       }
+    });
 
-      function hideOptions() {
-        $('.js-change-timeline').hide();
-        $('.js-lightning-options-btn').removeClass('active');
-        optionsDisplayed = false;
+    var optionsDisplayed = false;
+
+    $('.js-lightning-options-btn').click(changeOptions);
+
+    $('.js-lightning-options')
+      .mouseenter(showOptions)
+      .mouseleave(hideOptions);
+
+    function changeOptions() {
+      if (!optionsDisplayed) {
+        showOptions()
+      } else {
+        hideOptions()
       }
-
-      $('.js-timeline-date').click(function (e) {
-        $('.js-icon-group[data-year="' + $(this).data('year') + '"]').toggle();
-        $('.js-icon-group-count[data-year="' + $(this).data('year') + '"]').toggle();
-        $(this).toggleClass('collapse expand');
-      });
-
-      /**
-       Demo Lightening Viewer functionality
-       Set up for Letters but could any doc type...
-       **/
-      var letters = {
-        init: function () {
-
-          letters.selected = '#lqv_0';
-          letters.revertToSelected();
-          letters.xscrollIndex = 0;
-
-
-          $('.icon-event').hover(
-            function () {
-              var letterdata = $(this).data('lightning');
-              letters.changeLetter(letterdata);
-            }, function () {
-              letters.revertToSelected();
-            }
-          );
-
-          $('.icon-event').click(function () {
-            letters.newSelected(this.id);
-          });
-
-
-          // mouse position on letter
-          $('.oe-lightning-quick-view img').mousemove(function (e) {
-            var offset = $(this).offset();
-            letters.xscroll(e.pageX - offset.left, e);
-          });
-
-          $('.oe-lightning-quick-view img').mouseout(function (e) {
-            $('.icon-event').removeClass('js-hover');
-            letters.revertToSelected();
-          });
-
-          $('.oe-lightning-quick-view img').click(function () {
-            letters.newSelected(letters.xscrollIcon);
-          });
-
-        },
-
-        changeLetter: function (letterdata) {
-          var meta = $('.oe-lightning-meta');
-          var d = letterdata.split(',');
-          meta.children('.letter-type').text('Letter ' + d[0]);
-          meta.children('.date').text(d[1]);
-          meta.children('.sender').text(d[2]);
-
-          if (d[3] !== undefined) {
-            letters.letterPNG(d[3]);
-          }
-
-        },
-
-        xscroll: function (xCoord, e) {
-          var $letterImg = $('.oe-lightning-quick-view img');
-          var numOfletters = 17;
-          var imageWidth = 520;
-          var currentIndex = Math.round(xCoord / (imageWidth / numOfletters));
-          var icon = $('#lqv_' + currentIndex);
-          $('.icon-event').removeClass('js-hover');
-          icon.addClass('js-hover');
-          letters.changeLetter(icon.data('lightning'));
-          letters.xscrollIcon = 'lqv_' + currentIndex;
-        },
-
-        letterPNG: function (pngName) {
-          var img = $('.oe-lightning-quick-view img');
-          var imgPath = "../assets/img/_letters/";
-          img.attr("src", imgPath + pngName + ".png");
-        },
-
-        revertToSelected: function () {
-          var data = $(letters.selected).data('lightning');
-          letters.changeLetter(data);
-        },
-
-        newSelected: function (id) {
-          $(letters.selected).removeClass('selected');
-          console.log(id);
-          $('#' + id).addClass('selected');
-          letters.selected = '#' + id; // update
-          letters.revertToSelected();
-        }
-
-      };
-
-      letters.init();
-
     }
-  ); // ready
 
+    function showOptions() {
+      $('.js-change-timeline').show();
+      $('.js-lightning-options-btn').addClass('active');
+      optionsDisplayed = true;
+    }
 
+    function hideOptions() {
+      $('.js-change-timeline').hide();
+      $('.js-lightning-options-btn').removeClass('active');
+      optionsDisplayed = false;
+    }
+
+    $('.js-timeline-date').click(function (e) {
+      $('.js-icon-group[data-year="' + $(this).data('year') + '"]').toggle();
+      $('.js-icon-group-count[data-year="' + $(this).data('year') + '"]').toggle();
+      $(this).toggleClass('collapse expand');
+    });
+
+  });
 </script>

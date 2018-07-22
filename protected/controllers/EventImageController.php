@@ -42,7 +42,7 @@ class EventImageController extends BaseController
      * @param integer $id the ID of the model to be displayed
      * @param integer $page The page number for multi image events
      */
-    public function actionView($id, $page = null)
+    public function actionView($id, $page = null, $eye = null)
     {
         // Adapted from http://ernieleseberg.com/php-image-output-and-browser-caching/
         $criteria = new CDbCriteria();
@@ -51,6 +51,10 @@ class EventImageController extends BaseController
         if ($page !== null) {
             $criteria->addCondition('page = :page');
             $criteria->params[':page'] = $page;
+        }
+        if ($eye !== null) {
+            $criteria->addCondition('eye_id = :eye');
+            $criteria->params[':eye'] = $eye;
         }
         $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
 
