@@ -68,10 +68,12 @@ class PcrRisk
      * @param $patientId
      * @param $side
      * @param $element
+     * @param $set_data was introduced to be able to set back POSTed data when there is an error on the page
+     *          definitely needs to refactored
      *
      * @return array
      */
-    public function getPCRData($patientId, $side, $element)
+    public function getPCRData($patientId, $side, $element, $set_data)
     {
         $pcr = array();
         $this->patient = Patient::model()->findByPk((int) $patientId);
@@ -85,32 +87,43 @@ class PcrRisk
             }
         }
 
-        $ageGroup = $this->getAgeGroup($this->patient->getAge());
+        $ageGroup = isset($set_data['age']) ? $set_data['age'] : $this->getAgeGroup($this->patient->getAge());
+        $gender = ucfirst(isset($set_data['gender']) ? $set_data['gender'] : $this->patient->getGenderString());
 
-        $gender = ucfirst($this->patient->getGenderString());
-
-        $is_diabetic = (!is_null($pcrRiskValues->diabetic)) ? $pcrRiskValues->diabetic : 'NK';
-        if ($this->patient->getDiabetes()) {
-            $is_diabetic = 'Y';
+        if(isset($set_data['PcrRisk'][$side]['diabetic'])){
+            $is_diabetic = $set_data['PcrRisk'][$side]['diabetic'];
+        } else {
+            $is_diabetic = (!is_null($pcrRiskValues->diabetic)) ? $pcrRiskValues->diabetic : 'NK';
+            if ($this->patient->getDiabetes()) {
+                $is_diabetic = 'Y';
+            }
         }
 
-        $is_glaucoma = (!is_null($pcrRiskValues->glaucoma)) ? $pcrRiskValues->glaucoma : 'NK';
-        if (strpos($this->patient->getSdl(), 'glaucoma') !== false) {
-            $is_glaucoma = 'Y';
-        }
+        if( isset($set_data['PcrRisk'][$side]['glaucoma']) ){
+            $is_glaucoma = $set_data['PcrRisk'][$side]['glaucoma'];
 
-        $risk = PatientRiskAssignment::model()->findByAttributes(array('patient_id' => $patientId));
+        } else{
+            $is_glaucoma = (!is_null($pcrRiskValues->glaucoma)) ? $pcrRiskValues->glaucoma : 'NK';
+            if (strpos($this->patient->getSdl(), 'glaucoma') !== false) {
+                $is_glaucoma = 'Y';
+            }
+        }
 
         $user = Yii::app()->session['user'];
         $user_id = $user->id;
         if (strpos(get_class($element), 'OphTrOperationnote') !== false) {
             $user_id = $this->getOperationNoteSurgeonId($patientId);
         }
-        $user_data = User::model()->findByPk($user_id);
-        $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
 
-        if (!$doctor_grade_id) {
-            $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
+        if( isset($set_data['PcrRisk'][$side]['pcr_doctor_grade']) ){
+            $doctor_grade_id = $set_data['PcrRisk'][$side]['pcr_doctor_grade'];
+        } else {
+            $user_data = User::model()->findByPk($user_id);
+            $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
+
+            if (!$doctor_grade_id) {
+                $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
+            }
         }
 
         $pcr['patient_id'] = $patientId;
@@ -119,19 +132,46 @@ class PcrRisk
         $pcr['gender'] = $gender;
         $pcr['diabetic'] = $is_diabetic;
         $pcr['glaucoma'] = $is_glaucoma;
-        $pcr['lie_flat'] = ($this->getCannotLieFlat($patientId)) ? $this->getCannotLieFlat($patientId) : $pcrRiskValues->can_lie_flat;
 
-        $no_view = (!is_null($pcrRiskValues->no_fundal_view)) ? $pcrRiskValues->no_fundal_view : 'NK';
-        $no_view_data = $this->getOpticDisc($patientId, $side);
-        if (count($no_view_data) >= 1) {
-            $no_view = 'Y';
+        if( isset($set_data['PcrRisk'][$side]['abletolieflat']) ){
+            $pcr['lie_flat'] = $set_data['PcrRisk'][$side]['abletolieflat'];
+        } else {
+            $pcr['lie_flat'] = ($this->getCannotLieFlat($patientId)) ? $this->getCannotLieFlat($patientId) : $pcrRiskValues->can_lie_flat;
         }
-        $pcr['noview'] = $no_view;
 
-        $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
+
+        if( isset($set_data['PcrRisk'][$side]['no_fundal_view']) ){
+            $pcr['noview'] = $set_data['PcrRisk'][$side]['no_fundal_view'];
+        } else {
+            $no_view = (!is_null($pcrRiskValues->no_fundal_view)) ? $pcrRiskValues->no_fundal_view : 'NK';
+            $no_view_data = $this->getOpticDisc($patientId, $side);
+            if (count($no_view_data) >= 1) {
+                $no_view = 'Y';
+            }
+            $pcr['noview'] = $no_view;
+        }
+
+        if( \Yii::app()->request->isPostRequest){
+            $pcr['anteriorsegment']['pxf_phako'] = isset($set_data['PcrRisk'][$side]['pxf_phako']) ? $set_data['PcrRisk'][$side]['pxf_phako'] : 'NK';
+            $pcr['anteriorsegment']['pupil_size'] = isset($set_data['PcrRisk'][$side]['pupil_size']) ? $set_data['PcrRisk'][$side]['pupil_size'] : 'Large';
+            $pcr['anteriorsegment']['brunescent_white_cataract'] = isset($set_data['PcrRisk'][$side]['brunescent_white_cataract']) ? $set_data['PcrRisk'][$side]['brunescent_white_cataract'] : 'NK';
+        } else {
+            $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
+        }
+
         $pcr['doctor_grade_id'] = $doctor_grade_id;
-        $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
-        $pcr['arb'] = ($this->getAlphaBlocker($this->patient)) ? $this->getAlphaBlocker($this->patient) : $pcrRiskValues->alpha_receptor_blocker;
+
+        if(isset($set_data['PcrRisk'][$side]['axial_length'])){
+            $pcr['axial_length_group'] = $set_data['PcrRisk'][$side]['axial_length'];
+        } else {
+            $pcr['axial_length_group'] = ($this->getAxialLength($patientId, $side) !== 'N') ? $this->getAxialLength($patientId, $side) : $pcrRiskValues->axial_length_group;
+        }
+
+        if(isset($set_data['PcrRisk'][$side]['arb'])){
+            $pcr['arb'] = $set_data['PcrRisk'][$side]['arb'];
+        }else{
+            $pcr['arb'] = ($this->getAlphaBlocker($this->patient)) ? $this->getAlphaBlocker($this->patient) : $pcrRiskValues->alpha_receptor_blocker;
+        }
 
         return $pcr;
     }

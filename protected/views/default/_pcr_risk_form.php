@@ -82,7 +82,8 @@ $criteria = new CDbCriteria();
 
     if (isset($patientId)):
         $pcrRisk = new PcrRisk();
-        $pcr = $pcrRisk->getPCRData($patientId, $side, $element);
+        $pcr = $pcrRisk->getPCRData($patientId, $side, $element, $_POST);
+
         echo CHtml::hiddenField('age', $pcr['age_group']);
         echo CHtml::hiddenField('gender', $pcr['gender']);
         ?>
