@@ -23,22 +23,42 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
     <?php
 
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 4,
-        ),
-    ))?>
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 4,
+            ),
+        ));
+
+        $recipients_data = \CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name');
+        $none_option = [0 => 'None'];
+        $label_options = [];
+
+        if(isset($macro->letter_type) && $macro->letter_type->name === 'Internal Referral'){
+            $none_option[0] = 'Internal Referral';
+
+            $letter_type_gp_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'GP'))->queryScalar();
+            $letter_type_patient_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'Patient'))->queryScalar();
+
+            $label_options = [
+                $letter_type_gp_id => 'display:none',
+                $letter_type_patient_id => 'display:none',
+            ];
+        }
+
+        $recipients_data = $recipients_data + $none_option;
+
+    ?>
         <?php echo $form->dropDownList($macro, 'type', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()), array('empty' => '- Type -'))?>
         <?php echo $form->dropDownList($macro, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'), array('empty' => '- Letter type -'))?>
         <?php echo $form->dropDownList($macro, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -', 'div-class' => 'typeSite'), $macro->type != 'site')?>
         <?php echo $form->dropDownList($macro, 'subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty')?>
         <?php echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true), array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm'), $macro->type != 'firm')?>
         <?php echo $form->textField($macro, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-        <?php echo $form->radioButtons($macro, 'recipient_id', $recipients_data + $none_option,
+        <?php echo $form->radioButtons($macro, 'recipient_id', $recipients_data,
                 (!$macro->recipient_id ? '0' : null), false, false, false, false, array('empty' => 'None','labelOptions' => $label_options, 'empty-after' => true));
         ?>
         <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right'))?>
