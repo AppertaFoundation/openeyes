@@ -1978,7 +1978,27 @@ class Patient extends BaseActiveRecordVersioned
             return $cvi_api->getSummaryText($this);
         }
         else {
-            return $this->getOPHInfo()->cvi_status->name;
+            return 'asdfasdf';
+        }
+    }
+
+    /**
+     * Returns the date for the CVI status.
+     * @return string
+     */
+    public function getCviSummaryDate()
+    {
+        if ($cvi_api = Yii::app()->moduleAPI->get('OphCoCvi')) {
+//        regex below provides all the strings between the brackets()
+            preg_match_all('#\((.*?)\)#', $cvi_api->getSummaryText($this), $match);
+            $date = $match[1];
+            $counter = 0;
+            if (sizeof($date) == 2) {
+                $counter = 1;
+            }
+            return $date[$counter];
+        } else {
+            return '';
         }
     }
 

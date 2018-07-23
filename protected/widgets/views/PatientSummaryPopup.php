@@ -121,15 +121,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"> <?php
-                preg_match_all('#\((.*?)\)#', $this->cviStatus, $match);
-                 $date = $match[1];
-                 $counter = 0;
-                 if(sizeof($date) == 2){
-                     $counter = 1;
-                 }
-                ?>
-            <?php echo $date[$counter] ?>
+            <span class="oe-date"> <?php echo $this->patient->getCviSummaryDate() ?>
             </span>
         </div>
     </div>
