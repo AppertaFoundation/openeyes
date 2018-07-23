@@ -48,7 +48,7 @@
     scroll_selector: 'div.oe-scroll-wrapper'
   };
 
-  var sidebarCookiePrefix = 'oe-sidebar-state-';
+  var sidebarCookie = 'oe-sidebar-state';
 
   /**
    * Load the previous state of the sidebar from cookie storage
@@ -56,7 +56,7 @@
   EpisodeSidebar.prototype.loadState = function () {
     var self = this;
     if (typeof(Storage) !== "undefined") {
-      state = sessionStorage.getItem(sidebarCookiePrefix + self.element.attr('id'));
+      state = sessionStorage.getItem(sidebarCookie);
       if (state) {
         stateObj = JSON.parse(state);
         if (stateObj.sortOrder)
@@ -77,7 +77,7 @@
         sortOrder: self.sortOrder,
         grouping: self.grouping
       };
-      sessionStorage.setItem(sidebarCookiePrefix + self.element.attr('id'), JSON.stringify(state));
+      sessionStorage.setItem(sidebarCookie, JSON.stringify(state));
     }
   };
 
