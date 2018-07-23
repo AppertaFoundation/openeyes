@@ -111,8 +111,8 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         <div class="group">
             <?php
                 if($correspondence_api->getLastRefraction($patient, 'left') != null){?>
-            <span class="data">R <?php echo $correspondence_api->getLastRefraction($patient, 'left')?></span>
-            <span class="data">L <?php echo $correspondence_api->getLastRefraction($patient, 'right')?></span>
+            <span class="data">R <?php echo $correspondence_api->getLastRefraction($patient, 'right')?></span>
+            <span class="data">L <?php echo $correspondence_api->getLastRefraction($patient, 'left')?></span>
             <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient))?></span>
             <?php } else { ?>
                     <span class="data-value not-available">Not Available</span>
