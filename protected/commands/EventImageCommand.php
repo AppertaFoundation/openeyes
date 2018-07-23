@@ -11,6 +11,12 @@ class EventImageCommand extends CConsoleCommand
         return 'Creates the preview image for the given event ID, or creates the preview image for the latest event without an image if no event ID is specified';
     }
 
+    public function actionClean()
+    {
+        EventIMage::model()->deleteAll('status_id != ?',
+            array(EventImageStatus::model()->find('name = "CREATED"')->id));
+    }
+
     public function actionCreate($args, array $patient = null, array $event = null)
     {
         $this->openCurlConnection();
