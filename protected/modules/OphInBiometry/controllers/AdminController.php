@@ -20,7 +20,7 @@ class AdminController extends ModuleAdminController
     public function actionLensTypes($id = false)
     {
         $this->render('lens_types', array(
-            'lens_types' => OphInBiometry_LensType_Lens::model()->active()->findAll(array('order' => 'display_order asc')),
+            'lens_types' => OphInBiometry_LensType_Lens::model()->notDeleted()->findAll(array('order' => 'display_order asc')),
         ));
     }
 
