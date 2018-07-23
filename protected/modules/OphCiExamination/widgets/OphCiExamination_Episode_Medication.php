@@ -33,12 +33,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
                     if ($entry->drug_id){
                         foreach ($entry->drug->tags as $item) {
-                            array_push($meds_tag, $item->name);
+                            $meds_tag[] = $item->name;
                         }
                     }
                     if ($entry->medication_drug_id){
                         foreach ($entry->medication_drug->tags as $item) {
-                            array_push($meds_tag, $item->name);
+                            $meds_tag[] = $item->name;
                         }
                     }
 
