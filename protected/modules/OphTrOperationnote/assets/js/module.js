@@ -532,7 +532,7 @@ function AngleMarksController(_drawing) {
         } else {
             _drawing.deleteDoodle(angleMarks, true);
         }
-    }
+    };
 }
 
 function sidePortController(_drawing) {
