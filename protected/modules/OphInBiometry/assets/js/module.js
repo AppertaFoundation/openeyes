@@ -122,8 +122,8 @@ $(document).ready(function() {
 
 	function OphInBiometry_hide(side, el) {
 		hideSplitElementSide('Element_OphInBiometry_BiometryData', side);
-		hideSplitElementSide('edit-Element_OphInBiometry_Calculation', side);
-		hideSplitElementSide('edit-Element_OphInBiometry_Selection', side);
+		hideSplitElementSide('Element_OphInBiometry_Calculation', side);
+		hideSplitElementSide('Element_OphInBiometry_Selection', side);
 	}
 
 	function OphInBiometry_show(side) {
