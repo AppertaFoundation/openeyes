@@ -169,7 +169,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 function markElementChilds(element , element_remove_value) {
     $(element).find('.sub-elements.active').children().each(function () {
         let child_name = $(this).data('element-type-class');
-        $('input[name="element_removed[' + child_name +' ]"]').val(element_remove_value);
+        $('input[name="element_removed[' + child_name +']"]').val(element_remove_value);
     });
 }
 
