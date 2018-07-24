@@ -107,27 +107,9 @@ $model_name = CHtml::modelName($element);
                 type="button">
             <i class="oe-i comments small-icon"></i>
         </button>
-
         <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
             <i class="oe-i plus pro-theme"></i>
         </button>
-
-        <div id="add-prev-surgery" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-            <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-            <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
-            <div class="flex-layout flex-top flex-left">
-                <ul id="past-surgery-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-                    <?php
-                    $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
-                    foreach ($op_list as $op_item) { ?>
-                        <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
-                            <span class="restrict-width"><?php echo $op_item->name; ?></span>
-                        </li>
-                    <?php } ?>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 <script type="text/template" id="<?= CHtml::modelName($element) . '_operation_template' ?>" class="hidden">
     <?php
@@ -158,28 +140,25 @@ $model_name = CHtml::modelName($element);
     ?>
 </script>
 <script type="text/javascript">
-    $(function () {
-        var controller;
-        $(document).ready(function () {
-            controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
-        });
+  $(function () {
+    var controller;
+    $(document).ready(function () {
+      controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
 
-
-        var adder = $('#add-to-past-surgery');
-        var popup = adder.find('#add-prev-surgery');
-
-        function addSurgery(selection) {
-            controller.addEntry();
+      <?php  $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc')); ?>
+      new OpenEyes.UI.AdderDialog({
+        openButton: $('#show-add-popup'),
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($op_item) {
+                return ['value' =>$op_item->name, 'id' => $op_item->id];
+            }, $op_list)
+        ) ?>, {'multiSelect': true})],
+        onReturn: function (adderDialog, selectedItems) {
+          controller.addEntry(selectedItems);
         }
-
-        setUpAdder(
-            popup,
-            'multi',
-            addSurgery,
-            adder.find('#show-add-popup'),
-            popup.find('.add-icon-btn'),
-            adder.find('#close-btn, .add-icon-btn')
-        );
+      });
     });
+
+  });
 
 </script>
