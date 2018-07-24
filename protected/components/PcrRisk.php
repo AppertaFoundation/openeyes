@@ -73,7 +73,7 @@ class PcrRisk
      *
      * @return array
      */
-    public function getPCRData($patientId, $side, $element, $set_data)
+    public function getPCRData($patientId, $side, $element, $set_data = [])
     {
         $pcr = array();
         $this->patient = Patient::model()->findByPk((int) $patientId);
