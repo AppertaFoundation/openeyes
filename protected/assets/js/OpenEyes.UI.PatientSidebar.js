@@ -200,6 +200,9 @@
         var $parentLi = $(item);
         if (data === undefined)
             data = {};
+        
+        // "Click" the sidebar-group-header to open the group if it is closed
+        item.closest('.collapse-group').find('.collapse-group-header').click();
 
         addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-children'), undefined, data, callback);
     };
