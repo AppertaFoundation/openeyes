@@ -109,20 +109,19 @@
         <td>
             <?= $form->labelEx($element,$element->getAttributeLabel('alcohol_intake'))?>
         </td>
-        <td>
+        <td class="flex-layout flex-left">
             <?= $form->textField(
                 $element,
                 'alcohol_intake',
                 array(
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'append-text' => 'units/week',
-                    'style' => 'width: 100%;',
-                    'nowrapper' => true
+                    'nowrapper' => true,
+                    'style'=> 'margin-right: 10px;',
                 ),
                 null,
                 array('label' => 4, 'field' => 4, 'append-text' => 4, 'stretch' => false)
             );
-            ?>
+            ?> units/week
         </td>
         <td>
             <?= $form->labelEx($element,$element->getAttributeLabel('carer_id'))?>
