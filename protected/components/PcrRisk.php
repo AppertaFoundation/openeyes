@@ -118,13 +118,13 @@ class PcrRisk
         if( isset($set_data['PcrRisk'][$side]['pcr_doctor_grade']) ){
             $doctor_grade_id = $set_data['PcrRisk'][$side]['pcr_doctor_grade'];
         } else {
-            $user_data = User::model()->findByPk($user_id);
-            $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
-
-            if (!$doctor_grade_id) {
-                $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
+            $doctor_grade_id = $pcrRiskValues->doctor_grade_id;
+            if(!$doctor_grade_id){
+                $user_data = User::model()->findByPk($user_id);
+                $doctor_grade_id = $user_data['originalAttributes']['doctor_grade_id'];
             }
         }
+        $pcr['doctor_grade_id'] = $doctor_grade_id;
 
         $pcr['patient_id'] = $patientId;
         $pcr['side'] = $side;
@@ -158,8 +158,6 @@ class PcrRisk
         } else {
             $pcr['anteriorsegment'] = $this->getPatientAnteriorSegment($patientId, $side, $pcrRiskValues);
         }
-
-        $pcr['doctor_grade_id'] = $doctor_grade_id;
 
         if(isset($set_data['PcrRisk'][$side]['axial_length'])){
             $pcr['axial_length_group'] = $set_data['PcrRisk'][$side]['axial_length'];
