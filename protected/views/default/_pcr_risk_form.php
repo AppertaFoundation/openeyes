@@ -239,7 +239,7 @@ $criteria = new CDbCriteria();
                         }
 
                         echo CHtml::dropDownList("PcrRisk[$side][pcr_doctor_grade]", $pcr['doctor_grade_id'],
-                            CHtml::listData($grades, 'id', 'grade'),['options' => $pcr_data_attributes ]);
+                            CHtml::listData($grades, 'id', 'grade'),['id' => 'pcrrisk_right_doctor_grade_id',  'options' => $pcr_data_attributes ]);
                     ?>
                 </div>
                 <div class="large-2 column pcr-nkr">
