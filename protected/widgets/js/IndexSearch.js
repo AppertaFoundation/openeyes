@@ -324,11 +324,20 @@
             is_loading_timeout = setTimeout(()=>done(),6000);
         }
 
-        //element -> doodle -> property
-        if (parameters["doodle_name"]){
-            start();
-            click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => done());
-            return;
+  function click_element(parameters) {
+
+    //get side bar item
+    var $item = $('#episodes-and-events ul li').filter(function () {
+      return $(this).data('element-type-id') == parameters['element_id'];
+    }).first().find('a');
+
+    return click_sidebar_element($item).then(function () {
+      return new Promise(function (resolve, reject) {
+        //see if parameters are set for doodle
+        if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
+          resolve(parameters);
+        } else {
+          reject();
         }
 
         //element -> id
