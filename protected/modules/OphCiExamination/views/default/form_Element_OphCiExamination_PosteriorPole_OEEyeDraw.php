@@ -15,35 +15,78 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole $element
+ * @var string $side 'left'|'right'
+ */
 ?>
 
 <?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            array('Drusen', 'Geographic', 'CNV', 'RPEDetachment', 'EpiretinalMembrane', 'MacularHole', 'MacularDystrophy', 'Macroaneurysm', 'RetinalVeinOcclusionPostPole', 'RetinalArteryOcclusionPostPole'),
-            array('Microaneurysm', 'BlotHaemorrhage', 'HardExudate', 'IRMA', 'Circinate', 'MacularThickening', 'CystoidMacularOedema', 'PreRetinalHaemorrhage', 'CottonWoolSpot', 'DiabeticNV', 'VitreousOpacity', 'FibrousProliferation', 'TractionRetinalDetachment'),
-            array('SwollenDisc', 'Telangiectasis', 'ChoroidalHaemorrhage', 'ChoroidalNaevus','PCV'),
-            array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole', 'RPEAtrophy'),
+$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+    'doodleToolBarArray' => array(
+        array(
+            'Drusen',
+            'RPEAtrophy',
+            'Geographic',
+            'CNV',
+            'RPEDetachment',
+            'EpiretinalMembrane',
+            'MacularHole',
+            'Macroaneurysm',
+            'RetinalVeinOcclusionPostPole',
+            'RetinalArteryOcclusionPostPole',
         ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', ['MaculaPostPole']),
-            array('addDoodle', ['PostPole'] ),
-            array('deselectDoodles', array()),
+        array(
+            'Microaneurysm',
+            'BlotHaemorrhage',
+            'HardExudate',
+            'IRMA',
+            'Circinate',
+            'MacularThickening',
+            'CystoidMacularOedema',
+            'PreRetinalHaemorrhage',
+            'CottonWoolSpot',
+            'DiabeticNV',
+            'VitreousOpacity',
+            'FibrousProliferation',
+            'TractionRetinalDetachment',
         ),
-        'listenerArray' => array('posteriorListener', 'autoReportListener'),
-        'idSuffix' => $side.'_'.$element->elementType->id,
-        'side' => ($side == 'right') ? 'R' : 'L',
-        'mode' => 'edit',
-        'model' => $element,
-        'attribute' => $side.'_eyedraw',
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'maxToolbarButtons' => 7,
-        'autoReport' => CHtml::modelName($element) . '_'.$side.'_ed_report',
-        'autoReportEditable' => false,
-        'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
-            'form' => $form,
-            'side' => $side,
-            'element' => $element,
-        ), true),
-    ));
+        array(
+            'SwollenDisc',
+            'Telangiectasis',
+            'ChoroidalHaemorrhage',
+            'ChoroidalNaevus',
+            'PCV',
+            'MacularDystrophy',
+        ),
+        array(
+            'LaserSpot',
+            'FocalLaser',
+            'MacularGrid',
+            'SectorPRPPostPole',
+            'PRPPostPole',
+        ),
+    ),
+    'onReadyCommandArray' => array(
+        array('addDoodle', ['MaculaPostPole']),
+        array('addDoodle', ['PostPole']),
+        array('deselectDoodles', array()),
+    ),
+    'listenerArray' => array('posteriorListener', 'autoReportListener'),
+    'idSuffix' => $side . '_' . $element->elementType->id,
+    'side' => ($side === 'right') ? 'R' : 'L',
+    'mode' => 'edit',
+    'model' => $element,
+    'attribute' => $side . '_eyedraw',
+    'template' => 'OEEyeDrawWidget_InlineToolbar',
+    'maxToolbarButtons' => 7,
+    'autoReport' => CHtml::modelName($element) . '_' . $side . '_ed_report',
+    'autoReportEditable' => false,
+    'fields' => $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
+        'form' => $form,
+        'side' => $side,
+        'element' => $element,
+    ), true),
+));
 ?>
