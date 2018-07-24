@@ -192,7 +192,11 @@
    */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
-      return {'id': $(this).data('id'), 'label': $(this).data('label')};
+      var attr = {};
+      for (var key in this.dataset){
+        attr[key] = this.dataset[key];
+      }
+      return attr;
     }).get();
   };
 
@@ -206,8 +210,9 @@
     var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
 
     itemSet.items.forEach(function (item) {
-      var $listItem = $('<li />', {'data-label': item['label'], 'data-id': item['id']});
-      $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      var dataset = AdderDialog.prototype.constructDataset(item);
+      var $listItem = $('<li />', dataset);
+      $('<span />', {class: dialog.options.liClass}).text(item['value']).appendTo($listItem);
       $listItem.appendTo($list);
     });
 
@@ -308,6 +313,14 @@
     });
   };
 
+  AdderDialog.prototype.constructDataset =  function(item){
+    var dataset = {};
+    for (var key in item){
+      dataset['data-'+key] = item[key];
+    }
+    return dataset;
+  };
+
   AdderDialog.prototype.return = function () {
     if (this.options.onReturn) {
       var selectedItems = this.getSelectedItems();
@@ -348,7 +361,8 @@
       dialog.noSearchResultsWrapper.toggle(no_data);
 
       $(results).each(function (index, result) {
-        var item = $("<li />", {'data-label': result['value'], 'data-id': result['id']})
+        var dataset = AdderDialog.prototype.constructDataset(result);
+        var item = $("<li />", dataset)
           .append($('<span />', {class: 'auto-width'}).text(result['value']));
         dialog.searchResultList.append(item);
       });
