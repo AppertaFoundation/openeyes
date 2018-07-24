@@ -92,40 +92,11 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="flex-item-bottom" id="<?= $eye_side ?>-add-reading">
-            <button class="button hint green addReading" type="button">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-reading">
+            <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- oe-add-select-search -->
-
-            <div id="<?= $eye_side ?>-add-visual-acuity" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-              <div id="<?= $eye_side ?>-close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-              <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
-              <table class="select-options">
-                <tbody>
-                <tr>
-                  <td>
-                    <ul id="visual-acuity-value-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-                        <?php foreach ($values as $id=>$item) { ?>
-                              <li data-str="<?php echo $item; ?>" data-id="<?= $id; ?>">
-                                <span class="restrict-width"><?php echo $item; ?></span>
-                              </li>
-                        <?php } ?>
-                    </ul>
-                  </td>
-                  <td>
-                    <ul id="visual-acuity-method-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-                        <?php foreach ($methods as $id=>$item) { ?>
-                          <li data-id="<?= $id ?>" data-str="<?php echo $item; ?>">
-                            <span class="restrict-width"><?php echo $item; ?></span>
-                          </li>
-                        <?php } ?>
-                    </ul>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
           <!--flex bottom-->
         </div>
@@ -140,27 +111,27 @@ if ($cvi_api) {
       </div>
   <script type="text/javascript">
     $(function () {
-      var adder = $('#<?= $eye_side ?>-add-reading');
-      var popup = $('#<?= $eye_side ?>-add-visual-acuity');
-      function addVA() {
-        var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-        var va_value = $(popup).find('#visual-acuity-value-option .selected');
-        var va_method = $(popup).find('#visual-acuity-method-option .selected');
-        OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
-        var newRow = tableSelector.find('tbody tr:last');
-        newRow.find('.va-selector').val(va_value.data('id'));
-        newRow.find('.method_id').val(va_method.data('id'));
-        OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
-      }
-
-      setUpAdder(
-        popup,
-        'single',
-        addVA,
-        adder.find('.addReading'),
-        popup.find('.add-icon-btn'),
-        adder.find('#<?= $eye_side ?>-close-btn, .add-icon-btn')
-      );
+      new OpenEyes.UI.AdderDialog({
+        openButton:$('#add-reading-btn-<?= $eye_side?>'),
+        itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($key, $value) {
+                return ['value' => $value, 'id' => $key];
+            }, array_keys($values), $values)
+        ) ?>, {'multiSelect': false}),
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+              array_map(function ($key, $method) {
+                  return ['value' => $method, 'id' => $key];
+              }, array_keys($methods), $methods)
+          ) ?>, {'multiSelect': false})] ,
+        onReturn: function(adderDialog, selectedItems){
+          var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
+          OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
+          var newRow = tableSelector.find('tbody tr:last');
+          newRow.find('.va-selector').val(selectedItems[0]['id']);
+          newRow.find('.method_id').val(selectedItems[1]['id']);
+          OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+        },
+      });
     });
   </script>
     <?php endforeach; ?>
