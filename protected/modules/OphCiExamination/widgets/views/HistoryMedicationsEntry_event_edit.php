@@ -21,8 +21,8 @@
 
 /** @var EventMedicationUse $entry */
 
-if (isset($entry->start_date) && !is_null($entry->start_date)) {
-    $start_date = $entry->start_date;
+if (isset($entry->start_date_string_YYYYMMDD) && !is_null($entry->start_date_string_YYYYMMDD)) {
+    $start_date = $entry->start_date_string_YYYYMMDD;
 }
 else {
     $start_date = date('Ymd');
@@ -32,11 +32,11 @@ $start_sel_year = substr($start_date, 0, 4);
 $start_sel_month = substr($start_date, 4, 2);
 $start_sel_day = substr($start_date, 6, 2);
 
-if (isset($entry->end_date) && !is_null($entry->end_date)) {
+if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
 
-    $end_sel_year = substr($entry->end_date, 0, 4);
-    $end_sel_month = substr($entry->end_date, 4, 2);
-    $end_sel_day = substr($entry->end_date, 6, 2);
+    $end_sel_year = substr($entry->end_date_string_YYYYMMDD, 0, 4);
+    $end_sel_month = substr($entry->end_date_string_YYYYMMDD, 4, 2);
+    $end_sel_day = substr($entry->end_date_string_YYYYMMDD, 6, 2);
 
 } else {
     $end_sel_day = date('d');
@@ -120,13 +120,13 @@ else {
                 </a>
             </div>
             <fieldset class="field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
-                <?php if (!$entry->start_date||$removable) { ?>
+                <?php if (!$entry->start_date_string_YYYYMMDD||$removable) { ?>
                     <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date ?>" />
                     <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
                 <?php } else { ?>
 
                     <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
-                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date_string_YYYYMMDD ?>" />
 
                 <?php } ?>
             </fieldset>
@@ -137,7 +137,9 @@ else {
             <div class="alternative-display-element textual">
                 <a class="textual-display meds-stop-btn" href="javascript:void(0);" onclick="switch_alternative(this);">
                     <?php if(!is_null($entry->end_date)): ?>
-                        <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?><?php echo !is_null($entry->stop_reason_id) ? ' ('.$entry->stopReason->name.')' : ''; ?>
+                        <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
+                        <?php echo !is_null($entry->stop_reason_id) ?
+                            ' ('.$entry->stopReason->name.')' : ''; ?>
                     <?php else: ?>
                         stop
                     <?php endif; ?>

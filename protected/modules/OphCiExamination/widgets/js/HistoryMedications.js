@@ -410,8 +410,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           }
       });
 
-      console.log(obj);
-
       return obj;
   };
 
@@ -434,8 +432,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
 
       $row.find(".rgroup").val($row.closest("tbody").attr("data-group"));
-      $row.find('.medication-name').text(data.medication_name);
+      $row.find('.medication-name a').text(data.medication_name);
       $row.find(".dose-unit-term").text(data.dose_unit_term);
+
+      self.updateFuzzySelect($row);
+      self.switchRowToTextualDisplay($row);
   };
 
   HistoryMedicationsController.prototype.bindEntries = function($row1, $row2)

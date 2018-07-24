@@ -88,6 +88,7 @@ class EventMedicationUse extends BaseElement
 			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'length', 'max'=>8),
 			array('last_modified_date, created_date, event_id', 'safe'),
 			array('dose, route_id, frequency_id', 'required', 'on' => 'to_be_prescribed'),
+            array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, ref_medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
