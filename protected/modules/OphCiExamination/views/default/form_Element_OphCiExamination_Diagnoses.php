@@ -94,68 +94,10 @@ foreach ($this->patient->episodes as $ep) {
         </tbody>
     </table>
 
-    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
-        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
-            <i class="oe-i plus pro-theme"></i>
-        </button>
-        <div id="add-to-ophthalmic-diagnoses" class="oe-add-select-search" style="display: none;">
-            <!-- icon btns -->
-            <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
-            <div class="select-icon-btn" type="button"><i id="ophthalmic-diagnoses-select-btn" class="oe-i menu"></i></div>
-            <button class="button hint green add-icon-btn" type="button">
-                <i class="oe-i plus pro-theme"></i>
-            </button>
-
-            <table class="select-options" id='ophthalmic-diagnoses-select-options'>
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="flex-layout flex-top flex-left">
-                            <ul class="add-options" data-multi="true" data-clickadd="false" id="ophthalmic-diagnoses-option">
-                                <?php
-                                $firm_id = Yii::app()->session['selected_firm_id'];
-                                $firm = \Firm::model()->findByPk($firm_id);
-
-                                foreach (CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm) as $disorder) { ?>
-                                    <li data-str="<?= $disorder['label'] ?>" data-id="<?= $disorder['id']; ?>">
-                        <span class="auto-width">
-                          <?= $disorder['label']; ?>
-                      </span>
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                        </div>
-                        <!-- flex-layout -->
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="search-icon-btn"><i id="ophthalmic-diagnoses-search-btn" class="oe-i search"></i></div>
-            <div class="ophthalmic-diagnoses-search-options" style="display: none;">
-                <table class="cols-full last-left">
-                    <thead>
-                    <tr>
-                        <th>
-                            <input id="ophthalmic-diagnoses-search-field"
-                                   class="search"
-                                   placeholder="Search for Diagnoses"
-                                   type="text">
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <ul id="ophthalmic-diagnoses-search-results" class="add-options" data-multi="true" style="width: 100%;">
-                            </ul>
-                            <span id="ophthalmic-diagnoses-search-no-results">No results found</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+  <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
+    <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
 
     <script type="text/template" class="entry-template hidden">
         <?php
@@ -193,20 +135,27 @@ foreach ($this->patient->episodes as $ep) {
             subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
         });
         $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
+      <?php
+      $firm_id = Yii::app()->session['selected_firm_id'];
+      $firm = \Firm::model()->findByPk($firm_id);
 
-        var popup = $('#add-to-ophthalmic-diagnoses');
+      $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+      ?>
 
-        function addOphthalmicDiagoses() {
-            diagnosesController.addEntry();
-        }
-
-        setUpAdder(
-            popup,
-            'multi',
-            addOphthalmicDiagoses,
-            $('#add-ophthalmic-diagnoses'),
-            popup.find('.add-icon-btn'),
-            $('.close-icon-btn, .add-icon-btn')
-        );
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-ophthalmic-diagnoses'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($disorder_item) {
+              return ['value' =>$disorder_item['label'], 'id' => $disorder_item['id']];
+          }, $disorder_list)
+      ) ?>, {'multiSelect': true})],
+      searchOptions: {
+        searchSource: diagnosesController.options.searchSource,
+      },
+      onReturn: function (adderDialog, selectedItems) {
+        diagnosesController.addEntry(selectedItems);
+        return 1;
+      }
     });
+  });
 </script>
