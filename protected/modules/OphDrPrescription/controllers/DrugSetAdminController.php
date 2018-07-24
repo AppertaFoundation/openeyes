@@ -33,30 +33,31 @@ class DrugSetAdminController extends BaseAdminController
      */
     protected function initAdmin($id = false)
     {
-        $admin = new Admin(DrugSet::model(), $this);
+        $admin = new Admin(RefSetRule::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
         $element = Element_OphDrPrescription_Details::model();
         $admin->setCustomSaveURL('/OphDrPrescription/DrugSetAdmin/SaveDrugSet');
         $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
-
-        $admin->setEditFields(array(
-            'active' => 'checkbox',
-            'name' => 'text',
-            'subspecialty' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'setItems' => array(
-                'widget' => 'CustomView',
-                'viewName' => '/default/form_Element_OphDrPrescription_Details',
-                'viewArguments' => array('element' => $element),
-            ),
-        ));
+       
+        $admin->setEditFields(
+            array(
+                'refSet.name' => 'text',
+                'subspecialty' => array(
+                    'widget' => 'DropDownList',
+                    'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+                    'htmlOptions' => null,
+                    'hidden' => false,
+                    'layoutColumns' => null,
+                ),
+                'setItems' => array(
+                    'widget' => 'CustomView',
+                    'viewName' => '/default/form_Element_OphDrPrescription_Details',
+                    'viewArguments' => array('element' => $element),
+                ),
+            )
+        );
 
         return $admin;
     }
@@ -66,14 +67,22 @@ class DrugSetAdminController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(DrugSet::model(), $this);
+        $admin = new Admin(RefSetRule::model(), $this);
         $admin->setListFields(array(
             'id',
-            'name',
+            'refSet.name',
             'subspecialty.name',
-            'active',
         ));
+        
+        $admin->setModelDisplayName('Drug Sets');
+        
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'usage_code=:usage_code AND subspecialty_id IS NOT NULL';
+        $criteria->params = array(
+            ':usage_code' => 'Drug',
+        );
         $admin->searchAll();
+        $admin->getSearch()->setCriteria($criteria);
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }
