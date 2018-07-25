@@ -111,7 +111,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
           echo CHtml::hiddenField('age', $pcr['age_group']);
           echo CHtml::hiddenField('gender', $pcr['gender']);
           ?>
-        <div class="active-form" style="display: <?= $display ?>;">
+        <div class="active-form js-pcr-<?=$side?>" style="display: <?= $display ?>;">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <?php foreach ($dropDowns as $key => $data):
                 if ($key === 'doctor_grade_id'):?>
