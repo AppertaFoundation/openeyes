@@ -20,7 +20,7 @@
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye column <?= $eye_side ?>-eye side <?= $page_side ?>
+      <div class="element-eye column <?= $eye_side ?>-eye side js-side <?= $page_side ?>
           <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
            data-side="<?= $eye_side ?>">
 
@@ -47,4 +47,3 @@
 
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpticDisc.js", CClientScript::POS_HEAD); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
-

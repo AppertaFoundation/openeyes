@@ -474,7 +474,6 @@ return array(
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
-        'clinical_management_pcr' => false,
         'docman_generate_csv' => false,
         'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented

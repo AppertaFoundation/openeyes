@@ -31,16 +31,7 @@
           false,
           array('nowrapper' => true)
       ) ?>
-      <?php if(Yii::app()->params['clinical_management_pcr']): ?>
-        <span class="pcr-exam-link">
-            <span id="ophCiExaminationPCRRiskRightEyeLabel">
-                <a href="javascript:showhidePCR('ophCiExaminationPCRRiskRightEye')">Right Eye - PCR Risk <span class="pcr-span1"></span>%</a>
-            </span>&nbsp;|&nbsp;
-              <span id="ophCiExaminationPCRRiskLeftEyeLabel">
-                  <a href="javascript:showhidePCR('ophCiExaminationPCRRiskLeftEye')">Left Eye - PCR Risk <span class="pcr-span1"></span>%</a>
-              </span>
-          </span>
-      <?php endif; ?>
+
   </div>
   <div class="cols-12 data-group flex-layout flex-top">
     <table class="cols-6">
@@ -142,21 +133,7 @@
     </div>
   </div>
 </div>
-<?php if(Yii::app()->params['clinical_management_pcr']): ?>
-<div class="flex-layout element-eyes">
-  <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-opnote-eye">
-      <?php
-      $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'left', 'element' => $element));
-      ?>
-  </div>
-  <div id="ophCiExaminationPCRRiskRightEye" class="pcr-opnote-eye">
-      <?php
-      $this->renderPartial('application.views.default._pcr_risk_form', array('side' => 'right', 'element' => $element));
-      ?>
-  </div>
-</div>
 
-<?php endif; ?>
 <script type="text/javascript">
     // $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction').change(function () {
     //
