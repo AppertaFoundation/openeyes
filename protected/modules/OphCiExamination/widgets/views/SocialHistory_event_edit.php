@@ -173,93 +173,48 @@
             style="visibility: <?php if($element->comments){echo 'hidden';} ?>">
       <i class="oe-i comments small-icon "></i>
     </button>
-    <button class="button hint green js-add-select-search"  type="button">
+    <button class="button hint green js-add-select-search" id="add-social-history-btn" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button><!-- popup to add data to element -->
-    <div id="add-to-social-history" class="oe-add-select-search auto-width" style="display: none;">
-      <!-- icon btns -->
-      <div class="close-icon-btn">
-        <i class="oe-i remove-circle medium"></i>
-      </div>
-      <div class="select-icon-btn">
-        <i class="oe-i menu selected"></i>
-      </div>
-      <button class="button hint green add-icon-btn" type="button">
-        <i class="oe-i plus pro-theme"></i>
-      </button><!-- select (and search) options for element -->
-      <table class="select-options" >
-        <thead>
-        <tr>
-          <th>Employment</th>
-          <th>Driving Status</th>
-          <th>Smoking Status</th>
-          <th>Accommodation</th>
-          <th>Alcohol units</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <?php $occupation_options = $element->occupation_options;
-            $driving_status_options = $element->driving_statuses_options;
-            $smoking_options = $element->smoking_status_options;
-            $accommodation_options = $element->accommodation_options;
-            $options_list = array(
-                'occupation'=>$occupation_options,
-                'driving_status'=>$driving_status_options,
-                'smoking_status'=>$smoking_options,
-                'accommodation'=>$accommodation_options,
-            );
-            foreach ($options_list as $key=>$options){ ?>
-          <td><!-- flex layout only required IF I have more than 1 <ul> list (see Refraction in Examination) -->
-            <div class="flex-layout flex-top flex-left">
-                <ul class="add-options <?= $key ?>" data-multi="false" data-clickadd="false">
-                  <?php foreach ($options as $option_item){ ?>
-                    <li data-str="<?= $option_item->name ?>" data-id="<?= $option_item->id ?>">
-                      <span class="auto-width"><?= $option_item->name ?></span>
-                    </li>
-                  <?php } ?>
-                </ul>
-            </div> <!-- flex-layout -->
-          </td>
-            <?php } ?>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options alcohol" data-multi="false" data-clickadd="false">
-            <?php $alcohol_options = range(1,20);
-            foreach ($alcohol_options as $alcohol_option) { ?>
-              <li data-str="<?= $alcohol_option ?>" data-id="<?= $alcohol_option ?>" >
-                <span class="auto-width"><?= $alcohol_option ?></span>
-              </li>
-            <?php } ?>
-              </ul>
-            </div> <!-- flex-layout -->
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div><!-- oe-add-select-search -->
   </div>
 </div>
-
+<?php
+$occupation_options = $element->occupation_options;
+$driving_status_options = $element->driving_statuses_options;
+$smoking_options = $element->smoking_status_options;
+$accommodation_options = $element->accommodation_options;
+$options_list = array(
+    'occupation'=>$occupation_options,
+    'driving_status'=>$driving_status_options,
+    'smoking_status'=>$smoking_options,
+    'accommodation'=>$accommodation_options,
+);
+$alcohol_options = range(1,20);
+?>
 <script type="text/javascript">
   $(document).ready(function() {
     var controller = new OpenEyes.OphCiExamination.SocialHistoryController();
 
-    var adder = $('#add-social-history-popup');
-    var popup = adder.find('#add-to-social-history');
-
-
-    function changeSocialHistory() {
-      controller.addEntry();
-    };
-
-    setUpAdder(
-      popup,
-      'multi',
-      changeSocialHistory,
-      adder.find('.js-add-select-search'),
-      popup.find('.add-icon-btn'),
-      adder.find('.close-icon-btn')
-    );
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-social-history-btn'),
+      itemHeads: ['Employment', 'Driving Status', 'Smoking Status', 'Accommodation', 'Alcohol units'],
+      itemSets: [<?php foreach ($options_list as $key=>$options) {?>
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item, $label) {
+                return ['value' => $item->name, 'id' => $item->id, 'option-label'=>$label];
+            }, $options, array_fill(0,sizeof($options), $key))
+        ) ?>),
+          <?php } ?>
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['value' => $item, 'id' => $item, 'option-label'=>'alcohol'];
+            }, $alcohol_options)
+        ) ?>)
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        controller.addEntry(selectedItems);
+        return true;
+      }
+    });
   });
 </script>

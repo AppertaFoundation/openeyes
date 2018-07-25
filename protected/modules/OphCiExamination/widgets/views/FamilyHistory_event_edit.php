@@ -117,6 +117,7 @@
        new OpenEyes.UI.AdderDialog({
          id: 'add-family-history',
          openButton: $('#add-family-history-button'),
+         itemHeads: ['Relative', 'Side', 'Condition'],
          itemSets: [
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
              array_map(function ($relative_item) {
