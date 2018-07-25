@@ -51,7 +51,7 @@ $principals = $this->episode->patient->episodes;
                 <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
               </span>
             </td>
-            <td></td>
+            <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
           </tr>
         <?php }
         foreach ($principals as $principal) {
@@ -72,6 +72,7 @@ $principals = $this->episode->patient->episodes;
                 <td>
                     <?php echo $principal->NHSDate('start_date'); ?>
                 </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
               </tr>
             <?php }
         }
@@ -88,7 +89,7 @@ $principals = $this->episode->patient->episodes;
                 <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
               </span>
             </td>
-            <td></td>
+            <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->getDisplayDate()) ?></span></td>
           </tr>
         <?php } ?>
         </tbody>

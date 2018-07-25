@@ -47,10 +47,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                <td>
-                    <?= $diag->getDisplayDate(); ?>
-                </td>
-                <td></td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
               </tr>
             <?php } ?>
             <?php foreach ($checkedRequiredSystemicDiagnoses as $diag) { ?>
@@ -64,9 +61,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                <td>
-                    <?= $diag->getDisplayDate(); ?>
-                </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
                 <td>
                   <string>Not present</string>
                 </td>
@@ -83,9 +78,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                <td>
-                    <?= $diag->getDisplayDate(); ?>
-                </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
                 <td><strong>Not checked</strong></td>
               </tr>
             <?php } ?>
