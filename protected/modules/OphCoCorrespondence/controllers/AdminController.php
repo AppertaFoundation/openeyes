@@ -221,19 +221,11 @@ class AdminController extends \ModuleAdminController
             Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
         }
 
-        $letter_type_gp_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'GP'))->queryScalar();
-        $letter_type_patient_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'Patient'))->queryScalar();
         $this->render('_macro', array(
             'macro' => $macro,
             'init_method' => $init_method,
             'associated_content' => $associated_content_saved,
             'errors' => $errors,
-            'none_option' => ['0' => $macro->letter_type->name === 'Internal Referral' ? 'Internal Referral' : 'None'],
-            'recipients_data' => \CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-            'label_options' => [
-                $letter_type_gp_id => $macro->letter_type->name === 'Internal Referral' ? 'display:none' : '',
-                $letter_type_patient_id => $macro->letter_type->name === 'Internal Referral' ? 'display:none' : ''
-            ],
         ));
     }
 
