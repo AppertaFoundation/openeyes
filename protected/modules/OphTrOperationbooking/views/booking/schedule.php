@@ -131,8 +131,8 @@
                                         <select id="firm_id" class="inline firm-switcher">
                                             <option value="">Select a different <?php echo Firm::model()->contextLabel()?></option>
                                             <option value="EMG">Emergency List</option>
-                                            <?php foreach ($firmList as $id => $name) { ?>
-                                                <option value="<?php echo $id ?>"><?php echo $name ?></option>
+                                            <?php foreach ($firm_list as $_firm) { ?>
+                                                <option value="<?=$_firm->id ?>"><?=$_firm->name ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>

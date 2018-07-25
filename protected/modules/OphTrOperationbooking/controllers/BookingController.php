@@ -172,7 +172,7 @@ class BookingController extends OphTrOperationbookingEventController
                     }
                 } else {
                     $_POST['Booking']['admission_time'] = substr($session['default_admission_time'], 0, 5);
-                    $_POST['Booking']['ward_id'] = key($operation->getWardOptions($_session));
+                    $_POST['Booking']['ward_id'] = key($operation->getWardOptions($session));
                     $_POST['Session']['comments'] = $session['comments'];
                     $_POST['Operation']['referral_id'] = $operation->referral_id;
                     $_POST['Operation']['comments'] = $operation->comments;
