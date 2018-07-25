@@ -382,7 +382,7 @@ AnaestheticSlide.prototype = {
             });
 */
     }
-}
+};
 
 function AnaestheticGivenBySlide() {
     if (this.init) this.init.apply(this, arguments);
@@ -412,7 +412,7 @@ AnaestheticGivenBySlide.prototype = {
             anaestheticGivenBySlide.anaestheticTypeWitnessSliding = false;
         });
     }
-}
+};
 
 var anaestheticSlide = new AnaestheticSlide;
 var anaestheticGivenBySlide = new AnaestheticGivenBySlide;
@@ -487,7 +487,7 @@ function AngleMarksController(_drawing) {
                 this.initAntSegAngleMarks();
                 break;
         }
-    }
+    };
 
     this.initAntSegAngleMarks = function(){
 
@@ -508,7 +508,7 @@ function AngleMarksController(_drawing) {
             }
 
         }
-    }
+    };
 
     this.calculateBiometryData = function(data){
         var return_obj = {};
@@ -535,7 +535,7 @@ function AngleMarksController(_drawing) {
         } else {
             _drawing.deleteDoodle(angleMarks, true);
         }
-    }
+    };
 }
 
 function sidePortController(_drawing) {

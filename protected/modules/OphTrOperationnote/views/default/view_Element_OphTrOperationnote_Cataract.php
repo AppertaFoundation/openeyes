@@ -152,7 +152,7 @@
                   <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>:</div>
                 </td>
                 <td>
-                  <div class="data-value"><?php echo CHtml::encode($element->pcr_risk) ?></div>
+                  <div class="data-value"><?php echo CHtml::encode($element->pcr_risk) ?>%</div>
                 </td>
               </tr>
 
