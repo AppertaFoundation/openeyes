@@ -2,7 +2,8 @@
 
   'use strict';
 
-  function ItemSet(items, options) {
+  function ItemSet(items, header, options) {
+    this.header = header;
     this.items = items;
     this.options = $.extend(true, {}, ItemSet._defaultOptions, options);
     this.create();

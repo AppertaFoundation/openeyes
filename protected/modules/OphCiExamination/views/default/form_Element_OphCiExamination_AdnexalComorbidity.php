@@ -44,31 +44,28 @@
     <?php
     $items = array();
     foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-
         foreach ($attribute->getAttributeOptions() as $option) {
             $items[] = ['value' => (string)$option->slug];
         }
-    }
-    ?>
-        <script type="text/javascript">
-            $(function () {
-              var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_<?= $eye_side ?>_description');
+    } ?>
+      <script type="text/javascript">
+        $(function () {
+          var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_<?= $eye_side ?>_description');
 
-              new OpenEyes.UI.AdderDialog({
-                id: 'add-to-adnexal-<?= $eye_side?>',
-                openButton: $('#add-examination-adnexal-<?= $eye_side?>'),
-                itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
-                onReturn: function (adderDialog, selectedItems) {
-                  console.log(selectedItems);
-                  $(selectedItems).each(function (key, item) {
-                    inputText.val(inputText.val() ? inputText.val() + item['value'] : item['value']
-                    );
-                  });
-                  inputText.trigger('oninput');
-                  return true;
-                }
+          new OpenEyes.UI.AdderDialog({
+            id: 'add-to-adnexal-<?= $eye_side?>',
+            openButton: $('#add-examination-adnexal-<?= $eye_side?>'),
+            itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
+            onReturn: function (adderDialog, selectedItems) {
+              $(selectedItems).each(function (key, item) {
+                inputText.val(inputText.val() ? inputText.val() + item['value'] : item['value']
+                );
               });
-            });
-        </script>
+              inputText.trigger('oninput');
+              return true;
+            }
+          });
+        });
+      </script>
     <?php endforeach;?>
 </div>

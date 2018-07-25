@@ -116,13 +116,12 @@ if ($cvi_api) {
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
                 return ['value' => $value, 'id' => $key];
-            }, array_keys($values), $values)
-        ) ?>, {'multiSelect': false}),
+            }, array_keys($values), $values)) ?>),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                   return ['value' => $method, 'id' => $key];
-              }, array_keys($methods), $methods)
-          ) ?>, {'multiSelect': false})] ,
+              }, array_keys($methods), $methods)) ?>)
+        ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
           OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
@@ -130,6 +129,7 @@ if ($cvi_api) {
           newRow.find('.va-selector').val(selectedItems[0]['id']);
           newRow.find('.method_id').val(selectedItems[1]['id']);
           OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+          return true;
         },
       });
     });

@@ -35,7 +35,6 @@
    */
   AdderDialog._defaultOptions = {
     itemSets: [],
-    itemHeads: [],
     openButton: null,
     onOpen: null,
     onClose: null,
@@ -116,12 +115,10 @@
       this.selectWrapper = $('<div />', {class: 'select-options'});
       this.selectWrapper.appendTo(this.popup);
       var $headers = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.selectWrapper);
-      for (var i in this.options.itemHeads) {
-        $('<div />', {class: 'add-options cols-full'}).text(this.options.itemHeads[i]).appendTo($headers);
-      }
       var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
       $container.appendTo(this.selectWrapper);
       $(this.options.itemSets).each(function (index, itemSet) {
+        $('<div />', {class: 'add-options cols-full'}).text(itemSet.header).appendTo($headers);
         var $list = dialog.generateItemList(itemSet);
         $list.appendTo($container);
       });
@@ -196,11 +193,7 @@
    */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
-      var attr = {};
-      for (var key in this.dataset){
-        attr[key] = this.dataset[key];
-      }
-      return attr;
+      return this.dataset;
     }).get();
   };
 
