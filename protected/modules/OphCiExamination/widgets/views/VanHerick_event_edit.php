@@ -21,6 +21,62 @@
     $model_name = CHtml::modelName($element);
 ?>
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
+
+<div class="element-fields element-eyes" id="<?= $model_name ?>_element">
+
+<?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+
+    <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
+
+        <div class="active-form flex-layout">
+            <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+            <table class="cols-10">
+                <colgroup>
+                    <col class="cols-3">
+                    <col class="cols-2">
+                </colgroup>
+
+                <thead>
+                <tr>
+                    <th><?=$element->getAttributeLabel("{$eye_side}_van_herick_id"); ?></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><?php echo CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
+                    <td><?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster-images-link')); ?></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="inactive-form" style="display: none;">
+            <div class="add-side">
+                <a href="#">
+                    Add <?=$eye_side?> side <span class="icon-add-side"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+    <div class="js-foster-images-dialog dialog-content" title="Foster Images">
+        <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
+        <map name="foster_images_map">
+            <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
+            <area data-vh="Grade 1 (6-15%)" shape="rect" coords="0,225,225,450" />
+            <area data-vh="Grade 1 (16-25%)" shape="rect" coords="0,450,225,675" />
+            <area data-vh="Grade 2 (26-30%)" shape="rect" coords="225,0,450,225" />
+            <area data-vh="Grade 3 (31-75%)" shape="rect" coords="225,225,450,450" />
+            <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
+        </map>
+    </div>
+
+</div>
+
+
+
+<?php if(false): ?>
 <div class="element-fields element-eyes row" id="<?= $model_name ?>_element">
 
         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
@@ -67,19 +123,11 @@
             </div>
         </div>
 
-    <div class="js-foster_images_dialog dialog-content" title="Foster Images">
-        <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
-        <map name="foster_images_map">
-            <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
-            <area data-vh="Grade 1 (6-15%)" shape="rect" coords="0,225,225,450" />
-            <area data-vh="Grade 1 (16-25%)" shape="rect" coords="0,450,225,675" />
-            <area data-vh="Grade 2 (26-30%)" shape="rect" coords="225,0,450,225" />
-            <area data-vh="Grade 3 (31-75%)" shape="rect" coords="225,225,450,450" />
-            <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
-        </map>
-    </div>
+
 
 </div>
+
+<?php endif; ?>
 
 <script type="text/javascript">
     $(document).ready(function() {

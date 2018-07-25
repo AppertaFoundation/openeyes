@@ -898,27 +898,6 @@ $(document).ready(function() {
         OphCiExamination_DRGrading_update(side);
         e.preventDefault();
     });
-
-    $(this).delegate('a.foster_images_link', 'click', function(e) {
-        var side = $(this).closest('[data-side]').attr('data-side');
-
-        new OpenEyes.UI.Dialog({
-          title: 'Foster Images',
-          content: $(".foster_images_dialog").clone().first().show(),
-          width: 500
-        }).open();
-
-        e.preventDefault();
-    });
-    $('body').delegate('.foster_images_dialog area', 'click', function() {
-        var value = $(this).attr('data-vh');
-        var side = $(this).closest('[data-side]').attr('data-side');
-        $('.oe-popup-wrap').remove();
-
-        $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_'+side+'_van_herick_id option').attr('selected', function () {
-            return ($(this).text() == value + '%');
-        });
-    });
     /**
      * Update gonioExpert when gonioBasic is changed (gonioBasic controls are not stored in DB)
      */

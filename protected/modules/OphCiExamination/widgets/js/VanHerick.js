@@ -34,8 +34,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     VanHerickController._defaultOptions = {
         element: undefined,
         dropdown: '_van_herick_id',
-        imgContainerClass: 'js-foster_images_dialog',
-        imgLinkClass: 'js-foster_images_link',
+        imgContainerClass: 'js-foster-images-dialog',
+        imgLinkClass: 'js-foster-images-link',
     };
 
     VanHerickController.prototype.initialise = function () {
@@ -58,9 +58,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         $('.' + this.imgContainerClass).on('click', 'map area', function () {
-            var value = $(this).data('vh');
-            var side = $dialog.data('side');
-            var $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
+            let value = $(this).data('vh');
+            let side = $dialog.data('side');
+            let $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
 
             $dropdown.find('option').attr('selected', function () {
                 return ($(this).text() === value);
@@ -72,7 +72,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     VanHerickController.prototype.initialiseDialog = function () {
-        var controller = this;
+        let controller = this;
 
         //@TODO: OK, this is BAD, but didn't find any workaround - let me know if can fix it!
         // Without setTimeout the .dialog('open') won't work : cannot call methods on dialog prior to initialization; attempted to call method 'open'
@@ -82,7 +82,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 modal: true,
                 resizable: false,
                 width: 480
-            })
+            });
         },50);
     };
 
