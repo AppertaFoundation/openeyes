@@ -70,7 +70,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
     <h4>&copy; OpenEyes <?= date('Y') ?></h4>
     <p>
       <a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">
-        Served by <?php echo trim(`hostname`) ?>
+        Served by <?php echo trim(gethostname()) ?>
       </a>
     </p>
   </div>
