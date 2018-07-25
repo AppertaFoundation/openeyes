@@ -658,7 +658,6 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-
     /**
      * @param \Event $event
      * @return string
@@ -2549,7 +2548,6 @@ class OphCiExamination_API extends \BaseAPI
         return $required;
     }
 
-
     /**
      * Returns the required Operations for Surgical History Element
      *
@@ -2582,7 +2580,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->operation;
+                    $operation = $entry->operation;
+                    $required[$operation->id] = $operation;
                 }
             }
         }
@@ -2800,7 +2799,6 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->join .= ' JOIN episode ON event.`episode_id` = episode.id';
         $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
         $criteria->addCondition("patient_id = :patient_id");
-
         $criteria->addCondition("episode_id = :episode_id");
         $criteria->addCondition("t.disorder_id = :disorder_id");
         $criteria->params=['patient_id' => $episode->patient_id , 'disorder_id' => $disorder_id , 'episode_id' => $episode->id];
