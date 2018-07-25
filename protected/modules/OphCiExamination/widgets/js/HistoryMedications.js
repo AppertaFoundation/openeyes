@@ -336,39 +336,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
-  HistoryMedicationsController.prototype.createRow = function()
+  HistoryMedicationsController.prototype.createRow = function(selectedItems)
   {
 
-    var selected_option = [];
     var newRows = [];
     var template = this.templateText;
     var element = this.$element;
 
-    $('#history-medication-option').find('.selected').each(function (e) {
-      selected_option.push(this);
-    });
-    $(this.options.medicationSearchResult).find('.selected').each(function (e) {
-      selected_option.push(this);
-    });
-
-    for (var i in selected_option) {
+    for (var i in selectedItems) {
       data = {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      data['drug_id'] = $(selected_option[i]).data('drug-id');
-      data['medication_drug_id'] = $(selected_option[i]).data('medication-drug-id');
-      data['medication_name'] = $(selected_option[i]).data('str');
+      if (selectedItems[i]['type'] == 'md'){
+        data['medication_drug_id'] = selectedItems[i]['id'];
+      }
+      else {
+        data['drug_id'] = selectedItems[i]['id'];
+      }
+      data['medication_name'] = selectedItems[i]['value'];
       newRows.push( Mustache.render(
         template,
         data ));
     }
-
     return newRows;
 
   };
 
-  HistoryMedicationsController.prototype.addEntry = function()
+  HistoryMedicationsController.prototype.addEntry = function(selectedItems)
   {
-    var rows = this.createRow();
+    var rows = this.createRow(selectedItems);
     for(var i in rows){
       this.$table.find('tbody').append(rows[i]);
       this.initialiseRow(this.$table.find('tbody tr:last'));

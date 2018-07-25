@@ -122,11 +122,9 @@ $element_errors = $element->getErrors();
     medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
       element: $('#<?=$model_name?>_element')
     });
-    var templateText = $('#'+<?= CJSON::encode(CHtml::modelName($element).'_entry_template') ?>).text();
 
     <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());?>
     new OpenEyes.UI.AdderDialog({
-      id: '',
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $medication) {
@@ -134,23 +132,7 @@ $element_errors = $element->getErrors();
           },array_keys($medications),  $medications)
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
-        for (var i = 0; i < selectedItems.length; i++){
-          data = {};
-          data['row_count'] = OpenEyes.Util.getNextDataKey('#OEModule_OphCiExamination_models_HistoryMedications_entry_table tbody tr', 'key');
-          if (selectedItems[i]['type'] == 'md'){
-            data['medication_drug_id'] = selectedItems[i]['id'];
-          }
-          else {
-            data['drug_id'] = selectedItems[i]['id'];
-          }
-          data['medication_name'] = selectedItems[i]['value'];
-          var newRow =  Mustache.render(
-            template = templateText,
-            data
-          );
-          var row_tem = $(newRow);
-          $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table').find('tbody').append(row_tem);
-        }
+        medicationsController.addEntry(selectedItems);
         return 1;
       },
       searchOptions: {
