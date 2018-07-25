@@ -163,11 +163,6 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
         return $this;
     }
 
-    public function active()
-    {
-        return $this->notDeleted();
-    }
-
     public function activeOrPk($id)
     {
         return $this->notDeletedOrPk($id);
