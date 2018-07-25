@@ -59,8 +59,8 @@ if ($cvi_api) {
         <div class="active-form data-group flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table
-                class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
+            <table class="cols-full blank va_readings"
+                <?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
