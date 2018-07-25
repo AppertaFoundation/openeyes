@@ -68,8 +68,12 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
   </div>
   <div class="group">
     <h4>&copy; OpenEyes <?= date('Y') ?></h4>
+    <p>
+      <a href="<?php echo Yii::app()->createUrl('site/debuginfo') ?>" id="support-info-link">
+        Served by <?php echo trim(`hostname`) ?>
+      </a>
+    </p>
   </div>
-
 </div>
 
 <script>
@@ -95,5 +99,14 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
       });
         <?php endif; ?>
     });
+
+    $('#support-info-link').click(function (e) {
+      e.preventDefault();
+      new OpenEyes.UI.Dialog({
+        url: this.href,
+        title: 'Support Information'
+      }).open();
+    });
+
   });
 </script>
