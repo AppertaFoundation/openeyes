@@ -154,7 +154,7 @@ foreach ($this->patient->episodes as $ep) {
       },
       onReturn: function (adderDialog, selectedItems) {
         diagnosesController.addEntry(selectedItems);
-        return 1;
+        return true;
       }
     });
   });

@@ -155,7 +155,7 @@ $model_name = CHtml::modelName($element);
         ) ?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
           controller.addEntry(selectedItems);
-          return 1;
+          return true;
         }
       });
     });

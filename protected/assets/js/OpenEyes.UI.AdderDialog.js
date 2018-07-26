@@ -310,6 +310,11 @@
     });
   };
 
+  /**
+   * Given an object set of attributes, construct it in the format can be used as html element's dataset.
+   * @param Object item
+   * @returns Object
+   */
   AdderDialog.prototype.constructDataset =  function(item){
     var dataset = {};
     for (var key in item){
