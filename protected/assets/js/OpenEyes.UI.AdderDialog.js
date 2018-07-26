@@ -118,7 +118,7 @@
       var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
       $container.appendTo(this.selectWrapper);
       $(this.options.itemSets).each(function (index, itemSet) {
-        $('<div />', {class: 'add-options cols-full'}).text(itemSet.header).appendTo($headers);
+        $('<div />', {class: 'add-options cols-full'}).text(itemSet.options.header).appendTo($headers);
         var $list = dialog.generateItemList(itemSet);
         $list.appendTo($container);
       });

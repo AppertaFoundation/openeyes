@@ -122,17 +122,17 @@
              array_map(function ($relative_item) {
                  return ['value' => $relative_item->name, 'id' => $relative_item->id];
              }, $relative_options)
-         ) ?>, 'Relative'),
+         ) ?>, {'header':'Relative'}),
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                array_map(function ($side_item) {
                    return ['value' => $side_item->name, 'id' => $side_item->id];
                }, $side_options)
-           ) ?>, 'Side'),
+           ) ?>, {'header':'Side'}),
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                array_map(function ($condition_item) {
                    return ['value' => $condition_item->name, 'id' => $condition_item->id];
                }, $condition_options)
-           ) ?>, 'Condition')
+           ) ?>, {'header':'Condition'})
          ],
          onReturn: function (adderDialog, selectedItems) {
            data = {};

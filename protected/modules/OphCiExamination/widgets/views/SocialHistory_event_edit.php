@@ -202,13 +202,13 @@ $alcohol_options = range(1,20);
             array_map(function ($item, $label) {
                 return ['value' => $item->name, 'id' => $item->id, 'option-label'=>$label];
             }, $options, array_fill(0,sizeof($options), $key))
-        ) ?>, '<?= $key ?>'),
+        ) ?>, {'header':'<?= $key ?>'}),
           <?php } ?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['value' => $item, 'id' => $item, 'option-label'=>'alcohol'];
             }, $alcohol_options)
-        ) ?>, 'alcohol')
+        ) ?>, {'header':'alcohol'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);

@@ -2,8 +2,7 @@
 
   'use strict';
 
-  function ItemSet(items, header, options) {
-    this.header = header;
+  function ItemSet(items, options) {
     this.items = items;
     this.options = $.extend(true, {}, ItemSet._defaultOptions, options);
     this.create();
@@ -11,6 +10,7 @@
 
   ItemSet._default_options = {
     'multiSelect': false,
+    'header': null,
   };
 
   ItemSet.prototype.create = function () {
