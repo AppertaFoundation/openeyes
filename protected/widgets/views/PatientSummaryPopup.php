@@ -122,7 +122,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <div class="group">
             <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDate($patient) ?>
+            <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDisplayDate($patient) ?>
             </span>
         </div>
     </div>
