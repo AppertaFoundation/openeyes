@@ -42,11 +42,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     SocialHistoryController.prototype.addEntry = function(selectedItems) {
       data = {};
       var postfixes = {
-        'occupation':'_occupation_id',
-        'driving_status':'_driving_statuses',
-        'smoking_status':'_smoking_status_id',
-        'accommodation':'_accommodation_id',
-        'alcohol':'_alcohol_intake'
+        'Occupation':'_occupation_id',
+        'Driving Status':'_driving_statuses',
+        'Smoking Status':'_smoking_status_id',
+        'Accommodation':'_accommodation_id',
+        'Alcohol units':'_alcohol_intake'
       };
 
       for (i in selectedItems) {

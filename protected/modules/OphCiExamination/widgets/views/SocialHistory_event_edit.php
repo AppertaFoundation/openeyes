@@ -184,10 +184,10 @@ $driving_status_options = $element->driving_statuses_options;
 $smoking_options = $element->smoking_status_options;
 $accommodation_options = $element->accommodation_options;
 $options_list = array(
-    'occupation'=>$occupation_options,
-    'driving_status'=>$driving_status_options,
-    'smoking_status'=>$smoking_options,
-    'accommodation'=>$accommodation_options,
+    'Occupation'=>$occupation_options,
+    'Driving Status'=>$driving_status_options,
+    'Smoking Status'=>$smoking_options,
+    'Accommodation'=>$accommodation_options,
 );
 $alcohol_options = range(1,20);
 ?>
@@ -206,9 +206,9 @@ $alcohol_options = range(1,20);
           <?php } ?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item, 'id' => $item, 'option-label'=>'alcohol'];
+                return ['value' => $item, 'id' => $item, 'option-label'=>'Alcohol units'];
             }, $alcohol_options)
-        ) ?>, {'header':'alcohol'})
+        ) ?>, {'header':'Alcohol units'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);
