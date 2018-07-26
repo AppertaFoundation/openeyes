@@ -19,6 +19,7 @@
 <?php
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+$co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographies -->
 <div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
@@ -121,7 +122,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="group">
             <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"> <?php echo $this->patient->getCviSummaryDate() ?>
+            <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDate($patient) ?>
             </span>
         </div>
     </div>
@@ -179,11 +180,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               </tbody>
             </table>
 
-          </div><!-- data -->
+          </div>
         </div>
-        <!-- group -->
-        <!-- group-->
-      </div><!-- popup-overflow -->
+      </div>
 
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -197,15 +196,11 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-        <!-- group-->
           <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
               'patient' => $this->patient,
               'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
           )); ?>
 
-        <!-- group-->
-
-        <!-- group-->
 
         <div class="group">
           <div class="label">Family</div>
@@ -227,13 +222,10 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-      <!-- group-->
       </div><!-- 	.oe-popup-overflow -->
 
     </div><!-- .flex-layout -->
   </div>
-<!-- .row -->
-<!-- .patient-popup-quicklook -->
 
 <div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
 

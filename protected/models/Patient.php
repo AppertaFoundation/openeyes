@@ -1984,26 +1984,6 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Returns the date for the CVI status.
-     * @return string
-     */
-    public function getCviSummaryDate(){
-        $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-        if ($cvi_api) {
-//        regex below provides all the strings between the brackets()
-            preg_match_all('#\((.*?)\)#', $cvi_api->getSummaryText($this), $match);
-            $date = $match[1];
-            $counter = 0;
-            if (sizeof($date) == 2) {
-                $counter = 1;
-            }
-            return $date[$counter];
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * @return mixed
      */
     public function get_socialhistory()
