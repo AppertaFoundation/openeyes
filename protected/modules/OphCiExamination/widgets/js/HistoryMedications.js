@@ -196,8 +196,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
           $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
-
       controller.setDatepicker();
+
+      $row.on('change', controller.options.routeFieldSelector, function(e) {
+        controller.updateRowRouteOptions($row);
+      });
   };
 
   HistoryMedicationsController.prototype.popupSearch = function()
