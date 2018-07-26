@@ -1136,13 +1136,12 @@ class OphCiExamination_API extends \BaseAPI
         $management_summaries = $this->getElements('models\Element_OphCiExamination_Management',$patient,$use_context);
         if ($management_summaries) {
             $summary = [];
-            $summmary_dates = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
-                $created_date = date_format(date_create($summaries->event->event_date),"d.m.Y");
+                $created_date = date_format(date_create($summaries->event->event_date),'d.m.Y');
                 if(!array_key_exists($service, $summary)){
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service." [".$created_date."]"] = $summaries->comments;
+                    $summary_with_dates[$service.' ['.$created_date.']'] = $summaries->comments;
                 }
             }
             return $summary_with_dates;
