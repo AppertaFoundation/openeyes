@@ -63,43 +63,16 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'entries' => array(
-                self::HAS_MANY,
-                \EventMedicationUse::class,
-                array('id' => 'event_id'),
-                'through' => 'event',
-                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
+        return array_merge(array(
+                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id')
             ),
-            'current_entries' => array(
-                self::HAS_MANY,
-                \EventMedicationUse::class,
-                array('id' => 'event_id'),
-                'on' => "usage_type = 'OphCiExamination' AND (current_entries.end_date_string_YYYYMMDD > NOW() OR ( current_entries.end_date_string_YYYYMMDD is NULL OR current_entries.end_date_string_YYYYMMDD = ''))",
-                'through' => 'event',
-                'order' => 'current_entries.start_date_string_YYYYMMDD DESC, current_entries.end_date_string_YYYYMMDD DESC, current_entries.last_modified_date'
-            ),
-            'closed_entries' => array(
-                self::HAS_MANY,
-                \EventMedicationUse::class,
-                array('id' => 'event_id'),
-                'on' => "usage_type = 'OphCiExamination' AND (closed_entries.end_date_string_YYYYMMDD < NOW() AND ( closed_entries.end_date_string_YYYYMMDD is NOT NULL OR closed_entries.end_date_string_YYYYMMDD != '') )",
-                'through'=>'event',
-                'order' => 'closed_entries.start_date_string_YYYYMMDD ASC, closed_entries.end_date_string_YYYYMMDD ASC, closed_entries.last_modified_date'
-            ),
-            'prescribed_entries' => array(
-                self::HAS_MANY,
-                \EventMedicationUse::class,
-                array('id' => 'event_id'),
-                'on' => "usage_type = 'OphDrPrescription'",
-                'through'=>'event',
-                'order' => 'prescribed_entries.start_date_string_YYYYMMDD DESC, prescribed_entries.end_date_string_YYYYMMDD DESC, prescribed_entries.last_modified_date'
-            )
+            $this->getEntryRelations()
         );
     }
+
+    abstract public function getEntryRelations();
 
     /**
      * @inheritdoc

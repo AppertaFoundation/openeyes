@@ -87,4 +87,44 @@ class HistoryMedications extends BaseMedicationElement
     {
         return parent::model($className);
     }
+
+    public function getEntryRelations()
+    {
+        $usage_type_condition = "usage_type = '".\EventMedicationUse::getUsageType()."' AND usage_subtype = '".\EventMedicationUse::getUsageSubtype()."'";
+
+        return array(
+            'entries' => array(
+                self::HAS_MANY,
+                \EventMedicationUse::class,
+                array('id' => 'event_id'),
+                'through' => 'event',
+                'on' => $usage_type_condition,
+                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
+            ),
+            'current_entries' => array(
+                self::HAS_MANY,
+                \EventMedicationUse::class,
+                array('id' => 'event_id'),
+                'on' => "$usage_type_condition AND (current_entries.end_date_string_YYYYMMDD > NOW() OR ( current_entries.end_date_string_YYYYMMDD is NULL OR current_entries.end_date_string_YYYYMMDD = ''))",
+                'through' => 'event',
+                'order' => 'current_entries.start_date_string_YYYYMMDD DESC, current_entries.end_date_string_YYYYMMDD DESC, current_entries.last_modified_date'
+            ),
+            'closed_entries' => array(
+                self::HAS_MANY,
+                \EventMedicationUse::class,
+                array('id' => 'event_id'),
+                'on' => "$usage_type_condition AND (closed_entries.end_date_string_YYYYMMDD < NOW() AND ( closed_entries.end_date_string_YYYYMMDD is NOT NULL OR closed_entries.end_date_string_YYYYMMDD != '') )",
+                'through' => 'event',
+                'order' => 'closed_entries.start_date_string_YYYYMMDD ASC, closed_entries.end_date_string_YYYYMMDD ASC, closed_entries.last_modified_date'
+            ),
+            'prescribed_entries' => array(
+                self::HAS_MANY,
+                \EventMedicationUse::class,
+                array('id' => 'event_id'),
+                'on' => $usage_type_condition,
+                'through' => 'event',
+                'order' => 'prescribed_entries.start_date_string_YYYYMMDD DESC, prescribed_entries.end_date_string_YYYYMMDD DESC, prescribed_entries.last_modified_date'
+            )
+        );
+    }
 }

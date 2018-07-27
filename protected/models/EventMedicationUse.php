@@ -64,6 +64,16 @@ class EventMedicationUse extends BaseElement
     public $chk_prescribe;
     public $chk_stop;
 
+    public static function getUsageType()
+    {
+        return "OphCiExamination";
+    }
+
+    public static function getUsageSubtype()
+    {
+        return "History";
+    }
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -81,10 +91,12 @@ class EventMedicationUse extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('usage_type, ref_medication_id, start_date_string_YYYYMMDD', 'required'),
-			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id', 'numerical', 'integerOnly'=>true),
+			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, continue, prescribe', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),
+			array('usage_type', 'default', 'value' => self::getUsageType(), 'on' => 'insert'),
+			array('usage_subtype', 'default', 'value' => self::getUsageSubType(), 'on' => 'insert'),
 			array('start_date_string_YYYYMMDD, end_date_string_YYYYMMDD', 'length', 'max'=>8),
 			array('last_modified_date, created_date, event_id', 'safe'),
 			array('dose, route_id, frequency_id', 'required', 'on' => 'to_be_prescribed'),

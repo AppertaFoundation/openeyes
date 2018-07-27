@@ -178,6 +178,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     INSERT INTO event_medication_uses(
                         event_id, 
                         usage_type, 
+                        usage_subtype,
                         ref_medication_id, 
                         form_id, 
                         laterality,
@@ -193,6 +194,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     ) values(
                         ".$event['event_id'].",
                         '".$event['class_name']."',
+                        'History',
                         ".$event['ref_medication_id'].",
                         ".$event['ref_medication_form_id'].", 
                         '".$event['ref_laterality_id']."', 

@@ -65,18 +65,17 @@ class MedicationManagement extends BaseMedicationElement
 		);
 	}
 
-    public function relations()
+    public function getEntryRelations()
     {
         return array(
-            'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
-            'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
             'entries' => array(
                 self::HAS_MANY,
                 MedicationManagementEntry::class,
-                array('element_id' => 'id'),
-                'order' => 'entries.start_date DESC, entries.end_date DESC'
-            ),
+                array('id' => 'event_id'),
+                'through' => 'event',
+                'on' => "usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
+                'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
+            )
         );
     }
 
