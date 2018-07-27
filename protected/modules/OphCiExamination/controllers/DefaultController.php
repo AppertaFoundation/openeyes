@@ -757,7 +757,7 @@ class DefaultController extends \BaseEventTypeController
                     $diagnosis = new models\OphCiExamination_Diagnosis();
                     $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
                     $diagnosis->disorder_id = $disorder_id;
-                    $diagnosis->principal = (@$data['principal_diagnosis'] == $disorder_id);
+                    $diagnosis->principal = (@$data['principal_diagnosis_row_key'] == @$diagnoses_data['row_key'][$i]);
                     $diagnosis->date = isset($diagnoses_data['date'][$i]) ? $diagnoses_data['date'][$i] : null;
                     $diagnoses[] = $diagnosis;
                 }
@@ -957,9 +957,10 @@ class DefaultController extends \BaseEventTypeController
         if (!empty($data[$model_name]['disorder_id'])) {
             foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
                 $diagnoses[] = array(
+                    'id' => $data[$model_name]['id'][$i],
                     'eye_id' => $diagnosis_eyes[$i],
                     'disorder_id' => $disorder_id,
-                    'principal' => (@$data['principal_diagnosis'] == $disorder_id),
+                    'principal' => (@$data['principal_diagnosis_row_key'] == $data[$model_name]['row_key'][$i]),
                     'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
                 );
             }

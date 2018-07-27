@@ -29,6 +29,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.fieldPrefix = this.options.fieldPrefix;
         this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
+        this.row_key = this.options.row_key;
         this.renderCommonlyUsedDiagnoses = this.options.renderCommonlyUsedDiagnoses;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;

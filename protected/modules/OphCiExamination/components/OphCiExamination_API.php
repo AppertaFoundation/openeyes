@@ -2770,15 +2770,17 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
         $criteria->addCondition("patient_id = :patient_id");
         $criteria->addCondition("episode_id = :episode_id");
-        $criteria->addCondition("t.disorder_id = :disorder_id");
-        $criteria->params=['patient_id' => $episode->patient_id , 'disorder_id' => $disorder_id , 'episode_id' => $episode->id];
+        $criteria->addCondition("principal = 1");
+
+        $criteria->params=[':patient_id' => $episode->patient_id , ':episode_id' => $episode->id];
+        if($disorder_id){
+            $criteria->addCondition("t.disorder_id = :disorder_id");
+            $criteria->params[':disorder_id'] = $disorder_id;
+        }
+
         $criteria->order="t.created_date desc";
 
         $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
         return $value;
-
     }
-    
-    
-    
 }
