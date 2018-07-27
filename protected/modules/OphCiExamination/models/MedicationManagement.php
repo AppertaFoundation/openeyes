@@ -97,7 +97,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getStoppedEntries()
     {
         return array_filter($this->entries, function($e){
-            return $e->stop == 1;
+            return !is_null($e->end_date_string_YYYYMMDD);
         });
     }
 
@@ -119,7 +119,7 @@ class MedicationManagement extends BaseMedicationElement
     public function getOtherEntries()
     {
         return array_filter($this->entries, function($e){
-            return $e->prescribe == 0 && $e->stop == 0 && $e->continue == 0;
+            return $e->prescribe == 0 && is_null($e->end_date_string_YYYYMMDD) && $e->continue == 0;
         });
     }
 
@@ -152,17 +152,13 @@ class MedicationManagement extends BaseMedicationElement
     protected function saveEntries()
     {
         $criteria = new \CDbCriteria();
-        $criteria->addCondition("element_id = :element_id");
-        $criteria->params['element_id'] = $this->id;
+        $criteria->addCondition("event_id = :event_id AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."'");
+        $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
         $saved_ids = array();
         foreach ($this->entries as $entry) {
             /** @var MedicationManagementEntry $entry */
-            $entry->element_id = $this->id;
-
-            if(!is_null($entry->end_date)) {
-                $entry->stop = 1;
-            }
+            $entry->event_id = $this->event->id;
 
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
