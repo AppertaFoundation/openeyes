@@ -113,6 +113,9 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </fieldset>
   </td>
     <td>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
+    </td>
+    <td>
         <?php if ($removable) { ?>
             <i class="oe-i trash"></i>
         <?php } else { ?>

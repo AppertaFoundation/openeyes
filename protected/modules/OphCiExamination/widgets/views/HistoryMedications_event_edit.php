@@ -35,11 +35,11 @@ $element_errors = $element->getErrors();
             <th class="cols-2">
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
-                Drug
             </th>
-            <th class="cols-5">Dose/frequency/route</th>
+            <th class="cols-5"></th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
+            <th class="cols-1">Reason</th>
             <th></th>
         </tr>
         </thead>
