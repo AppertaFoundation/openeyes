@@ -65,14 +65,7 @@
               'id',
               CHtml::listData($element->driving_statuses_options, 'id', 'name'),
               array(),
-              array('empty' => '- Select -', 'nowrapper' => true),
-              //'label' => $element->getAttributeLabel('driving_statuses')),
-              false,
-              false,
-              null,
-              false,
-              false, // various attributes we don't care about
-              array('stretch' => true)
+              array('empty' => '- Select -', 'nowrapper' => true)
           ); ?>
       </td>
     </tr>
@@ -85,9 +78,7 @@
               $element,
               'smoking_status_id',
               CHtml::listData($element->smoking_status_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
-              false,
-              array('label' => 4, 'field' => 4, 'full_dropdown' => true)
+              array('empty' => '- Select -', 'nowrapper' => true)
           );
           ?>
       </td>
@@ -99,9 +90,7 @@
               $element,
               'accommodation_id',
               CHtml::listData($element->accommodation_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
-              false,
-              array('label' => 4, 'field' => 5, 'full_dropdown' => true)
+              array('empty' => '- Select -', 'nowrapper' => true)
           );
           ?>
       </td>
@@ -131,9 +120,7 @@
               $element,
               'carer_id',
               CHtml::listData($element->carer_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
-              false,
-              array('label' => 4, 'field' => 8, 'full_dropdown' => true)
+              array('empty' => '- Select -', 'nowrapper' => true)
           );
           ?>
       </td>
@@ -147,9 +134,7 @@
               $element,
               'substance_misuse_id',
               CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
-              false,
-              array('label' => 4, 'field' => 5, 'full_dropdown' => true)
+              array('empty' => '- Select -', 'nowrapper' => true)
           ); ?>
       </td>
       <td colspan="2" class="js-comment-container"
@@ -179,7 +164,7 @@
     </button>
     <button class="button hint green js-add-select-search" id="add-social-history-btn" type="button">
       <i class="oe-i plus pro-theme"></i>
-    </button><!-- popup to add data to element -->
+    </button>
   </div>
 </div>
 <?php
@@ -188,12 +173,12 @@ $driving_status_options = $element->driving_statuses_options;
 $smoking_options = $element->smoking_status_options;
 $accommodation_options = $element->accommodation_options;
 $options_list = array(
-    'Occupation'=>$occupation_options,
-    'Driving Status'=>$driving_status_options,
-    'Smoking Status'=>$smoking_options,
-    'Accommodation'=>$accommodation_options,
+    'Occupation' => $occupation_options,
+    'Driving Status' => $driving_status_options,
+    'Smoking Status' => $smoking_options,
+    'Accommodation' => $accommodation_options,
 );
-$alcohol_options = range(1,20);
+$alcohol_options = range(1, 20);
 ?>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -204,15 +189,15 @@ $alcohol_options = range(1,20);
       itemSets: [<?php foreach ($options_list as $key=>$options) {?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item, $label) {
-                return ['value' => $item->name, 'id' => $item->id, 'option-label'=>$label];
-            }, $options, array_fill(0,sizeof($options), $key))
-        ) ?>, {'header':'<?= $key ?>'}),
+                return ['value' => $item->name, 'id' => $item->id, 'option-label' => $label];
+            }, $options, array_fill(0, count($options), $key))
+        ) ?>, {'header': '<?= $key ?>'}),
           <?php } ?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item, 'id' => $item, 'option-label'=>'Alcohol units'];
+                return ['value' => $item, 'id' => $item, 'option-label' => 'Alcohol units'];
             }, $alcohol_options)
-        ) ?>, {'header':'Alcohol units'})
+        ) ?>, {'header': 'Alcohol units'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);
