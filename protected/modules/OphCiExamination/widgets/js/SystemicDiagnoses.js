@@ -43,6 +43,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   SystemicDiagnosesController.prototype.initialiseTriggers = function () {
     var controller = this;
+    var eye_selector;
 
     // removal button for table entries
     controller.$table.on('click', 'i.trash', function (e) {
@@ -53,8 +54,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // setup current table row behaviours
     controller.$table.find('tbody tr').each(function () {
       controller.initialiseRow($(this));
-
     });
+
+    eye_selector = new OpenEyes.UI.EyeSelector({
+      element: controller.$element.closest('section')
+    });
+
   };
   SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
     var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
