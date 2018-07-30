@@ -299,7 +299,7 @@
     * Code that handles what happens when
     * an index is clicked
     */
-    function index_clicked($this){
+    function index_clicked($this) {
         let parameters = {};
         parameters["element_name"] = $this.data('elementName');
         parameters["element_id"] = $this.data('elementId');
@@ -312,17 +312,18 @@
         //can revese order have different length chains etc
         //Chains can be made conditional based on content of parameters
         //Guarantees funcion execution order (even for asyncrounous functions)
-        let done = function() {
+        let done = function () {
             $('#is_loading').hide();
             clearTimeout(is_loading_timeout);
             hide_results();
         };
 
-        let start = function() {
+        let start = function () {
             $('#is_loading').show();
             //if ajax call is very slow hide loading gif so user can perform other actions
-            is_loading_timeout = setTimeout(()=>done(),6000);
+            is_loading_timeout = setTimeout(() => done(), 6000);
         }
+    }
 
   function click_element(parameters) {
 
@@ -362,8 +363,9 @@
         }
 
         //if it gets here then the index item is not clickable as it has no element name
-
-    }
+      });
+    });
+  }
 
     function goto_id(parameters){
         return new Promise(function(resolve, reject) {

@@ -29,17 +29,17 @@ $element_errors = $element->getErrors();
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
   <div class="data-group flex-layout">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_entry_table" class=" cols-10 <?php echo $element_errors ? 'highlighted-error' : '' ?>">
+    <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error' : '' ?>">
         <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
             <th class="cols-2">
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
+                Drug
             </th>
-            <th class="cols-5"></th>
+            <th class="cols-5">Dose/frequency/route</th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
-            <th class="cols-1">Reason</th>
             <th></th>
         </tr>
         </thead>

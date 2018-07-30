@@ -169,7 +169,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.initialiseRow = function($row)
   {
       var controller = this;
-      controller.initialiseSearch($row.find('input.search'));
 
       $row.on('change', controller.options.drugSelectSelector, function(e) {
           var $option = $(this).find('option:selected'),
