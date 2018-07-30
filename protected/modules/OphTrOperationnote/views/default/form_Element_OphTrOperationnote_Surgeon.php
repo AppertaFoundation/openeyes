@@ -58,5 +58,49 @@
     </tr>
     </tbody>
   </table>
+  <div class="add-data-actions flex-item-bottom " id="add-social-history-popup">
+    <button class="button hint green js-add-select-search" id="add-surgeon-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button><!-- popup to add data to element -->
+  </div>
 </div>
 <style>.Element_OphTrOperationnote_Surgeon{min-height: 54px !important;}</style>
+
+<?php $surgeons = $element->surgeons; ?>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-surgeon-btn'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['value' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id,
+                    'option-label'=>'surgeon_id'];
+            }, $surgeons) ) ?>, {'header':'Surgeon'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['value' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id,
+                    'option-label'=>'assistant_id'];
+            }, $surgeons) ) ?>, {'header':'Assistant'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['value' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id,
+                    'option-label'=>'supervising_surgeon_id'];
+            }, $surgeons) ) ?>, {'header':'Supervising Surgeon'})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var label = selectedItems[i]['optionLabel'];
+          var id = selectedItems[i]['id'];
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+label);
+          $selector.val(id);
+        }
+        return true;
+      }
+    });
+  });
+</script>
