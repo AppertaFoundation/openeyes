@@ -299,7 +299,7 @@
     * Code that handles what happens when
     * an index is clicked
     */
-    function index_clicked($this) {
+    function index_clicked($this){
         let parameters = {};
         parameters["element_name"] = $this.data('elementName');
         parameters["element_id"] = $this.data('elementId');
@@ -312,531 +312,529 @@
         //can revese order have different length chains etc
         //Chains can be made conditional based on content of parameters
         //Guarantees funcion execution order (even for asyncrounous functions)
-        let done = function () {
+        let done = function() {
             $('#is_loading').hide();
             clearTimeout(is_loading_timeout);
             hide_results();
         };
 
-        let start = function () {
+        let start = function() {
             $('#is_loading').show();
             //if ajax call is very slow hide loading gif so user can perform other actions
-            is_loading_timeout = setTimeout(() => done(), 6000);
-        }
-    }
-
-  function click_element(parameters) {
-
-    //get side bar item
-    var $item = $('#episodes-and-events ul li').filter(function () {
-      return $(this).data('element-type-id') == parameters['element_id'];
-    }).first().find('a');
-
-    return click_sidebar_element($item).then(function () {
-      return new Promise(function (resolve, reject) {
-        //see if parameters are set for doodle
-        if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
-          resolve(parameters);
-        } else {
-          reject();
+            is_loading_timeout = setTimeout(()=>done(),6000);
         }
 
-        //element -> id
-        if (parameters["goto_id"]) {
-            start();
-            click_element(parameters).then(result => goto_id(result)).catch(() => done());
-            return;
-        }
+        function click_element(parameters) {
 
-        //element -> tag (subcontainers?) -> text
-        if (parameters['goto_tag']) {
-            start();
-            click_element(parameters).then(result => goto_tag_and_text(result)).catch(() => done());
-            return;
-        }
+            //get side bar item
+            var $item = $('#episodes-and-events ul li').filter(function () {
+                return $(this).data('element-type-id') == parameters['element_id'];
+            }).first().find('a');
 
-        //element
-        if (parameters['element_name']) {
-            start();
-            click_element(parameters).catch(() => done());
-            return;
-        }
+            return click_sidebar_element($item).then(function () {
+                return new Promise(function (resolve, reject) {
+                    //see if parameters are set for doodle
+                    if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
+                        resolve(parameters);
+                    } else {
+                        reject();
+                    }
 
-        //if it gets here then the index item is not clickable as it has no element name
-      });
-    });
-  }
+                    //element -> id
+                    if (parameters["goto_id"]) {
+                        start();
+                        click_element(parameters).then(result => goto_id(result)).catch(() => done());
+                        return;
+                    }
 
-    function goto_id(parameters){
-        return new Promise(function(resolve, reject) {
-            let target_id = parameters['goto_id'].replace('%position',last_search_pos);
-            $(`section[data-element-type-id = ${parameters['element_id']}]`).find(`#${target_id}`).effect("highlight", {}, 6000);
-            reject();
-        });
-    }
+                    //element -> tag (subcontainers?) -> text
+                    if (parameters['goto_tag']) {
+                        start();
+                        click_element(parameters).then(result => goto_tag_and_text(result)).catch(() => done());
+                        return;
+                    }
 
-    function goto_tag_and_text(parameters){
-        return new Promise(function(resolve, reject) {
-            let container = $(`section[data-element-type-id = ${parameters['element_id']}]`);
-            if (parameters['goto_subcontainer']) {
-                container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
-            }
-            container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000); //if want whole row highlight hightlight parent if not div or fieldset
-            reject();
-        });
-    }
+                    //element
+                    if (parameters['element_name']) {
+                        start();
+                        click_element(parameters).catch(() => done());
+                        return;
+                    }
 
-    function click_element(parameters){
-        //get side bar item
-        let $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']})`).filter(function(){
-            return $(this).text() == parameters['element_name'];
-        });
-        if (!$item.length){
-            $item = $(`#episodes-and-events h3:contains(${parameters['element_name']})`).filter(function(){
-                return $(this).text() == parameters['element_name'];
-            });
-        }
-        if (parameters['element_name'] == 'Risks'){
-            $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
-        }
-        return click_sidebar_element($item).then(function (){
-            return new Promise(function(resolve, reject) {
-                //see if parameters are set for doodle
-                if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
-                    resolve(parameters);
-                } else {
-                    reject();
-                }
-            });
-        });
-    }
+                    //if it gets here then the index item is not clickable as it has no element name
 
-    function click_doodle(parameters){
-        ED.Checker.storeCanvasId("ed_canvas_edit_"+last_search_pos+"_"+parameters.element_id);
-        return onAllCanvasesReady().then(function(){
-            return new Promise(function(resolve, reject) {
-                let ed_canvas = ED.Checker.getInstanceByIdSuffix(last_search_pos+"_"+parameters.element_id);
-                let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
-                let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
-                let doodle_name = ED.titles[parameters.doodle_name];
-                let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
-                if ($selected_doodle.length == 0) {
-                    ed_canvas.addDoodle(parameters.doodle_name);
-                } else {
-                    $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
-                    $selected_doodle.attr('selected','selected');
-                    $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
-                }
-                //Ensures Promise chains breaks if parameter(s) for next promise are not present
-                if (parameters.property_name) {
-                    resolve(parameters);
-                } else {
-                    reject();
-                }
-            });
-        });
-    }
-
-    function click_property(parameters){
-        return new Promise(function(resolve, reject) {
-            let control_id = get_controls_id(parameters.element_id,last_search_pos);
-            $(control_id).find("div:contains("+parameters.property_name+")").effect("highlight", {}, 6000);
-            /* Breaks the Promise chain as nothing should be called after property,
-            based on the current code */
-            reject();
-        });
-    }
-    //wrapper for old-style callback
-    function click_sidebar_element($item) {
-        return new Promise(function(resolve, reject) {
-            event_sidebar.loadClickedItem($item,{},resolve);
-        });
-    }
-
-    //wrapper for old-style callback
-    function onAllCanvasesReady() {
-        return new Promise(function(resolve, reject) {
-            ED.Checker.onAllReady(resolve);
-        });
-    }
-    /* End of Promise code */
-
-
-    /* Shortcut plugin */
-    /**
-     * http://www.openjs.com/scripts/events/keyboard_shortcuts/
-     * Version : 2.01.B
-     * By Binny V A
-     * License : BSD
-     */
-    const shortcut = {
-        'all_shortcuts':{},//All the shortcuts are stored in this array
-        'add': function(shortcut_combination,callback,opt) {
-            //Provide a set of default options
-            var default_options = {
-                'type':'keyup',
-                'propagate':false,
-                'disable_in_input':false,
-                'target':document,
-                'keycode':false
-            }
-            if(!opt) opt = default_options;
-            else {
-                for(var dfo in default_options) {
-                    if(typeof opt[dfo] == 'undefined') opt[dfo] = default_options[dfo];
-                }
-            }
-
-            var ele = opt.target;
-            if(typeof opt.target == 'string') ele = document.getElementById(opt.target);
-            var ths = this;
-            shortcut_combination = shortcut_combination.toLowerCase();
-
-            //The function to be called at keypress
-            var func = function(e) {
-                e = e || window.event;
-
-                if(opt['disable_in_input']) { //Don't enable shortcut keys in Input, Textarea fields
-                    var element;
-                    if(e.target) element=e.target;
-                    else if(e.srcElement) element=e.srcElement;
-                    if(element.nodeType==3) element=element.parentNode;
-
-                    if(element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') return;
                 }
 
-                //Find Which key is pressed
-                let code;
-                if (e.keyCode) code = e.keyCode;
-                else if (e.which) code = e.which;
-                var character = String.fromCharCode(code).toLowerCase();
-
-                if(code == 188) character=","; //If the user presses , when the type is onkeyup
-                if(code == 190) character="."; //If the user presses , when the type is onkeyup
-
-                var keys = shortcut_combination.split("+");
-                //Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
-                var kp = 0;
-
-                //Work around for stupid Shift key bug created by using lowercase - as a result the shift+num combination was broken
-                var shift_nums = {
-                    "`":"~",
-                    "1":"!",
-                    "2":"@",
-                    "3":"#",
-                    "4":"$",
-                    "5":"%",
-                    "6":"^",
-                    "7":"&",
-                    "8":"*",
-                    "9":"(",
-                    "0":")",
-                    "-":"_",
-                    "=":"+",
-                    ";":":",
-                    "'":"\"",
-                    ",":"<",
-                    ".":">",
-                    "/":"?",
-                    "\\":"|"
-                }
-                //Special Keys - and their codes
-                var special_keys = {
-                    'esc':27,
-                    'escape':27,
-                    'tab':9,
-                    'space':32,
-                    'return':13,
-                    'enter':13,
-                    'backspace':8,
-
-                    'scrolllock':145,
-                    'scroll_lock':145,
-                    'scroll':145,
-                    'capslock':20,
-                    'caps_lock':20,
-                    'caps':20,
-                    'numlock':144,
-                    'num_lock':144,
-                    'num':144,
-
-                    'pause':19,
-                    'break':19,
-
-                    'insert':45,
-                    'home':36,
-                    'delete':46,
-                    'end':35,
-
-                    'pageup':33,
-                    'page_up':33,
-                    'pu':33,
-
-                    'pagedown':34,
-                    'page_down':34,
-                    'pd':34,
-
-                    'left':37,
-                    'up':38,
-                    'right':39,
-                    'down':40,
-
-                    'f1':112,
-                    'f2':113,
-                    'f3':114,
-                    'f4':115,
-                    'f5':116,
-                    'f6':117,
-                    'f7':118,
-                    'f8':119,
-                    'f9':120,
-                    'f10':121,
-                    'f11':122,
-                    'f12':123
+                function goto_id(parameters){
+                    return new Promise(function(resolve, reject) {
+                        let target_id = parameters['goto_id'].replace('%position',last_search_pos);
+                        $(`section[data-element-type-id = ${parameters['element_id']}]`).find(`#${target_id}`).effect("highlight", {}, 6000);
+                        reject();
+                    });
                 }
 
-                var modifiers = {
-                    shift: { wanted:false, pressed:false},
-                    ctrl : { wanted:false, pressed:false},
-                    alt  : { wanted:false, pressed:false},
-                    meta : { wanted:false, pressed:false}	//Meta is Mac specific
-                };
+                function goto_tag_and_text(parameters){
+                    return new Promise(function(resolve, reject) {
+                        let container = $(`section[data-element-type-id = ${parameters['element_id']}]`);
+                        if (parameters['goto_subcontainer']) {
+                            container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
+                        }
+                        container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000); //if want whole row highlight hightlight parent if not div or fieldset
+                        reject();
+                    });
+                }
 
-                if(e.ctrlKey)	modifiers.ctrl.pressed = true;
-                if(e.shiftKey)	modifiers.shift.pressed = true;
-                if(e.altKey)	modifiers.alt.pressed = true;
-                if(e.metaKey)   modifiers.meta.pressed = true;
-                var k;
-                for(var i=0; k=keys[i],i<keys.length; i++) {
-                    //Modifiers
-                    if(k == 'ctrl' || k == 'control') {
-                        kp++;
-                        modifiers.ctrl.wanted = true;
+                function click_element(parameters){
+                    //get side bar item
+                    let $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']})`).filter(function(){
+                        return $(this).text() == parameters['element_name'];
+                    });
+                    if (!$item.length){
+                        $item = $(`#episodes-and-events h3:contains(${parameters['element_name']})`).filter(function(){
+                            return $(this).text() == parameters['element_name'];
+                        });
+                    }
+                    if (parameters['element_name'] == 'Risks'){
+                        $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
+                    }
+                    return click_sidebar_element($item).then(function (){
+                        return new Promise(function(resolve, reject) {
+                            //see if parameters are set for doodle
+                            if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
+                                resolve(parameters);
+                            } else {
+                                reject();
+                            }
+                        });
+                    });
+                }
 
-                    } else if(k == 'shift') {
-                        kp++;
-                        modifiers.shift.wanted = true;
+                function click_doodle(parameters){
+                    ED.Checker.storeCanvasId("ed_canvas_edit_"+last_search_pos+"_"+parameters.element_id);
+                    return onAllCanvasesReady().then(function(){
+                        return new Promise(function(resolve, reject) {
+                            let ed_canvas = ED.Checker.getInstanceByIdSuffix(last_search_pos+"_"+parameters.element_id);
+                            let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
+                            let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
+                            let doodle_name = ED.titles[parameters.doodle_name];
+                            let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
+                            if ($selected_doodle.length == 0) {
+                                ed_canvas.addDoodle(parameters.doodle_name);
+                            } else {
+                                $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
+                                $selected_doodle.attr('selected','selected');
+                                $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
+                            }
+                            //Ensures Promise chains breaks if parameter(s) for next promise are not present
+                            if (parameters.property_name) {
+                                resolve(parameters);
+                            } else {
+                                reject();
+                            }
+                        });
+                    });
+                }
 
-                    } else if(k == 'alt') {
-                        kp++;
-                        modifiers.alt.wanted = true;
-                    } else if(k == 'meta') {
-                        kp++;
-                        modifiers.meta.wanted = true;
-                    } else if(k.length > 1) { //If it is a special key
-                        if(special_keys[k] == code) kp++;
+                function click_property(parameters){
+                    return new Promise(function(resolve, reject) {
+                        let control_id = get_controls_id(parameters.element_id,last_search_pos);
+                        $(control_id).find("div:contains("+parameters.property_name+")").effect("highlight", {}, 6000);
+                        /* Breaks the Promise chain as nothing should be called after property,
+                        based on the current code */
+                        reject();
+                    });
+                }
+                //wrapper for old-style callback
+                function click_sidebar_element($item) {
+                    return new Promise(function(resolve, reject) {
+                        event_sidebar.loadClickedItem($item,{},resolve);
+                    });
+                }
 
-                    } else if(opt['keycode']) {
-                        if(opt['keycode'] == code) kp++;
+                //wrapper for old-style callback
+                function onAllCanvasesReady() {
+                    return new Promise(function(resolve, reject) {
+                        ED.Checker.onAllReady(resolve);
+                    });
+                }
+                /* End of Promise code */
 
-                    } else { //The special keys did not match
-                        if(character == k) kp++;
+
+                /* Shortcut plugin */
+                /**
+                 * http://www.openjs.com/scripts/events/keyboard_shortcuts/
+                 * Version : 2.01.B
+                 * By Binny V A
+                 * License : BSD
+                 */
+                const shortcut = {
+                    'all_shortcuts':{},//All the shortcuts are stored in this array
+                    'add': function(shortcut_combination,callback,opt) {
+                        //Provide a set of default options
+                        var default_options = {
+                            'type':'keyup',
+                            'propagate':false,
+                            'disable_in_input':false,
+                            'target':document,
+                            'keycode':false
+                        }
+                        if(!opt) opt = default_options;
                         else {
-                            if(shift_nums[character] && e.shiftKey) { //Stupid Shift key bug created by using lowercase
-                                character = shift_nums[character];
-                                if(character == k) kp++;
+                            for(var dfo in default_options) {
+                                if(typeof opt[dfo] == 'undefined') opt[dfo] = default_options[dfo];
                             }
                         }
+
+                        var ele = opt.target;
+                        if(typeof opt.target == 'string') ele = document.getElementById(opt.target);
+                        var ths = this;
+                        shortcut_combination = shortcut_combination.toLowerCase();
+
+                        //The function to be called at keypress
+                        var func = function(e) {
+                            e = e || window.event;
+
+                            if(opt['disable_in_input']) { //Don't enable shortcut keys in Input, Textarea fields
+                                var element;
+                                if(e.target) element=e.target;
+                                else if(e.srcElement) element=e.srcElement;
+                                if(element.nodeType==3) element=element.parentNode;
+
+                                if(element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') return;
+                            }
+
+                            //Find Which key is pressed
+                            let code;
+                            if (e.keyCode) code = e.keyCode;
+                            else if (e.which) code = e.which;
+                            var character = String.fromCharCode(code).toLowerCase();
+
+                            if(code == 188) character=","; //If the user presses , when the type is onkeyup
+                            if(code == 190) character="."; //If the user presses , when the type is onkeyup
+
+                            var keys = shortcut_combination.split("+");
+                            //Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
+                            var kp = 0;
+
+                            //Work around for stupid Shift key bug created by using lowercase - as a result the shift+num combination was broken
+                            var shift_nums = {
+                                "`":"~",
+                                "1":"!",
+                                "2":"@",
+                                "3":"#",
+                                "4":"$",
+                                "5":"%",
+                                "6":"^",
+                                "7":"&",
+                                "8":"*",
+                                "9":"(",
+                                "0":")",
+                                "-":"_",
+                                "=":"+",
+                                ";":":",
+                                "'":"\"",
+                                ",":"<",
+                                ".":">",
+                                "/":"?",
+                                "\\":"|"
+                            }
+                            //Special Keys - and their codes
+                            var special_keys = {
+                                'esc':27,
+                                'escape':27,
+                                'tab':9,
+                                'space':32,
+                                'return':13,
+                                'enter':13,
+                                'backspace':8,
+
+                                'scrolllock':145,
+                                'scroll_lock':145,
+                                'scroll':145,
+                                'capslock':20,
+                                'caps_lock':20,
+                                'caps':20,
+                                'numlock':144,
+                                'num_lock':144,
+                                'num':144,
+
+                                'pause':19,
+                                'break':19,
+
+                                'insert':45,
+                                'home':36,
+                                'delete':46,
+                                'end':35,
+
+                                'pageup':33,
+                                'page_up':33,
+                                'pu':33,
+
+                                'pagedown':34,
+                                'page_down':34,
+                                'pd':34,
+
+                                'left':37,
+                                'up':38,
+                                'right':39,
+                                'down':40,
+
+                                'f1':112,
+                                'f2':113,
+                                'f3':114,
+                                'f4':115,
+                                'f5':116,
+                                'f6':117,
+                                'f7':118,
+                                'f8':119,
+                                'f9':120,
+                                'f10':121,
+                                'f11':122,
+                                'f12':123
+                            }
+
+                            var modifiers = {
+                                shift: { wanted:false, pressed:false},
+                                ctrl : { wanted:false, pressed:false},
+                                alt  : { wanted:false, pressed:false},
+                                meta : { wanted:false, pressed:false}	//Meta is Mac specific
+                            };
+
+                            if(e.ctrlKey)	modifiers.ctrl.pressed = true;
+                            if(e.shiftKey)	modifiers.shift.pressed = true;
+                            if(e.altKey)	modifiers.alt.pressed = true;
+                            if(e.metaKey)   modifiers.meta.pressed = true;
+                            var k;
+                            for(var i=0; k=keys[i],i<keys.length; i++) {
+                                //Modifiers
+                                if(k == 'ctrl' || k == 'control') {
+                                    kp++;
+                                    modifiers.ctrl.wanted = true;
+
+                                } else if(k == 'shift') {
+                                    kp++;
+                                    modifiers.shift.wanted = true;
+
+                                } else if(k == 'alt') {
+                                    kp++;
+                                    modifiers.alt.wanted = true;
+                                } else if(k == 'meta') {
+                                    kp++;
+                                    modifiers.meta.wanted = true;
+                                } else if(k.length > 1) { //If it is a special key
+                                    if(special_keys[k] == code) kp++;
+
+                                } else if(opt['keycode']) {
+                                    if(opt['keycode'] == code) kp++;
+
+                                } else { //The special keys did not match
+                                    if(character == k) kp++;
+                                    else {
+                                        if(shift_nums[character] && e.shiftKey) { //Stupid Shift key bug created by using lowercase
+                                            character = shift_nums[character];
+                                            if(character == k) kp++;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(kp == keys.length &&
+                                modifiers.ctrl.pressed == modifiers.ctrl.wanted &&
+                                modifiers.shift.pressed == modifiers.shift.wanted &&
+                                modifiers.alt.pressed == modifiers.alt.wanted &&
+                                modifiers.meta.pressed == modifiers.meta.wanted) {
+                                callback(e);
+
+                                if(!opt['propagate']) { //Stop the event
+                                    //e.cancelBubble is supported by IE - this will kill the bubbling process.
+                                    e.cancelBubble = true;
+                                    e.returnValue = false;
+
+                                    //e.stopPropagation works in Firefox.
+                                    if (e.stopPropagation) {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
+                        this.all_shortcuts[shortcut_combination] = {
+                            'callback':func,
+                            'target':ele,
+                            'event': opt['type']
+                        };
+                        //Attach the function with the event
+                        if(ele.addEventListener) ele.addEventListener(opt['type'], func, false);
+                        else if(ele.attachEvent) ele.attachEvent('on'+opt['type'], func);
+                        else ele['on'+opt['type']] = func;
+                    },
+
+                    //Remove the shortcut - just specify the shortcut and I will remove the binding
+                    'remove':function(shortcut_combination) {
+                        shortcut_combination = shortcut_combination.toLowerCase();
+                        var binding = this.all_shortcuts[shortcut_combination];
+                        delete(this.all_shortcuts[shortcut_combination])
+                        if(!binding) return;
+                        var type = binding['event'];
+                        var ele = binding['target'];
+                        var callback = binding['callback'];
+
+                        if(ele.detachEvent) ele.detachEvent('on'+type, callback);
+                        else if(ele.removeEventListener) ele.removeEventListener(type, callback, false);
+                        else ele['on'+type] = false;
                     }
                 }
 
-                if(kp == keys.length &&
-                    modifiers.ctrl.pressed == modifiers.ctrl.wanted &&
-                    modifiers.shift.pressed == modifiers.shift.wanted &&
-                    modifiers.alt.pressed == modifiers.alt.wanted &&
-                    modifiers.meta.pressed == modifiers.meta.wanted) {
-                    callback(e);
+                shortcut.add("Ctrl+Alt+R",function() {
+                    $("#js-search-event-input-right").trigger("focus");
+                });
+                shortcut.add("Ctrl+Alt+L",function() {
+                    $("#js-search-event-input-left").trigger("focus");
+                });
+                shortcut.add("Esc",function() {
+                    $("#js-search-event-input-right,#js-search-event-input-left").trigger("blur");
+                    hide_results();
+                });
+                /* End of Shortcut code */
 
-                    if(!opt['propagate']) { //Stop the event
-                        //e.cancelBubble is supported by IE - this will kill the bubbling process.
-                        e.cancelBubble = true;
-                        e.returnValue = false;
+                /* https://github.com/hiddentao/fast-levenshtein */
 
-                        //e.stopPropagation works in Firefox.
-                        if (e.stopPropagation) {
-                            e.stopPropagation();
-                            e.preventDefault();
-                        }
-                        return false;
+                (function() {
+                    'use strict';
+
+                    var collator;
+                    try {
+                        collator = (typeof Intl !== "undefined" && typeof Intl.Collator !== "undefined") ? Intl.Collator("generic", { sensitivity: "base" }) : null;
+                    } catch (err){
+                        console.log("Collator could not be initialized and wouldn't be used");
                     }
-                }
-            }
-            this.all_shortcuts[shortcut_combination] = {
-                'callback':func,
-                'target':ele,
-                'event': opt['type']
-            };
-            //Attach the function with the event
-            if(ele.addEventListener) ele.addEventListener(opt['type'], func, false);
-            else if(ele.attachEvent) ele.attachEvent('on'+opt['type'], func);
-            else ele['on'+opt['type']] = func;
-        },
+                    // arrays to re-use
+                    var prevRow = [],
+                        str2Char = [];
 
-        //Remove the shortcut - just specify the shortcut and I will remove the binding
-        'remove':function(shortcut_combination) {
-            shortcut_combination = shortcut_combination.toLowerCase();
-            var binding = this.all_shortcuts[shortcut_combination];
-            delete(this.all_shortcuts[shortcut_combination])
-            if(!binding) return;
-            var type = binding['event'];
-            var ele = binding['target'];
-            var callback = binding['callback'];
+                    /**
+                     * Based on the algorithm at http://en.wikipedia.org/wiki/Levenshtein_distance.
+                     */
+                    var Levenshtein = {
+                        /**
+                         * Calculate levenshtein distance of the two strings.
+                         *
+                         * @param str1 String the first string.
+                         * @param str2 String the second string.
+                         * @param [options] Additional options.
+                         * @param [options.useCollator] Use `Intl.Collator` for locale-sensitive string comparison.
+                         * @return Integer the levenshtein distance (0 and above).
+                         */
+                        get: function(str1, str2, options) {
+                            var useCollator = (options && collator && options.useCollator);
 
-            if(ele.detachEvent) ele.detachEvent('on'+type, callback);
-            else if(ele.removeEventListener) ele.removeEventListener(type, callback, false);
-            else ele['on'+type] = false;
-        }
-    }
+                            var str1Len = str1.length,
+                                str2Len = str2.length;
 
-    shortcut.add("Ctrl+Alt+R",function() {
-        $("#js-search-event-input-right").trigger("focus");
-    });
-    shortcut.add("Ctrl+Alt+L",function() {
-        $("#js-search-event-input-left").trigger("focus");
-    });
-    shortcut.add("Esc",function() {
-        $("#js-search-event-input-right,#js-search-event-input-left").trigger("blur");
-        hide_results();
-    });
-    /* End of Shortcut code */
+                            // base cases
+                            if (str1Len === 0) return str2Len;
+                            if (str2Len === 0) return str1Len;
 
-    /* https://github.com/hiddentao/fast-levenshtein */
+                            // two rows
+                            var curCol, nextCol, i, j, tmp;
 
-    (function() {
-        'use strict';
-
-        var collator;
-        try {
-            collator = (typeof Intl !== "undefined" && typeof Intl.Collator !== "undefined") ? Intl.Collator("generic", { sensitivity: "base" }) : null;
-        } catch (err){
-            console.log("Collator could not be initialized and wouldn't be used");
-        }
-        // arrays to re-use
-        var prevRow = [],
-            str2Char = [];
-
-        /**
-         * Based on the algorithm at http://en.wikipedia.org/wiki/Levenshtein_distance.
-         */
-        var Levenshtein = {
-            /**
-             * Calculate levenshtein distance of the two strings.
-             *
-             * @param str1 String the first string.
-             * @param str2 String the second string.
-             * @param [options] Additional options.
-             * @param [options.useCollator] Use `Intl.Collator` for locale-sensitive string comparison.
-             * @return Integer the levenshtein distance (0 and above).
-             */
-            get: function(str1, str2, options) {
-                var useCollator = (options && collator && options.useCollator);
-
-                var str1Len = str1.length,
-                    str2Len = str2.length;
-
-                // base cases
-                if (str1Len === 0) return str2Len;
-                if (str2Len === 0) return str1Len;
-
-                // two rows
-                var curCol, nextCol, i, j, tmp;
-
-                // initialise previous row
-                for (i=0; i<str2Len; ++i) {
-                    prevRow[i] = i;
-                    str2Char[i] = str2.charCodeAt(i);
-                }
-                prevRow[str2Len] = str2Len;
-
-                var strCmp;
-                if (useCollator) {
-                    // calculate current row distance from previous row using collator
-                    for (i = 0; i < str1Len; ++i) {
-                        nextCol = i + 1;
-
-                        for (j = 0; j < str2Len; ++j) {
-                            curCol = nextCol;
-
-                            // substution
-                            strCmp = 0 === collator.compare(str1.charAt(i), String.fromCharCode(str2Char[j]));
-
-                            nextCol = prevRow[j] + (strCmp ? 0 : 1);
-
-                            // insertion
-                            tmp = curCol + 1;
-                            if (nextCol > tmp) {
-                                nextCol = tmp;
+                            // initialise previous row
+                            for (i=0; i<str2Len; ++i) {
+                                prevRow[i] = i;
+                                str2Char[i] = str2.charCodeAt(i);
                             }
-                            // deletion
-                            tmp = prevRow[j + 1] + 1;
-                            if (nextCol > tmp) {
-                                nextCol = tmp;
-                            }
+                            prevRow[str2Len] = str2Len;
 
-                            // copy current col value into previous (in preparation for next iteration)
-                            prevRow[j] = curCol;
+                            var strCmp;
+                            if (useCollator) {
+                                // calculate current row distance from previous row using collator
+                                for (i = 0; i < str1Len; ++i) {
+                                    nextCol = i + 1;
+
+                                    for (j = 0; j < str2Len; ++j) {
+                                        curCol = nextCol;
+
+                                        // substution
+                                        strCmp = 0 === collator.compare(str1.charAt(i), String.fromCharCode(str2Char[j]));
+
+                                        nextCol = prevRow[j] + (strCmp ? 0 : 1);
+
+                                        // insertion
+                                        tmp = curCol + 1;
+                                        if (nextCol > tmp) {
+                                            nextCol = tmp;
+                                        }
+                                        // deletion
+                                        tmp = prevRow[j + 1] + 1;
+                                        if (nextCol > tmp) {
+                                            nextCol = tmp;
+                                        }
+
+                                        // copy current col value into previous (in preparation for next iteration)
+                                        prevRow[j] = curCol;
+                                    }
+
+                                    // copy last col value into previous (in preparation for next iteration)
+                                    prevRow[j] = nextCol;
+                                }
+                            }
+                            else {
+                                // calculate current row distance from previous row without collator
+                                for (i = 0; i < str1Len; ++i) {
+                                    nextCol = i + 1;
+
+                                    for (j = 0; j < str2Len; ++j) {
+                                        curCol = nextCol;
+
+                                        // substution
+                                        strCmp = str1.charCodeAt(i) === str2Char[j];
+
+                                        nextCol = prevRow[j] + (strCmp ? 0 : 1);
+
+                                        // insertion
+                                        tmp = curCol + 1;
+                                        if (nextCol > tmp) {
+                                            nextCol = tmp;
+                                        }
+                                        // deletion
+                                        tmp = prevRow[j + 1] + 1;
+                                        if (nextCol > tmp) {
+                                            nextCol = tmp;
+                                        }
+
+                                        // copy current col value into previous (in preparation for next iteration)
+                                        prevRow[j] = curCol;
+                                    }
+
+                                    // copy last col value into previous (in preparation for next iteration)
+                                    prevRow[j] = nextCol;
+                                }
+                            }
+                            return nextCol;
                         }
 
-                        // copy last col value into previous (in preparation for next iteration)
-                        prevRow[j] = nextCol;
+                    };
+
+                    // amd
+                    if (typeof define !== "undefined" && define !== null && define.amd) {
+                        define(function() {
+                            return Levenshtein;
+                        });
                     }
-                }
-                else {
-                    // calculate current row distance from previous row without collator
-                    for (i = 0; i < str1Len; ++i) {
-                        nextCol = i + 1;
-
-                        for (j = 0; j < str2Len; ++j) {
-                            curCol = nextCol;
-
-                            // substution
-                            strCmp = str1.charCodeAt(i) === str2Char[j];
-
-                            nextCol = prevRow[j] + (strCmp ? 0 : 1);
-
-                            // insertion
-                            tmp = curCol + 1;
-                            if (nextCol > tmp) {
-                                nextCol = tmp;
-                            }
-                            // deletion
-                            tmp = prevRow[j + 1] + 1;
-                            if (nextCol > tmp) {
-                                nextCol = tmp;
-                            }
-
-                            // copy current col value into previous (in preparation for next iteration)
-                            prevRow[j] = curCol;
-                        }
-
-                        // copy last col value into previous (in preparation for next iteration)
-                        prevRow[j] = nextCol;
+                    // commonjs
+                    else if (typeof module !== "undefined" && module !== null && typeof exports !== "undefined" && module.exports === exports) {
+                        module.exports = Levenshtein;
                     }
-                }
-                return nextCol;
-            }
+                    // web worker
+                    else if (typeof self !== "undefined" && typeof self.postMessage === 'function' && typeof self.importScripts === 'function') {
+                        self.Levenshtein = Levenshtein;
+                    }
+                    // browser main thread
+                    else if (typeof window !== "undefined" && window !== null) {
+                        window.Levenshtein = Levenshtein;
+                    }
+                }());
 
-        };
-
-        // amd
-        if (typeof define !== "undefined" && define !== null && define.amd) {
-            define(function() {
-                return Levenshtein;
-            });
-        }
-        // commonjs
-        else if (typeof module !== "undefined" && module !== null && typeof exports !== "undefined" && module.exports === exports) {
-            module.exports = Levenshtein;
-        }
-        // web worker
-        else if (typeof self !== "undefined" && typeof self.postMessage === 'function' && typeof self.importScripts === 'function') {
-            self.Levenshtein = Levenshtein;
-        }
-        // browser main thread
-        else if (typeof window !== "undefined" && window !== null) {
-            window.Levenshtein = Levenshtein;
-        }
-    }());
-
-    /* End of https://github.com/hiddentao/fast-levenshtein */
-}(this.OpenEyes.UI.Widgets));
+                /* End of https://github.com/hiddentao/fast-levenshtein */
+            }(this.OpenEyes.UI.Widgets));
