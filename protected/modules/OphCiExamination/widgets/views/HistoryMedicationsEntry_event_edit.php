@@ -52,41 +52,10 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
       <?php if ($entry->originallyStopped) { ?>
         <i class="oe-i stop small pad"></i>
       <?php } ?>
-        <?php
-        if(!$entry->getMedicationDisplay()&&$this->getFirm()) {
-               echo CHtml::dropDownList(
-                  $field_prefix . '[drug_select]',
-                  '',
-                  Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
-                  array('empty' => '- Select -', 'class' => 'cols-12')
-               );
-          ?>
-          <input type="text" name="<?= $field_prefix ?>[medication_search]"
-                 value="<?= $entry->getMedicationDisplay() ?>"
-                 class="search" placeholder="Type to search"
-          />
-        <?php echo $entry->getMedicationDisplay(); } ?>
-
-        <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
-            <div class="large-1 column text-right">
-                <a href="#" class="stop-medication enable date-control has-tooltip" data-tooltip-content="record a stop date for this medication" <?php if ($entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-stop"></i></a>
-                <a href="#" class="stop-medication cancel date-control has-tooltip" data-tooltip-content="remove the stop date for this medication" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-times-circle"></i></a>
-            </div>
-            <div class="large-11 column end">
-              <span class="stop-date-wrapper" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>>
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
-            </span>
-            </div>
-        </fieldset>
+        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $values['drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $values['medication_drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $values['medication_name'] ?>" />
     </td>
-    <td>
-        <span class="medication-display"><a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a> <span class="medication-name"><?= $entry->getMedicationDisplay() ?></span></span>
-        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
-
         <?php
         $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
         $html_options = ['empty' => '- Select -'];
@@ -101,13 +70,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                 'data-tallmanlabel' => $select_option['name'],
             ];
         }
-
-        if($this->getFirm()){
-            echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
-        }
         ?>
-        <input type="text" name="<?= $field_prefix ?>[medication_search]" value="<?= $entry->getMedicationDisplay() ?>" class="search" placeholder="Type to search" <?= $hide_search ? 'style="display: none;"': '' ?>/>
-    </td>
+
     <td>
       <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
       <input class="cols-2" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
@@ -148,45 +112,14 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <?php } ?>
     </fieldset>
   </td>
-                        <?php
-                        $attributes['placeholder'] = $entry->units;
-                        $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
-                        if($entry->units == 'mg'){
-                            $attributes['class'] .= " decimal";
-                        }
-
-                        echo CHtml::textField("{$field_prefix}[dose]", $entry->dose, $attributes);
-                        ?>
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
-                    <div class="large-9 column end">
-                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-')) ?>
-                    </div>
-                </div>
-            </div>
-            <div class="large-6 column end">
-                <div class="row">
-                    <div class="large-3 column"><label>Route:</label></div>
-                    <div class="large-9 column end">
-                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-')) ?>
-                    </div>
-                </div>
-                <div class="row admin-route-options" <?php if (!$entry->routeOptions()) {?>style="display:none;"<?php } ?>>
-                    <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
-                    <div class="large-9 column end route-option-wrapper">
-                        <?= CHtml::dropDownList($field_prefix . '[option_id]',
-                            $entry->option_id,
-                            CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
-                            array('empty' => '-Select-')) ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <td>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
     </td>
-    <td class="edit-column">
-        <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
+    <td>
+        <?php if ($removable) { ?>
+            <i class="oe-i trash"></i>
+        <?php } else { ?>
+            <i class="oe-i info small-icon"></i>
+        <?php } ?>
     </td>
 </tr>
