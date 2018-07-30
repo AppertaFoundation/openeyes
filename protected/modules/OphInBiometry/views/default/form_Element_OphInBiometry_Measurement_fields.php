@@ -11,15 +11,9 @@
           <th colspan="4">
               <?php if ($side == 'right') { ?>
                   <?php echo $element->getAttributeLabel($side . 'Eye') ?>
-                <span class="oe-eye-lat-icons">
-                  <i class="oe-i laterality R small pad"></i>
-                  <i class="oe-i laterality NA small pad"></i>
-                </span>
-              <?php } else { ?>
-                <span class="oe-eye-lat-icons">
-                  <i class="oe-i laterality NA small pad"></i>
-                  <i class="oe-i laterality L small pad"></i>
-                </span>
+              <?php } ?>
+              <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+              <?php if ($side == 'left') { ?>
                   <?php echo $element->getAttributeLabel($side . 'Eye') ?>
               <?php } ?>
           </th>

@@ -35,13 +35,13 @@ $widget = $this;
               <?php if (array_key_exists('side', $operation) ||
                   (array_key_exists('object', $operation) && $operation['object']->side)): ?>
                 <td>
-                    <?php $side = array_key_exists('side', $operation) ?
+                    <?php
+                      $side = array_key_exists('side', $operation) ?
                         $operation['side'] : (array_key_exists('object',
-                            $operation) ? $operation['object']->side : ''); ?>
-                  <span class="oe-eye-lat-icons">
-                    <i class="oe-i laterality <?php echo $side == 'Right' || $side == 'Both' || $side == 'Bilateral' ? 'R' : 'NA' ?> small pad"></i>
-                    <i class="oe-i laterality <?php echo $side == 'Left' || $side == 'Both' || $side == 'Bilateral' ? 'L' : 'NA' ?> small pad"></i>
-                  </span>
+                            $operation) ? $operation['object']->side : '');
+
+                      $this->widget('EyeLateralityWidget', array('laterality' => $side));
+                    ?>
                 </td>
               <?php endif; ?>
             <td>

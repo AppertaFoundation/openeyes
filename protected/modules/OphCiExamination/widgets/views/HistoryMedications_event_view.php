@@ -44,10 +44,7 @@
                             <tr>
                                 <td><?= $entry->getMedicationDisplay() ?></td>
                                 <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                                  <span class="oe-eye-lat-icons">
-                                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                                  </span>
+                                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
                                 </td>
                                 <td><?= $entry->getStartDateDisplay() ?></td>
                             </tr>
@@ -68,12 +65,7 @@
                             if ($entry['route_id'] == 1) { ?>
                                 <tr>
                                     <td><?= $entry->getMedicationDisplay() ?></td>
-                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                                      <span class="oe-eye-lat-icons">
-                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                                      </span>
-                                    </td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
                                     <td><?= $entry->getStartDateDisplay() ?></td>
                                 </tr>
                             <?php }
@@ -111,12 +103,7 @@
                             if ($entry['route_id'] != 1) { ?>
                                 <tr>
                                     <td><?= $entry->getMedicationDisplay() ?></td>
-                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                                      <span class="oe-eye-lat-icons">
-                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                                      </span>
-                                    </td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
                                     <td><?= $entry->getStartDateDisplay() ?></td>
                                 </tr>
                             <?php }
