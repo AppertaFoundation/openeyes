@@ -2800,6 +2800,9 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
         $criteria->addCondition("patient_id = :patient_id");
         $criteria->addCondition("episode_id = :episode_id");
+        $criteria->addCondition("principal = 1");
+
+        $criteria->params=[':patient_id' => $episode->patient_id , ':episode_id' => $episode->id];
 
         $criteria->params = [':patient_id' => $episode->patient_id , ':episode_id' => $episode->id];
 
@@ -2809,7 +2812,6 @@ class OphCiExamination_API extends \BaseAPI
         }
 
         $criteria->order="t.created_date desc";
-
         $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
         return $value;
 
