@@ -17,6 +17,7 @@
 namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
 use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
+use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagementElement;
 /**
  * Class HistoryMedications
  * @package OEModule\OphCiExamination\widgets
@@ -93,13 +94,38 @@ class HistoryMedications extends BaseMedicationWidget
         }
         return !$this->missing_prescription_items;
     }
+
+    /**
+     * @return array
+     */
+
+    private function getEntriesFromPreviousManagement()
+    {
+        $entries = [];
+        $element = $this->element->getModuleApi()->getLatestElement(MedicationManagementElement::class, $this->patient);
+        if(!is_null($element)) {
+            /** @var MedicationManagementElement $element*/
+            foreach ($element->entries as $entry) {
+                $entries[]= clone $entry;
+            }
+        }
+
+        return $entries;
+    }
+
+    private function setEntriesFromPreviousManagement()
+    {
+        $this->element->entries = $this->getEntriesFromPreviousManagement();
+    }
+
     /**
      * @inheritdoc
      */
     protected function setElementFromDefaults()
     {
         if(!$this->isPostedEntries()) {
-            parent::setElementFromDefaults();
+            //parent::setElementFromDefaults();
+            $this->setEntriesFromPreviousManagement();
         }
         // because the entries cloned into the new element may contain stale data for related
         // prescription data (or that prescription item might have been deleted)
@@ -121,6 +147,21 @@ class HistoryMedications extends BaseMedicationWidget
                 $untracked);
         }
     }
+
+    /**
+     * @return array
+     */
+
+    public function getMergedManagementEntries()
+    {
+        $this->setEntriesFromPreviousManagement();
+        $this->element->assortEntries();
+        return [
+            'current' => $this->element->current_entries,
+            'stopped' => $this->element->closed_entries
+        ];
+    }
+
     /**
      * Merges any missing (i.e. created since the element) prescription items into lists of
      * current and stopped medications for patient level rendering.
@@ -129,6 +170,7 @@ class HistoryMedications extends BaseMedicationWidget
      * should the need arise.
      *
      * @return array
+     * @deprecated  please use HistoryMedications::getMergedManagementEntries
      */
     public function getMergedEntries()
     {
@@ -195,10 +237,10 @@ class HistoryMedications extends BaseMedicationWidget
     /**
      * @return array
      */
-    public  function getViewData()
+    public function getViewData()
     {
         if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
-            return array_merge(parent::getViewData(), $this->getMergedEntries());
+            return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
     }
