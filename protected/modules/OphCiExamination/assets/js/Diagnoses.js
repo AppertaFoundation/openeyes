@@ -469,7 +469,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             // adding this disorder to the search result as createRow will check if there is any selected items in
             // selectItems or searchResult - otherwise it won't add
             controller.appendToSearchResult({id: id, value: name}, true);
-            console.log("append");
 
             row = controller.createRow({disorder_id: id, disorder_display: name, eye_id:side});
             controller.$table.find('tbody').append(row);
