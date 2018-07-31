@@ -76,13 +76,13 @@ class EyeSelector extends BaseCWidget
 
     public function renderRight(){
         echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[right_eye]", in_array($this->selectedEyeId, [1,3]), ['class' => 'js-right-eye']) . ' R';
+        echo CHtml::checkBox($this->inputNamePrefix . "[right_eye]", in_array($this->selectedEyeId, [\Eye::RIGHT, \EYE::BOTH]), ['class' => 'js-right-eye']) . ' R';
         echo CHtml::closeTag('label');
     }
 
     public function renderLeft(){
         echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[left_eye]", in_array($this->selectedEyeId, [2,3]), ['class' => 'js-left-eye']) . ' L';
+        echo CHtml::checkBox($this->inputNamePrefix . "[left_eye]", in_array($this->selectedEyeId, [\Eye::LEFT, \EYE::BOTH]), ['class' => 'js-left-eye']) . ' L';
         echo CHtml::closeTag('label');
     }
 
