@@ -18,42 +18,41 @@
 ?>
 
 <?php
-    $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);
-    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
+$js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
+$exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+$firm = Firm::model()->with(array(
+    'serviceSubspecialtyAssignment' => array('subspecialty')
+))->findByPk(Yii::app()->session['selected_firm_id']);
 
-    $firm = Firm::model()->with(array(
-            'serviceSubspecialtyAssignment' => array('subspecialty')
-    ))->findByPk(Yii::app()->session['selected_firm_id']);
+$current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
 
-    $current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
+$other_episode_ids = array_map(function ($episodes) {
+    return $episodes->id;
+}, $this->patient->episodes);
 
-    $other_episode_ids = array_map(function($episodes){
-        return $episodes->id;
-    }, $this->patient->episodes);
+unset($other_episode_ids[$current_episode->id]);
 
-    unset($other_episode_ids[$current_episode->id]);
-
-    $read_only_diagnoses = [];
-    foreach ($this->patient->episodes as $ep) {
-        $diagnosis = $ep->diagnosis; // Disorder model
-        if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
-            $read_only_diagnoses[] =[
-                'diagnosis' => $diagnosis,
-                'eye' => Eye::methodPostFix($ep->eye_id),
-                'subspecialty' => $ep->getSubspecialtyText(),
-            ];
-        }
+$read_only_diagnoses = [];
+foreach ($this->patient->episodes as $ep) {
+    $diagnosis = $ep->diagnosis; // Disorder model
+    if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
+        $read_only_diagnoses[] = [
+            'diagnosis' => $diagnosis,
+            'eye' => Eye::methodPostFix($ep->eye_id),
+            'subspecialty' => $ep->getSubspecialtyText(),
+        ];
     }
+}
 ?>
 
-<script type="text/javascript" src="<?=$js_path;?>"></script>
+<script type="text/javascript" src="<?= $js_path; ?>"></script>
 
 <?php $model_name = CHtml::modelName($element); ?>
 
-<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
-    <input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
-
-    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+<div class="element-fields" id="<?= CHtml::modelName($element); ?>_element">
+    <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table id="<?= $model_name ?>_diagnoses_table">
         <thead>
@@ -93,9 +92,12 @@
         <tfoot>
         <tr>
             <td colspan="4">
-                <img class="external-loader" style="display: none;" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
+                <img class="external-loader" style="display: none;"
+                     src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>
             </td>
-            <td><button class="button small primary add-entry">Add</button></td>
+            <td>
+                <button class="button small primary add-entry">Add</button>
+            </td>
         </tr>
         </tfoot>
     </table>

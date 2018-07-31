@@ -25,8 +25,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param options
      * @constructor
      */
-    function DiagnosesController(options)
-    {
+    function DiagnosesController(options) {
         var controller = this;
 
         this.options = $.extend(true, {}, DiagnosesController._defaultOptions, options);
@@ -57,63 +56,62 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         loaderClass: 'external-loader'
     };
 
-    DiagnosesController.prototype.setDate = function($tr, date){
+    DiagnosesController.prototype.setDate = function ($tr, date) {
 
-        if(date === undefined){
+        if (date === undefined) {
             date = new Date();
         }
 
-        $tr.find('.fuzzy_month').val(date.getMonth()+1);
+        $tr.find('.fuzzy_month').val(date.getMonth() + 1);
         $tr.find('.fuzzy_day').val(date.getDate());
         $tr.find('.fuzzy_year').val(date.getFullYear()).trigger('change');
     }
 
-    DiagnosesController.prototype.initialiseTriggers = function()
-    {
+    DiagnosesController.prototype.initialiseTriggers = function () {
         var controller = this;
 
         // removal button for table entries
-        controller.$table.on('click', '.button.remove', function(e) {
+        controller.$table.on('click', '.button.remove', function (e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
         });
 
         // setup current table row behaviours
-        controller.$table.find('tbody tr').each(function() {
+        controller.$table.find('tbody tr').each(function () {
             controller.initialiseRow($(this));
         });
 
         // adding entries
-        controller.$element.on('click', controller.options.addButtonSelector, function(e) {
+        controller.$element.on('click', controller.options.addButtonSelector, function (e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        controller.$element.on('change', 'select.condition-secondary-to', function(){
+        controller.$element.on('change', 'select.condition-secondary-to', function () {
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
                 row, $tr;
 
-            if(type && type === 'alternate'){
+            if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
                 var $tr = $(this).closest('tr'),
                     item = $option.data('item');
 
-                if(item){
-                    row = controller.createRow({disorder_id: item.id, disorder_display:item.label});
+                if (item) {
+                    row = controller.createRow({disorder_id: item.id, disorder_display: item.label});
                     $tr.remove();
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
                     controller.initialiseRow($tr);
                     controller.setDate($tr);
                 }
-            } else if(type && type === 'disorder'){
+            } else if (type && type === 'disorder') {
                 // just add the disorder as an extra row
-                row = controller.createRow({disorder_id: $(this).val(), disorder_display:$option.text()});
+                row = controller.createRow({disorder_id: $(this).val(), disorder_display: $option.text()});
                 controller.$table.find('tbody').append(row);
                 controller.initialiseRow(controller.$table.find('tbody tr:last'));
-            } else if(type && type === 'finding') {
+            } else if (type && type === 'finding') {
                 //Add Further Findings
                 OphCiExamination_AddFinding($(this).val(), $option.text());
             }
@@ -123,8 +121,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     };
 
-    DiagnosesController.prototype.initialiseRow = function($row)
-    {
+    DiagnosesController.prototype.initialiseRow = function ($row) {
         var controller = this,
             DiagnosesSearchController = null,
             $radioButtons = $row.find('.sides-radio-group'),
@@ -132,7 +129,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $fuzzy_month = $row.find('.fuzzy_month'),
             $fuzzy_year = $row.find('.fuzzy_year');
 
-        $row.on('change', '.fuzzy-date select', function(e) {
+        $row.on('change', '.fuzzy-date select', function (e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
             var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
             $fuzzyFieldset.find('input[type="hidden"]').val(date);
@@ -142,27 +139,39 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': $row.closest('section').data('element-type-class'),
             'code': "130",
-            'afterSelect': function(){
+            'row_key' : $row.data('key'),
+            'afterSelect': function () {
                 //Adding new element to array doesn't trigger change so do it manually
                 $(":input[name^='diabetic_diagnoses']").trigger('change');
                 $(":input[name^='glaucoma_diagnoses']").trigger('change');
 
-                //this references to DiagnosesSearchController object
-                let disorder_id = this.$row.find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val();
-                this.$row.find('input[name="principal_diagnosis"]').val(disorder_id);
+                this.$row.find('input[name="principal_diagnosis_row_key"]').val($row.data("key"));
             },
+            singleTemplate :
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
+            "<span class='diagnosis-name'></span></span>" +
+            "<select class='commonly-used-diagnosis'></select>" +
+            "{{#render_secondary_to}}" +
+            "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+            "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+            "<select class='condition-secondary-to'></select>" +
+            "</div>" +
+            "{{/render_secondary_to}}" +
+            "{{{input_field}}}" +
+            "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
+            "<input type='hidden' name='{{field_prefix}}[row_key][]' value=" + $row.data("key") +">" +
+            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
-        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
+        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
 
         // radio buttons
-        $radioButtons.on('change', 'input', function(){
-            $(this).closest('tr').find('.diagnosis-side-value').val( $(this).val() );
+        $radioButtons.on('change', 'input', function () {
+            $(this).closest('tr').find('.diagnosis-side-value').val($(this).val());
         });
     }
 
-    DiagnosesController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
+    DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
         var res = fieldset.find('select.fuzzy_year').val();
         var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
         res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
@@ -172,12 +181,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return res;
     };
 
-    DiagnosesController.prototype.createRow = function(data)
-    {
+    DiagnosesController.prototype.createRow = function (data) {
         if (data === undefined)
             data = {};
 
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+        data['row_count'] = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
 
         return Mustache.render(
             this.templateText,
@@ -185,8 +193,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         );
     };
 
-    DiagnosesController.prototype.addEntry = function()
-    {
+    DiagnosesController.prototype.addEntry = function () {
         var row = this.createRow(),
             $row;
         this.$table.find('tbody').append(row);
@@ -201,8 +208,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param diagnosesBySource
      */
-    DiagnosesController.prototype.setExternalDiagnoses = function(diagnosesBySource)
-    {
+    DiagnosesController.prototype.setExternalDiagnoses = function (diagnosesBySource) {
         var controller = this;
 
         // reformat to controller usable structure
@@ -240,16 +246,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Remove the diagnosis if it was added from an external source.
      */
-    DiagnosesController.prototype.removeExternalDiagnosis = function(code)
-    {
+    DiagnosesController.prototype.removeExternalDiagnosis = function (code) {
         this.$table.find('input[type="hidden"][value="' + code + '"].savedDiagnosis').closest('tr').remove();
     };
 
     /**
      * Runs through the current external diagnoses and ensures they are displayed correctly
      */
-    DiagnosesController.prototype.renderExternalDiagnoses = function()
-    {
+    DiagnosesController.prototype.renderExternalDiagnoses = function () {
         var controller = this;
 
         for (let diagnosisCode in controller.externalDiagnoses) {
@@ -265,10 +269,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param code
      * @param sides
      */
-    DiagnosesController.prototype.updateExternalDiagnosis = function(code, sides)
-    {
+    DiagnosesController.prototype.updateExternalDiagnosis = function (code, sides) {
         var controller = this;
-        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller) );
+        controller.retrieveDiagnosisDetail(code, controller.resolveEyeCode(sides), controller.setExternalDiagnosisDisplay.bind(controller));
     };
 
     var diagnosisDetail = {};
@@ -281,8 +284,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param sides
      * @param callback
      */
-    DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, side, callback)
-    {
+    DiagnosesController.prototype.retrieveDiagnosisDetail = function (code, side, callback) {
         var controller = this;
         if (diagnosisDetail.hasOwnProperty(code)) {
             callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
@@ -290,15 +292,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $.ajax({
                 'type': 'GET',
                 // TODO: this should be a property of the element
-                'url': '/OphCiExamination/default/getDisorder?disorder_id='+code,
-                'beforeSend':function(){
+                'url': '/OphCiExamination/default/getDisorder?disorder_id=' + code,
+                'beforeSend': function () {
                     controller.$loader.show();
                 },
-                'success': function(json) {
+                'success': function (json) {
                     diagnosisDetail[code] = json;
                     callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
                 },
-                'complete': function(){
+                'complete': function () {
                     controller.$loader.hide();
                 }
             });
@@ -313,8 +315,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      *
      * @param sides
      */
-    DiagnosesController.prototype.resolveEyeCode = function(sides)
-    {
+    DiagnosesController.prototype.resolveEyeCode = function (sides) {
         var left = false;
         var right = false;
         for (var i = 0; i < sides.length; i++) {
@@ -335,8 +336,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param name
      * @param side
      */
-    DiagnosesController.prototype.setExternalDiagnosisDisplay = function(id, name, side)
-    {
+    DiagnosesController.prototype.setExternalDiagnosisDisplay = function (id, name, side) {
 
         var controller = this;
 
@@ -346,7 +346,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var row, $tr;
 
         // iterate over table rows.
-        $('#OphCiExamination_diagnoses').children('tr').each(function() {
+        $('#OphCiExamination_diagnoses').children('tr').each(function () {
             if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val() == id) {
                 alreadyInList = true;
                 if ($(this).hasClass('external')) {
@@ -369,7 +369,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             // the auto flag for control of removing diagnoses as the eyedraws are updated
             //OphCiExamination_AddDiagnosis(id, name, side, false, false, true);
 
-            row = controller.createRow({disorder_id: id, disorder_display: name, eye_id:side});
+            row = controller.createRow({disorder_id: id, disorder_display: name, eye_id: side});
             controller.$table.find('tbody').append(row);
             $tr = this.$table.find('tbody tr:last');
             $tr.addClass('external');
