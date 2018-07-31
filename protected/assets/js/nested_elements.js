@@ -103,10 +103,10 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
                 if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
                     $(sideField).val($(pel).find('.element-fields input.sideField').val());
 
-                    if ($(sideField).val() == '1') {
+                    if ($(sideField).val() === '1') {
                         $(cel).find('.side.left').addClass('inactive');
                     }
-                    else if ($(sideField).val() == '2') {
+                    else if ($(sideField).val() === '2') {
                         $(cel).find('.side.right').addClass('inactive');
                     }
                 }
@@ -149,8 +149,8 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
                 // note this flag is a bit of a misnomer now, as we've removed the animation in favour of moving straight to the
                 // relevant element. This is an intentional change intended to reduce eyestrain for heavy OE users.
                 setTimeout(function () {
-                    moveToElement(inserted)
-                }, 100)
+                    moveToElement(inserted);
+                }, 100);
             }
 
             // Update text macros (if defined)
@@ -317,7 +317,8 @@ $(document).ready(function () {
             $(element).find('> .element-fields').css('opacity', '0.5');
             $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
             dialog.close();
-            addElement(element, false, (elementType == 'sub-element'), element_id);
+            removeElement(element, (elementType === 'sub-element'), true);
+            addElement(element, false, (elementType === 'sub-element'), element_id);
         }.bind(undefined, dialog, element));
     });
 
