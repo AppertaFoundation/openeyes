@@ -187,6 +187,7 @@ $alcohol_options = range(1, 20);
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-social-history-btn'),
       itemSets: [<?php foreach ($options_list as $key=>$options) {?>
+      width: 1000,
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item, $label) {
                 return ['value' => $item->name, 'id' => $item->id, 'option-label' => $label];

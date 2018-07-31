@@ -46,6 +46,7 @@
     popupClass: 'oe-add-select-search auto-width',
     liClass: 'auto-width',
     searchOptions: null,
+    width: null,
   };
 
   /**
@@ -56,6 +57,9 @@
     var dialog = this;
 
     var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
+    if(this.options.width) {
+      content.css('width', this.options.width);
+    }
     var $closeButton = $('<div />', {class: 'close-icon-btn'})
       .append($('<i />', {class: 'oe-i remove-circle medium'}));
     content.append($closeButton);
