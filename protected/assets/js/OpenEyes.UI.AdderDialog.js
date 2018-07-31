@@ -197,7 +197,7 @@
    */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
-      return this.dataset;
+      return $(this).data();
     }).get();
   };
 
@@ -214,6 +214,7 @@
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['value']).appendTo($listItem);
+      $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
 

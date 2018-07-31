@@ -168,15 +168,17 @@
   </div>
 </div>
 <?php
-$occupation_options = $element->occupation_options;
-$driving_status_options = $element->driving_statuses_options;
-$smoking_options = $element->smoking_status_options;
-$accommodation_options = $element->accommodation_options;
 $options_list = array(
-    'Occupation' => $occupation_options,
-    'Driving Status' => $driving_status_options,
-    'Smoking Status' => $smoking_options,
-    'Accommodation' => $accommodation_options,
+    'occupation_id' => ['header' => 'Employment', 'options' => $element->occupation_options],
+    'driving_statuses' => [
+        'header' => 'Driving Status',
+        'options' => $element->driving_statuses_options,
+        'multi_select' => true,
+    ],
+    'smoking_status_id' => ['header' => 'Smoking Status', 'options' => $element->smoking_status_options],
+    'accommodation_id' => ['header' => 'Accommodation', 'options' => $element->accommodation_options],
+    'carer_id' => ['header' => 'Carer', 'options' => $element->carer_options],
+    'substance_misuse_id' => ['header' => 'Substance Misuse', 'options' => $element->substance_misuse_options],
 );
 $alcohol_options = range(1, 20);
 ?>
@@ -186,19 +188,22 @@ $alcohol_options = range(1, 20);
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-social-history-btn'),
-      itemSets: [<?php foreach ($options_list as $key=>$options) {?>
       width: 1000,
+      itemSets: [<?php foreach ($options_list as $key => $options) {?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item, $label) {
                 return ['value' => $item->name, 'id' => $item->id, 'option-label' => $label];
-            }, $options, array_fill(0, count($options), $key))
-        ) ?>, {'header': '<?= $key ?>'}),
+            }, $options['options'], array_fill(0, count($options), $key))
+        ) ?>, {
+          'header': '<?= $options['header'] ?>', 'id': '<?= $key ?>'
+            <?php if(@$options['multi_select']) {?>, 'multiSelect': true <?php } ?>
+        }),
           <?php } ?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item, 'id' => $item, 'option-label' => 'Alcohol units'];
+                return ['value' => $item, 'id' => $item];
             }, $alcohol_options)
-        ) ?>, {'header': 'Alcohol units'})
+        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);
