@@ -111,12 +111,14 @@ $key = 0;
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
-          OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>');
-          var newRow = tableSelector.find('tbody tr:last');
-          newRow.find('.va-selector').val(selectedItems[0]['id']);
-          newRow.find('.method_id').val(selectedItems[1]['id']);
-          OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
-          return 1;
+          if(selectedItems.length){
+            OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>');
+            var newRow = tableSelector.find('tbody tr:last');
+            newRow.find('.va-selector').val(selectedItems[0]['id']);
+            newRow.find('.method_id').val(selectedItems[1]['id']);
+            OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+          }
+          return true;
         }
 
       });

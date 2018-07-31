@@ -1628,9 +1628,15 @@ function OphCiExamination_VisualAcuity_addReading(side, template, suffix) {
     $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye.'+side+'-eye .noReadings').hide().find('input:checkbox').each(function() {
         $(this).attr('checked', false);
     });
-    var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye[data-side="'+side+'"] table.va_readings');
+    if (suffix === 'VisualAcuity'){
+      var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye[data-side="'+side+'"] table.va_readings');
+    } else {
+      var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye[data-side="'+side+'"] table.near-va-readings');
+    }
+
     table.show();
     var nextMethodId = OphCiExamination_VisualAcuity_getNextMethodId(side, suffix);
+
     $('tbody', table).append(form);
     $('.method_id', table).last().val(nextMethodId);
 
