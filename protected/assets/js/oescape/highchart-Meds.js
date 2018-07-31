@@ -96,4 +96,12 @@ function drawMedsSeries(chart, data, eye_side){
     };
     addSeries(chart, name, [data[name]], options );
   }
+  for (var i = Object.keys(data).length; i < series_no; i++){
+    var options = {
+      className: "oes-hs-eye-"+eye_side+"-dull",
+      pointWidth: "20",
+      keys: ['low','high','stop_reason']
+    };
+    addSeries(chart, '', {'low': 0, 'high': 0, 'stop_reason': ''}, options );
+  }
 }
