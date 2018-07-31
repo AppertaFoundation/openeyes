@@ -19,10 +19,9 @@
 <?php $methods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method::model()->activeOrPk(array($element->right_method_id, $element->left_method_id))->findAll(array('order' => 'display_order')), 'id', 'name') ?>
 <div class="element-eyes sub-element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
-      $hasEyeFunc = 'has'.ucfirst($eye); ?>
+  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye): ?>
       <div class="element-eye <?=$eye?>-eye column <?=$side?> side" data-side="<?=$eye?>">
-      <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : ""?>">
+      <div class="active-form" style="<?= !$element->hasEye($eye) ? "display: none;" : ""?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
       <div class="cols-full flex-layout">
         <?php echo $form->textField(
@@ -31,7 +30,7 @@
             array('autocomplete' =>
             Yii::app()->params['html_autocomplete'],
             'nowrapper' => true,
-            'append-text'=>'&micro;m, using',
+            'append-text'=>'&nbsp &micro;m, using',
             'class' => 'cct_value')) ?>
         <?php echo $form->dropDownList(
             $element,
@@ -40,7 +39,7 @@
             array('nowrapper' => true, 'class' => 'inline')) ?>
         </div>
       </div>
-      <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : ""?>">
+      <div class="inactive-form side" style="<?= $element->hasEye($eye) ? "display: none;" : ""?>">
         <div class="add-side">
           <a href="#">
             Add <?=$eye?> eye <span class="icon-add-side"></span>
