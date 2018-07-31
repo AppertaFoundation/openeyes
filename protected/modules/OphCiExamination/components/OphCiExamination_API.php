@@ -2800,6 +2800,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
         $criteria->addCondition("patient_id = :patient_id");
         $criteria->addCondition("episode_id = :episode_id");
+        $criteria->addCondition("principal = 1");
 
         if($disorder_id){
             $criteria->addCondition("t.disorder_id = :disorder_id");

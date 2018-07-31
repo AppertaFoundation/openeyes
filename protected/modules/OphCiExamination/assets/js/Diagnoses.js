@@ -25,8 +25,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param options
      * @constructor
      */
-    function DiagnosesController(options)
-    {
+    function DiagnosesController(options) {
         var controller = this;
 
         this.options = $.extend(true, {}, DiagnosesController._defaultOptions, options);
@@ -67,77 +66,76 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         searchResult: '#ophthalmic-diagnoses-search-results'
     };
 
-    DiagnosesController.prototype.initialiseTriggers = function()
-    {
+    DiagnosesController.prototype.initialiseTriggers = function () {
         var controller = this;
 
         // removal button for table entries
-        controller.$table.on('click', '.button.remove', function(e) {
+        controller.$table.on('click', '.button.remove', function (e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
         });
 
         // setup current table row behaviours
-        controller.$table.find('tbody tr').each(function() {
+        controller.$table.find('tbody tr').each(function () {
             controller.initialiseRow($(this));
         });
 
-        controller.$element.on('click','#ophthalmic-diagnoses-search-btn', function () {
-          if ($(this).hasClass('selected')) {
-            return;
-          }
+        controller.$element.on('click', '#ophthalmic-diagnoses-search-btn', function () {
+            if ($(this).hasClass('selected')) {
+                return;
+            }
 
-          $(this).addClass('selected');
-          $('#ophthalmic-diagnoses-select-btn').removeClass('selected');
+            $(this).addClass('selected');
+            $('#ophthalmic-diagnoses-select-btn').removeClass('selected');
 
-          $(controller.options.searchOptions).show();
-          $(controller.options.selectOptions).find('.selected').removeClass('selected');
-          $(controller.options.selectOptions).hide();
+            $(controller.options.searchOptions).show();
+            $(controller.options.selectOptions).find('.selected').removeClass('selected');
+            $(controller.options.selectOptions).hide();
         });
 
-        controller.$element.on('click','#ophthalmic-diagnoses-select-btn', function () {
-        if ($(this).hasClass('selected')) {
-          return;
-        }
+        controller.$element.on('click', '#ophthalmic-diagnoses-select-btn', function () {
+            if ($(this).hasClass('selected')) {
+                return;
+            }
 
-        $(this).addClass('selected');
-        $('#ophthalmic-diagnoses-search-btn').removeClass('selected');
+            $(this).addClass('selected');
+            $('#ophthalmic-diagnoses-search-btn').removeClass('selected');
 
-        $(controller.options.selectOptions).show();
-        $(controller.options.searchOptions).hide();
-        $(controller.options.searchInput).val('');
-        $(controller.options.searchResult).empty();
-      });
+            $(controller.options.selectOptions).show();
+            $(controller.options.searchOptions).hide();
+            $(controller.options.searchInput).val('');
+            $(controller.options.searchResult).empty();
+        });
 
         $(controller.options.searchInput).on('keyup', function () {
-          controller.popupSearch();
+            controller.popupSearch();
         });
 
-        controller.$element.on('change', 'select.condition-secondary-to', function(){
+        controller.$element.on('change', 'select.condition-secondary-to', function () {
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
                 row, $tr;
 
-            if(type && type === 'alternate'){
+            if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
                 var $tr = $(this).closest('tr'),
                     item = $option.data('item');
 
-                if(item){
-                    row = controller.createRow({disorder_id: item.id, disorder_display:item.label});
+                if (item) {
+                    row = controller.createRow({disorder_id: item.id, disorder_display: item.label});
                     $tr.remove();
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
                     controller.initialiseRow($tr);
                     controller.setDatepicker();
                 }
-            } else if(type && type === 'disorder'){
+            } else if (type && type === 'disorder') {
                 // just add the disorder as an extra row
-                row = controller.createRow({disorder_id: $(this).val(), disorder_display:$option.text()});
+                row = controller.createRow({disorder_id: $(this).val(), disorder_display: $option.text()});
                 controller.$table.find('tbody').append(row);
                 controller.initialiseRow(controller.$table.find('tbody tr:last'));
-            } else if(type && type === 'finding') {
+            } else if (type && type === 'finding') {
                 //Add Further Findings
                 OphCiExamination_AddFinding($(this).val(), $option.text());
             }
@@ -147,8 +145,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     };
 
-    DiagnosesController.prototype.initialiseRow = function($row)
-    {
+    DiagnosesController.prototype.initialiseRow = function ($row) {
         var controller = this,
             DiagnosesSearchController = null,
             $radioButtons = $row.find('.sides-radio-group'),
@@ -156,7 +153,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $fuzzy_month = $row.find('.fuzzy_month'),
             $fuzzy_year = $row.find('.fuzzy_year');
 
-        $row.on('change', '.fuzzy-date select', function(e) {
+        $row.on('change', '.fuzzy-date select', function (e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
             var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
             $fuzzyFieldset.find('input[type="hidden"]').val(date);
@@ -166,7 +163,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': $row.closest('section').data('element-type-class'),
             'code': "130",
-            'afterSelect': function(){
+            'afterSelect': function () {
                 //Adding new element to array doesn't trigger change so do it manually
                 $(":input[name^='diabetic_diagnoses']").trigger('change');
                 $(":input[name^='glaucoma_diagnoses']").trigger('change');
@@ -175,43 +172,56 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 let disorder_id = this.$row.find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val();
                 this.$row.find('input[name="principal_diagnosis"]').val(disorder_id);
             },
+            singleTemplate :
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
+            "<span class='diagnosis-name'></span></span>" +
+            "<select class='commonly-used-diagnosis'></select>" +
+            "{{#render_secondary_to}}" +
+            "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+            "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+            "<select class='condition-secondary-to'></select>" +
+            "</div>" +
+            "{{/render_secondary_to}}" +
+            "{{{input_field}}}" +
+            "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
+            "<input type='hidden' name='{{field_prefix}}[row_key][]' value=" + $row.data("key") +">" +
+            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
-        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
+        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
 
         // radio buttons
-        $radioButtons.on('change', 'input', function(){
-            $(this).closest('tr').find('.diagnosis-side-value').val( $(this).val() );
+        $radioButtons.on('change', 'input', function () {
+            $(this).closest('tr').find('.diagnosis-side-value').val($(this).val());
         });
     };
 
     DiagnosesController.prototype.popupSearch = function () {
-      var controller = this;
-      if (controller.searchRequest !== null) {
-        controller.searchRequest.abort();
-      }
-      controller.searchRequest = $.getJSON(controller.options.searchSource, {
-        term: $(controller.options.searchInput).val(),
-        code: controller.options.code,
-        ajax: 'ajax'
-      }, function (data) {
-        controller.searchRequest = null;
-        $(controller.options.searchResult).empty();
-        var no_data = !$(data).length;
-        $(controller.options.searchResult).toggle(!no_data);
-        $('#ophthalmic-diagnoses-search-no-results').toggle(no_data);
-        for (var i in data){
-          var span = "<span class='auto-width'>"+data[i]['value']+"</span>";
-          var item = $("<li>")
-            .attr('data-str', data[i]['value'])
-            .attr('data-id', data[i]['id']);
-          item.append(span);
-          $(controller.options.searchResult).append(item);
-      }
-      });
+        var controller = this;
+        if (controller.searchRequest !== null) {
+            controller.searchRequest.abort();
+        }
+        controller.searchRequest = $.getJSON(controller.options.searchSource, {
+            term: $(controller.options.searchInput).val(),
+            code: controller.options.code,
+            ajax: 'ajax'
+        }, function (data) {
+            controller.searchRequest = null;
+            $(controller.options.searchResult).empty();
+            var no_data = !$(data).length;
+            $(controller.options.searchResult).toggle(!no_data);
+            $('#ophthalmic-diagnoses-search-no-results').toggle(no_data);
+            for (var i in data) {
+                var span = "<span class='auto-width'>" + data[i]['value'] + "</span>";
+                var item = $("<li>")
+                    .attr('data-str', data[i]['value'])
+                    .attr('data-id', data[i]['id']);
+                item.append(span);
+                $(controller.options.searchResult).append(item);
+            }
+        });
     };
-    DiagnosesController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
+    DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
         var res = fieldset.find('select.fuzzy_year').val();
         var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
         res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
@@ -222,62 +232,64 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
 
-  DiagnosesController.prototype.initialiseDatepicker = function () {
-    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
-    for (var i=0; i<row_count;i++){
-      var datepicker_name = '#diagnoses-datepicker-'+i;
-      var datepicker= $(this.$table).find(datepicker_name);
-      if (datepicker.length!=0){
-        pickmeup(datepicker_name, {
-          format: 'Y-m-d',
-          hide_on_select: true,
-          default_date: false
-        });
-      }}
-  };
-
-  DiagnosesController.prototype.setDatepicker = function () {
-    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-    var datepicker_name = '#diagnoses-datepicker-'+row_count;
-    var datepicker= $(this.$table).find(datepicker_name);
-    if (datepicker.length!=0){
-      pickmeup(datepicker_name, {
-        format: 'Y-m-d',
-        hide_on_select: true,
-        default_date: false
-      });
-    }};
-
-
-    DiagnosesController.prototype.createRow = function(data)
-    {
-      var controller = this;
-      var selected_options = [];
-      var newRows = [];
-      var template = this.templateText;
-      var element = this.$element;
-
-      $(controller.options.selectItems).find('.selected').each(function (e) {
-        selected_options.push(this);
-      });
-      $(controller.options.searchResult).find('.selected').each(function (e) {
-        selected_options.push(this);
-      });
-      for (var i in selected_options) {
-        data = {};
-        data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-        data['disorder_id'] = $(selected_options[i]).data('id');
-        data['disorder_display'] = $(selected_options[i]).data('str');
-        newRows.push( Mustache.render(
-          template,
-          data ));
-      }
-
-      return newRows;
+    DiagnosesController.prototype.initialiseDatepicker = function () {
+        var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
+        for (var i = 0; i < row_count; i++) {
+            var datepicker_name = '#diagnoses-datepicker-' + i;
+            var datepicker = $(this.$table).find(datepicker_name);
+            if (datepicker.length != 0) {
+                pickmeup(datepicker_name, {
+                    format: 'Y-m-d',
+                    hide_on_select: true,
+                    default_date: false
+                });
+            }
+        }
     };
 
-    DiagnosesController.prototype.addEntry = function()
+    DiagnosesController.prototype.setDatepicker = function () {
+        var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key') - 1;
+        var datepicker_name = '#diagnoses-datepicker-' + row_count;
+        var datepicker = $(this.$table).find(datepicker_name);
+        if (datepicker.length != 0) {
+            pickmeup(datepicker_name, {
+                format: 'Y-m-d',
+                hide_on_select: true,
+                default_date: false
+            });
+        }
+    };
+
+
+    DiagnosesController.prototype.createRow = function (data) {
+        var controller = this;
+        var selected_options = [];
+        var newRows = [];
+        var template = this.templateText;
+        var element = this.$element;
+
+        $(controller.options.selectItems).find('.selected').each(function (e) {
+            selected_options.push(this);
+        });
+        $(controller.options.searchResult).find('.selected').each(function (e) {
+            selected_options.push(this);
+        });
+        for (var i in selected_options) {
+            data = {};
+            data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+            data['disorder_id'] = $(selected_options[i]).data('id');
+            data['disorder_display'] = $(selected_options[i]).data('str');
+            newRows.push(Mustache.render(
+                template,
+                data));
+        }
+
+        return newRows;
+    };
+
+    DiagnosesController.prototype.addEntry = function ()
     {
+        console.log('diagnose');
         var rows = this.createRow();
         for (var i in rows) {
           this.$table.find('tbody').append(rows[i]);
