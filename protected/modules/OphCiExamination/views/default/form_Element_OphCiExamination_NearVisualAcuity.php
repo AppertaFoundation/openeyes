@@ -26,7 +26,7 @@ $key = 0;
   <div class="flex-layout flex-center">
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+          <?php echo CHtml::dropDownList('nearvisualacuity_unit_change', @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
@@ -53,7 +53,7 @@ $key = 0;
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
           <table class="blank near-va-readings"
-                 style="display: <?php if (!$element->{$eye_side . '_readings'}) { echo ' none; '; } ?> ">
+                 style=" <?= !$element->{$eye_side . '_readings'}? 'display: none; ': '' ?> ">
             <tbody>
             <?php foreach ($element->{$eye_side.'_readings'} as $reading) {
                 // Adjust currently element readings to match unit steps
@@ -73,7 +73,7 @@ $key = 0;
             </tbody>
           </table>
           <div class="data-group noReadings"
-               style="display: <?php if ($element->{$eye_side . '_readings'}) { echo ' none; '; } ?>" >
+               style=" <?=($element->{$eye_side . '_readings'})?  'display: none; ': '' ?>" >
             <div class="cols-4 column">
               <div class="data-value not-recorded">Not recorded</div>
             </div>
