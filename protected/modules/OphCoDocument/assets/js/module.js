@@ -50,6 +50,14 @@ function validateFile(input) {
                 valid = false;
             }
 
+            if(file.name.length > max_document_name_length){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'The file you tried to upload exceeds the maximum allowed document name length, which is ' + max_document_name_length + ' characters'
+                }).open();
+
+                valid = false;
+            }
+
             if (allowed_file_types.indexOf(file.type) === -1) {
                 valid = false;
 
