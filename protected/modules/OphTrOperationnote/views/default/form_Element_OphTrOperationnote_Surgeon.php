@@ -58,7 +58,7 @@
     </tr>
     </tbody>
   </table>
-  <div class="add-data-actions flex-item-bottom " id="add-social-history-popup">
+  <div class="add-data-actions flex-item-bottom " id="add-surgeon-popup">
     <button class="button hint green js-add-select-search" id="add-surgeon-btn" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button><!-- popup to add data to element -->
