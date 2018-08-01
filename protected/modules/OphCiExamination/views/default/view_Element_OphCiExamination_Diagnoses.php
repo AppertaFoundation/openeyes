@@ -19,7 +19,7 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
 <?php
-$principals = $this->episode->patient->episodes;
+$episodes = $this->episode->patient->episodes;
  ?>
 <div class="element-data">
         <?php if (!$element->id) { ?>
@@ -54,25 +54,22 @@ $principals = $this->episode->patient->episodes;
             <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
           </tr>
         <?php }
-        foreach ($principals as $principal) {
-            if ($principal->id != $this->episode->id && $principal->diagnosis ) {
+        foreach ($episodes as $episode) {
+            if ($episode->id != $this->episode->id && $episode->diagnosis ) {
                 ?>
               <tr>
                 <td>
-                    <?= $principal->diagnosis->term ?>
-                  <span class="js-has-tooltip oe-i info small"
-                        data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
+                    <?= $episode->diagnosis->term ?>
+                  <span class="js-$episode-tooltip oe-i info small"
+                        data-tooltip-content="Principal diagnosis for <?= $episode->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
                   <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                <td>
-                    <?php echo $principal->NHSDate('start_date'); ?>
-                </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
+                  <td></td>
               </tr>
             <?php }
         }
