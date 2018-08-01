@@ -19,8 +19,8 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
 <?php
-$episodes = $this->episode->patient->episodes;
- ?>
+$episodes = $this->episode->patient->episodes
+;?>
 <div class="element-data">
         <?php if (!$element->id) { ?>
         <div class="data-value not-recorded">No diagnoses recorded during this encounter</div>
@@ -69,7 +69,11 @@ $episodes = $this->episode->patient->episodes;
                       <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                  <td></td>
+                  <?php if($date = $episode->getDisplayDate()){ ?>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
+                    <?php } else { ?>
+                    <td></td>
+                  <?php } ?>
               </tr>
             <?php }
         }

@@ -41,6 +41,7 @@ foreach ($this->patient->episodes as $ep) {
         $read_only_diagnoses[] = [
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
+            'date' => $ep->disorder_date,
             'subspecialty' => $ep->getSubspecialtyText(),
         ];
     }
