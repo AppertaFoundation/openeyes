@@ -48,7 +48,8 @@ if (!isset($values)) {
     <tr data-key="<?=$row_count;?>">
         <td>
             <?=$values['disorder_display'];?>
-            <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[disorder_id]" value="<?=$values['disorder_id'] ?>" />
         </td>
 
         <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
@@ -58,9 +59,9 @@ if (!isset($values)) {
 
                 if($removable) {
                     echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
-                    echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
+                    echo CHtml::hiddenField($field_prefix . '[has_disorder]', $selected);
                 } else {
-                    echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+                    echo CHtml::dropDownList($field_prefix . '[has_disorder]', $selected, [
                         SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
                         SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
                         SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
@@ -69,10 +70,13 @@ if (!isset($values)) {
             ?>
         </td>
 
-        <?php $this->widget('application.widgets.eyeSelector', ['inputNamePrefix' => $field_prefix ]); ?>
+        <?php $this->widget('application.widgets.eyeSelector', [
+                'inputNamePrefix' => $field_prefix,
+                'selectedEyeId' => $values['side_id']
+        ]); ?>
 
         <td>
-            <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" class="date" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" autocomplete="off">
+            <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" class="date" placeholder="yyyy-mm-dd"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
         </td>
         <td>
             <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>

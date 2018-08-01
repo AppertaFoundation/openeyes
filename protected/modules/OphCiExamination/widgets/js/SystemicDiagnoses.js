@@ -120,18 +120,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   SystemicDiagnosesController.prototype.createRow = function (selectedOptions) {
-    var newRows = [];
-    var template = this.templateText;
-    var element = this.$element;
+    let newRows = [];
+    let template = this.templateText;
+    let element = this.$element;
 
     $(selectedOptions).each(function (index, option) {
-      data = {};
-      data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
-      data['disorder_id'] = option['id'];
-      data['disorder_display'] = option['label'];
-      newRows.push(Mustache.render(
-        template,
-        data));
+      let data = {};
+      data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+      data.disorder_id = option.id;
+      data.disorder_display = option.label;
+      newRows.push(Mustache.render(template, data));
     });
 
     return newRows;

@@ -88,7 +88,7 @@ class EyeSelector extends BaseCWidget
 
     public function renderNA(){
         echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId === 0, ['class' => 'js-na-eye', 'name' => null, 'value' => 0]) . ' n/a';
+        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => -9]) . ' n/a';
         echo CHtml::closeTag('label');
     }
 }
