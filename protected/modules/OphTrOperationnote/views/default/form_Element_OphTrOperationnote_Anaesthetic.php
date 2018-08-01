@@ -161,14 +161,54 @@ $is_hidden = function () use ($element) {
       </table>
     </div>
   </div>
-  <div class="flex-item-bottom">
-    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
-            class="button js-add-comments"
-            type="button"
-            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
-    >
-      <i class="oe-i comments small-icon"></i>
-    </button>
+
+  <div class="add-data-actions flex-item-bottom">
+    <div class="flex-item-bottom">
+      <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
+              class="button js-add-comments"
+              type="button"
+              data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+              style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
+      >
+        <i class="oe-i comments small-icon"></i>
+      </button>
+      <button class="button hint green js-add-select-search" id="add-anaesthetic-btn" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button><!-- popup to add data to element -->
+    </div>
   </div>
 </div>
+<?php
+  $complications = OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll();
+  $agents =  $this->getAnaesthetic_agent_list($element);
+?>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-anaesthetic-btn'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($key, $value) {
+                return ['value' => $value, 'id' => $key, 'option-label'=>'AnaestheticAgent'];
+            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'multiSelect': true}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['value' => $item->name,
+                    'id' => $item->id,
+                    'option-label'=>'OphTrOperationnote_AnaestheticComplications'];
+            }, $complications) ) ?>, {'header':'Complications', 'multiSelect': true})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var label = selectedItems[i]['optionLabel'];
+          var id = selectedItems[i]['id'];
+          var $selector = $('#'+label);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
+  });
+</script>
