@@ -98,7 +98,12 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             /** @var \EventMedicationUse $entry */
             $entry->event_id = $this->event_id;
-            $entry->id = null;
+
+            /* Why do I have to do this? */
+            if(isset($entry->id) && !is_null($entry->id)) {
+                $entry->setIsNewRecord(false);
+            }
+
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));

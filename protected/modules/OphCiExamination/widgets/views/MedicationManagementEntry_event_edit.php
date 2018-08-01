@@ -21,7 +21,7 @@
 /** @var \OEModule\OphCiExamination\models\MedicationManagementEntry $entry */
 
 if (isset($entry->start_date) && !is_null($entry->start_date)) {
-    $start_date = $entry->start_date;
+    $start_date = $entry->start_date_string_YYYYMMDD;
 }
 else {
     $start_date = date('Ymd');
@@ -31,11 +31,13 @@ $start_sel_year = substr($start_date, 0, 4);
 $start_sel_month = substr($start_date, 4, 2);
 $start_sel_day = substr($start_date, 6, 2);
 
-if (isset($entry->end_date) && !is_null($entry->end_date)) {
+if (isset($entry->end_date_string_YYYYMMDD) && !is_null($entry->end_date_string_YYYYMMDD)) {
 
-    $end_sel_year = substr($entry->end_date, 0, 4);
-    $end_sel_month = substr($entry->end_date, 4, 2);
-    $end_sel_day = substr($entry->end_date, 6, 2);
+    $end_date = $entry->end_date_string_YYYYMMDD;
+
+    $end_sel_year = substr($end_date, 0, 4);
+    $end_sel_month = substr($end_date, 4, 2);
+    $end_sel_day = substr($end_date, 6, 2);
 
 } else {
     $end_sel_day = date('d');
@@ -135,7 +137,7 @@ $is_new = isset($is_new) ? $is_new : false;
                 </a>
             </div>
             <fieldset class="alternative-display-element fuzzy-date"  style="display: none;">
-                <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+                <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date_string_YYYYMMDD ?>" />
                 <span class="fuzzy-date end_date_wrapper" >
                     <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
                 </span>

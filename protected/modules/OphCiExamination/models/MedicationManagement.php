@@ -168,6 +168,11 @@ class MedicationManagement extends BaseMedicationElement
             /** @var MedicationManagementEntry $entry */
             $entry->event_id = $this->event->id;
 
+            /* Why do I have to do this? */
+            if(isset($entry->id) && !is_null($entry->id)) {
+                $entry->setIsNewRecord(false);
+            }
+
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));
