@@ -173,19 +173,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 this.$row.find('input[name="principal_diagnosis"]').val(disorder_id);
             },
             singleTemplate :
-            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
-            "<span class='diagnosis-name'></span></span>" +
-            "<select class='commonly-used-diagnosis'></select>" +
-            "{{#render_secondary_to}}" +
-            "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
-            "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
-            "<select class='condition-secondary-to'></select>" +
-            "</div>" +
-            "{{/render_secondary_to}}" +
-            "{{{input_field}}}" +
-            "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
-            "<input type='hidden' name='{{field_prefix}}[row_key][]' value=" + $row.data("key") +">" +
-            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
+                "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
+                "<span class='diagnosis-name'></span></span>" +
+                "<select class='commonly-used-diagnosis'></select>" +
+                "{{#render_secondary_to}}" +
+                "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+                "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+                "<select class='condition-secondary-to'></select>" +
+                "</div>" +
+                "{{/render_secondary_to}}" +
+                "{{{input_field}}}" +
+                "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
+                "<input type='hidden' name='{{field_prefix}}[row_key][]' value=" + $row.data("key") +">" +
+                "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
@@ -211,16 +211,25 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var no_data = !$(data).length;
             $(controller.options.searchResult).toggle(!no_data);
             $('#ophthalmic-diagnoses-search-no-results').toggle(no_data);
-            for (var i in data) {
-                var span = "<span class='auto-width'>" + data[i]['value'] + "</span>";
-                var item = $("<li>")
-                    .attr('data-str', data[i]['value'])
-                    .attr('data-id', data[i]['id']);
-                item.append(span);
-                $(controller.options.searchResult).append(item);
+            for(let i = 0; i < data.length; i++){
+                controller.appendToSearchResult(data[i]);
             }
         });
     };
+
+    DiagnosesController.prototype.appendToSearchResult = function (item, is_selected) {
+        let controller = this;
+        let $span = "<span class='auto-width'>" + item.value + "</span>";
+        let $item = $("<li>")
+            .attr('data-str', item.value)
+            .attr('data-id', item.id);
+        if(is_selected){
+            $item.addClass('selected');
+        }
+        $item.append($span);
+        $(controller.options.searchResult).append($item);
+    };
+
     DiagnosesController.prototype.dateFromFuzzyFieldSet = function (fieldset) {
         var res = fieldset.find('select.fuzzy_year').val();
         var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
@@ -274,11 +283,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.searchResult).find('.selected').each(function (e) {
             selected_options.push(this);
         });
-        for (var i in selected_options) {
+        for(var i = 0; i < selected_options.length; i++){
             data = {};
-            data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
-            data['disorder_id'] = $(selected_options[i]).data('id');
-            data['disorder_display'] = $(selected_options[i]).data('str');
+            data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+            data.disorder_id = $(selected_options[i]).data('id');
+            data.disorder_display = $(selected_options[i]).data('str');
             newRows.push(Mustache.render(
                 template,
                 data));
@@ -292,9 +301,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         console.log('diagnose');
         var rows = this.createRow();
         for (var i in rows) {
-          this.$table.find('tbody').append(rows[i]);
-          this.initialiseRow(this.$table.find('tbody tr:last'));
-          this.setDatepicker();
+            this.$table.find('tbody').append(rows[i]);
+            this.initialiseRow(this.$table.find('tbody tr:last'));
+            this.setDatepicker();
         }
     };
 
@@ -466,10 +475,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         if (!alreadyInList) {
-            // TODO: this should be a method on this controller, but we're leveraging existing code for now.
-            // NOTE: the hardcoded settings for diabetic/glaucoma flags are present to allow us to provide
-            // the auto flag for control of removing diagnoses as the eyedraws are updated
-            //OphCiExamination_AddDiagnosis(id, name, side, false, false, true);
+            // adding this disorder to the search result as createRow will check if there is any selected items in
+            // selectItems or searchResult - otherwise it won't add
+            controller.appendToSearchResult({id: id, value: name}, true);
 
             row = controller.createRow({disorder_id: id, disorder_display: name, eye_id:side});
             controller.$table.find('tbody').append(row);
