@@ -38,7 +38,6 @@ if ($side === 'left') {
           pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
         }
       }
-
     }
 
     $.getScript('<?=$jsPath?>', function () {
@@ -57,11 +56,8 @@ if ($side === 'left') {
 
     });
   </script>
-    <?php
-
-}
-$criteria = new CDbCriteria();
-?>
+    <?php }
+    $criteria = new CDbCriteria(); ?>
 
 <div class="sub-element-fields element" id="div_<?php echo CHtml::modelName($element) ?>_pcr_risk">
   <div>
@@ -87,7 +83,7 @@ $criteria = new CDbCriteria();
       echo CHtml::hiddenField('age', $pcr['age_group']);
       echo CHtml::hiddenField('gender', $pcr['gender']);
       ?>
-    <div id="left_eye_pcr" class="cols-full">
+    <div id="<?= $side ?>_eye_pcr" class="cols-11">
       <div class="cols-full flex-layout flex-top col-gap">
         <div class="cols-6">
           <table class="last-left cols-full">
@@ -262,6 +258,101 @@ $criteria = new CDbCriteria();
         </div>
       </div>
     </div>
+    <div class="add-data-actions flex-item-bottom " id="add-pcr-risk-popup-<?= $side ?>">
+      <button class="button hint green js-add-select-search" id="add-pcr-risk-btn-<?= $side ?>" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button><!-- popup to add data to element -->
+    </div>
   </div>
     <?php endif; ?>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    var drop_glaucoma = [
+      {'id':'NK', 'value':'Not Known', 'option-label':'glaucoma'},
+        {'id':'N', 'value':'No Glaucoma', 'option-label':'glaucoma'},
+        {'id':'Y', 'value':'Glaucoma present', 'option-label':'glaucoma'}
+        ],
+      drop_diabetic = [
+        {'id':'NK', 'value':'Not Known', 'option-label':'diabetic'},
+        {'id':'N', 'value':'No Diabetes', 'option-label':'diabetic'},
+        {'id':'Y', 'value':'Diabetes present', 'option-label':'diabetic'}
+      ],
+      drop_lie_flat = [
+        {'id':'N', 'value':'No', 'option-label':'abletolieflat'},
+        {'id':'Y', 'value':'Yes', 'option-label':'abletolieflat'}
+        ],
+      drop_axial_length = [
+        {'id':'NK', 'value':'Not Known', 'option-label':'axial_length'},
+        {'id': 1, 'value':'< 26', 'option-label':'axial_length'},
+        {'id': 2, 'value':'> or = 26', 'option-label':'axial_length'}
+        ],
+      drop_pupil_size = [
+        {'id':'Large', 'value':'Large', 'option-label':'pupil_size' },
+        {'id':'Medium', 'value':'Medium', 'option-label':'pupil_size'},
+        {'id':'Small', 'value':'Small', 'option-label':'pupil_size'}
+        ],
+      drop_item1 = [
+        {'id':'NK', 'value':'Not Known'},
+        {'id':'N', 'value':'No'},
+        {'id':'Y', 'value':'Yes'}
+      ];
+    var drop_fundus = JSON.parse(JSON.stringify(drop_item1));
+    var drop_brunescent = JSON.parse(JSON.stringify(drop_item1));
+    var drop_pxf = JSON.parse(JSON.stringify(drop_item1));
+    var drop_arb = JSON.parse(JSON.stringify(drop_item1));
+
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_glaucoma, {'header':'Glaucoma'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_diabetic, {'header':'Diabetic'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_fundus.map(x=>{x['option-label']='no_fundal_view'; return x}), {'header':'Fundus Obscured'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_brunescent.map(x=>{x['option-label']='brunescent_white_cataract'; return x}), {'header':'Brunescent/ White Cataract'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(
+                array_map(function ($item) {
+                    return ['value' =>$item->grade,
+                        'risk-value'=>$item->pcr_risk_value,
+                        'id' => $item->id,
+                        'option-label'=>'_doctor_grade_id'];
+                }, $grades) ) ?>, {'header':'Surgeon Grade'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_pxf.map(x=>{x['option-label'] = 'pxf_phako'; return x}), {'header':'PXF/ Phacodonesis'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_pupil_size, {'header':'Pupil Size'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_axial_length, {'header':'Axial Length (mm)'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_arb.map(x=>{x['option-label'] = 'arb'; return x}), {'header':'Alpha receptor blocker '}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_lie_flat, {'header':'Alpha receptor blocker '}
+        )
+      ],
+      onReturn: function(adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var label = selectedItems[i]['optionLabel'];
+          var id = selectedItems[i]['id'];
+          var $selector = $('#pcrrisk_<?= $side ?>_'+label);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
+  });
+</script>
