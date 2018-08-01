@@ -113,9 +113,15 @@ class HistoryMedications extends BaseMedicationWidget
         return $entries;
     }
 
+    /**
+     * @return bool whether any entries were set
+     */
+
     private function setEntriesFromPreviousManagement()
     {
-        $this->element->entries = $this->getEntriesFromPreviousManagement();
+        $entries = $this->getEntriesFromPreviousManagement();
+        $this->element->entries = $entries;
+        return !empty($entries);
     }
 
     /**
@@ -124,9 +130,16 @@ class HistoryMedications extends BaseMedicationWidget
     protected function setElementFromDefaults()
     {
         if(!$this->isPostedEntries()) {
-            //parent::setElementFromDefaults();
-            $this->setEntriesFromPreviousManagement();
+
+            /*  If there has never been a Management element added, the last
+            History element should be taken into account */
+            if(!$this->setEntriesFromPreviousManagement()) {
+                parent::setElementFromDefaults();
+            }
         }
+
+        // TODO this has to be reworked after the new prescription event is done!
+
         // because the entries cloned into the new element may contain stale data for related
         // prescription data (or that prescription item might have been deleted)
         // we need to update appropriately.

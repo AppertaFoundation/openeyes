@@ -75,7 +75,15 @@ class MedicationManagement extends BaseMedicationElement
                 'through' => 'event',
                 'on' => "usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
                 'order' => 'entries.start_date_string_YYYYMMDD DESC, entries.end_date_string_YYYYMMDD DESC, entries.last_modified_date'
-            )
+            ),
+            'visible_entries' => array(
+                self::HAS_MANY,
+                MedicationManagementEntry::class,
+                array('id' => 'event_id'),
+                'through' => 'event',
+                'on' => "hidden = 0 AND usage_type = '".MedicationManagementEntry::getUsageType()."' AND usage_subtype = '".MedicationManagementEntry::getUsageSubtype()."' ",
+                'order' => 'visible_entries.start_date_string_YYYYMMDD DESC, visible_entries.end_date_string_YYYYMMDD DESC, visible_entries.last_modified_date'
+            ),
         );
     }
 
@@ -85,7 +93,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getContinuedEntries()
     {
-        return array_filter($this->entries, function($e){
+        return array_filter($this->visible_entries, function($e){
             return $e->continue == 1;
         });
     }
@@ -96,7 +104,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getStoppedEntries()
     {
-        return array_filter($this->entries, function($e){
+        return array_filter($this->visible_entries, function($e){
             return !is_null($e->end_date_string_YYYYMMDD);
         });
     }
@@ -107,7 +115,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getPrescribedEntries()
     {
-        return array_filter($this->entries, function($e){
+        return array_filter($this->visible_entries, function($e){
             return $e->prescribe == 1;
         });
     }
@@ -118,7 +126,7 @@ class MedicationManagement extends BaseMedicationElement
 
     public function getOtherEntries()
     {
-        return array_filter($this->entries, function($e){
+        return array_filter($this->visible_entries, function($e){
             return $e->prescribe == 0 && is_null($e->end_date_string_YYYYMMDD) && $e->continue == 0;
         });
     }
@@ -168,9 +176,10 @@ class MedicationManagement extends BaseMedicationElement
             }
             $saved_ids[] = $entry->id;
         }
-        foreach ($orig_entries as $entry) {
-            if(!in_array($entry->id, $saved_ids)) {
-                $entry->delete();
+
+        foreach ($orig_entries as $orig_entry) {
+            if(!in_array($orig_entry->id, $saved_ids)) {
+                $orig_entry->delete();
             }
         }
         if(count($this->getPrescribedEntries()) > 0) {

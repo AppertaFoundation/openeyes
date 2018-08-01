@@ -150,26 +150,29 @@ $element_errors = $element->getErrors();
             },
             initRowsFromHistoryElement: function() {
                 <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
-                $.each(window.HMController.$table.find("tbody").find("tr").not(".ignore"), function(i, e){
+                $.each(window.HMController.$table.find("tbody").find("tr").not(".ignore-for-real"), function(i, e){
                     var $row = $(e);
                     var data = window.HMController.getRowData($row);
-                    console.log(data);
+
+                    var hidden = $row.hasClass("ignore");
+                    data.hidden = hidden ? 1 : 0;
+
                     data.bound_entry = $row;
                     data.is_new = 0;
                     var newrow = window.MMController.createRow(data);
                     var $newrow = $(newrow);
+
                     $newrow.removeClass("new");
 
-                    // Don't hide
-                    /*
-                    if($row.hasClass("fade")) {
+                    if(hidden) {
                         $newrow.addClass("hidden");
                     }
-                    */
 
                     $newrow.find(".trash").remove();
                     $newrow.appendTo(window.MMController.$table.find("tbody"));
                     window.MMController.setRowData($newrow, data);
+
+
                     $newrow.find(".rgroup").val("inherited");
                     window.MMController.initialiseRow($newrow);
                     window.MMController.switchRowToTextualDisplay($newrow);

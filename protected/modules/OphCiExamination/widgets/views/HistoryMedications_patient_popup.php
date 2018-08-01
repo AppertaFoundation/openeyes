@@ -42,7 +42,8 @@
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
-                            <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
+                            <td>
+                                <span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
                             <td style="white-space: nowrap;"><?= $entry->getDatesDisplay() ?></td>
                         </tr>
                     <?php } ?>

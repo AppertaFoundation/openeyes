@@ -36,7 +36,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       'end_date',
       'stop_reason_id',
       'usage_type',
-        'group'
+        'group', 'hidden'
     ];
     this.drugsByRisk = {};
     this.initialiseFilters();

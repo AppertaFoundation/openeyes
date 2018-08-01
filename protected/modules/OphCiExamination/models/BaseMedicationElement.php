@@ -90,7 +90,8 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
     protected function saveEntries()
     {
         $criteria = new \CDbCriteria();
-        $criteria->addCondition("event_id = :event_id");
+        $class = self::$entry_class;
+        $criteria->addCondition("event_id = :event_id AND usage_type = '".$class::getUsageType()."' AND usage_subtype = '".$class::getUsageSubtype()."'");
         $criteria->params['event_id'] = $this->event_id;
         $orig_entries = \EventMedicationUse::model()->findAll($criteria);
         $saved_ids = array();
