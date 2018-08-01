@@ -17,31 +17,39 @@
  */
 ?>
 
+<?php
+if (@$htmlOptions['id']){
+  $input_id = @$htmlOptions['id'];
+} else {
+  $input_id = CHtml::modelName($element) . '_' . $field . '_0';
+}
+?>
 <?php if (!@$htmlOptions['nowrapper']) { ?>
-<div class="row field-row"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
+<div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
     <?php unset($htmlOptions['hidden']) ?>
-
-    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+    <div class="cols-<?php echo $layoutColumns['label']; ?> column">
         <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
             <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
         </label>
     </div>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+    <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
 <?php } ?>
-
-    <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'name' => $name,
-        'id' => CHtml::modelName($element) . '_' . $field . '_0',
-        // additional javascript options for the date picker plugin
-        'options' => array_merge($options, array(
-            'showAnim' => 'fold',
-            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-        )),
-        'value' => (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value) ? Helper::convertMySQL2NHS($value) : $value),
-        'htmlOptions' => $htmlOptions,
-    )); ?>
-
+      <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" autocomplete="off">
 <?php if (!@$htmlOptions['nowrapper']) { ?>
     </div>
 </div>
 <?php } ?>
+<script>
+  $(function () {
+    var datepicker = $('#<?= $input_id ?>');
+
+    if (datepicker.length !== 0) {
+      pickmeup('#<?= $input_id ?>', {
+        format: '<?= @$htmlOptions['dateFormat'] ?: 'd b Y' ?>',
+        hide_on_select: true,
+        default_date: false,
+        max: '<?= @$options['maxDate'] ?>'
+      });
+    }
+  });
+</script>

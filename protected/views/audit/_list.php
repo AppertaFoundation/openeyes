@@ -16,14 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row">
-	<div class="large-12 column">
-		<h2>Results:</h2>
-	</div>
+<div class="cols-12 column">
+  <h2>Results:</h2>
 </div>
 
-<div class="row">
-	<div class="large-12 column">
+<div class="cols-12 column">
 		<div class="box generic">
 			<?php
             if (empty($data['items'])) {?>
@@ -57,4 +54,3 @@
 			<?php }?>
 		</div>
 	</div>
-</div>

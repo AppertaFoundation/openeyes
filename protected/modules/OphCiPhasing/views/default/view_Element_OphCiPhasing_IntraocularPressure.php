@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes full-width data-group">
 	<div class="element-eye right-eye column">
 		<?php
         $this->renderPartial('view_Element_OphCiPhasing_IntraocularPressure_Side', array(

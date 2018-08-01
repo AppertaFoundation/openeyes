@@ -36,6 +36,7 @@ class ProfileController extends BaseController
         Yii::app()->assetManager->registerCssFile('css/admin.css');
         Yii::app()->assetManager->registerScriptFile('js/profile.js');
         $this->jsVars['items_per_page'] = $this->items_per_page;
+
         return parent::beforeAction($action);
     }
 
@@ -51,6 +52,9 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user->id));
+
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
                 foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
@@ -63,11 +67,15 @@ class ProfileController extends BaseController
                 } else {
                     Yii::app()->user->setFlash('success', 'Your profile has been updated.');
                 }
+
+                $display_theme_setting = $this->changeDisplayTheme($user->id, $_POST['display_theme']);
             }
         }
+
         $this->render('/profile/info', array(
             'user' => $user,
             'errors' => $errors,
+            'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
         ));
     }
 
@@ -326,4 +334,43 @@ class ProfileController extends BaseController
         }
     }
 
+    /**
+     * Changes the display theme of the current user and redirects them to teh page they were previously on
+     *
+     * @param string $display_theme What to set the user's theme to
+     */
+    public function actionChangeDisplayTheme($display_theme)
+    {
+        $this->changeDisplayTheme(Yii::app()->user->id, $display_theme);
+    }
+
+    /**
+     * Changes the display theme of the given user and returns the SettingUser object (if it exists)
+     *
+     * @param int $user_id The ID of the user to change the display theme for
+     * @param string $display_theme What to set the user's theme to
+     * @return SettingUser The setting if the theme was set (otherwise null)
+     */
+    public function changeDisplayTheme($user_id, $display_theme)
+    {
+        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user_id));
+
+        if ($display_theme) {
+            if ($display_theme_setting === null) {
+                $display_theme_setting = new SettingUser();
+                $display_theme_setting->user_id = $user_id;
+                $display_theme_setting->key = 'display_theme';
+            }
+            $display_theme_setting->value = $display_theme;
+            $display_theme_setting->save();
+        } elseif ($display_theme_setting) {
+            # If the theme isn't set, but the setting already exists
+            # then remove the display theme entirely so the global setting will take precedence
+            $display_theme_setting->delete();
+            $display_theme_setting = null;
+        }
+
+        return $display_theme_setting;
+    }
 }

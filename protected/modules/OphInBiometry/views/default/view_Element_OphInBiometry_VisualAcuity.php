@@ -19,18 +19,18 @@
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
     <div class="element-eye right-eye column">
         <?php if ($element->hasRight()) {
             ?>
             <?php if ($element->getCombined('right')) {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->unit->name ?>
                     </div>
                 </div>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->getCombined('right') ?>
                     </div>
@@ -38,8 +38,8 @@
                 <?php
             } else {
                 ?>
-                <div class="data-row">
-                    <div class="data-value">
+                <div class="data-group">
+                    <div class="data-value not-recorded">
                         Not recorded
                         <?php if ($element->right_unable_to_assess) {
                             ?>
@@ -62,8 +62,8 @@
             <?php
         } else {
             ?>
-            <div class="data-row">
-                <div class="data-value">
+            <div class="data-group">
+                <div class="data-value not-recorded">
                     Not recorded
                 </div>
             </div>
@@ -75,12 +75,12 @@
             ?>
             <?php if ($element->getCombined('left')) {
                 ?>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->unit->name ?>
                     </div>
                 </div>
-                <div class="data-row">
+                <div class="data-group">
                     <div class="data-value">
                         <?php echo $element->getCombined('left') ?>
                     </div>
@@ -88,8 +88,8 @@
                 <?php
             } else {
                 ?>
-                <div class="data-row">
-                    <div class="data-value">
+                <div class="data-group">
+                    <div class="data-value not-recorded">
                         Not recorded
                         <?php if ($element->left_unable_to_assess) {
                             ?>
@@ -112,8 +112,8 @@
             <?php
         } else {
             ?>
-            <div class="data-row">
-                <div class="data-value">
+            <div class="data-group">
+                <div class="data-value not-recorded">
                     Not recorded
                 </div>
             </div>

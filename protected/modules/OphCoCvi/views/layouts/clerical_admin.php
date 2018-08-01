@@ -25,7 +25,6 @@
 </head>
 <body class="open-eyes">
 
-<?php $this->renderPartial('//base/_banner_watermark'); ?>
 <?php $this->renderPartial('//base/_debug'); ?>
 
 <div class="container main" role="main">
@@ -37,12 +36,10 @@
         <h1 class="badge admin">Admin</h1>
 
         <div class="box content admin-content">
-            <div class="row">
-                <div class="large-12 column content admin">
-                    <?php $this->renderPartial('//base/_messages'); ?>
-                    <?php echo $content; ?>
-                </div>
-            </div>
+          <div class="cols-12 column content admin">
+              <?php $this->renderPartial('//base/_messages'); ?>
+              <?php echo $content; ?>
+          </div>
         </div>
 
     </div><!-- /.content -->

@@ -373,28 +373,31 @@ EOSQL;
       return "{$this->getMainDivDivImage($index)} {$this->getMainDivDivClass($index)} {$this->getMainDivDivData($index)}";
     }
 
-    private function getMainDivDivImage($index){
-      $result = "";
-      if ($index->IMG_URL){
-        $path = $index->IMG_URL;
-        $image_URL = '<?php
-        if (file_exists(\''.$path.'\')){
-          echo Yii::app()->getAssetManager()->publish(\''.$path.'\');
+    private function getMainDivDivImage($index)
+    {
+        $result = "";
+        if ($index->IMG_URL) {
+            $path = $index->IMG_URL;
+            $image_URL = '<?php
+        if (file_exists(\'' . $path . '\')){
+          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\');
         } else {
           echo "";
         }
         ?>';
-        $result = "style=\"background-image: url({$image_URL});\"";
-      }
-      return $result;
+            $result = "style=\"background-image: url({$image_URL}); background-repeat: no-repeat; padding-left: 5px; background-size: 16px 16px;\"";
+        }
+
+        return $result;
     }
 
-    private function getMainDivDivClass($index){
-      if ($index->IMG_URL){
-        return "class=\"result_item result_item_with_icon\"";
-      } else {
-        return "class=\"result_item\"";
-      }
+    private function getMainDivDivClass($index)
+    {
+        if ($index->IMG_URL) {
+            return "class=\"result_item result_item_with_icon\"";
+        } else {
+            return "class=\"result_item\"";
+        }
     }
 
     private function getMainDivSpanAttr($index,$lvl) {
@@ -415,7 +418,7 @@ EOSQL;
     private function getAdditionalInfoLeftCol($secondary_term_list,$lvl) {
       $secondary_terms = (array)$secondary_term_list;
       return
-      "<div class=\"index_row\">"
+      "<div class=\"index_row row\">"
       ."<div class=\"index_col_left"."_lvl{$lvl}\">"
       ."<span class=\"alias\">"
       .($secondary_terms ? (implode(", ",$secondary_terms)) : (""))
@@ -435,7 +438,7 @@ EOSQL;
     private function generateIndexDescription($description,$warning,$info) {
       $result="";
       if ($description){
-        $result = "<span class=\"description_note\">{$description}</span>";
+        $result = "<p class=\"description_note note\">{$description}</p>";
       }
       return ($warning || $info) ? "{$result}<br>" : $result;
     }
@@ -455,7 +458,7 @@ EOSQL;
       if ($info){
         $result =
         "<span class=\"info_icon\"></span>"
-        ."<span class=\"info_note\">{$info}</span>";
+        ."<p class=\"info_note\">{$info}</p>";
       }
       return $result;
     }
@@ -506,8 +509,8 @@ EOSQL;
     private function getIndexSearchHeader() {
       return
       "<?php \$this->render('IndexSearch_header'); ?>"
-      ."<div id=\"results\">"
-      ."<a href=\"#\" id=\"big_cross\"></a>"
+      ."<div id=\"elements-search-results\" class=\"elements-search-results search-results\" style=\"display:none;\">"
+      ."<div class=\"close-icon-btn\"><i class=\"oe-i remove-circle\"></i></div>"
       ."<ul class='results_list'>";
     }
 
@@ -547,7 +550,7 @@ EOSQL;
         //appends HTML for the index and all of its descendants
         $results .= $this->generateIndexHTML($index,$event_name);
       }
-      $results .= "</ul></div>";
+      $results .= "</ul></div></div>";
       return $results;
     }
 

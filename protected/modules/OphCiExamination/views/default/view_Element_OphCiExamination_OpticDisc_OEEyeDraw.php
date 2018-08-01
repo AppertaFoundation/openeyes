@@ -16,50 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row optic-disc">
-	<div class="column fixed">
-		<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-                'side' => ($side == 'right') ? 'R' : 'L',
-                'mode' => 'view',
-                'width' => 200,
-                'height' => 200,
-                'model' => $element,
-                'attribute' => $side.'_eyedraw',
-        ))?>
-	</div>
-	<div class="column fluid">
-        <div class="data-row">
-            <div class="data-value">
-                <?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?>
-            </div>
+<div class="eyedraw flex-layout flex-top flex-left optic-disc">
+  <div class="eyedraw-canvas">
+      <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+          'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
+          'side' => ($side == 'right') ? 'R' : 'L',
+          'mode' => 'view',
+          'width' => 200,
+          'height' => 200,
+          'model' => $element,
+          'attribute' => $side . '_eyedraw',
+      )) ?>
+  </div>
+  <div class="eyedraw-data stack">
+    <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
+
+      <?php if ($report = $element->{$side . '_description'}): ?>
+        <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_description'}) ?></div>
+      <?php endif; ?>
+
+    <div class="data-label"><?php echo $element->getAttributeLabel($side . '_cd_ratio_id') ?>:</div>
+    <div class="data-value"><?php echo $element->{$side . '_cd_ratio'}->name ?></div>
+
+      <?php if ($report = $element->{$side . '_diameter'}): ?>
+        <div class="data-label"><?php echo $element->getAttributeLabel($side . '_diameter') ?>:</div>
+        <div class="data-value"><?php echo $element->{$side . '_diameter'} ?> mm
+          (lens <?php echo $element->{$side . '_lens'}->name ?>)
         </div>
-		<?php if ($element->{$side.'_description'}): ?>
-			<div class="data-row">
-				<div class="data-value">
-					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
-				</div>
-			</div>
-		<?php endif; ?>
-		<div class="row data-row">
-			<div class="large-5 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel($side.'_cd_ratio_id')?>:</div>
-			</div>
-			<div class="large-7 column">
-				<div class="data-value"><?php echo $element->{$side.'_cd_ratio'}->name?></div>
-			</div>
-		</div>
-		<?php if ($element->{$side.'_diameter'}) {
-    ?>
-			<div class="row data-row">
-				<div class="large-5 column">
-					<div class="data-label"><?php echo $element->getAttributeLabel($side.'_diameter')?>:</div>
-				</div>
-				<div class="large-7 column">
-					<div class="data-value"><?php echo $element->{$side.'_diameter'} ?> mm (lens <?php echo $element->{$side.'_lens'}->name ?>)</div>
-				</div>
-			</div>
-		<?php 
-}?>
-	</div>
+      <?php endif; ?>
+
+  </div>
 </div>

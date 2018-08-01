@@ -40,7 +40,7 @@
 		<tbody>
 			<tr>
 				<td colspan="12">
-					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader" /> loading data ...
+          <i class="spinner" title="Loading...">loading data ...</i>
 				</td>
 			</tr>
 		</tbody>

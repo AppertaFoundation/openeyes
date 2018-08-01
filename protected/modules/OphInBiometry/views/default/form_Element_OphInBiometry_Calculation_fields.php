@@ -1,11 +1,24 @@
-
-<div class="element-fields">
-
-	<?php echo $form->textField($element, 'target_refraction_'.$side, array('placeholder'=>'0.00'), null, array('label' => 4, 'field' => 2))?>
-
+<div class="data-group">
+    <table class="cols-11 last-left">
+        <colgroup>
+            <col class="cols-6">
+            <col class="cols-6">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>
+                Target Refraction:
+            </td>
+            <td>
+                <?php echo $form->textField($element, 'target_refraction_'.$side, array('placeholder'=>'0.00', 'nowrapper'=> true), null, array('label' => 4, 'field' => 2))?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 	<?php //echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(OphInBiometry_Calculation_Formula::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),null,array('label'=>3, 'field'=>6))?>
 	<!--
-	<div class="row">
+	<div class="data-group">
 		<div class="large-8 column">
 			<table name="table" id="iol-table_<?php echo $side?>" align="center" cellspacing="0" width="200" style="margin-top: 10px">
 				<thead>
@@ -20,4 +33,3 @@
 		</div>
 	</div>
 	-->
-</div>

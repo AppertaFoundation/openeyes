@@ -33,8 +33,9 @@ $(document).ready(function() {
 
 		clearBoundaries();
 
-		$('#date-start').datepicker('setDate', format_date(today));
-		$('#date-end').datepicker('setDate', format_date(today));
+
+		$('#date-start').val(format_pickmeup_date(today));
+		$('#date-end').val(format_pickmeup_date(today));
 
 		setDiaryFilter({'date-filter':'today','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
@@ -46,8 +47,8 @@ $(document).ready(function() {
 
 		clearBoundaries();
 
-		$('#date-start').datepicker('setDate', format_date(today));
-		$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, 6)));
+		$('#date-start').val(format_pickmeup_date(today));
+		$('#date-end').val(format_pickmeup_date(returnDateWithInterval(today, 6)));
 
 		setDiaryFilter({'date-filter':'week','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
@@ -59,8 +60,8 @@ $(document).ready(function() {
 
 		clearBoundaries();
 
-		$('#date-start').val(format_date(today));
-		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
+		$('#date-start').val(format_pickmeup_date(today));
+		$('#date-end').val(format_pickmeup_date(returnDateWithInterval(today, 29)));
 
 		setDiaryFilter({'date-filter':'month','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
@@ -81,11 +82,11 @@ $(document).ready(function() {
 
 		if (sd == '') {
 			today = new Date();
-			$('#date-start').datepicker('setDate', format_date(returnDateWithInterval(today, -8)));
-			$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, -1)));
+			$('#date-start').val(format_pickmeup_date(returnDateWithInterval(today, -8)));
+			$('#date-end').val(format_pickmeup_date(returnDateWithInterval(today, -1)));
 		} else {
-			$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(new Date(sd), -1)));
-			$('#date-start').datepicker('setDate', format_date(returnDateWithInterval(new Date(sd), -7)));
+			$('#date-end').val(format_pickmeup_date(returnDateWithInterval(new Date(sd), -1)));
+			$('#date-start').val(format_pickmeup_date(returnDateWithInterval(new Date(sd), -7)));
 		}
 
 		setDiaryFilter({'date-filter':''});
@@ -103,17 +104,17 @@ $(document).ready(function() {
 		if (ed == '') {
 			today = new Date();
 
-			$('#date-start').datepicker('setDate', format_date(today));
-			$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, 7)));
+			$('#date-start').val(today);
+			$('#date-end').val(format_pickmeup_date(returnDateWithInterval(today, 7)));
 		} else {
 			today = new Date();
 
-			if (ed == format_date(today)) {
-				$('#date-start').datepicker('setDate', format_date(returnDateWithInterval(new Date(ed), 7)));
-				$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(new Date(ed), 13)));
+			if (ed == format_pickmeup_date(today)) {
+				$('#date-start').val(format_pickmeup_date(returnDateWithInterval(new Date(ed), 7)));
+				$('#date-end').val(format_pickmeup_date(returnDateWithInterval(new Date(ed), 13)));
 			} else {
-				$('#date-start').datepicker('setDate', format_date(returnDateWithInterval(new Date(ed), 1)));
-				$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(new Date(ed), 7)));
+				$('#date-start').val(format_pickmeup_date(returnDateWithInterval(new Date(ed), 1)));
+				$('#date-end').val(format_pickmeup_date(returnDateWithInterval(new Date(ed), 7)));
 			}
 		}
 
@@ -123,14 +124,6 @@ $(document).ready(function() {
 		$('#date-end').trigger('change');
 
 		return false;
-	});
-
-	$('#date-start').bind('change',function() {
-		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
-	});
-
-	$('#date-end').bind('change',function() {
-		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 	});
 
 	$('#theatre-filter select').change(function() {
@@ -187,11 +180,11 @@ $(document).ready(function() {
 		}, enableButtons);
 	});
 
-	$(this).undelegate('a.edit-session','click').delegate('a.edit-session','click',function() {
+	$(this).undelegate('.edit-session','click').delegate('.edit-session','click',function() {
 		cancel_edit();
 
 		disableButtons($('button,.button').not('.theatre'));
-		$('.loader').hide();
+		$('.spinner').hide();
 
 		theatre_edit_session_id = $(this).attr('rel');
 
@@ -209,7 +202,7 @@ $(document).ready(function() {
 
 		theatre_edit_session_data["row_order"] = [];
 		theatre_edit_session_data["confirm"] = {};
-		theatre_edit_session_data["comments"] = $('.panel.comments p.comments[data-id="'+theatre_edit_session_id+'"]').text();
+		theatre_edit_session_data["comments"] = $('.comments p.comments[data-id="'+theatre_edit_session_id+'"]').text();
 
 		$('#tbody_'+theatre_edit_session_id).children('tr').map(function(){
 			theatre_edit_session_data["row_order"].push($(this).attr('id'));
@@ -217,10 +210,7 @@ $(document).ready(function() {
 			theatre_edit_session_data["confirm"][id] = $('#confirm_'+id).is(':checked');
 		});
 
-		$('#tbody_'+theatre_edit_session_id+' .diaryViewMode').hide();
-		$('div.session_options.diaryViewMode').hide();
-		$('.panel.comments .comments.diaryViewMode').hide();
-		$('button.diaryViewMode').hide();
+		$('.diaryViewMode').hide();
 		$('.diaryEditMode[data-id="'+theatre_edit_session_id+'"]').show();
 		$('.action_options[data-id="'+theatre_edit_session_id+'"]').show();
 
@@ -294,6 +284,7 @@ $(document).ready(function() {
 	$(this).undelegate('button[id^="btn_edit_session_save_"]','click').delegate('button[id^="btn_edit_session_save_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
+			$('.diaries-search .spinner').hide();
 
 			var session_id = $(this).attr('id').match(/[0-9]+/);
 
@@ -352,7 +343,7 @@ $(document).ready(function() {
 						$(this).text($('input[name="admitTime_'+$(this).attr('data-operation-id')+'"]').val());
 					});
 
-					$('.panel.comments .comments[data-id="'+session_id+'"]').text($('textarea[name="comments_'+session_id+'"]').val());
+					$('.session-comments .comments[data-id="'+session_id+'"] .comment').text($('textarea[name="comments_'+session_id+'"]').val());
 
 					function checkedOrOne(field) {
 						if($(field).prop('type') == 'checkbox') {
@@ -425,7 +416,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	new OpenEyes.UI.StickyElement('.panel.actions', {
+	new OpenEyes.UI.StickyElement('.actions', {
 		offset: -44,
 		enableHandler: function(instance) {
 			instance.element.width(instance.element.width());
@@ -463,7 +454,7 @@ function getDiary() {
 				if (data['status'] == 'success') {
 					theatreList.html(data['data']);
 				} else {
-                    theatreList.html('<div class="large-12 column"><div class="alert-box"><strong>'+data['message']+'</strong></div></div>');
+					theatreList.html('<div class="large-12 column"><div class="alert-box"><strong>'+data['message']+'</strong></div></div>');
 				}
 				enableButtons();
 				return false;
@@ -538,8 +529,7 @@ function loadTheatresAndWards(siteId) {
 }
 
 function clearBoundaries() {
-	$('#date-start').datepicker('option','minDate', '').datepicker('option','maxDate', '');
-	$('#date-end').datepicker('option','minDate', '').datepicker('option','maxDate', '');
+	// Not sure how to change pickmeup boundaries after initialisation
 }
 
 function returnDateWithInterval(d, interval) {

@@ -18,18 +18,16 @@
  */
 ?>
 
-
-
 <div class="box admin">
     <h2>Secondary Common Ophthalmic Disorder</h2>
 
     <form method="get">
-        <div class="row field-row">
-            <div class="large-2 column"><label for="subspecialty_id">Parent</label></div>
-            <div class="large-5 column end">
-                <?php echo CHtml::dropDownList('parent_id', (isset($_GET['parent_id']) ? $_GET['parent_id'] : null), SelectionHelper::listData('CommonOphthalmicDisorder')); ?>
-            </div>
+      <div class="data-group">
+        <div class="cols-2 column"><label for="subspecialty_id">Parent</label></div>
+        <div class="cols-5 column end">
+            <?php echo CHtml::dropDownList('parent_id', (isset($_GET['parent_id']) ? $_GET['parent_id'] : null), SelectionHelper::listData('CommonOphthalmicDisorder')); ?>
         </div>
+      </div>
     </form>
 
     <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">
@@ -80,7 +78,7 @@
                     );
 
                     $remove_a = CHtml::tag('a',array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                        Chtml::tag('i', array('class' => 'fa fa-times-circle', 'aria-hidden' => "true", 'title' => "Change finding"), null)
+                        Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                     );
 
                     $name_span = CHtml::tag('span',array('class' => 'finding-name name'), $finding_data['name']);
@@ -146,9 +144,9 @@
             'renderCommonlyUsedDiagnoses': false,
             'code': '',
             'singleTemplate' :
-            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
-            "<select class='commonly-used-diagnosis' style='display:none'></select>" +
+            "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
@@ -250,7 +248,7 @@
         </td>
         <td width="200px">
             <span class="medication-display" style="display:none">
-                <a href="javascript:void(0)" class="diagnosis-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change diagnosis"></i></a>
+                <a href="javascript:void(0)" class="diagnosis-rename"><i class="oe-i remove-circle small" aria-hidden="true" title="Change diagnosis"></i></a>
                 <span class="diagnosis-name"></span>
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
@@ -261,7 +259,7 @@
         <td>
             <span class="finding-display display" style="display: none;">
                 <a href="javascript:void(0)" class="finding-rename">
-                    <i class="fa fa-times-circle" aria-hidden="true" title="Change finding"></i>
+                    <i class="oe-i remove-circle small" aria-hidden="true" title="Change finding"></i>
                 </a>
                 <span class="finding-name name"></span>
             </span>

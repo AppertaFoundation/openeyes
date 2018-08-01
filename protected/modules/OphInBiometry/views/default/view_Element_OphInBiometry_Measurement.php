@@ -25,27 +25,28 @@ if ($element->event->id > 0) {
 }
 ?>
 
-<section class="element">
-	<div class="element-data element-eyes row">
-		<div class="element-eye right-eye column">
-			<div class="element-header right-side">
-				<h4><b>RIGHT</b></h4>
-			</div>
-			<?php if ($element->hasRight()) {
-    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'measurementInput' => $iolRefValues));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
-		<div class="element-eye left-eye column">
-			<div class="element-header left-side">
-				<h4><b>LEFT</b></h4>
-			</div>
-			<?php if ($element->hasLeft()) {
-    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'measurementInput' => $iolRefValues));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
-	</div>
+<section>
+    <div class="element-data element-eyes">
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+            <div class="<?= $eye_side ?>-eye">
+                <?php if ($element->hasEye($eye_side)) { ?>
+                  <div class="eye-icon-header">
+                      <span class="oe-eye-lat-icons">
+                    <?php if ($eye_side == 'right') { ?>
+                      <i class="oe-i laterality  R pad"></i>
+                      <i class="oe-i laterality NA pad"></i>
+                    <?php } else { ?>
+                      <i class="oe-i laterality NA pad"></i>
+                      <i class="oe-i laterality  L pad"></i>
+                    <?php } ?>
+                      </span>
+                  </div>
+                    <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
+                        array('side' => $eye_side, 'element' => $element));
+                } else { ?>
+                    <div class="data-value not-recorded">Not recorded</div>
+                <?php } ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
 </section>

@@ -16,7 +16,7 @@
  */
 
 ?>
-<?php $this->beginContent('//patient/event_container') ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)) ?>
 
 <h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 

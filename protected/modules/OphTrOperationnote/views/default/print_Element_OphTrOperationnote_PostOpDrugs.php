@@ -20,7 +20,6 @@
 	<h3 class="element-title"><?php echo CHtml::encode($element->elementType->name)?></h3>
 	<div class="details">
 		<div class="element-data">
-			<div class="data-row">
 				<div class="data-value <?php if (!$element->drugs) {?> none<?php }?>">
 					<?php if (!$element->drugs) {?>
 						None
@@ -30,7 +29,6 @@
 						<?php }?>
 					<?php }?>
 				</div>
-			</div>
 		</div>
 	</div>
 </section>

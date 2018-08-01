@@ -20,7 +20,6 @@
     var popup;
     var trackedHeight;
     var popupOverflow;
-    var popupOverflowAlert;
     var buttons;
     var helpHint;
 
@@ -38,7 +37,6 @@
         container = $('#patient-popup-container');
         popup = $('#patient-summary-popup');
         popupOverflow = popup.find('.oe-popup-overflow');
-        popupOverflowAlert = popup.find('.oe-popup-overflow-alert');
         buttons = container.find('.toggle-patient-summary-popup');
         helpHint = popup.find('.help-hint');
 
@@ -48,6 +46,7 @@
                 popup.trigger(stuck ? 'show' : 'hide');
             },
             show: function() {
+                updateScrollingCss();
                 if (popup.hasClass('show')) return;
                 clearTimeout(hideTimer);
                 popup.show();
@@ -138,7 +137,6 @@
     function updateScrollingCss() {
         if (needsScroll) {
                 popupOverflow.addClass('scroll');
-                popupOverflowAlert.hide();
             }
         }
 
@@ -160,7 +158,7 @@
 
     function refresh(patientId) {
         if (!patientId) {
-            throw new Error('Patient id is required')
+            throw new Error('Patient id is required');
         }
         $.ajax({
             type: 'GET',

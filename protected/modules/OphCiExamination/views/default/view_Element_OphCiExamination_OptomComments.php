@@ -17,11 +17,11 @@
  */
 ?>
 <div class="element-data">
-	<div class="field-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<label>Ready for second eye?</label>
 		</div>
-		<div class="large-10 column end">
+		<div class="cols-10 column end">
 			<?php if ($element->ready_for_second_eye === '1'):?>
 				Yes
 			<?php elseif ($element->ready_for_second_eye === '0'):?>
@@ -31,11 +31,11 @@
 			<?php endif;?>
 		</div>
 	</div>
-	<div class="field-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<label>Comment</label>
 		</div>
-		<div class="large-10 column end">
+		<div class="cols-10 column end">
 			<?= ($element->comment ? Yii::app()->format->Ntext($element->comment) : 'No Comment') ?>
 		</div>
 	</div>

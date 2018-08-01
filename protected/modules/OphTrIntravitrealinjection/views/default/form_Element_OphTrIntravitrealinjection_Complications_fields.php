@@ -63,15 +63,14 @@ if( is_array($complications) ){
 }
 ?>
 
-<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row field-row<?php if (!$show_desc) {
-    echo ' hide';
-} ?>">
-  <div class="<?php echo $form->columns('label'); ?>">
+<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="data-group"
+     style="display: <?php if (!$show_desc) { echo ' none'; } ?>">
+  <div class="cols-<?php echo $form->columns('label'); ?>">
     <label for="<?php echo get_class($element) ?>_<?php echo $side . '_oth_descrip' ?>">
         <?php echo $element->getAttributeLabel($side . '_oth_descrip'); ?>:
     </label>
   </div>
-  <div class="<?php echo $form->columns('field'); ?>">
+  <div class="cols-<?php echo $form->columns('field'); ?>">
       <?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true)); ?>
   </div>
 </div>

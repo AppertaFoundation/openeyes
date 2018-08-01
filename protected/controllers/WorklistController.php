@@ -21,7 +21,7 @@ class WorklistController extends BaseController
     /**
      * @var WorklistManager
      */
-    private $manager;
+    protected $manager;
 
     public function accessRules()
     {
@@ -37,6 +37,15 @@ class WorklistController extends BaseController
         $this->manager = new WorklistManager();
 
         return parent::beforeAction($action);
+    }
+
+    public function actionView($date_from = null, $date_to = null)
+    {
+        $this->layout = 'main';
+        $this->fixedHotlist = true;
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null,
+            $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+        $this->render('index', array('worklists' => $worklists));
     }
 
     /**

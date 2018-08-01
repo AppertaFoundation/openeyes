@@ -46,7 +46,6 @@
   <?php echo $form->textField($user, 'registration_code',
       array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
   <?php echo $form->radioBoolean($user, 'active') ?>
-  <?php echo $form->radioBoolean($user, 'is_doctor') ?>
     <?php echo $form->radioBoolean($user, 'global_firm_rights') ?>
     <?php
     echo $form->multiSelectList(

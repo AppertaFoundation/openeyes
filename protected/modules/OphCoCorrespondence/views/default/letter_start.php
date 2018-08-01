@@ -18,12 +18,12 @@
 $logoHelper = new LogoHelper();
 
 ?>
-<div class="banner clearfix">
+<div class="banner clearfix" style="text-align: right">
 		<?= $logoHelper->render() ?>
 	
 </div>
 <?php if ($element->site) {?>
-	<div class="from-address">
+	<div class="from-address" style="float: right;">
 		<?php
         echo $element->site->getLetterAddress(array(
             'include_name' => true,
@@ -47,7 +47,7 @@ $logoHelper = new LogoHelper();
 	<div class="to-address-header">
 		To:
 	</div>
-	<div class="to-address-address">
+	<div class="to-address-address" style="font-weight: bold;">
 		<?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress))?>
 	</div>
 </div>

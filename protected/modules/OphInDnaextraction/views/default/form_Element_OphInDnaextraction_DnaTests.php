@@ -38,11 +38,11 @@
 
   <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="dnatests element-fields">
-    <div class="row field-row">
-      <div class="large-3 column">
+    <div class="data-group">
+      <div class="cols-3 column">
         <label>Tests:</label>
       </div>
-      <div class="large-9 column">
+      <div class="cols-9 data-group column">
         <table>
           <thead>
           <tr>
@@ -56,9 +56,7 @@
           <tbody class="transactions">
 
           <?php
-
-                $is_test = true;
-
+          $is_test = true;
                 /* as OphInDnaextraction_DnaTests_Transaction is  not an element, OE will not take care of the POSTed values and Models for is */
                 $transaction_posts = Yii::app()->request->getPost('OphInDnaextraction_DnaTests_Transaction');
 
@@ -75,7 +73,6 @@
                         $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => ($this->action->id === 'view') ));
                     }
                 } else {
-
                     $is_test = false;
                 } ?>
 
@@ -89,7 +86,7 @@
           <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
                   <span style="display: none"><i class="frmDnaTests_loader loadervfa fa-spinner fa-spin"></i></span>
-                  <span class="frmDnaTests_successmessage successmessage msg success" style="display: none; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
+                  <span class="frmDnaTests_successmessage successmessage msg success" style="display: none; font-size: 12px;"><i class="oe-i tick small"></i> Saved</span>
                   <div class="frmDnaTests_controls" class="frmDnaTests_controls" style="display: none;">
                       <button class="button warning small cancelTest">Cancel</button>
                       <button class="button small default submitTest">Save changes</button>
@@ -102,9 +99,7 @@
       </div>
     </div>
   </fieldset>
-
     <?php if($this->action->Id === 'view') {
         $this->endWidget();
     } ?>
-
 </section>

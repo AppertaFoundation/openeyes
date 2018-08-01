@@ -36,9 +36,7 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-        
-        setDropDownWidth('macro_id');
-        
+
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
@@ -319,7 +317,7 @@ $(document).ready(function() {
 
     });
 
-    handleButton($('#et_cancel'),function() {
+    $(this).on('click','#et_cancel',function() {
 		$('#dialog-confirm-cancel').dialog({
 			resizable: false,
 			//height: 140,
@@ -344,8 +342,6 @@ $(document).ready(function() {
 		});
 	});
 
-	handleButton($('#et_deleteevent'));
-	handleButton($('#et_canceldelete'));
 
 	$('#address_target').change(function() {
 		var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
@@ -675,7 +671,7 @@ $(document).ready(function() {
 		}
 	}
 
-	handleButton($('#et_print'),function(e) {
+	$(this).on('click','#et_print',function(e) {
 		if ($('#correspondence_out').hasClass('draft')) {
 			$.ajax({
 				'type': 'GET',
@@ -696,7 +692,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_print_all'),function(e) {
+  $(this).on('click','#et_print_all',function(e) {
 		if ($('#correspondence_out').hasClass('draft')) {
 			$.ajax({
 				'type': 'GET',
@@ -717,7 +713,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_confirm_printed'),function() {
+	$(this).on('click','#et_confirm_printed',function() {
 		$.ajax({
 			'type': 'GET',
 			'url': baseUrl+'/OphCoCorrespondence/Default/confirmPrinted/'+OE_event_id,
@@ -746,11 +742,11 @@ $(document).ready(function() {
 		id += 1;
 
 		var html = [
-			'<div class="field-row row collapse in enclosureItem">',
-			'		<div class="large-8 column">',
+			'<div class="data-group collapse in enclosureItem">',
+			'		<div class="cols-8 column">',
 			'			<input type="text" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
 			'		</div>',
-			'		<div class="large-4 column end">',
+			'		<div class="cols-4 column end">',
 			'			<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>',
 			'		</div>',
 			'	</div>'

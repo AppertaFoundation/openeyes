@@ -16,11 +16,11 @@
 <?php if ($emails): ?>
 	<?php foreach ($emails as $email): ?>
 		<?php if (($files = $email->attachments)): ?>
-			<div class="row data-row">
-				<div class="large-4 column">
+			<div class="data-group">
+				<div class="cols-4 column">
 					<div class="data-label">Application files:</div>
 				</div>
-				<div class="large-8 column">
+				<div class="cols-8 column">
 					<div class="data-value">
 						<ul class="application-files">
 							<?php foreach ($files as $file): ?>

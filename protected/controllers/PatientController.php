@@ -19,8 +19,9 @@ Yii::import('application.controllers.*');
 
 class PatientController extends BaseController
 {
-    public $layout = '//layouts/main';
+    public $layout = '//layouts/home';
     public $renderPatientPanel = true;
+    public $fixedHotlist = true;
     public $patient;
     public $firm;
     public $editable;
@@ -43,7 +44,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -317,6 +318,7 @@ class PatientController extends BaseController
 
         $episodes = $this->patient->episodes;
         $legacyepisodes = $this->patient->legacyepisodes;
+        $supportserviceepisodes = $this->patient->supportserviceepisodes;
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
         if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -346,6 +348,12 @@ class PatientController extends BaseController
             $current_episode = null;
         }
 
+        $no_episodes = count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
         $this->current_episode = $current_episode;
         $this->title = 'Episode summary';
 
@@ -354,6 +362,7 @@ class PatientController extends BaseController
             'episodes' => $episodes,
             'site' => $site,
             'cssClass' => 'episodes-list',
+            'noEpisodes' => $no_episodes,
         ));
     }
 
@@ -363,6 +372,7 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
+        $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
 
@@ -396,6 +406,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
+            'noEpisodes' => false,
         ));
     }
 
@@ -474,9 +485,45 @@ class PatientController extends BaseController
             'site' => $site,
             'current_episode' => $this->episode,
             'error' => @$error,
+            'noEpisodes' => false,
         ));
     }
 
+    public function actionOEscape($id){
+        if (!$this->episode = Episode::model()->findByPk($id)) {
+            throw new SystemException('Episode not found: '.$id);
+        }
+
+        $this->fixedHotlist = false;
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = $this->episode->patient;
+
+        //if $this->patient was merged we redirect the user to the primary patient's page
+        $this->redirectIfMerged();
+
+        $episodes = $this->patient->episodes;
+
+        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+        $this->event_tabs = array(
+            array(
+                'label' => 'View',
+                'active' => true,
+            ),
+        );
+
+        $this->current_episode = $this->episode;
+        $status = Yii::app()->session['episode_hide_status'];
+        $status[$id] = true;
+        Yii::app()->session['episode_hide_status'] = $status;
+
+        $this->render('oescapes', array(
+            'title' => '' ,
+            'episodes' => $episodes,
+            'site' => $site,
+            'noEpisodes' => false,
+        ));
+    }
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

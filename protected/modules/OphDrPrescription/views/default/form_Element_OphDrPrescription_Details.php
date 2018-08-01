@@ -20,171 +20,190 @@
 // we need to separate the public and admin view
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
-}
-if (is_a(Yii::app()->getController(), 'DefaultController')) {?>
-<section class="element <?php echo $element->elementType->class_name?>"
-		 data-element-type-id="<?php echo $element->elementType->id ?>"
-		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
-		 data-element-type-name="<?php echo $element->elementType->name ?>"
-		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
-	<?php } else {?>
-	<section class="element">
-	<?php }?>
-	<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
-        <div class="row field-row">
-			<div class="large-6 column">
-				<fieldset class="row field-row">
-					<legend class="large-4 column">
-						Add Item
-					</legend>
-					<div class="large-8 column">
-						<div class="field-row">
-							<?php echo CHtml::dropDownList('common_drug_id', null, CHtml::listData($element->commonDrugs(), 'id', 'tallmanlabel'), array('empty' => '-- Select common --')); ?>
-						</div>
-						<div class="field-row">
-							<?php
-                            // we need to separate the public and admin view
-                            if (is_a(Yii::app()->getController(), 'DefaultController')) {
-                                $searchListURL = $this->createUrl('DrugList');
-                            } else {
-                                $searchListURL = '/'.Yii::app()->getModule('OphDrPrescription')->id.'/'.Yii::app()->getModule('OphDrPrescription')->defaultController.'/DrugList';
-                            }
-
-                            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                'name' => 'drug_id',
-                                'id' => 'autocomplete_drug_id',
-                                'source' => "js:function(request, response) {
-									$.getJSON('".$searchListURL."', {
-										term : request.term,
-										type_id: $('#drug_type_id').val(),
-										preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
-									}, response);
-								}",
-                                'options' => array(
-                                    'select' => "js:function(event, ui) {
-										addItem(ui.item.value, ui.item.id);
-										$(this).val('');
-										return false;
-									}",
-                                ),
-                                'htmlOptions' => array(
-                                    'placeholder' => 'or search formulary',
-                                ),
-                            ));?>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-			<div class="large-6 column">
-				<fieldset>
-					<legend><em>Filtered by:</em></legend>
-					<label class="inline" for="drug_type_id">Type:</label>
-					<?php echo CHtml::dropDownList('drug_type_id', null, $element->drugTypes(), array('class' => 'inline drugFilter', 'empty' => '-- Select --')); ?>
-					<label class="inline highlight">
-						No preservative
-						<?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter'))?>
-					</label>
-				</fieldset>
-			</div>
-		</div>
-		<?php
-        // we need to separate the public and admin view
-        if (is_a(Yii::app()->getController(), 'DefaultController')) {
-            ?>
-			<div class="row field-row">
-				<div class="large-2 column">
-					<label for="drug_set_id">Add Standard Set:</label>
-				</div>
-				<div class="large-3 column end">
-					<?php echo CHtml::dropDownList('drug_set_id', null,
-                        CHtml::listData($element->drugSets(), 'id', 'name'), array('empty' => '-- Select --')); ?>
-				</div>
-			</div>
-		<?php
-
-        }
-        ?>
-		<div class="row field-row">
-			<div class="large-2 column">
-				<div class="field-label">Other Actions</div>
-			</div>
-			<div class="large-10 column">
-				<?php
-                // we need to separate the public and admin view
-                if (is_a(Yii::app()->getController(), 'DefaultController')) {
-                    if ($this->getPreviousPrescription($element->id)) { ?>
-						<button type="button" class="button small"
-								id="repeat_prescription" name="repeat_prescription">
-							Add Repeat Prescription
-						</button>
-					<?php
-
-                    }
-                }
-                ?>
-
-				<button type="button" class="small"
-						id="clear_prescription" name="clear_prescription">
-					Clear <?php if (is_a(Yii::app()->getController(), 'DefaultController')) {
-    echo 'Prescription';
 } ?>
-				</button>
-			</div>
-		</div>
-	</div>
+
+<section class="element edit full  edit-details">
+  <header class="element-header">
+    <h3 class="element-title">Details</h3>
+  </header>
+  <div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields full-width">
+
+    <div class="data-group">
+      <table id="prescription_items" class="cols-full">
+        <colgroup>
+          <col>
+          <col class="cols-3">
+          <col class="cols-1">
+          <col>
+          <col class="cols-1">
+        </colgroup>
+        <thead>
+        <tr>
+          <th colspan="2">Drug</th>
+          <th>Dose</th>
+          <th>Route</th>
+            <?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
+              <th>Options</th>
+            <?php } ?>
+          <th>Frequency</th>
+          <th>Duration</th>
+          <th>Dispense Condition</th>
+          <th>Location</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($element->items as $key => $item) {
+            $this->renderPartial('form_Element_OphDrPrescription_Details_Item',
+                array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+        } ?>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex-layout">
+      <div>
+        <button type="button" class="button hint blue"
+                id="clear_prescription" name="clear_prescription">
+          Clear all
+        </button>
+
+          <?php
+          // we need to separate the public and admin view
+          if (is_a(Yii::app()->getController(), 'DefaultController') &&
+              $this->getPreviousPrescription($element->id)): ?>
+            <button type="button" class="button hint blue"
+                    id="repeat_prescription" name="repeat_prescription">
+              Add repeat prescription
+            </button>
+          <?php endif; ?>
+      </div>
+
+      <div>
+
+        <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
+
+        <div id="add-standard-set-popup" class="oe-add-select-search auto-width" style="display: none;">
+          <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+          <ul class="add-options" data-multi="true" data-clickadd="false">
+              <?php foreach ($element->drugSets() as $drug_set): ?>
+                <li data-drug-set="<?= $drug_set->id ?>">
+                  <span class="auto-width"><?= $drug_set->name ?></span>
+                </li>
+              <?php endforeach; ?>
+          </ul>
+        </div>
+
+        <button class="button hint green" id="add-prescription-btn" type="button"><i class="oe-i plus pro-theme"></i>
+        </button>
+
+        <div id="add-to-prescription-popup" class="oe-add-select-search auto-width"
+             style="width: 600px; display: none;">
+          <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+          <div class="select-icon-btn"><i id="prescription-select-btn" class="oe-i menu selected"></i></div>
+          <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
+
+          <table class="common-drug-options">
+            <thead>
+            <tr>
+              <th>Common Drugs</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <ul class="add-options">
+                    <?php foreach ($element->commonDrugs() as $commonDrug): ?>
+                      <li data-item-id="<?= $commonDrug->id ?>" data-label="<?= $commonDrug->name ?>">
+                        <span class="auto-width"><?= $commonDrug->name ?></span>
+                      </li>
+                    <?php endforeach; ?>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="search-icon-btn"><i id="prescription-search-btn" class="oe-i search"></i></div>
+          <div class="prescription-search-options" style="display: none;">
+            <table class="cols-full">
+              <thead>
+              <tr>
+                <th>Filters</th>
+                <th>
+                  <input id="prescription-search-field"
+                         class="cols-full"
+                         placeholder="Search for Drug"
+                         type="text">
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>
+                  <div id="add-prescription-drug-types" class="flex-layout flex-top flex-left">
+                    <ul class="add-options" style="width: 100%">
+                        <?php foreach ($element->drugTypes() as $drug_type): ?>
+                          <li data-drug-type="<?= $drug_type->id ?>">
+                            <span class="auto-width"><?= $drug_type->name ?></span>
+                          </li>
+                        <?php endforeach; ?>
+                    </ul>
+                  </div>
+                </td>
+                <td class="flex-layout flex-top flex-left">
+                  <ul id="prescription-search-results" class="add-options" data-multi="true" style="width: 100%;">
+                  </ul>
+                  <span id="prescription-search-no-results">No results found</span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <label class="inline highlight">
+            No preservative
+              <?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter')) ?>
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>
-
-<input type="hidden" name="prescription_items_valid" value="1" />
-<table class="prescriptions" id="prescription_items">
-	<thead>
-	<tr>
-		<th>Drug</th>
-		<th>Dose</th>
-		<th>Route</th>
-		<?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
-			<th>Options</th>
-		<?php } ?>
-		<th>Frequency</th>
-		<th>Duration</th>
-		<th></th>
-		<th>Dispense Condition/Location</th>
-	</tr>
-	</thead>
-	<tbody>
-	<?php
-    foreach ($element->items as $key => $item) {
-        $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
-} ?>
-	</tbody>
-</table>
 
 <?php
 // we need to separate the public and admin view
-if (is_a(Yii::app()->getController(), 'DefaultController')) {
-    ?>
-	<section class="element">
-		<div class="element-fields">
-			<?php echo $form->textArea($element, 'comments', array('rows' => 4)) ?>
-		</div>
-	</section>
+if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
+  <section class="element full">
+    <header class="element-header">
+      <h3 class="element-title">Comments</h3>
+    </header>
+    <div class="element-fields flex-layout full-width">
+        <?php echo $form->textArea($element, 'comments', array('rows' => 4, 'nowrapper' => true)) ?>
+    </div>
+  </section>
+<?php } ?>
+
+<script type="text/javascript">
+    <?php
+    // we need to separate the public and admin view
+    if (is_a(Yii::app()->getController(), 'DefaultController')): ?>
+    var searchListUrl = '<?= $this->createUrl('DrugList') ?>';
+    <?php else: ?>
+    var searchListUrl = '<?='/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController . '/DrugList'; ?>';
+    <?php endif; ?>
+</script>
+
 <?php
-
-}
-?>
-
-<?php
-
 /*
  * We need to decide which JS file need to be loaded regarding to the controller
- * Unfortunatelly jsVars[] won't work from here because processJsVars function already called
+ * Unfortunately jsVars[] won't work from here because processJsVars function already called
  */
-
 $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphDrPrescription.assets'));
 
 Yii::app()->getClientScript()->registerScript('scr_controllerName',
-    "controllerName = '".get_class(Yii::app()->getController())."';", CClientScript::POS_HEAD);
+    "controllerName = '" . get_class(Yii::app()->getController()) . "';", CClientScript::POS_HEAD);
 
-Yii::app()->clientScript->registerScriptFile($modulePath.'/js/defaultprescription.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile($modulePath . '/js/defaultprescription.js', CClientScript::POS_END);
 
 ?>
-

@@ -17,11 +17,9 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
-			<h2>Per-operative Drugs</h2>
-		</div>
-	</div>
+  <div class="cols-8 column">
+    <h2>Per-operative Drugs</h2>
+  </div>
 	<form id="admin_drugs">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
@@ -37,7 +35,7 @@
 					<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id?>">
 						<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
 						<td><?php echo ($drug->active) ? ($drug->name) : ('<s>'.$drug->name.'</s>');?></td>
-						<td><?php echo ($drug->active) ? ('<i class="fa fa-check"></i>') : ('<i class="fa fa-times"></i>');?></td>
+						<td><?php echo ($drug->active) ? ('<i class="oe-i tick small"></i>') : ('<i class="oe-i remove small"></i>');?></td>
 
 					</tr>
 				<?php }?>

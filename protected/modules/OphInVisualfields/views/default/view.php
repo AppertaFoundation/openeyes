@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 
 // Event actions
 /* - disable printing button for the time being - see OE-4489
@@ -23,12 +23,12 @@ $this->beginContent('//patient/event_container');
     $this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
 }*/
 
- if ($this->event->delete_pending) {?>
-		<div class="alert-box alert with-icon">
-			This event is pending deletion and has been locked.
-		</div>
-<?php }?>
+if ($this->event->delete_pending) { ?>
+  <div class="alert-box alert with-icon">
+    This event is pending deletion and has been locked.
+  </div>
+<?php } ?>
 
-	<?php $this->renderOpenElements($this->action->id)?>
-
-<?php $this->endContent();?>
+<?php $this->renderOpenElements($this->action->id) ?>
+<?php $this->renderPartial('//default/delete');?>
+<?php $this->endContent(); ?>

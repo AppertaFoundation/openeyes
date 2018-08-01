@@ -15,192 +15,190 @@
 ?>
 <?php
 if ($keratometry) { ?>
-    <div class="row large-12">
-        <div class="row">
-            <div class="large-3 column">
+    <div class="cols-12">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h3 class="element-title">RIGHT</h3>
             </div>
-            <div class="large-8 column">
+            <div class="cols-8 column">
             </div>
         </div>
-        <div class="row">
-            <div class="large-3 column">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h3 class="data-title"></h3>
             </div>
-            <div class="large-2 column">
+            <div class="cols-2 column">
                 <h3 class="data-title">Front</h3>
             </div>
-            <div class="large-2 column">
+            <div class="cols-2 column">
                 <h3 class="data-title">Back</h3>
             </div>
-            <div class="large-5 column">
+            <div class="cols-5 column">
                 <h3 class="data-title">Other</h3>
             </div>
         </div>
-        <div class="row">
-            <div class="large-3 column">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h4 class="data-title">Date</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K1</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K2</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K1</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K2</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">Kmax</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">TPP</h4>
             </div>
-            <div class="large-3 column"></div>
+            <div class="cols-3 column"></div>
         </div>
-        <div class="row">
+        <div class="data-group">
             <?php
                 foreach ($keratometry as $kera) {
                     ?>
-                    <div class="large-3 column">
+                    <div class="cols-3 column">
                     <?php
                     $keraDate = new DateTime($kera['created_date']);
                     echo $keraDate->format('d-m-Y');
                         ?>
                     </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_anterior_k1_value'];
                 ?>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_axis_anterior_k1_value'];
                 ?>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_anterior_k2_value'];
                 ?>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_axis_anterior_k2_value'];
                 ?>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_kmax_value'];
                 ?>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <?php
                 echo $kera['right_thinnest_point_pachymetry_value'];
                 ?>
             </div>
-            <div class="large-3 column"></div><br/>
+            <div class="cols-3 column"></div><br/>
                 <?php
                 }
              ?>
         </div>
-</div>
+    </div>
     <br/>
-    <div class="row large-12">
-        <div class="row">
-            <div class="large-3 column">
+    <div class="cols-12">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h3 class="element-title">LEFT</h3>
             </div>
-            <div class="large-8 column">
+            <div class="cols-8 column">
             </div>
         </div>
-        <div class="row">
-            <div class="large-3 column">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h3 class="data-title"></h3>
             </div>
-            <div class="large-2 column">
+            <div class="cols-2 column">
                 <h3 class="data-title">Front</h3>
             </div>
-            <div class="large-2 column">
+            <div class="cols-2 column">
                 <h3 class="data-title">Back</h3>
             </div>
-            <div class="large-5 column">
+            <div class="cols-5 column">
                 <h3 class="data-title">Other</h3>
             </div>
         </div>
-        <div class="row">
-            <div class="large-3 column">
+        <div class="data-group">
+            <div class="cols-3 column">
                 <h4 class="data-title">Date</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K1</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K2</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K1</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">K2</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">Kmax</h4>
             </div>
-            <div class="large-1 column">
+            <div class="cols-1 column">
                 <h4 class="data-title">TPP</h4>
             </div>
-            <div class="large-3 column"></div>
+            <div class="cols-3 column"></div>
         </div>
-        <div class="row">
+        <div class="data-group">
             <?php
                 foreach ($keratometry as $kera){
                     ?>
-                    <div class="large-3 column">
+                    <div class="cols-3 column">
                         <?php
                         $keraDate = new DateTime($kera['created_date']);
                         echo $keraDate->format('d-m-Y');
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_anterior_k1_value'];
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_axis_anterior_k1_value'];
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_anterior_k2_value'];
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_axis_anterior_k2_value'];
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_kmax_value'];
                         ?>
                     </div>
-                    <div class="large-1 column">
+                    <div class="cols-1 column">
                         <?php
                         echo $kera['left_thinnest_point_pachymetry_value'];
                         ?>
                     </div>
-                    <div class="large-3 column"></div><br/>
+                    <div class="cols-3 column"></div><br/>
                     <?php
                 }
  ?>
         </div>
     </div>
     <br/>
-        <?php
-    }
-    ?>
+        <?php } ?>

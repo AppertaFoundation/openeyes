@@ -18,8 +18,7 @@
 ?>
 <div class="box admin">
 	<h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'adminform',
             'enableAjaxValidation' => false,
             'focus' => '#contactname',
@@ -39,19 +38,17 @@
 	<?php echo $form->textField($rule, 'refuse_title', array('size' => 90))?>
 	<?php echo $form->textField($rule, 'health_telephone', array('size' => 90))?>
 	<?php if ($rule->children) {?>
-		<div class="row field-row">
-			<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+		<div class="data-group">
+			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:
 				</div>
 			</div>
-			<div class="large-<?php echo 12 - $form->layoutColumns['label'];?> column">
+			<div class="cols-<?php echo 12 - $form->layoutColumns['label'];?> column">
 				<div class="panel" style="margin:0">
-					<?php
-                        $this->widget('CTreeView', array(
-                            'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
-                        ));
-    ?>
+					<?php $this->widget('CTreeView', array(
+					    'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
+          )); ?>
 				</div>
 			</div>
 		</div>

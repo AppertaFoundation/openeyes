@@ -19,20 +19,59 @@
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
+
+// Find all event modifications that occurred per day
+// but remove any consecutive changes by the same user on the same day
+$modifications = Yii::app()->db->createCommand('
+SELECT last_modified_user_id, last_modified_date FROM (
+  SELECT
+    id,
+    last_modified_user_id,
+    last_modified_date,
+    @prev_user                  prev_user,
+    @prev_date                  prev_date,
+    @prev_user := last_modified_user_id curr_user,
+    @prev_date := last_modified_date curr_date
+  FROM event_version, (SELECT
+                           @prev_user := NULL,
+                           @prev_date := NULL) vars
+  WHERE id = :event_id
+  ORDER BY last_modified_Date DESC
+) lagged_events
+WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != prev_user OR prev_user IS NULL'
+)->limit(10)->query(array('event_id' => $event->id));
 ?>
-<div class="metadata">
-	<?php if (!@$hide_created) { ?>
-		<span class="info">
-			<?php echo $event_type ?> created by <span class="user"><?php echo $event->user->fullname ?></span>
-			on <?php echo $event->NHSDate('created_date') ?>
-			at <?php echo date('H:i', strtotime($event->created_date)) ?>
-		</span>
-	<?php } ?>
-	<?php if (!@$hide_modified) { ?>
-		<span class="info">
-			<?php echo $event_type ?> last modified by <span class="user"><?php echo $event->usermodified->fullname ?></span>
-			on <?php echo $event->NHSDate('last_modified_date') ?>
-			at <?php echo date('H:i', strtotime($event->last_modified_date)) ?>
-		</span>
-	<?php } ?>
+
+<div id="js-event-audit-trail" class="oe-popup-event-audit-trail" style="display: none;">
+  <table>
+    <tbody>
+    <?php if (!@$hide_created) { ?>
+      <tr>
+        <td class="title">Created by</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><?php echo $event->user->getFullNameAndTitle(); ?></td>
+        <td><?php echo $event->NHSDate('created_date') ?></td>
+        <td><?php echo date('H:i', strtotime($event->created_date)) ?></td>
+      </tr>
+    <?php } ?>
+    <?php if (!@$hide_modified) { ?>
+      <tr>
+        <td class="title">Last Modified by</td>
+        <td></td>
+        <td></td>
+      </tr>
+        <?php foreach ($modifications as $modification): ?>
+            <?php $modified_user = \User::model()->findByPk($modification['last_modified_user_id']); ?>
+        <tr>
+          <td><?php echo $modified_user->getFullNameAndTitle(); ?></td>
+          <td><?php echo Helper::convertMySQL2NHS($modification['last_modified_date']) ?></td>
+          <td><?php echo date('H:i', strtotime($modification['last_modified_date'])) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    <?php } ?>
+    </tbody>
+  </table>
 </div>

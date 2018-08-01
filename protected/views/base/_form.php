@@ -32,27 +32,57 @@ if (!Yii::app()->user->isGuest) {
     }
     $user = Yii::app()->session['user'];
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
+    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
     ?>
 
-	<div class="panel user">
-		<ul class="oe-user-panel">
-			<li class="oe-user-info">
-				<ul class="oe-user-profile-firm">
-					<li><em>User</em><?= $user->first_name.' '.$user->last_name; ?>
-						<?php if (Yii::app()->params['profile_user_can_edit']) { ?>
-							<a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
-						<?php } ?>
-					</li>
+  <div class="oe-user">
+    <ul class="oe-user-profile-context">
+      <li><em>User</em><?= $user->first_name . ' ' . $user->last_name; ?>
+          <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
+            <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
+          <?php } ?>
+      </li>
 
-					<li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
-					<li><em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
-                        <span class="change-firm"><a href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a></span></li>
-				</ul>
-			</li>
-			<li class="oe-user-home"><a class="oe-user-big-icon home" href="/">Home</a></li>
-			<?= $menuHelper->render() ?>
-			<li class="oe-user-logout"><a class="oe-user-big-icon logout" href="<?= Yii::app()->createUrl('/site/logout'); ?>">Logout</a></li>
-		</ul>
+      <li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
+      <li>
+        <em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
+        <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
+      </li>
+    </ul>
+  </div>
+  <div class="oe-nav">
+    <ul class="oe-big-icons">
+      <li class="oe-nav-btn">
+        <a class="icon-btn" href="/">
+          <svg viewBox="0 0 80 40" class="icon home">
+            <use xlink:href="<?= $navIconUrl . '#home-icon'; ?>"></use>
+          </svg>
+        </a>
+      </li>
+        <?= $menuHelper->render($navIconUrl) ?>
+      <li class="oe-nav-btn">
+        <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
+          <svg viewBox="0 0 80 40" class="icon clinic ">
+            <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
+          </svg>
+        </a>
+      </li>
+      <li class="oe-nav-btn">
+        <div class="nav-js-btn" id="js-nav-hotlist-btn" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
+          <svg viewBox="0 0 80 40" class="icon hotlist">
+            <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
+          </svg>
+        </div>
+      </li>
+      <li class="oe-nav-btn">
+        <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
+          <svg viewBox="0 0 80 40" class="icon logout">
+            <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
+          </svg>
+          <img src="" class="icon-logout"/>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-	</div>
 <?php } ?>

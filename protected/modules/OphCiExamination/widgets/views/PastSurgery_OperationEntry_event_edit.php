@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\PastSurgery_Operation;
+
 ?>
 
 <?php
@@ -25,12 +27,14 @@ if (!isset($values)) {
         'side_id' => $op->side_id,
         'side_display' => $op->side ? $op->side->adjective : 'None',
         'date' => $op->date,
-        'date_display' => $op->getDisplayDate()
+        'date_display' => $op->getDisplayDate(),
+        'had_operation' => $op->had_operation
     );
 }
+$required = isset($required) ? $required : false;
 
 if (isset($values['date']) && strtotime($values['date'])) {
-    list($sel_year, $sel_month, $sel_day) = explode('-', $values['date']);
+    list($sel_year, $sel_month, $sel_day) = array_pad(explode('-', $values['date']), 3,0);
 } else {
     $sel_day = $sel_month = null;
     $sel_year = date('Y');
@@ -41,74 +45,80 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <?php if($removable){ echo "data-key='{$row_count}'"; } ?>
 >
     <td>
-
-        <?php if(!$removable) :?>
+        <?php if (!$removable): ?>
             <?= $values['operation'] ?>
-        <?php else:?>
-
-            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-
-            <?php echo CHtml::dropDownList(null, '',
-                CHtml::listData(CommonPreviousOperation::model()->findAll(
-                    array('order' => 'display_order asc')), 'id', 'name'),
-                array('empty' => '- Select -', 'class' => $model_name . '_operations'))?>
-            <br />
+        <?php else: ?>
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Select from above or type',
+                'placeholder' => 'Click the green plus or type',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
-                )); ?>
-
+            )); ?>
+            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php endif; ?>
-
     </td>
-    <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-
-        <?php if(!$removable) :?>
-            <?= $values['side'] ?>
-        <?php else:?>
-         <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
-
-            <label class="inline">
-                <input type="radio"
-                       name="<?="side_group_name_$row_count"; ?>"
-                       class="<?= $model_name ?>_previous_operation_side"
-                       <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
-                       value="" /> None
-            </label>
-            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
-                <label class="inline">
-                    <input
+    <td id="<?= $model_name ?>_operations_<?=$row_count?>" class="past-surgery-entry has-operation">
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[had_operation]', $posted_not_checked, array('value' => PastSurgery_Operation::$NOT_CHECKED)); ?>
+            Not checked
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[had_operation]', $values['had_operation'] === (string) PastSurgery_Operation::$PRESENT, array('value' => PastSurgery_Operation::$PRESENT)); ?>
+            yes
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[had_operation]', $values['had_operation'] === (string) PastSurgery_Operation::$NOT_PRESENT, array('value' => PastSurgery_Operation::$NOT_PRESENT)); ?>
+            no
+        </label>
+    </td>
+    <?php if(!$removable) : ?>
+        <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+            <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
+                <i class="oe-i laterality R small pad"></i>
+            <?php } ?>
+        </td>
+        <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+            <?php if($values['side']=='Left'||$values['side']=='Both'){ ?>
+                <i class="oe-i laterality L small pad"></i>
+            <?php } ?>
+        </td>
+        <td></td>
+        <td></td>
+    <?php else:?>
+        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
+        <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
+            <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+                <input
                         type="radio" name="<?="side_group_name_$row_count"; ?>"
                         class="<?= $model_name ?>_previous_operation_side"
                         value="<?php echo $eye->id?>"
-                        <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
-                    />
-                    <?php echo $eye->name ?>
-                </label>
-            <?php }?>
-         <?php endif; ?>
-    </td>
-    <td>
-        <?php if(!$removable) :?>
-            <?=Helper::formatFuzzyDate($values['date']) ?>
-        <?php else:?>
-
-            <input type="hidden" name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" />
-
-            <fieldset id="<?= $model_name ?>_fuzzy_date" class="row field-row fuzzy_date" style="padding:0">
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $sel_day, 'sel_month' => $sel_month, 'sel_year' => $sel_year)) ?>
-            </fieldset>
-        <?php endif; ?>
-    </td>
-
-    <?php if($removable) : ?>
-        <td class="edit-column">
-            <button class="button small warning remove">remove</button>
+                    <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
+                />
+            </td>
+        <?php } ?>
+        <td>
+            <input type="radio"
+                   name="<?="side_group_name_$row_count"; ?>"
+                   class="<?= $model_name ?>_previous_operation_side"
+                <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
+                   value="" />
         </td>
-    <?php else: ?>
-        <td>read only <span class="has-tooltip fa fa-info-circle"
-                            data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></span></td>
     <?php endif; ?>
 
+    <td>
+        <?php if (!$removable) :?>
+            <?=Helper::formatFuzzyDate($values['date']) ?>
+        <?php else:?>
+            <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
+            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+        <?php endif; ?>
+    </td>
+    <?php if ($removable && !$required) : ?>
+        <td>
+            <i class="oe-i trash remove_item"></i>
+        </td>
+    <?php elseif(!$required): ?>
+        <td>read only <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></i></td>
+    <?php elseif($required): ?>
+        <td>mandatory <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="<?=$values['operation'];?> is mandatory to collect."></i></td>
+    <?php endif; ?>
 </tr>

@@ -17,18 +17,16 @@
  */
 ?>
 
-<section class="sub-element">
-	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->getElementTypeName() ?></h3>
-	</header>
+<section class="element view full">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->getElementTypeName() ?></h3>
+  </header>
 
-	<div class="sub-element-data">
-		<div class="row data-row">
-			<div class="large-12 column">
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo Yii::app()->format->Ntext($element->comments)?>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="-element-data">
+      <div class="cols-12 column">
+        <div class="data-value<?php if (!$element->procedure) { ?> none<?php } ?>">
+            <?php echo Yii::app()->format->Ntext($element->comments) ?>
+        </div>
+      </div>
+  </div>
 </section>

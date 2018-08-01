@@ -70,7 +70,7 @@ class HistoryMedications extends \BaseEventElementWidget
      *
      * @return array
      */
-    private function getEntriesForUntrackedPrescriptionItems()
+    public function getEntriesForUntrackedPrescriptionItems()
     {
         $untracked = array();
         if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
@@ -174,6 +174,15 @@ class HistoryMedications extends \BaseEventElementWidget
                              'stop_reason_id', 'prescription_item_id') as $k) {
                     $entry->$k = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
                 }
+                if ($entry_data['start_date']){
+                    list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
+                    $entry->start_date = \Helper::padFuzzyDate($start_year, $start_month, $start_day);
+                }
+                if ($entry_data['end_date']){
+                    list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
+                    $entry->end_date = \Helper::padFuzzyDate($end_year, $end_month, $end_day);
+                }
+
                 $entries[] = $entry;
             }
             $element->entries = $entries;

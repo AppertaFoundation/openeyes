@@ -1,7 +1,4 @@
-<div class="row messages patient fixed">
-    <?php $this->renderPartial('//patient/_patient_alerts')?>
-</div>
-<div class="box content row">
+<div class="box content data-group">
 
     <?php if ($this->patient->isDeceased()) {?>
         <div id="deceased-notice" class="alert-box alert with-icon">

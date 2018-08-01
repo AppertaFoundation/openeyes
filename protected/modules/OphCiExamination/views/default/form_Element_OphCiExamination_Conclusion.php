@@ -16,11 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<div class="field-row textMacros">
+<div class="element-fields flex-layout full-width ">
+	<div class="textMacros">
 		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
 	</div>
-	<div class="field-row">
-		<?php echo $form->textArea($element, 'description', array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true))?>
-	</div>
+    <?php echo $form->textArea($element, 'description', array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true))?>
 </div>

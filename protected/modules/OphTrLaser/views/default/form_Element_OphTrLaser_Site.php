@@ -31,13 +31,43 @@ foreach ($lasers as $laser) {
     }
 }
 ?>
-<div class="element-fields">
-	<?php echo $form->dropDownList($element, 'site_id', CHtml::listData($sites, 'id', 'short_name'), array('empty' => '- Please select -'), false, array('label' => 2, 'field' => 3))?>
-	<?php echo $form->dropDownList($element, 'laser_id', CHtml::listData($laser_options, 'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 2, 'field' => 3))?>
-	<div class="field-row">
-		<div class="field-info">
-			<em>Please select a site to see the list of available lasers.</em>
-		</div>
-	</div>
-	<?php echo $form->dropDownList($element, 'operator_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- Please select -'), false, array('label' => 2, 'field' => 3))?>
+<div class="element-fields full-width flex-layout">
+  <table class="cols-10 last-left">
+    <colgroup>
+      <col class="cols-4">
+      <col class="cols-4">
+      <col class="cols-4">
+    </colgroup>
+    <thead>
+    <tr>
+      <th>Site</th>
+      <th>Laser</th>
+      <th>Laser operator</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="col-gap">
+      <td>
+
+
+          <?php echo $form->dropDownList($element, 'site_id',
+              CHtml::listData($sites, 'id', 'short_name'),
+              array('class' => 'cols-full', 'empty' => '- Please select -', 'nowrapper' => true),
+              false) ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList($element, 'laser_id',
+              CHtml::listData($laser_options, 'id', 'name'),
+              array('class' => 'cols-full', 'empty' => '- Please select -', 'nowrapper' => true),
+              false) ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList($element, 'operator_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('class' => 'cols-full', 'empty' => '- Please select -', 'nowrapper' => true),
+              false) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>

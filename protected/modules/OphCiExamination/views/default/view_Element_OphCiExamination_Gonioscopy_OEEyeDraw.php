@@ -16,77 +16,49 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="column fixed">
-	<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-            'side' => ($side == 'right') ? 'R' : 'L',
-            'mode' => 'view',
-            'width' => 200,
-            'height' => 200,
-            'model' => $element,
-            'attribute' => $side.'_eyedraw',
-    ))?>
+<div class="eyedraw-canvas">
+    <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
+        'side' => ($side === 'right') ? 'R' : 'L',
+        'mode' => 'view',
+        'width' => 200,
+        'height' => 200,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw',
+    )) ?>
 </div>
-<div class="column fluid">
-    <div class="row">
-        <div class="column large-4">
-            <div class="data-label"><?= $element->getAttributeLabel($side.'_ed_report') ?>:</div>
-        </div>
-        <div class="column large-8">
-            <div class="data-value">
-                <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
-            </div>
-        </div>
+<div class="eyedraw-data stack">
+
+  <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
+
+    <?php if ($element->{$side . '_description'}) { ?>
+      <div class="data-label"><?= $element->getAttributeLabel($side . '_description') ?>:</div>
+      <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_description'}) ?></div>
+    <?php } ?>
+
+  <div class="shaffer-grade" style="margin-top: 5px;">
+    <div class="data-label">Shaffer Grade:</div>
+    <div class="gonio-cross">
+      <div class="gonio-sup">
+        <span class="data-value">
+          <?php echo $element->{$side . '_gonio_sup'}->name; ?>
+        </span>
+      </div>
+      <div class="gonio-tem">
+        <span class="data-value">
+          <?php echo $element->{$side . '_gonio_tem'}->name; ?>
+        </span>
+      </div>
+      <div class="gonio-nas">
+        <span class="data-value">
+          <?php echo $element->{$side . '_gonio_nas'}->name; ?>
+        </span>
+      </div>
+      <div class="gonio-inf">
+        <span class="data-value">
+          <?php echo $element->{$side . '_gonio_inf'}->name; ?>
+        </span>
+      </div>
     </div>
-
-	<?php if ($element->{$side.'_description'}) {?>
-        <div class="row">
-            <div class="column large-4">
-                <div class="data-label"><?= $element->getAttributeLabel($side.'_description') ?>:</div>
-            </div>
-            <div class="column large-8">
-                <div class="data-value">
-                    <?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
-                </div>
-            </div>
-        </div>
-	<?php }?>
-
-    <div class="shaffer-grade" style="margin-top: 5px;">
-		<div class="data-label">Shaffer Grade:</div>
-		<div class="gonio-cross">
-			<div class="gonio-sup">
-				<span class="data-value">
-					<?php echo $element->{$side.'_gonio_sup'}->name; ?>
-				</span>
-			</div>
-			<div class="gonio-tem">
-				<span class="data-value">
-					<?php echo $element->{$side.'_gonio_tem'}->name; ?>
-				</span>
-			</div>
-			<div class="gonio-nas">
-				<span class="data-value">
-					<?php echo $element->{$side.'_gonio_nas'}->name; ?>
-				</span>
-			</div>
-			<div class="gonio-inf">
-				<span class="data-value">
-					<?php echo $element->{$side.'_gonio_inf'}->name; ?>
-				</span>
-			</div>
-		</div>
-	</div>
-	<div class="data-row">
-		<span class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_van_herick_id') ?>:
-		</span>
-		<span class="data-value">
-			<?php if ($van_herick = $element->{$side.'_van_herick'}) {
-    echo $van_herick->name;
-} else {
-    echo 'NR';
-} ?>
-		</span>
-	</div>
+  </div>
 </div>

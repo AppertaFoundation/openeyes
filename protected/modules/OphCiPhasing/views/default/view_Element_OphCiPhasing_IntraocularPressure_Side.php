@@ -16,31 +16,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($element->{'has'.$side}()) {?>
-	<div class="data-row">
-		<div class="field-value">
-			<?php echo $element->{strtolower($side).'_instrument'}->name ?> <?php if ($element->{strtolower($side).'_dilated'}) { ?>(dilated)<?php } ?>
-		</div>
-	</div>
-	<div class="data-row">
-		<table class="blank">
-			<tbody>
-				<?php foreach ($element->{strtolower($side).'_readings'} as $reading) {?>
-				<tr>
-					<td><?php echo date('G:i', strtotime($reading->measurement_timestamp))?> - </td>
-					<td><?php echo $reading->value ?> mm Hg</td>
-				</tr>
-				<?php }?>
-			</tbody>
-		</table>
-	</div>
-	<?php if ($element->{strtolower($side).'_comments'}) {?>
-		<div class="data-row">
-			<div class="field-value">
-				(<?php echo Yii::app()->format->Ntext($element->{strtolower($side).'_comments'}) ?>)
-			</div>
-		</div>
-	<?php }?>
-<?php }else{?>
-	<div class="data-value">Not recorded</div>
-<?php }?>
+<?php if ($element->{'has' . $side}()) { ?>
+    <div>
+        <?php echo $element->{strtolower($side) . '_instrument'}->name ?> <?php if ($element->{strtolower($side) . '_dilated'}) { ?>(dilated)<?php } ?>
+    </div>
+    <ul>
+        <?php foreach ($element->{strtolower($side) . '_readings'} as $reading) { ?>
+          <li>
+              <?php echo date('G:i', strtotime($reading->measurement_timestamp)) . ' - ' . $reading->value ?> mm Hg
+          </li>
+        <?php } ?>
+    </ul>
+    <?php if ($element->{strtolower($side) . '_comments'}) { ?>
+      <div>
+        (<?php echo Yii::app()->format->Ntext($element->{strtolower($side) . '_comments'}) ?>)
+      </div>
+    <?php } ?>
+<?php } else { ?>
+  <div class="data-value not-recorded">Not recorded</div>
+<?php } ?>

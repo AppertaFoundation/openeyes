@@ -15,7 +15,7 @@
 $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' => 3, 'field' => 9)));
 
 ?>
-    <fieldset class="field-row">
+    <fieldset class="data-group">
 
         <legend><strong><?= $medication->isNewRecord ? 'Add' : 'Edit' ?> medication</strong></legend>
 
@@ -24,7 +24,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         <input type="hidden" name="prescription_item_id" id="prescription_item_id"
                value="<?= $medication->prescription_item_id ?>"/>
 
-        <div class="field-row row">
+        <div class="data-group">
             <div class="<?= $form->columns('label'); ?>">
                 <label for="drug_id">Medication:</label>
             </div>
@@ -33,10 +33,10 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <input type="hidden" name="drug_id" value="<?= $medication->drug_id ?>"/>
                 <input type="hidden" name="medication_drug_id" value="<?= $medication->medication_drug_id ?>"/>
 
-                <div class="field-row data-value"
+                <div class="data-value"
                      id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
 
-                <div class="field-row">
+                <div class="data-group">
                     <?= CHtml::dropDownList(
                         'drug_select',
                         '',
@@ -45,10 +45,9 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                     ) ?>
                 </div>
 
-                <div class="field-row">
+                <div class="data-group">
                     <div class="label"></div>
                     <?php
-
                     $this->widget('zii.widgets.jui.CJuiAutoComplete',
                         array(
                             'name' => 'drug_autocomplete',
@@ -117,7 +116,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             )
         ); ?>
 
-        <div class="row field-row">
+        <div class="data-group">
             <div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
             <div class="<?= $form->columns('field') ?>">
                 <label

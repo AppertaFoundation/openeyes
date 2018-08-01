@@ -16,14 +16,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<ul class="inline-list tabs event-actions">
-	<?php foreach ($this->event_tabs as $tab) { ?>
-	<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-		<?php if (@$tab['href']) { ?>
-			<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-		<?php } else { //FIXME: don't select?>
-			<a href="#"><?php echo $tab['label'] ?></a>
-		<?php } ?>
-	</li>
-	<?php } ?>
-</ul>
+
+<?php
+// Strip whitespace between HTML tags to prevent gaps between tabs
+ob_start(function ($buffer) {
+    return preg_replace('/>\s+</', '><', $buffer);
+}); ?>
+
+<?php if ($this->event): ?>
+  <?php echo $this->event->getEventIcon('medium'); ?>
+<?php endif; ?>
+<?php foreach ($this->event_tabs as $tab) { ?>
+    <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button header-tab <?php if (@$tab['active']) { ?>selected<?php } ?>">
+        <?php echo $tab['label'] ?>
+    </a>
+<?php } ?>
+
+<?php if ($this->action->id === 'create' || $this->action->id === 'update'): ?>
+  <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+    <i class="oe-i search"></i>
+  </button>
+<?php endif; ?>
+
+<?php ob_get_flush() ?>

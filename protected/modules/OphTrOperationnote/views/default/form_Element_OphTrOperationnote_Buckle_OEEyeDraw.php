@@ -19,7 +19,11 @@
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        0 => 'CircumferentialBuckle', 'EncirclingBand', 'RadialSponge', 'BuckleSuture', 'DrainageSite',
+        0 => 'CircumferentialBuckle',
+        'EncirclingBand',
+        'RadialSponge',
+        'BuckleSuture',
+        'DrainageSite',
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('BuckleOperation')),

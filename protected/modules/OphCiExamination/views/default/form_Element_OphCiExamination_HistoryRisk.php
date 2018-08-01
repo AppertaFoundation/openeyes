@@ -17,16 +17,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-fields">
-    <div class="field-row row">
-        <div class="large-6 column">
+<div class="element-fields flex-layout full-width ">
+    <div class="data-group">
+        <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,
                 'anticoagulant',
                 array(
-                    0 => 'Not Checked',
                     1 => 'Yes',
                     2 => 'No',
+                    0 => 'Not Checked',
                 ),
                 ($element->anticoagulant !== null) ? $element->anticoagulant : 0,
                 false,
@@ -43,7 +43,7 @@
                 ));
             ?>
         </div>
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <?php $form->textField(
                 $element,
                 'anticoagulant_name',
@@ -56,15 +56,15 @@
             ); ?>
         </div>
     </div>
-    <div class="field-row row">
-        <div class="large-6 column">
+    <div class="data-group">
+        <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,
                 'alphablocker',
                 array(
-                    0 => 'Not Checked',
                     1 => 'Yes',
                     2 => 'No',
+                    0 => 'Not Checked',
                 ),
                 ($element->alphablocker !== null) ? $element->alphablocker : 0,
                 false,
@@ -81,7 +81,7 @@
                 ));
             ?>
         </div>
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <?php $form->textField(
                 $element,
                 'alpha_blocker_name',

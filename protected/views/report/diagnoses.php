@@ -29,13 +29,13 @@
 
 		<input type="hidden" name="report-name" value="Diagnoses" />
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="start_date">
 					Start date:
 				</label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'start_date',
                     'options' => array(
@@ -47,13 +47,13 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="end_date">
 					End date:
 				</label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'end_date',
                     'options' => array(
@@ -65,8 +65,7 @@
 			</div>
 		</div>
 
-		<div class="row field-row">
-			<div class="large-12 column end">
+    <div class="cols-12 column end">
 				<div class="whiteBox forClinicians">
 					<div class="data_row">
 						<table class="subtleWhite">
@@ -83,7 +82,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 
 		<div id="selected_diagnoses">
 		</div>
@@ -95,20 +93,20 @@
                 'callback' => 'Reports_AddDiagnosis',
         ))?>
 
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
 				<label for="condition_or">
 					Match patients with <strong>any</strong> of these diagnoses
 				</label>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 			</div>
-			<div class="large-9 column end">
+			<div class="cols-9 column end">
 				<input type="radio" name="condition_type" id="condition_and" value="and" />
 				<label for="condition_and">
 					Match patients with <strong>all</strong> of these diagnoses

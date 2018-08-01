@@ -16,9 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<?php echo $form->dropDownList($element, 'gas_type_id', 'OphTrOperationnote_GasType', array('empty' => '- Please select -'), false, array('field' => 2))?>
-	<?php echo $form->dropDownList($element, 'gas_percentage_id', CHtml::listData(OphTrOperationnote_GasPercentage::model()->findAll(array('order' => 'display_order')), 'id', 'value'), array('empty' => '- Please select -'), false, array('field' => 2))?>
-	<?php echo $form->dropDownList($element, 'gas_volume_id', CHtml::listData(OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAll(array('order' => 'display_order')), 'id', 'value'), array('empty' => '- Please select -'), false, array('field' => 2))?>
+<div class="element-fields full-width">
+    <?php echo $form->dropDownList($element, 'gas_type_id', 'OphTrOperationnote_GasType',
+        array('empty' => '- Please select -'), false, array('field' => 2)) ?>
+    <?php echo $form->dropDownList($element, 'gas_percentage_id',
+        CHtml::listData(OphTrOperationnote_GasPercentage::model()->findAll(array('order' => 'display_order')), 'id',
+            'value'), array('empty' => '- Please select -'), false, array('field' => 2)) ?>
+    <?php echo $form->dropDownList($element, 'gas_volume_id',
+        CHtml::listData(OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAll(array('order' => 'display_order')),
+            'id', 'value'), array('empty' => '- Please select -'), false, array('field' => 2)) ?>
 </div>
 

@@ -16,14 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row">
-	<div class="large-12 column">
-		<h2>Results:</h2>
-	</div>
+<div class="cols-12 column">
+  <h2>Results:</h2>
 </div>
 
-<div class="row">
-	<div class="large-12 column">
+<div class="cols-12 column">
 		<div class="box generic">
 			<?php
             if (empty($data['items'])) {?>
@@ -51,12 +48,11 @@
 					</thead>
 					<tbody id="auditListData">
 						<?php foreach ($data['files_data'] as $i => $log) {
-                            $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
-                        }?>
+						  $this->renderPartial('//dicomlogviewer/_list_row', array('i' => $i, 'log' => $log));
+						}?>
 					</tbody>
 				</table>
 				<div class="pagination last"></div>
 			<?php }?>
 		</div>
 	</div>
-</div>

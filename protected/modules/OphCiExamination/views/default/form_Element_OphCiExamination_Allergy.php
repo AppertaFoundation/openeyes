@@ -16,13 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-  <div class="field-row row">
-    <div class="large-12 column">
+<div class="element-fields flex-layout full-width ">
+  <div class="cols-12 column">
         <?php if ($this->checkAccess('OprnEditAllergy')) { ?>
           <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_Allergy[allergy_loaded]" value="1">
           <div id="add_allergy">
-            <div class="allergies_confirm_no field-row row" style="display: none;">
+            <div class="allergies_confirm_no data-group" style="display: none;">
               <div class="allergies">
                 <div class="<?php echo $form->columns('label'); ?>">
                   <label for="no_allergies">Confirm patient has no allergies:</label>
@@ -36,7 +35,7 @@
             <input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value=""/>
             <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
 
-            <div class="row field-row allergy_field">
+            <div class="data-group allergy_field">
               <div class="<?php echo $form->columns('label'); ?>">
                 <label for="allergy_id">Add allergy:</label>
               </div>
@@ -48,7 +47,7 @@
                       CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
               </div>
             </div>
-            <div id="allergy_other" class="row field-row hidden">
+            <div id="allergy_other" class="data-group hidden">
               <div class="<?php echo $form->columns('label'); ?>">
                 <label for="allergy_id">Other allergy:</label>
               </div>
@@ -56,7 +55,7 @@
                   <?= CHtml::textField('other_allergy', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
               </div>
             </div>
-            <div class="field-row row allergy_field">
+            <div class="data-group allergy_field">
               <div class="<?php echo $form->columns('label'); ?>">
                 <label for="comments">Comments:</label>
               </div>
@@ -65,16 +64,14 @@
               </div>
             </div>
 
-            <div class="buttons large-12 column">
+            <div class="buttons cols-12 column">
               <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_allergy_loader" style="display: none;"/>
               <button type="button" class="secondary small btn_save_allergy right">Add</button>
             </div>
           </div>
         <?php } ?>
     </div>
-  </div>
-  <div class="field-row row">
-    <div class="large-12 column">
+  <div class="cols-12 data-group column">
       <table>
         <thead>
         <tr>
@@ -116,5 +113,4 @@
         </tbody>
       </table>
     </div>
-  </div>
 </div>

@@ -16,33 +16,71 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<div class="element-fields">
-
-	<?php echo $form->hiddenField($element, 'booking_event_id')?>
-
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
-	<?php $form->widget('application.widgets.ProcedureSelection', array(
-        'element' => $element,
-        'durations' => false,
-        'identifier' => 'procedures',
-        'read_only' => !@$_GET['unbooked'],
-        'restrict' => 'unbooked',
-        'restrict_common' => 'unbooked',
-    ))?>
-
-    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
-        false, false, false, false,
-        array(
-            'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
-        )
-    ); ?>
-
-	<?php $form->widget('application.widgets.ProcedureSelection', array(
-        'element' => $element,
-        'durations' => false,
-        'relation' => 'additional_procedures',
-        'label' => 'Additional procedures',
-        'identifier' => 'additional',
-        'headertext' => 'Any extra procedures which may become necessary during the procedure.',
-    ))?>
-</div>
+<table class="cols-full">
+  <tbody>
+  <?php echo $form->hiddenField($element, 'booking_event_id')?>
+  <tr>
+    <td>
+        <?php echo CHtml::encode($element->getAttributeLabel('eye_id')); ?>
+    </td>
+    <td>
+      <?php echo $form->radioButtons(
+          $element,
+          'eye_id',
+          CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+          null, false, false,false,false,
+          array('nowrapper' => true),
+          array()
+      )?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
+    </td>
+    <td>
+        <?php echo $form->checkBoxes(
+            $element,
+            'AnaestheticType',
+            'anaesthetic_type',
+            'Anaesthetic Type',
+            false, false, false, false,
+            array(
+                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : '',
+                'nowrapper' => true
+            )
+        ); ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Procedures</td>
+    <td>
+        <?php $form->widget('application.widgets.ProcedureSelection', array(
+            'element' => $element,
+            'durations' => false,
+            'identifier' => 'procedures',
+            'read_only' => !@$_GET['unbooked'],
+            'restrict' => 'unbooked',
+            'restrict_common' => 'unbooked',
+            'label' =>''
+        ))?>
+    </td>
+  </tr>
+  <tr>
+    <td>Additional procedures</td>
+    <td>
+        <?php $form->widget('application.widgets.ProcedureSelection', array(
+            'element' => $element,
+            'durations' => false,
+            'relation' => 'additional_procedures',
+            'identifier' => 'additional',
+            'label' => '',
+            'headertext' => 'Any extra procedures which may become necessary during the procedure.',
+        ))?>
+    </td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>

@@ -23,32 +23,27 @@
 	<?php $this->renderPartial('//base/head/_assets'); ?>
 	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
-
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
-
-	<div class="container main" role="main">
-
-		<?php $this->renderPartial('//base/_header'); ?>
-
-		<div class="container content">
-
-			<div class="box content admin-content">
-				<div class="row">
-					<aside class="large-3 column sidebar admin">
-						<?php $this->renderPartial('//profile/sidebar'); ?>
-					</aside>
-					<div class="large-9 column">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-
-		</div><!-- /.content -->
-
-		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
+<body class="open-eyes oe-grid">
+<?php $this->renderPartial('//base/_debug'); ?><!-- Branding (logo) -->
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+<?php $this->renderPartial('//base/_header'); ?>
+<div class="oe-full-header flex-layout">
+  <div class="title wordcaps">User:
+    <b><?php
+        $user = Yii::app()->session['user'];
+        echo $user->title.' '.$user->first_name . ' ' . $user->last_name; ?>
+    </b>
+  </div>
+</div>
+	<div class="oe-full-content oe-user-profile flex-layout flex-top">
+      <nav class="oe-full-side-panel">
+          <?php $this->renderPartial('//profile/sidebar'); ?>
+      </nav>
+      <main class="oe-full-main">
+          <?php echo $content; ?>
+      </main>
+  </div><!-- /.content -->
 </body>
 </html>

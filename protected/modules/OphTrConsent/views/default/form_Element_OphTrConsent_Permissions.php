@@ -15,7 +15,28 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
-<div class="element-fields">
-	<?= $form->radioButtons($element, 'images_id', 'OphTrConsent_Permissions_Images') ?>
+?>
+<div class="element-fields full-width">
+  <table class="cols-11 last-left">
+    <colgroup>
+      <col class="cols-5">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Agree for use in audit, education and publication:</td>
+      <td>
+        <fieldset>
+            <?= $form->radioButtons(
+                $element,
+                'images_id',
+                'OphTrConsent_Permissions_Images',
+                null, false, false, false, false,
+                array('nowrapper' => true),
+                null
+            ) ?>
+        </fieldset>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>

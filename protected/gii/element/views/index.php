@@ -70,7 +70,7 @@ $('.form .row.model-class').toggle($('#{$class}_elementName').val().substring($(
 if ($model->level == $model::CREATE_MIGRATION) {
     // Element name
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'elementName');
     echo $form->textField($model, 'elementName', array('size' => 65));
@@ -85,7 +85,7 @@ if ($model->level == $model::CREATE_MIGRATION) {
 
     // Migration path
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'migrationPath');
     echo $form->textField($model, 'migrationPath', array('size' => 65, 'value' => 'application.migrations'));
@@ -101,7 +101,7 @@ if ($model->level == $model::CREATE_MIGRATION) {
 
     // Element table fields
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'elementFields');
     echo $form->textArea($model, 'elementFields', array('style' => 'width: 344px; height: 150px;'));
@@ -203,7 +203,7 @@ if ($model->level == $model::CREATE_MIGRATION) {
 
     // Table name
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'tableName');
     echo $form->textField($model, 'tableName', array('size' => 65));
@@ -229,7 +229,7 @@ if ($model->level == $model::CREATE_FILES) {
 
     // Class name
     echo '
-    <div class="row model-class">
+    <div class="data-group model-class">
     ';
     echo "\t".$form->label($model, 'modelClass', array('required' => true));
     echo $form->textField($model, 'modelClass', array('size' => 65));
@@ -244,7 +244,7 @@ if ($model->level == $model::CREATE_FILES) {
 
     // Base class
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'baseClass');
     echo $form->textField($model, 'baseClass', array('size' => 65));
@@ -260,7 +260,7 @@ if ($model->level == $model::CREATE_FILES) {
 
     // Model path
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'modelPath');
     echo $form->textField($model, 'modelPath', array('size' => 65));
@@ -276,7 +276,7 @@ if ($model->level == $model::CREATE_FILES) {
 
     // Controller class
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'controllerClass');
     echo $form->textField($model, 'controllerClass', array('size' => 65));
@@ -292,7 +292,7 @@ if ($model->level == $model::CREATE_FILES) {
 
     //Base controller class
     echo '
-    <div class="row">
+    <div class="data-group">
     ';
     echo "\t".$form->labelEx($model, 'baseControllerClass');
     echo $form->textField($model, 'baseControllerClass', array('size' => 65));

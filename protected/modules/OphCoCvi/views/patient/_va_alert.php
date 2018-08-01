@@ -16,10 +16,18 @@
  */
 ?>
 
-<br clear="all" class="hidden"/><div class="cvi-alert alert-box warning <?= $visible ? '': ' hidden' ?>" data-alert="CVI may be applicable" data-threshold="<?= $threshold ?>">
-    CVI may be applicable
-    <a class="dismiss_cva_alert dismiss right" href="javascript:void(0)">dismiss</a>
-    <?php if($show_create): ?>
-        <a class="create-cvi create right" href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create', array('patient_id' => $this->patient->id) ); ?>">create</a>
-    <?php endif; ?>
+<div class="cvi-alert alert-box alert flex-layout" data-alert="CVI may be applicable"
+     data-threshold="<?= $threshold ?>" <?php if (!$visible): ?>style="display: none"<?php endif; ?>>
+  This patient may be eligible for a Certificate of Visual Impairment
+  <span class="right">
+      <?php if ($show_create): ?>
+        <a class="button create-cvi hint green"
+                href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
+                    array('patient_id' => $this->patient->id)); ?>">
+
+          Create CVI
+        </a>
+      <?php endif; ?>
+    <i class="oe-i remove-circle small dismiss_cva_alert dismiss right"></i>
+    </span>
 </div>

@@ -20,12 +20,12 @@
 <li class="queue<?= $queue->active ? '' : ' inactive'?>">
 	<div class="description"><?= $queue->name ?></div>
 	<div class="actions" data-queue-id="<?=$queue->id?>">
-		<span class="edit admin-action has-tooltip" data-tooltip="edit">e</span> -
-		<span class="add-child admin-action has-tooltip" data-tooltip="add">+</span> -
-		<span class="active-toggle admin-action has-tooltip" data-tooltip="<?= $queue->active ? 'deactivate' : 'activate' ?>"><?= $queue->active ? 'x' : 'o' ?></span> -
+		<span class="edit admin-action js-has-tooltip" data-tooltip-content="edit">e</span> -
+		<span class="add-child admin-action js-has-tooltip" data-tooltip-content="add">+</span> -
+		<span class="active-toggle admin-action js-has-tooltip" data-tooltip-content="<?= $queue->active ? 'deactivate' : 'activate' ?>"><?= $queue->active ? 'x' : 'o' ?></span> -
 		<span class="expansion-controls">
-			<span class="show-children has-tooltip" data-tooltip="expand" style="display:none;">\/</span>
-			<span class="hide-children has-tooltip" data-tooltip="collapse">/\</span>
+			<span class="show-children js-has-tooltip" data-tooltip-content="expand" style="display:none;">\/</span>
+			<span class="hide-children js-has-tooltip" data-tooltip-content="collapse">/\</span>
 		</span>
 	</div>
 

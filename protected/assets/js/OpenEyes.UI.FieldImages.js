@@ -60,8 +60,9 @@
 	 */
 	FieldImages.prototype.createDiag = function(fieldElId) {
 		this.options.dialog = new OpenEyes.UI.Dialog({
-			title: this.options.title,
-			content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId)
+			title: $('#' + fieldElId).data('popupTitle'),
+			content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId),
+			width: 460
 		});
 		this.options.dialog.open();
 	};
@@ -95,6 +96,11 @@
 			},function(e) {
 				$( "#"+ e.data.selectId).val(e.data.val);
 				e.data.fieldImgInstance.options.dialog.close();
+
+				var nextPopupId = $( "#"+ e.data.selectId).data('nextPopupId');
+				if (nextPopupId) {
+          e.data.fieldImgInstance.createDiag(nextPopupId);
+        }
 			});
 			var valPar = $('<p class="ui-field-image-val">' + sval + '</p>');
 			if(imgPath){

@@ -18,17 +18,12 @@
 ?>
 
 
-<section class="box patient-info associated-data js-toggle-container">
-	<header class="box-header">
-		<h3 class="box-title">
+<section class="element patient-info associated-data js-toggle-container">
+	<header class="element-header">
+		<h3 class="element-header">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Allergies
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide js-toggle">
-			<span class="icon-showhide">
-				Show/hide this section
-			</span>
-		</a>
 	</header>
 	<div class="js-toggle-body">
         <?php $this->widget('OEModule\OphCiExamination\widgets\Allergies', array(

@@ -16,36 +16,94 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields element-eyes row">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php echo $form->dropDownList($element, 'right_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->right_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php echo $form->dropDownList($element, 'left_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->left_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)) ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+<div class="element-fields element-eyes">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
+        <div class="active-form flex-layout"
+             style="<?php if (!$element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+          <table class="cols-10">
+            <tbody>
+            <tr>
+              <td>
+                  <?= $element->getAttributeLabel($eye_side . '_rapd') ?>
+              </td>
+              <td>
+                  <?php
+                  echo $form->radioButtons(
+                      $element,
+                      $eye_side . '_rapd',
+                      array(
+                          1 => 'Yes',
+                          2 => 'No',
+                          0 => 'Not Checked',
+                      ),
+                      ($element->{$eye_side . '_rapd'} !== null) ? $element->{$eye_side . '_rapd'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
+                          'nowrapper' => true,
+                      )
+                  );
+                  ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                  <?= $element->getAttributeLabel($eye_side . '_abnormality_id') ?>
+              </td>
+              <td>
+                  <?php echo $form->dropDownList($element, $eye_side . '_abnormality_id',
+                      $this->getPupilliaryAbnormalitiesList($element->{$eye_side . '_abnormality_id'}),
+                      array('empty' => '-- Select --', 'nowrapper' => true),
+                      false, array('nowrapper' => true)); ?>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="js-comment-container"
+                  style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;"
+                  data-comment-button="#pupils-<?= $eye_side ?>-comment_button">
+                <div class="flex-layout flex-left comment-group">
+                  <?php
+                  echo $form->textArea(
+                      $element,
+                      $eye_side . '_comments',
+                      array('nowrapper' => true),
+                      false,
+                      array(
+                          'class' => 'js-comment-field',
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
+                      )
+                  )
+                  ?>
+                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="add-data-actions flex-item-bottom">
+            <button id="pupils-<?= $eye_side ?>-comment_button"
+                    class="button js-add-comments"
+                    data-comment-container="#pupils-<?= $eye_side ?>-comments"
+                    style="<?php if ($element->{$eye_side . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
+                    type="button">
+              <i class="oe-i comments small-icon"></i>
+            </button>
+          </div>
+
+        </div>
+        <div class="inactive-form"
+             style="<?php if ($element->hasEye($eye_side)) { ?>display: none;<?php } ?>">
+          <div class="add-side">
+            <a href="#">
+              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
 </div>

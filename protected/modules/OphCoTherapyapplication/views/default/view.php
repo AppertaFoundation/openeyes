@@ -65,7 +65,7 @@ if (!$warnings && !$this->event->isLocked()) {
     }
 }
 
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
 
 	<?php $this->renderPartial('//base/_messages'); ?>
@@ -88,5 +88,5 @@ $this->beginContent('//patient/event_container');
 
 	<?php $this->renderOpenElements($this->action->id, false, array('status' => $status))?>
 	<?php $this->renderPartial('emails', array('service' => $service)) ?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

@@ -17,10 +17,9 @@
  */
 ?>
 
-
 <div class="box content">
-	<div class="oe-header-panel row">
-		<div class="large-12 column">
+	<div class="oe-header-panel">
+		<div class="cols-12 column">
 			<h1>Partial bookings waiting list</h1>
 			<div class="panel actions">
 
@@ -72,15 +71,14 @@
 		</div>
 	</div>
 
-
-	<div id="waitinglist_display" class="row">
-		<div class="large-12 column">
+	<div id="waitinglist_display">
+		<div class="cols-12 column">
 			<h2>Search partial bookings waiting lists by:</h2>
 		</div>
 	</div>
-	<form class="row search-filters waiting-list" method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
+	<form class="data-group search-filters waiting-list" method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<div class="large-12 column">
+		<div class="cols-12 column">
 			<div class="panel">
 				<table class="grid">
 					<thead>
@@ -135,11 +133,11 @@
 			</div>
 		</div>
 	</form>
-	<div class="row">
-		<div id="searchResults" class="large-12 column">
+	<div class="data-group">
+		<div id="searchResults" class="cols-12 column">
 
 		</div>
-		<div id="search-loading-msg" class="large-12 column hide">
+		<div id="search-loading-msg" class="cols-12 column hide">
 			<div class="alert-box">
 				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" class="spinner" /> <strong>Searching, please wait...</strong>
 			</div>

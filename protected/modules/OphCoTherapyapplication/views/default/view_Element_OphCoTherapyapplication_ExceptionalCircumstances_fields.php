@@ -16,202 +16,240 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<table class="label-value no-left">
+  <colgroup>
+    <col class="cols-5">
+  </colgroup>
+  <tbody>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_standard_intervention_exists') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo $element->{$side . '_standard_intervention_exists'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_standard_intervention_exists') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_standard_intervention_exists'} ? 'Yes' : 'No'?></div>
-	</div>
-</div>
+  <?php if ($element->{$side . '_standard_intervention_exists'}) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_standard_intervention_id') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo $element->{$side . '_standard_intervention'}->name ?>
+      </td>
+    </tr>
 
-<?php if ($element->{$side.'_standard_intervention_exists'}) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_standard_intervention_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_standard_intervention'}->name ?></div>
-		</div>
-	</div>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_standard_previous') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo $element->{$side . '_standard_previous'} ? 'Yes' : 'No' ?>
+      </td>
+    </tr>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_standard_previous') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_standard_previous'} ? 'Yes' : 'No' ?></div>
-		</div>
-	</div>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_intervention_id') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo $element->{$side . '_intervention'}->name ?>
+      </td>
+    </tr>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_intervention_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_intervention'}->name ?></div>
-		</div>
-	</div>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_description') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo Yii::app()->format->Ntext($element->{$side . '_description'}) ?>
+      </td>
+    </tr>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_description') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_description'}) ?></div>
-		</div>
-	</div>
+      <?php if ($element->needDeviationReasonForSide($side)) { ?>
+      <tr>
+        <td>
+          <div class="data-label">
+              <?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:
+          </div>
+        </td>
+        <td>
+          <ul>
+              <?php foreach ($element->{$side . '_deviationreasons'} as $dr) {
+                  echo '<li>' . $dr->name . '</li>';
+              } ?>
+          </ul>
+        </td>
+      </tr>
+      <?php } ?>
+  <?php } else { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_condition_rare') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo $element->{$side . '_condition_rare'} ? 'Yes' : 'No' ?>
+      </td>
+    </tr>
 
-	<?php if ($element->needDeviationReasonForSide($side)) { ?>
-		<div class="row data-row">
-			<div class="large-4 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel($side.'_deviationreasons') ?>:</div>
-			</div>
-			<div class="large-8 column">
-				<div class="data-value">
-					<ul>
-						<?php foreach ($element->{$side.'_deviationreasons'} as $dr) {
-                            echo '<li>'.$dr->name.'</li>';
-                        }?>
-					</ul>
-				</div>
-			</div>
-		</div>
-	<?php }?>
-<?php } else { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_condition_rare') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_condition_rare'} ? 'Yes' : 'No' ?></div>
-		</div>
-	</div>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_incidence') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo Yii::app()->format->Ntext($element->{$side . '_incidence'}) ?>
+      </td>
+    </tr>
+  <?php } ?>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_incidence') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_incidence'}) ?></div>
-		</div>
-	</div>
-<?php }?>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_different') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_different'}) ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_patient_different') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_patient_different'}) ?></div>
-	</div>
-</div>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_gain') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_gain'}) ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_patient_gain') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_patient_gain'}) ?></div>
-	</div>
-</div>
+  <?php if ($element->{$side . '_previnterventions'}) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_previnterventions') ?>:
+        </div>
+      </td>
+      <td>
+          <?php foreach ($element->{$side . '_previnterventions'} as $previntervention) {
+              $this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
+                  'pastintervention' => $previntervention,
+              ));
+          }
+          ?>
+      </td>
+    </tr>
+  <?php } ?>
 
-<?php if ($element->{$side.'_previnterventions'}) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_previnterventions') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<?php
-                foreach ($element->{$side.'_previnterventions'} as $previntervention) {
-                    $this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
-                        'pastintervention' => $previntervention,
-                    ));
-                }
-            ?>
-		</div>
-	</div>
-<?php } ?>
+  <?php if ($element->{$side . '_relevantinterventions'}) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?>:
+        </div>
+      </td>
+      <td>
+          <?php
+          foreach ($element->{$side . '_relevantinterventions'} as $relevantintervention) {
+              $this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
+                  'pastintervention' => $relevantintervention,
+              ));
+          }
+          ?>
+      </td>
+    </tr>
+  <?php } ?>
 
-<?php if ($element->{$side.'_relevantinterventions'}) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_relevantinterventions') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<?php
-            foreach ($element->{$side.'_relevantinterventions'} as $relevantintervention) {
-                $this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
-                        'pastintervention' => $relevantintervention,
-                    ));
-            }
-            ?>
-		</div>
-	</div>
-<?php } ?>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_factors') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo $element->{$side . '_patient_factors'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_patient_factors') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_patient_factors'} ? 'Yes' : 'No'?></div>
-	</div>
-</div>
+  <?php if ($element->{$side . '_patient_factors'}) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_patient_factor_details') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_factor_details'}) ?>
+      </td>
+    </tr>
+  <?php } ?>
 
-<?php if ($element->{$side.'_patient_factors'}) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_patient_factor_details') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_patient_factor_details'}) ?></div>
-		</div>
-	</div>
-<?php } ?>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_expectations') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_expectations'}) ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_patient_expectations') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_patient_expectations'}) ?></div>
-	</div>
-</div>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_start_period_id') ?>:
+      </div>
+    </td>
+    <td>
+        <?php echo $element->{$side . '_start_period'}->name ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_start_period_id') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_start_period'}->name ?></div>
-	</div>
-</div>
+  <?php if ($element->{$side . '_start_period'}->urgent) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_urgency_reason') ?>:
+        </div>
+      </td>
+      <td>
+          <?php echo Yii::app()->format->Ntext($element->{$side . '_urgency_reason'}) ?>
+      </td>
+    </tr>
+  <?php } ?>
 
-<?php if ($element->{$side.'_start_period'}->urgent) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_urgency_reason') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo Yii::app()->format->Ntext($element->{$side.'_urgency_reason'}) ?></div>
-		</div>
-	</div>
-<?php } ?>
-
-<?php if ($element->{$side.'_filecollections'} && (isset($status) && ($status != OphCoTherapyapplication_Processor::STATUS_SENT))) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_filecollections') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<ul style="display: inline-block">
-		<?php foreach ($element->{$side.'_filecollections'} as $filecoll) { ?>
-		<li><a href="<?php echo $filecoll->getDownloadURL() ?>"><?php echo $filecoll->name ?></a></li>
-		<?php } ?>
-		</ul></div>
-		</div>
-	</div>
-<?php } ?>
+  <?php if ($element->{$side . '_filecollections'} && (isset($status) && ($status != OphCoTherapyapplication_Processor::STATUS_SENT))) { ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_filecollections') ?>:
+        </div>
+      </td>
+      <td>
+        <ul style="display: inline-block">
+            <?php foreach ($element->{$side . '_filecollections'} as $filecoll) { ?>
+              <li><a href="<?php echo $filecoll->getDownloadURL() ?>"><?php echo $filecoll->name ?></a></li>
+            <?php } ?>
+        </ul>
+      </td>
+    </tr>
+  <?php } ?>
+  </tbody>
+</table>

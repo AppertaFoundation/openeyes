@@ -17,83 +17,97 @@
  */
 ?>
 
-<section class="<?php echo $type; ?> box patient-info js-toggle-container">
+<section class="<?php echo $type; ?> box patient-info js-toggle-container element">
 	<h3 class="box-title">Personal Details:</h3>
 	
         <?php echo CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
         
 	<div class="js-toggle-body">
-            
-            <div class="row data-row">
-                <div class="large-4 column">
+        <table class="cols-12">
+            <tbody class="cols-12">
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
+                    <div class="large-4 column">
                         <div class="data-label">Hospital No.</div>
-                </div>
-                <div class="large-8 column">
-                    <div style="line-height:1.3">
-                        <div class="hospital-number">
-                            <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
-                            <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
+                    </div>
+                    <div class="large-8 column">
+                        <div style="line-height:1.3">
+                            <div class="hospital-number">
+                                <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
+                                <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row data-row">
-                <div class="large-4 column">
-                        <div class="data-label">NHS Number:</div>
-                </div>
-                <div class="large-8 column">
-                    <div class="">
-                        <!-- NHS number -->
-                        <div class="nhs-number">
+                </td>
+            </tr>
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
+                    <div class="large-8 column">
+                        <div class="">
+                            <!-- NHS number -->
+                            <div class="nhs-number">
                                 <span class="hide-text print-only">
                                     NHS number:
                                 </span>
                                 <span data-default="000 000 0000" class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
                                 <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="row data-row">
+                </td>
+            </tr>
+
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
                     <div class="large-4 column">
-                            <div class="data-label">First name(s):</div>
+                        <div class="data-label">First name(s):</div>
                     </div>
                     <div class="large-8 column">
                         <div class="data-value first_name">
-                           <?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->first_name; ?>
+                            <?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->first_name; ?>
                         </div>
                     </div>
-            </div>
+                </td>
+            </tr>
 
-            <div class="row data-row">
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
                     <div class="large-4 column">
-                            <div class="data-label">Last name:</div>
+                        <div class="data-label">Last name:</div>
                     </div>
                     <div class="large-8 column">
-                            <div class="data-value last_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?></div>
+                        <div class="data-value last_name"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->last_name; ?></div>
                     </div>
-            </div>
-           
-            <div class="row data-row">
+                </td>
+            </tr>
+
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
                     <div class="large-4 column">
-                            <div class="data-label">Date of Birth:</div>
+                        <div class="data-label">Date of Birth:</div>
                     </div>
                     <div class="large-8 column">
-                            <div class="data-value dob"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->NHSDate('dob'); ?></div>
-                            <?php echo CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
+                        <div class="data-value dob"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->NHSDate('dob'); ?></div>
+                        <?php echo CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
                     </div>
-            </div>
+                </td>
+            </tr>
 
-		<div class="row data-row">
-			<div class="large-4 column">
-				<div class="data-label">Gender:</div>
-			</div>
-			<div class="large-8 column">
-				<div class="data-value gender"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->getGenderString(); ?></div>
-                                <?php echo CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
-			</div>
-		</div>
+            <tr class="cols-full">
+                <td class="cols-full" style="text-align: left">
+                    <div class="large-4 column">
+                        <div class="data-label">Gender:</div>
+                    </div>
+                    <div class="large-8 column">
+                        <div class="data-value gender"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->getGenderString(); ?></div>
+                        <?php echo CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+            
+
 	</div>
 </section>
 

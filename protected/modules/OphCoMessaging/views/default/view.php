@@ -14,17 +14,23 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 ?>
+
+<div class="event-title-extra-info" id="event-title-extra-info">
+    <span class="extra-info">
+        <?php echo Helper::convertDate2NHS($this->event->event_date); ?>
+    </span>
+</div>
 
 <?php
 // Event actions
 if ($this->canMarkRead()) {
     $this->event_actions[] = EventAction::link('Mark Read',
-        Yii::app()->createUrl($this->getModule()->name.'/Default/markRead/'.$this->event->id), null, array('class' => 'warning button small'));
+        Yii::app()->createUrl($this->getModule()->name.'/Default/markRead/'.$this->event->id), null, array('class' => 'red button small'));
 } elseif ($this->canMarkUnread()) {
     $this->event_actions[] = EventAction::link('Mark Unread',
-        Yii::app()->createUrl($this->getModule()->name.'/Default/markUnread/'.$this->event->id), null, array('class' => 'secondary button small'));
+        Yii::app()->createUrl($this->getModule()->name.'/Default/markUnread/'.$this->event->id), null, array('class' => 'green button small'));
 }
 
 if ($this->checkPrintAccess()) {
@@ -40,5 +46,6 @@ if ($this->checkPrintAccess()) {
 
 <?php $this->displayErrors(@$errors)?>
 <?php $this->renderOpenElements($this->action->id)?>
+<?php $this->renderPartial('//default/delete');?>
 
 <?php $this->endContent();?>

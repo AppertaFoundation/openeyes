@@ -16,79 +16,43 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasRight()) {
-    ?>
-					<table cellspacing="0">
-						<thead>
-						<tr>
-							<th width="25%">Area (Central)</th>
-							<th width="25%">Area (Maximal)</th>
-							<th width="25%">Height</th>
-							<th width="25%">Vascularity</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td style="text-align: center;"><?php echo $element->right_central_area->area;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->right_max_area->area;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->right_height->height;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->right_vasc->vascularity;
-    ?></td>
-						</tr>
-						</tbody>
-					</table>
-					<?php
-
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasLeft()) {
-    ?>
-					<table cellspacing="0">
-						<thead>
-						<tr>
-							<th width="25%">Area (Central)</th>
-							<th width="25%">Area (Maximal)</th>
-							<th width="25%">Height</th>
-							<th width="25%">Vascularity</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td style="text-align: center;"><?php echo $element->left_central_area->area;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->left_max_area->area;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->left_height->height;
-    ?></td>
-							<td style="text-align: center;"><?php echo $element->left_vasc->vascularity;
-    ?></td>
-						</tr>
-						</tbody>
-					</table>
-					<?php
-
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
+<div class="element-data element-eyes">
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+  <div class="element-eye <?= $eye_side ?>-eye column">
+    <div class="data-group">
+        <?php if ($element->hasEye($eye_side)): ?>
+          <table>
+            <thead>
+              <tr>
+                <th class="center cols-3">Area (Central)</th>
+                <th class="center cols-3">Area (Maximal)</th>
+                <th class="center cols-3">Height</th>
+                <th class="center cols-3">Vascularity</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="center">
+                    <?php echo $element->{$eye_side . '_central_area'}->area; ?>
+                </td>
+                <td class="center">
+                    <?php echo $element->{$eye_side . '_max_area'}->area; ?>
+                </td>
+                <td class="center">
+                    <?php echo $element->{$eye_side . '_height'}->height; ?>
+                </td>
+                <td class="center">
+                    <?php echo $element->{$eye_side . '_vasc'}->vascularity; ?>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          <?php else: ?>
+            <div class="data-value not-recorded">
+                Not recorded
+            </div>
+          <?php endif; ?>
+      </div>
+  </div>
+  <?php endforeach; ?>
 </div>

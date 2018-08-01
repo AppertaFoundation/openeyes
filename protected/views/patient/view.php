@@ -22,68 +22,47 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
 ?>
-
-<div class="container content">
-
-	<div class="row messages patient">
-
+<main class="main-event edit" id="event-content">
+	<div class="messages patient">
 		<?php $this->renderPartial('//base/_messages'); ?>
-
 		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
-			<div class="row">
-				<div class="large-12 column">
-					<div id="no-current-address-error" class="alert-box alert with-icon">
-						Warning: The patient has no current address. The address shown is their last known address.
-					</div>
-				</div>
-			</div>
+      <div id="no-current-address-error" class="alert-box alert with-icon">
+        Warning: The patient has no current address. The address shown is their last known address.
+      </div>
 		<?php }?>
 
 		<?php if ($this->patient->isDeceased()) {?>
-			<div clas="row">
-				<div class="large-12 column">
-					<div id="deceased-notice" class="alert-box alert with-icon">
-						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
-					</div>
-				</div>
-			</div>
+      <div id="deceased-notice" class="alert-box alert with-icon">
+        This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+      </div>
 		<?php }?>
 
 		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
-			<div class="row">
-				<div class="large-12 column">
-					<div id="no-practice-address" class="alert-box alert with-icon">
-						Patient has no GP practice address, please correct in PAS before printing GP letter.
-					</div>
-				</div>
-			</div>
+      <div id="no-practice-address" class="alert-box alert with-icon">
+        Patient has no GP practice address, please correct in PAS before printing GP letter.
+      </div>
 		<?php }?>
 
 		<?php if ($warnings) { ?>
-			<div class="row">
-				<div class="large-12 column">
-					<div class="alert-box patient with-icon">
-						<?php foreach ($warnings as $warn) {?>
-							<strong><?php echo $warn['long_msg']; ?></strong>
-							- <?php echo $warn['details'];
-                        }?>
-					</div>
-				</div>
-			</div>
+      <div class="alert-box patient with-icon">
+          <?php foreach ($warnings as $warn) {?>
+            <strong><?php echo $warn['long_msg']; ?></strong>
+            - <?php echo $warn['details']; }?>
+      </div>
 		<?php }?>
 
 		<?php $this->renderPartial('//patient/_patient_alerts')?>
 		</div>
 
-	<div class="row patient-content">
-		<div class="large-6 column">
+	<div class="patient-content">
+    <div class="col-left">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
-				<section class="box patient-info">
-					<div class="row data-row">
+				<section class="element patient-info">
+					<div class="data-group">
 						<?php $last_updated = strtotime($this->patient->last_modified_date) ?>
-						<div class="large-4 column data-label">Last updated:</div>
-						<div class="large-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT.' H:i', $last_updated) ?></div>
-						<div class="large-3 column">
+						<div class="cols-4 column data-label">Last updated:</div>
+						<div class="cols-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT.' H:i', $last_updated) ?></div>
+						<div class="cols-3 column">
 							<?= CHtml::beginForm($refresh_url) ?>
 								<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
 								<button class="small <?php if ($last_updated > (time() - 300)) echo ' disabled' ?>">Refresh</button>
@@ -98,16 +77,15 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_commissioningbodies')?>
 			<?php $this->renderPartial('_patient_contacts')?>
 			<?php $this->renderModulePartials('patient_summary_column1')?>
-		</div>
-		<div class="large-6 column" id="patient-summary-form-container">
-
-            <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
-                <section class="box patient-info internalreferral internalreferral-doclist">
-                        <?php echo CHtml::link('View patient referrals',$component->generateUrlForDocumentList($this->patient)); ?>
-                        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-                        <span>e-WinDIP</span>
-                </section>
-            <?php endif; ?>
+    </div>
+    <div class="col-right" id="patient-summary-form-container">
+        <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
+          <section class="box patient-info internalreferral internalreferral-doclist">
+              <?php echo CHtml::link('View patient referrals', $component->generateUrlForDocumentList($this->patient)); ?>
+            <i class="spinner" title="Loading..." style="display: none;"></i>
+            <span>e-WinDIP</span>
+          </section>
+        <?php endif; ?>
 
             <?php if ($this->checkAccess('OprnViewClinical')) {?>
 				<?php $this->renderPartial('_patient_episodes', array(
@@ -121,4 +99,4 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php }?>
 		</div>
 	</div>
-</div>
+</main>

@@ -21,75 +21,74 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
     'id' => ($this->mode === 'static' ? 'static-' : '') . 'site-and-firm-form',
-    'htmlOptions' => array( 'class' => $this->mode . '-site-and-firm-form'),
+    'htmlOptions' => array('class' => 'js-' . $this->mode . '-site-and-firm-form'),
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
-	<?php echo CHtml::hiddenField('returnUrl', $this->returnUrl)?>
+<?php echo CHtml::hiddenField('returnUrl', $this->returnUrl) ?>
 
-	<?php if ($this->subspecialty) {
-    ?>
-		<?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id)?>
-		<p>
-			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
-		</p>
-	<?php
-}?>
+<?php if ($this->subspecialty): ?>
+    <?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id) ?>
+  <p>
+    To add an event to this episode you must switch to a <?php echo $this->subspecialty->name ?> firm.
+  </p>
+<?php endif; ?>
 
-	<?php if ($this->support_services) {
-    ?>
-		<?php echo CHtml::hiddenField('support_services', 1)?>
-		<p>
-			To add an event to this episode you must switch to a support services firm.
-		</p>
-	<?php
-}?>
+<?php if ($this->support_services): ?>
+    <?php echo CHtml::hiddenField('support_services', 1) ?>
+  <p>
+    To add an event to this episode you must switch to a support services firm.
+  </p>
+<?php endif; ?>
 
-	<?php if ($this->patient) {
-    ?>
-		<?php echo CHtml::hiddenField('patient_id', $this->patient->id)?>
-	<?php
-}?>
+<?php if ($this->patient): ?>
+    <?php echo CHtml::hiddenField('patient_id', $this->patient->id) ?>
+<?php endif; ?>
 
-	<?php
-    if ($errors = $form->errorSummary($model)) {
-        echo '<div>'.$errors.'</div>';
-    }
-    ?>
+<?php
+if ($errors = $form->errorSummary($model)) {
+    echo '<div>' . $errors . '</div>';
+}
+?>
+<table <?php if ($this->mode === 'static'): ?>class="standard"<?php endif; ?>>
+  <colgroup>
+    <col class="cols-3">
+  </colgroup>
+  <tbody>
+  <tr>
+    <td>
+        <?= $model->getAttributeLabel('site_id') ?>
+    </td>
+    <td>
+        <?php echo $form->dropDownList($model, 'site_id', $sites, array('class' => 'cols-full')); ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?= $model->getAttributeLabel('firm_id') ?>
+    </td>
+    <td>
+        <?php echo $form->dropDownList($model, 'firm_id', $firms, array('class' => 'cols-full')); ?>
+    </td>
+  </tr>
 
-	<div class="field-row row">
-		<div class="large-3 column text-right">
-			<?php echo $form->label($model, 'site_id'); ?>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->dropDownList($model, 'site_id', $sites); ?>
-		</div>
-	</div>
-
-	<div class="field-row row">
-		<div class="large-3 column text-right">
-			<?php echo $form->label($model, 'firm_id'); ?>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
-		</div>
-	</div>
-
-    <?php if($this->mode === "popup"): ?>
-        <div class="field-row row">
-            <div class="large-9 large-offset-3 column">
-                <?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
-            </div>
-        </div>
-    <?php endif;?>
+  <?php if ($this->mode === "popup"): ?>
+    <tr>
+      <td colspan="2" class="align-right">
+          <?php echo CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
+      </td>
+    </tr>
+  <?php endif; ?>
+  </tbody>
+</table>
 
 <?php
 if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
     Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
             jQuery("body").ajaxComplete(
                 function(event, request, options) {
-                    if (request.responseText == "'.Yii::app()->components['user']->loginRequiredAjaxResponse.'") {
-                        window.location.href = "'.Yii::app()->createUrl('/site/login').'"
+                    if (request.responseText == "' . Yii::app()->components['user']->loginRequiredAjaxResponse . '") {
+                        window.location.href = "' . Yii::app()->createUrl('/site/login') . '"
                     }
                 }
             );
@@ -100,9 +99,9 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
 <?php $this->endWidget(); ?>
 
 <script>
-    $(document).ready(function(){
-        $('.static-site-and-firm-form').on('change', 'select', function(){
-            $(this).closest('form').submit();
-        });
+  $(document).ready(function () {
+    $('.js-static-site-and-firm-form').on('change', 'select', function () {
+      $(this).closest('form').submit();
     });
+  });
 </script>

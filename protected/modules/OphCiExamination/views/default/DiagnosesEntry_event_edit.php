@@ -42,10 +42,11 @@ if (isset($values['date']) && strtotime($values['date'])) {
 }
 
 ?>
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
     <td style="width:290px;padding-top:15px;padding-bottom:15px;">
 
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[row_key][]" value="<?=$row_count?>" />
 
         <input type="text"
                class="diagnoses-search-autocomplete"
@@ -55,10 +56,10 @@ if (isset($values['date']) && strtotime($values['date'])) {
                     'name' => $values['disorder_display'],
                     'disorder_id' => $values['disorder_id'])); ?>'
 
-        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
+        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][<?= $row_count?>]" value="">
     </td>
 
-    <td>
+    <td class="eye" style="<?= isset($diagnosis) && $diagnosis->hasErrors() ? 'border: 2px solid red;' : '' ?>">
         <div class="sides-radio-group">
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {
                 ?>
@@ -73,27 +74,22 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
     <td>
         <input type="radio"
-               name="principal_diagnosis"
-               value="<?php echo $values['disorder_id']; ?>"
-               <?php if ($values['is_principal'] == 1) {?>checked="checked" <?php } ?>/>
+               name="principal_diagnosis_row_key"
+               value="<?php echo $row_count; ?>"
+               <?php if ($values['is_principal'] == 1) {
+               ?>checked="checked" <?php } ?>/>
     </td>
     <td>
-        <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" />
-            <div class="large-12 column end">
-                <span class="start-date-wrapper">
-                <?php $this->renderPartial('application.views.patient._fuzzy_date_fields', array(
-                    'sel_day' => $start_sel_day,
-                    'sel_month' => $start_sel_month,
-                    'sel_year' => $start_sel_year))
-                ?>
-                </span>
-            </div>
+        <fieldset class="data-group fuzzy-date">
+          <input id="diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" >
+          <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         </fieldset>
     </td>
     <td class="edit-column">
         <?php if($removable) : ?>
-            <button class="button small warning remove">remove</button>
+          <a href="#" class="removeDiagnosis" rel="<?php echo $values['disorder_id'] ?>">
+            <i class="oe-i trash"></i>
+          </a>
         <?php else: ?>
             read only
         <?php endif; ?>

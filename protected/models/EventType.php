@@ -21,14 +21,18 @@
  *
  * The followings are the available columns in table 'event_type':
  *
- * @property int     $id
- * @property string  $name
+ * @property int $id
+ * @property string $name
  *
  * The followings are the available model relations:
  * @property Event[] $events
  */
 class EventType extends BaseActiveRecordVersioned
 {
+    const ELEMENT_DISPLAY_ORDER_SQL = '
+        COALESCE((SELECT parent.display_order FROM element_type parent WHERE parent.id = t.parent_element_type_id), t.display_order), 
+        CASE WHEN t.parent_element_type_id IS NULL THEN -1 ELSE t.display_order END';
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -99,7 +103,8 @@ class EventType extends BaseActiveRecordVersioned
         $legacy_events = EventGroup::model()->find('code=?', array('Le'));
 
         $criteria = new CDbCriteria();
-        $criteria->condition = "class_name in ('" . implode("','", array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
+        $criteria->condition = "class_name in ('" . implode("','",
+                array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
 
@@ -303,7 +308,7 @@ class EventType extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
         $criteria->compare('`default`', 1);
-        $criteria->order = 'display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         $elements = array();
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
@@ -344,7 +349,7 @@ class EventType extends BaseActiveRecordVersioned
             $ids[] = $parent->id;
         }
         $criteria->addInCondition('event_type_id', $ids);
-        $criteria->order = 'display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         return ElementType::model()->findAll($criteria);
     }
@@ -363,36 +368,28 @@ class EventType extends BaseActiveRecordVersioned
         }
         $criteria->addInCondition('t.event_type_id', $ids);
         $criteria->addCondition('t.parent_element_type_id IS NULL');
-        $criteria->order = 't.display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         return ElementType::model()->with('child_element_types')->findAll($criteria);
     }
 
     /**
-     * @param string $type
-     * @param Event $event
-     * @return string
+     * Generate an icon element suited to this event type
+     *
+     * @param string $type The size of the icon
+     * @param Event $event The event to generate the icon for
+     * @return string The HTML of the rendered icon
      */
-    public function getEventIcon($type='small', Event $event = null)
+    public function getEventIcon($type = 'small', Event $event = null)
     {
-        $asset_manager = Yii::app()->getAssetManager();
-        $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
-
-        $possible_images = array();
-        if ($event && $event->is_automated) {
-            $possible_images[] = $type . '-auto.png';
+        // 'medium' PNGs are the equivalent size as 'large' SVG backgrounds
+        if ($type === 'medium') {
+            $type = 'large';
         }
-        $possible_images[] = $type . '.png';
-
-        // module specific
-        foreach ($possible_images as $possible) {
-            $file = $module_path . '/' . $possible;
-            if (file_exists($file)) {
-                return $asset_manager->publish($file);
-            }
+        if (isset($event->is_automated) && $event->eventType->class_name =='OphCiExamination' && $event->is_automated == 1) {
+            return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
         }
-
-        return '';
+        return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
     }
 
     /**
@@ -401,14 +398,66 @@ class EventType extends BaseActiveRecordVersioned
     public function getNonPrintableEventTypes()
     {
         $result = array();
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
         $criteria->select = array('id');
-        $criteria->condition='is_printable = 0';
+        $criteria->condition = 'is_printable = 0';
         $data = self::model()->findAll($criteria);
-        foreach($data as $row)
-        {
+        foreach ($data as $row) {
             $result[] = $row->id;
         }
         return $result;
+    }
+
+    /**
+     * Gets the CSS class that is used to display the event icon
+     * (replaces EventType::getEventIcon()
+     *
+     * @return string A CSS classname
+     */
+    public function getEventIconCssClass()
+    {
+        static $style_mapping = array(
+            'OphCiAmdinjection' => 'i-TrIntravitrealInjection',
+            'OphCiAnaesth' => 'i-CiAnaestheticExam',
+            'OphCiExamination' => 'i-CiExamination',
+            'OphCiOrthoptics' => 'i-CiOrthoptics',
+            'OphCiPhasing' => 'i-CiPhasing',
+            'OphCiPreassess' => 'i-CiExamination',
+            'OphCiRefraction' => 'i-CiRefraction',
+            'OphCoAmdapplication' => 'i-CoIVTApplication',
+            'OphCoCorrespondence' => 'i-CoLetterOut',
+            'OphCoCvi' => 'i-CoCertificate',
+            'OphCoDocument' => 'i-CoDocument',
+            'OphCoLetterin' => 'i-CoLetterIn',
+            'OphCoLetterout' => 'i-CoLetterOut',
+            'OphCoMessaging' => 'i-Message',
+            'OphCoTherapyapplication' => 'i-CoIVTApplication',
+            'OphDrInjection' => 'i-TrIntravitrealInjection',
+            'OphDrPrescription' => 'i-DrPrescription',
+            'OphImCtscan' => 'i-InMRI-CT',
+            'OphImFfa' => 'i-ImOCT',
+            'OphImIcg' => 'i-ImOCT',
+            'OphImMriscan' => 'i-InMRI-CT',
+            'OphImOct' => 'i-ImOCT',
+            'OphImUltrasound' => 'i-ImUltraSound',
+            'OphImXray' => 'i-InMRI-CT',
+            'OphInBiometry' => 'i-InBiometry',
+            'OphInBloodtest' => 'i-InBlood',
+            'OphInHfa' => 'i-ImOCT',
+            'OphInLabResults' => 'i-InLabRequest',
+            'OphInVisualfields' => 'i-InVisualField',
+            'OphLeEpatientletter' => 'i-CoLetterIn',
+            'OphLeIntravitrealinjection' => 'i-TrIntravitrealInjection',
+            'OphOuAnaestheticsatisfactionaudit' => 'i-OuAnaestheticSatisfaction',
+            'OphTrConsent' => 'i-CoPatientConsent',
+            'OphTrIntravitrealinjection' => 'i-TrIntravitrealInjection',
+            'OphTrLaser' => 'i-TrLaser',
+            'OphTrOperation' => 'i-TrOperationProcedure',
+            'OphTrOperationbooking' => 'i-TrOperation',
+            'OphTrOperationnote' => 'i-TrOperationNotes',
+            'OphCiDidNotAttend' => 'i-PatientDNA',
+        );
+
+        return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;
     }
 }

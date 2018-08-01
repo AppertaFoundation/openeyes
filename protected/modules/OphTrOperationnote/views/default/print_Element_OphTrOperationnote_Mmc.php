@@ -17,69 +17,67 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?> data-group">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
-		<div class="large-8 column end">
-			<div class="row">
-				<div class="large-6 column text-right">
+  <div class="cols-8 column end">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('application_type_id'))?>:</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value"><?= $element->application_type->name?></div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('concentration_id')) ?>:</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value"><?= $element->concentration->value ?></div>
 				</div>
 			</div>
 			<?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('duration')) ?>:</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value"><?= $element->duration ?></div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('number')) ?>:</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value"><?= $element->number ?></div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('washed')) ?>:</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value"><?= $element->washed ? 'Yes' : 'No' ?></div>
 					</div>
 				</div>
 			<?php else: ?>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('volume_id')) ?>:</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value"><?= $element->volume->value ?></div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="large-6 column text-right">
+				<div class="data-group">
+					<div class="cols-6 column text-right">
 						<div class="data-label"><?= CHtml::encode($element->getAttributeLabel('dose')) ?>:</div>
 					</div>
-					<div class="large-6 column">
+					<div class="cols-6 column">
 						<div class="data-value"><?= $element->dose ?></div>
 					</div>
 				</div>
 			<?php endif ?>
 		</div>
-	</div>
 </section>

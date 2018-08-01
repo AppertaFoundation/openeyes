@@ -17,32 +17,28 @@
 ?>
 <br>
 <div class="element-data row clearfix">
-    <div class="row">
-        <div class=" large-2 column">
+    <div class="data-group">
+        <div class="cols-2 column">
             <label>Current:</label>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10 column end">
             <?php foreach ($element->currentOrderedEntries as $entry): ?>
-                <div class="row">
-                    <div class="large-12 column">
-                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
-                    </div>
-                </div>
+              <div class="cols-12 column">
+                <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+              </div>
             <?php endforeach; ?>
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="large-2 column">
+    <div class="data-group">
+        <div class="cols-2 column">
             <label>Stopped:</label>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10 column end">
             <?php foreach ($element->stoppedOrderedEntries as $entry): ?>
-                <div class="row">
-                    <div class="large-12 column">
-                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
-                    </div>
-                </div>
+              <div class="cols-12 column">
+                <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+              </div>
             <?php endforeach; ?>
         </div>
     </div>

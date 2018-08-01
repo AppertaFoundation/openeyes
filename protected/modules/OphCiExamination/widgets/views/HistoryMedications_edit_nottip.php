@@ -28,6 +28,6 @@ if ($this->missing_prescription_items) {
 }
 ?>
 
-<p class="alert-box warning" style="margin-bottom: 0px;">Changes will not affect the current <?= $element_name ?> state for patient
-    <span class="has-tooltip fa fa-info-circle"
-          data-tooltip-content="<?= $start ?> for this patient. To update the current state of <?= $element_name ?>, <?= $end ?>"></span></p>
+<p class="alert-box warning" style="margin-bottom: 0px;">Changes will not affect the current <?= $element_name ?> state for patient.
+    <?= $start ?> for this patient. To update the current state of <?= $element_name ?>, <?= $end ?>">
+</p>

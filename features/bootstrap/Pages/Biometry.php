@@ -26,10 +26,10 @@ class Biometry extends OpenEyesPage
             'xpath'=> "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]"
         ),
         'readonlyFields'=> array(
-            'xpath'=> "//*[@class='row field-row']//*[@class='readonly-box']"
+            'xpath'=> "//*[@class='row']//*[@class='readonly-box']"
         ),
         'createdByIOLMasterDesc'=> array(
-            'xpath'=> "//*[@class='row field-row']//*[contains(text(),'Created by IOL Master input')]"
+            'xpath'=> "//*[@class='row']//*[contains(text(),'Created by IOL Master input')]"
         ),
         'biometryReport'=> array(
             'xpath'=> "//*[@class='highlight booking']"

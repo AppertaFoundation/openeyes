@@ -133,7 +133,7 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
     {
         $user = Yii::app()->session['user'];
 
-        if ($user->is_doctor) {
+        if ($user->is_surgeon) {
             $this->surgeon_id = $user->id;
         }
     }
@@ -152,5 +152,15 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         }
 
         return $this->surgeonlist;
+    }
+
+    public function getViewTitle()
+    {
+        return 'Personnel';
+    }
+
+    public function getFormTitle()
+    {
+        return 'Personnel';
     }
 }

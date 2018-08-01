@@ -33,13 +33,13 @@
     }
     ?>
 
-    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="row field-row">
+    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="data-group">
 
-        <div class="large-2 column">
+        <div class="cols-2 column">
             <label for="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id">Context:</label>
         </div>
 
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <?php
             $is_disabled = !(bool)$model->subspecialty_id;
             echo CHtml::activeDropDownList($model, "firm_id", $firms, [
@@ -50,7 +50,7 @@
             ]);
             ?>
         </div>
-        <div class="large-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
+        <div class="cols-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
     </div>
 
     <?php
@@ -63,8 +63,7 @@
     }, 'name');
 ?>
 
-<div id="risks" class="field-row">
-
+<div id="risks" class="data-group">
         <?php
         $columns = array(
             array(
@@ -134,7 +133,6 @@
         ));
         ?>
         <button id="add_new_risk" type="button" class="small primary right">Add</button>
-
 </div>
 
 <?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);?>
@@ -173,7 +171,7 @@
             singleTemplate :
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
                 "<span class='diagnosis-name'></span></span>" +
-                "<select class='commonly-used-diagnosis'></select>" +
+                "<select class='commonly-used-diagnosis cols-full'></select>" +
                 "{{{input_field}}}" +
                 "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][id]' class='savedDiagnosisId' value=''>" +
                 "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][disorder_id]' class='savedDiagnosis' value=''>"

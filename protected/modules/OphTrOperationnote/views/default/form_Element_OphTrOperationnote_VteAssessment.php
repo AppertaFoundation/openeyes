@@ -17,10 +17,10 @@
  */
 ?>
 
-<div class="element-fields">
-            <p>Has an assessment for the risk of thrombosis been completed on admission?</p>
-            <?php echo $form->radioButtons(
-                    $element,
-                    'selected_option',
-                    'OphTrOperationnote_VteAssessmentOption'); ?>
+<div class="element-fields full-width">
+  <strong>Has an assessment for the risk of thrombosis been completed on admission?</strong>
+    <?php echo $form->radioButtons(
+        $element,
+        'selected_option',
+        'OphTrOperationnote_VteAssessmentOption'); ?>
 </div>

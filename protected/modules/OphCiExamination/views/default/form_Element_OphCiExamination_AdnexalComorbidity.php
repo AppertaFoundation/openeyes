@@ -16,42 +16,60 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-eyes element-fields">
+<div class="element-fields element-eyes">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="field-row textMacros">
-				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'right_description', 'form' => $form))?>
-			</div>
-			<div class="field-row">
-				<?php echo $form->textArea($element, 'right_description', array('class' => 'autosize', 'nowrapper' => true, 'rows'=>1))?>
-			</div>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="field-row textMacros">
-				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'left_description', 'form' => $form))?>
-			</div>
-			<div class="field-row">
-				<?php echo $form->textArea($element, 'left_description', array('class' => 'autosize', 'nowrapper' => true, 'rows'=>1))?>
-			</div>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+        <div class="element-eye <?=$eye_side?>-eye column <?=$page_side?> side"
+             data-side="<?=$eye_side?>" >
+            <div class="active-form field-row flex-layout"
+                 style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
+              <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+              <div class="cols-11 flex-layout">
+                  <?php echo $form->textArea($element, $eye_side.'_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
+              </div>
+              <div class="add-data-actions flex-item-bottom">
+                <button class="button hint green js-add-select-search" id="add-examination-adnexal" type="button">
+                  <i class="oe-i plus pro-theme"></i>
+                </button>
+                <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
+                    <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => $eye_side.'_description', 'form' => $form))?>
+                </div>
+              </div>
+            </div>
+            <div class="inactive-form" style="<?=$element->hasEye($eye_side)?"display: none;":""?>">
+                <div class="add-side">
+                    <a href="#">
+                        Add <?=ucfirst($eye_side)?> side <span class="icon-add-side"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+               var side = $('.<?= str_replace('_', '-', CHtml::modelName($element))?> .<?=$eye_side?>-eye');
+               var popup = side.find('#add-to-adnexal');
+               var adnexText = side.find('#<?=CHtml::modelName($element)?>_<?=$eye_side?>_description');
+
+               function setAdnexText() {
+                   popup.find('.selected').each(function () {
+                     adnexText.val(adnexText.val() ?
+                       adnexText.val()+$(this).attr('data-str') : $(this).attr('data-str')
+                     );
+                   });
+
+                   adnexText.trigger('oninput');
+                   popup.find('.selected').removeClass('selected');
+               }
+
+               setUpAdder(
+                   popup,
+                   'multi',
+                   setAdnexText,
+                   side.find('.js-add-select-search'),
+                   popup.find('.add-icon-btn'),
+                   popup.find('.close-icon-btn')
+               );
+            });
+        </script>
+    <?php endforeach;?>
 </div>

@@ -17,16 +17,14 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column end">
-			<h2>Injection users</h2>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-3 column">
+  <div class="cols-8 column end">
+    <h2>Injection users</h2>
+  </div>
+	<div class="data-group">
+		<div class="cols-3 column">
 			<?php echo CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullNameAndUserName'), array('empty' => '- Select user -'))?>
 		</div>
-		<div class="large-4 column end">
+		<div class="cols-4 column end">
 			<?php echo CHtml::htmlButton('Add user', array('class' => 'button small addUser'))?>
 		</div>
 	</div>
@@ -46,9 +44,7 @@
 			</tbody>
 		</table>
 	</form>
-	<div class="row data-row">
-		<div class="large-4 column end">
-			<?php echo CHtml::htmlButton('Delete user(s)', array('class' => 'button small deleteUser'))?>
-		</div>
-	</div>
+  <div class="cols-4 column end">
+      <?php echo CHtml::htmlButton('Delete user(s)', array('class' => 'button small deleteUser'))?>
+  </div>
 </div>

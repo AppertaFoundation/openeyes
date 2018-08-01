@@ -16,11 +16,59 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<div class="field-row textMacros">
-		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form))?>
-	</div>
-	<div class="field-row">
-		<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'))?>
-	</div>
+<div class="element-fields flex-layout full-width ">
+  <div class="cols-7">
+      <?php echo $form->textArea(
+          $element,
+          'comments',
+          array('class' => 'cols-full', 'nowrapper' => true),
+          false,
+          array(
+              'rows' => 1,
+              'placeholder' => 'Management',
+              'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
+          )
+      ) ?>
+  </div>
+  <div class="add-data-actions flex-item-bottom">
+    <button class="button hint green js-add-select-search" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+  </div>
 </div>
+<?php
+$itemSets = array();
+foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+    $itemSet = array_map(function ($attr) {
+        return ['id' => $attr['slug'], 'label' => $attr['label']];
+    }, $attribute->getAttributeOptions());
+    $itemSets[] = $itemSet;
+}
+?>
+
+<script type="text/javascript">
+  $(function () {
+    var managementDiv = $('section[data-element-type-class=\'<?= CHtml::modelName($element) ?>\']');
+
+    new OpenEyes.UI.AdderDialog({
+      openButton: managementDiv.find('.js-add-select-search'),
+      itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
+        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+      }),
+      liClass: 'restrict-width',
+      onReturn: function (adderDialog, selectedItems) {
+        var inputText = managementDiv.find(
+          '#<?= CHtml::modelName($element) ?>_comments'
+        );
+
+        var text = $.map(selectedItems, function (item) {
+          return item['label'];
+        }).join(' ');
+
+        inputText.val(inputText.val() ? inputText.val() + text : text);
+        inputText.trigger('oninput');
+        return true;
+      },
+    });
+  });
+</script>

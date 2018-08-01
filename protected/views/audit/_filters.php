@@ -16,20 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row">
 	<div class="large-12 column">
 		<h2>Filter by:</h2>
 	</div>
-</div>
 <div class="search-filters theatre-diaries">
-
-	<div class="row">
-		<input type="hidden" id="page" name="page" value="1" />
-		<div class="large-12 column">
+  <input type="hidden" id="page" name="page" value="1" />
+  <div class="cols-12 column">
 			<div class="panel">
-				<div class="row">
-					<div class="large-12 column">
-
+        <div class="cols-12 column">
 						<table class="grid">
 							<thead>
 								<tr>
@@ -78,10 +72,9 @@
 							</tbody>
 						</table>
 					</div>
-				</div>
 
-				<div class="row">
-					<div class="large-10 column">
+				<div class="data-group">
+					<div class="cols-10 column">
 						<div class="search-filters-extra audit-filters clearfix">
 							<fieldset class="inline highlight">
 								<label class="inline" for="date_from">From:</label>
@@ -117,12 +110,11 @@
 							</fieldset>
 						</div>
 					</div>
-					<div class="large-2 column text-right">
+					<div class="cols-2 column text-right">
 						<img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
 						<button type="submit" class="secondary long">Filter</button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </div>

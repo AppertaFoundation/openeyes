@@ -1,4 +1,14 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
+<?php
+$display_theme = SettingMetadata::model()->getSetting('display_theme');
+$newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
+?>
+<link rel="stylesheet" type="text/css" data-theme="dark"
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+<link rel="stylesheet" type="text/css" data-theme="light"
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0_classic.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
@@ -9,12 +19,14 @@
 <?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
+<?php $assetManager->registerScriptFile('js/jquery.query-object.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.waypoints.min.js')?>
 <?php $assetManager->registerScriptFile('js/sticky.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
 <?php $assetManager->registerScriptFile('js/print.js')?>
 <?php $assetManager->registerScriptFile('js/buttons.js')?>
+<?php $assetManager->registerScriptFile('js/comments.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Util.EventEmitter.js')?>
@@ -23,6 +35,10 @@
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.StickyElement.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Tooltip.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.HotList.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Alert.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Confirm.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>
@@ -36,3 +52,5 @@
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
+<?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
+<?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>

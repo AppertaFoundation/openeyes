@@ -15,60 +15,63 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container'); ?>
-
+$this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
+<section class="element">
+  <section class="element-fields full-width">
 	<?php $this->title = 'Cancel operation' ?>
 
 	<?php
     echo CHtml::form(Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
     echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
-	<div class="alert-box alert with-icon hide">
+	<div class="alert-box alert with-icon" style="display: none;">
 		<p>Please fix the following input errors:</p>
 	</div>
 
 	<div class="element-fields">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<div class="field-label">
 					Patient:
 				</div>
 			</div>
-			<div class="large-10 column end">
+			<div class="cols-10">
 				<div class="field-value">
 					<?php echo $patient->getDisplayName().' ('.$patient->hos_num.')'; ?>
 				</div>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<?php echo CHtml::label('Cancellation reason: ', 'cancellation_reason'); ?>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-10">
 				<?php if (!empty($operation->booking) && (strtotime($operation->booking->session->date) <= strtotime('now'))) {
-    $listIndex = 3;
-} else {
-    $listIndex = 2;
-} ?>
+				  $listIndex = 3;
+				} else {
+				  $listIndex = 2;
+				} ?>
 				<?php echo CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                    array('empty' => 'Select a reason')
-                ); ?>
+            array('empty' => 'Select a reason')
+        ); ?>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<?php echo CHtml::label('Comments: ', 'cancellation_comment'); ?>
 			</div>
-			<div class="large-5 column end">
-				<textarea id="cancellation_comment" name="cancellation_comment" rows="6"></textarea>
+			<div class="cols-10">
+				<textarea id="cancellation_comment" name="cancellation_comment"></textarea>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-10 column large-offset-2">
+		<div class="flex-layout">
+			<div class="cols-10 large-offset-2">
 				<button type="submit" class="warning" id="cancel">Cancel operation</button>
-				<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+        <i class="spinner loader" style="display: none;"></i>
 			</div>
 		</div>
 	</div>
 	<?php echo CHtml::endForm(); ?>
+  </section>
+</section>
 <?php $this->endContent();?>

@@ -160,6 +160,37 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * Get the Latest Refraction - both eyes.
+     *
+     * @param $patient
+     * @param $side - The side is used to define the refraction to be extracted.
+     * @param $use_context
+     * @return string|null
+     */
+    public function getLastRefraction(\Patient $patient, $side, $use_context = false){
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+            return Yii::app()->format->text($element->getCombined($side));
+        }
+        return null;
+    }
+
+    /**
+     * Get the Latest Refraction Date - both eyes.
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
+    public function getLastRefractionDate(\Patient $patient, $use_context = false){
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+            return $element->event->event_date;
+        }
+        return null;
+    }
+
     /*
      * Operated Eye (left/right) from last operation note
      * @param $patient
@@ -205,6 +236,44 @@ class OphCoCorrespondence_API extends BaseAPI
                 }
                 if ($result = $api->$method($event)) {
                     return $result;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+ * Internal abstraction of getting data from before the most recent op note.
+ *
+ * @param $patient
+ * @param bool $use_context
+ * @param $api
+ * @param $method
+ * @return date|null
+ */
+    private function getPreOpDateFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        if($op_event){
+            $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+            $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+            foreach ($events as $event) {
+
+                // take account of event date not containing time so we ensure we get the
+                // exam from BEFORE the op note, not on the same day but after.
+                if ($event->event_date == $op_event->event_date) {
+                    if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                        continue;
+                    }
+                }
+                if ($result = $api->$method($event)) {
+                    return $event->event_date;
                 }
             }
         }
@@ -652,10 +721,12 @@ class OphCoCorrespondence_API extends BaseAPI
 
             $empty_lines = "\n";
             $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
-            $count = $meta_data ? $meta_data->value : 4;
-            for ($x = 0; $x < $count; $x++) {
-                $empty_lines .= "\n";
-            }
+
+            $count = $meta_data ? $meta_data->value : 0;
+                if (is_numeric($count))
+                for ($x = 0; $x < $count; $x++) {
+                    $empty_lines .= "\n";
+                }
             return "Yours sincerely". $empty_lines . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
 

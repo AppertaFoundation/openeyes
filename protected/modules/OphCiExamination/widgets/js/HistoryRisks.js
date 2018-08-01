@@ -77,6 +77,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
         this.tableSelector = '.' + this.options.modelName + '_entry_table';
+        this.$popupSelector = $('#add-history-risk-popup');
         this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
         this.riskIdMap = undefined;
@@ -124,26 +125,33 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.dedupeRiskSelectors();
         });
 
-        controller.$element.on('click', '.' + controller.options.modelName + '_add_entry', function(e) {
+        this.$popupSelector.on('click', '.js-add-select-search', function(e) {
             e.preventDefault();
-            controller.addEntry();
+            controller.$table.show();
         });
-
-      controller.$table.on('click', '.button.remove', function(e) {
+      controller.$table.on('click', 'i.trash', function(e) {
             e.preventDefault();
+            var info = $(e.target).parents('tr').find('.risk-display');
+            data = {};
+            data['id'] = $(info).data('id');
+            data['name'] = $(info).data('label');
+            controller.appendSelectList(data);
             $(e.target).parents('tr').remove();
+
             controller.updateNoRisksState();
+
             controller.dedupeRiskSelectors();
         });
 
       controller.$noRisksFld.on('click', function() {
             if (controller.$noRisksFld.prop('checked')) {
                 controller.$table.hide();
+                controller.$popupSelector.hide();
             }
             else {
-                controller.$table.show();
+              controller.$popupSelector.show();
             }
-        })
+        });
     };
     HistoryRisksController.prototype.setPcrRisk = function(container, text)
     {
@@ -166,6 +174,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noRisksWrapper.show();
+            this.$table.hide();
         } else {
             this.$noRisksWrapper.hide();
             this.$noRisksFld.prop('checked', false);
@@ -177,16 +186,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param data
      * @returns {*}
      */
-    HistoryRisksController.prototype.createRow = function(data)
+    HistoryRisksController.prototype.createRow = function()
     {
-        if (data === undefined)
-            data = {};
+      var selected_option = $('#history-risks-option').find('.selected');
 
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        return Mustache.render(
-            this.templateText,
-            data
-        );
+      var newRows = [];
+      var template = this.templateText;
+      var tableSelector = this.tableSelector;
+
+      selected_option.each(function (e) {
+        data = {};
+        data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
+        data['risk_id'] = $(this).data('id');
+        data['risk_display'] = $(this).data('str');
+        var new_row = Mustache.render(
+          template,
+          data );
+        var row_tem = $(new_row);
+        if ($(this).data('str')==='Other'){
+          row_tem.find('span').show();
+        }
+        newRows.push(row_tem);
+        $(this).remove();
+      });
+      return newRows;
     };
 
     /**
@@ -194,10 +217,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksController.prototype.addEntry = function()
     {
-        var row = this.createRow();
-        this.$table.find('tbody').append(row);
-        this.dedupeRiskSelectors();
+        var rows = this.createRow();
+      for(var i in rows){
+        this.$table.find('tbody').append(rows[i]);
+
+      }
         this.updateNoRisksState();
+        $('.flex-item-bottom').find('.selected').removeClass('selected');
     };
 
     /**
@@ -224,7 +250,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 }
             });
         });
-    }
+    };
 
     /**
      * Update the risks table with the given list of risks with comments
@@ -363,6 +389,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return selected ? selected.val() : undefined;
     };
 
-    exports.HistoryRisksController = HistoryRisksController;
-})(OpenEyes.OphCiExamination);
+  /**
+   *
+   */
+  HistoryRisksController.prototype.appendSelectList = function (data) {
+      var span = "<span class='auto-width'>"+data['name']+"</span>";
+      var list_item = $('<li>')
+      .attr('data-str', data['name'])
+      .attr('data-id', data['id']);
+    list_item.append(span);
+    $('#history-risks-option').append(list_item);
+  };
 
+  exports.HistoryRisksController = HistoryRisksController;
+})(OpenEyes.OphCiExamination)

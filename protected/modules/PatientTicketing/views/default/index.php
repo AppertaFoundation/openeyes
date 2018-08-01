@@ -16,39 +16,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<div class="oe-full-header flex-layout">
+    <?php
+    $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
+    ?>
+    <div class="title wordcaps">
+        <b><?= $queueset ? $queueset->name : $category->name ?></b>
+    </div>
 
+    <?php
+    if ($queueset) {
+        if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId())) {
+            ?>
+            <br/>
+            <div class="large-12 column">
+                <div class="panel">
+                    <div class="alert-box with-icon success">
+                        <?php echo $flash_message;
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <?php
 
-<?php
-$qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
-?>
-	<h1 class="badge"><?= $queueset ? $queueset->name : $category->name ?></h1>
-
-	<div class="box content">
-		<?php
-        if ($queueset) {
-            if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-'.$queueset->getId())) {
-                ?>
-				<br />
-				<div class="large-12 column">
-					<div class="panel">
-						<div class="alert-box with-icon success">
-							<?php echo $flash_message;
-                ?>
-						</div>
-					</div>
-				</div>
-			<?php
-
-            }
         }
-        ?>
-<?php
+    }
+
     $this->renderPartial('form_queueset_select', array(
         'category' => $category,
         'queueset' => $queueset,
         'cat_id' => $cat_id,
     ));
 
+    ?>
+</div>
+<div class="oe-full-content oe-virtual-clinic flex-layout flex-top">
+    <?php
     if ($queueset) {
         $this->renderPartial('ticketlist', array(
             'qs_svc' => $qs_svc,
@@ -60,5 +63,5 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
             'cat_id' => $cat_id,
         ));
     }
-?>
+    ?>
 </div>

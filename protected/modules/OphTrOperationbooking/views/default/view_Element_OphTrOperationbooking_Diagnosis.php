@@ -16,10 +16,14 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<section class="element element-data">
-	<h3 class="data-title"><?php  echo $element->elementType->name ?></h3>
-		<div class="data-value highlight">
-			<?php $disorder = $element->disorder?>
-			<?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?>
+<section class="element view full priority view-diagnosis">
+    <header class="element-header">
+        <h3 class="element-title"><?php  echo $element->elementType->name ?></h3>
+    </header>
+		<div class="element-data full-width">
+            <div class="cols-10">
+                <span class="priority-text"> <?php $disorder = $element->disorder?>
+                <?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?></span>
+            </div>
 		</div>
 </section>

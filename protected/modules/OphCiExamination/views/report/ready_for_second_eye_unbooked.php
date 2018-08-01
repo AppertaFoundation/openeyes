@@ -38,13 +38,11 @@
         <ul>
         </ul>
     </div>
-    <div class="row field-row">
-        <div class="large-6 column end">
-            <button type="submit" class="classy blue mini display-module-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
-            <button type="submit" class="classy blue mini download-module-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-            <img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-        </div>
-    </div>
+  <div class="cols-6 column end">
+    <button type="submit" class="classy blue mini display-module-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
+    <button type="submit" class="classy blue mini download-module-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
+    <img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+  </div>
     <div class="reportSummary report curvybox white blueborder" style="display: none;">
     </div>
 </div>

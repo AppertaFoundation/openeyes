@@ -197,15 +197,12 @@ function OphTrIntravitrealinjection_otherComplicationsCheck(side) {
 
 $(document).ready(function() {
 
-	handleButton($('#et_print'),function(e) {
-		e.preventDefault();
-		printEvent(null);
-	});
+  $(this).on('click','#et_print', function (e) {
+    e.preventDefault();
+    printEvent(null);
+  });
 
-	handleButton($('#et_save'),function() {
-	});
-
-	handleButton($('#et_cancel'),function(e) {
+  $(this).on('click','#et_cancel',function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
@@ -213,10 +210,6 @@ $(document).ready(function() {
 		}
 		e.preventDefault();
 	});
-
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#et_canceldelete'));
 
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {
@@ -315,7 +308,7 @@ $(document).ready(function() {
 	});
 
 	// extend the removal behaviour for treatment element to affect the dependent elements
-	$(this).undelegate('.event-content .remove-side', 'click').delegate('.event-content .remove-side', 'click', function(e) {
+	$(this).undelegate('#event-content .remove-side', 'click').delegate('#event-content .remove-side', 'click', function(e) {
 		e.preventDefault();
 		side = getSplitElementSide($(this));
 

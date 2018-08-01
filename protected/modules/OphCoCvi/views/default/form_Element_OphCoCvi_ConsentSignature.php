@@ -17,14 +17,20 @@
 
 ?>
 
-<div class="element-fields row">
-    <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
-        array('style' => 'width: 110px;')) ?>
-    <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row field-row">
-        <div class="large-2 column">
-            <label>Signed By:</label>
+<div class="element-fields ">
+<table class="cols-full last-left">
+  <colgroup>
+    <col class="cols-6">
+    <col class="cols-6">
+  </colgroup>
+  <tbody>
+  <tr class="col-gap">
+    <td>
+      <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="data-group">
+        <div class="cols-2 column">
+          <label>Signed By:</label>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10 column end">
             <?php echo $form->radioButtons($element, 'is_patient', array(
                 1 => 'Patient',
                 0 => "Patient's Representative",
@@ -35,7 +41,15 @@
             ); ?>
             <?php // echo $form->radioBoolean($element, 'is_patient', array('nowrapper' => true)) ?>
         </div>
-    </fieldset>
-    <?php echo $form->textField($element, 'representative_name', array('hide' => $element->is_patient), null, array('field' => 4)) ?>
+      </fieldset>
+        <?php echo $form->textField($element, 'representative_name', array('hide' => $element->is_patient), null, array('field' => 4)) ?>
+    </td>
+    <td>
+        <?php echo $form->datePicker($element, 'signature_date', array('maxDate' => 'today'),
+            array('style' => 'width: 110px;')) ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
 </div>

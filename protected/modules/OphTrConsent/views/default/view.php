@@ -20,7 +20,7 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print for visually impaired', 'print_va', array(), array('class' => 'button small'));
 }
 ?>
-<?php $this->beginContent('//patient/event_container');?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
 	<?php if ($this->event->delete_pending) {?>
 		<div class="alert-box alert with-icon">
@@ -37,5 +37,5 @@ if ($this->checkPrintAccess()) {
 	<?php // The "print" value is set by the controller and comes from the user session ?>
 	<input type="hidden" name="OphTrConsent_print" id="OphTrConsent_print" value="<?php echo $print;?>" />
 	<iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent(); ?>

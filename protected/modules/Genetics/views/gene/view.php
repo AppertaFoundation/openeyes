@@ -17,9 +17,9 @@
  */
 ?>
 <div class="admin box">
-    <div class="row">
-        <div class="large-10 column"><h2>View Gene</h2></div>
-        <div class="large-2 column right">
+    <div class="data-group">
+        <div class="cols-10 column"><h2>View Gene</h2></div>
+        <div class="cols-2 column right">
             <?php if( $this->checkAccess('OprnEditGene') ): ?>
                 <a href="/Genetics/gene/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/gene/view/').$model->id; ?>" class="button small right" id="gene_edit">Edit</a>
             <?php endif; ?>

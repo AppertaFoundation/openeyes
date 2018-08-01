@@ -17,8 +17,26 @@
 
 ?>
 
-<div class="element-fields">
-    <div class="fields-row">
-        <?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please Select -', 'style' => 'margin-left:8px'), false, array('label' => 2, 'field' => 3)) ?>
-    </div>
-</div>
+<section class="element edit full edit-site">
+  <header class="element-header">
+    <h3 class="element-title">
+        <?php echo $element->getAttributeLabel('site_id')?>
+    </h3>
+  </header>
+  <div class="element-fields full-width">
+      <?php echo $form->dropDownList(
+          $element, 'site_id',
+          Site::model()->getListForCurrentInstitution(),
+          array(
+              'empty' => '- Please Select -',
+              'style' => 'margin-left:8px',
+              'nowrapper' => true
+          ),
+          false,
+          array(
+              'label' => 2,
+              'field' => 3
+          )
+      ) ?>
+  </div>
+</section>

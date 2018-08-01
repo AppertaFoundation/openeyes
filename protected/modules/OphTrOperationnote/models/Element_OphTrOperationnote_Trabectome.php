@@ -224,14 +224,15 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
         foreach ($this->complication_assignments as $ca) {
             $curr_by_id[$ca->complication_id] = $ca;
         }
-
-        foreach ($ids as $id) {
-            if (!array_key_exists($id, $curr_by_id)) {
-                $ass = new OphTrOperationnote_Trabectome_ComplicationAssignment();
-                $ass->attributes = array('element_id' => $this->id, 'complication_id' => $id);
-                $save[] = $ass;
-            } else {
-                unset($curr_by_id[$id]);
+        if(!empty($ids)){
+            foreach ($ids as $id) {
+                if (!array_key_exists($id, $curr_by_id)) {
+                    $ass = new OphTrOperationnote_Trabectome_ComplicationAssignment();
+                    $ass->attributes = array('element_id' => $this->id, 'complication_id' => $id);
+                    $save[] = $ass;
+                } else {
+                    unset($curr_by_id[$id]);
+                }
             }
         }
 

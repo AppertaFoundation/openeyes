@@ -17,11 +17,11 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
+	<div class="data-group">
+		<div class="cols-8 column">
 			<h2>Laser operators</h2>
 		</div>
-		<div class="large-4 column">
+		<div class="cols-4 column">
 		</div>
 	</div>
 	<form id="admin_users">
@@ -48,8 +48,8 @@
 						<?php echo EventAction::button('Add', 'add_operator', null, array('class' => 'small'))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete_operator', null, array('class' => 'small'))->toHtml()?>
 						<?php echo $this->renderPartial('_pagination', array(
-                            'pagination' => $pagination,
-                        ))?>
+						    'pagination' => $pagination,
+            ))?>
 					</td>
 				</tr>
 			</tfoot>

@@ -16,55 +16,30 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row posterior-pole">
-	<div class="column fixed">
-		<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-            'side' => ($side == 'right') ? 'R' : 'L',
-            'mode' => 'view',
-            'width' => 200,
-            'height' => 200,
-            'model' => $element,
-            'attribute' => $side.'_eyedraw',
-        ))?>
-	</div>
-	<div class="column fluid">
-        <div class="row">
-            <div class="column large-4">
-                <div class="data-label"><?= $element->getAttributeLabel($side.'_ed_report') ?>:</div>
-            </div>
-            <div class="column large-8">
-                <div class="data-value">
-                    <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
-                </div>
-            </div>
-        </div>
+<div class="eyedraw flex-layout flex-top flex-left posterior-pole">
+  <div class="eyedraw-canvas">
+      <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+          'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
+          'side' => ($side == 'right') ? 'R' : 'L',
+          'mode' => 'view',
+          'width' => 200,
+          'height' => 200,
+          'model' => $element,
+          'attribute' => $side . '_eyedraw',
+      )) ?>
+  </div>
+  <div class="eyedraw-data stack">
+    <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 
-		<?php if ($element->{$side.'_description'}): ?>
-			<div class="row">
-                <div class="column large-4">
-                    <div class="data-label"><?= $element->getAttributeLabel($side.'_description') ?>:</div>
-                </div>
-                <div class="column large-8">
-                    <div class="data-value">
-                        <?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
-                    </div>
-                </div>
-			</div>
-		<?php endif; ?>
+      <?php if ($element->{$side . '_description'}): ?>
+        <div class="data-label"><?= $element->getAttributeLabel($side . '_description') ?>:</div>
+        <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_description'}) ?></div>
+      <?php endif; ?>
 
-        <?php if ($element->{$side . '_vitreous'}): ?>
-            <div class="row">
-                <div class="column large-4">
-                    <div class="data-label"><?= $element->getAttributeLabel('vitreous') ?>:</div>
-                </div>
-                <div class="column large-8">
-                    <div class="data-value">
-                            <?= implode('<br />', $element->{$side . '_vitreous'}) ?>
-                        </div>
-                    </div>
-                </div>
-        <?php endif; ?>
+      <?php if ($element->{$side . '_vitreous'}): ?>
+        <div class="data-label"><?= $element->getAttributeLabel('vitreous') ?>:</div>
+        <div class="data-value"><?= implode('<br />', $element->{$side . '_vitreous'}) ?></div>
+      <?php endif; ?>
 
-	</div>
+  </div>
 </div>

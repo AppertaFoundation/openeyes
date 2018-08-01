@@ -1,12 +1,22 @@
-<div class="element-fields">
-	<div class="fields-row">
-		<?php
-            echo $form->datePicker($this->event, 'event_date', array('maxDate' => 'today'), array(
+<section class="element edit full edit-date">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo CHtml::encode($this->event->getAttributeLabel('event_date')) ?></h3>
+  </header>
+  <div class="element-fields full-width">
+    <div>
+        <?php
+        echo $form->datePicker($this->event, 'event_date',
+            array('maxDate' => 'today'),
+            array(
                 'style' => 'margin-left:8px',
-            ), array(
+                'nowrapper' => true,
+            ),
+            array(
                 'label' => 2,
                 'field' => 2,
-            ));
+            )
+        );
         ?>
-	</div>
-</div>
+    </div>
+  </div>
+</section>

@@ -42,13 +42,13 @@
 	<?php echo $form->radioBoolean($rule, 'emphasis')?>
 	<?php echo $form->radioBoolean($rule, 'strong')?>
 	<?php if ($rule->children) {?>
-		<div class="row field-row">
-			<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+		<div class="data-group">
+			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
 				<div class="field-label">
 					Descendants:
 				</div>
 			</div>
-			<div class="large-<?php echo 12 - $form->layoutColumns['label'];?> column">
+			<div class="cols-<?php echo 12 - $form->layoutColumns['label'];?> column">
 				<div class="panel" style="margin:0">
 					<?php
                     $this->widget('CTreeView', array(

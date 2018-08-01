@@ -56,6 +56,8 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionIndex()
     {
+        $this->fixedHotlist = true;
+
         //TODO: determine whether we actually need this check
         $firm = Firm::model()->findByPk($this->selectedFirmId);
 
@@ -114,12 +116,6 @@ class TheatreDiaryController extends BaseModuleController
     {
         Audit::add('diary', 'print');
 
-        Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl(
-            Yii::app()->getAssetManager()->publish(
-                Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets')
-            ).'/css/module.css'
-        ));
-
         $this->renderPartial('_print_diary', array('diary' => $this->getDiaryTheatres($_POST), 'ward_id' => @$_POST['ward-id']), false, true);
     }
 
@@ -129,12 +125,6 @@ class TheatreDiaryController extends BaseModuleController
     public function actionPrintList()
     {
         Audit::add('diary', 'print list');
-
-        Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl(
-            Yii::app()->getAssetManager()->publish(
-                Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets')
-            ).'/css/module.css'
-        ));
 
         $this->renderPartial('_print_list', array('bookings' => $this->getBookingList($_POST)), false, true);
     }

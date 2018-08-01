@@ -149,4 +149,8 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
         return !$this->isEnabled();
     }
 
+    public function getTileSize($action) {
+        return $action === 'view' ? 1 : null;
+    }
+
 }

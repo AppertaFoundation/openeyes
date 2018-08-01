@@ -32,10 +32,7 @@ $(document).ready(function() {
 		}
 	});
 
-    handleButton($('#et_save'),function() {
-    });
-
-    handleButton($('#et_cancel'),function(e) {
+    $(this).on('click','#et_cancel',function(e) {
             if (m = window.location.href.match(/\/update\/[0-9]+/)) {
                     window.location.href = window.location.href.replace('/update/','/view/');
             } else {
@@ -43,10 +40,6 @@ $(document).ready(function() {
             }
             e.preventDefault();
     });
-
-    handleButton($('#et_deleteevent'));
-
-    handleButton($('#et_canceldelete'));
 
     handleButton($('#capture-patient-signature'), function(e) {
 
@@ -98,18 +91,15 @@ $(document).ready(function() {
             }                                    
         });
     });
-    
-    handleButton($('#et_print'),function(e) {
+
+    $(this).on('click','#et_print',function(e) {
         doPrint(e);
     });
     
-    handleButton($('#et_print_labels'),function(e) {
-        
+    $(this).on('click','#et_print_labels',function(e) {
+
         var table = generateTable();
-        var dialogContainer = '<div id="label-print-dialog">'
-            + generateLabelInput()
-            + table.outerHTML
-        +'</div>';
+        var dialogContainer = '<div id="label-print-dialog">' + generateLabelInput() + table.outerHTML +'</div>';
        
         var labelDialog = new OpenEyes.UI.Dialog({
             content: dialogContainer,
@@ -165,10 +155,7 @@ $(document).ready(function() {
         });
         
         labelDialog.open();
-        
-                
-                
-        
+
         $('#printLabelPanel tr td').click(function(){
             $('#printLabelPanel tr td').removeClass('active-panel');
             $('#printLabelPanel tr td').text('Label');
@@ -231,9 +218,9 @@ $(document).ready(function() {
 
     $(document).on('change', 'input[name="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature[is_patient]"][type="radio"]',function(e) {
         if ($(e.target).val() === '1') {
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').prop('disabled', 'disabled').closest('.field-row').hide();
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').prop('disabled', 'disabled').closest('.data-group').hide();
         } else {
-            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').removeProp('disabled').closest('.field-row').show();
+            $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_representative_name').removeProp('disabled').closest('.data-group').show();
         }
 
     });

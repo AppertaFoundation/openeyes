@@ -16,22 +16,72 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element">
-	<h3 class="element-title highlight">Other information</h3>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id'))?></h4>
-				<div class="data-value"><?php echo $element->surgeon->fullNameAndTitle?></div>
-			</div>
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id'))?></h4>
-				<div class="data-value<?php if (!$element->assistant) {?> none<?php }?>"><?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None'?></div>
-			</div>
-			<div class="large-2 column end">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id'))?></h4>
-				<div class="data-value<?php if (!$element->supervising_surgeon) {?> none<?php }?>"><?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None'?></div>
-			</div>
-		</div>
-	</div>
+
+<section class="element view full">
+  <header class="element-header">
+    <h3 class="element-title">Personnel</h3>
+  </header>
+  <div class="element-data full-width">
+
+    <div class="data-group">
+      <div class="data-value flex-layout flex-top">
+        <div class="cols-11">
+          <div class="cols-11" id="js-listview-info-pro" style="">
+            <ul class="dslash-list large-text">
+              <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
+              <li>
+                <span class="fade">
+                    <?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?>
+                  : <?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?>
+                </span>
+              </li>
+              <li>
+                <span class="fade">
+                    <?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?>
+                  : <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-6 data-group" id="js-listview-info-full" style="display: none">
+            <table class="last-left">
+              <thead>
+              <tr>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>
+                  <span class="large-text">
+                      <?php echo $element->surgeon->fullNameAndTitle ?>
+                  </span>
+                </td>
+                <td>
+                  <span class="large-text">
+                        <?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?>
+                  </span>
+                </td>
+                <td>
+                  <span class="large-text">
+                      <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
+                  </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <div>
+          <i class="oe-i small expand js-listview-expand-btn" data-list="info"></i>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </section>

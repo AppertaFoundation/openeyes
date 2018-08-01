@@ -16,18 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-fields">
-	<div class="field-row furtherfindings-multi-select">
-		<?php echo $form->multiSelectListFreeText($element, CHtml::modelName($element).'[further_findings_assignment]',
-            'further_findings_assignment', 'finding_id', CHtml::encodeArray(CHtml::listData(
-                Finding::model()->activeOrPk($element->furtherFindingsAssigned)->bySubspecialty($this->firm->getSubspecialty())->findAll(),
-                'id',
-                'name'
-            )), array(), array(
-                'empty' => '-- Add --',
-                'label' => 'Findings',
-                'nowrapper' => true,
-                'requires_description_field' => 'requires_description',
-            ), false, true, 'No further findings', true, true, array(), 'Finding') ?>
-	</div>
+<div class="element-fields flex-layout full-width ">
+  <div class="furtherfindings-multi-select">
+      <?php echo $form->multiSelectListFreeText(
+          $element,
+          CHtml::modelName($element) . '[further_findings_assignment]',
+          'further_findings_assignment',
+          'finding_id',
+          CHtml::encodeArray(
+              CHtml::listData(
+                  Finding::model()->activeOrPk(
+                      $element->furtherFindingsAssigned)->bySubspecialty(
+                      $this->firm->getSubspecialty())->findAll(),
+                  'id',
+                  'name')
+          ),
+          array(),
+          array(
+              'empty' => '-- Add --',
+              'label' => 'Findings',
+              'nowrapper' => true,
+              'requires_description_field' => 'requires_description',
+          ),
+          false,
+          true,
+          'No further findings',
+          true,
+          true,
+          array(),
+          'Finding') ?>
+  </div>
 </div>

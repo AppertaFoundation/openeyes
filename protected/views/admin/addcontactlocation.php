@@ -19,11 +19,11 @@
 <div class="admin box">
 	<h2>Add location</h2>
 	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<div class="row field-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<div class="field-label">Contact:</div>
 		</div>
-		<div class="large-10 column">
+		<div class="cols-10 column">
 			<div class="field-value"><?php echo $contact->fullName?></div>
 		</div>
 	</div>
@@ -34,19 +34,19 @@
         'focus' => '#username',
     ))?>
 		<input type="hidden" name="contact_id" value="<?php echo $contact->id?>" />
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="institution_id">Institution:</label>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-5 column end">
 				<?php echo CHtml::dropDownList('institution_id', @$_POST['institution_id'], CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Please select -'))?>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="site_od">Site:</label>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-5 column end">
 				<?php echo CHtml::dropDownList('site_id', '', $sites, array('empty' => '- Optional -'))?>
 			</div>
 		</div>

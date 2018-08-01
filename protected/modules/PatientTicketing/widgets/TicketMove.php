@@ -41,7 +41,6 @@ class TicketMove extends \CWidget
         if (file_exists(dirname(__FILE__).'/js/'.$this->shortName.'.js')) {
             $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js/');
             Yii::app()->getClientScript()->registerScriptFile($this->assetFolder.'/'.$this->shortName.'.js');
-            Yii::app()->getAssetManager()->registerCssFile('css/module.css', 'application.modules.PatientTicketing.assets', 10, \AssetManager::OUTPUT_ALL);
         }
 
         if ($this->ticket) {

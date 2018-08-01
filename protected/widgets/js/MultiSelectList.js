@@ -27,7 +27,7 @@ $(document).ready(function () {
         var lis = $($selection).find('li');
 
         if( lis.length === 1 && $( lis[0]).find('a').data('text') === 'None'){
-            $multi_select.find('select').prop('disabled', true).css({'background-color':'lightgrey'});
+            $multi_select.find('select').prop('disabled', true);
         }
     });
 
@@ -83,9 +83,7 @@ $(document).ready(function () {
       var input = $(inp_str);
 
       var remote_data = {
-        'href': '#',
-        'class': 'MultiSelectRemove remove-one ' + selected.val(),
-        'text': 'Remove',
+        'class': 'multi-select-remove remove-one ' + selected.val(),
         'data-name': fieldName + '[]',
         'data-text': selected.text()
       };
@@ -96,7 +94,9 @@ $(document).ready(function () {
         remote_data['data-linked-values'] = $(this).data('linked-values');
       }
 
-      var remove = $('<a />', remote_data);
+      var remove = $('<span></span>', remote_data);
+      var remove_icon = $('<i class="oe-i remove-circle small "></i>');
+      remove.append(remove_icon);
 
       var item = $('<li><span class="text">' + selected.text() + '</span></li>');
       item.append(remove);
@@ -114,10 +114,10 @@ $(document).ready(function () {
 
       selections
         .append(item)
-        .removeClass('hide');
+        .show();
 
-      noSelectionsMsg.addClass('hide');
-      removeAll.removeClass('hide');
+      noSelectionsMsg.hide();
+      removeAll.show();
 
       if (!select.data('searchable')) {
         selected.remove();
@@ -140,12 +140,9 @@ $(document).ready(function () {
     if(selected_text === 'None'){
         $(this).prop('disabled', true);
 
-          // to ensure visual feedback
-          $(this).css({'background-color':'lightgrey'});
-
           //remove other options
           $.each(selections.find('li'), function( index, $item ) {
-            var $anchor = $($item).find('a.MultiSelectRemove');
+            var $anchor = $($item).find('.multi-select-remove');
 
             if($anchor.data('text').trim() !== 'None'){
                 $anchor.trigger('click');
@@ -157,7 +154,7 @@ $(document).ready(function () {
     return false;
   });
 
-  $(this).on('click', 'a.MultiSelectRemove', 'click', function (e) {
+  $(this).on('click', '.multi-select-remove', 'click', function (e) {
     e.preventDefault();
     var anchor = $(this);
     var container = anchor.closest('.multi-select');
@@ -186,7 +183,7 @@ $(document).ready(function () {
     if (!select.data('searchable')) {
       select.append('<option' + attr_str + '>' + text + '</option>');
       if(text.trim() === 'None'){
-          select.css({'background-color':'white'}).prop('disabled', false);
+          select.prop('disabled', false);
       }
 
       sort_selectbox(select);
@@ -196,8 +193,8 @@ $(document).ready(function () {
     input.remove();
 
     if (!selections.children().length) {
-      selections.add(removeAll).addClass('hide');
-      noSelectionsMsg.removeClass('hide');
+      selections.add(removeAll).hide();
+      noSelectionsMsg.show();
       var container = select.closest('.multi-select');
       var inputField = container.find('.multi-select-list-name');
       var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];

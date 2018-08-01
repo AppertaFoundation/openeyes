@@ -42,7 +42,7 @@
 }?>
 		</select>
 	</td>
-	<td class="readingActions">
-		<a href="#" class="removeCVReading">Remove</a>
-	</td>
+  <td class="cols-2 readingActions">
+    <i class="oe-i trash removeCVReading"></i>
+  </td>
 </tr>

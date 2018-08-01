@@ -20,9 +20,9 @@ $this->layout = '//layouts/error';
 ?>
 
 <h2>Page not found</h2>
-<p class="panel">
+<div class="alert-box error">
     <strong>There has been a problem trying to access OpenEyes, please try again in a moment.</strong>
-</p>
+</div>
 <p class="panel">
     If there continues to be a problem please contact support.
 </p>

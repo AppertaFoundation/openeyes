@@ -18,9 +18,9 @@
 ?>
 
 <div class="element-data">
-    <div class="row data-row">
-        <div class="large-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('ability_id')) ?></div>
-        <div class="large-10 column end">
+    <div class="data-group">
+        <div class="cols-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('ability_id')) ?></div>
+        <div class="cols-10 column end">
             <div class="data-value">
                 <?php if (!$element->abilitys) { ?>
                     None
@@ -33,13 +33,13 @@
         </div>
     </div>
     <?php if ($element->hasMultiSelectValue('abilitys', 'Other')) { ?>
-        <div class="row data-row">
-            <div class="large-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('other')) ?></div>
-            <div class="large-10 column data-value"><?= $element->textWithLineBreaks('other') ?></div>
+        <div class="data-group">
+            <div class="cols-2 column data-label"><?= CHtml::encode($element->getAttributeLabel('other')) ?></div>
+            <div class="cols-10 column data-value"><?= $element->textWithLineBreaks('other') ?></div>
         </div>
     <?php } ?>
-    <div class="row data-row">
-        <div class="large-2 column data-label"><?= $element->getAttributeLabel('glasses') ?></div>
-        <div class="large-10 column data-value"><?= $element->glasses ? 'Yes' : 'No' ?></div>
+    <div class="data-group">
+        <div class="cols-2 column data-label"><?= $element->getAttributeLabel('glasses') ?></div>
+        <div class="cols-10 column data-value"><?= $element->glasses ? 'Yes' : 'No' ?></div>
     </div>
 </div>

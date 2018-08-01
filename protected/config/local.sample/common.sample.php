@@ -117,6 +117,7 @@ $config = array(
         'OphInDnaextraction',
         'OphInGeneticresults',*/
         'OphCoDocument',
+	'OphCiDidNotAttend',
     ),
 
     'params' => array(

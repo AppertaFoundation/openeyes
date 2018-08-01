@@ -18,122 +18,162 @@
 ?>
 <?php
 if ($this->checkClinicalEditAccess()) { ?>
-    <div class="element-fields row">
-        <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'),
-            array('style' => 'width: 110px;')) ?>
-        <div class="indent-correct row">
-            <div class="column large-6">
-                <div class="row field-row">
-                    <div class="column large-4">
-                        <label><?= $element->getAttributeLabel('is_considered_blind');?></label>
-                    </div>
-                    <div class="column large-8">
-                        <?php echo $form->radioButtons($element, 'is_considered_blind', array(
-                            0 => $element::$NOT_BLIND_STATUS,
-                            1 => $element::$BLIND_STATUS,
-                        ),
-                            $element->is_considered_blind,
-                            false, false, false, false,
-                            array('nowrapper' => true)
-                        ); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="column large-6 end">
-                <div class="row field-row">
-                    <div class="column large-5">
-                        <label><?= $element->getAttributeLabel('sight_varies_by_light_levels');?></label>
-                    </div>
-                    <div class="column large-7 large-pull-1">
-                        <?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels', array('nowrapper' => true)) ?>
-                    </div>
-                </div>
-            </div>
+    <div class="element-fields full-width">
+      <div class="data-group">
+        <table class="cols-6 last-left">
+          <colgroup>
+            <col class="cols-5">
+            <col class="cols-7">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td>
+                  <?php echo $element->getAttributeLabel('examination_date')?>
+              </td>
+              <td>
+                  <?php echo $form->datePicker($element, 'examination_date', array('maxDate' => 'today'),
+                      array('style' => 'width: 110px;', 'nowrapper'=> true)) ?>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex-layout flex-top col-gap">
+        <div class="cols-6 data-group">
+          <table class="cols-full last-left">
+            <colgroup>
+              <col class="cols-5">
+              <col class="cols-7">
+            </colgroup>
+            <tbody>
+            <tr>
+              <td>
+                <label><?= $element->getAttributeLabel('is_considered_blind');?></label>
+              </td>
+              <td>
+                  <?php echo $form->radioButtons($element, 'is_considered_blind', array(
+                      0 => $element::$NOT_BLIND_STATUS,
+                      1 => $element::$BLIND_STATUS,
+                  ),
+                      $element->is_considered_blind,
+                      false, false, false, false,
+                      array('nowrapper' => true)
+                  ); ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?= $element->getAttributeLabel('sight_varies_by_light_levels');?></label>
+              </td>
+              <td>
+                  <?php echo $form->radioBoolean($element, 'sight_varies_by_light_levels', array('nowrapper' => true)) ?>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="indent-correct row">
-            <div class="column large-6">
-                <?php echo $form->dropDownList($element, 'low_vision_status_id',
-                    CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
-                        'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 6)) ?>
-            </div>
-            <div class="column large-6 end">
-                <?php echo $form->dropDownList($element, 'field_of_vision_id',
-                    CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
-                        'id', 'name'), array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 6)) ?>
-            </div>
+        <div class="cols-6 data-group">
+          <table class="cols-full last-left">
+            <colgroup>
+              <col class="cols-5">
+              <col class="cols-7">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>
+                  <label><?= $element->getAttributeLabel('low_vision_status_id');?></label>
+                </td>
+                <td>
+                    <?php echo $form->dropDownList($element, 'low_vision_status_id',
+                        CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
+                            'id', 'name'), array('empty' => '- Please select -','nowrapper' => true), false, array('label' => 4, 'field' => 6)) ?>
+                </td>
+              </tr>
+            <tr>
+              <td>
+                <label><?= $element->getAttributeLabel('field_of_vision_id');?></label>
+              </td>
+              <td>
+                  <?php echo $form->dropDownList($element, 'field_of_vision_id',
+                      CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
+                          'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false, array('label' => 4, 'field' => 6)) ?>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="row">
-            <div class="column large-3 end"><h3 class="inline-header">Visual Acuity</h3></div>
+      <div class="data-group">
+        <div class="">
+          <h3 class="element-title">Visual Acuity</h3>
         </div>
-        <div class="indent-correct element-eyes sub-element-fields">
-            <div class="element-eye right-eye column left side" data-side="right">
-                <div class="active-form">
-                    <div class="row field-row">
-                        <div class="large-4 column">
-                            <label for="<?php echo 'unaided_right_va'; ?>">
-                                <?php echo $element->getAttributeLabel('unaided_right_va'); ?>:
-                            </label>
-                        </div>
-                        <div class="large-6 column end">
-                            <?php echo $form->textField($element, 'unaided_right_va',
-                                array('size' => 5, 'nowrapper' => true)); ?>
-                        </div>
-                    </div>
-                    <div class="row field-row">
-                        <div class="large-4 column">
-                            <label for="<?php echo 'best_corrected_right_va'; ?>">
-                                <?php echo $element->getAttributeLabel('best_corrected_right_va'); ?>:
-                            </label>
-                        </div>
-                        <div class="large-6 column end">
-                            <?php echo $form->textField($element, 'best_corrected_right_va',
-                                array('size' => 5, 'nowrapper' => true)); ?>
-                        </div>
-                    </div>
-                </div>
+        <div class="indent-correct element-eyes element-fields">
+          <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+          <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
+            <div class="active-form data-group">
+              <table class="cols-full">
+                <tbody>
+                <tr>
+                  <td>
+                    <span class="oe-eye-lat-icons">
+                      <i class="oe-i laterality <?= $eye_side == 'right' ? 'R' : 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?= $eye_side == 'left' ? 'L' : 'NA' ?> small pad"></i>
+                    </span>
+                  </td>
+                  <td>
+                      <?php echo $element->getAttributeLabel('unaided_'.$eye_side.'_va'); ?>
+                  </td>
+                  <td>
+                      <?php echo $form->textField($element, 'unaided_'.$eye_side.'_va',
+                          array('size' => 5, 'nowrapper' => true)); ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="oe-eye-lat-icons">
+                      <i class="oe-i laterality <?= $eye_side=='right'? 'R': 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?= $eye_side=='left'? 'L': 'NA' ?> small pad"></i>
+                    </span>
+                  </td>
+                  <td><?php echo $element->getAttributeLabel('best_corrected_'.$eye_side.'_va'); ?></td>
+                  <td><?php echo $form->textField($element, 'best_corrected_'.$eye_side.'_va',
+                          array('size' => 5, 'nowrapper' => true)); ?>
+                  </td>
+                </tr>
+                <?php if ($eye_side=='right'){ ?>
+                <tr>
+                  <td>
+                    <span class="oe-eye-lat-icons">
+                      <i class="oe-i laterality R small pad"></i>
+                      <i class="oe-i laterality L small pad"></i>
+                    </span>
+                  </td>
+                  <td><?php echo $element->getAttributeLabel('best_corrected_binocular_va'); ?></td>
+                  <td>
+                      <?php echo $form->textField(
+                          $element,
+                          'best_corrected_binocular_va',
+                          array('size' => '10', 'nowrapper' => true),
+                          null,
+                          array()) ?>
+                  </td>
+                </tr>
+                <?php } ?>
+                </tbody>
+              </table>
             </div>
-
-            <div class="element-eye left-eye column right side" data-side="left">
-                <div class="active-form">
-                    <div class="row field-row">
-                        <div class="large-4 column">
-                            <label for="<?php echo 'unaided_left_va'; ?>">
-                                <?php echo $element->getAttributeLabel('unaided_left_va'); ?>:
-                            </label>
-                        </div>
-                        <div class="large-6 column end">
-                            <?php echo $form->textField($element, 'unaided_left_va',
-                                array('size' => 5, 'nowrapper' => true)); ?>
-                        </div>
-                    </div>
-                    <div class="row field-row">
-                        <div class="large-4 column">
-                            <label for="<?php echo 'best_corrected_left_va'; ?>">
-                                <?php echo $element->getAttributeLabel('best_corrected_left_va'); ?>:
-                            </label>
-                        </div>
-                        <div class="large-6 column end">
-                            <?php echo $form->textField($element, 'best_corrected_left_va',
-                                array('size' => 5, 'nowrapper' => true)); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <?php } ?>
         </div>
-        <div>
-        <?php echo $form->textField($element, 'best_corrected_binocular_va', array('size' => '10'), null, array('label' => '3', 'field' => '2 large-push-2')) ?></div>
-
+      </div>
+      <div class="data-group">
         <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
             'element' => $element,
             'form' => $form,
-
         ))?>
-
-
-        <?php echo $form->textArea($element, 'diagnoses_not_covered', array('rows' => 2, 'cols' => 80)) ?>
-
-    </div>
+        <?php echo $form->textArea($element, 'diagnoses_not_covered', array()) ?>
+      </div>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>

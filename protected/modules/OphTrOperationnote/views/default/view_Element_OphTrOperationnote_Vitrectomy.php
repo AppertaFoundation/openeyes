@@ -17,61 +17,63 @@
  */
 ?>
 
-<section class="sub-element">
-	<h3 class="sub-element-title highlight"><?php echo $element->elementType->name ?></h3>
-	<div class="sub-element-data">
-		<div class="row">
-			<div class="large-6 column">
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('gauge_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->gauge->value?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('pvd_induced'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->pvd_induced ? 'Yes' : 'No'; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo Yii::app()->format->Ntext($element->comments)?>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<?php
-                    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                    'side' => $element->eye->getShortName(),
-                    'mode' => 'view',
-                    'width' => 200,
-                    'height' => 200,
-                    'model' => $element,
-                    'attribute' => 'eyedraw',
-                    'idSuffix' => 'Vitrectomy',
-                    ));
-                ?>
-			</div>
-		</div>
-	</div>
+<section class="element">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+    <div class="data-group">
+      <div class="cols-6 column">
+        <div class="data-group">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->gauge->value ?>
+            </div>
+          </div>
+        </div>
+        <div class="data-group">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->pvd_induced ? 'Yes' : 'No'; ?>
+            </div>
+          </div>
+        </div>
+        <div class="data-group">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo Yii::app()->format->Ntext($element->comments) ?>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cols-6 column">
+          <?php
+          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+              'side' => $element->eye->getShortName(),
+              'mode' => 'view',
+              'width' => 200,
+              'height' => 200,
+              'model' => $element,
+              'attribute' => 'eyedraw',
+              'idSuffix' => 'Vitrectomy',
+          ));
+          ?>
+      </div>
+    </div>
+  </section>
 </section>

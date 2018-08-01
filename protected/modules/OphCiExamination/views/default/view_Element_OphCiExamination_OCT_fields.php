@@ -16,77 +16,63 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_method_id')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_method'}->name?>
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_crt')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_crt'}?> &micro;m
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_sft')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_sft'}?> &micro;m
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_thickness_increase') ?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php
-                if ($element->{$side.'_thickness_increase'} === null) {
-                    echo 'Not recorded';
-                } else {
-                    echo $element->{$side.'_thickness_increase'} ? 'Yes' : 'No';
-                }
-            ?>
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">Finding:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{'get'.ucfirst($side).'FluidString'}();?></div>
-	</div>
-</div>
-<?php if ($element->{$side.'_comments'}) {
-    ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_comments') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></div>
-		</div>
-	</div>
-<?php 
-}
+<table>
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_method_id') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_method'}->name ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_crt') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_crt'} ?> &micro;m
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_sft') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_sft'} ?> &micro;m
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_thickness_increase') ?>:
+    </td>
+    <td>
+        <?php if ($element->{$side . '_thickness_increase'} === null) {
+            echo 'Not recorded';
+        } else {
+            echo $element->{$side . '_thickness_increase'} ? 'Yes' : 'No';
+        } ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Finding:
+    </td>
+    <td>
+        <?php echo $element->{'get' . ucfirst($side) . 'FluidString'}(); ?>
+    </td>
+  </tr>
+  <?php if ($element->{$side . '_comments'}) { ?>
+    <tr>
+      <td>
+          <?php echo $element->getAttributeLabel($side . '_comments') ?>:
+      </td>
+      <td>
+          <?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
+      </td>
+    </tr>
+  <?php } ?>
+  </tbody>
+</table>
+
+

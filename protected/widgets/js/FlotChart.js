@@ -39,7 +39,7 @@
 		}
 
 		var labels = $(
-			'<div class="row" style="padding-bottom:5px">' +
+			'<div class="data-group" style="padding-bottom:5px">' +
 			'<div class="column small-6"><span class="data-value">' + left_label + '</span></div>' +
 			'<div class="column small-6"><span class="data-value right">' + right_label + '</span></div>' +
 			'</div>'

@@ -17,74 +17,92 @@
  */
 ?>
 
-<section class="element">
-	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
-	<div class="element-data">
-		<div class="row">
-			<div class="large-2 column">
-				<h4 class="data-title">Type</h4>
-				<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
-			</div>
-            
-			<?php if ( count($element->anaesthetic_type) > 1 || ( count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA")) ) {?>
-                <div class="large-2 column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
-                    <div class="data-value <?php if (!$element->anaesthetist) {?> none<?php }?>"><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None'?></div>
-                </div>
-                <div class="large-2 column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
-                    <div class="data-value <?php if (!$element->anaesthetic_agents) {?> none<?php }?>">
-                        <?php if (!$element->anaesthetic_agents) {?>
-                            None
-                        <?php } else {?>
-                            <?php foreach ($element->anaesthetic_agents as $agent) {?>
-                                <?php echo $agent->name?><br/>
-                            <?php }?>
-                        <?php }?>
+<?php
 
-                    </div>
-                </div>
-                <div class="large-3 column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
-                    <div class="data-value <?php if (!$element->anaesthetic_complications) {?> none<?php }?>">
-                        <?php if (!$element->anaesthetic_complications) {?>
-                            None
-                        <?php } else {?>
-                            <?php foreach ($element->anaesthetic_complications as $complication) {?>
-                                <?php echo $complication->name?><br/>
-                            <?php }?>
-                        <?php }?>
-                    </div>
-                </div>
-                <div class="large-3 column">
-                    <h4 class="data-title">Delivery</h4>
-                    <div class="data-value <?php if (!$element->anaesthetic_delivery) {?> none<?php }?>">
-                        <?php
-                            $text = '';
-                            foreach($element->anaesthetic_delivery as $anaesthetic_delivery){
-                                if(!empty($text)){ $text .= ', '; }
-                                $text .= $anaesthetic_delivery->name;
-                            }
+$anaesthetic_agents = implode('<br />', array_map(function($agent) { return $agent->name; }, $element->anaesthetic_agents));
+$anaesthetic_deliveries = implode(', ', array_map(function($delivery){ return $delivery->name; }, $element->anaesthetic_delivery));
+$anaesthetic_complications = implode('<br />', array_map(function($complication) { return $complication->name; }, $element->anaesthetic_complications));
 
-                            echo $text ? $text : 'None';
-                        ?>
-                    </div>
-                </div>
-                <?php if ($element->getSetting('fife')) {?>
-                    <div class="large-3 column">
-                        <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id'))?></h4>
-                        <div class="data-value<?php if (!$element->witness) {?> none<?php }?>">
-                            <?php echo $element->witness ? $element->witness->fullName : 'None'?>
-                        </div>
-                    </div>
-                <?php }?>
-		    <?php }?>
-		</div>
-		<div class="row data-row">
-			<div class="large-8 column end">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
-				<div class="data-value<?php if (!$element->anaesthetic_comment) {?> none<?php }?>"><?php echo CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None'?></div>
-			</div>
-		</div>
-	</div>
+?>
+<section class="element view full  view-anaesthetic">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <div class="element-data full-width">
+    <div class="data-group">
+      <div class="data-value flex-layout flex-top">
+        <div class="cols-full">
+            <?php if (count($element->anaesthetic_type) > 1 || (count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA"))) { ?>
+          <div class="cols-11" id="js-listview-anaesthetic-pro">
+            <ul class="dslash-list large-text">
+              <li><?= $element->getAnaestheticTypeDisplay() ?></li>
+              <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?>:
+                <span <?php if (!$element->anaesthetic_agents){ ?>class="none"<?php } ?>>
+                   <?php echo $anaesthetic_agents ?>
+                </span>
+              </li>
+              <li>
+                  <?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
+              </li>
+              <li>
+                  <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>:
+                  <?php echo $anaesthetic_complications ?: 'None' ?>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-6" id="js-listview-anaesthetic-full" style="display: none;">
+            <table class="last-left large">
+              <colgroup>
+                <col class="cols-fifth" span="5">
+              </colgroup>
+              <thead>
+              <tr>
+                <th>Type</th>
+                <th>Delivery</th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('complications')) ?></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><?= $element->getAnaestheticTypeDisplay() ?></td>
+                <td><?php echo $anaesthetic_deliveries ?: 'None' ?></td>
+                <td>
+                  <span <?php if (!$element->anaesthetic_agents){ ?>class="none"<?php } ?>>
+                   <?php echo $anaesthetic_agents ?: 'None' ?>
+                  </span>
+                </td>
+                <td><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
+                </td>
+                <td>
+                    <?php echo $anaesthetic_complications ?: 'None' ?>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment')) ?></h4>
+            <div
+                class="data-value<?php if (!$element->anaesthetic_comment) { ?> none<?php } ?>"><?php echo CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?>
+            </div>
+          </div>
+        </div>
+          <?php if ($element->getSetting('fife')) { ?>
+            <div class="cols-3 column">
+              <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id')) ?></h4>
+              <div class="data-value<?php if (!$element->witness) { ?> none<?php } ?>">
+                  <?php echo $element->witness ? $element->witness->fullName : 'None' ?>
+              </div>
+            </div>
+          <?php } ?>
+          <?php } ?>
+        <div>
+          <i class="oe-i expand small js-listview-expand-btn" data-list="anaesthetic"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

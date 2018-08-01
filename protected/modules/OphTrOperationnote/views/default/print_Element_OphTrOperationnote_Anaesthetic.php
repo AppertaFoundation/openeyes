@@ -25,11 +25,8 @@
                 if ($element->hasAnaestheticType('GA') && count($element->anaesthetic_type) == 1) {
                     $columns -= 2;
                 }
-                if (!$element->getSetting('fife')) {
-                    $columns -= 1;
-                }
             ?>
-			<div class="row data-row columns-<?php echo $columns;?>">
+			<div class="data-group columns-<?php echo $columns;?>">
 				<div class="column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
 					<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
@@ -44,7 +41,6 @@
                                 if(!empty($text)){ $text .= ', '; }
                                 $text .= $anaesthetic_delivery->name;
                             }
-
                             echo $text ? $text : 'None';
                             ?>
                         </div>
@@ -77,22 +73,12 @@
 							<?php }?>
 						</div>
 					</div>
-					<?php if ($element->getSetting('fife')) {?>
-						<div class="column">
-							<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id'))?></h4>
-							<div class="data-value<?php if (!$element->witness) {?> none<?php }?>">
-								<?php echo $element->witness ? $element->witness->fullName : 'None'?>
-							</div>
-						</div>
-					<?php }?>
 				<?php }?>
 			</div>
-			<div class="row data-row">
-				<div class="large-12 column">
+				<div class="cols-12 column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
 					<div class="data-value"><?php echo  Yii::app()->format->Ntext($element->anaesthetic_comment)?></div>
 				</div>
-			</div>
 		</div>
 	</div>
 </section>

@@ -32,7 +32,7 @@
         array(
             'empty' => '- Recipient -',
             'nowrapper' => true, 
-            'class' => 'full-width docman_recipient',
+            'class' => 'full-width docman_recipient cols-full',
             'data-rowindex' => $row_index, 
             'data-previous' => $contact_id,
             'data-name' => 'DocumentTarget['.$row_index.'][attributes][contact_id]',
@@ -44,8 +44,8 @@
 
     echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id);
 ?>
-<br><br>
-<?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name)); ?>
+<?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full')); ?>
 <div>
-    <textarea rows="4" cols="10" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
+    <textarea rows="4" cols="10" style="width: 100%" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
 </div>
+<br><br>

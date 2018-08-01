@@ -18,277 +18,122 @@
 ?>
 
 <div class="element-data">
-    <div class="data-row">
-        <div class="large-3 column">
-            <div class="data-label">
-                <?php echo $element->getAttributeLabel('tomographer_id')?>:
-            </div>
-        </div>
-        <div class="large-3 column">
-            <div class="data-value">
-                <?php
-                echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->getName($element->tomographer_id);
-                ?>
-            </div>
-        </div>
-        <div class="large-6 column">
-            </div>
-    </div>
+  <div class="data-group">
+      <?php echo $element->getAttributeLabel('tomographer_id') ?>:
+      <?php echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->getName($element->tomographer_id); ?>
+  </div>
 </div>
 
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <?php if ($element->hasRight()) {?>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('right_anterior_k1_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->hasEye($eye_side)) { ?>
+            <table>
+              <tbody>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_anterior_k1_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_anterior_k1_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_anterior_k2_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_anterior_k2_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_quality_front') ?>:
+                </td>
+                <td>
                     <?php
-                    echo $element->right_anterior_k1_value;
-                    ?>
-                    </div>
-                </div>
-                <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_anterior_k2_value')?>:
-                </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->right_anterior_k2_value;
-                    ?>
-                    </div>
-                </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_quality_front')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    if($element->right_quality_front){
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_front);
+                    if ($element->{$eye_side . '_quality_front'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->{$eye_side . '_quality_front'});
                     }
                     ?>
-                </div>
-            </div>
-        <div class="row">
-            <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_axis_anterior_k1_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-                <?php
-                echo $element->right_axis_anterior_k1_value;
-                    ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_axis_anterior_k2_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-            <?php
-                    echo $element->right_axis_anterior_k2_value;
-            ?>
-            </div>
-        </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_quality_back')?>:
-                </div>
-                <div class="large-5 column data-value">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k1_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_axis_anterior_k1_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k2_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_axis_anterior_k2_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_quality_back') ?>:
+                </td>
+                <td>
                     <?php
-                    if($element->right_quality_back){
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_back);
+                    if ($element->{$eye_side . '_quality_back'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->{$eye_side . '_quality_back'});
                     }
                     ?>
-                </div>
-            </div>
-        <div class="row">
-            <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_kmax_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-                <?php
-                    echo $element->right_kmax_value;
-                ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="large-6 column data-value">
-            <?php echo $element->getAttributeLabel('right_thinnest_point_pachymetry_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-                <?php
-                    echo $element->right_thinnest_point_pachymetry_value;
-                ?>
-                </div>
-        </div>
-        <div class="row">
-            <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_ba_index_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-                <?php
-                    echo $element->right_ba_index_value;
-                ?>
-            </div>
-        </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_flourescein_value')?>:
-                </div>
-                <div class="large-5 column data-value">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_kmax_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_kmax_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_thinnest_point_pachymetry_value') ?>:
+                </td>
+                <td>
                     <?php
-                    echo yesOrNo($element->right_flourescein_value);
+                    echo $element->{$eye_side . '_thinnest_point_pachymetry_value'}
                     ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_cl_removed')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    if($element->right_cl_removed){
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->right_cl_removed);
-                    }
-                    ?>
-                </div>
-            </div>
-
-
-<?php
-                } else {
-                    ?>
-                    Not recorded
-                    <?php
-                }?>
-            </div>
-
-
-        <div class="element-eye left-eye column">
-            <?php if ($element->hasLeft()) {?>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_anterior_k1_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_anterior_k1_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_anterior_k2_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_anterior_k2_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_quality_front')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        if($element->left_quality_front){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_front);
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_axis_anterior_k1_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_axis_anterior_k1_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_axis_anterior_k2_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_axis_anterior_k2_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_quality_back')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        if($element->left_quality_back){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_back);
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_kmax_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_kmax_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_thinnest_point_pachymetry_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_thinnest_point_pachymetry_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_ba_index_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_ba_index_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_flourescein_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo yesOrNo($element->left_flourescein_value);
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_cl_removed')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        if($element->left_cl_removed){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->left_cl_removed);
-                        }
-                        ?>
-                    </div>
-                </div>
-                <?php
-            } else {
-                ?>
-                Not recorded
-                <?php
-            }?>
-        </div>
-    </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_ba_index_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_ba_index_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_flourescein_value') ?>:
+                </td>
+                <td>
+                    <?php echo yesOrNo($element->{$eye_side . '_flourescein_value'}); ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_cl_removed') ?>:
+                </td>
+                <td>
+                    <?php if ($element->{$eye_side . '_cl_removed'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->{$eye_side . '_cl_removed'});
+                    } ?>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          <?php } else { ?> Not recorded
+          <?php } ?>
+      </div>
+    <?php endforeach; ?>
+</div>

@@ -27,11 +27,9 @@
           'focus' => '#search',
           'action' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
       )) ?>
-    <div class="large-12 column">
-
-        <div class="row">
-          <div class="large-12 column">
-            <table class="grid">
+    <div class="cols-12 column">
+      <div class="cols-12 column">
+        <table class="grid">
               <thead>
               <tr>
                 <th>Subject Id</th>
@@ -70,7 +68,7 @@
               </tr>
               </tbody>
             </table>
-            <table class="grid">
+        <table class="grid">
               <thead>
               <tr>
                 <th>Result date from</th>
@@ -117,7 +115,7 @@
                             if($value){
                                 $disorder = Disorder::model()->findByPk($value);
                                 echo $disorder->term;
-                                ?><i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
+                                ?><i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
                             }
                             ?>
                         </span>
@@ -127,7 +125,7 @@
                             'name' => 'genetics-patient-disorder-id',
                             'code' => '',
                             'value' => $value,
-                            'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                            'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                             'placeholder' => 'Search for a diagnosis',
                         ));
                         ?>
@@ -137,11 +135,10 @@
               </tbody>
 
             </table>
-              <button id="search_tests" class="secondary right" type="submit">
+        <button id="search_tests" class="secondary right" type="submit">
                   Search
               </button>
-          </div>
-        </div>
+      </div>
     </div>
       <?php $this->endWidget() ?>
     <div style="clear:both"></div>

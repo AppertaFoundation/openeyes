@@ -16,56 +16,56 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'address_type_id'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'address_type_id'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->dropDownList($address,'address_type_id', $address_type_ids, array('empty'=>'-- select --')); ?>
         <?php echo $form->error($address,'address_type_id'); ?>
     </div>
 </div>
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'address1'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'address1'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->textField($address,'address1',array('size'=>15)); ?>
         <?php echo $form->error($address,'address1'); ?>
     </div>
 </div>
 
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'address2'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'address2'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->textField($address,'address2',array('size'=>15)); ?>
         <?php echo $form->error($address,'address2'); ?>
     </div>
 </div>
 
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'city'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'city'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->textField($address,'city',array('size'=>15)); ?>
         <?php echo $form->error($address,'city'); ?>
     </div>
 </div>
 
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'postcode'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'postcode'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->textField($address,'postcode',array('size'=>15)); ?>
         <?php echo $form->error($address,'postcode'); ?>
     </div>
 </div>
 
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'county'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'county'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->textField($address,'county',array('size'=>15)); ?>
         <?php echo $form->error($address,'county'); ?>
     </div>
 </div>
 
-<div class="row field-row">
-    <div class="large-3 column"><?php echo $form->labelEx($address,'country_id'); ?></div>
-    <div class="large-4 column end">
+<div class="data-group">
+    <div class="cols-3 column"><?php echo $form->labelEx($address,'country_id'); ?></div>
+    <div class="cols-4 column end">
         <?php echo $form->dropDownList($address,'country_id', $countries, array('empty'=>'-- select --')); ?>
         <?php echo $form->error($address,'country_id'); ?>
     </div>

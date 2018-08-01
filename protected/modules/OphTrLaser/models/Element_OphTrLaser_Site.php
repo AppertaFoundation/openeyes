@@ -142,9 +142,9 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $user = Yii::app()->session['user'];
 
-            if ($user->is_doctor) {
-                $this->operator_id = $user->id;
-            }
+            //it will be ignored in the drop down if it was not a valid option
+            // and in a future we want to remove the 'Laser Operators' list
+            $this->operator_id = $user->id;
         }
     }
 
@@ -169,5 +169,10 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
         if ($this->site_id && $this->laser && $this->site_id != $this->laser->site_id) {
             $this->addError($attribute, 'Selected laser must be on the selected site');
         }
+    }
+
+    public function getViewTitle()
+    {
+        return 'Laser Information';
     }
 }

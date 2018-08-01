@@ -22,7 +22,7 @@
  */
 ?>
 <div class="element-fields">
-	<div class="row field-row">
+	<div class="data-group">
 		<?php foreach ($fields as $field) {?>
 			<?php echo CHtml::hiddenField(CHtml::modelName($element)."[$field]", '0', array('id' => CHtml::modelName($element).'_'.$field.'_hidden'))?>
 			<?php if (!@$htmlOptions['no-label']) {?>

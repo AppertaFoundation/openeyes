@@ -16,11 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
-	<div class="large-6 column">
-		<div class="data-value"><?php echo $cct && $cct->hasRight() ? $cct->right_value.' &micro;m ('.$cct->right_method->name.')' : 'Not recorded'?></div>
+	<div class="cols-6 column">
+		<div class="data-value <?php echo $cct && $cct->hasRight() ? '' : 'not-recorded'?>"><?php echo $cct && $cct->hasRight() ? $cct->right_value.' &micro;m ('.$cct->right_method->name.')' : 'Not recorded'?></div>
 	</div>
-	<div class="large-6 column">
-		<div class="data-value"><?php echo $cct && $cct->hasLeft() ? $cct->left_value.' &micro;m ('.$cct->left_method->name.')' : 'Not recorded'?></div>
+	<div class="cols-6 column">
+		<div class="data-value <?php echo $cct && $cct->hasLeft() ? '' : 'not-recorded'?>"><?php echo $cct && $cct->hasLeft() ? $cct->left_value.' &micro;m ('.$cct->left_method->name.')' : 'Not recorded'?></div>
 	</div>
-</div>

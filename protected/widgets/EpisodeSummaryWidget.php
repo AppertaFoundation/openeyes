@@ -30,4 +30,79 @@ abstract class EpisodeSummaryWidget extends CWidget
      * @var bool
      */
     public $openOnPageLoad = false;
+
+    protected function sortData($item1, $item2){
+        if ($item1['x'] == $item2['x']) return 0;
+        return $item1['x'] < $item2['x'] ? -1 : 1;
+    }
+
+    public function run_right_side(){
+
+    }
+
+    public function run_oescape($widgets_no = 1){
+
+    }
+
+    public function getOpnoteEvent(){
+        $opnote_marking = array('right'=>array(), 'left'=>array());
+
+        $marking_list = array();
+        $subspecialty = Subspecialty::model()->findByAttributes(array('name'=>'Glaucoma'));
+        if ($subspecialty){
+            foreach (Procedure::model()->getListBySubspecialty($subspecialty->id, false) as $proc_id => $name) {
+                $marking_list[] = $name;
+            }
+        }
+
+        $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->episode->patient);
+        $eye_side_list = [Eye::LEFT =>['left'], Eye::RIGHT=>['right'], Eye::BOTH=>['left', 'right']];
+
+        foreach ($events as $event) {
+            if (($proc_list = $event->getElementByClass('Element_OphTrOperationnote_ProcedureList'))) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+                $eye_side = $eye_side_list[$proc_list->eye->id];
+                foreach ($eye_side as $side){
+                    foreach ($proc_list->procedures as $proc){
+                        if (in_array($proc->term, $marking_list)){
+                            if (empty($opnote_marking[$side])||!array_key_exists($proc->short_format, $opnote_marking[$side])){
+                                $opnote_marking[$side][$proc->short_format] = array();
+                            }
+                            $opnote_marking[$side][$proc->short_format][]=$timestamp;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $opnote_marking;
+    }
+
+    public function getLaserEvent() {
+        $laser_marking = array('right'=>array(), 'left'=>array());
+
+        $event_laser = EventType::model()->find('class_name=?', array('OphTrLaser'));
+        $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->episode->patient);
+
+        foreach ($events as $event) {
+            $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+            if ($proc_list = $event->getElementByClass('Element_OphTrLaser_Treatment') ){
+                foreach ($proc_list->left_procedures as $left_procedure) {
+                    if (empty($laser_marking['left'])||!array_key_exists($left_procedure->short_format, $laser_marking['left'])){
+                        $laser_marking['left'][$left_procedure->short_format] = array();
+                    }
+                    $laser_marking['left'][$left_procedure->short_format][] = $timestamp;
+                }
+                foreach ($proc_list->right_procedures as $right_procedure) {
+                    if (empty($laser_marking['right'])||!array_key_exists($right_procedure->short_format, $laser_marking['right'])){
+                        $laser_marking['right'][$right_procedure->short_format] = array();
+                    }
+                    $laser_marking['right'][$right_procedure->short_format][] = $timestamp;
+                }
+            }
+        }
+        return $laser_marking;
+    }
+
 }

@@ -17,11 +17,11 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
+	<div class="data-group">
+		<div class="cols-8 column">
 			<h2>Internal Referral Settings</h2>
 		</div>
-		<div class="large-4 column">
+		<div class="cols-4 column">
 		</div>
 	</div>
 
@@ -47,26 +47,26 @@
 	</form>
     <br>
     <div id="internal_referral_to_location">
-        <div class="row">
-            <div class="large-8 column">
+        <div class="data-group">
+            <div class="cols-8 column">
                 <h3>Add sites to the 'To Location' dropdown</h3>
             </div>
-            <div class="large-4 column">
+            <div class="cols-4 column">
             </div>
         </div>
 
-        <div class="row">
-            <div class="large-4 column">&nbsp
+        <div class="data-group">
+            <div class="cols-4 column">&nbsp
             </div>
-            <div class="large-4 end column right">
+            <div class="cols-4 end column right">
                 <img class="loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
                 <span class="right saved hidden" style="font-size:13px; color:#19b910">Saved</span>
                 <span class="right error hidden" style="font-size:13px"">Error, try again later</span>
             </div>
         </div>
 
-        <div class="row">
-            <div class="large-8 column">
+        <div class="data-group">
+            <div class="cols-8 column">
                 <table class="grid" id="to_location_sites_grid">
                     <thead>
                     <tr>
@@ -123,7 +123,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="large-4 column"></div>
+            <div class="cols-4 column"></div>
         </div>
     </div>
 </div>

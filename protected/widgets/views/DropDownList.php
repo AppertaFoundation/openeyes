@@ -16,52 +16,77 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (@$htmlOptions['nowrapper']) { ?>
-    <?php echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
-<?php } else { ?>
-<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>" class="row field-row"<?php if (@$hidden) { ?> style="display: none;"<?php } ?>>
-
-    <?php if (@$htmlOptions['layout'] === 'vertical') { ?>
-  <div class="large-12 column end">
-    <label for="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>">
-        <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>
+<?php
+if (@$htmlOptions['nowrapper']):
+    echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions);
+else:
+    $stretch = @$layoutColumns['stretch']; //whether or not to fill the container
+    $stretch = $stretch?:false;
+    $full_dropdown = @$layoutColumns['full_dropdown'];
+    $full_dropdown = $full_dropdown?:false;
+?>
+<div id="div_<?=CHtml::modelName($element)?>_<?=$field?>"
+     class="data-group cols-full <?php
+      echo !@$htmlOptions['vertical']?" flex-layout ":"";
+      echo !$stretch?' flex-left ':''
+     ?> "
+     style="<?=(@$hidden) ?"display: none;":""?>"
+>
+  <?php if (!@$htmlOptions['nolabel']): ?>
+  <div class="<?= $stretch?'': 'cols-'.$layoutColumns['label']; ?> column">
+    <label for="<?= CHtml::modelName($element)."_".$field ?>">
+        <?= $element->getAttributeLabel($field) ?>:
     </label>
-      <?php } else { ?>
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <?php if (!@$htmlOptions['nolabel']) { ?>
-              <label for="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>"><?php echo $element->getAttributeLabel($field) ?>:</label>
-            <?php } ?>
-        </div>
-      <?php } ?>
-
-      <?php if (@$htmlOptions['layout'] !== 'vertical') { ?>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
-        <?php } ?>
-
-        <?php if (@$htmlOptions['divided']) { ?>
-          <select name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]" id="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>">
-              <?php if (isset($htmlOptions['empty'])) { ?>
-                <option value=""><?php echo $htmlOptions['empty'] ?></option>
-              <?php } ?>
-              <?php foreach ($data as $i => $optgroup) { ?>
-                <optgroup label="---------------">
-                    <?php foreach ($optgroup as $id => $option) { ?>
-                      <option value="<?php echo $id ?>"<?php if ($id == $value) { ?> selected="selected"<?php } ?>><?php echo CHtml::encode($option) ?></option>
-                    <?php } ?>
-                </optgroup>
-              <?php } ?>
-          </select>
-        <?php } else {
-            if (@$htmlOptions['textAttribute']) {
-                $html_options = array();
-                foreach ($data as $i => $item) {
-                    $html_options[(string)$i] = array($htmlOptions['textAttribute'] => $item);
-                }
-                $htmlOptions['options'] = $html_options;
-            }
-            echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
-        <?php } ?>
-
-    </div>
   </div>
-<?php } ?>
+  <?php endif ?>
+  <div class="<?= $stretch?'': 'cols-'.$layoutColumns['field']; ?> column">
+  <?php if (@$htmlOptions['divided']): ?>
+    <select name="<?= CHtml::modelName($element) . '[' . $field . ']' ?>"
+            id="<?= CHtml::modelName($element) . "_" . $field ?>"
+    >
+      <?php if (isset($htmlOptions['empty'])): ?>
+      <option value=""><?= $htmlOptions['empty'] ?></option>
+      <?php endif;
+      foreach ($data as $i => $optgroup): ?>
+        <optgroup label="---------------">
+            <?php foreach ($optgroup as $id => $option) { ?>
+              <option
+                  value="<?= $id ?>"
+                  <?= $id == $value ? "selected=\"selected\"" : "" ?>
+              >
+                  <?= CHtml::encode($option) ?>
+              </option>
+            <?php } ?>
+        </optgroup>
+      <?php endforeach; ?>
+    </select>
+  <?php elseif ($full_dropdown):?>
+    <select name="<?= CHtml::modelName($element) . '[' . $field . ']' ?>"
+            id="<?= CHtml::modelName($element) . "_" . $field ?>"
+            style="width: 100%"
+    >
+        <?php if (isset($htmlOptions['empty'])): ?>
+          <option value=""><?= $htmlOptions['empty'] ?></option>
+        <?php endif;
+        foreach ($data as $id => $option): ?>
+          <option
+              value="<?= $id ?>"
+              <?= $id == $value ? "selected=\"selected\"" : "" ?>
+          >
+              <?= CHtml::encode($option) ?>
+          </option>
+        <?php endforeach; ?>
+    </select>
+  <?php else:
+      if (@$htmlOptions['textAttribute']) {
+          $html_options = array();
+          foreach ($data as $i => $item) {
+              $html_options[(string)$i] = array($htmlOptions['textAttribute'] => $item);
+          }
+          $htmlOptions['options'] = $html_options;
+      }
+      echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
+  <?php endif; ?>
+  </div>
+</div>
+<?php endif; ?>

@@ -815,6 +815,15 @@ class OphCiExamination_API extends \BaseAPI
         return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
 
+
+    public function getLetterVisualAcuityDate($patient, $side, $use_context = false)
+    {
+        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
+        return ($best ? $best->element->event->event_date : 'NA');
+    }
+
+
+
     /**
      * Abstraction for getting VA from last 6 weeks used for several letter string methods
      *
@@ -857,6 +866,18 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
         return ($best = $this->getBestVisualAcuity($patient,'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+    }
+
+    public function getLetterVAMethodName($patient, $side, $use_context = false){
+        $best = $this->getBestVisualAcuity($patient, $side, $use_context);
+       $method_name =  $best ? $this->getMethodName($best->method_id) : null;
+       if($method_name == 'Unaided'){
+           return 'ua';
+       } else if($method_name == 'Pinhole'){
+           return 'ph';
+       } else {
+           return 'rx';
+       }
     }
 
     /**
@@ -1899,7 +1920,7 @@ class OphCiExamination_API extends \BaseAPI
 
         if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestVisibleEvent(
-                'models\Element_OphCiExamination_Gonioscopy',
+                'models\VanHerick',
                 $patient,
                 $use_context
         ))) {
@@ -2169,6 +2190,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Return no_risks_date of last HistoryRisk of a Patient
      * @param Patient $patient
      * @param bool $use_context
      * @return mixed|null
@@ -2177,6 +2199,19 @@ class OphCiExamination_API extends \BaseAPI
     {
         if ($element = $this->getLatestElement('models\Allergies', $patient, $use_context)) {
             return $element->no_allergies_date;
+        }
+        return null;
+    }
+
+    /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoRisksDate(\Patient $patient, $use_context = false)
+    {
+        if ($element = $this->getLatestElement('models\HistoryRisks', $patient, $use_context)) {
+            return $element->no_risks_date;
         }
         return null;
     }
@@ -2415,7 +2450,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->ophciexamination_risks_entry){
                 foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
-                    $required[] = $ophciexamination_risks->ophciexamination_risk;
+                    $risk = $ophciexamination_risks->ophciexamination_risk;
+                    $required[$risk->id] = $risk;
                 }
             }
         }
@@ -2458,7 +2494,8 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->allergy_set_entries){
                 foreach($set->allergy_set_entries as $allergy_entry){
-                    $required[] = $allergy_entry->ophciexaminationAllergy;
+                    $allergy = $allergy_entry->ophciexaminationAllergy;
+                    $required[$allergy->id] = $allergy;
                 }
             }
         }
@@ -2502,11 +2539,52 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->disorder;
+                    $disorder = $entry->disorder;
+                    $required[$disorder->id] = $disorder;
                 }
             }
         }
 
+        return $required;
+    }
+
+    /**
+     * Returns the required Operations for Surgical History Element
+     *
+     * @param Patient $patient
+     * @param null|int $firm_id
+     * @return array of operations
+     */
+    public function getRequiredSurgicalHistory(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+        $sets = models\SurgicalHistorySet::model()->findAll($criteria);
+        $required = array();
+        foreach($sets as $set){
+            if($set->entries){
+                foreach($set->entries as $entry){
+                    $operation = $entry->operation;
+                    $required[$operation->id] = $operation;
+                }
+            }
+        }
         return $required;
     }
 
@@ -2722,15 +2800,17 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
         $criteria->addCondition("patient_id = :patient_id");
         $criteria->addCondition("episode_id = :episode_id");
-        $criteria->addCondition("t.disorder_id = :disorder_id");
-        $criteria->params=['patient_id' => $episode->patient_id , 'disorder_id' => $disorder_id , 'episode_id' => $episode->id];
-        $criteria->order="t.created_date desc";
+        $criteria->addCondition("principal = 1");
+        $criteria->params = [':patient_id' => $episode->patient_id , ':episode_id' => $episode->id];
 
+        if($disorder_id){
+            $criteria->addCondition("t.disorder_id = :disorder_id");
+            $criteria->params[':disorder_id'] = $disorder_id;
+        }
+
+        $criteria->order="t.created_date desc";
         $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
         return $value;
 
     }
-    
-    
-    
 }

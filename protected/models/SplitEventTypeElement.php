@@ -33,6 +33,25 @@ class SplitEventTypeElement extends BaseEventTypeElement
     }
 
     /**
+     * Returns a value indicating whether this event has the eye of the given side
+     *
+     * @param string $side The side of the eye to test for (either left or right)
+     * @return bool True if this event has the eye of the given side
+     * @throws InvalidArgumentException Thrown if the given eye is not valid
+     */
+    public function hasEye($side)
+    {
+        switch ($side) {
+            case 'left':
+                return $this->hasLeft();
+            case 'right':
+                return $this->hasRight();
+            default:
+                throw new InvalidArgumentException('Side must be either "left" or "right"');
+        }
+    }
+
+    /**
      * An array of field suffixes that we should treat as "sided".
      * e.g. 'example' would indicate 'left_example' and 'right_example'.
      *

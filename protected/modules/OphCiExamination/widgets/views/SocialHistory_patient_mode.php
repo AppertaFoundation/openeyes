@@ -1,13 +1,7 @@
 <?php if (!$element) { ?>
-<p>No Social History recorded.</p>
+  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
 <?php } else { ?>
     <table class="plain patient-data">
-        <thead>
-        <tr>
-            <th>Social History</th>
-            <th>Status</th>
-        </tr>
-        </thead>
         <tbody>
         <?php if ($element->occupation) { ?>
             <tr>

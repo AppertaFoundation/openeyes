@@ -17,7 +17,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
 	<?php
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'examination-create'));
     ?>
@@ -48,5 +48,4 @@
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>
-	<?php //$this->widget('application.widgets.IndexSearch',array('event_type' => 'examination')); ?>
 <?php $this->endContent();?>

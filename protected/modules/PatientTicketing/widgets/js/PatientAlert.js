@@ -39,7 +39,6 @@ function patientTicketingSpacer() {
 		return;
 
 	var height = parseInt($('#patient-alert-patientticketing').height(), 10);
-	spaceElement('aside.episodes-and-events', height);
     spaceElement('.event-header', height);
     spaceElement('.event-content', height, 'padding-top');
     spaceElement('.episode-content', height, 'padding-top');

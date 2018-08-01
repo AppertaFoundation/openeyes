@@ -19,11 +19,9 @@ $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application
 Yii::app()->clientScript->registerScriptFile($modulePath.'/js/siteSecretary.js');
 ?>
 <div class="box admin">
-	<div class="row">
 		<div class="large-8 column">
 			<h2>Contact Numbers</h2>
 		</div>
-	</div>
 	<?php
     $deleteForm = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'deleteSecretaryForm',

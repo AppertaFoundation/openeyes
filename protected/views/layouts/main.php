@@ -23,21 +23,20 @@
 	<?php $this->renderPartial('//base/head/_assets'); ?>
 	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
+<body class="open-eyes oe-grid">
 
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
 	<?php $this->renderPartial('//base/_debug'); ?>
 
-	<div class="container main" role="main">
+  <!-- Branding (logo) -->
+  <div class="openeyes-brand">
+      <?php $this->renderPartial('//base/_brand'); ?>
+  </div>
 
-		<?php $this->renderPartial('//base/_header'); ?>
+  <?php $this->renderPartial('//base/_header'); ?>
 
-		<div class="container content">
 			<?php echo $content; ?>
-		</div><!-- /.content.container -->
 
 		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
 </body>
 </html>

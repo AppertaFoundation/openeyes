@@ -135,14 +135,15 @@
 			$(this).parent().html('None');
 		});
 
-		handleButton($('#et_print_admission_form'),function() {
+		$(this).on('click','#et_print_admission_form',function() {
 			printIFrameUrl(baseUrl + '/OphTrOperationbooking/default/admissionForm/' + OE_event_id);
 		});
 
-        handleButton($('#et_print'),function(e) {
-            printEvent(null);
-            e.preventDefault();
-        });
+
+		$(this).on('click','#et_print',function(e) {
+			printEvent(null);
+			e.preventDefault();
+		});
 
 		$('input[name="Element_OphTrOperationbooking_Operation[priority_id]"]').click(function(e) {
 			var priority_id = $(this).val();

@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="eyedraw-data eyedraw-row row field-row anterior-segment">
-	<div class="fixed column">
+<div class="eyedraw eyedraw-row flex-layout flex-top anterior-segment">
+	<div class="eyedraw-canvas">
 		<?php
         $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                 'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
@@ -32,15 +32,11 @@
         ?>
 	</div>
     <?php if($element->{$side.'_lens_status'}): ?>
-        <div class="fluid column">
-            <div class="row data-row">
-                <div class="large-5 column">
-                    <div class="data-label"><?php echo $element->getAttributeLabel($side.'_lens_status_id') ?>:</div>
-                </div>
-                <div class="large-7 column">
-                    <div class="data-value"><?php echo $element->{$side.'_lens_status'}->name ?></div>
-                </div>
-            </div>
+        <div class="eyedraw-data stack">
+          <div class="data-label">
+            <?php echo $element->getAttributeLabel($side.'_lens_status_id') ?>:
+          </div>
+            <?php echo $element->{$side.'_lens_status'}->name ?>
         </div>
     <?php endif; ?>
 </div>

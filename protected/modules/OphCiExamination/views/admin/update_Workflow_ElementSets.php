@@ -34,7 +34,14 @@
 					<tr class="selectable" data-id="<?php echo $step->id?>">
 						<td><?php echo $step->position?></td>
 						<td><?php echo $step->name?></td>
-						<td><a href="#" class="removeElementSet" rel="<?php echo $step->id?>">Remove</a></td>
+                        <td>
+                        <?php if($step->isDeletable()):  ?>
+                            <a href="#" class="removeElementSet" rel="<?php echo $step->id?>">Remove</a>
+                        <?php else: ?>
+                            Remove
+                            <span class="has-tooltip fa fa-info-circle" style="margin-top:3px" data-tooltip-content="Step is in use and cannot be deleted."></span>
+                        <?php endif; ?>
+                        </td>
 					</tr>
 				<?php 
                 }?>

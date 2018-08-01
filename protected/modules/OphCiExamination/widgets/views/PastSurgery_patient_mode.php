@@ -16,21 +16,35 @@
  */
 
 ?>
-<table class="plain patient-data">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Operation</th>
-    </tr>
-    </thead>
+<table>
     <tbody>
-    <?php foreach ($operations as $operation) {?>
+    <?php if (!$operations || sizeof($operations)==0) { ?>
+      <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+    <?php } else {
+     foreach ($operations as $operation) {?>
         <tr>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?>
-                <?php if (array_key_exists('link', $operation)) { ?><a href="<?= $operation['link'] ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a><?php } ?>
-            </td>
+          <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
+          <td>
+              <?php if (array_key_exists('link', $operation)) { ?>
+                <a href="<?= $operation['link'] ?>"><i class="oe-i eye pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i></a>
+              <?php } ?>
+          </td>
+          <td>
+              <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+            <span class="oe-eye-lat-icons">
+                <i class="oe-i laterality <?php echo  $side=='Right'||$side=='Both'||$side=='Bilateral'? 'R':'NA' ?> small pad"></i>
+                <i class="oe-i laterality <?php echo $side=='Left'||$side=='Both'||$side=='Bilateral'? 'L':'NA' ?> small pad"></i>
+            </span>
+          </td>
+          <td>
+          </td>
+          <td>
+            <span class="oe-date">
+              <?= Helper::convertDate2HTML(array_key_exists('object',
+                  $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date'])); ?>
+          </span>
+          </td>
         </tr>
-    <?php }?>
+    <?php } }?>
     </tbody>
 </table>

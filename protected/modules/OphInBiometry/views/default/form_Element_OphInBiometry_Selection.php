@@ -17,33 +17,43 @@
  */
 ?>
 
-<div class="element-fields element-eyes row">
-    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <div id="right-eye-selection" class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-             data-side="right">
-        <div class="active-form">
-            <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-            <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
-                    array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-        </div>
-        <div class="inactive-form">
-            <div class="add-side">
-                Set right side lens type
-            </div>
-        </div>
-    </div>
+<div class="element-fields element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+                <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+                <div id="<?php echo $eye_side?>-eye-selection"
+                     class="element-eye <?php echo $eye_side?>-eye <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) {?> inactive<?php } ?>"
+                     data-side="<?= $eye_side?>">
+                    <div class="active-form">
+                        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+                        <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
+                            array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+                    </div>
+                    <div class="inactive-form">
+                        <div class="add-side">
+                            Set <?php echo $eye_side ?> side lens type
+                        </div>
+                    </div>
+                </div>
+    <?php endforeach; ?>
 
-    <div id="left-eye-selection" class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-             data-side="left">
-        <div class="active-form">
 
-            <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
-                    array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-        </div>
-        <div class="inactive-form">
-            <div class="add-side">
-                Set left side lens type
-            </div>
-        </div>
-    </div>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    if ($('section.Element_OphInBiometry_Selection').find('.element-eye.right-eye').hasClass('inactive')) {
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.active-form').hide();
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.inactive-form').show();
+    } else {
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.active-form').show();
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.inactive-form').hide();
+    }
+    if ($('section.Element_OphInBiometry_Selection').find('.element-eye.left-eye').hasClass('inactive')) {
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.active-form').hide();
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.inactive-form').show();
+    } else {
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.active-form').show();
+      $('section.Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.inactive-form').hide();
+    }
+  });
+</script>

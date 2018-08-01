@@ -336,27 +336,6 @@
 			$(this).parents('li').remove();
 		});
 
-		// ensure we display the tooltips for the admin controls on the nodes
-		var toolTip = new OpenEyes.UI.Tooltip({
-			offset: {
-				x: 10,
-				y: 10
-			},
-			viewPortOffset: {
-				x: 0,
-				y: 32 // height of sticky footer
-			}
-		});
-		$(this).on('mouseover', '.has-tooltip', function() {
-			if ($(this).data('tooltip').length) {
-				toolTip.setContent($(this).data('tooltip'));
-				var offsets = $(this).offset();
-				toolTip.show(offsets.left, offsets.top);
-			}
-		}).mouseout(function (e) {
-			toolTip.hide();
-		});
-
 	});
 }());
 

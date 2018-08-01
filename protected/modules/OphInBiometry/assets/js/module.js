@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 	if(show_disable_manual_warning) {
 		var warning_message = 'No new biometry reports are available for this patient. Please generate a new event on your linked device first (e.g., IOL Master).';
-		var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px; position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
+		var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; height: auto; width: 600px; position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
 			'<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
 			'<span id="ui-id-1" class="ui-dialog-title">No New Biometry Reports</span>' +
 			'</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
@@ -55,7 +55,7 @@ $(document).ready(function() {
 			'<input class="secondary small" id="prescription-yes" type="submit" name="yt0" style = "margin-right:10px" value="OK" onclick="goBack()">' +
 			'</div>';
 
-		var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;z-index:10000">';
+		var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;">';
 
 		$(dialog_msg).prependTo("body");
 		$(blackout_box).prependTo("body");
@@ -66,11 +66,6 @@ $(document).ready(function() {
 		});
 	}
 
-
-
-
-	handleButton($('#et_save'),function() {
-	});
 
 	$('input[id^="iolrefrad-"], tr[id^="iolreftr-"]').click(function(event) {
 		var id = event.target.id;
@@ -84,7 +79,7 @@ $(document).ready(function() {
 		updateIolRefRow('right');
 	});
 
-	handleButton($('#et_cancel'),function(e) {
+	$(this).on('click','#et_cancel',function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
@@ -93,9 +88,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#et_canceldelete'),function(e) {
+	$(this).on('click','#et_canceldelete',function(e) {
 		if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/delete/','/view/');
 		} else {
@@ -104,7 +97,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('#et_print'),function(e) {
+	$(this).on('click','#et_print',function(e) {
 		printIFrameUrl(OE_print_url, null);
 		enableButtons();
 		e.preventDefault();
@@ -113,7 +106,6 @@ $(document).ready(function() {
 	// extend the removal behaviour to affect the dependent elements
 	$(this).delegate('#event-content .side .active-form .remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
-
 		var other_side = 'left';
 		if (side == 'left') {
 			other_side = 'right';

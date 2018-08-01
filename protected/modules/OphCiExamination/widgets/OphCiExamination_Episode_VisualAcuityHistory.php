@@ -23,7 +23,10 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     protected $va_unit_input = 'va_history_unit_id';
 
     protected $va_axis;
-    private $va_unit;
+    protected $va_ticks;
+    protected $va_unit;
+    protected $va_y_min;
+    protected $va_y_max;
 
     public function run()
     {
@@ -36,33 +39,42 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $this->render(get_class($this), array('va_unit' => $this->va_unit, 'chart' => $chart));
     }
 
+    public function run_oescape($widgets_no = 1){
+        $va_unit_id = @$_GET[$this->va_unit_input] ?:  models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
+        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+
+        $this->configureChart();
+
+        $this->render("OphCiExamination_OEscape_VisualAcuityHistory", array('va_unit' => $this->va_unit, 'widget_no' => $widgets_no));
+    }
+
+    /**
+     * Moves the values for CF, HM, PL, NPL for better graphing
+     * @param $val float|int value of Visual Acuity to be adjusted
+     * @return float|int adjusted value
+     */
+    public function getAdjustedVA( $val )
+    {
+        return $val > 4 ? $val : ($val-2) * 10;
+    }
+
+
+
     /**
      * @return FlotChart
      */
-    public function configureChart()
-    {
-        $va_ticks = array();
-        foreach ($this->va_unit->selectableValues as $value) {
-            if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
-                continue;
-            }
+    public function configureChart() {
+        $va_ticks = $this->getChartTicks();
 
-            /*
-                OE-7011
-                Replacing the charts completely with highcharts will come in OE3.x (with OEScape)
-                until that we need to fix this overlapping labels
-                FlotChart's tickFormatter function won't apply as "'ticks' => $va_ticks" are provided
-            */
-            $label = ($value->value == '6/9.5') ? '' : $value->value;
-
-            $va_ticks[] = array($value->base_value, $label);
-        }
-
-        $this->va_axis = "Visual Acuity ({$this->va_unit->name})";
+        $this->va_ticks = $va_ticks;
+        $this->va_axis = (string)$this->va_unit->name;
 
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
-            ->configureYAxis($this->va_axis, array('position' => 'left', 'min' => 1, 'max' => 150, 'ticks' => $va_ticks))
+            ->configureYAxis(
+                $this->va_axis,
+                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $va_ticks)
+            )
             ->configureSeries('Visual Acuity (right)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('Visual Acuity (left)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
 
@@ -96,4 +108,57 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $label = "{$series_name}\n{$reading->element->unit->name}: {$reading->convertTo($reading->value)} {$reading->method->name}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading->value, $label);
     }
+
+    public function getVaData(){
+        $va_data_list = array('right'=>array(), 'left'=>array());
+        foreach ($this->event_type->api->getElements(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+            $this->episode->patient,
+            false
+        ) as $va) {
+            foreach (['left', 'right'] as $side){
+                if ($reading = $va->getBestReading($side)){
+                    $va_value = $this->getAdjustedVA((float)$reading->value);
+                    $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
+                }
+            }
+        }
+        foreach (['left', 'right'] as $side){
+            usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+        }
+        return $va_data_list;
+    }
+
+    public function getVaAxis() {
+        return $this->va_axis;
+    }
+
+    public function getVaTicks() {
+        $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
+        foreach ($this->va_ticks as $tick){
+            array_push($tick_data['tick_position'],(float)$tick[0]);
+            array_push($tick_data['tick_labels'], $tick[1]);
+        }
+        return $tick_data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getChartTicks()
+    {
+        foreach ($this->va_unit->selectableValues as $value) {
+            $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
+        }
+
+        if($va_ticks[0][1] !== 'NPL'){
+            array_unshift($va_ticks, [$this->getAdjustedVA(4), 'CF']);
+            array_unshift($va_ticks, [$this->getAdjustedVA(3), 'HM']);
+            array_unshift($va_ticks, [$this->getAdjustedVA(2), 'PL']);
+            array_unshift($va_ticks, [$this->getAdjustedVA(1), 'NPL']);
+        }
+
+        return $va_ticks;
+    }
+
 }

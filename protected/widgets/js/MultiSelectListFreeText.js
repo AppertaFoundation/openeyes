@@ -68,7 +68,7 @@ $(document).ready(function() {
 			var remote_data = {
 				'href': '#',
 				'class': 'MultiSelectFreeTextRemove remove-one '+selected.val(),
-				'text': 'Remove',
+				'text': '',
 				'data-name': fieldName+'[]',
 				'data-text': selected.text()
 			};
@@ -79,26 +79,27 @@ $(document).ready(function() {
 				remote_data['data-linked-values'] = $(this).data('linked-values');
 			}
 
-			var remove = $('<a />', remote_data);
+			var remove = $('<span></span>', remote_data);
+			var remove_icon = $('<i class="oe-i remove-circle small"></i>');
+			remove.append(remove_icon);
 
 			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
 			item.append(input);
 
-			selections.append(item).removeClass('hide');
-
-			noSelectionsMsg.addClass('hide');
-			removeAll.removeClass('hide');
+			selections.append(item).show();
+			noSelectionsMsg.hide();
+			removeAll.show();
 
 			if (selected.data('requires-description')) {
 				descriptions.append(
-					'<div class="row data-row" data-option="' + selected.text() + '">' +
-						'<div class="large-2 column">' +
+					'<div class="data-group" data-option="' + selected.text() + '">' +
+						'<div class="cols-2">' +
 							'<div class="data-label">' +
 								selected.text() + ':' +
 							'</div>' +
 						'</div>' +
-						'<div class="large-4 column end">' +
+						'<div class="cols-4">' +
 							'<div class="data-value">' +
 								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '"></textarea>' +
 							'</div>' +
@@ -122,7 +123,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(this).on('click', 'a.MultiSelectFreeTextRemove', 'click',function(e) {
+	$(this).on('click', '.MultiSelectFreeTextRemove', 'click',function(e) {
 		e.preventDefault();
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select-free-text');
@@ -155,8 +156,8 @@ $(document).ready(function() {
 		descriptions.find('div[data-option="' + text + '"]').remove();
 
 		if (!selections.children().length) {
-			selections.add(removeAll).addClass('hide');
-			noSelectionsMsg.removeClass('hide');
+			selections.add(removeAll).hide();
+			noSelectionsMsg.show();
 		}
 
 		if ($(this).hasClass('linked-fields')) {

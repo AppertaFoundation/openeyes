@@ -56,7 +56,7 @@ function AlertDialogIfExaminationEventIsMissing(){
         
         
 
-        var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
+        var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
           '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
           '<span id="ui-id-1" class="ui-dialog-title">Confirm booking</span>' +
           '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
@@ -69,7 +69,7 @@ function AlertDialogIfExaminationEventIsMissing(){
           '<input class="event-action small" id="operationbooking-create-_examination" type="submit" name="yt2" value="Create Examination Event" onclick="goToExaminationEvent()">' +
           '</div>';
 
-        var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;z-index:10000">';
+        var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;">';
 
 
         $(dialog_msg).prependTo("body");
@@ -103,27 +103,18 @@ $(document).ready(function() {
         return true;
 	});
 
+  $(this).on('click', '#et_save_and_schedule', function () {
+    $('#schedule_now').val(1);
+  });
 
-	handleButton($('#et_save_and_schedule'),function() {
-		$('#schedule_now').val(1);
-	});
-
-	handleButton($('#et_cancel'),function(e) {
-		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
-			window.location.href = window.location.href.replace('/update/','/view/');
-		} else {
-			window.location.href = baseUrl+'/patient/episodes/'+OE_patient_id;
-		}
-		e.preventDefault();
-	});
-
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#btn_reschedule-now'));
-
-	handleButton($('#btn_cancel-operation'));
-
-	handleButton($('#et_canceldelete'));
+  $(this).on('click', '#et_cancel', function (e) {
+    if (m = window.location.href.match(/\/update\/[0-9]+/)) {
+      window.location.href = window.location.href.replace('/update/', '/view/');
+    } else {
+      window.location.href = baseUrl + '/patient/episodes/' + OE_patient_id;
+    }
+    e.preventDefault();
+  });
 
 	$(this).delegate('.addUnavailable', 'click', function(e) {
 		OphTrOperationbooking_PatientUnavailable_add();
@@ -145,9 +136,8 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#cancel'),function(e) {
+	$(this).on('click','#cancel',function(e) {
 		e.preventDefault();
-
 		$.ajax({
 			type: 'POST',
 			url: window.location.href,
@@ -169,8 +159,6 @@ $(document).ready(function() {
 					$('#cancelForm .alert-box').html(html);
 					enableButtons();
 				}
-
-
 			}
 		});
 	});
@@ -193,7 +181,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('#bookingForm button#confirm_slot'),function() {
+	$('#bookingForm button#confirm_slot').on('click',function(e) {
 		$('#bookingForm').submit();
 	});
 
@@ -213,12 +201,12 @@ $(document).ready(function() {
 		window.location.href = URI(window.location.href).setSearch(search).removeSearch(['session_id', 'day']);
 	});
 
-	handleButton($('#btn_print-letter'),function() {
+	$(this).on('click','#btn_print-letter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLetters',{'event_id': m[1]});
 	});
 
-	handleButton($('#btn_print-admissionletter'),function() {
+  $(this).on('click','#btn_print-admissionletter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/default/admissionLetter/'+m[1]);
 	});
@@ -246,24 +234,41 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$(this).delegate('.unavailable-start-date', 'change', function(e) {
-		var end = $(this).closest('tr').find('.unavailable-end-date');
-		if ($(this).datepicker('getDate') > end.datepicker('getDate')) {
-			end.val($(this).val());
-		}
-	});
+  $('.unavailables').find('.unavailable-start-date').each(function () {
+    datepicker_start(this);
+  });
+  $('.unavailables').find('.unavailable-end-date').each(function () {
+    datepicker_end(this);
+  });
 
-	$(this).delegate('.unavailable-end-date', 'change', function(e) {
-		var start = $(this).closest('tr').find('.unavailable-start-date');
-		if ($(this).datepicker('getDate') < start.datepicker('getDate')) {
-			start.val($(this).val());
-		}
-	});
-	
 	AlertDialogIfExaminationEventIsMissing();
 	
 });
 
+/**
+ * After set the unavailable start date, if end date is empty or before start date, reset end date value
+ * @param element: the datepicker element
+ */
+function datepicker_start(element){
+  element.addEventListener('pickmeup-fill', function (e) {
+    var end = $(element).closest('tr').find('.unavailable-end-date')[0];
+    if ($(end).val()===''||pickmeup(element).get_date() > new Date($(end).val())){
+      $(end).val($(element).val());
+    }
+  });
+}
+/**
+ * After set the unavailable end date, if start date is empty or after start date, reset start date value
+ * @param element: the datepicker element
+ */
+function datepicker_end(element) {
+  element.addEventListener('pickmeup-fill', function (e) {
+    var start = $(element).closest('tr').find('.unavailable-start-date')[0];
+    if ($(start).val()===''||pickmeup(element).get_date() < new Date($(start).val())){
+      $(start).val($(element).val());
+    }
+  });
+}
 function OphTrOperationbooking_PatientUnavailable_getNextKey() {
 	var keys = $('#event-content .Element_OphTrOperationbooking_ScheduleOperation .patient-unavailable').map(function(index, el) {
 		return parseInt($(el).attr('data-key'));
@@ -281,12 +286,20 @@ function OphTrOperationbooking_PatientUnavailable_add() {
 		"key" : OphTrOperationbooking_PatientUnavailable_getNextKey()
 	};
 	var form = Mustache.render(template, data);
+	$('.unavailables').parent().show();
 	$('.unavailables').append(form);
 	$('.unavailables').find('[id$="date"]').each(function() {
-		$(this).datepicker({
-			'showAnim': 'fold',
-			'dateFormat': nhs_date_format,
-            'minDate': 0
-		});
+    pickmeup('#'+this.getAttribute('id'), {
+      format: 'd b Y',
+      hide_on_select: true,
+      default_date: false,
+			min: new Date()
+    });
 	});
+  $('.unavailables').find('.unavailable-start-date').each(function () {
+  	datepicker_start(this);
+  });
+  $('.unavailables').find('.unavailable-end-date').each(function () {
+    datepicker_end(this);
+  });
 }

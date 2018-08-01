@@ -61,9 +61,13 @@ $(document).ready(function(){
 		}
 	});
 
+    $(this).delegate('#js-event-audit-trail-btn', 'click', function () {
+        $("#js-event-audit-trail").toggle();
+        $(this).toggleClass("active");
+    });
+
 	// Handle form fields that have linked fields to show/hide
 	$(this).on('change', 'select.linked-fields', function() {
-
 		var fields = $(this).data('linked-fields').split(',');
 		var values = $(this).data('linked-values').split(',');
 
@@ -77,12 +81,19 @@ $(document).ready(function(){
 			}
 		}
 
-		if (inArray($(this).children('option:selected').text(),values)) {
+    if ($(this).hasClass('MultiSelectList')) {
+			var selected = $(this).parents('.multi-select').find('.multi-select-selections').children('li');
+			for (var j = 0; j < selected.length; j++){
+				var value = $(selected[j]).children('.multi-select-remove')[0];
+				if ($(value).data('text') == $(selected[j]).find('.text').text()){
+					show_linked_field(element_name,$(value).data('linked-fields'),true);
+				}
+			}
+		}else if (inArray($(this).children('option:selected').text(),values)) {
 			var vi = arrayIndex($(this).children('option:selected').text(),values);
-
-			for (var i in fields) {
-				if (values.length == 1 || i == vi) {
-					show_linked_field(element_name,fields[i],i==0);
+			for (var j in fields) {
+				if (values.length == 1 || j == vi) {
+					show_linked_field(element_name,fields[j],js==0);
 				}
 			}
 		}
@@ -120,6 +131,74 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+  $(this).on('click', '.js-remove-element', function (e) {
+    e.preventDefault();
+    var parent = $(this).closest('.element');
+    removeElement(parent);
+  });
+
+  $(this).on('click', '.js-tiles-collapse-btn', function () {
+    var $tileGroup = $(this).closest('.element-tile-group');
+    var showGroup = $tileGroup.hasClass('collapse');
+    $tileGroup.toggleClass('collapse');
+    $tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(showGroup);
+    $(this).toggleClass('expand collapse');
+
+    if (!showGroup) {
+      $tileGroup.find('.element').each(function () {
+
+        // Skip titles that already have a count from Tile Data Overflow
+        if ($(this).find('small').length) {
+          return true;
+        }
+
+        var rowCount = $(this).find('tr').length;
+        var $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
+        $(this).find('.element-title').append($countDisplay);
+      });
+    } else {
+      $tileGroup.find('.js-data-hidden-state').remove();
+    }
+  });
+
+  // Tile Data Overflow
+  $('.element.tile').each(function () {
+    var h = $(this).find('.data-value').height();
+
+    // CSS is set to max-height:180px;
+    if (h > 179) {
+      // it's scrolling, so flag it
+      var flag = $('<div/>', {class: "tile-more-data-flag"});
+      var icon = $('<i/>', {class: "oe-i arrow-down-bold medium selected"});
+      flag.append(icon);
+      $(this).prepend(flag);
+
+      var tileOverflow = $('.tile-data-overflow', this);
+
+      flag.click(function () {
+        tileOverflow.animate({
+          scrollTop: tileOverflow.height()
+        }, 1000);
+
+        flag.fadeOut();
+      });
+
+      tileOverflow.on('scroll', function () {
+        flag.fadeOut();
+      });
+
+      if ($(this).find('tbody').length > 0) {
+        // Assuming it's a table!...
+        var trCount = $(this).find('tbody').get(0).childElementCount;
+        // and then set the title to show total data count
+
+        var title = $('.element-title', this);
+        title.html(title.text() + ' <small>[' + trCount + ']</small>');
+      }
+    }
+  });
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -252,14 +331,118 @@ function hide_linked_field(element_name,field_name)
 	$('select[name="'+element_name+'['+field_name+']"]').val('');
 
 	if ($('#'+field_name).hasClass('MultiSelectList')) {
-		$('a.MultiSelectRemove[data-name="'+field_name+'[]"]').map(function() {
+		$('.multi-select-remove[data-name="'+field_name+'[]"]').map(function() {
 			$(this).click();
 		});
 	}
 }
 
 function scrollToElement(element) {
-    $('html, body').animate({
-        scrollTop: parseInt(element.offset().top - 100)
-    }, 1);
+  var $container = $('main.main-event');
+  $container.scrollTop(
+    $(element).offset().top - $container.offset().top + $container.scrollTop() - 130
+  );
+
+  var $title = $(element).closest('.element').find('.element-title');
+  $title.effect('pulsate', {
+    times: 2
+  }, 600);
+}
+
+/**
+ * Sets ups all the event listeners for adders
+ * @param adderDiv div(or any other element) that is the adder
+ * @param selectMode can more than one item be selected per list
+ * 	- multi: Multiple elements in a list can be selected simultaneously
+ * 	- single: When a second item in a list is selected the rest are deselected (in that one list)
+ * 	- return: Immediately return and call the callback with selected item
+ * @param callback function to call when the adder exits
+ * @param openButtons divs that on click will open the adderDiv
+ * @param addButtons divs that on click will close the adder and call the callback
+ * @param closeButtons divs that on click will close the adderDiv without callback
+ */
+function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, openButtons = null, addButtons = null, closeButtons = null){
+    if (adderDiv === null){
+        console.warn('no div sent to setUpAdder');
+        return;
+    }
+
+    if (openButtons !== null){
+        openButtons.click(function showAdder() {
+        		positionFixedPopup(openButtons, adderDiv);
+            adderDiv.show();
+        });
+    }
+
+    if(addButtons !== null){
+        addButtons.click(function closeAndAdd(){
+            adderDiv.hide();
+            callback();
+        });
+    }
+
+    if(closeButtons !== null){
+        closeButtons.click(function closeAdder() {
+        		adderDiv.find('.selected').removeClass('selected');
+            adderDiv.hide();
+        });
+    }
+
+    //set up select class on clicks
+    if(selectMode === 'return'){
+        adderDiv.find('li').click(function () {
+        	$(this).addClass('selected');
+        	adderDiv.hide();
+        	callback($(this));
+        });
+	} else {
+        adderDiv.on('click', 'li',function () {
+            if(!$(this).hasClass('selected')){
+                if(selectMode !== 'multi'){
+                    $(this).parent('ul').find('li').removeClass('selected');
+                }
+                $(this).addClass('selected');
+            }else {
+                $(this).removeClass('selected');
+            }
+        });
+	}
+}
+
+function positionFixedPopup($btn, adderDiv = null){
+  /*
+  Popup is FIXED positioned
+  work out offset position
+  setup events to close it on resize or scroll.
+  */
+  var elem = $btn[ 0 ];
+
+  // js vanilla:
+  var btnPos = elem.getBoundingClientRect();
+  var w = document.documentElement.clientWidth;
+  var h = document.documentElement.clientHeight;
+  var right = (w - btnPos.right);
+  var bottom = (h - btnPos.bottom);
+  // set CSS Fixed position
+  adderDiv.css(	{	"bottom":bottom,
+    "right":right });
+
+  /*
+  Close popup on...
+  as scroll event fires on assignment.
+  check against scroll position
+  */
+  var scrollPos = $(".main-event").scrollTop();
+	document.addEventListener("scroll", function () {
+    if( scrollPos !=  $(this).scrollTop() ){
+      // Remove scroll event:
+      $(".main-event").off("scroll");
+      closeCancel(adderDiv);
+    }
+  });
+}
+
+// Close and reset
+function closeCancel(adderDiv = null){
+  adderDiv.hide();
 }

@@ -17,31 +17,32 @@
  */
 ?>
 
-<section class="element element-data">
-    <div class="row">
-        <div class="large-6 column">
-            <h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-            <ul class="data-value highlight important">
-                <?php foreach ($element->procedures as $procedure) { ?>
-                    <li><?php echo $element->eye->adjective . ' ' ?><?php echo $procedure->term ?></li>
-                <?php } ?>
-            </ul>
-        </div>
-        <div class="large-6 column">
-            <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name') . 's'; ?></h3>
-            <?php
-            $codes = [];
-            foreach ($element->procedures as $procedure) {
-                $size = count($procedure->opcsCodes) - 1;
-                foreach ($procedure->opcsCodes as $code) {
-                    $codes[] = $code->name;
-                }
-            }
-            echo implode(', ', $codes);
-            ?>
-        </div>
+<section class="element view full">
+  <header class="element-header">
+    <h3 class="element-title">Procedure & OPCS codes</h3>
+  </header>
+  <div class="element-data full-width">
+    <div class="cols-10">
+      <table class="priority-text last-left">
+        <tbody>
+        <?php foreach ($element->procedures as $procedure): ?>
+          <tr>
+            <td><span class="priority-text">
+              <?php echo $element->eye->adjective ?>
+              <?php echo $procedure->term ?>
+              </span></td>
+            <td><span class="priority-text">
+                    <?= implode(array_map(function ($x) {
+                        return $x->name;
+                    }, $procedure->opcsCodes), ', '); ?>
+              </span></td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
     </div>
-    <div class="sub-elements">
-        <?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
-    </div>
+  </div>
 </section>
+<?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
+
+

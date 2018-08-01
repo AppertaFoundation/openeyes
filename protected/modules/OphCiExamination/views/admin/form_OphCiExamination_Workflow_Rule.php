@@ -16,9 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="field-row">
-	<h2>Edit workflow rule</h2>
-</div>
+<h2>Edit workflow rule</h2>
 <?php echo $form->errorSummary($model)?>
 <?php echo $form->dropDownList($model, 'firm_id', CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'), array('empty' => '- All -'))?>
 <?php echo $form->dropDownList($model, 'episode_status_id', 'EpisodeStatus', array('empty' => '- All -'))?>

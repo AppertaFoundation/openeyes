@@ -29,8 +29,6 @@ class BaseAdminController extends BaseController
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-        Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
-        Yii::app()->assetManager->registerCssFile('components/jt.timepicker/jquery.timepicker.css', null, 10);
         Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
         Yii::app()->assetManager->registerScriptFile('js/handleButtons.js', null, 10);
         $this->jsVars['items_per_page'] = $this->items_per_page;

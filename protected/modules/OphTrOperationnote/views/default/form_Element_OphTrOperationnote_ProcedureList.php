@@ -16,30 +16,38 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id ?>"
-	data-element-type-class="<?php echo $element->elementType->class_name ?>"
-	data-element-type-name="<?php echo $element->elementType->name ?>"
-	data-element-display-order="<?php echo $element->elementType->display_order ?>">
+<section class="element edit-full edit-procedures  <?php echo $element->elementType->class_name ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-	<header class="element-header">
-		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
-	</header>
+  <header class="element-header">
+    <h3 class="element-title">Procedures</h3>
+  </header>
 
-	<div class="element-fields">
-		<?php echo $form->hiddenInput($element, 'booking_event_id')?>
-		<?php echo $form->radioButtons($element, 'eye_id', $element->eyeOptions, ($element->eye() ? $element->eye()->id : null), null, null, null, null, null, array('label' => 2, 'field' => 10))?>
-		<?php
+  <div class="element-fields full-width flex-layout">
+    <div class="cols-2">
+        <?php echo $form->hiddenInput($element, 'booking_event_id') ?>
+        <?php echo $form->radioButtons($element, 'eye_id', $element->eyeOptions,
+            ($element->eye() ? $element->eye()->id : null), null, null, null, null, array('nowrapper'=>true),
+            array()) ?>
+    </div>
+    <div class="cols-10">
+        <?php
         $form->widget('application.widgets.ProcedureSelection', array(
             'element' => $element,
             'selected_procedures' => $element->procedures,
             'newRecord' => true,
             'last' => true,
+            'label' => '',
             'hidden' => ($this->action->id == 'create' && $element->eye == null && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
         ));
         ?>
-	</div>
-	<div class="sub-elements active">
-		<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
-	</div>
+    </div>
+  </div>
 </section>
+
+<div class="sub-elements active">
+    <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
+</div>

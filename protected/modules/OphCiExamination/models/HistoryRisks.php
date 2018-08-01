@@ -166,7 +166,7 @@ class HistoryRisks extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             $force[] = $entry->risk_id;
         }
-        return OphCiExaminationRisk::model()->activeOrPk($force)->findAllByAttributes(array('required' => false));
+        return OphCiExaminationRisk::model()->activeOrPk($force)->findAll();
     }
 
     /**
@@ -178,7 +178,7 @@ class HistoryRisks extends \BaseEventTypeElement
         foreach (array('present', 'not_checked', 'not_present') as $cat) {
             $result[] = $this->getAttributeLabel($cat) . ': ' . implode(', ', $this->$cat);
         }
-        return implode(' // ', $result);
+        return implode(' <br /> ', $result);
     }
 
     /**
@@ -221,6 +221,16 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
         return null;
+    }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 55;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
     }
 
 }

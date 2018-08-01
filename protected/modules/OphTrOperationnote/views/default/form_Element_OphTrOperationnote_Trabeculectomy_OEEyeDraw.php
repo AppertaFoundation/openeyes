@@ -14,53 +14,56 @@
  */
 ?>
 <?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            array('TrabySuture', 'PI', 'SidePort', 'Patch', 'ConjunctivalSuture', 'ACMaintainer', 'CornealSuture'),
+$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+    'doodleToolBarArray' => array(
+        array('TrabySuture', 'PI', 'SidePort', 'Patch', 'ConjunctivalSuture', 'ACMaintainer', 'CornealSuture'),
+    ),
+    'onReadyCommandArray' => array(
+        array('addDoodle', array('AntSeg')),
+        array('addDoodle', array('ConjunctivalFlap')),
+        array('addDoodle', array('PI', array('rotation' => 0))),
+        array(
+            'addDoodle',
+            array('SidePort', array('rotation' => ($this->selectedEyeForEyedraw->name == 'Right' ? 5 : 3) * pi() / 4)),
         ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('AntSeg')),
-            array('addDoodle', array('ConjunctivalFlap')),
-            array('addDoodle', array('PI', array('rotation' => 0))),
-            array('addDoodle', array('SidePort', array('rotation' => ($this->selectedEyeForEyedraw->name == 'Right' ? 5 : 3) * pi() / 4))),
-            array('addDoodle', array('TrabyFlap')),
-            array('addDoodle', array('TrabySuture')),
-            array('addDoodle', array('TrabySuture')),
-            array('addDoodle', array('TrabySuture')),
-        ),
-        'model' => $element,
-        'attribute' => 'eyedraw',
-        'side' => $this->selectedEyeForEyedraw->shortName,
-        'idSuffix' => 'Trabeculectomy',
-        'mode' => 'edit',
-        'width' => 300,
-        'height' => 300,
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'scale' => 0.72,
-        'listenerArray' => array(
-            'trabeculectomyController',
-        ),
-        'bindingArray' => array(
-            'ConjunctivalFlap' => array(
-                'method' => array(
-                    'id' => 'Element_OphTrOperationnote_Trabeculectomy_conjunctival_flap_type_id',
-                    'attribute' => 'data-value',
-                ),
-            ),
-            'TrabyFlap' => array(
-                'site' => array(
-                    'id' => 'Element_OphTrOperationnote_Trabeculectomy_site_id',
-                    'attribute' => 'data-value',
-                ),
-                'size' => array(
-                    'id' => 'Element_OphTrOperationnote_Trabeculectomy_size_id',
-                    'attribute' => 'data-value',
-                ),
-                'sclerostomy' => array(
-                    'id' => 'Element_OphTrOperationnote_Trabeculectomy_sclerostomy_type_id',
-                    'attribute' => 'data-value',
-                ),
+        array('addDoodle', array('TrabyFlap')),
+        array('addDoodle', array('TrabySuture')),
+        array('addDoodle', array('TrabySuture')),
+        array('addDoodle', array('TrabySuture')),
+    ),
+    'model' => $element,
+    'attribute' => 'eyedraw',
+    'side' => $this->selectedEyeForEyedraw->shortName,
+    'idSuffix' => 'Trabeculectomy',
+    'mode' => 'edit',
+    'width' => 300,
+    'height' => 300,
+    'template' => 'OEEyeDrawWidget_InlineToolbar',
+    'scale' => 0.72,
+    'listenerArray' => array(
+        'trabeculectomyController',
+    ),
+    'bindingArray' => array(
+        'ConjunctivalFlap' => array(
+            'method' => array(
+                'id' => 'Element_OphTrOperationnote_Trabeculectomy_conjunctival_flap_type_id',
+                'attribute' => 'data-value',
             ),
         ),
-    ));
+        'TrabyFlap' => array(
+            'site' => array(
+                'id' => 'Element_OphTrOperationnote_Trabeculectomy_site_id',
+                'attribute' => 'data-value',
+            ),
+            'size' => array(
+                'id' => 'Element_OphTrOperationnote_Trabeculectomy_size_id',
+                'attribute' => 'data-value',
+            ),
+            'sclerostomy' => array(
+                'id' => 'Element_OphTrOperationnote_Trabeculectomy_sclerostomy_type_id',
+                'attribute' => 'data-value',
+            ),
+        ),
+    ),
+));
 ?>

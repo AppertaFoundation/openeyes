@@ -99,7 +99,7 @@ class BaseEventElementWidget extends CWidget
      * @return bool
      */
     protected function showEditTipWarning() {
-        return $this->inEditMode();
+        return $this->inEditMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
     /**
@@ -113,7 +113,7 @@ class BaseEventElementWidget extends CWidget
      * @return bool
      */
     protected function showViewTipWarning() {
-        return $this->inViewMode();
+        return $this->inViewMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
     /**
@@ -271,6 +271,17 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
+     * @param string $filename
+     * @return mixed
+     */
+    public function getImgPublishedPath($filename = null)
+    {
+        return $this->getPublishedPath('../assets/img', $filename);
+    }
+
+
+
+    /**
      * Determine whether this widget should support editing
      *
      * @return bool
@@ -363,9 +374,11 @@ class BaseEventElementWidget extends CWidget
         // TODO: refactor this out for consistent rendering
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
+        } elseif ($this->mode === static::$EVENT_VIEW_MODE) {
+            return $this->render($this->getView(), $this->getViewData());
+        } else {
+            return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
         }
-
-        return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
     }
 
     /**

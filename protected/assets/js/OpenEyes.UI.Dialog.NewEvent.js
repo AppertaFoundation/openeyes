@@ -14,14 +14,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-(function(exports, Util) {
+(function (exports, Util) {
     'use strict';
 
     // Base Dialog.
     var Dialog = exports;
 
-    function NewEventDialog(options)
-    {
+    function NewEventDialog(options) {
         options = $.extend(true, {}, NewEventDialog._defaultOptions, options);
 
         Dialog.call(this, options);
@@ -33,6 +32,7 @@
     NewEventDialog._defaultOptions = {
         destroyOnClose: false,
         title: 'Add a new event',
+        popupClass: 'oe-create-event-popup',
         modal: true,
         width: 1000,
         minHeight: 400,
@@ -69,8 +69,7 @@
     /**
      * Manage all the provided option data into required internal data structures for initialisation.
      */
-    NewEventDialog.prototype.create = function ()
-    {
+    NewEventDialog.prototype.create = function () {
         var self = this;
 
         // current subspecialties for patient initialisation
@@ -119,8 +118,7 @@
      * @param options
      * @returns {string}
      */
-    NewEventDialog.prototype.getContent = function (options)
-    {
+    NewEventDialog.prototype.getContent = function (options) {
         return this.compileTemplate({
             selector: options.selector,
             data: {
@@ -133,8 +131,7 @@
         });
     };
 
-    NewEventDialog.prototype.updateTitle = function(subspecialty)
-    {
+    NewEventDialog.prototype.updateTitle = function (subspecialty) {
         var title = this.options.title;
         if (subspecialty !== undefined) {
             title = 'Add a new ' + subspecialty.name + ' event';
@@ -145,11 +142,10 @@
     /**
      * Setup all the interaction event hooks for clicking and updating form elements in the dialog.
      */
-    NewEventDialog.prototype.setupEventHandlers = function()
-    {
+    NewEventDialog.prototype.setupEventHandlers = function () {
         var self = this;
 
-        self.content.on('click', selectors.subspecialtyItem, function(e) {
+        self.content.on('click', selectors.subspecialtyItem, function (e) {
             self.content.find(selectors.subspecialtyItem).removeClass('selected');
             $(this).addClass('selected');
             // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
@@ -160,32 +156,32 @@
         });
 
         // change of the new subspecialty
-        self.content.on('change', selectors.newSubspecialtyList, function(e) {
+        self.content.on('change', selectors.newSubspecialtyList, function (e) {
             self.newSubspecialty();
         });
 
-        self.content.on('change', selectors.serviceList, function(e) {
+        self.content.on('change', selectors.serviceList, function (e) {
             self.newSubspecialtyService();
         });
 
         // add new subspecialty
-        self.content.on('click', selectors.addNewSubspecialty, function(e) {
+        self.content.on('click', selectors.addNewSubspecialty, function (e) {
             self.addNewSubspecialty();
         });
 
         // removal of new subspecialty selection
-        self.content.on('click', selectors.removeNewSubspecialty, function(e) {
+        self.content.on('click', selectors.removeNewSubspecialty, function (e) {
             self.removeNewSubspecialty();
         });
 
         // selection of context
-        self.content.on('click', selectors.contextItem, function(e) {
+        self.content.on('click', selectors.contextItem, function (e) {
             self.content.find(selectors.contextItem).removeClass('selected');
             $(this).addClass('selected');
             self.updateEventList();
         });
 
-        self.content.on('click', selectors.eventTypeItem, function(e) {
+        self.content.on('click', selectors.eventTypeItem, function (e) {
             if (!$(this).hasClass('add_event_disabled')) {
                 // can proceed
                 self.createEvent($(this).data('eventtype-id'));
@@ -193,8 +189,7 @@
         });
     };
 
-    NewEventDialog.prototype.setDefaultSelections = function()
-    {
+    NewEventDialog.prototype.setDefaultSelections = function () {
         var self = this;
 
         // ensure that the new subspecialty box is setup correctly on first view.
@@ -203,7 +198,7 @@
         // auto selection of subspecialty based on current view
         var selected = false;
         // Either subspecialty already active for the patient ...
-        self.content.find(selectors.subspecialtyItem).each(function() {
+        self.content.find(selectors.subspecialtyItem).each(function () {
             if (String($(this).data('subspecialty-id')) === String(self.defaultSubspecialtyId)) {
                 $(this).trigger('click');
                 selected = true;
@@ -227,8 +222,7 @@
     /**
      * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
      */
-    NewEventDialog.prototype.newSubspecialty = function ()
-    {
+    NewEventDialog.prototype.newSubspecialty = function () {
         var self = this;
         var id = self.content.find(selectors.newSubspecialtyList).val();
         if (id) {
@@ -253,8 +247,7 @@
     /**
      * Handle change of selection of the service for the new subspecialty
      */
-    NewEventDialog.prototype.newSubspecialtyService = function()
-    {
+    NewEventDialog.prototype.newSubspecialtyService = function () {
         var self = this;
         var id = self.content.find(selectors.serviceList).val();
         if (id) {
@@ -270,8 +263,7 @@
      *
      * @param service
      */
-    NewEventDialog.prototype.setFixedService = function(service)
-    {
+    NewEventDialog.prototype.setFixedService = function (service) {
         var self = this;
         self.content.find(selectors.fixedService).html(service.name);
         self.content.find(selectors.fixedService).show();
@@ -285,14 +277,13 @@
      *
      * @param services
      */
-    NewEventDialog.prototype.setServiceOptions = function(services)
-    {
+    NewEventDialog.prototype.setServiceOptions = function (services) {
         var self = this;
         var select = self.content.find(selectors.serviceList);
         select.html('');
         var options = '<option value="">- Please Select -</option>';
         for (var i in services) {
-            options += '<option value="'+services[i].id+'"';
+            options += '<option value="' + services[i].id + '"';
             // default to current runtime firm
             if (services[i].id === self.options.userContext.id) {
                 options += ' selected';
@@ -309,8 +300,7 @@
     /**
      * Add new subspecialty to list based on form, if it's complete.
      */
-    NewEventDialog.prototype.addNewSubspecialty = function()
-    {
+    NewEventDialog.prototype.addNewSubspecialty = function () {
         var self = this;
         var id = self.content.find(selectors.newSubspecialtyList).val();
         if (!id) {
@@ -350,8 +340,7 @@
     /**
      * Simply removes any new subspecialty option if it
      */
-    NewEventDialog.prototype.removeNewSubspecialty = function()
-    {
+    NewEventDialog.prototype.removeNewSubspecialty = function () {
         var self = this;
         self.content.find(selectors.newSubspecialtyItem).remove();
         self.content.find(selectors.newSubspecialtyContainer).show();
@@ -361,8 +350,7 @@
     /**
      * Ensures the new subspecialty component is reset to no selections
      */
-    NewEventDialog.prototype.resetNewSubspecialtyContainer = function()
-    {
+    NewEventDialog.prototype.resetNewSubspecialtyContainer = function () {
         var self = this;
         self.content.find(selectors.newSubspecialtyList).val('').trigger('change');
     };
@@ -370,8 +358,7 @@
     /**
      * Update the context list to reflect the currently selected subspecialty
      */
-    NewEventDialog.prototype.updateContextList = function()
-    {
+    NewEventDialog.prototype.updateContextList = function () {
         var self = this;
         // get selected subspecialty
         var selected = self.content.find(selectors.subspecialtyItem + '.selected');
@@ -389,7 +376,7 @@
             var list = '';
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
-                list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
+                list += '<li class="step-2" data-context-id="' + context.id + '">' + context.name + '</li>';
                 if (String(context.id) === defaultContextId) {
                     contextListIdx = i;
                 }
@@ -397,7 +384,7 @@
             self.content.find('.context-list').html(list);
             self.content.find('.step-context').css('visibility', 'visible');
             if (contextListIdx !== undefined) {
-                self.content.find('.context-list li:eq('+contextListIdx+')').trigger('click');
+                self.content.find('.context-list li:eq(' + contextListIdx + ')').trigger('click');
             }
         } else {
             self.updateTitle();
@@ -411,14 +398,14 @@
     /**
      * show or hide the event list
      */
-    NewEventDialog.prototype.updateEventList = function() {
+    NewEventDialog.prototype.updateEventList = function () {
         var self = this;
         var selected = self.content.find('.step-2.selected');
         if (selected.length) {
             var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
             if (selectedSubspecialty.supportServices) {
                 // Filter list based on whether Support Services is being chosen.
-                self.content.find(selectors.eventTypeItem).each(function() {
+                self.content.find(selectors.eventTypeItem).each(function () {
                     if (!$(this).data('support-services')) {
                         $(this).hide();
                     }
@@ -438,7 +425,7 @@
      *
      * @param eventTypeId
      */
-    NewEventDialog.prototype.createEvent = function(eventTypeId) {
+    NewEventDialog.prototype.createEvent = function (eventTypeId) {
         var self = this;
         // build params for the new event request
         var requestParams = {
@@ -455,7 +442,7 @@
         }
 
         // set window location to the new event request URL
-        window.location = '/patientEvent/create?'+$.param(requestParams);
+        window.location = '/patientEvent/create?' + $.param(requestParams);
     };
 
     exports.NewEvent = NewEventDialog;

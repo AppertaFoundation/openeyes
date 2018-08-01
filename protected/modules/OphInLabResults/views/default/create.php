@@ -1,4 +1,4 @@
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -16,7 +16,7 @@ $this->displayErrors($errors)?>
 <?php $this->displayErrors($errors, true)?>
 <?php $this->endWidget(); ?>
 
-    <div id="dialog-confirm-cancel" title="Cancel" class="hide">
+    <div id="dialog-confirm-cancel" title="Cancel" class="hidden">
         <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>All text entered will be lost. Are you sure?</p>
     </div>
 

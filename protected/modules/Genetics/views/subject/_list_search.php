@@ -98,7 +98,7 @@
                     if($value){
                         $disorder = Disorder::model()->findByPk($value);
                         echo $disorder->term;
-                        ?><i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
+                        ?><i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
                     }
                 ?>
             </span>
@@ -108,7 +108,7 @@
                     'name' => 'patient_disorder_id',
                     'code' => '',
                     'value' => $value,
-                    'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                    'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                     'placeholder' => 'Search for a diagnosis',
                     'callback' => null
                 ));

@@ -14,18 +14,37 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 
-<fieldset class="element-fields" id="editDiagnosis">
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
-	<?php $form->widget('application.widgets.DiagnosisSelection', array(
-        'field' => 'disorder_id',
-        'element' => $element,
-        'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-        'layoutColumns' => array(
-            'label' => $form->layoutColumns['label'],
-            'field' => 4,
-        ),
-    ));
-    ?>
-</fieldset>
+<div class="element-fields flex-layout full-width">
+    <table class="cols-11" id="editDiagnosis">
+        <colgroup>
+            <col class="cols-1">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>
+                Eyes:
+            </td>
+            <td>
+                <span class="oe-eye-lat-icons">
+                    <?php echo $form->radioButtons($element, 'eye_id',
+                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), null,
+                        false, false, false, false, array('nowrapper' => true)) ?>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <?php $form->widget('application.widgets.DiagnosisSelection', array(
+                'field' => 'disorder_id',
+                'element' => $element,
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'layoutColumns' => array(
+                    'label' => $form->layoutColumns['label'],
+                    'field' => 4,
+                ),
+            ));
+            ?>
+        </tr>
+        </tbody>
+    </table>

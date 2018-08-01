@@ -367,15 +367,6 @@ return array(
         'admin_menu' => array(
         ),
         'dashboard_items' => array(
-            array(
-                'class' => 'WorklistManager',
-                'method' => 'renderAutomaticDashboard',
-                'position' => 10,
-            ),
-            array(
-                'class' => 'WorklistManager',
-                'method' => 'renderManualDashboard',
-            ),
         ),
         'admin_email' => '',
         'enable_transactions' => true,
@@ -483,7 +474,6 @@ return array(
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
-        'clinical_management_pcr' => false,
         'docman_generate_csv' => false,
         'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented

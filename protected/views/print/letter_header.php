@@ -24,8 +24,7 @@ $event_type = $event->eventType->name;
 ?>
 <header class="header">
 	<?= $logoHelper->render() ?>
-	<div class="row">
-		<div class="large-4 column patient">
+		<div class="cols-4 column patient">
 			<strong><?php echo $this->patient->contact->fullName?></strong>
 			<br />
 			<?php echo $this->patient->getLetterAddress(array(
@@ -39,5 +38,4 @@ $event_type = $event->eventType->name;
 			<br />
 			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
 		</div>
-	</div>
 </header>

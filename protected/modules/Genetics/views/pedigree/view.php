@@ -18,9 +18,9 @@
 ?>
 <?php $this->renderPartial('//base/_messages')?>
     <div class="admin box">
-        <div class="row">
-        <div class="large-8 column"><h2>View Family</h2></div>
-        <div class="large-3 column">
+        <div class="data-group">
+        <div class="cols-8 column"><h2>View Family</h2></div>
+        <div class="cols-3 column">
         </div><div class="large-1 column right">
             <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
                 <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>

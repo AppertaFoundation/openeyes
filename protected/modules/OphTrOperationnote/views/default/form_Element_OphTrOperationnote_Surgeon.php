@@ -16,22 +16,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<?php echo $form->dropDownListRow(
-        $element,
-        array(
-            'surgeon_id',
-            'assistant_id',
-        ),
-        array(
-            CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-            CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-        ),
-        array(
-            array('empty' => '- Please select -'),
-            array('empty' => '- None -'),
-        ),
-        array('field' => 9)
-    )?>
-	<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- None -'), false, array('field' => 3))?>
+<div class="element-fields full-width flex-layout">
+  <table class="cols-10 last-left">
+    <colgroup>
+      <col class="cols-4">
+      <col class="cols-4">
+      <col class="cols-4">
+    </colgroup>
+    <thead>
+    <tr>
+      <th>Surgeon</th>
+      <th>Assistant</th>
+      <th>Supervising surgeon</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="col-gap">
+      <td>
+
+          <?php echo $form->dropDownList(
+              $element, 'surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList(
+              $element, 'assistant_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList($element, 'supervising_surgeon_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true), false,
+              array('field' => 3)) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>
