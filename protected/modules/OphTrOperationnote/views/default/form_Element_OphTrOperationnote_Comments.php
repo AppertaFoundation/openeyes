@@ -17,8 +17,8 @@
  */
 ?>
 
-<div class="element-fields full-width">
-  <div class="data-group">
+<div class="element-fields full-width flex-layout">
+  <div class="data-group cols-10">
     <div class="">
         <?php echo $form->textArea(
             $element,
@@ -53,4 +53,34 @@
       </div>
     </div>
   </div>
+  <div class="add-data-actions flex-item-bottom">
+    <button class="button hint green js-add-select-search" id="add-postop-instruction-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button><!-- popup to add data to element -->
+  </div>
 </div>
+<?php $instru_list = $element->postop_instructions_list; ?>
+<script type="text/javascript">
+  $(document).ready(function () {
+    var inputText = $('#Element_OphTrOperationnote_Comments_postop_instructions');
+
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-postop-instruction-btn'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($key, $item) {
+              return ['value' => $item, 'id' => $key,];
+          },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        $(selectedItems).each(function (key, item) {
+          inputText.val(inputText.val() ?
+            inputText.val() + item['value'] : item['value']
+          );
+        });
+
+        inputText.trigger('oninput');
+        return true;
+      }
+    });
+  });
+</script>
