@@ -717,7 +717,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     $row.find(".rgroup").val("new");
 
-    $row.appendTo(this.$table.find('tbody'));
+    if(this.$table.find('tbody').find("tr.js-divider").length > 0) {
+        $row.insertBefore(this.$table.find('tbody').find("tr.js-divider"));
+    }
+    else {
+        $row.appendTo(this.$table.find('tbody'));
+    }
     this.initialiseRow($row);
 
       if (typeof medication !== 'undefined') {
