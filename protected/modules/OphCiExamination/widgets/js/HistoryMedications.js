@@ -342,6 +342,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var $rx_input = $row.find(".btn-prescribe input");
       $rx_input.attr("data-prev-state", $rx_input.prop("checked") ? '1' : '0');
       $rx_input.prop("checked", false).attr("disabled", "disabled");
+
+      this.updateInputFromFuzzySelect($row);
   };
 
   HistoryMedicationsController.prototype.cancelStopped = function($row) {
@@ -632,6 +634,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $container.find(this.options.drugSelectSelector).show();
       }
   };
+
+    HistoryMedicationsController.prototype.updateInputFromFuzzySelect = function($row)
+    {
+        $row.find(".fuzzy-date").each(function(i, fieldset) {
+            var $hidden_input = $(fieldset).find("input[type=hidden]");
+            $hidden_input.val($(fieldset).find(".fuzzy_year").val()+''+$(fieldset).find(".fuzzy_month").val().padStart(2, "0")+''+$(fieldset).find(".fuzzy_day").val().padStart(2, "0"));
+        });
+    };
 
     HistoryMedicationsController.prototype.updateFuzzySelect = function($row)
     {

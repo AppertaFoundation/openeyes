@@ -134,7 +134,7 @@ $is_new = isset($is_new) ? $is_new : false;
                 <?php endif; ?>
                 </a>
             </div>
-            <fieldset class="alternative-display-element"  style="display: none;">
+            <fieldset class="alternative-display-element fuzzy-date"  style="display: none;">
                 <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
                 <span class="fuzzy-date end_date_wrapper" >
                     <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
