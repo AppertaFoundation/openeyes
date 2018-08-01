@@ -83,12 +83,12 @@ if (!isset($values)) {
 
   <?php if (!$removable): ?>
   <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-      <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
+      <?php if($values['side_id'] == \EYE::RIGHT  ||$values['side_id']=== \EYE::BOTH){ ?>
         <i class="oe-i laterality R small pad"></i>
       <?php } ?>
   </td>
   <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-  <?php if($values['side']=='Left'||$values['side']=='Both'){ ?>
+      <?php if($values['side_id'] == \EYE::LEFT  ||$values['side_id'] == \EYE::BOTH){ ?>
         <i class="oe-i laterality L small pad"></i>
       <?php } ?>
   </td>
