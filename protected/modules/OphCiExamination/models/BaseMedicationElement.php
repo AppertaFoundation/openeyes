@@ -98,6 +98,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             /** @var \EventMedicationUse $entry */
             $entry->event_id = $this->event_id;
+            $entry->id = null;
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));

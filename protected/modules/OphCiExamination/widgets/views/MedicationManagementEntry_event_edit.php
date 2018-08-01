@@ -51,7 +51,7 @@ $is_new = isset($is_new) ? $is_new : false;
 <tr
     data-key="<?=$row_count?>"
     data-event-medication-use-id="<?php echo $entry->id; ?>"
-    class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $row_type == 'closed' ? ' fade ignore' : '' ?>"
+    class="<?=$field_prefix ?>_row <?= ($is_new || /*$entry->group*/ "new" == 'new') ? " new" : ""?><?= $entry->hidden == 1 ? ' hidden' : '' ?>"
 >
 
     <td>
