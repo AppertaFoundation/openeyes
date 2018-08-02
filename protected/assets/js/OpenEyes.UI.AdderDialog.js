@@ -322,8 +322,12 @@
    */
   AdderDialog.prototype.constructDataset =  function(item){
     var dataset = {};
-    for (var key in item){
-      dataset['data-'+key] = item[key];
+    if(typeof item === 'string'){
+      dataset['data-value'] = item;
+    } else {
+      for (var key in item){
+        dataset['data-'+key] = item[key];
+      }
     }
     return dataset;
   };
@@ -370,7 +374,7 @@
       $(results).each(function (index, result) {
         var dataset = AdderDialog.prototype.constructDataset(result);
         var item = $("<li />", dataset)
-          .append($('<span />', {class: 'auto-width'}).text(result['value']));
+          .append($('<span />', {class: 'auto-width'}).text(dataset['data-value']));
         dialog.searchResultList.append(item);
       });
     });

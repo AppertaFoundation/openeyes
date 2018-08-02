@@ -181,7 +181,12 @@
           <?php } ?>
       </div>
     </div>
-  </div>
+    <div class="add-data-actions flex-item-bottom">
+      <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
+        <i class="oe-i plus pro-theme"></i>
+      </button>
+    </div>
+</div>
 
   <script type="text/javascript">
     // Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
@@ -391,6 +396,38 @@
             callbackAddProcedure(procedure_id);
           }
         }
-      });
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      id:'procedure_popup_<?= $identifier ?:''; ?>',
+      openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($key, $item) {
+              return ['value' =>$item, 'id' => $key, 'label'=>'select'];
+          },array_keys($procedures), $procedures)
+      ) ?>, {'multiSelect': true})],
+
+      onReturn: function (adderDialog, selectedItems) {
+        var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          if (selectedItems[i]['label']==='select'){
+            $selector.val(id);
+            $selector.trigger('change');
+          }
+          else {
+            ProcedureSelectionSelectByName(selectedItems[i]['value'], true, '<?= $identifier ?>');
+          }
+        }
+        return true;
+      },
+    searchOptions: {
+        searchSource: '/procedure/autocomplete',
     }
-  </script>
+    });
+  });
+</script>
+
