@@ -89,11 +89,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
-                controller.$table.hide();
+                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
+                //in case of mandatory allegies are present
+                controller.setRadioButtonsToNo();
             }
             else {
                 controller.$popupSelector.show();
+                controller.$table.find('tr:not(:first-child)').show();
+                //when we ticked the 'no allergies' checkbox all allergies were set to No(value 0)
+                //now when we un-tick the box we do not want allergies marked No by default - user must select something
+                controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
     };
@@ -181,6 +187,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         self.$element.find(self.allergySelector).each(function () {
             var value = this.getAttribute('value');
+            /* can someone explain the hardcoded 17, please ? And shouldn't operator !== be used ? */
             if (value && !(value == 17)) {
                 selectedAllergies.push(value);
             }

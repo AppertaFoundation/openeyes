@@ -36,7 +36,7 @@ class Allergies extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\Allergies')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\Allergies')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -92,7 +92,11 @@ class Allergies extends \BaseEventElementWidget
      */
     public function getMissingRequiredAllergies()
     {
-        $current_ids = array_map(function ($e) { return $e->allergy_id; }, $this->element->entries);
+        $current_ids = array_map(function ($e) {
+            return $e->allergy_id;
+        },
+        $this->element->entries);
+
         $missing = array();
         foreach ($this->getRequiredAllergies() as $required) {
             if (!in_array($required->id, $current_ids)) {
@@ -104,24 +108,43 @@ class Allergies extends \BaseEventElementWidget
         return $missing;
     }
 
-    public function isAllergiesSetYes($element){
-
-        foreach ($element->entries as $entry){
-            if($entry->has_allergy === AllergyEntry::$PRESENT){
+    public function isAllergiesSetYes($element)
+    {
+        foreach ($element->entries as $entry) {
+            if ($entry->has_allergy === (string) AllergyEntry::$PRESENT) {
                 return true;
             }
         }
         return false;
-
     }
+
     /**
      * @param $row
      * @return bool
      */
     public function postedNotChecked($row)
     {
-        return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".entries.$row.has_allergy", $_POST)
+        return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries.$row.has_allergy", $_POST)
             == AllergyEntry::$NOT_CHECKED;
+    }
+
+    /**
+     * Reruns an AllergyEntry array by status
+     * @return array
+     */
+    public function getEntriesByStatus()
+    {
+        $entries = [
+            "0" => [],
+            "1" => [],
+        ];
+        foreach ($this->element->getSortedEntries() as $entry) {
+            if ($entry->has_allergy === (string) AllergyEntry::$PRESENT) {
+                $entries["1"][] = $entry;
+            } elseif ($entry->has_allergy === (string) AllergyEntry::$NOT_PRESENT) {
+                $entries["0"][] = $entry;
+            }
+        }
+        return $entries;
     }
 }
