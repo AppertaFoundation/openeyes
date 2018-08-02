@@ -444,7 +444,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.bindEntries = function($row1, $row2)
   {
       $row1.data("bound_entry", $row2);
-      $row2.data("bound_entry", $row1);
+      // Only one-way binding for now
+      //$row2.data("bound_entry", $row1);
   };
 
   HistoryMedicationsController.prototype.updateBoundEntry = function ($row, callback)
@@ -477,7 +478,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       var dose_unit_term = $row.find(".dose").val()+" "+$row.find(".dose_unit_term").val();
       var frequency = $row.find(".frequency").val() !== "" ? $row.find(".frequency option:selected").text() : "";
-      var route_lat = $row.find(".route").val() !== "" ? $row.find(".laterality option:selected").text() + " " + $row.find(".route option:selected").text() : "";
+      var route_lat = $row.find(".route").val() !== "" ? $row.find(".laterality option:selected").text().replace("-Select-", "") + " " + $row.find(".route option:selected").text() : "";
 
       $row.find(".textual-display-dose").text(dose_unit_term);
       $row.find(".textual-display-frequency").text(frequency);
@@ -749,7 +750,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
           $row.find(".dose-unit-term").text(medication.dose_unit_term !== null ? medication.dose_unit_term : "");
 
-          $row.find(".route").trigger("change");
+          this.updateRowRouteOptions($row);
       }
 
       if(do_callback) {
