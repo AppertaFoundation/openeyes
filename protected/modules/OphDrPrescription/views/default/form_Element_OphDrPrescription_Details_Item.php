@@ -83,9 +83,23 @@
   </td>
   <td>
     <a class="taperItem" href="#">+Taper</a>
+      &nbsp;|&nbsp;
+      <a class="addComment" href="#">+Commment</a>
     <i class="oe-i trash removeItem"></i>
+
   </td>
 </tr>
+
+<?php if(!is_null($item->comments)): ?>
+    <tr data-key="<?php echo $key; ?>" class="prescription-comments">
+        <td class="prescription-label"><span>Comments:</span></td>
+        <td colspan="5">
+            <textarea name="prescription_item[<?php echo $key; ?>][comments]"><?php echo CHtml::encode($item->comments); ?></textarea>
+        </td>
+        <td class="prescriptionItemActions"><a class="removeComment" href="#">Remove</a></td>
+        <td></td>
+    </tr>
+<?php endif; ?>
 
 <?php
 $count = 0;
@@ -128,6 +142,9 @@ foreach ($item->tapers as $taper): ?>
       <i class="oe-i trash removeTaper"></i></td>
     </td>
   </tr>
+
     <?php
     ++$count;
+
+
 endforeach; ?>
