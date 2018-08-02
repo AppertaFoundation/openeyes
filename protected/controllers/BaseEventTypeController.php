@@ -2468,8 +2468,7 @@ class BaseEventTypeController extends BaseModuleController
 
         } catch (Exception $ex) {
             // Store an error entry,so that no attempts are made to generate the image again until the errors are fixed
-            $eventImage->status_id = EventImageStatus::model()->find('name = "FAILED"')->id;
-            $eventImage->save();
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }
     }
