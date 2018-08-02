@@ -149,4 +149,12 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
         $class_name_underscores = str_replace("\\", "_", static::$elementClass);
         return isset($_POST[$class_name_underscores]['entries']);
     }
+
+    public function getViewData()
+    {
+        return array_merge(
+            parent::getViewData(),
+            array('prescribe_access' => $this->checkAccess('OprnCreatePrescription'))
+        );
+    }
 }

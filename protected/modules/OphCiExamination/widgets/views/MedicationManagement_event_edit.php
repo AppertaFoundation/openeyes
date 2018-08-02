@@ -82,7 +82,8 @@ $element_errors = $element->getErrors();
                                     'usage_type' => /* $entry->usage_type */ 'UTYPE',
                                     'row_type' => /*$entry->group */ 'group',
                                     'removable' => /* $entry->group === "new" */ "old",
-                                    'is_last' => ($row_count == $total_count - 1)
+                                    'is_last' => ($row_count == $total_count - 1),
+                                    'prescribe_access' => $prescribe_access
                                 )
                             );
                             $row_count++;
@@ -121,7 +122,8 @@ $element_errors = $element->getErrors();
                 'usage_type' => 'OphCiExamination',
                 'row_type' => 'new',
                 'is_last' => false,
-                'is_new' => true
+                'is_new' => true,
+                'prescribe_access' => $prescribe_access
             )
         );
         ?>

@@ -157,7 +157,7 @@ $is_new = isset($is_new) ? $is_new : false;
 
     <td>
          <span class="icon-switch btn-prescribe">
-            <input type="checkbox" name="<?= $field_prefix ?>[prescribe]" <?php echo $entry->prescribe == 1 ? "checked" : ""; ?> />
+            <input type="checkbox" name="<?= $field_prefix ?>[prescribe]" <?php echo $entry->prescribe == 1 ? "checked" : ""; ?> <?php if(!$prescribe_access): ?>onclick="return false;"<?php endif; ?> />
         </span>
 
     </td>
