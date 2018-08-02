@@ -182,7 +182,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function getViewData()
     {
         return array_merge(parent::getViewData(), array(
-            'operations' => $this->getMergedOperations($include_no = true),
+            'operations' => $this->getMergedOperations($this->mode !== self::$PATIENT_SUMMARY_MODE),
         ));
     }
 
