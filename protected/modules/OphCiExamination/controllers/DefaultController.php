@@ -793,55 +793,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Set the allergies against the Element_OphCiExamination_Allergy element
-     * It's a child element of History.
-     *
-     * @param Element_OphCiExamination_History $element
-     * @param $data
-     * @param $index
-     */
-    protected function setComplexAttributes_Element_OphCiExamination_History($element, $data, $index)
-    {
-        $allergies = array();
-        // we add the original rows
-        foreach ($this->patient->allergyAssignments as $paa) {
-            $allergies[] = $paa;
-        }
-
-        // we remove the deleted ones
-        if (!empty($data['deleted_allergies'])) {
-            $this->deletedAllergies = $data['deleted_allergies'];
-            foreach ($this->deletedAllergies as $deletedAssignmentId) {
-                foreach ($allergies as $key => $allergyRow) {
-                    if ($allergyRow->id == $deletedAssignmentId) {
-                        unset($allergies[$key]);
-                    }
-                }
-            }
-        }
-
-        // and finally we just add the new ones
-        if (!empty($data['selected_allergies'])) {
-            foreach ($data['selected_allergies'] as $i => $allergy_id) {
-                if ($data['other_names'][$i] == 'undefined') {
-                    $data['other_names'][$i] = '';
-                }
-                $newAllergy = new \PatientAllergyAssignment();
-                $newAllergy->allergy_id = $allergy_id;
-                $newAllergy->other = $data['other_names'][$i];
-                $newAllergy->comments = $data['allergy_comments'][$i];
-                $allergies[] = $newAllergy;
-            }
-        }
-
-        $this->allergies = $allergies;
-
-        if (isset($data['no_allergies']) && $data['no_allergies'] && !$this->patient->no_allergies_date) {
-            $this->patient->no_allergies_date = date('Y-m-d');
-        }
-    }
-
-    /**
      * set the dilation treatments against the element from the provided data.
      *
      * @param models\Element_OphCiExamination_Dilation $element

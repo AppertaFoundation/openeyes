@@ -28,8 +28,7 @@ $required_allergy_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
 
-        <?php $is_table_hidden = !count($element->entries) && !count($missing_req_allergies); ?>
-        <table id="<?= $model_name ?>_entry_table" class="cols-10 <?=$is_table_hidden  ? 'hidden' : '' ?>">
+        <table id="<?= $model_name ?>_entry_table" class="cols-10">
             <colgroup>
                 <col class="cols-3">
                 <col class="cols-3">
@@ -37,7 +36,7 @@ $required_allergy_ids = array_map(function ($r) {
             </colgroup>
             <tbody>
 
-            <tr class="<?= $this->isAllergiesSetYes($element) ? ' hidden' : '' ?>"
+            <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
                 id="<?= $model_name ?>_no_allergies_wrapper">
                 <td colspan="5" class="align-left">
                     <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
@@ -89,13 +88,13 @@ $required_allergy_ids = array_map(function ($r) {
         </table>
 
     <div class="add-data-actions flex-item-bottom" id="history-allergy-popup"
-         style="display: <?php echo $element->no_allergies_date ? 'none' : ''; ?>">
+         style="visibility: <?php echo $element->no_allergies_date ? 'hidden' : ''; ?>">
         <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
                     class="oe-i plus pro-theme"></i></button>
     </div>
 </div>
 
-<script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" class="hidden">
+<script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" style="display:none">
     <?php
     $empty_entry = new \OEModule\OphCiExamination\models\AllergyEntry();
     $this->render(
@@ -144,5 +143,4 @@ $required_allergy_ids = array_map(function ($r) {
             }
         });
     });
-
 </script>

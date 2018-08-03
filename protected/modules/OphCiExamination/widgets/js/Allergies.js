@@ -90,12 +90,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
                 controller.$table.find('tr:not(:first-child)').hide();
-                controller.$popupSelector.hide();
+                //prevent table jumping when show/hide btn
+                controller.$popupSelector.css({'visibility':'hidden'});
                 //in case of mandatory allegies are present
                 controller.setRadioButtonsToNo();
             }
             else {
-                controller.$popupSelector.show();
+                //prevent table jumping when show/hide btn
+                controller.$popupSelector.css({'visibility':'visible'});
                 controller.$table.find('tr:not(:first-child)').show();
                 //when we ticked the 'no allergies' checkbox all allergies were set to No(value 0)
                 //now when we un-tick the box we do not want allergies marked No by default - user must select something
@@ -150,11 +152,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.$table.find('tbody tr').length === 0) {
+        if (this.$table.find('tbody tr').length === 1) {
             this.$noAllergiesWrapper.show();
-            this.$table.hide();
         } else {
-            this.$popupSelector.show();
+            this.$popupSelector.css({'visibility':'visible'});
             this.$noAllergiesWrapper.hide();
             this.$noAllergiesFld.prop('checked', false);
         }

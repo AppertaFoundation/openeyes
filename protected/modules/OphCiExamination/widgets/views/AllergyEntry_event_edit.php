@@ -78,6 +78,7 @@ if (!isset($values)) {
                           data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                   <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
                       'class' => 'js-comment-field',
+                      'autocomplete' => 'off'
                   )) ?>
                         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </span>
