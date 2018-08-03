@@ -29,7 +29,7 @@ class EyeSelector extends BaseCWidget
     /**
      * @var int the id of the selected eye.
      * null - nothing is selected
-     * 0 - n/a, 1 - left, 2 - right, 3 - both
+     * -9 - n/a, 1 - left, 2 - right, 3 - both
      */
     public $selectedEyeId;
 
@@ -47,6 +47,7 @@ class EyeSelector extends BaseCWidget
     public function render()
     {
         ob_start();
+
         echo preg_replace_callback("/{(\w+)}/", array($this, 'renderSection'), $this->template);
         ob_end_flush();
     }

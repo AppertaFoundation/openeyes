@@ -45,84 +45,43 @@ if (!isset($values)) {
     $mandatory = !$removable;
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$model_name ?>_row" style="height:50px; <?= ($values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_PRESENT && !$mandatory) ? 'display: none;' : '' ?>">
-    <td style="width:270px;">
-        <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
+    <tr data-key="<?=$row_count;?>">
+        <td>
+            <?=$values['disorder_display'];?>
+            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[disorder_id]" value="<?=$values['disorder_id'] ?>" />
+        </td>
 
-        <input type="text" class="diagnoses-search-autocomplete"
-               id="diagnoses_search_autocomplete_<?=$row_count?>"
-               <?php if(isset($diagnosis)):?>
-                    data-saved-diagnoses='<?php echo json_encode(array(
-                            'id' => $values['id'],
-                            'name' => $values['disorder_display'],
-                            'disorder_id' => $values['disorder_id']), JSON_HEX_APOS); ?>'
-               <?php endif; ?> >
-        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
-    </td>
+        <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
+            <?php
+                $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
+                $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
 
+                if($removable) {
+                    echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
+                    echo CHtml::hiddenField($field_prefix . '[has_disorder]', $selected);
+                } else {
+                    echo CHtml::dropDownList($field_prefix . '[has_disorder]', $selected, [
+                        SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
+                        SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
+                        SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
+                    ],['empty' => '- Select -']);
+                }
+            ?>
+        </td>
 
-  <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
-      <?php
+        <?php $this->widget('application.widgets.EyeSelector', [
+                'inputNamePrefix' => $field_prefix,
+                'selectedEyeId' => $values['side_id']
+        ]); ?>
 
-      $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
-      $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
-
-      if($removable) {
-          echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
-          echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
-      }
-      else {
-          echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
-              SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
-              SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
-              SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
-          ],['empty' => '- Select -']);
-      }
-      ?>
-  </td>
-
-  <?php if (!$removable): ?>
-  <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-      <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
-        <i class="oe-i laterality R small pad"></i>
-      <?php } ?>
-  </td>
-  <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-  <?php if($values['side']=='Left'||$values['side']=='Both'){ ?>
-        <i class="oe-i laterality L small pad"></i>
-      <?php } ?>
-  </td>
-  <?php else: ?>
-    <input type="hidden" name="<?= $model_name ?>[side_id][]" class="diagnosis-side-value" value="<?=$values['side_id']?>">
-      <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
-      <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-        <input type="radio"
-               name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>"
-               value="<?php echo $eye->id?>"
-            <?php if($eye->id == $values['side_id']){ echo "checked"; }?>/>
-      </td>
-      <?php }?>
-      <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-      <input type="radio"
-             name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>"
-          <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
-             value="" />
-    </td>
-  <?php endif; ?>
-    <td>
-        <?php if(!$removable) :?>
-            <?=Helper::formatFuzzyDate($values['date']) ?>
-        <?php else:?>
-          <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" autocomplete="off">
-          <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-        <?php endif; ?>
-    </td>
-
-    <?php if($removable) : ?>
-      <td>
-        <i class="oe-i trash"></i>
-      </td>
-    <?php else: ?>
-      <td>read only <i class="oe-i info small pad"></i></td>
-    <?php endif; ?>
-</tr>
+        <td>
+            <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" class="date" placeholder="yyyy-mm-dd"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
+        </td>
+        <td>
+            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+        </td>
+        <td>
+            <i class="oe-i trash"></i>
+        </td>
+    </tr>
