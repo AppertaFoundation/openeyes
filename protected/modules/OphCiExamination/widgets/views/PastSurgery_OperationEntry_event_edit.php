@@ -46,7 +46,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     id="<?= $model_name ?>_operations_<?=$row_count?>"
 >
     <td>
-        <?php if (!$removable) : ?>
+        <?php if (!$removable || $required) : ?>
             <?= $values['operation'] ?>
         <?php else : ?>
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
