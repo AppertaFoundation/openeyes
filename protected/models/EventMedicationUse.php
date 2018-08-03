@@ -1,5 +1,7 @@
 <?php
 
+use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+
 /**
  * This is the model class for table "event_medication_uses".
  *
@@ -42,8 +44,6 @@
  * @property EventMedicationUse $prescriptionItem
  * @property RefMedicationLaterality $refMedicationLaterality
  */
-
-use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 
 class EventMedicationUse extends BaseElement
 {
