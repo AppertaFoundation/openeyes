@@ -23,21 +23,19 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div class="flex-layout">
-      <div>
+  <div style="text-align: center">
       <?php if ($element->isNewRecord) { ?>
-        <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-              CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
-                  'id', 'name'), array('class' => 'inline'));
-          ?>
+          <span class="data-label">VA Scale &nbsp;&nbsp;</span>
+            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                    'id', 'name'), array('class' => 'inline'));
+            ?>
       <?php } ?>
       <?php if ($element->unit->information) { ?>
           <span class="js-has-tooltip fa oe-i info small"
                 data-tooltip-content="<?php echo $element->unit->information ?>"></span>
       <?php } ?>
       </div>
-  </div>
 </div>
 
 <?php

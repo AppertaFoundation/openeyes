@@ -23,7 +23,7 @@ $key = 0;
 ?>
 
 <div class="element-both-eyes">
-  <div class="flex-layout flex-center">
+  <div style="text-align: center">
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
           <?php echo CHtml::dropDownList('nearvisualacuity_unit_change', @$element->unit_id,
