@@ -33,7 +33,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	handleButton($('#et_canceldelete'));
 
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {

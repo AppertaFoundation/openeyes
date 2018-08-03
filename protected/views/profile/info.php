@@ -16,10 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<div class="box admin">
 	<h2>Basic information</h2>
-
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'profile-form',
         'enableAjaxValidation' => false,
@@ -38,22 +35,86 @@
 		<?php $this->renderPartial('//base/_messages')?>
 		<?php $this->renderPartial('//elements/form_errors', array('errors' => $errors))?>
 
-		<?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])), null, array('field' => 2));?>
-		<?php echo $form->textField($user, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
-		<?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
-		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
-		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
-
-		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
-			<div class="row field-row">
-				<div class="large-5 large-offset-2 column">
-					<?php echo EventAction::button('Save', 'save')->toHtml()?>
-					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-				</div>
-			</div>
+<table class="standard">
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $form->textField(
+            $user,
+            'title',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                    || !Yii::app()->params['profile_user_show_menu'])),
+            null,
+            array('field' => 2)
+        );?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textField(
+            $user,
+            'first_name',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                    || !Yii::app()->params['profile_user_show_menu']))
+        );?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textField(
+            $user,
+            'last_name',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                    || !Yii::app()->params['profile_user_show_menu']))
+        );?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textField(
+            $user,
+            'email',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                    || !Yii::app()->params['profile_user_show_menu']))
+        );?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textField(
+            $user,
+            'qualifications',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+                'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                    || !Yii::app()->params['profile_user_show_menu']))
+        );?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="data-group flex-layout flex-left cols-full">
+        <div class="cols-2">
+          <label for="User_qualifications">Display Theme:</label>
+        </div>
+        <div class="cols-5">
+            <?php echo CHtml::dropDownList('display_theme', $display_theme, array(null => 'Default', 'light' => 'Light', 'dark' => 'Dark')); ?>
+        </div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<?php if (Yii::app()->params['profile_user_can_edit']) {?>
+      <div class="profile-actions">
+          <?php echo EventAction::button('Update', 'save',null, array('class'=>'button large hint green'))->toHtml()?>
+        <i class="spinner" title="Loading..." style="display: none;"></i>
+      </div>
 		<?php }?>
 
 	<?php $this->endWidget()?>
-</div>
 
 

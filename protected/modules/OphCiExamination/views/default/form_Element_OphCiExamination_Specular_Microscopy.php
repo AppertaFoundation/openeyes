@@ -17,100 +17,58 @@
  */
 ?>
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-<div class="element-fields row">
-	<div class="large-2 column">
-		<label><?php echo $element->getAttributeLabel('specular_microscope_id')?>:</label>
-	</div>
-	<div class="large-2 column">
-		<?php
-		$allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
-			$element->specular_microscope_id,
-			CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-	</div>
-	<div class="large-2 column"></div>
-	<div class="large-2 column">
-		<label><?php echo $element->getAttributeLabel('scan_quality_id')?>:</label>
-	</div>
-	<div class="large-2 column">
-		<?php
-		$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
-			$element->scan_quality_id,
-			CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-	</div>
-	<div class="large-2 column"></div>
+<div class="element-fields flex-layout full-width">
+  <div>
+    <label><?php echo $element->getAttributeLabel('specular_microscope_id') ?>:</label>
+      <?php
+      $allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
+      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
+          $element->specular_microscope_id,
+          CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+    <label><?php echo $element->getAttributeLabel('scan_quality_id') ?>:</label>
+      <?php
+      $allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
+      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
+          $element->scan_quality_id,
+          CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+  </div>
 </div>
-<div class="element-fields element-eyes row">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
-?> inactive<?php
-}?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-
-			<div class="row field-row">
-				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('right_endothelial_cell_density_value')?>:</label>
-				</div>
-				<div class="large-4 column">
-				<?= $form->textField($element, "right_endothelial_cell_density_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 4)) ?>
-				</div>
-				<div class="large-4 column">
-				</div>
-			</div>
-
-			<div class="row field-row">
-				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('right_coefficient_variation_value')?>:</label>
-				</div>
-				<div class="large-4 column">
-					<?= $form->textField($element, "right_coefficient_variation_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-				</div>
-					<div class="large-4 column">
-					</div>
-				</div>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {
-?> inactive<?php
-}?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="row field-row">
-				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('left_endothelial_cell_density_value')?>:</label>
-				</div>
-				<div class="large-4 column">
-					<?= $form->textField($element, "left_endothelial_cell_density_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 4)) ?>
-				</div>
-				<div class="large-4 column">
-				</div>
-			</div>
-			<div class="row field-row">
-				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('left_coefficient_variation_value')?>:</label>
-				</div>
-				<div class="large-4 column">
-					<?= $form->textField($element, "left_coefficient_variation_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-				</div>
-				<div class="large-4 column">
-				</div>
-			</div>
-			</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+<div class="element-fields element-eyes">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+          <table class="cols-full">
+            <tbody>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_endothelial_cell_density_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye_side . "_endothelial_cell_density_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 4)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_coefficient_variation_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye_side . "_coefficient_variation_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="add-side">
+            <a href="#">
+              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
 </div>

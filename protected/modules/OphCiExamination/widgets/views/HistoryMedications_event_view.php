@@ -16,51 +16,117 @@
  */
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
-<?php $el_id =  CHtml::modelName($element) . '_element'; ?>
+<?php $el_id = CHtml::modelName($element) . '_element'; ?>
 
-<div class="element-data" id="<?=$el_id?>">
-  <div class="row current-kind">
-    <div class="large-2 column">
-      <label style="white-space: nowrap;">Current:
-          <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="kind-toggle show" data-kind="stopped" <?php if (!$element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?></label>
-    </div>
-    <div class="large-10 column end">
-        <div class="data-value current">
-            <?php if ($element->currentOrderedEntries) { ?>
-            <ul class="comma-list">
-                <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                <?php } ?>
-            </ul>
-            <?php } else { ?>
+<section class="element view-Eye-Medications tile "
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Eye Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+    <header class=" element-header">
+        <h3 class="element-title">Eye Medications</h3>
+    </header>
+    <div class="element-data">
+        <div class="data-value">
+            <?php if (!$element->currentOrderedEntries) { ?>
                 No current medications.
+                <br/>
+                Stopped Medications : 
+                <table>
+                    <colgroup>
+                        <col>
+                        <col width="55px">
+                        <col width="85px">
+                    </colgroup>
+                    <tbody>
+                    <?php foreach ($element->stoppedOrderedEntries as $entry) {
+                        if ($entry['route_id'] == 1) { ?>
+                            <tr>
+                                <td><?= $entry->getMedicationDisplay() ?></td>
+                                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                  <span class="oe-eye-lat-icons">
+                                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                  </span>
+                                </td>
+                                <td><?= $entry->getStartDateDisplay() ?></td>
+                            </tr>
+                        <?php }
+                    } ?>
+                    </tbody>
+                </table>
+            <?php } else { ?>
+                <div class="tile-data-overflow">
+                    <table>
+                        <colgroup>
+                            <col>
+                            <col width="55px">
+                            <col width="85px">
+                        </colgroup>
+                        <tbody>
+                        <?php foreach ($element->currentOrderedEntries as $entry) {
+                            if ($entry['route_id'] == 1) { ?>
+                                <tr>
+                                    <td><?= $entry->getMedicationDisplay() ?></td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                      <span class="oe-eye-lat-icons">
+                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                      </span>
+                                    </td>
+                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php } ?>
         </div>
     </div>
-  </div>
-    <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>>
-        <div class="large-2 column">
-            <label style="white-space: nowrap;">Stopped:
-                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
-            </label>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value stopped">
-                <ul class="comma-list">
-                    <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                    <?php } ?>
-                </ul>
-            </div>
+</section>
+
+<section class=" element view-Systemic-Medications tile"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Systemic Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order + 1 ?>">
+    <header class=" element-header">
+        <h3 class="element-title">Systemic Medications</h3>
+    </header>
+    <div class="element-data">
+        <div class="data-value">
+            <?php if (!$element->orderedEntries) { ?>
+                No current medications.
+            <?php } else { ?>
+                <div class="tile-data-overflow">
+                    <table>
+                        <colgroup>
+                            <col>
+                            <col width="55px">
+                            <col width="85px">
+                        </colgroup>
+                        <tbody>
+                        <?php foreach ($element->orderedEntries as $entry) {
+                            if ($entry['route_id'] != 1) { ?>
+                                <tr>
+                                    <td><?= $entry->getMedicationDisplay() ?></td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                      <span class="oe-eye-lat-icons">
+                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                      </span>
+                                    </td>
+                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php } ?>
         </div>
     </div>
-</div>
-<script type="text/javascript">
-  $(document).ready(function() {
-    new OpenEyes.OphCiExamination.HistoryMedicationsViewController({
-      element: $('#<?= $el_id ?>')
-    });
-  });
-</script>
+</section>
 
 

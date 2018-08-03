@@ -1,6 +1,6 @@
 <?php
 ?>
-<section class="element element-data">
+<section class="element-data">
     <h3 class="data-title">Type</h3>
     <div class="data-value">
         <?= $element->type->type ?>

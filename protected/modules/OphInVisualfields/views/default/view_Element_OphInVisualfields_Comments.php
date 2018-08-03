@@ -17,13 +17,13 @@
  */
 ?>
 <div class="element-data">
-	<div class="row data-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<div class="data-label">
 				<?php echo $element->getAttributeLabel('comments')?>:
 			</div>
 		</div>
-		<div class="large-10 column">
+		<div class="cols-10 column">
 			<div class="data-value">
 				<?= $element->textWithLineBreaks('comments') ?>
 			</div>

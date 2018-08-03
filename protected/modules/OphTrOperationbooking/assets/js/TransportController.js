@@ -16,7 +16,7 @@
 */
 
 $(document).ready(function() {
-	handleButton($('button.btn_transport_viewall'),function(e) {
+	$(this).on('click','button.btn_transport_viewall',function(e) {
 		$('#transport_date_from').val('');
 		$('#transport_date_to').val('');
 		$('#include_bookings').attr('checked','checked');
@@ -27,12 +27,12 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('button.btn_transport_filter'),function(e) {
+  $(this).on('click','button.btn_transport_filter',function(e) {
 		transport_load_tcis();
 		e.preventDefault();
 	});
 
-	handleButton($('button.btn_transport_confirm'),function(e) {
+  $(this).on('click','button.btn_transport_confirm',function(e) {
 		$.ajax({
 			type: "POST",
 			url: baseUrl+"/OphTrOperationbooking/transport/confirm",
@@ -54,7 +54,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('button.btn_transport_print'),function(e) {
+  $(this).on('click','button.btn_transport_print',function(e) {
 		var get = '';
 
 		url = baseUrl+"/OphTrOperationbooking/transport/printList?";

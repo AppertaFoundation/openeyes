@@ -23,19 +23,19 @@ $sessions = $sessions['data'];
 <div class="box admin">
 <h2>Filters</h2>
 <form id="admin_sessions_filters" class="panel">
-	<div class="row field-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Theatre -'))?>
 		</div>
-		<div class="large-3 column">
-			<div class="row">
-				<div class="large-3 column">
+		<div class="cols-3 column">
+			<div class="data-group">
+				<div class="cols-3 column">
 					<label class="align" for="date_from">From:</label>
 				</div>
-				<div class="large-9 column">
+				<div class="cols-9 column">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                             'name' => 'date_from',
                             'id' => 'date_from',
@@ -49,12 +49,12 @@ $sessions = $sessions['data'];
 				</div>
 			</div>
 		</div>
-		<div class="large-3 column">
-			<div class="row">
-				<div class="large-2 column">
+		<div class="cols-3 column">
+			<div class="data-group">
+				<div class="cols-2 column">
 					<label class="align" for="date_to">To:</label>
 				</div>
-				<div class="large-10 column">
+				<div class="cols-10 column">
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                             'name' => 'date_to',
                             'id' => 'date_to',
@@ -68,38 +68,38 @@ $sessions = $sessions['data'];
 				</div>
 			</div>
 		</div>
-		<div class="large-2 column end">
-			<div class="row">
-				<div class="large-3 column">
+		<div class="cols-2 column end">
+			<div class="data-group">
+				<div class="cols-3 column">
 					<label class="align" for="sequence_id">Seq:</label>
 				</div>
-				<div class="large-9 column">
+				<div class="cols-9 column">
 					<?php echo CHtml::textField('sequence_id', @$_GET['sequence_id'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row field-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('weekday', @$_GET['weekday'], array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'), array('empty' => '- Weekday '))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('consultant', @$_GET['consultant'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Consultant -'))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('paediatric', @$_GET['paediatric'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Paediatric -'))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('anaesthetist', @$_GET['anaesthetist'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Anaesthetist -'))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('general_anaesthetic', @$_GET['general_anaesthetic'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- General anaesthetic -'))?>
 		</div>
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<?php echo CHtml::dropDownList('available', @$_GET['available'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Available -'))?>
 		</div>
 	</div>
-	<div class="field-row">
+	<div class="data-group">
 		<?php echo EventAction::button('Filter', 'filter', null, array('class' => 'small'))->toHtml()?>
 		<?php echo EventAction::button('Reset', 'reset', null, array('class' => 'small'))->toHtml()?>
 	</div>
@@ -184,28 +184,28 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'enableAjaxValidation' => false,
         'htmlOptions' => array('style' => 'display: none;', 'class' => 'panel'),
     ))?>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for=""><?php echo Firm::contextLabel() ?>:</label>
 	</div>
-	<div class="large-5 column end">
+	<div class="cols-5 column end">
 		<?php echo CHtml::dropDownList('inline_firm_id', '', Firm::model()->getListWithSpecialties(), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Theatre:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_theatre_id', '', CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Date:</label>
 	</div>
-	<div class="large-2 column end">
+	<div class="cols-2 column end">
 		<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'inline_date',
                 'id' => 'inline_date',
@@ -220,72 +220,72 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Start time:</label>
 	</div>
-	<div class="large-2 column end"><?php echo CHtml::textField('inline_start_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
+	<div class="cols-2 column end"><?php echo CHtml::textField('inline_start_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">End time:</label>
 	</div>
-	<div class="large-2 column end"><?php echo CHtml::textField('inline_end_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
+	<div class="cols-2 column end"><?php echo CHtml::textField('inline_end_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Consultant:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_consultant', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Paediatric:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_paediatric', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Anaesthetist:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_anaesthetist', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">General anaesthetic:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_general_anaesthetic', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Available:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
+	<div class="cols-5 column end"><?php echo CHtml::dropDownList('inline_available', '', array(1 => 'Yes', 0 => 'No'), array('empty' => '- Don\'t change -'))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-2 column">
+<div class="data-group">
+	<div class="cols-2 column">
 		<label for="">Comments:</label>
 	</div>
-	<div class="large-5 column end"><?php echo CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
+	<div class="cols-5 column end"><?php echo CHtml::textArea('inline_comments', '', array('rows' => 5, 'cols' => 60))?>
 		<span class="error"></span>
 	</div>
 </div>
-<div class="row field-row">
-	<div class="large-10 large-offset-2 column">
+<div class="data-group">
+	<div class="cols-10 large-offset-2 column">
 		<?php echo EventAction::button('Update', 'update_inline', null, array('class' => 'small'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		<span class="timeWarning" style="display: none;">Please be patient, it may take some time to process all the sessions ...</span>

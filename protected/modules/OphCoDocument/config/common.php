@@ -31,6 +31,14 @@ return array(
                 'ogg'   => 'video/ogg',
 		'mov'	=> 'video/quicktime',
             )
+        ),
+        'admin_structure' => array(
+            'Document' => array(
+                'Document sub type settings' => array(
+                    'module' => 'OphCoDocument',
+                    'uri' => '/OphCoDocument/oeadmin/DocumentSubTypesSettings',
+                    ),
+            ),
         )
     )
 );

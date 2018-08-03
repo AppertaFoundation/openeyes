@@ -19,13 +19,14 @@
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 if($correspondeceApp === "on") {
     ?>
-    <div class="row data-row">
-        <div class="large-2 column" style="margin-left: 10px;">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></div>
-        </div>
-        <div class="large-9 column end">
-                <div class="data-value">
-                    <?php
+<div class="element-fields full-width flex-layout flex-top col-gap" style="padding: 10px;">
+    <div class="cols-5 ">
+        <table class="cols-full">
+            <tr>
+                <td class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
+                <td class="large-9 column end">
+                    <div class="data-value" style="text-align: right">
+                        <?php
                         if($element->is_signed_off == NULL){
                             echo 'N/A';
                         } else if((int)$element->is_signed_off == 1){
@@ -33,75 +34,150 @@ if($correspondeceApp === "on") {
                         } else {
                             echo 'No';
                         }
+                        ?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="data-label">
+                    From
+                </td>
+                <td style="text-align: right">
+                    <?php
+                    echo $element->site->getLetterAddress(array(
+                        'include_name' => true,
+                        'delimiter' => '<br />',
+                        'include_telephone' => true,
+                        'include_fax' => true,
+                    ))?>
+                </td>
+            </tr>
+            <tr>
+                <td class="data-label">
+                    Direct Line
+                </td>
+                <td style="text-align: right">
+                    <?php
+                    echo $element->direct_line
                     ?>
-                </div>
-        </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="data-label">
+                    Direct Fax
+                </td>
+                <td style="text-align: right">
+                    <?php
+                    echo $element->fax
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="data-label">
+                    Cc
+                </td>
+                <td style="text-align: right">
+                    <?php
+                    $ccString = "";
+                    $toAddress = "";
+
+                    if($element->document_instance) {
+
+                        foreach ($element->document_instance as $instance) {
+                            foreach ($instance->document_target as $target) {
+                                if($target->ToCc == 'To'){
+                                    $toAddress = $target->contact_name . "\n" . $target->address;
+                                } else {
+                                    $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+
+                                    $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                                }
+                            }
+                        }
+                    }else
+                    {
+                        $toAddress = $element->address;
+                        foreach (explode("\n", trim($element->cc)) as $line) {
+                            if (trim($line)) {
+                                $ccString .= "" . str_replace(';', ',', $line)."<br/>";
+                            }
+                        }
+                    }
+                    ?>
+                    <?php
+                    echo $ccString
+                    ?>
+                </td>
+            </tr>
+        </table>
     </div>
+
     <?php
 }
 ?>
 
-<div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
-	<header>
-        <?php
-        $ccString = "";
-        $toAddress = "";
+    <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7" style="background-color: white; color: black; padding: 10px;">
+        <header>
+            <?php
+            $ccString = "";
+            $toAddress = "";
 
-        if($element->document_instance) {
+            if($element->document_instance) {
 
-            foreach ($element->document_instance as $instance) {
-                foreach ($instance->document_target as $target) {
-                    if($target->ToCc == 'To'){
-                        $toAddress = $target->contact_name . "\n" . $target->address;
-                    } else {
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                foreach ($element->document_instance as $instance) {
+                    foreach ($instance->document_target as $target) {
+                        if($target->ToCc == 'To'){
+                            $toAddress = $target->contact_name . "\n" . $target->address;
+                        } else {
+                            $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
 
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                            $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                        }
+                    }
+                }
+            }else
+            {
+                $toAddress = $element->address;
+                foreach (explode("\n", trim($element->cc)) as $line) {
+                    if (trim($line)) {
+                        $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
                     }
                 }
             }
-        }else
-        {
-            $toAddress = $element->address;
-            foreach (explode("\n", trim($element->cc)) as $line) {
-                if (trim($line)) {
-                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                }
-            }
-        }
-        $this->renderPartial('letter_start', array(
-            'toAddress' => $toAddress,
-            'patient' => $this->patient,
-            'date' => $element->date,
-            'clinicDate' => $element->clinic_date,
-            'element' => $element,
-        ));
-                ?>
-	</header>
-
-	<?php
-            $this->renderPartial('reply_address', array(
-                'site' => $element->site,
-                'is_internal_referral' => $element->isInternalReferral(),
-            ));
-
-            $this->renderPartial('print_ElementLetter', array(
-                'element' => $element,
+            $this->renderPartial('letter_start', array(
                 'toAddress' => $toAddress,
-                'ccString' => $ccString,
-                'no_header' => true,
+                'patient' => $this->patient,
+                'date' => $element->date,
+                'clinicDate' => $element->clinic_date,
+                'element' => $element,
             ));
+                    ?>
+        </header>
 
-            $is_document = isset($element->document_instance);
-        ?>
+        <?php
+                $this->renderPartial('reply_address', array(
+                    'site' => $element->site,
+                    'is_internal_referral' => $element->isInternalReferral(),
+                ));
 
-	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
+                $this->renderPartial('print_ElementLetter', array(
+                    'element' => $element,
+                    'toAddress' => $toAddress,
+                    'ccString' => $ccString,
+                    'no_header' => true,
+                ));
 
-        <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
-            <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
-        <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php echo $is_document ? '1' : '0'; ?>" />
-        <?php else: ?>
-            <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
-        <?php endif; ?>
+                $is_document = isset($element->document_instance);
+            ?>
 
+        <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
+
+            <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
+                <?php Yii::app()->user->setState('correspondece_element_letter_saved', false); ?>
+            <input type="hidden" name="OphCoCorrespondence_print_checked" id="OphCoCorrespondence_print_checked" value="<?php echo $is_document ? '1' : '0'; ?>" />
+            <?php else: ?>
+                <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+            <?php endif; ?>
+
+    </div>
 </div>

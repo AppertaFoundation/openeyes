@@ -16,7 +16,7 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 <?php
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
@@ -37,8 +37,7 @@ $warnings = $this->patient->getWarnings($clinical);
     ?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 <?php if ($warnings) { ?>
-    <div class="row">
-        <div class="large-12 column">
+        <div class="cols-12 column">
             <div class="alert-box patient with-icon">
                 <?php foreach ($warnings as $warn) {?>
                     <strong><?php echo $warn['long_msg']; ?></strong>
@@ -46,7 +45,6 @@ $warnings = $this->patient->getWarnings($clinical);
                 }?>
             </div>
         </div>
-    </div>
 <?php }?>
 	<?php
     $this->displayErrors($errors);

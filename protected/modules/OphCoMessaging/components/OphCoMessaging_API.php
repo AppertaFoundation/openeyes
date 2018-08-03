@@ -47,17 +47,45 @@ class OphCoMessaging_API extends \BaseAPI
     }
 
     /**
+     * @return array Dashboard widget content and options (No need for title).
+     */
+    public function getMessages($user = null)
+    {
+        $inbox_messages = $this->getInboxMessages($user);
+        $sent_messages = $this->getSentMessages($user);
+        $urgent_messages = $this->getInboxMessages($user, true);
+
+        // Generate the dashboard widget HTML.
+        $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
+                'inbox' => $inbox_messages['list'],
+                'sent' => $sent_messages['list'],
+                'urgent' => $urgent_messages['list'],
+                'inbox_unread' => $inbox_messages['unread'],
+                'sent_unread' => $sent_messages['unread'],
+                'urgent_unread' => $urgent_messages['unread'],
+                'module_class' => $this->getModuleClass(),
+            )
+        );
+
+        return array(
+            'content' => $dashboard_view,
+            'options' => array(
+                'container-id' => \Yii::app()->user->id.'-dashboard-container',
+            ),
+        );
+    }
+
+    /**
      * Get received messages.
      * 
-     * @param CWebUser $user
+     * @param \CWebUser $user
+     * @param bool $urgent_only
      *
-     * @return array title and content of for the widget
+     * @return array data provider and total unread messages
      */
-    public function getInboxMessages($user = null)
+    private function getInboxMessages($user = null, $urgent_only = false)
     {
-        $read_check = (\Yii::app()->request->getQuery('OphCoMessaging_read', '0') === '1');
-
-        if (is_null($user)) {
+        if ($user === null) {
             $user = \Yii::app()->user;
         }
 
@@ -72,17 +100,19 @@ class OphCoMessaging_API extends \BaseAPI
                                     'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
             'hos_num' => array('asc' => 'patient.hos_num asc',
                                 'desc' => 'patient.hos_num desc', ),
-            'dob' => array('asc' => 'patient.dob asc',
-                            'desc' => 'patient.dob desc', ),
+            'age' => array('asc' => 'patient.dob desc',
+                            'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
                             'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+            'gender' => array('asc' => 'patient.gender asc',
+                                'desc' => 'patient.gender desc', ),
         );
 
         $sort->defaultOrder = 'event_date desc';
 
         $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
         $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $params = array(':uid' => $user->id, ':read' => $read_check);
+        $params = array(':uid' => $user->id);
 
         $criteria = new \CDbCriteria();
         $criteria->select = array(
@@ -92,24 +122,28 @@ class OphCoMessaging_API extends \BaseAPI
             new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
 
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid AND t.marked_as_read = :read');
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
         $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
         $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
         $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
         $criteria->together = true;
         if ($from) {
             $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
+            $params[':from'] = $from;
         }
         if ($to) {
             $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
+            $params[':to'] = $to;
         }
 
         $criteria->addCondition('event.deleted = 0');
         $criteria->addCondition('episode.deleted = 0');
-
+        if ($urgent_only) {
+            $criteria->addCondition('t.urgent != 0');
+        }
         $criteria->params = $params;
+
+        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
@@ -117,57 +151,32 @@ class OphCoMessaging_API extends \BaseAPI
                 'criteria' => $criteria,
                 'pagination' => array(
                     'pageSize' => 10,
+                    'itemCount' => $total_messages
                 ),
             ));
 
-        $messages = Element_OphCoMessaging_Message::model()->with(array('event'))->findAll($criteria);
+        $unread_criteria = new \CDbCriteria();
+        $unread_criteria->addCondition('t.marked_as_read != 1');
 
-        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
-
-        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
-                            'module_class' => $this->getModuleClass(),
-                            'messages' => $messages,
-                            'dp' => $dp,
-                            'read_check' => $read_check,
-                        ), true);
-
-        $is_open = ($read_check && $dp->totalItemCount > 0) ? true : false;
-
-        $cookie_name = \Yii::app()->user->id.'-inbox-container-state';
-
-        if (\Yii::app()->request->cookies->contains($cookie_name)) {
-
-            //unread messages
-            if (!$read_check) {
-                //always open the widget if there are unread messages
-                $is_open = $dp->totalItemCount > 0 ? true : (bool) \Yii::app()->request->cookies[$cookie_name]->value;
-            } else {
-                // read messages
-                $is_open = (bool) \Yii::app()->request->cookies[$cookie_name]->value;
-            }
-        }
-        \Yii::app()->request->cookies[$cookie_name] = new \CHttpCookie($cookie_name, (int) $is_open);
+        $unread_criteria->mergeWith($criteria);
+        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
-            'title' => 'Messages'.(!$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : ''),
-            'content' => $inbox_view,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-inbox-container',
-                'js-toggle-open' => $is_open,
-            ),
+            'list' => $dp,
+            'unread' => $unread_messages
         );
     }
 
     /**
      * Get sent messages.
      * 
-     * @param CWebUser $user
+     * @param \CWebUser $user
      *
-     * @return array title and content for the widget
+     * @return array data provider and total unread messages
      */
-    public function getSentMessages($user = null)
+    private function getSentMessages($user = null)
     {
-        if (is_null($user)) {
+        if ($user === null) {
             $user = \Yii::app()->user;
         }
 
@@ -182,16 +191,18 @@ class OphCoMessaging_API extends \BaseAPI
                                     'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
             'hos_num' => array('asc' => 'patient.hos_num asc',
                                 'desc' => 'patient.hos_num desc', ),
-            'dob' => array('asc' => 'patient.dob asc',
-                            'desc' => 'patient.dob desc', ),
+            'age' => array('asc' => 'patient.dob desc',
+                'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
                             'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+            'gender' => array('asc' => 'patient.gender asc',
+                'desc' => 'patient.gender desc', ),
         );
 
         $sort->defaultOrder = 'event_date desc';
 
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_sent_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_sent_to', '');
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
         $params = array(':uid' => $user->id);
 
         $criteria = new \CDbCriteria();
@@ -203,11 +214,11 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->together = true;
         if ($from) {
             $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
+            $params[':from'] = $from;
         }
         if ($to) {
             $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
+            $params[':to'] = $to;
         }
 
         $criteria->addCondition('event.deleted = 0');
@@ -215,32 +226,28 @@ class OphCoMessaging_API extends \BaseAPI
 
         $criteria->params = $params;
 
+        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
+
         $dataProvider = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
                 'pagination' => array(
                     'pageSize' => 10,
+                    'itemCount' => $total_messages
                 ),
             ));
 
-        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
 
-        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
+        $unread_criteria = new \CDbCriteria();
+        $unread_criteria->addCondition('t.marked_as_read != 1');
 
-        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.sent.grid', array(
-            'module_class' => $this->getModuleClass(),
-            'messages' => $messages,
-            'dataProvider' => $dataProvider,
-        ), true);
+        $unread_criteria->mergeWith($criteria);
+        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
-            'title' => 'Sent Messages',
-            'content' => $inbox_view,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-sent-container',
-                'js-toggle-open' => \Yii::app()->request->cookies->contains(\Yii::app()->user->id.'-sent-container-state') ? (bool) \Yii::app()->request->cookies[\Yii::app()->user->id.'-sent-container-state']->value : false,
-            ),
+            'list' => $dataProvider,
+            'unread' => $unread_messages
         );
     }
 }

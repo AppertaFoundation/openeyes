@@ -21,9 +21,10 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
     $item_ids = $element->getItemIds();
 }
 ?>
-<div class="sub-element-fields">
+<div class="element-fields flex-layout full-width ">
+
     <?php echo CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
-  <div class="field-row comorbidities-multi-select">
+  <div class="comorbidities-multi-select">
       <?php echo $form->multiSelectList(
           $element,
           CHtml::modelName($element) . '[items]',
@@ -39,16 +40,29 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
                   'name')
           ),
           array(),
-          array('empty' => '-- Add --', 'label' => 'Comorbidities', 'nowrapper' => true),
+          array('empty' => 'Add', 'label' => 'Comorbidities', 'nowrapper' => true),
           false,
           true,
           'No comorbidities',
           true,
           true
       ) ?>
+
+      <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array(
+          'class' => 'js-comment-field js-comment-container',
+          'data-comment-button' => '#' . CHtml::modelName($element) . '_comment_button',
+          'placeholder' => 'Enter comments here',
+          'style' => $element->comments ? '' : 'display: none;',
+      )) ?>
   </div>
-  <div class="field-row">
-      <?php echo $form->textArea($element, 'comments', array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false,
-          array('placeholder' => 'Enter comments here')) ?>
-  </div>
+  <button id="<?= CHtml::modelName($element) ?>_comment_button"
+          class="button js-add-comments"
+          data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>"
+          type="button"
+          style="<?php if ($element->comments): ?>visibility: hidden;<?php endif; ?>"
+  >
+    <i class="oe-i comments small-icon"></i>
+  </button>
 </div>
+
+

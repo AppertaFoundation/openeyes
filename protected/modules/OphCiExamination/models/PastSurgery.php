@@ -32,6 +32,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $user
  * @property \User $usermodified
  * @property PastSurgery_Operation[] $operations
+ * @property string $comments
  */
 class PastSurgery extends \BaseEventTypeElement
 {
@@ -76,10 +77,10 @@ class PastSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, operations', 'safe'),
+            array('event_id, operations, comments', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id',  'safe', 'on' => 'search')
+            array('id, event_id, comments',  'safe', 'on' => 'search')
         );
     }
 
@@ -93,12 +94,20 @@ class PastSurgery extends \BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id'),
-            'orderedOperations' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\PastSurgery_Operation',
-                'element_id',
-                'order' => 'orderedOperations.date desc, orderedOperations.last_modified_date'),
+            'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id', 'order' => 'operations.date desc, operations.last_modified_date'),
         );
+    }
+
+    public function beforeSave()
+    {
+        $entries = $this->operations;
+        foreach ($entries as $key=>$entry) {
+            if($entry->had_operation == PastSurgery_Operation::$NOT_CHECKED) {
+                unset($entries[$key]);
+            }
+        }
+        $this->operations = $entries;
+        return parent::beforeSave();
     }
 
     /**
@@ -109,7 +118,7 @@ class PastSurgery extends \BaseEventTypeElement
         foreach ($this->operations as $i => $operation) {
             if (!$operation->validate()) {
                 foreach ($operation->getErrors() as $fld => $err) {
-                    $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
+                    $this->addError('operations_' . ($i), 'Operation ('.($i + 1).'): '.implode(', ', $err));
                 }
             }
         }
@@ -130,9 +139,11 @@ class PastSurgery extends \BaseEventTypeElement
             $op->operation = $prev->operation;
             $op->side_id = $prev->side_id;
             $op->date = $prev->date;
+            $op->had_operation = $prev->had_operation;
             $operations[] = $op;
         }
         $this->operations = $operations;
+        $this->comments = $element->comments;
     }
 
     /**
@@ -140,6 +151,26 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function __toString()
     {
-        return implode(' // ', $this->operations);
+        return implode(' <br /> ', $this->operations);
+    }
+
+    public function getTileSize($action)
+    {
+        return $action === 'view' ? 1 : null;
+    }
+
+    public function getViewTitle()
+    {
+        return 'Eye Procedures';
+    }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 10;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
     }
 }

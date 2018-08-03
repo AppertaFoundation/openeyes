@@ -17,7 +17,7 @@
  */
 ?>
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-<div class="element-fields row">
+<div class="element-fields flex-layout full-width">
     <div class="large-2 column">
         <label><?php echo $element->getAttributeLabel('diagnosis_id')?>:</label>
     </div>

@@ -33,12 +33,12 @@
 	});
 </script>
 
-<div class="row field-row slider">
-	<div class="large-<?php echo $layoutColumns['label']?> column">
+<div class="data-group slider">
+	<div class="cols-<?php echo $layoutColumns['label']?> column">
 		<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
 	</div>
-	<div class="large-<?php echo $layoutColumns['field']?> column end">
-		<div class="field-row">
+	<div class="cols-<?php echo $layoutColumns['field']?> column end">
+		<div class="data-group">
 			<span class="widgetSliderValue slider-value" id="<?php echo CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
 			<input
 				class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
@@ -53,7 +53,7 @@
 				/>
 		</div>
 		<?php if ($painScale) {?>
-			<div class="field-row">
+			<div class="data-group">
 				<img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
 			</div>
 		<?php }?>

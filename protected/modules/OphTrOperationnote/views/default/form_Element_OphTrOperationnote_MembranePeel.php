@@ -16,10 +16,63 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<?php echo $form->radioBoolean($element, 'membrane_blue')?>
-	<?php echo $form->radioBoolean($element, 'brilliant_blue')?>
-	<?php echo $form->textField($element, 'other_dye', array(), array(), array_merge($form->layoutColumns, array('field' => 3)))?>
-	<?php echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 6)))?>
-</div>
+<div class="element-fields full-width flex-layout" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
 
+  <div class="cols-11 flex-layout flex-top col-gap">
+    <div class="cols-4">
+      <table class="last-left">
+        <colgroup>
+          <col class="cols-2"/>
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>
+              <?php echo $element->getAttributeLabel('membrane_blue'); ?>
+          </td>
+          <td>
+              <?php echo $form->radioBoolean($element, 'membrane_blue', array('nowrapper' => true)) ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <?php echo $element->getAttributeLabel('brilliant_blue'); ?>
+          </td>
+          <td>
+              <?php echo $form->radioBoolean($element, 'brilliant_blue', array('nowrapper' => true)) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="cols-7">
+
+      <table>
+        <colgroup>
+          <col class="cols-2"/>
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>
+              <?php echo $element->getAttributeLabel('other_dye'); ?>
+          </td>
+          <td>
+              <?php echo $form->textField($element, 'other_dye',
+                  array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;'), array()) ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <?php echo $element->getAttributeLabel('comments'); ?>
+          </td>
+          <td>
+              <?php echo $form->textArea($element, 'comments', array('nowrapper' => true, 'class' => 'cols-11'), false,
+                  array('placeholder' => 'Comments')) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

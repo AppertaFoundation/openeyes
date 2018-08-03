@@ -18,19 +18,19 @@
 ?>
 <div class="box admin">
 	<h2>Contact location</h2>
-	<div class="row data-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<div class="data-label">Contact:</div>
 		</div>
-		<div class="large-10 column">
+		<div class="cols-10 column">
 			<div class="data-value"><?php echo $location->contact->fullName?></div>
 		</div>
 	</div>
-	<div class="row data-row">
-		<div class="large-2 column">
+	<div class="data-group">
+		<div class="cols-2 column">
 			<div class="data-label"><?php echo $location->site_id ? 'Site' : 'Institution'?>:</div>
 		</div>
-		<div class="large-10 column">
+		<div class="cols-10 column">
 			<div class="data-value">
 				<?php echo $location->site ? $location->site->name : $location->institution->name?>
 			</div>
@@ -51,8 +51,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-                foreach ($location->patients as $i => $patient) {?>
+				<?php foreach ($location->patients as $i => $patient) {?>
 					<tr class="clickable" data-id="<?php echo $patient->id?>" data-uri="patient/view/<?php echo $patient->id?>">
 						<td><?php echo $patient->hos_num?>&nbsp;</td>
 						<td><?php echo $patient->title?>&nbsp;</td>

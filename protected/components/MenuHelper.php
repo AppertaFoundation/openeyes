@@ -45,13 +45,14 @@ class MenuHelper
     /**
      * @return string
      */
-    public function render()
+    public function render($navIconUrl)
     {
         return $this->getApp()->controller->renderPartial(
             '//base/_menu',
             array(
                 'menu' => $this->formatMenuOptions($this->menuOptions),
                 'uri' => $this->uri,
+                'navIconUrl' => $navIconUrl
             ),
             true
         );

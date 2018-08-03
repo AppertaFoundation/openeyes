@@ -16,8 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
+<section class="element">
+  <section class="element-fields full-width">
 	<?php echo CHtml::form(array('Default/requestDeletion/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>
 	<div id="delete_event">
 		<h3>Request event deletion</h3>
@@ -27,23 +29,23 @@
 		<?php $this->displayErrors($errors)?>
 		<div style="width:300px; margin-bottom: 0.6em;">
 			<p>Reason for deletion:</p>
-			<?php echo CHtml::textArea('delete_reason', '')?>
+			<?php echo CHtml::textArea('delete_reason', '', array('cols' => 40))?>
 		</div>
 		<p>
 			<strong>Are you sure you want to proceed?</strong>
 		</p>
-		<?php
-            echo CHtml::hiddenField('event_id', $this->event->id); ?>
+		<?php echo CHtml::hiddenField('event_id', $this->event->id); ?>
 			<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
 				Request deletion
 			</button>
 			<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
 				Cancel
 			</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+    <i class="loader spinner" style="display: none;"></i>
 		<?php echo CHtml::endForm(); ?>
 	</div>
-
+  </section>
+</section>
 <?php $this->endContent() ?>
 <script type="text/javascript">
 	$('#delete_reason').focus();

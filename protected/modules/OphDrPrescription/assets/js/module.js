@@ -32,27 +32,28 @@ $(document).ready(function () {
 
   $('#Element_OphDrPrescription_Details_comments').autosize();
 
-  handleButton($('#et_save_print'), function (e) {
+  $(document).on('click', '#et_save_print', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
-    if(!checkPrescriptionLength()){
-      e.preventDefault();
-    }
-  });
-    handleButton($('#et_save'), function (e) {
-        $('#Element_OphDrPrescription_Details_draft').val(0);
-        if(!checkPrescriptionLength()){
-            e.preventDefault();
-        }
-    });
-  
-  handleButton($('#et_save_draft'), function (e) {
-    $('#Element_OphDrPrescription_Details_draft').val(1);
-    if(!checkPrescriptionLength()){
+    if (!checkPrescriptionLength()) {
       e.preventDefault();
     }
   });
 
-  handleButton($('#et_print'), function (e) {
+  $(document).on('click', '#et_save', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(0);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('click', '#et_save_draft', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(1);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('click', '#et_print', function (e) {
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',
@@ -71,34 +72,6 @@ $(document).ready(function () {
       do_print_prescription();
       e.preventDefault();
     }
-  });
-
-  handleButton($('#et_deleteevent'));
-  handleButton($('#et_canceldelete'));
-
-  handleButton($('#et_cancel'), function (e) {
-    $('#dialog-confirm-cancel').dialog({
-      resizable: false,
-      //height: 140,
-      modal: true,
-      buttons: {
-        "Yes, cancel": function () {
-          $(this).dialog('close');
-
-          disableButtons();
-
-          if (m = window.location.href.match(/\/update\/[0-9]+/)) {
-            window.location.href = window.location.href.replace('/update/', '/view/');
-          } else {
-            window.location.href = baseUrl + '/patient/episodes/' + OE_patient_id;
-          }
-        },
-        "No, go back": function () {
-          $(this).dialog('close');
-        }
-      }
-    });
-    e.preventDefault();
   });
 
   if ($('#et_ophdrprescription_print').val() == 1) {

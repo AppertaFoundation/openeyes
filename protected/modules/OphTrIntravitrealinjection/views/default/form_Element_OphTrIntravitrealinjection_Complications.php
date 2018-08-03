@@ -16,34 +16,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields element-eyes row">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="element-eye right-eye left side column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-		data-side="right">
-		<div class="active-form">
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-			Set right side treatment drug
-			</div>
-		</div>
-	</div>
-
-	<div
-		class="element-eye left-eye right side column<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-		data-side="left">
-		<div class="active-form">
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-			Set left side treatment drug
-			</div>
-		</div>
-	</div>
-
+<div class="element-fields element-eyes data-group">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+            <?php $this->renderPartial($element->form_view . '_fields',
+                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+        </div>
+        <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="add-side">
+              Set <?= $eye_side ?> side treatment drug <span class="icon-add-side"></span>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
 </div>

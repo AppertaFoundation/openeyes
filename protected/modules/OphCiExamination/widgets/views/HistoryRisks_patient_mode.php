@@ -19,21 +19,22 @@
  */
 $model_name = CHtml::modelName($element);
 ?>
-
 <?php if (!$element) { ?>
     <p class="risk-status-unknown">Patient risk status is unknown</p>
+<?php }
+elseif(!count($element->entries) || $element->no_risks_date ){ ?>
+  <div class="risk-status-none">
+    <h2>Alerts</h2>
+    <p>Patient has no known risks.</p>
+  </div>
 <?php } else { ?>
-    <p class="risk-status-none" <?php if (!$element->no_risks_date) { echo 'style="display: none;"'; }?>>Patient has no known risks</p>
-
-
-    <table class="plain patient-data" id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
-        <thead>
-        <tr>
-            <th>Risk</th>
-            <th>Status</th>
-            <th>Comments</th>
-        </tr>
-        </thead>
+    <div class="alert-box patient">
+    <strong>Alerts</strong><br>
+    </div>
+  <table class="risks alert-box patient">
+  <colgroup>
+    <col class="cols-5">
+  </colgroup>
         <tbody>
         <?php
         foreach ($element->entries as $entry) {
@@ -47,5 +48,5 @@ $model_name = CHtml::modelName($element);
         }
         ?>
         </tbody>
-    </table>
+  </table>
 <?php } ?>

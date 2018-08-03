@@ -17,38 +17,38 @@
  */
 ?>
 
-<div class="field-row furtherfindings-multi-select">
+<div class=" furtherfindings-multi-select">
+  <div id="div_GeneticsPatient_Pedigree" class="eventDetail row widget">
+    <div class="cols-2 column">
+      <label for="GeneticsPatient[pedigrees]">
+        Pedigree:
+      </label>
+    </div>
+    <div class="cols-5 column">
+      <div class="multi-select">
 
-    <div id="div_GeneticsPatient_Pedigree" class="eventDetail row field-row widget">
-        <div class="large-2 column">
-            <label for="GeneticsPatient[pedigrees]">
-                Pedigree:
-            </label>
-        </div>
-        <div class="large-5 column">
-            <div class="multi-select">
+          <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
+        <select class="hidden"></select>
 
-                <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
-                <select class="hidden"></select>
-
-                <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]" class="multi-select-list-name">
-                <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'id' => 'GeneticsPatient_pedigreeAutoComplete',
-                    'name' => 'GeneticsPatient[pedigree]',
-                    'value' => '',
-                    'sourceUrl' => array('pedigree/search'),
-                    'options' => array(
-                        'minLength' => '1',
-                        'search' => "js:function( event, ui ) { $('.loader-pedigree').show();}",
-                        'response' => "js:function( event, ui ) { 
+        <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]"
+               class="multi-select-list-name">
+          <?php
+          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+              'id' => 'GeneticsPatient_pedigreeAutoComplete',
+              'name' => 'GeneticsPatient[pedigree]',
+              'value' => '',
+              'sourceUrl' => array('pedigree/search'),
+              'options' => array(
+                  'minLength' => '1',
+                  'search' => "js:function( event, ui ) { $('.loader-pedigree').show();}",
+                  'response' => "js:function( event, ui ) { 
                                                 $('.loader-pedigree').hide();
                                                 if (!ui.content.length) {
                                                 var noResult = { value:\"\",label:\"No results found\" };
                                                 ui.content.push(noResult);
                                             }
                                         }",
-                        'select' => "js:function(event, ui) {
+                  'select' => "js:function(event, ui) {
                                             if(ui.item.value){
                                                 $('ul.pedigree-list').append(
                                                     Mustache.render(pedigree_status_template, {
@@ -60,61 +60,60 @@
                                             }
                                             return false;
                                         }",
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Search for pedigree id',
-                    ),
-                ));
-                ?>
+              ),
+              'htmlOptions' => array(
+                  'placeholder' => 'Search for pedigree id',
+              ),
+          )); ?>
 
-                <ul class="MultiSelectList pedigree-list multi-select-selections">
+        <ul class="MultiSelectList pedigree-list multi-select-selections">
+            <?php foreach (GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $genetics_patient->id)) as $pedigree): ?>
+              <li>
+                <a href="/Genetics/pedigree/edit/<?= $pedigree->pedigree_id; ?>">
+                  <span class="text">
+                      <?= $pedigree->pedigree_id; ?>
+                      <?php if ($pedigree->pedigree->gene): ?>
+                        (<?= $pedigree->pedigree->gene->name ?>)
+                      <?php endif; ?>
+                  </span>
+                </a>
 
-                    <?php foreach(GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $genetics_patient->id)) as $pedigree): ?>
+                <span class="multi-select-remove remove-one" data-text="<?= $pedigree->pedigree_id; ?>">
+                              <i class="oe-i remove-circle small"></i>
+                            </span>
+                <input type="hidden" name="GeneticsPatient[pedigrees][]" value="<?= $pedigree->pedigree_id; ?>">
 
-                        <li>
-                            <a href="/Genetics/pedigree/edit/<?=$pedigree->pedigree_id;?>">
-                                <span class="text">
-                                    <?=$pedigree->pedigree_id;?>
-                                    <?php if($pedigree->pedigree->gene): ?>
-                                        (<?=$pedigree->pedigree->gene->name?>)
-                                    <?php endif; ?>
-                                </span>
-                            </a>
-
-                            <a href="#" data-text="<?=$pedigree->pedigree_id;?>" class="MultiSelectRemove remove-one">Remove</a>
-                            <input type="hidden" name="GeneticsPatient[pedigrees][]" value="<?=$pedigree->pedigree_id;?>">
-
-                            <select name="GeneticsPatient[pedigrees_through][<?=$pedigree->pedigree_id;?>][status_id]">
-                            <?php foreach(PedigreeStatus::model()->findAll() as $pedigree_status): ?>
-                                <option value="<?=$pedigree_status->id;?>" <?php echo $pedigree_status->id == $pedigree->status_id ? 'selected=""' : '';?>><?=$pedigree_status->name;?></option>
-                            <?php endforeach; ?>
-                            </select>
-                        </li>
+                <select name="GeneticsPatient[pedigrees_through][<?= $pedigree->pedigree_id; ?>][status_id]">
+                    <?php foreach (PedigreeStatus::model()->findAll() as $pedigree_status): ?>
+                      <option
+                          value="<?= $pedigree_status->id; ?>" <?php echo $pedigree_status->id == $pedigree->status_id ? 'selected=""' : ''; ?>><?= $pedigree_status->name; ?></option>
                     <?php endforeach; ?>
-
-                </ul>
-            </div>
-        </div>
-        <div class="large-1 column end">
-            <img class="loader-pedigree hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
-        </div>
-    </div>
-
-
-    <script>
-
-        pedigree_status_template = '<li><a href="/Genetics/pedigree/edit/{{pedigreeId}}"><span class="text">{{label}}</span></a>' +
-            '<a href="#" data-text="{{pedigreeId}}" class="MultiSelectRemove remove-one">Remove</a>' +
-            '<input type="hidden" name="GeneticsPatient[pedigrees][]" value="{{pedigreeId}}">' +
-
-            '<select name="GeneticsPatient[pedigrees_through][{{pedigreeId}}][status_id]">' +
-            <?php foreach(PedigreeStatus::model()->findAll() as $pedigree_status): ?>
-
-                '<option value="<?=$pedigree_status->id;?>" <?php echo $pedigree_status->name == 'Unknown' ? 'selected=""' : ''?> ><?=$pedigree_status->name;?></option>' +
-
+                </select>
+              </li>
             <?php endforeach; ?>
 
-            '</select></li>';
-    </script>
+        </ul>
+      </div>
+    </div>
+    <div class="cols-1 column end">
+      <img class="loader-pedigree hidden"
+           src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif'); ?>" alt="loading..."
+           style="margin-right:10px"/>
+    </div>
+  </div>
 
+  <script>
+    pedigree_status_template = '<li><a href="/Genetics/pedigree/edit/{{pedigreeId}}"><span class="text">{{label}}</span></a>' +
+      '<span data-text="{{pedigreeId}}" class="multi-select-remove remove-one"><i class="oe-i remove-circle small"></i></span>' +
+      '<input type="hidden" name="GeneticsPatient[pedigrees][]" value="{{pedigreeId}}">' +
+
+      '<select name="GeneticsPatient[pedigrees_through][{{pedigreeId}}][status_id]">' +
+        <?php foreach(PedigreeStatus::model()->findAll() as $pedigree_status): ?>
+
+      '<option value="<?=$pedigree_status->id;?>" <?php echo $pedigree_status->name == 'Unknown' ? 'selected=""' : ''?> ><?=$pedigree_status->name;?></option>' +
+
+        <?php endforeach; ?>
+
+      '</select></li>';
+  </script>
 </div>

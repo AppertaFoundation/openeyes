@@ -54,6 +54,7 @@ class DefaultController extends BaseEventTypeController
         $errors = array();
         // if we are after the submit we need to check if any event is selected
         if (preg_match('/^biometry([0-9]+)$/', Yii::app()->request->getPost('SelectBiometry'), $matches)) {
+            $this->updateHotlistItem($this->patient);
             $importedEvent = OphInBiometry_Imported_Events::model()->findByPk($matches[1]);
             $this->updateImportedEvent(Event::model()->findByPk($importedEvent->event_id), $importedEvent);
             $this->redirect(array('/OphInBiometry/default/view/' . $importedEvent->event_id . '?autosaved=1'));
@@ -113,32 +114,32 @@ class DefaultController extends BaseEventTypeController
             $event_data = $this->getAutoBiometryEventData($id);
             $isAlMod = $this->isAlModified();
             $isKMod = $this->isKModified();
-            $warning_flash_message = '';
             $issue_flash_message = '';
+            $info_flash_message = '';
             $success_flash_message = '';
 
             if (($isAlMod['left']) && ($isAlMod['right'])) {
-                $warning_flash_message .= '<li>AL for both eyes was entered manually. Possibly Ultrasound? Use with caution.</li>';
+                $issue_flash_message .= '<li>AL for both eyes was entered manually. Possibly Ultrasound? Use with caution.</li>';
             } else {
                 if ($isAlMod['left']) {
-                    $warning_flash_message .= '<li>AL for left eye was entered manually. Possibly Ultrasound? Use with caution.</li>';
+                    $issue_flash_message .= '<li>AL for left eye was entered manually. Possibly Ultrasound? Use with caution.</li>';
                 } elseif ($isAlMod['right']) {
-                    $warning_flash_message .= '<li>AL for right eye was entered manually. Possibly Ultrasound? Use with caution.</li>';
+                    $issue_flash_message .= '<li>AL for right eye was entered manually. Possibly Ultrasound? Use with caution.</li>';
                 }
             }
 
             if (($isKMod['left']) && ($isKMod['right'])) {
-                $warning_flash_message .= '<li>K value for both eyes was entered manually. Use with caution.</li>';
+                $issue_flash_message .= '<li>K value for both eyes was entered manually. Use with caution.</li>';
             } else {
                 if ($isKMod['left']) {
-                    $warning_flash_message .= '<li>K value for left eye was entered manually. Use with caution.</li>';
+                    $issue_flash_message .= '<li>K value for left eye was entered manually. Use with caution.</li>';
                 } elseif ($isKMod['right']) {
-                    $warning_flash_message .= '<li>K value for right eye was entered manually. Use with caution.</li>';
+                    $issue_flash_message .= '<li>K value for right eye was entered manually. Use with caution.</li>';
                 }
             }
 
             foreach ($event_data as $detail) {
-                $issue_flash_message .= '<b>Data Source</b>: ' . $detail['device_name'] . ' (<i>' . $detail['device_manufacturer'] . ' ' . $detail['device_model'] . '</i>)';
+                $info_flash_message .= '<b>Data Source</b>: ' . $detail['device_name'] . ' (<i>' . $detail['device_manufacturer'] . ' ' . $detail['device_model'] . '</i>)';
 
                 if ($detail['is_merged']) {
                     $success_flash_message .= 'New data has been added to this event.<br>';
@@ -152,11 +153,11 @@ class DefaultController extends BaseEventTypeController
             $quality = $this->isBadQuality();
 
             if (!empty($quality) && (!empty($quality['reason']))) {
-                $warning_flash_message .= '<li><b>The quality of this data is bad and not recommended for clinical use </b>: (' . $quality['reason'] . ')</li>';
+                $issue_flash_message .= '<li><b>The quality of this data is bad and not recommended for clinical use </b>: (' . $quality['reason'] . ')</li>';
             } else {
                 $quality = $this->isBordelineQuality();
                 if (!empty($quality) && (!empty($quality['reason']))) {
-                    $warning_flash_message .= '<li><b>The quality of this data is borderline </b>: (' . $quality['reason'] . ')</li>';
+                    $issue_flash_message .= '<li><b>The quality of this data is borderline </b>: (' . $quality['reason'] . ')</li>';
                 }
             }
 
@@ -164,14 +165,14 @@ class DefaultController extends BaseEventTypeController
             if (!empty($checkalqual) && ($checkalqual['code'])) {
                 foreach ($checkalqual['reason'] as $v) {
                     if (!empty($v)) {
-                        $warning_flash_message .= '<li>' . $v . '</li>';
+                        $issue_flash_message .= '<li>' . $v . '</li>';
                     }
                 }
             }
 
             $checkaldiff = $this->checkALDiff();
             if (!empty($checkaldiff) && (!empty($checkaldiff['reason']))) {
-                $warning_flash_message .= '<li>' . $checkaldiff['reason'] . '</li>';
+                $issue_flash_message .= '<li>' . $checkaldiff['reason'] . '</li>';
             }
 
             if (count($this->iolRefValues) !== 0) {
@@ -186,26 +187,26 @@ class DefaultController extends BaseEventTypeController
             }
 
             if (empty($lens_left) && empty($lens_right) && $this->getLensCalc(1) && $this->getLensCalc(2)) {
-                $warning_flash_message .= '<li>No lens options are available for either eye. Please recalculate lenses on the IOL Master device and resend</li>';
+                $issue_flash_message .= '<li>No lens options are available for either eye. Please recalculate lenses on the IOL Master device and resend</li>';
             } else {
                 if (empty($lens_left) && $this->getLensCalc(1)) {
-                    $warning_flash_message .= '<li>No lens options are available for the left eye. Please recalculate lenses on the IOL Master device and resend</li>';
+                    $issue_flash_message .= '<li>No lens options are available for the left eye. Please recalculate lenses on the IOL Master device and resend</li>';
                 } elseif (empty($lens_right) && $this->getLensCalc(2)) {
-                    $warning_flash_message .= '<li>No lens options are available for the right eye. Please recalculate lenses on the IOL Master device and resend</li>';
+                    $issue_flash_message .= '<li>No lens options are available for the right eye. Please recalculate lenses on the IOL Master device and resend</li>';
                 }
             }
 
-            if ($warning_flash_message != '') {
-                Yii::app()->user->setFlash('warning.data', '<ul>' . $warning_flash_message . '</ul>');
-            }
             if ($issue_flash_message != '') {
                 Yii::app()->user->setFlash('issue.data', '<ul>' . $issue_flash_message . '</ul>');
+            }
+            if ($info_flash_message != '') {
+                Yii::app()->user->setFlash('info.data', '<ul>' . $info_flash_message . '</ul>');
             }
             if ($success_flash_message != '') {
                 Yii::app()->user->setFlash('success.data', '<ul>' . $success_flash_message . '</ul>');
             }
         } else {
-            Yii::app()->user->setFlash('issue.formula', $this->flash_message);
+            Yii::app()->user->setFlash('info.formula', $this->flash_message);
         }
     }
 

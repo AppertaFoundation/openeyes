@@ -17,17 +17,19 @@
  */
 ?>
 <tr class="item">
-	<td class="procedure">
-		<span class="field"><?php echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id); ?></span>
-		<span class="value"><?php echo $proc->term;?></span>
-	</td>
-	<?php if ($durations) {?>
-		<td class="duration">
-			<?php echo $proc->default_duration?> mins
-		</td>
-	<?php }?>
-	<td>
-		<a href="#" class="removeProcedure">Remove</a>
-	</td>
+  <td class="procedure">
+    <span class="field"><?php echo CHtml::hiddenField('Procedures_' . $identifier . '[]', $proc->id); ?></span>
+    <span class="value"><?php echo $proc->term; ?></span>
+  </td>
+    <?php if ($durations) { ?>
+      <td class="duration">
+          <?php echo $proc->default_duration ?> mins
+      </td>
+    <?php } ?>
+  <td>
+    <span class="removeProcedure">
+      <i class="oe-i remove-circle small"></i>
+    </span>
+  </td>
 </tr>
 

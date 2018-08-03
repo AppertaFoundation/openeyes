@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -60,13 +60,11 @@ foreach($actions as $action_id => $action){
 ?>
     
 <?php if($banner_text): ?>
-<div class="row data-row">
-    <div class="large-10 correspondence_create_banner column">
-        <div class="data-label">
-            <?php echo $banner_text; ?>
-        </div>
+  <div class="cols-10 correspondence_create_banner column">
+    <div class="data-label">
+        <?php echo $banner_text; ?>
     </div>
-</div>
+  </div>
 <?php endif; ?>
 
 <?php $this->renderOpenElements($this->action->id, $form); ?>

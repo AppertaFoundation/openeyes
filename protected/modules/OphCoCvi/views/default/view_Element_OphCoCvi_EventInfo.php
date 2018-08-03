@@ -18,11 +18,11 @@
 ?>
 
 <div class="element-data">
-    <div class="row data-row">
-        <div class="large-2 column">
+    <div class="data-group">
+        <div class="cols-2">
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
         </div>
-        <div class="large-10 column end">
+        <div class="cols-10">
             <div class="data-value"><?php echo $element->site ? $element->site->name : '-' ?></div>
         </div>
     </div>

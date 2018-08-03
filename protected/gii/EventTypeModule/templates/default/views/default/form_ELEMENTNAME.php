@@ -16,7 +16,7 @@
  */
 <?php echo "?>\n"?>
 
-<div class="element-fields row">
+<div class="element-fields data-group">
 <?php
         if (isset($element)) {
             foreach ($element['fields'] as $field) {?>

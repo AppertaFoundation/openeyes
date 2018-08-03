@@ -16,11 +16,46 @@
  */
 $widget = $this;
 ?>
-
 <div class="element-data">
-    <div class="data-value"><?=
-        implode(' // ', array_map(function($op) use ($widget) {
-            return array_key_exists('object', $op) ? (string) $op['object'] : $widget->formatExternalOperation($op);
-        }, $operations))
-    ?></div>
+  <div class="data-value">
+    <div class="tile-data-overflow">
+        <?php if (!$operations || count($operations) === 0) { ?>
+          <div class="data-value not-recorded">No procedures recorded during this encounter</div>
+        <?php } else { ?>
+      <table>
+        <colgroup>
+          <col class="cols-7">
+        </colgroup>
+        <tbody> <?php foreach ($operations as $operation) { ?>
+          <tr>
+            <td>
+                <?= array_key_exists('object',
+                    $operation) ? $operation['object']->operation : $operation['operation']; ?>
+            </td>
+              <?php if (array_key_exists('side', $operation) ||
+                  (array_key_exists('object', $operation) && $operation['object']->side)): ?>
+                <td>
+                    <?php $side = array_key_exists('side', $operation) ?
+                        $operation['side'] : (array_key_exists('object',
+                            $operation) ? $operation['object']->side : ''); ?>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $side == 'Right' || $side == 'Both' || $side == 'Bilateral' ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $side == 'Left' || $side == 'Both' || $side == 'Bilateral' ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
+                </td>
+              <?php endif; ?>
+            <td>
+              <div class="oe-date">
+                <?= array_key_exists('object',
+                    $operation) ? $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+              </div>
+            </td>
+          </tr>
+        <?php }
+        } ?>
+        </tbody>
+      </table>
+        <?= CHtml::encode($element->comments) ?>
+    </div>
+  </div>
 </div>

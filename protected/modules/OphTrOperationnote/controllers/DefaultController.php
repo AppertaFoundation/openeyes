@@ -142,9 +142,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
     {
-        if (Yii::app()->params['fife']) {
-            $element->witness_required = true;
-        }
         if ($action == 'create') {
             if ($this->booking_operation) {
                 $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
@@ -437,13 +434,56 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /*
+     * Overloads BaseEventTypeController::renderOpenElements() to not render the event date as a separate element
+     * The event date element is instead rendered as part of the Location element
+     */
+    public function renderOpenElements($action, $form = null, $data = null)
+    {
+        $this->renderTiledElements($this->getElements($action), $action, $form, $data);
+    }
+
+    /**
+     * Get the open elements for the event that are not children.
+     *
+     * @return array
+     */
+    public function getElements()
+    {
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                if ($element->getElementType() && !$element->getElementType()->isChild()) {
+                    $elements[] = $element;
+                }
+            }
+        }
+
+        return $elements;
+    }
+
+    public function getChildElements($parent_type)
+    {
+        $open_child_elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $open) {
+                $et = $open->getElementType();
+                if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+                    $open_child_elements[] = $open;
+                }
+            }
+        }
+
+        return $open_child_elements;
+    }
+
     /**
      * Overrides for procedure list to render the elements in the order they are selected.
      *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
+     * @param BaseEventTypeElement $parent_element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      *
@@ -649,6 +689,11 @@ class DefaultController extends BaseEventTypeController
                 $complications[] = OphTrOperationnote_CataractComplications::model()->findByPk($c_id);
             }
         }
+
+        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])){
+            $element->setEye( \Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']) );
+        }
+
         $element->complications = $complications;
 
         $devices = array();
@@ -1150,5 +1195,26 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $errors;
+    }
+
+    public function hasExtraTitleInfo()
+    {
+        return $this->getAction()->id === 'view';
+    }
+
+    public function getExtraTitleInfo()
+    {
+        /* @var Element_OphTrOperationnote_SiteTheatre */
+        $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
+
+        if (!$element) {
+            return null;
+        }
+
+        return '<span class="extra-info">' .
+            '<span class="fade">Site: </span>' .
+            $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
+            '</span>' .
+            '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
     }
 }

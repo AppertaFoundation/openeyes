@@ -7,9 +7,9 @@
     }
 
 ?>
-<div class="row field-row <?php echo (!$genetics_patient || !$genetics_patient->pedigrees || $empty_pedigree_save) ? '' : ' hidden'; ?> ">
-    <div class="large-2 column">&nbsp;</div>
-    <div class="large-5 column end">
+<div class="data-group <?php echo (!$genetics_patient || !$genetics_patient->pedigrees || $empty_pedigree_save) ? '' : ' hidden'; ?> ">
+    <div class="cols-2 column">&nbsp;</div>
+    <div class="cols-5 column end">
         <input type="checkbox" id="no_pedigree" name="no_pedigree" />
         <label for="no_pedigree" style="display: inline">Automatically generate pedigree</label>
     </div>
@@ -20,7 +20,7 @@
             var checked = $(this).prop("checked");
             if(checked)
             {
-                $("#div_GeneticsPatient_Pedigree .MultiSelectList .MultiSelectRemove").trigger("click");
+                $("#div_GeneticsPatient_Pedigree .MultiSelectList .multi-select-remove").trigger("click");
                 $('#GeneticsPatient_pedigrees').prop('disabled', true).trigger("chosen:updated");
             }
             else

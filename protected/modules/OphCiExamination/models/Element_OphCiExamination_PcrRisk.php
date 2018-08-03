@@ -160,31 +160,6 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
     }
 
     /**
-     * Get the class required to make the risk the correct colour
-     *
-     * @param $side
-     * @return string
-     */
-    public function pcrRiskColour($side)
-    {
-        $value = $this->{$side . '_pcr_risk'};
-
-        if (!$value) {
-            return 'blue';
-        }
-
-        if ($value <= 1) {
-            return 'green';
-        } else {
-            if ($value > 1 && $value <= 5) {
-                return 'orange';
-            } else {
-                return 'red';
-            }
-        }
-    }
-
-    /**
      * Set the data from other parts of the system if it's available.
      */
     public function afterConstruct()

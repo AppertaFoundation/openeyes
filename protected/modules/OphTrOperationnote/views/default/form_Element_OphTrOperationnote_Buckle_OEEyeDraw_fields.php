@@ -16,8 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->hiddenInput($element, 'report', $element->report)?>
-<?php echo $form->dropDownList($element, 'drainage_type_id', 'OphTrOperationnote_DrainageType', array('empty' => '- Please select -'))?>
-<?php echo $form->radioBoolean($element, 'drain_haem')?>
-<?php echo $form->radioBoolean($element, 'deep_suture')?>
-<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60))?>
+<?php echo $form->hiddenInput($element, 'report', $element->report) ?>
+<?php echo $form->dropDownList($element, 'drainage_type_id', 'OphTrOperationnote_DrainageType',
+    array('empty' => '- Please select -')) ?>
+<?php echo $form->radioBoolean($element, 'drain_haem') ?>
+<?php echo $form->radioBoolean($element, 'deep_suture') ?>
+<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60)) ?>

@@ -25,10 +25,7 @@
 		<div class="alert-box with-icon success">
 			<?php echo $flash_message; ?>
 		</div>
-	<?php
-
-    }
-?>
+	<?php } ?>
 
 
 <form id="PatientTicketing-moveForm-<?= $this->ticket->id ?>" class="PatientTicketing-moveTicket" data-patient-id="<?= $this->ticket->patient_id ?>">
@@ -38,37 +35,28 @@
 	<div>
 		<h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
 		<?php
-            if (count($this->outcome_options) > 1) { ?>
-				<fieldset class="field-row row">
-					<div class="large-2 column">
+    if (count($this->outcome_options) > 1) { ?>
+				<fieldset class="data-group">
+					<div class="cols-2 column">
 						<label for="to_queue_id">To:</label>
 					</div>
-					<div class="large-3 column">
-						<?php
-                            echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
-                                    'id' => 'to_queue_id-'.$this->ticket->id,
-                                    'empty' => ' - Please Select -', ));
-                ?>
+					<div class="cols-3 column">
+						<?php echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
+						    'id' => 'to_queue_id-'.$this->ticket->id,
+                'empty' => ' - Please Select -', )); ?>
 					</div>
-					<div class="large-1 column end">
+					<div class="cols-1 column end">
 						<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;">
 					</div>
 				</fieldset>
-		<?php
-            } else {
-                ?>
+		<?php } else { ?>
 				<input type="hidden" name="to_queue_id" value="<?=$this->outcome_queue_id?>" />
-		<?php
-
-            }
-        ?>
+		<?php } ?>
 	</div>
 	<div id="PatientTicketing-queue-assignment" data-queue="<?=$this->ticket->current_queue->id?>">
-		<?php
-
-            $buttons = '<div class="buttons text-right">
-                            <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
-                            <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->queueset->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
+		<?php $buttons = '<div class="buttons text-right">
+                          <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
+                          <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->queueset->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
                         </div>';
 
             $buttons_drawn = false;
@@ -83,9 +71,7 @@
                     ));
 
                 $buttons_drawn = true;
-            }
-        ?>
-
+            } ?>
 	</div>
 	<div class="alert-box alert hidden"></div>
     <?php if(!$buttons_drawn) echo $buttons; ?>

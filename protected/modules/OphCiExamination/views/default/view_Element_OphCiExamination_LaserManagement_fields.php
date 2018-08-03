@@ -16,59 +16,61 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo CHtml::encode($element->getAttributeLabel($side.'_laser_status_id'))?>
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_laser_status'} ?>
-		</div>
-	</div>
-</div>
-<?php if ($element->{$side.'_laser_status'}->deferred) {
-    ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">
-				<?php echo CHtml::encode($element->getAttributeLabel($side.'_laser_deferralreason_id'))?>
-			</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<?php echo Yii::app()->format->Ntext($element->getLaserDeferralReasonForSide($side)) ?>
-			</div>
-		</div>
-	</div>
-<?php 
-} elseif ($element->{$side.'_laser_status'}->book || $element->{$side.'_laser_status'}->event) {
-    ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel($side.'_lasertype_id') ?>:
-			</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<?php echo Yii::app()->format->Ntext($element->getLaserTypeStringForSide($side)) ?>
-			</div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel($side.'_comments') ?>:
-			</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<?php echo $element->{$side.'_comments'} ? Yii::app()->format->Ntext($element->{$side.'_comments'}) : 'None';
-    ?>
-			</div>
-		</div>
-	</div>
-<?php 
-}
+<table class="cols-full">
+  <tbody>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?= CHtml::encode($element->getAttributeLabel($eye . '_laser_status_id')) ?>
+      </div>
+    </td>
+    <td>
+      <div class="data-value">
+          <?= $element->{$eye . '_laser_status'} ?>
+      </div>
+    </td>
+  </tr>
+  <?php if ($element->{$eye . '_laser_status'}->deferred): ?>
+    <tr>
+      <td>
+        <div class="data-label">
+            <?= CHtml::encode($element->getAttributeLabel($eye . '_laser_deferralreason_id')) ?>
+        </div>
+      </td>
+      <td>
+        <div class="data-value">
+            <?= Yii::app()->format->Ntext($element->getLaserDeferralReasonForSide($eye)) ?>
+        </div>
+      </td>
+    </tr>
+  <?php elseif ($element->{$eye . '_laser_status'}->book || $element->{$eye . '_laser_status'}->event): ?>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?= $element->getAttributeLabel($eye . '_lasertype_id') ?>:
+      </div>
+    </td>
+    <td>
+      <div class="data-value">
+          <?= Yii::app()->format->Ntext($element->getLaserTypeStringForSide($eye)) ?>
+      </div>
+    </td>
+  </tr>
+  <tr></tr>
+  </tbody>
+  <tbody>
+  <tr>
+    <td>
+      <div class="data-label">
+          <?= $element->getAttributeLabel($eye . '_comments') ?>:
+      </div>
+    </td>
+    <td>
+      <div class="data-value">
+          <?= $element->{$eye . '_comments'} ? Yii::app()->format->Ntext($element->{$eye . '_comments'}) : 'None'; ?>
+      </div>
+    </td>
+  </tr>
+  <?php endif; ?>
+  </tbody>
+</table>

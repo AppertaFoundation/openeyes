@@ -17,10 +17,13 @@
  */
 ?>
 
-<section class="sub-element">
-    <h3 class="sub-element-title highlight"><?php echo $element->elementType->name ?></h3>
-    <div class="sub-element-data">
-        <p>Has an assessment for the risk of thrombosis been completed on admission?</p>
-        <?php echo $element->selected_option()->name; ?>
-    </div>
+<section class="element view tile">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+    <p>
+      Thrombosis risk assessed on admission? <?php echo $element->selected_option()->name; ?>
+    </p>
+  </section>
 </section>

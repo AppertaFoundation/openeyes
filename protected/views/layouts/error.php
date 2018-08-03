@@ -19,33 +19,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
-<body class="open-eyes">
-
-	<div class="container main" role="main">
-
-		<header class="header row">
-			<!-- Branding (logo) -->
-			<div class="large-2 column end">
-				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-		</header><!-- /.header -->
-
-		<div class="container content">
-			<div class="row">
-				<div class="large-11 large-centered column">
-					<div class="panel error">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-		</div><!-- /.content -->
-
-		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
-
+<body class="open-eyes oe-grid">
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+<header class="oe-header">
+</header>
+<main class="oe-home">
+  <div class="oe-error-message">
+    <div class="message">
+      <h1>OpenEyes</h1>
+        <?php echo $content; ?>
+    </div>
+  </div>
+</main>
 </body>
 </html>

@@ -66,8 +66,8 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-                'values' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue', 'unit_id', 'order' => 'base_value DESC'),
-                'selectableValues' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue', 'unit_id', 'on' => 'selectableValues.selectable = true', 'order' => 'base_value DESC'),
+                'values' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue', 'unit_id', 'order' => 'base_value ASC'),
+                'selectableValues' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue', 'unit_id', 'on' => 'selectableValues.selectable = true', 'order' => 'base_value ASC'),
         );
     }
 

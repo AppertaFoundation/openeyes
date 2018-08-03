@@ -18,7 +18,7 @@
 ?>
 
 <?php
-    $this->beginContent('//patient/event_container');
+    $this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
 
     <?php
@@ -36,5 +36,5 @@
 
     <?php $this->renderOpenElements($this->action->id)?>
     <?php $this->renderOptionalElements($this->action->id)?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container', array('no_face'=>false));
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'update-form',
         'enableAjaxValidation' => false,
@@ -27,12 +27,12 @@ $this->beginContent('//patient/event_container', array());
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
 
         // Add the open in forum button if FORUM integration is enabled
-        $sop=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id))->sop_uid;
-        if (Yii::app()->params['enable_forum_integration'] == 'on' && !empty($sop)){
+        $sop = OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+        if (!empty($sop->uid && Yii::app()->params['enable_forum_integration'] === 'on')){
         array_unshift(
         $this->event_actions,
             EventAction::link('Open In Forum',
-                ('oelauncher:forumsop/'.$sop),
+                ('oelauncher:forumsop/'.$sop->sop_uid),
                 null, array('class' => 'button small')
             ));
         }

@@ -43,19 +43,19 @@
 
     <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : ''; ?>
 
-	<fieldset id="<?php echo CHtml::modelName($element).'_'.$field?>" class="row field-row <?=$fieldset_class?> <?php echo $hidden ? 'hidden' : ''?>" >
+	<fieldset id="<?php echo CHtml::modelName($element).'_'.$field?>" class="cols-full flex-layout flex-left<?=$fieldset_class?> <?php echo $hidden ? 'hidden' : ''?>" >
 		<?php	// Added hidden input below to enforce posting of current form element name.
 				// When using radio or checkboxes if no value is selected then nothing is posted
 				// not triggereing server side validation.
 		?>
-		<legend class="large-<?php echo $layoutColumns['label'];?> column">
+		<label class="cols-<?php echo $layoutColumns['label'];?> column">
 			<?php if ($field_value) {?><?php echo CHtml::encode($element->getAttributeLabel($field_value)); ?>
 			<?php }elseif (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?>
-		</legend>
+		</label>
 		<?php if (!$no_element) {?>
 			<input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
 		<?php }?>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<div class="cols-<?php echo $layoutColumns['field'];?> column">
 			<?php $i = 0; ?>
 			<?php if ($label_above) {?>
 				<label for="">

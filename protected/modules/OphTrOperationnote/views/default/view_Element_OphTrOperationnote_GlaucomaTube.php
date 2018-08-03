@@ -17,121 +17,107 @@
  */
 ?>
 
-<section class="sub-element">
-	<h3 class="sub-element-title highlight"><?php echo $element->elementType->name ?></h3>
-	<div class="sub-element-data">
-		<div class="row">
-			<div class="large-6 column">
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('plate_position_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->plate_position->name ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('plate_limbus'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->plate_limbus ?> mm
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('tube_position_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->tube_position->name ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('stent'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->stent ? 'Yes' : 'No'; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('slit'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->slit ? 'Yes' : 'No'; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('visco_in_ac'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->visco_in_ac ? 'Yes' : 'No'; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('flow_tested'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->flow_tested ? 'Yes' : 'No'; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo Yii::app()->format->Ntext($element->description)?>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                                'mode' => 'view',
-                                'width' => 200,
-                                'height' => 200,
-                                'model' => $element,
-                                'attribute' => 'eyedraw',
-                                'scale' => 0.72,
-                                'idSuffix' => 'GlaucomaTube',
-                        ));
-                ?>
-			</div>
-		</div>
-	</div>
+<section class="element view full">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+
+    <div class="eyedraw flex-layout flex-top flex-left posterior-pole">
+      <div class="eyedraw-canvas">
+          <?php
+          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+              'mode' => 'view',
+              'width' => 200,
+              'height' => 200,
+              'model' => $element,
+              'attribute' => 'eyedraw',
+              'scale' => 0.72,
+              'idSuffix' => 'GlaucomaTube',
+          ));
+          ?>
+      </div>
+
+      <div class="eyedraw-data cols-5">
+        <table class="label-value no-lines last-left">
+          <colgroup>
+            <col class="cols-5">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td>
+              <div class="data-label">Incision site:</div>
+            </td>
+            <td>
+              <div class="data-value">Corneal</div>
+            </td>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('plate_position_id')) ?>:</div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->plate_position->name ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('plate_limbus')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->plate_limbus ?> mm</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('tube_position_id')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->tube_position->name ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('stent')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->stent ? 'Yes' : 'No'; ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('slit')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->slit ? 'Yes' : 'No'; ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('visco_in_ac')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->visco_in_ac ? 'Yes' : 'No'; ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('flow_tested')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= $element->flow_tested ? 'Yes' : 'No'; ?></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('description')) ?></div>
+            </td>
+            <td>
+              <div class="data-value"><?= Yii::app()->format->Ntext($element->description) ?></div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </section>

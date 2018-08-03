@@ -15,19 +15,19 @@
     ));
     ?>
     <input type="hidden" name="return" value="<?=Yii::app()->request->getQuery('return', '')?>">
-    <div class="row field-row">
-        <div class="large-2 column">
+    <div class="data-group">
+        <div class="cols-2 column">
             <label>Subject:</label>
         </div>
-        <div class="large-5 column end">
+        <div class="cols-5 column end">
             <?= $pivot->subject->patient->fullName ?>
         </div>
     </div>
-    <div class="row field-row">
-        <div class="large-2 column">
+    <div class="data-group">
+        <div class="cols-2 column">
             <label>Study:</label>
         </div>
-        <div class="large-5 column end">
+        <div class="cols-5 column end">
             <?= $pivot->study->name ?>
         </div>
     </div>

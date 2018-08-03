@@ -24,7 +24,6 @@ function handleButton(button, callback) {
 			}
 		} else {
 			e.preventDefault();
-			console.log('canceled');
 		}
 	});
 }
@@ -62,7 +61,7 @@ function disableButtons(selector) {
         $selector.attr('disabled', true);
 	});
 
-	$('.loader').show();
+	$('.spinner').show();
 }
 
 function enableButtons(selector) {
@@ -75,7 +74,7 @@ function enableButtons(selector) {
 	.attr('disabled', false)
 	.off('click.disable');
 
-	$('.loader').hide();
+	$('.spinner').hide();
 }
 
 $(document).ready(function() {

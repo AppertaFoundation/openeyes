@@ -13,70 +13,67 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if ($plan): ?>
-	<div class="row data-row">
-		<div class="large-6 column">
-			<table class="grid plain">
-				<tbody>
-					<tr>
-						<th scope="col">Clinic interval</th>
-						<td><?= $plan->clinic_interval ? : 'None' ?></td>
-					</tr>
-					<tr>
-						<th scope="col">Photo</th>
-						<td><?= $plan->photo->name ?></td>
-					</tr>
-					<tr>
-						<th scope="col">OCT</th>
-						<td><?= $plan->oct->name ?></td>
-					</tr>
-					<tr>
-						<th scope="col">Visual Fields</th>
-						<td><?= $plan->hfa->name ?></td>
-					</tr>
-					<tr>
-						<th scope="col">Gonio</th>
-						<td><?= $plan->gonio->name ?></td>
-					</tr>
-					<?php if (isset($plan->hrt)) {
-    ?>
-					<tr>
-						<th scope="col">HRT</th>
-						<td><?= $plan->hrt->name ?></td>
-					</tr>
-					<?php 
-} ?>
-				</tbody>
-			</table>
-		</div>
-		<div class="large-6 column">
-			<?php if ($plan->comments) {
-    ?>
-				<div class="data-label">Comments:</div>
-				<div class="data-value panel comments"><?= Yii::app()->format->nText($plan->comments) ?></div>
-			<?php 
-}?>
-		</div>
-	</div>
 
-	<div class="row">
-		<div class="large-6 column">
-			<?php if ($plan->hasRight()) {
-    $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side', array('plan' => $plan, 'side' => 'right'));
-} ?>
-		</div>
-		<div class="large-6 column">
-			<?php if ($plan->hasLeft()) {
-    $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side', array('plan' => $plan, 'side' => 'left'));
-} ?>
-		</div>
-	</div>
+
+<?php if ($plan): ?>
+  <div class="flex-layout">
+    <div class="cols-6 data-group column">
+      <table>
+        <tbody>
+        <tr>
+          <th scope="col">Clinic interval</th>
+          <td><?= $plan->clinic_interval ?: 'None' ?></td>
+        </tr>
+        <tr>
+          <th scope="col">Photo</th>
+          <td><?= $plan->photo->name ?></td>
+        </tr>
+        <tr>
+          <th scope="col">OCT</th>
+          <td><?= $plan->oct->name ?></td>
+        </tr>
+        <tr>
+          <th scope="col">Visual Fields</th>
+          <td><?= $plan->hfa->name ?></td>
+        </tr>
+        <tr>
+          <th scope="col">Gonio</th>
+          <td><?= $plan->gonio->name ?></td>
+        </tr>
+        <?php if (isset($plan->hrt)) {
+            ?>
+          <tr>
+            <th scope="col">HRT</th>
+            <td><?= $plan->hrt->name ?></td>
+          </tr>
+            <?php } ?>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols-6 data-group column">
+        <?php if ($plan->comments) { ?>
+          <div class="data-label">Comments:</div>
+          <div class="data-value panel comments"><?= Yii::app()->format->nText($plan->comments) ?></div>
+        <?php } ?>
+    </div>
+  </div>
+
+  <div class="flex-layout">
+    <div class="cols-6 data-group column">
+        <?php if ($plan->hasRight()) {
+            $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
+                array('plan' => $plan, 'side' => 'right'));
+        } ?>
+    </div>
+    <div class="cols-6 data-group column">
+        <?php if ($plan->hasLeft()) {
+            $this->render('OphCiExamination_Episode_GlaucomaManagementPlan_side',
+                array('plan' => $plan, 'side' => 'left'));
+        } ?>
+    </div>
+  </div>
 <?php else: ?>
-	<div class="row">
-		<div class="large-12 column">
-			<div class="data-row">
-				<div class="data-value">(not recorded)</div>
-			</div>
-		</div>
-	</div>
+  <div class="cols-12 column">
+    <div class="data-value not-recorded">(not recorded)</div>
+  </div>
 <?php endif; ?>

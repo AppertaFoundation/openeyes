@@ -1,5 +1,9 @@
 <meta charset="utf-8" />
 <?php
+$assetManager = Yii::app()->getAssetManager();
+$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'));
+$favicon_path = $newblue_path . '/img/favicon_package_OE';
+
 //Because the wonderful way the namespace is created means if you don't include your file in the assets template
 //the namespace doesn't exist and gets overwritten.
 ?>
@@ -14,9 +18,14 @@
 	<meta http-equiv="pragma" content="no-cache" />
 <?php }?>
 
-<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
-<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/>
+<link rel="apple-touch-icon" sizes="180x180" href="<?= $favicon_path ?>/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon_path ?>/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="<?= $favicon_path ?>/favicon-16x16.png">
+<link rel="manifest" href="<?= $favicon_path ?>/site.webmanifest">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="theme-color" content="#ffffff">
 
 <script type="text/javascript">
 	var baseUrl = '<?php echo Yii::app()->baseUrl?>';
 </script>
+

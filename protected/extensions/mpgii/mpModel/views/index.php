@@ -38,7 +38,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 
 <?php $form = $this->beginWidget('CCodeForm', array('model' => $model)); ?>
 
-	<div class="row sticky">
+	<div class="data-group sticky">
 		<?php echo $form->labelEx($model, 'tablePrefix'); ?>
 		<?php echo $form->textField($model, 'tablePrefix', array('size' => 65)); ?>
 		<div class="tooltip">
@@ -51,7 +51,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model, 'tablePrefix'); ?>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<?php echo $form->labelEx($model, 'tableName'); ?>
 		<?php echo $form->textField($model, 'tableName', array('size' => 65)); ?>
 		<div class="tooltip">
@@ -62,7 +62,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model, 'tableName'); ?>
 	</div>
-	<div class="row model-class">
+	<div class="data-group model-class">
 		<?php echo $form->label($model, 'modelClass', array('required' => true)); ?>
 		<?php echo $form->textField($model, 'modelClass', array('size' => 65)); ?>
 		<div class="tooltip">
@@ -71,7 +71,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model, 'modelClass'); ?>
 	</div>
-	<div class="row sticky">
+	<div class="data-group sticky">
 		<?php echo $form->labelEx($model, 'baseClass'); ?>
 		<?php echo $form->textField($model, 'baseClass', array('size' => 65)); ?>
 		<div class="tooltip">
@@ -80,7 +80,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model, 'baseClass'); ?>
 	</div>
-	<div class="row sticky">
+	<div class="data-group sticky">
 		<?php echo $form->labelEx($model, 'modelPath'); ?>
 		<?php echo $form->textField($model, 'modelPath', array('size' => 65)); ?>
 		<div class="tooltip">
@@ -89,7 +89,7 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		</div>
 		<?php echo $form->error($model, 'modelPath'); ?>
 	</div>
-    <div class="row sticky">
+    <div class="data-group sticky">
 		<?php echo $form->labelEx($model, 'connectionId'); ?>
 		<?php echo $form->textField($model, 'connectionId', array('size' => 65)); ?>
 		<div class="tooltip">

@@ -18,124 +18,49 @@
 ?>
 <?php
 
-    $all_units = $element->getUnits($element->unit->id, false);
-    $va_tooltip_right = "";
-    $va_tooltip_left = "";
-    foreach($all_units as $unit) {
-        $va_tooltip_right.='<b>'.$unit->name.'</b>:<br/> '.$element->getCombined('right', $unit->id).'<br/>';
-        $va_tooltip_left.='<b>'.$unit->name.'</b>:<br/> '.$element->getCombined('left', $unit->id).'<br/>';
-    }
+$all_units = $element->getUnits($element->unit->id, false);
+$va_tooltip_right = "";
+$va_tooltip_left = "";
+foreach ($all_units as $unit) {
+    $va_tooltip_right .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('right', $unit->id) . '<br/>';
+    $va_tooltip_left .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('left', $unit->id) . '<br/>';
+}
 
-
-    $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-    if ($cvi_api) {
-        echo $cvi_api->renderAlertForVA($this->patient, $element, true);
-    }
+$cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
+    echo $cvi_api->renderAlertForVA($this->patient, $element, true);
+}
 
 ?>
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
-
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <?php if ($element->hasRight()) {
-            ?>
-            <?php if ($element->getCombined('right')) {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php echo $element->unit->name ?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'right', 'is_near'=>false)); ?>
-                    </div>
-                </div>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php echo $element->getCombined('right') ?>
-                    </div>
-                </div>
-                <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                        <?php if ($element->right_unable_to_assess) {
-                            ?>
-                            (Unable to assess<?php if ($element->right_eye_missing) {
-                                ?>, eye missing<?php
-                            }
-                            ?>)
-                            <?php
-                        } elseif ($element->right_eye_missing) {
-                            ?>
-                            (Eye missing)
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-                <?php
-            }
-            ?>
-            <?php
-        } else {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
+<div class="element-data element-eyes">
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye">
+          <?php if ($element->hasEye($eye_side)): ?>
+            <div class="data-value">
+                  <?php if ($element->getCombined($eye_side)): ?>
+                    <span class="priority-text">
+                      <?php echo $element->getCombined($eye_side) ?>
+                    </span>
+                    <i class="oe-i info small pad js-has-tooltip"
+                       data-tooltip-content="<?= ${'va_tooltip_' . $eye_side} ?>"></i>
+                  <?php else: ?>
                     Not recorded
-                </div>
+                      <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
+                      (Unable to assess <?php if ($element->{$eye_side . '_eye_missing'}) { ?>,
+                        eye missing<?php } ?>)
+                      <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
+                      (Eye missing)
+                      <?php endif; ?>
+                  <?php endif; ?>
+              </div>
+          <?php else: ?>
+            <div class="data-value not-recorded">
+              Not recorded
             </div>
-            <?php
-        } ?>
-    </div>
-    <div class="element-eye left-eye column">
-        <?php if ($element->hasLeft()) {
-            ?>
-            <?php if ($element->getCombined('left')) {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php echo $element->unit->name ?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'left', 'is_near'=>false)); ?>
-                    </div>
-                </div>
-                <div class="data-row">
-                    <div class="data-value">
-                        <?php echo $element->getCombined('left') ?>
-                    </div>
-                </div>
-                <?php
-            } else {
-                ?>
-                <div class="data-row">
-                    <div class="data-value">
-                        Not recorded
-                        <?php if ($element->left_unable_to_assess) {
-                            ?>
-                            (Unable to assess<?php if ($element->left_eye_missing) {
-                                ?>, eye missing<?php
-                            }
-                            ?>)
-                            <?php
-                        } elseif ($element->left_eye_missing) {
-                            ?>
-                            (Eye missing)
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-                <?php
-            }
-            ?>
-            <?php
-        } else {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
-                    Not recorded
-                </div>
-            </div>
-            <?php
-        } ?>
-    </div>
+          <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
 </div>

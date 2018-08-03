@@ -25,7 +25,7 @@ if ($right_emails || $left_emails) {
 		<h3 class="element-title">Application</h3>
 	</header>
 
-	<div class="element-data element-eyes row">
+	<div class="element-data element-eyes">
 		<div class="element-eye right-eye column">
 			<?php $this->renderPartial('emails_side', array('emails' => $right_emails)); ?>
 		</div>

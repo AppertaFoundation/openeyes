@@ -150,7 +150,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_add_sequence'),function(e) {
+	$(this).on('click','#et_add_sequence',function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/OphTrOperationbooking/admin/addSequence';
 	});
@@ -174,7 +174,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_add_session'),function(e) {
+	$(this).on('click','#et_add_session',function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/OphTrOperationbooking/admin/addSession';
 	});

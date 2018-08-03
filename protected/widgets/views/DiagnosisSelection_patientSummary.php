@@ -16,16 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row diagnosis-selection">
-	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+<div class="data-group diagnosis-selection">
+	<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 		<label for="<?php echo "{$class}_{$field}";?>">
 			<?php echo $label?>:
 		</label>
 	</div>
-	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 
 		<!-- Here we show the selected diagnosis -->
-		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="field-row hide">
+		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="hide">
 		</div>
 
 		<div class="dropdown-row">

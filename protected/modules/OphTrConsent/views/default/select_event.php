@@ -15,102 +15,95 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
-<?php
-    $this->beginContent('//patient/event_container');
-    $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
-    $this->moduleNameCssClass .= ' edit';
 ?>
-	<div class="row">
-		<div class="large-12 column">
+<?php
+$this->beginContent('//patient/event_container', array('no_face' => true));
+$assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
+$this->moduleNameCssClass .= ' edit';
+?>
+<section class="element">
 
-			<section class="element">
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'consent-form',
+        'enableAjaxValidation' => false,
+    ));
+    ?>
+    <?php $this->displayErrors($errors) ?>
 
-				<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                        'id' => 'consent-form',
-                        'enableAjaxValidation' => false,
-                        // 'focus'=>'#procedure_id'
-                    ));
-                    // Event actions
-                    $this->event_actions[] = EventAction::button('Create Consent Form', 'save', array('level' => 'secondary'), array('class' => 'small', 'form' => 'consent-form'));
-                ?>
-					<?php $this->displayErrors($errors)?>
+  <header class="element-header">
+    <h3 class="element-title">Create Consent Form</h3>
+  </header>
+  <input type="hidden" name="SelectBooking"/>
 
-					<header class="element-header">
-						<h3 class="element-title">Create Consent Form</h3>
-					</header>
-
-					<div class="element-fields">
-
-						<div class="field-row">
-							<div class="field-info">
-								<?php if (count($bookings) > 0) {?>
-									Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
-								<?php } else {?>
-									There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
-								<?php }?>
-
-							</div>
-						</div>
-
-						<fieldset class="row field-row">
-							<legend class="large-2 column">Select:</legend>
-							<div class="large-6 column end">
-                                <?php if($bookings){
-								    foreach ($bookings as $operation) {?>
-									<label class="highlight booking">
-										<span class="row">
-											<span class="large-1 column">
-												<input type="radio" value="booking<?php echo $operation->event_id?>" name="SelectBooking" />
-											</span>
-											<span class="large-1 column">
-												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" width="19" height="19" />
-											</span>
-											<span class="large-3 column">
-												<?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED'?>
-											</span>
-											<span class="large-3 column">
-												Operation
-											</span>
-											<span class="large-4 column">
-												<?php foreach ($operation->procedures as $i => $procedure) {
-    if ($i > 0) {
-        echo '<br/>';
-    }
-    echo $operation->eye->name.' '.$procedure->term;
-                                                }?>
-											</span>
-										</span>
-									</label>
-									<?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', array($operation->event_id))) {?>
-										<div class="alert-box alert with-icon">
-											Warning: this booking already has a consent form
-										</div>
-									<?php }?>
-								<?php }
-                                }
-								?>
-
-								<label class="highlight booking">
-									<span class="row">
-										<span class="large-1 column">
-											<input type="radio" value="unbooked" name="SelectBooking" <?php if (count($bookings) == 0) {?>checked="checked" <?php }?>/>
-										</span>
-										<span class="large-11 column">
-											Unbooked procedures
-										</span>
-									</span>
-								</label>
-							</div>
-						</fieldset>
-					</div>
-
-					<?php  $this->displayErrors($errors, true)?>
-
-				<?php  $this->endWidget(); ?>
-
-			</section>
-		</div>
-	</div>
-
-<?php $this->endContent();?>
+  <div class="data-group">
+    <div class="data-value flex-layout">
+      <p>
+          <?php if (count($bookings) > 0) { ?>
+            Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
+          <?php } else { ?>
+            There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
+          <?php } ?>
+      </p>
+    </div>
+    <br/>
+    <div class="cols-8">
+      <div class="data-group" style="padding-left: 100px">
+        <table class="cols-full last-left">
+          <thead>
+          <tr>
+            <th>Booked Date</th>
+            <th>Procedure</th>
+            <th>Comments</th>
+          </tr>
+          </thead>
+          <tbody>
+          <?php if ($bookings) {
+              foreach ($bookings as $operation) { ?>
+                <tr>
+                  <td>
+                      <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
+                  </td>
+                  <td>
+                    <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
+                        <?php foreach ($operation->procedures as $i => $procedure) {
+                            if ($i > 0) {
+                                echo '<br/>';
+                            }
+                            echo $operation->eye->name . ' ' . $procedure->term;
+                        } ?>
+                    </a>
+                  </td>
+                  <td>
+                      <?= $operation->comments; ?>
+                  </td>
+                </tr>
+                  <?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',
+                      array($operation->event_id))) { ?>
+                  <div class="alert-box alert with-icon">
+                    Warning: this booking already has a consent form
+                  </div>
+                  <?php } ?>
+              <?php }
+          } ?>
+          <tr>
+            <td>N/A</td>
+            <td>
+              <a href="#" class="booking-select" data-booking="unbooked"> Unbooked procedures </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      <?php $this->displayErrors($errors, true) ?>
+      <?php $this->endWidget(); ?>
+</section>
+<script type="text/javascript">
+  $(function () {
+    $('.booking-select').on('click', function () {
+      $('[name="SelectBooking"]').val($(this).data('booking'));
+      $('#consent-form').submit();
+    });
+  });
+</script>
+<?php $this->endContent(); ?>

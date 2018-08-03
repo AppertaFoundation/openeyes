@@ -16,28 +16,24 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<div class="large-<?php echo $layoutColumns['label'];?> column">
-		<div class="data-label"><?php echo $label?>:</div>
+<div class="data-group procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+	<div class="cols-<?php echo $layoutColumns['label'];?> column">
+		<div class="data-label"><?php echo $label?></div>
 	</div>
-	<div class="large-4 column">
-		<?php
-        $totalDuration = 0;
-        ?>
-		<div id="procedureList_<?php echo $identifier?>" class="panel procedures readonly" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
-			<?php
-            if (!empty($selected_procedures)) {
+	<div class="cols-4 column">
+		<?php $totalDuration = 0; ?>
+		<div id="procedureList_<?php echo $identifier?>" class="panel procedures readonly" style=" text-align: left; <?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
+			<?php if (!empty($selected_procedures)) {
                 foreach ($selected_procedures as $procedure) {?>
-					<div class="row procedureItem">
-						<div class="large-<?php echo (!$durations) ? '12' : '10'; ?> column">
-							<?php
-                                $totalDuration += $procedure['default_duration'];
+					<div class="data-group procedureItem">
+						<div class="cols-<?php echo (!$durations) ? '12' : '10'; ?> column">
+							<?php $totalDuration += $procedure['default_duration'];
                     echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
                     echo '<span>'.$procedure['term'].'</span>';
                     ?>
 						</div>
 						<?php if ($durations) {?>
-							<div class="large-2 column">
+							<div class="cols-2 column">
 								<div class="field-value"><?php echo $procedure['default_duration']?> mins</div>
 							</div>
 						<?php } ?>
@@ -46,7 +42,7 @@
             }?>
 		</div>
 	</div>
-	<div class="large-6 column">
+	<div class="cols-6 column">
 		<div<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
 			<table class="plain">
 				<tfoot>
@@ -54,7 +50,14 @@
 						<th>Calculated Total Duration:</th>
 						<th id="projected_duration_<?php echo $identifier?>"><?php echo $totalDuration?> mins</th>
 						<th>Estimated Total Duration:</th>
-						<th><input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" value="<?php echo CHtml::encode($total_duration)?>" id="<?php echo $class?>_total_duration_<?php echo $identifier?>" name="<?php echo $class?>[total_duration_<?php echo $identifier?>]" style="width: 60px;"></th>
+						<th>
+              <input type="text"
+                     autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+                     value="<?php echo CHtml::encode($total_duration)?>"
+                     id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
+                     name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
+                     style="width: 60px;" />
+            </th>
 					</tr>
 				</tfoot>
 			</table>

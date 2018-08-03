@@ -16,94 +16,148 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields" id="OphTrOperationnote_Anaesthetic">
 
-    <?php
+<?php
+$is_hidden = function () use ($element) {
+    if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+        return true;
+    }
 
-        $is_hidden = function() use ($element){
-          if( count($element->anaesthetic_type_assignments) == 1 && ( $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA' ) ){
-              return true;
-          }
-            return false;
-        };
+    return false;
+}; ?>
 
-        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
-
-        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
-        false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : '')));
-
-        echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id, false, false, false, false,
-            array('fieldset-class' => ($is_hidden() ? 'hidden' : '')) );
-    ?>
-
-    <?php if ($element->getSetting('fife')) { ?>
-        <?php echo $form->dropDownList($element, 'anaesthetic_witness_id', CHtml::listData($element->surgeons, 'id', 'FullName'), array('empty' => '- Please select -'),
-            $element->witness_hidden, array('field' => 3)); ?>
-    <?php } ?>
-
-
-    <div class="row">
-        <div class="large-6 column">
-            <div id="<?php echo 'div_' . CHtml::modelName($element); ?>" class="row field-row widget">
-
-                <div class="large-2 column">
-                    <label for="AnaestheticAgent">Agents:</label>
-                </div>
-
-                <div class="large-7 large-offset-2 column end">
-                    <?php echo $form->multiSelectList(
-                        $element,
-                        'AnaestheticAgent',
-                        'anaesthetic_agents',
-                        'id',
-                        $this->getAnaesthetic_agent_list($element),
-                        null,
-                        array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
-                        false,
-                        false,
-                        null,
-                        false,
-                        false,
-                        array('field' => 3)
-                    ) ?>
-                </div>
+<div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic">
+  <div class="cols-11 flex-layout flex-top col-gap">
+    <div class="cols-7">
+      <table class="last-left">
+        <colgroup>
+          <col class="cols-2">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>Type</td>
+          <td>
+              <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
+                  false, false, false, false, array(), array('field' => 12)); ?>
+          </td>
+        </tr>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
+            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>">
+          <td>LA Delivery Methods</td>
+          <td>
+            <div>
+                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', '',
+                    false, false, false, false); ?>
             </div>
+          </td>
+        </tr>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
+            style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>"
+        >
+          <td>
+            Given by:
+          </td>
+          <td>
+            <fieldset id="<?php echo CHtml::modelName($element) . '_anaesthetist_id' ?>">
+                <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
+                    false, false, false, false, array('nowrapper' => true)); ?>
 
-            <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications" class="row field-row widget">
+            </fieldset>
+          </td>
+        </tr>
+        <?php if ($element->getSetting('fife')): ?>
+          <tr>
+            <td>
+                <?php echo $element->getAttributeLabel('anaesthetic_witness_id') ?>
+            </td>
+            <td>
+                <?php echo $form->dropDownList($element, 'anaesthetic_witness_id',
+                    CHtml::listData($element->surgeons, 'id', 'FullName'),
+                    array('empty' => '- Please select -', 'nowrapper' => true),
+                    $element->witness_hidden, array('field' => 3)); ?>
 
-                <div class="large-2 column">
-                    <label for="OphTrOperationnote_AnaestheticComplications">Complications:</label>
-                </div>
-
-                <div class="large-7 large-offset-2 column end">
-                    <?php echo $form->multiSelectList(
-                      $element,
-                      'OphTrOperationnote_AnaestheticComplications',
-                      'anaesthetic_complications',
-                      'id',
-                      CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(), 'id', 'name'),
-                      array(),
-                      array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
-                      false,
-                      false,
-                      null,
-                      false,
-                      false,
-                      array('field' => 3)
-                  ) ?>
-                </div>
-
-            </div>
-
-        </div>
-        <div class="large-6 column">
-
-            <div class="large-8 column end">
-                <label for="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">Comments:</label>
-                <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false, array('rows' => 4)) ?>
-
-            </div>
-
-
-        </div>
+            </td>
+          </tr>
+        <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols-5">
+      <table>
+        <colgroup>
+          <col class="cols-2">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>Agents</td>
+          <td>
+              <?php echo $form->multiSelectList(
+                  $element,
+                  'AnaestheticAgent',
+                  'anaesthetic_agents',
+                  'id',
+                  $this->getAnaesthetic_agent_list($element),
+                  null,
+                  array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
+                  false,
+                  false,
+                  null,
+                  false,
+                  false,
+                  array('field' => 3)
+              ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td>Complications</td>
+          <td>
+              <?php echo $form->multiSelectList(
+                  $element,
+                  'OphTrOperationnote_AnaestheticComplications',
+                  'anaesthetic_complications',
+                  'id',
+                  CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(),
+                      'id', 'name'),
+                  array(),
+                  array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
+                  false,
+                  false,
+                  null,
+                  false,
+                  false,
+                  array('field' => 3)
+              ) ?>
+          </td>
+        </tr>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+            style="<?php if (!$element->anaesthetic_comment): ?>display: none;<?php endif ?>"
+            class="comment-group js-comment-container"
+            data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
+          <td>
+            Comments
+          </td>
+          <td>
+              <?php echo $form->textArea($element, 'anaesthetic_comment',
+                  array('nowrapper' => true), false,
+                  array(
+                      'rows' => 4,
+                      'cols' => 40,
+                      'class' => 'js-comment-field',
+                  )) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="flex-item-bottom">
+    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
+            class="button js-add-comments"
+            type="button"
+            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+            style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
+    >
+      <i class="oe-i comments small-icon"></i>
+    </button>
+  </div>
 </div>

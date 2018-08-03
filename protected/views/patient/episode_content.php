@@ -16,14 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="column event episode highlight-fields view <?php echo isset($cssClass) ? $cssClass : '';?>" style="margin-left: 14.6%">
-
-	<header class="event-header no-face">
-		<?php $this->renderPartial('//patient/event_tabs')?>
-		<?php $this->renderPartial('//patient/event_actions'); ?>
-	</header>
-
-	<div class="event-content">
-		<?php echo $content; ?>
-	</div>
-</div>
+<main class="main-event"  id="event-content">
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
+    <?php echo $content; ?>
+</main>

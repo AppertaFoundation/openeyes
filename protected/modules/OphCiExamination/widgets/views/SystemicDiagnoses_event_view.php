@@ -15,8 +15,76 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $widget = $this;
+
+$checkedRequiredSystemicDiagnoses = $this->getCheckedRequiredSystemicDiagnoses();
+$missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
+
 ?>
 
 <div class="element-data">
-    <div class="data-value"><?= $this->getDiagnosesViewMode() ?></div>
+    <?php if (!$element->orderedDiagnoses && !$checkedRequiredSystemicDiagnoses && !$missingRequiredSystemicDiagnoses) { ?>
+      <div class="data-value not-recorded">
+        No diagnoses recorded during this encounter
+      </div>
+    <?php } else { ?>
+      <div class="data-value">
+        <div class="tile-data-overflow">
+          <table>
+            <colgroup>
+              <col>
+              <col width="55px">
+              <col width="85px">
+            </colgroup>
+            <tbody>
+            <?php foreach ($element->orderedDiagnoses as $diag) { ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Right' || $diag->side->adjective == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
+                </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+              </tr>
+            <?php } ?>
+            <?php foreach ($checkedRequiredSystemicDiagnoses as $diag) { ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Right' || $diag->side->adjective == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
+                </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+                <td>
+                  <string>Not present</string>
+                </td>
+              </tr>
+            <?php } ?>
+            <?php foreach ($missingRequiredSystemicDiagnoses as $diag) { ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Right' || $diag->side->adjective == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
+                </td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+                <td><strong>Not checked</strong></td>
+              </tr>
+            <?php } ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <?php } ?>
 </div>

@@ -1,6 +1,5 @@
-<div class="box admin">
-	<h2>Profile</h2>
-	<ul class="navigation admin">
+	<h3>Your Profile</h3>
+	<ul>
 		<?php
 		$links = array();
 		if (Yii::app()->params['profile_user_show_menu']) {
@@ -23,4 +22,3 @@
 			</li>
 		<?php }?>
 	</ul>
-</div>

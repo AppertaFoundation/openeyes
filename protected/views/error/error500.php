@@ -19,8 +19,10 @@
 $this->layout = '//layouts/error';
 ?>
 <h2>Application Error</h2>
-<p class="panel"><strong>There has been a problem trying to access OpenEyes, please
-        try again in a moment</strong></p>
+<div class="alert-box error">
+  <strong>There has been a problem trying to access OpenEyes, please
+        try again in a moment</strong>
+</div>
 <p class="panel">If there continues to be a problem please contact support.</p>
 <?php echo $this->renderPartial('//error/support') ?>
 <p class="date"><?php echo date('r'); ?></p>

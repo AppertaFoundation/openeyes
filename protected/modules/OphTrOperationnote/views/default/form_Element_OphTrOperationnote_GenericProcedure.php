@@ -28,32 +28,50 @@ $layoutColumns = array(
 $numHash = crc32($element->getElementTypeName());
 ?>
 
-<section class="sub-element <?php echo $element->elementType->class_name?> on-demand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
-	data-element-type-id="<?php echo $element->elementType->id ?>"
-	data-element-type-class="<?php echo $element->elementType->class_name ?>"
-	data-element-type-name="<?php echo $element->elementType->name ?>"
-	data-element-display-order="<?php echo $element->elementType->display_order ?>">
+<section
+    class="edit element full on-demand sub-element
+      <?php echo $element->elementType->class_name ?>
+      <?php if (@$ondemand) { ?>hidden<?php } ?>
+      <?php if ($this->action->id === 'update' && !$element->event_id) { ?>missing<?php } ?>"
+    data-element-type-id="<?php echo $element->elementType->id ?>"
+    data-element-type-class="<?php echo $element->elementType->class_name ?>"
+    data-element-type-name="<?php echo $element->elementType->name ?>"
+    data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-	<header class="sub-element-header">
-		<h4 class="sub-element-title"><?php echo $element->getElementTypeName() ?></h4>
-	</header>
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->getElementTypeName() ?></h3>
+  </header>
 
-	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
-		<div class="alert-box alert">This element is missing and needs to be completed</div>
-	<?php }?>
+    <?php if ($this->action->id == 'update' && !$element->event_id) { ?>
+      <div class="alert-box alert">This element is missing and needs to be completed</div>
+    <?php } ?>
 
-	<div class="element-fields" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
-		<div class="row field-row">
-			<div class="large-<?php echo $layoutColumns['label'];?> column">
-				<label for="<?php echo get_class($element).'_comments_'.$numHash;?>">
-					Comments:
-				</label>
-			</div>
-			<div class="large-<?php echo $layoutColumns['field'];?> column end">
-				<?php echo CHtml::textArea(get_class($element).'['.$element->proc_id.'][comments]', $element->comments, array('rows' => 4, 'id' => get_class($element).'_comments_'.$numHash))?>
-			</div>
-		</div>
-	</div>
-	<input type="hidden" name="<?php echo get_class($element)?>[<?php echo $element->proc_id?>][proc_id]" value="<?php echo CHtml::encode($element->proc_id)?>" />
-	<input type="hidden" name="<?php echo get_class($element)?>[<?php echo $element->proc_id?>][id]" value="<?php echo CHtml::encode($element->id)?>" />
+
+  <div class="element-fields full-width flex-layout" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
+
+    <table class="cols-11">
+      <colgroup>
+        <col class="cols-4">
+      </colgroup>
+      <tbody>
+      <tr>
+        <td>
+          <label for="<?php echo get_class($element) . '_comments_' . $numHash; ?>">
+            Comments:
+          </label>
+        </td>
+        <td>
+            <?php echo CHtml::textArea(get_class($element) . '[' . $element->proc_id . '][comments]',
+                $element->comments,
+                array('rows' => 4, 'class' => 'cols-full', 'id' => get_class($element) . '_comments_' . $numHash)) ?>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][proc_id]"
+         value="<?php echo CHtml::encode($element->proc_id) ?>"/>
+  <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][id]"
+         value="<?php echo CHtml::encode($element->id) ?>"/>
 </section>

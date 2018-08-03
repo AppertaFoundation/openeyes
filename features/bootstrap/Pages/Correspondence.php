@@ -43,7 +43,7 @@ class Correspondence extends OpenEyesPage {
 					'xpath' => "//select[@id='cc']" 
 			),
 			'addEnclosure' => array (
-					'xpath' => "//*[@class='field-row']//*[contains(text(),'Add')]" 
+					'xpath' => "//*[@class='data-group']//*[contains(text(),'Add')]" 
 			),
 			'enterEnclosure' => array (
 					'xpath' => "//div[@id='enclosureItems']/div/div/input" 

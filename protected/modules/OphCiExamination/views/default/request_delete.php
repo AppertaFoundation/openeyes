@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 	<?php echo CHtml::form(array('Default/requestDeletion/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>
 	<div id="delete_event">
@@ -40,7 +40,7 @@
 			<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
 				Cancel
 			</button>
-			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+    <i class="spinner" title="Loading..." style="display: none;"></i>
 		<?php echo CHtml::endForm(); ?>
 	</div>
 

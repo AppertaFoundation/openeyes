@@ -16,74 +16,93 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->clinic_interval ? : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->photo ? $element->photo->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('oct_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->oct ? $element->oct->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('hfa_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->hfa ? $element->hfa->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('gonio_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->gonio ? $element->gonio->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('hrt_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->hrt ? $element->hrt->name : 'None'?></div></div>
-	</div>
-	<div class="row data-row">
-		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->textWithLineBreaks('comments')?></div></div>
-	</div>
+<div class="element-data eye-divider">
+
+  <div class="element-both-eyes">
+      <div class="data-value flex-layout flex-top">
+        <div class="cols-11">
+
+          <div class="cols-11">
+            <ul id="js-listview-risks-pro" class="dslash-list">
+              <li><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?>
+                : <?php echo $element->clinic_interval ?: 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?>
+                : <?php echo $element->photo ? $element->photo->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?>
+                : <?php echo $element->oct ? $element->oct->name : 'None' ?></li>
+              <li><?php echo $element->oct ? $element->oct->name : 'None' ?>
+                : <?php echo $element->hfa ? $element->hfa->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?>
+                : <?php echo $element->gonio ? $element->gonio->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?>
+                : <?php echo $element->hrt ? $element->hrt->name : 'None' ?></li>
+            </ul>
+          </div>
+
+          <div class="col-11" id="js-listview-risks-full" style="display: none;">
+
+            <table class="cols-full last-left">
+              <thead>
+              <tr>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('hfa_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><span class="large-text"><?php echo $element->clinic_interval ?: 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->photo ? $element->photo->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->oct ? $element->oct->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->hfa ? $element->hfa->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->gonio ? $element->gonio->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->hrt ? $element->hrt->name : 'None' ?></span></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <div>
+          <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
+        </div>
+
+      </div>
+      <?php if ($element->comments !== ''): ?>
+        <div class="flex-layout">
+          <div class="data-label cols-1"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
+          <div class="data-value cols-11"><?php echo $element->textWithLineBreaks('comments') ?></div>
+        </div>
+      <?php endif; ?>
+  </div>
+  <div class="element-eyes">
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <div class="element-eye <?= $eye_side ?>-eye">
+          <div class="data-group">
+              <?php if ($element->hasEye($eye_side)): ?>
+                <table class="cols-11 large-text last-left">
+                  <colgroup>
+                    <col class="cols-3">
+                  </colgroup>
+                  <tbody>
+                  <tr>
+                    <td><?php echo CHtml::encode($element->getAttributeLabel($eye_side . '_target_iop_id')) ?></td>
+                    <td><?php echo $element->{$eye_side . '_target_iop'}->name ?> mmHg</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+              <?php else: ?>
+                Not recorded
+              <?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+  </div>
 </div>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasRight()) {
-    ?>
-					<div class="row data-row">
-						<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('right_target_iop_id'))?></div></div>
-						<div class="large-7 column end"><div class="data-value" id="OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_target_iop_id"><?php echo $element->right_target_iop->name?> mmHg</div></div>
-					</div>
 
-				<?php
 
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasLeft()) {
-    ?>
-					<div class="row data-row">
-						<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('left_target_iop_id'))?></div></div>
-						<div class="large-7 column end"><div class="data-value" id="OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_target_iop_id"><?php echo $element->left_target_iop->name?> mmHg</div></div>
-					</div>
-				<?php
-
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
-</div>

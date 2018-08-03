@@ -55,8 +55,8 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
             }
 
             if( ($GA.is(':checked') || $no_anaesthetic.is(':checked') ) && $(this).closest('div').find('input:checked').length === 1 ){
-                $(options['deliverySelector']).slideUp();
-                $(options['anaestheticSelector']).slideUp();
+                $(options['deliveryContainer']).fadeOut();
+                $(options['anaestheticContainer']).fadeOut();
 
                 if( $GA.is(':checked') ){
                     $(options['deliverySelector']).find('input').prop('checked', false);
@@ -80,9 +80,9 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
                 }
 
             } else {
-                $(options['deliverySelector']).slideDown();
-                $(options['anaestheticSelector']).slideDown();
-            };
+                $(options['deliveryContainer']).fadeIn();
+                $(options['anaestheticContainer']).fadeIn();
+            }
         });
     }
 
@@ -90,7 +90,9 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
         sectionSelector: '.Element_OphTrOperationnote_Anaesthetic',
         typeSelector: '#Element_OphTrOperationnote_Anaesthetic_AnaestheticType',
         deliverySelector: "#Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery",
+        deliveryContainer: "#Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container",
         anaestheticSelector: "#Element_OphTrOperationnote_Anaesthetic_anaesthetist_id",
+        anaestheticContainer: "#Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container",
         agentSelector: "#AnaestheticAgent",
     };
 

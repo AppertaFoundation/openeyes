@@ -24,17 +24,17 @@
 	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
 	<?php $this->renderPartial('//base/_debug'); ?>
 	<div class="container main" role="main">
 		<?php $this->renderPartial('//base/_header'); ?>
 		<div class="container content">
 			<div class="box content admin-content">
-				<div class="row">
-					<aside class="large-3 column sidebar admin">
+				<div class="data-group">
+					<aside class="cols-3 column sidebar admin">
 						<?php $this->renderPartial('//report/sidebar'); ?>
 					</aside>
-					<div class="large-9 column content admin">
+					<div class="cols-9 column content admin">
 						<?php echo $content; ?>
 					</div>
 				</div>

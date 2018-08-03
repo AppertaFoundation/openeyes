@@ -34,12 +34,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			<?php echo Yii::app()->user->getFlash('info.save_message'); ?>
 		</div>
 	<?php } ?>
-	<div class="row field-row">
-		<div class="large-4 column"><h3>Select a set:</h3></div>
-	</div>
-	<div class="row field-row">
-		<div class="large-2 column"><label for="set_name">Saved sets:</label></div>
-		<div class="large-4 column">
+  <div class="cols-4 column"><h3>Select a set:</h3></div>
+	<div class="data-group">
+		<div class="cols-2 column"><label for="set_name">Saved sets:</label></div>
+		<div class="cols-4 column">
 			<table class="grid">
 				<tr>
 					<th>Name</th>
@@ -56,19 +54,17 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 array('empty' => '-- Select this to add new --')); ?>
 			</table>
 		</div>
-		<div class="large-6 column end"></div>
+		<div class="cols-6 column end"></div>
 	</div>
 
-	<div class="row field-row">
-		<div class="large-4 column"><h3>OR Add new:</h3></div>
-	</div>
-	<div class="row field-row">
-		<div class="large-2 column"><label for="set_name">Set name:</label></div>
-		<div class="large-4 column">
+  <div class="cols-4 column"><h3>OR Add new:</h3></div>
+	<div class="data-group">
+		<div class="cols-2 column"><label for="set_name">Set name:</label></div>
+		<div class="cols-4 column">
 			<?php echo CHtml::textField('set_name'); ?>
 		</div>
-		<div class="large-2 column"><label for="site_id">Subspeciality:</label></div>
-		<div class="large-4 column end">
+		<div class="cols-2 column"><label for="site_id">Subspeciality:</label></div>
+		<div class="cols-4 column end">
 			<?php
             // $selectedsubspecialty
             echo CHtml::dropDownList('subspecialty_id', '',

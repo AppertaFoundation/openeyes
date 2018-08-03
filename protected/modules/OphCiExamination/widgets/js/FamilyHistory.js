@@ -25,18 +25,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noHistoryWrapper = $('#' + this.options.modelName + '_no_family_history_wrapper');
         this.$noHistoryFld = $('#' + this.options.modelName + '_no_family_history');
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
-        this.$relativeSelect = $('#' + this.options.modelName + '_relative_id');
-        this.$sideSelect = $('#' + this.options.modelName + '_side_id');
-        this.$conditionSelect = $('#' + this.options.modelName + '_condition_id');
-        this.$otherCondition = $('#' + this.options.modelName + '_other_condition');
-        this.$otherConditionWrapper = $('#' + this.options.modelName + '_other_condition_wrapper');
-        this.$commentFld = $('#' + this.options.modelName + '_comments');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
+        this.$popupSelector = $('#add-family-history-button');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
-
         this.initialiseTriggers();
-
     }
 
     FamilyHistoryController._defaultOptions = {
@@ -46,36 +39,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     FamilyHistoryController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$table.on('change', '.relatives', function(e) {
-            var $other_input = $(this).closest('td').find('.other_relative_text');
-            var $selected = $(this).find('option:selected');
-            if ($selected.data('other')) {
-                $(this).closest('td').find('.other_relative_wrapper').show();
-            }
-            else {
-                $(this).closest('td').find('.other_relative_wrapper').hide();
-                $other_input.val('');
-            }
-        });
-
-        controller.$table.on('change', '.conditions', function(e) {
-            var $other_input = $(this).closest('td').find('.other_condition_text');
-            var $selected = $(this).find('option:selected');
-            if ($selected.data('other')) {
-                $(this).closest('td').find('.other_condition_wrapper').show();
-            }
-            else {
-                $(this).closest('td').find('.other_condition_wrapper').hide();
-                $other_input.val('');
-            }
-        });
-
-        this.$table.on('click', '#' + this.options.modelName + '_add_entry', function(e) {
-            e.preventDefault();
-            controller.addEntry();
-        });
-
-        this.$table.on('click', 'button.remove', function(e) {
+        this.$table.on('click', 'i.trash', function(e) {
             e.preventDefault();
             $(this).closest('tr').remove();
             controller.showNoHistory();
@@ -84,28 +48,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noHistoryFld.on('click', function() {
             if (controller.$noHistoryFld.prop('checked')) {
                 controller.$table.hide();
+                controller.$popupSelector.hide();
             }
             else {
-                controller.$table.show();
+              controller.$popupSelector.show();
             }
         });
-    };
 
-    /**
-     *
-     * @param data
-     * @returns {*}
-     */
-    FamilyHistoryController.prototype.createRow = function(data)
-    {
-        if (data === undefined)
-            data = {};
-
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        return Mustache.render(
-          template = this.templateText,
-          data
-        );
+      this.$popupSelector.on('click', function(e) {
+        e.preventDefault();
+        controller.hideNoHistory();
+        if (controller.$table.hasClass('hidden')){
+          controller.$table.removeClass('hidden');
+        }
+        controller.$table.show();
+      });
     };
 
     /**
@@ -125,19 +82,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noHistoryWrapper.show();
+            this.$table.hide();
         } else {
             this.hideNoHistory();
         }
     };
 
-    /**
-    * Add a family history section if its valid.
-    */
-    FamilyHistoryController.prototype.addEntry = function()
-    {
-        this.hideNoHistory();
-        this.$table.find('tbody').append(this.createRow());
-    };
 
     exports.FamilyHistoryController = FamilyHistoryController;
 

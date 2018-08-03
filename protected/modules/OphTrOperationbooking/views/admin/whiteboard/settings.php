@@ -17,11 +17,11 @@
  */
 ?>
 <div class="box admin">
-    <div class="row">
-        <div class="large-8 column">
+    <div class="data-group">
+        <div class="cols-8 column">
             <h2>Whiteboard Settings</h2>
         </div>
-        <div class="large-4 column">
+        <div class="cols-4 column">
         </div>
     </div>
 

@@ -23,49 +23,40 @@
 }
     ?>">
 		<p>Please fix the following input errors:</p>
-		<?php foreach ($errors as $field => $errs) {
-    ?>
-			<?php foreach ($errs as $err) {
-    ?>
+		<?php foreach ($errors as $field => $errs) { ?>
+			<?php foreach ($errs as $err) { ?>
 				<ul>
 					<li>
 						<?php echo $field.': '.$err?>
 					</li>
 				</ul>
-			<?php
-}
-    ?>
-		<?php
-}
-    ?>
+			<?php } ?>
+		<?php } ?>
 	</div>
-<?php
-}?>
+<?php } ?>
 <script type="text/javascript">
 	$(document).ready(function () {
-        <?php if (isset($elements) && is_array($elements)): ?>
-            <?php foreach ($elements as $element): ?>
-
-        var errorObject = <?php $element->getFrontEndErrors(); ?>;
-
-        for (k = 0; k < errorObject.length; k++) {
-            var $field = $('#' + errorObject[k]);
-            if ($field.length) {
-                if ($field.is('tr')) {
-                    $field.addClass('highlighted-error');
-                } else {
-                    if(! $field.parent().hasClass('highlighted-error')) {
-                        $field.wrap("<div class='highlighted-error'></div>");
-                    }
-                }
-            } else {
-                if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
-                    $('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap("<div class='highlighted-error'></div>");
-                }
-            }
+		<?php if (isset($elements) && is_array($elements)) {
+                foreach ($elements as $element) { ?>
+		var errorObject = <?php $element->getFrontEndErrors(); ?>;
+		for (k = 0; k < errorObject.length; k++) {
+      var $field = $('#' + errorObject[k]);
+      $field.closest('.element').find('.element-title').addClass('error');
+      if ($field.length) {
+			  if ($field.is('tr')||$field.is('input')) {
+			    $field.addClass('highlighted-error');
+        } else {
+          if(!$field.parent().hasClass('highlighted-error')) {
+            $field.addClass('highlighted-error');
+          }
         }
-            <?php endforeach;?>
-        <?php endif; ?>
+			} else {
+				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
+					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap('<div class="highlighted-error cols-full" style="display: inherit;" ></div>');
+				}
+			}
+		}
+		<?php }
+		}?>
 	});
-
 </script>

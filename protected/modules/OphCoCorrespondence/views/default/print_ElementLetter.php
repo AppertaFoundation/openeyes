@@ -52,10 +52,11 @@
 </p>
 
 <p nobr="true">
-<?php 
-    echo ($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>' ) : '');
-    echo ($ccString ? $ccString : '');
-    ?>
+<!--    Commented code below which displayed the To address and CC adress again at the footer as the design mockup did not contain it-->
+<?php //
+//    echo ($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>' ) : '');
+//    echo ($ccString ? $ccString : '');
+//    ?>
 
 <?php if ($element->enclosures) {?>
 <?php

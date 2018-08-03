@@ -23,14 +23,15 @@ if ($this->checkPrintAccess()) {
 }
 
 // Add the open in forum button if FORUM integration is enabled
-$sop=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id))->sop_uid;
-if (Yii::app()->params['enable_forum_integration'] == 'on' && !empty($sop)){
-array_unshift(
-$this->event_actions,
-    EventAction::link('Open In Forum',
-        ('oelauncher:forumsop/'.$sop),
-        null, array('class' => 'button small')
-    ));
+$sop = OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+
+if (!empty($sop->uid) && Yii::app()->params['enable_forum_integration'] === 'on') {
+    array_unshift(
+        $this->event_actions,
+        EventAction::link('Open In Forum',
+            ('oelauncher:forumsop/' . $sop->uid),
+            null, array('class' => 'button small')
+        ));
 }
 
 if ($this->checkEditAccess()){
@@ -40,28 +41,28 @@ if ($this->checkEditAccess()){
     ));
 }
 
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 $this->moduleNameCssClass .= ' highlight-fields';
 
 if ($this->is_auto) {
     ?>
-<div id="surgeon" class="row data-row">
-	<div class="large-2 column" style="margin-left: 10px;">
-		<div class="data-label">Surgeon:</div>
-	</div>
-	<div class="large-9 column end">
-		<div class="data-value"><b><?php
-                if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
-                    echo OphInBiometry_Surgeon::model()->findByAttributes(
-                        array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
-                    )->name;
-                }
-    ?></b></div>
+<div id="surgeon">
+	<div class="cols-2 column" style="margin-left: 10px;">
+		<div class="data-label">Surgeon:
+           <b> <?php
+            if (isset(Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)) {
+                echo OphInBiometry_Surgeon::model()->findByAttributes(
+                    array('id' => Element_OphInBiometry_IolRefValues::model()->findByAttributes(array('event_id' => $this->event->id))->surgeon_id)
+                )->name;
+            }
+            ?>
+           </b>
+        </div>
 	</div>
 </div>
 <?php
 
 }
 $this->renderOpenElements($this->action->id); ?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent()?>

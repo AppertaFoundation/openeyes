@@ -24,6 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
+    public $fixedHotlist = false;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
@@ -123,10 +124,6 @@ class BaseController extends Controller
         //FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
         // to render the HTML template for the TCPDF engine)
-
-        // Register the main stylesheet without pre-registering to ensure it's always output first.
-        $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
-        $assetManager->registerCssFile('css/new_ui.css', null, null, AssetManager::OUTPUT_SCREEN, false);
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
@@ -236,6 +233,7 @@ class BaseController extends Controller
         $this->jsVars['uservoice_use_logged_in_user'] = Yii::app()->params['uservoice_use_logged_in_user'];
         $this->jsVars['uservoice_override_account_id'] = Yii::app()->params['uservoice_override_account_id'];
         $this->jsVars['uservoice_override_account_name'] = Yii::app()->params['uservoice_override_account_name'];
+        $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
           $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
           $this->jsVars['user_id'] = $user->id;

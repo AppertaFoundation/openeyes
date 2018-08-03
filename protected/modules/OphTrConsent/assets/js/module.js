@@ -16,15 +16,15 @@
  */
 
 $(document).ready(function() {
-	handleButton($('#et_save_draft'),function() {
+	$(this).on('click','#et_save_draft',function() {
 		$('#Element_OphTrConsent_Type_draft').val(1);
 	});
 
-	handleButton($('#et_save_print'),function() {
+  $(this).on('click','#et_save_print',function() {
 		$('#Element_OphTrConsent_Type_draft').val(0);
 	});
 
-	handleButton($('#et_cancel'),function(e) {
+  $(this).on('click','#et_cancel',function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
@@ -32,10 +32,6 @@ $(document).ready(function() {
 		}
 		e.preventDefault();
 	});
-
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#et_canceldelete'));
 
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {
@@ -54,19 +50,19 @@ $(document).ready(function() {
 
 	$('input[id="Element_OphTrConsent_Other_witness_required"]').unbind('click').click(function() {
 		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_witness_name').show().closest('.field-row').show();
+			$('#Element_OphTrConsent_Other_witness_name').show().closest('.data-group').show();
 			$('#Element_OphTrConsent_Other_witness_name').val('').focus();
 		} else {
-			$('#Element_OphTrConsent_Other_witness_name').hide().closest('.field-row').hide();
+			$('#Element_OphTrConsent_Other_witness_name').hide().closest('.data-group').hide();
 		}
 	});
 
 	$('input[id="Element_OphTrConsent_Other_interpreter_required"]').unbind('click').click(function() {
 		if ($(this).attr('checked') == 'checked') {
-			$('#Element_OphTrConsent_Other_interpreter_name').show().closest('.field-row').show();
+			$('#Element_OphTrConsent_Other_interpreter_name').show().closest('.data-group').show();
 			$('#Element_OphTrConsent_Other_interpreter_name').val('').focus();
 		} else {
-			$('#Element_OphTrConsent_Other_interpreter_name').hide().closest('.field-row').hide();
+			$('#Element_OphTrConsent_Other_interpreter_name').hide().closest('.data-group').hide();
 		}
 	});
 

@@ -16,26 +16,13 @@
  */
 
 $(document).ready(function(){
-    var toolTip = new OpenEyes.UI.Tooltip({
-        className: 'quicklook',
-        offset: {
-            x: 10,
-            y: 10
-        },
-        viewPortOffset: {
-            x: 0,
-            y: 32 // height of sticky footer
-        }
-    });
-    $(this).on('mouseover', '.has-tooltip', function() {
-        if ($(this).data('tooltip-content') && $(this).data('tooltip-content').length) {
-            toolTip.setContent($(this).data('tooltip-content'));
-            var offsets = $(this).offset();
-            toolTip.show(offsets.left, offsets.top);
-        }
-    }).mouseout(function (e) {
-        toolTip.hide();
-    });
+
+    var openeyes 	= new OpenEyes.UI.NavBtnPopup( 'logo', $('#js-openeyes-btn'), $('#js-openeyes-info') ).useWrapper($('.openeyes-brand'));
+  	$('.openeyes-brand').off('mouseenter');
+
+    var shortcuts 	= new OpenEyes.UI.NavBtnPopup( 'shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav') ).useWrapper( $('#js-nav-shortcuts') );
+    var hotlist_nav 	= new OpenEyes.UI.NavBtnPopup( 'hotlist', $('#js-nav-hotlist-btn'), $('#js-hotlist-panel') );
+    var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
 
 	// override the behaviour for showing search results
 	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
@@ -167,6 +154,37 @@ $(document).ready(function(){
 		});
 	}());
 
+  (function expandElementList() {
+    // check for view elementss
+    if ($('.element-data').length == 0) return;
+
+    $('.js-listview-expand-btn').each(function () {
+      // id= js-listview-[data-list]-full | quick
+      var listid = $(this).data('list');
+      var listview = new ListView($(this),
+        $('#js-listview-' + listid + '-pro'),
+        $('#js-listview-' + listid + '-full'));
+    });
+
+    function ListView($iconBtn, $quick, $full) {
+      var quick = true;
+
+
+      $iconBtn.click(function () {
+        $(this).toggleClass('collapse expand');
+        quick = !quick;
+
+        if (quick) {
+          $quick.show();
+          $full.hide();
+        } else {
+          $quick.hide();
+          $full.show();
+        }
+      });
+    }
+  })();
+
 	/**
 	 * Tab hover
 	 */
@@ -231,13 +249,14 @@ $(document).ready(function(){
 		};
 
 		// Show the 'change firm' dialog when clicking on the 'change firm' link.
-		$(document).on('click', '.change-firm', function(e) {
+		$(document).on('click', '#change-firm', function(e) {
 
 			e.preventDefault();
 			var returnUrl = window.location.href;
 
 			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
+				width: 500,
 				data: {
 					returnUrl: returnUrl,
 					patient_id: window.OE_patient_id || null
@@ -253,6 +272,32 @@ $(document).ready(function(){
     $(this).on('click', '.alert-box .close' , function(e) {
         $(e.srcElement).closest('.alert-box').fadeOut(500);
     });
+
+
+  $(this).on('mouseout', '.js-has-tooltip', function (e) {
+    $('body').find(".oe-tooltip").remove();
+  });
+
+  $(this).on('mouseover', '.js-has-tooltip', function (e) {
+    var text = $(this).data('tooltip-content');
+    var offset = $(this).offset();
+    var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
+
+    // add, calculate height then show (remove 'hidden')
+    var tip = $("<div></div>", {
+      "class": "oe-tooltip",
+      "style": "position:fixed; left:" + leftPos + "px; top:0; pointer-events: none;"
+    });
+
+    // add the tip:
+    tip.html(text);
+    tip.appendTo($('body'));
+    // Move the popup by its height (but never off the edge of the screen)
+    var top = Math.max(offset.top - tip.height() - 20, 0);
+    tip.css({"top": top + "px"});
+
+  });
+
 });
 
 function changeState(wb,sp) {
@@ -280,6 +325,10 @@ function format_date(d) {
 
 		return date;
 	}
+}
+
+function format_pickmeup_date(d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
 }
 
 function format_date_get_segment(d,segment) {

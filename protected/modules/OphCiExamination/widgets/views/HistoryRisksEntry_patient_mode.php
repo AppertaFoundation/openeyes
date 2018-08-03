@@ -19,8 +19,9 @@
  */
 ?>
 
-<tr>
-    <td><?= $entry->getDisplayRisk() ?></td>
-    <td><?= $entry->getDisplayHasRisk() ?></td>
-    <td><?= $entry->comments ?></td>
+<tr  style="background-color: <?= $entry->getDisplayHasRisk()=='Not present' ? '#101925': '' ?>">
+  <td><?= $entry->getDisplayRisk() ?></td>
+  <td><?= $entry->getDisplayHasRisk() ?></td>
+  <td><?= $entry->comments ?></td>
+  <td></td>
 </tr>

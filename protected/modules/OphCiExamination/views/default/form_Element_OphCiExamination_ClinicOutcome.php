@@ -17,162 +17,215 @@
  */
 ?>
 <?php
+
+$model_name = CHtml::modelName($element);
+
 $queues = array();
 if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     $queues = $element->getPatientTicketQueues($this->firm, $this->patient);
 }
 ?>
 
-<div class="element-fields">
-    <div id="div_<?php echo CHtml::modelName($element)?>_status">
-		<div class="field-row row">
-			<div class="large-3 column">
-				<label for="<?php echo CHtml::modelName($element).'_status_id';?>">
-					<?php echo $element->getAttributeLabel('status_id')?>:
-				</label>
-			</div>
-			<div class="large-3 column end">
-				<?php
-                $outcomes = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->activeOrPk($element->status_id)->bySubspecialty($this->firm->getSubspecialty())->findAll();
-                $html_options = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
-                $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
+<div class="element-fields flex-layout full-width">
 
-                foreach ($outcomes as $opt) {
-                    $options = array('data-followup' => $opt->followup, 'data-ticket' => $opt->patientticket);
-                    if ($opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets']))) {
-                        $options['disabled'] = true;
-                    }
-                    $html_options['options'][(string) $opt->id] = $options;
-                }
-                echo $form->dropDownList($element, 'status_id', \CHtml::listData($outcomes, 'id', 'name'), $html_options)?>
-			</div>
-		</div>
-	</div>
 
-	<?php if ($ticket_api) {
-    ?>
-		<div id="div_<?= CHtml::modelName($element)?>_patientticket"
-				<?php if (!($element->status && $element->status->patientticket)) {
-    ?> style="display: none;"<?php 
-}
-    ?>
-				data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI()?>">
-			<!-- TODO, this should be pulled from the ticketing module somehow -->
-			<?php
-            $ticket = $element->getPatientTicket();
-    if ($ticket) {
-        ?>
+    <?php echo $form->hiddenField($element, 'status_id'); ?>
+    <?php echo $form->hiddenField($element, 'followup_quantity'); ?>
+    <?php echo $form->hiddenField($element, 'followup_period_id'); ?>
+    <?php echo $form->hiddenField($element, 'role_id'); ?>
+    <?php echo $form->hiddenField($element, 'role_comments'); ?>
 
-				<span class="field-info">Already Referred to Virtual Clinic:</span><br />
-				<?php $this->widget($ticket_api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket));
-        ?>
-			<?php 
-    } else {
-        ?>
-				<fieldset class="field-row row">
-					<legend class="large-3 column">
-						Virtual Clinic:
-					</legend>
-					<div class="large-3 column">
-						<?php
-                            if (count($queues) == 0) {
-                                ?>
-								<span>No valid Virtual Clinics available</span>
-							<?php
+  <div class="cols-7">
+      <?php echo CHtml::textField('follow-up-dummy-input', '', array(
+          'class' => 'cols-full',
+          'rows' => 1,
+          'placeholder' => 'Follow-up',
+          'disabled' => true,
+          'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
+      )) ?>
 
-                            } elseif (count($queues) == 1) {
-                                echo reset($queues);
-                                $qid = key($queues);
-                                $_POST['patientticket_queue'] = $qid;
-                                ?>
-								<input type="hidden" name="patientticket_queue" value="<?= $qid ?>" />
-
-							<?php
-
-                            } else {
-                                echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
-                                    array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
-                            }
-        ?>
-					</div>
-					<div class="large-1 column end">
-						<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;">
-					</div>
-				</fieldset>
-				<div id="queue-assignment-placeholder">
-					<?php if (@$_POST['patientticket_queue']) {
-    $this->widget($ticket_api::$QUEUE_ASSIGNMENT_WIDGET, array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5));
-}
-        ?>
-				</div>
-			<?php 
-    }
-    ?>
-		</div>
-	<?php 
-} ?>
-
-	<div id="div_<?php echo CHtml::modelName($element)?>_followup"<?php if (!($element->status && $element->status->followup)) {
-    ?> style="display: none;"<?php 
-}?>>
-		<fieldset class="field-row row">
-			<legend class="large-3 column">
-					<?php echo $element->getAttributeLabel('followup_quantity')?>:
-			</legend>
-			<div class="large-9 column end">
-				<?php
-                $html_options = array('empty' => '- Please select -', 'options' => array());
-                echo CHtml::activeDropDownList($element, 'followup_quantity', $element->getFollowUpQuantityOptions(), array_merge($html_options, array('class' => 'inline')))?>
-				<?php
-                $html_options = array('empty' => '- Please select -', 'options' => array());
-                echo CHtml::activeDropDownList($element, 'followup_period_id', CHtml::listData(\Period::model()->findAll(array('order' => 'display_order')), 'id', 'name'), array_merge($html_options, array('class' => 'inline')))?>
-				<label class="inline">
-					<?php echo CHtml::activeCheckBox($element, 'community_patient')?>
-					<?php echo $element->getAttributeLabel('community_patient')?>
-				</label>
-			</div>
-		</fieldset>
-	</div>
-
-	<div id="div_<?php echo CHtml::modelName($element)?>_role"<?php if (!($element->status && $element->status->followup)) {
-    ?> style="display: none;"<?php 
-}?>>
-		<fieldset class="field-row row">
-			<legend class="large-3 column">
-				<?php echo $element->getAttributeLabel('role')?>:
-			</legend>
-			<div class="large-9 column end">
-				<div class="row">
-					<div class="large-3 column">
-						<?php
-                        $html_options = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
-                        echo $form->dropDownList($element, 'role_id', '\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', $html_options) ?>
-					</div>
-					<div class="large-3 column end">
-						<?php echo CHtml::activeTextField($element, 'role_comments', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-					</div>
-				</div>
-			</div>
-		</fieldset>
-	</div>
-    <div class="field-row textMacros">
-        <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
-    </div>
-    <div class="field-row">
-        <?php echo $form->textArea($element, 'description', array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('description')))?>
+    <div id="outcomes-comments" class="flex-layout flex-left comment-group js-comment-container"
+         style="<?= $element->description ? '' : 'display: none;' ?>" data-comment-button="#outcomes-comment-button">
+        <?php echo $form->textArea(
+            $element,
+            'description',
+            array('nowrapper' => true),
+            false,
+            array(
+                'class' => 'autosize js-comment-field',
+                'placeholder' => $element->getAttributeLabel('description'),
+            )
+        ) ?>
+      <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
     </div>
 
-	<script type="text/javascript">
-			var Element_OphCiExamination_ClinicOutcome_templates = {
-			<?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Template::model()->findAll() as $template) {
-    ?>
-			"<?php echo $template->id?>": {
-				"clinic_outcome_status_id": <?php echo $template->clinic_outcome_status_id ?>,
-				"followup_quantity": "<?php echo $template->followup_quantity ?>",
-				"followup_period_id": "<?php echo $template->followup_period_id ?>"
-			},
-			<?php 
-} ?>
-			};
-	</script>
+      <?php if ($ticket_api) { ?>
+        <br/>
+        <div data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
+             id="div_<?= CHtml::modelName($element) ?>_patientticket"
+             style="<?= !($element->status && $element->status->patientticket) ? 'display: none;' : '' ?>">
+          <!-- TODO, this should be pulled from the ticketing module somehow -->
+            <?php $ticket = $element->getPatientTicket();
+            if ($ticket) { ?>
+              <span class="field-info">Already Referred to Virtual Clinic:</span><br/>
+                <?php $this->widget($ticket_api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+            <?php } else { ?>
+              <fieldset class="flex-layout">
+                Virtual Clinic:
+                <div class="cols-3">
+                    <?php if (count($queues) == 0) { ?>
+                      <span>No valid Virtual Clinics available</span>
+                    <?php } elseif (count($queues) == 1) {
+                        echo reset($queues);
+                        $qid = key($queues);
+                        $_POST['patientticket_queue'] = $qid;
+                        ?>
+                      <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
+
+                    <?php } else {
+                        echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
+                            array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
+                    } ?>
+                </div>
+                <div class="cols-1">
+                  <i class="oe-i spinner" style="display: none;"></i>
+                </div>
+              </fieldset>
+              <div id="queue-assignment-placeholder">
+                  <?php if (@$_POST['patientticket_queue']) {
+                      $this->widget(
+                          $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
+                          array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
+                      );
+                  } ?>
+              </div>
+            <?php } ?>
+        </div>
+      <?php } ?>
+  </div>
+  <div class="flex-item-bottom">
+    <button id="outcomes-comment-button"
+            class="button js-add-comments"
+            data-comment-container="#outcomes-comments"
+            style="<?php if ($element->description): ?>visibility: hidden;<?php endif; ?>"
+            type="button">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+
+    <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+
+    <div id="add-to-follow-up" class="oe-add-select-search auto-width" style="display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <button class="button hint green add-icon-btn" id="add-follow-up-btn" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button>
+      <div class="flex-layout flex-left flex-top">
+        <div class="data-group">
+          <table class="select-options">
+            <tbody>
+            <tr>
+              <td>
+                <div class="flex-layout flex-top flex-left">
+                  <ul class="add-options" id="follow-up-outcome-options">
+                      <?php
+                      $outcomes = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->activeOrPk($element->status_id)->bySubspecialty($this->firm->getSubspecialty())->findAll();
+                      $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
+                      foreach ($outcomes as $opt): ?>
+                        <li data-outcome-id="<?= $opt->id ?>" data-followup="<?= $opt->followup ?>"
+                            data-str="<?= $opt->name ?>"
+                            data-ticket="<?= $opt->patientticket ?>"
+                            class="<?= $element->status_id == $opt->id ? 'selected' : '' ?>"
+                            <?= $opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets'])) ? 'disabled' : '' ?>>
+                          <span class="restrict-width"><?= $opt->name ?></span>
+                        </li>
+                      <?php endforeach; ?>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="follow-up-options-follow-up-only data-group"
+             style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>">
+          <table>
+            <tbody>
+            <tr>
+              <td>
+                <div class="flex-layout flex-top flex-left">
+                  <ul class="add-options" id="follow-uo-quantity-options">
+                      <?php foreach ($element->getFollowUpQuantityOptions() as $quantity): ?>
+                        <li data-str="<?= $quantity ?>"
+                            class="<?= $element->followup_quantity == $quantity ? 'selected' : '' ?>">
+                            <?= $quantity ?>
+                        </li>
+                      <?php endforeach; ?>
+                  </ul>
+                  <ul class="add-options" id="follow-up-period-options">
+                      <?php foreach (Period::model()->findAll(array('order' => 'display_order')) as $period): ?>
+                        <li data-str="<?= $period->name ?>" data-period-id="<?= $period->id ?>"
+                            class="<?= $element->followup_period_id == $period->id ? 'selected' : '' ?>">
+                          <span class="restrict-width"><?= $period->name ?></span>
+                        </li>
+                      <?php endforeach; ?>
+                  </ul>
+                </div>
+              </td>
+              <td class="flex-layout flex-top">
+                <div>
+                  <ul class="add-options" id="follow-up-role-options">
+                      <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll() as $role): ?>
+                        <li data-str="<?= $role->name ?>" data-role-id="<?= $role->id ?>"
+                            class="<?= $element->role_id == $role->id ? 'selected' : '' ?>">
+                          <span class="restrict-width"><?= $role->name ?></span>
+                        </li>
+                      <?php endforeach; ?>
+                  </ul>
+                </div>
+              </td>
+              <td>
+                <div class="flex-layout flex-top flex-left">
+                    <?php echo CHtml::textField('follow_up_role_comments', $element->role_comments,
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Role')) ?>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+
+  var Element_OphCiExamination_ClinicOutcome_templates = {
+      <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Template::model()->findAll() as $template): ?>
+    "<?php echo $template->id?>": {
+      "clinic_outcome_status_id": <?php echo $template->clinic_outcome_status_id ?>,
+      "followup_quantity": "<?php echo $template->followup_quantity ?>",
+      "followup_period_id": "<?php echo $template->followup_period_id ?>"
+    },
+      <?php endforeach ?>
+  };
+
+  $(function () {
+    setUpAdder(
+      $('#add-to-follow-up'),
+      null,
+      function () {
+      },
+      $('#show-follow-up-popup-btn'),
+      null,
+      $('#add-to-follow-up').find('.close-icon-btn')
+    );
+
+    // Remove the quantity if it has defaulted to zero (which isn't allowed, it should be null instead)
+    if ($('#<?= $model_name ?>_followup_quantity').val() === '0') {
+      $('#<?= $model_name ?>_followup_quantity').val('');
+    }
+  });
+</script>

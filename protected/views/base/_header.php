@@ -1,19 +1,21 @@
-<header class="header row">
-    
-    <!-- Branding (logo) -->
-    <div class="large-2 column">
-        <?php $this->renderPartial('//base/_brand'); ?>
-    </div>
+<?php
+/**
+ * @var SiteController $this
+ */
+?>
 
-    <!-- Patient panel -->
-    <div class="large-4 medium-5 column">
-        <?php if ($this->renderPatientPanel === true) {
-            $this->renderPartial('//patient/_patient_id');
-        }?>
-    </div>
+<header class="oe-header">
+    <?php if ($this->action->id === 'login'): ?>
+      <div class="oe-logo-flag-help">
+        <i class="oe-i direction-left pro-theme no-click"></i> Click for Help, Theme change, Tours &amp; Feedback
+      </div>
+    <?php endif; ?>
 
-    <!-- User panel (with site navigation) -->
-    <div class="large-6 medium-7 column">
-        <?php $this->renderPartial('//base/_form'); ?>
-    </div>
+    <?php if ($this->renderPatientPanel === true) {
+        $this->renderPartial('//patient/_patient_id');
+    } ?>
+
+    <?php $this->renderPartial('//base/_form'); ?>
 </header><!-- /.header -->
+
+<?php $this->renderPartial('//base/_hotlist'); ?>

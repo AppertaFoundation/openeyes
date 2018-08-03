@@ -17,11 +17,9 @@
  */
 ?>
 <div class="box admin">
-	<div class="row">
-		<div class="large-8 column">
-			<h2>Anaesthetic Agents</h2>
-		</div>
-	</div>
+  <div class="cols-8 column">
+    <h2>Anaesthetic Agents</h2>
+  </div>
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',

@@ -17,17 +17,16 @@
  ?>
 
 <div class="box admin">
-    <div class="row">
-        <div class="large-10 column">
-            <h2>Manage Manual Worklists</h2>
-            <?php echo EventAction::link('Add Worklist', '/worklist/manualAdd/', array(), array('class' => 'button primary small'))->toHtml()?>
+  <div class="cols-10 column">
+    <h2>Manage Manual Worklists</h2>
+      <?php echo EventAction::link('Add Worklist', '/worklist/manualAdd/', array(), array('class' => 'button primary small'))->toHtml()?>
 
-            <?php if ($current_worklists || $available_worklists) { ?>
+      <?php if ($current_worklists || $available_worklists) { ?>
             <div id="draggablelist">
                 <?= CHtml::beginForm(array('/worklist/manualUpdateDisplayOrder'), 'post'); ?>
                 <?= CHtml::hiddenField('item_ids'); ?>
-                <div id="draggablelist-items" class="row">
-                    <div class="large-6 column">
+                <div id="draggablelist-items" class="data-group">
+                    <div class="cols-6 column">
                         <h2>Current Worklists</h2>
                         <?php $this->renderPartial('manual/_worklists_table', array('id' => 'draggablelist-items-enabled', 'items' => $current_worklists)); ?>
                         <div class="right">
@@ -35,7 +34,7 @@
                             <button id="draggablelist-cancel" class="small warning" type="button">Cancel</button>
                         </div>
                     </div>
-                    <div class="large-6 column">
+                    <div class="cols-6 column">
                         <h2>Available Worklists</h2>
                         <?php $this->renderPartial('manual/_worklists_table', array('id' => 'draggablelist-items-available', 'items' => $available_worklists)); ?>
                     </div>
@@ -45,12 +44,8 @@
             <?php
             } else {?>
                 <div class="alert-box info">You currently have no access to any manual worklists. You may add one by clicking the button above ...</div>
-            <?php
-
-}
-            ?>
+            <?php } ?>
         </div>
-    </div>
 </div>
 <script type="text/javascript">
     // TODO: move this into a self contained library

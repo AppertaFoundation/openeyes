@@ -16,39 +16,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<div class="element-data element-eyes data-row">
-		<div class="element-eye right-eye column">
-			<div class="data-row">
-				<?php if ($element->hasRight()) {
-                    if (!$element->right_procedures) {?>
-						None
-					<?php } else {?>
-						<ul class="data-value">
-							<?php foreach ($element->right_procedures as $proc) {?>
-								<li><?php echo $proc->term?></li>
-							<?php }?>
-						</ul>
-					<?php }?>
-				<?php }else{?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
-		</div>
-		<div class="element-eye left-eye column">
-			<div class="data-row">
-				<?php if ($element->hasLeft()) {
-                    if (!$element->left_procedures) {?>
-						None
-					<?php } else {?>
-						<ul class="data-value">
-							<?php foreach ($element->left_procedures as $proc) {?>
-								<li><?php echo $proc->term?></li>
-							<?php }?>
-						</ul>
-					<?php }?>
-				<?php }else{?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
-		</div>
-	</div>
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="<?= $eye_side ?>-eye">
+
+          <?php if ($element->hasEye($eye_side)) {
+              if (!$element->{$eye_side . '_procedures'}) { ?>
+                None
+              <?php } else { ?>
+                <table class="cols-11 last-left">
+                    <?php foreach ($element->{$eye_side . '_procedures'} as $proc) { ?>
+                      <tr>
+                        <td class="priority-text"><?php echo $proc->term ?></td>
+                      </tr>
+                    <?php } ?>
+                </table>
+              <?php } ?>
+          <?php } else { ?>
+            <div class="data-value not-recorded">Not recorded</div>
+          <?php } ?>
+      </div>
+    <?php endforeach; ?>
+</div>

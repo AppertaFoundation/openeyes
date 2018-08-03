@@ -16,27 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-data sub-element-eyes row">
-	<div class="element-eye right-eye column">
-		<?php if ($element->hasRight()) {
-    $this->renderPartial($element->view_view.'_fields', array('side' => 'right', 'element' => $element));
-} else {
-    ?>
-			<div class="data-row">
-				<div class="data-value">Not recorded</div>
-			</div>
-		<?php 
-}?>
-	</div>
-	<div class="element-eye left-eye column">
-		<?php if ($element->hasLeft()) {
-    $this->renderPartial($element->view_view.'_fields', array('side' => 'left', 'element' => $element));
-} else {
-    ?>
-			<div class="data-row">
-				<div class="data-value">Not recorded</div>
-			</div>
-		<?php 
-}?>
-	</div>
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <div class="element-eye <?= $eye_side ?>-eye column">
+        <?php if ($element->hasEye($eye_side)) {
+            $this->renderPartial($element->view_view.'_fields', array('side' => $eye_side, 'element' => $element));
+        } else { ?>
+          <div class="data-row">
+            <div class="data-value not-recorded">Not recorded</div>
+          </div>
+        <?php } ?>
+    </div>
+  <?php endforeach; ?>
 </div>

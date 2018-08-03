@@ -17,9 +17,9 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container');?>
+$this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
-<div id="delete_event">
+<div id="event-delete">
 	<h3>Delete event</h3>
 	<div class="alert-box alert with-icon">
 		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
@@ -36,10 +36,10 @@ $this->beginContent('//patient/event_container');?>
         echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
         echo CHtml::hiddenField('event_id', $this->event->id);
     ?>
-	<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+	<button type="submit" class="button small red" id="et_deleteevent" name="et_deleteevent">
 		Delete event
 	</button>
-	<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+	<button type="submit" class="button small green" id="et_canceldelete" name="et_canceldelete">
 		Cancel
 	</button>
 	<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

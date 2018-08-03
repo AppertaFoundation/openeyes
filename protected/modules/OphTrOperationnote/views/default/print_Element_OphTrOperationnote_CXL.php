@@ -20,7 +20,7 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
     <div class="details">
         <div class="element-data">
-            <div class="row data-row columns-6">
+            <div class="data-group columns-6">
                 <div class="column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('protocol_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->protocol_id)?></div>
@@ -32,7 +32,7 @@
                 <div class="column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('epithelial_status_id'))?></h4>
                     <div class="data-value><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->epithelial_status_id)?></div>
-                    </div>
+                </div>
                     <div class="column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->epithelial_removal_method_id)?></div>
@@ -46,7 +46,7 @@
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->mitomycin_c)?></div>
                 </div>
             </div>
-            <div class="row data-row columns-6">
+            <div class="data-group columns-6">
                 <div class="column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->iontophoresis_id)?></div>
@@ -84,7 +84,7 @@
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->soak_duration_range_id)?></div>
                 </div>
             </div>
-            <div class="row data-row columns-6">
+            <div class="data-group columns-6">
                 <div class="column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('uv_irradiance_range_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->uv_irradiance_range_id) . " mW/cm2"; ?></div>
@@ -115,13 +115,10 @@
                 </div>
             </div>
 
-
-            <div class="row data-row">
-                <div class="large-12 column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('cxl_comments'))?></h4>
-                    <div class="data-value"><?php echo $element->cxl_comments?></div>
-                </div>
-            </div>
+          <div class="cols-12 column">
+            <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('cxl_comments'))?></h4>
+            <div class="data-value"><?php echo $element->cxl_comments?></div>
+          </div>
         </div>
     </div>
 </section>

@@ -76,7 +76,11 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <td>GP Post Code:</td>
 <td><?php echo ($patient->practice && $patient->practice->contact->correspondAddress) ? $patient->practice->contact->correspondAddress->postcode : 'Unknown' ?></td>
 <td>Patient consents to share data:</td>
-<td><?php echo is_null($service_info) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No')?></td>
+<td>
+    <div class="data-value <?php echo is_null($service_info) ? 'not-recorded' : ''?>">
+        <?php echo is_null($service_info) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No')?>
+    </div>
+</td>
 </tr>
 
 <tr>

@@ -18,27 +18,30 @@
 $model_name = CHtml::modelName($element);
 ?>
 
-<?php if (!$element) { ?>
+<?php if (!$element ) { ?>
     <p class="allergy-status-unknown">Patient allergy status is unknown</p>
-<?php } else { ?>
-    <p class="allergy-status-none" <?php if (!$element->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
-
-
-    <table class="plain patient-data" id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
-        <thead>
-        <tr>
-            <th>Allergy</th>
-            <th>Comments</th>
-        </tr>
-        </thead>
+<?php } elseif(!count($element->entries) ||$element->no_allergies_date){ ?>
+  <div class="allergy-status-none">
+  <h2>Allergies</h2>
+    <p>Patient has no known allergies.</p>
+  </div>
+<?php } else{ ?>
+    <div class="alert-box patient">
+      <strong>Allergies</strong><br>
+    </div>
+  <table class="risks alert-box patient">
+    <colgroup>
+      <col class="cols-5">
+    </colgroup>
         <tbody>
         <?php
         foreach ($element->entries as $i => $entry) { ?>
           <tr>
             <td><?= $entry->getDisplayAllergy() ?></td>
             <td><?= $entry->comments ?></td>
+            <td></td>
           </tr>
         <?php } ?>
         </tbody>
-    </table>
+  </table>
 <?php } ?>

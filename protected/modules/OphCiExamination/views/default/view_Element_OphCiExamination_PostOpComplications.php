@@ -16,44 +16,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <div class="data-row">
-            <div class="data-value">
-                <?php if ($element->hasRight()):?>
-                
-                    <table id="right-complication-list" class="recorded-postop-complications" data-sideletter="R">
-                    <?php foreach ($element->getFullComplicationList(\Eye::RIGHT) as $value): ?>
-                            <tr>
-                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
-                            </tr>
-                    <?php endforeach; ?>
-                    </table>
-                   
-                <?php else: ?>
-                        Not recorded
-                <?php endif;?>
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+        <div class="data-group">
+            <?php if ($element->hasEye($eye_side)):
+                $eye_abbr = $eye_side == 'right' ? 'R' : 'L';
+                $eye_macro = $eye_side == 'right' ? \Eye::RIGHT : \Eye::LEFT;
+                ?>
+              <table id="right-complication-list" class="recorded-postop-complications"
+                     data-sideletter="<?= $eye_abbr ?>">
+                  <?php foreach ($element->getFullComplicationList($eye_macro) as $value): ?>
+                    <tr>
+                      <td class=postop-complication-name><?php echo $value['name']; ?></td>
+                      <td></td>
+                    </tr>
+                  <?php endforeach; ?>
+              </table>
+            <?php else: ?>
+            <div class="data-value not-recorded">
+              Not recorded
             </div>
+            <?php endif; ?>
         </div>
-    </div>
-    <div class="element-eye left-eye column">
-        <div class="data-row">
-            <div class="data-value">
-                <?php if ($element->hasLeft()):?>
-                    
-                   <table id="left-complication-list" class="recorded-postop-complications" data-sideletter="L">
-                   <?php 
-                        foreach ($element->getFullComplicationList(\Eye::LEFT) as $value): ?>
-                           <tr> 
-                                <td class=postop-complication-name><?php echo $value['name']; ?></td>
-                            </tr>
-                    <?php endforeach; ?>
-                    </table>
-
-                <?php else: ?>
-                    Not recorded
-                <?php endif;?>
-            </div>
-        </div>     
-    </div>
+      </div>
+    <?php endforeach; ?>
 </div>

@@ -17,57 +17,54 @@
  */
 ?>
 
-<section class="sub-element element-data">
-	<h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-	<div class="element-data">
-		<?php if ($element->membrane_blue) {?>
-			<div class="row data-row">
-				<div class="large-2 column">
-					<div class="data-value">
-					<?php echo CHtml::encode($element->getAttributeLabel('membrane_blue'))?>
-					</div>
-				</div>
-			</div>
-		<?php }?>
+<section class="element view full">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+      <?php if ($element->membrane_blue) { ?>
+        <div class="cols-2 column">
+            <div class="data-value">
+                <?php echo CHtml::encode($element->getAttributeLabel('membrane_blue')) ?>
+            </div>
+          </div>
+      <?php } ?>
+      <?php if ($element->brilliant_blue) { ?>
+        <div class="cols-2 column">
+            <div class="data-value">
+                <?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue')) ?>
+            </div>
+          </div>
+      <?php } ?>
 
-		<?php if ($element->brilliant_blue) {?>
-			<div class="row data-row">
-				<div class="large-2 column">
-					<div class="data-value">
-					<?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue'))?>
-					</div>
-				</div>
-			</div>
-		<?php }?>
+      <?php if ($element->other_dye) { ?>
+        <div class="data-group">
+          <div class="cols-2 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('other_dye')) ?>:
+            </div>
+          </div>
+          <div class="cols-10 column">
+            <div class="data-value">
+                <?php echo CHtml::encode($element->other_dye) ?>
+            </div>
+          </div>
+        </div>
+      <?php } ?>
 
-		<?php if ($element->other_dye) {?>
-			<div class="row data-row">
-				<div class="large-2 column">
-					<div class="data-label">
-					<?php echo CHtml::encode($element->getAttributeLabel('other_dye'))?>:
-					</div>
-				</div>
-				<div class="large-10 column">
-					<div class="data-value">
-					<?php echo CHtml::encode($element->other_dye)?>
-					</div>
-				</div>
-			</div>
-		<?php }?>
-
-		<?php if ($element->comments) {?>
-			<div class="row data-row">
-				<div class="large-2 column">
-					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>:
-					</div>
-				</div>
-				<div class="large-10 column">
-					<div class="data-value">
-						<?php echo Yii::app()->format->Ntext($element->comments)?>
-					</div>
-				</div>
-			</div>
-		<?php }?>
-	</div>
+      <?php if ($element->comments) { ?>
+        <div class="data-group">
+          <div class="cols-2 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:
+            </div>
+          </div>
+          <div class="cols-10 column">
+            <div class="data-value">
+                <?php echo Yii::app()->format->Ntext($element->comments) ?>
+            </div>
+          </div>
+        </div>
+      <?php } ?>
+  </section>
 </section>

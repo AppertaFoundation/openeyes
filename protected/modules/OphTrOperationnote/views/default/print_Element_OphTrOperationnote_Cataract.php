@@ -17,60 +17,60 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?> data-group">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
-		<div class="large-6 column">
-			<div class="row">
-				<div class="large-6 column text-right">
+	<div class="data-group">
+		<div class="cols-6 column">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->incision_site->name?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('length'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo CHtml::encode($element->length)?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo CHtml::encode($element->meridian)?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->incision_type->name?>
 					</div>
 				</div>
 			</div>
 
-			<div class="data-row">
+			<div class="data-group">
 				<h4>Details</h4>
 				<div class="details pronounced">
 					<ul>
@@ -81,13 +81,13 @@
 				</div>
 			</div>
 
-			<div class="row data-row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						Devices Used:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php if (!$element->operative_devices) {?>
 							None
@@ -100,7 +100,7 @@
 				</div>
 			</div>
 
-			<div class="data-row">
+			<div class="data-group">
 				<h4>Per Operative Complications</h4>
 				<div class="details">
 					<?php if (!$element->complications && !$element->complication_notes) {?>
@@ -116,8 +116,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="large-6 column">
-			<div class="data-row">
+		<div class="cols-6 column">
+			<div class="data-group">
 				<div class="details">
 					<?php
                     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
@@ -145,13 +145,13 @@
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="large-6 column">
+			<div class="data-group">
+				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php
                             echo $element->iol_type ? $element->iol_type->display_name : 'None';
@@ -159,55 +159,54 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column">
+			<div class="data-group">
+				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_power'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo CHtml::encode($element->iol_power)?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column">
+			<div class="data-group">
+				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->predicted_refraction?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column">
+			<div class="data-group">
+				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('iol_position_id'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->iol_position->name?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column">
+			<div class="data-group">
+				<div class="cols-6 column">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->pcr_risk?>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </section>

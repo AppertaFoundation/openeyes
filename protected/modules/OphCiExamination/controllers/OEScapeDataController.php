@@ -26,6 +26,10 @@ class OEScapeDataController extends \BaseController
     {
         return array(
             array('allow',
+                'actions' => array('SetPreferredChartSize'),
+                'users' => array('@'),
+            ),
+            array('allow',
                 'actions' => array('dataset', 'datasetva', 'datasetmd', 'loadimage', 'loadallimages', 'getoperations', 'getimage', 'getmedications'),
                 'expression' => 'Yii::app()->user->isSurgeon()',
             ),
@@ -263,5 +267,12 @@ class OEScapeDataController extends \BaseController
         ob_clean();
         flush();
         readfile($filepath);
+    }
+
+    /**
+     * @param $chart_size string (small|medium|large\full)
+     */
+    public function actionSetPreferredChartSize(){
+        $_SESSION['oescape_chart_size'] = $_POST['chart_size'];
     }
 }

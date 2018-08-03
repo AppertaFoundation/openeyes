@@ -16,27 +16,19 @@
  */
 ?>
 
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <div class="data-row">
-            <?php if ($element->hasRight()) {
-                $this->renderPartial($element->view_view.'_OEEyeDraw', array('side' => 'right', 'element' => $element));
-            } else {
-                ?>
-                <div class="data-value">Not recorded</div>
-                <?php
-            }?>
+<div class="element-data element-eyes">
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side; ?>-eye column">
+        <div class="data-group">
+            <?php if ($element->hasEye($eye_side)): ?>
+              <div class="eyedraw flex-layout flex-top anterior-segment">
+                  <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+                      array('side' => $eye_side, 'element' => $element)); ?>
+              </div>
+            <?php else: ?>
+              <div class="data-value not-recorded">Not recorded</div>
+            <?php endif; ?>
         </div>
-    </div>
-    <div class="element-eye left-eye column">
-        <div class="data-row">
-            <?php if ($element->hasLeft()) {
-                $this->renderPartial($element->view_view.'_OEEyeDraw', array('side' => 'left', 'element' => $element));
-            } else {
-                ?>
-                <div class="data-value">Not recorded</div>
-                <?php
-            }?>
-        </div>
-    </div>
+      </div>
+    <?php endforeach; ?>
 </div>

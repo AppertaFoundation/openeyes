@@ -17,7 +17,7 @@
  */
 $assetManager = Yii::app()->getAssetManager();
 $assetManager->registerScriptFile('js/libs/uri-1.10.2.js');
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'create-form',
     'enableAjaxValidation' => false,

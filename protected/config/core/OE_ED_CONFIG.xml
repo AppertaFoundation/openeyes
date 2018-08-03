@@ -1910,14 +1910,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Visual Function</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>
-            <TERM>RAPD</TERM>
-            <TERM>Relative Afferent Pupillary Defect</TERM>
-          </SECONDARY_TERM_LIST>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
-        <INDEX>
           <PRIMARY_TERM>Visual Acuity</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>VA</TERM>
@@ -2039,7 +2031,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Pupillary Abnormalities</PRIMARY_TERM>
+          <PRIMARY_TERM>Pupils</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Pupillary Abnormalities</TERM>
+            <TERM>RAPD</TERM>
+            <TERM>Relative Afferent Pupillary Defect</TERM>
+          </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities</OPEN_ELEMENT_CLASS_NAME>
           <GOTO_ID>div_OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_%position_abnormality_id</GOTO_ID>
         </INDEX>
@@ -2628,7 +2625,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_status_id</GOTO_ID>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Examination Posterior Pole</PRIMARY_TERM>
+          <PRIMARY_TERM>Examination Macula</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
             <INDEX>
@@ -2851,7 +2848,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<GOTO_PROPERTY>Watzke</GOTO_PROPERTY>
 			</INDEX>
           </INDEX_LIST>
-		  
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Van Herick</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\VanHerick</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Examination Gonioscopy</PRIMARY_TERM>
@@ -2866,11 +2866,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
               <GOTO_TAG>div.field-label</GOTO_TAG>
               <GOTO_TEXT>Angle Open?</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Van Herick</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_van_herick_id</GOTO_ID>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Comments</PRIMARY_TERM>

@@ -210,10 +210,7 @@ class SocialHistory extends \BaseEventTypeElement
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function getDisplayAllEntries()
     {
         $res = array();
         foreach (array(
@@ -224,12 +221,21 @@ class SocialHistory extends \BaseEventTypeElement
                      'comments' => 'comments',
                      'carer_id' => 'carer',
                      'alcohol_intake' => 'displayalcoholintake',
-                     'substance_misuse_id' => 'substance_misuse'
+                     'substance_misuse_id' => 'substance_misuse',
                  ) as $id => $source) {
             if ($this->$source) {
                 $res[] = $this->getAttributeLabel($id) . ': ' . $this->$source;
             }
         }
-        return implode(' // ', $res);
+
+        return $res;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode(' <br /> ', $this->getEntries());
     }
 }

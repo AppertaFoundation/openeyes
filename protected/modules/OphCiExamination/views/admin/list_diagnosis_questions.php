@@ -19,66 +19,61 @@
 
 <div class="box admin">
 
-	<header class="box-header">
-		<h2 class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></h2>
-		<div class="box-actions">
-			<a class="button small" href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create'.$model_class); ?>?disorder_id=<?php echo $disorder_id ?>">Add New</a>
-		</div>
-	</header>
+  <header class="box-header">
+    <h2 class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></h2>
+    <div class="box-actions">
+      <a class="button small"
+         href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class); ?>?disorder_id=<?php echo $disorder_id ?>">Add
+        New</a>
+    </div>
+  </header>
 
-	<div class="row field-row">
-		<div class="large-2 column">
-			<label for="question_disorder">Select disorder:</label>
-		</div>
-		<div class="large-6 column end">
-			<?php
-            echo CHtml::dropDownList('disorder_id', $disorder_id, CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(), 'id', 'term'), array('empty' => '- Please select -', 'id' => 'question_disorder'));
-            ?>
-		</div>
-	</div>
-
-
-	<?php
-    if (!$disorder_id) {
+  <div class="data-group">
+    <div class="cols-2 column">
+      <label for="question_disorder">Select disorder:</label>
+    </div>
+    <div class="cols-6 column end">
+        <?php
+        echo CHtml::dropDownList('disorder_id', $disorder_id,
+            CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(),
+                'id', 'term'), array('empty' => '- Please select -', 'id' => 'question_disorder'));
         ?>
-		<div class="alert-box">
-			<strong>Please select a disorder to view the questions</strong>
-		</div>
-	<?php
-
-    } elseif (count($model_list)) {
-        ?>
-		<table class="grid">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Enabled</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-                foreach ($model_list as $i => $model) {
-                    ?>
-					<tr data-attr-id="<?php echo $model->id?>" data-attr-name="Question">
-						<td><a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->question ?></a></td>
-						<td>
-							<input type="checkbox" class="model_enabled" <?php if ($model->active) {
-    echo 'checked';
-}
-                    ?> />
-						</td>
-					</tr>
-				<?php 
-                }
-        ?>
-			</tbody>
-		</table>
-	<?php 
-    } else {
-        ?>
-		<div class="alert-box">
-			<strong>No questions set for this disorder</strong>
-		</div>
-	<?php 
-    } ?>
+    </div>
+  </div>
+    <?php if (!$disorder_id) { ?>
+      <div class="alert-box">
+        <strong>Please select a disorder to view the questions</strong>
+      </div>
+    <?php } elseif (count($model_list)) { ?>
+        <div class="data-group">
+          <table class="grid">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Enabled</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($model_list as $i => $model) {
+                ?>
+              <tr data-attr-id="<?php echo $model->id ?>" data-attr-name="Question">
+                <td>
+                  <a href="<?php echo Yii::app()->createUrl($this->module->getName() . '/admin/update' . Helper::getNSShortname($model),
+                      array('id' => $model->id)) ?>"><?php echo $model->question ?></a></td>
+                <td>
+                  <input type="checkbox" class="model_enabled" <?php if ($model->active) {
+                      echo 'checked';
+                  } ?> />
+                </td>
+              </tr>
+            <?php } ?>
+            </tbody>
+          </table>
+        </div>
+        <?php } else { ?>
+      <div class="alert-box">
+        <strong>No questions set for this disorder</strong>
+      </div>
+    <?php } ?>
 </div>

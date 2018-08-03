@@ -31,12 +31,12 @@
         'layoutColumns' => $layoutColumns,
     ));
 ?>
-<div class="row field-row">
-    <div class="large-<?=$layoutColumns['label'];?> column">
+<div class="data-group">
+    <div class="cols-<?=$layoutColumns['label'];?> column">
         <label for="<?=CHtml::modelName($model);?>_firm_id">Context:</label>
     </div>
 
-    <div class="large-<?=$layoutColumns['field'];?> column">
+    <div class="cols-<?=$layoutColumns['field'];?> column">
         <?php
             $is_disabled = !(bool)$model->subspecialty_id;
             echo CHtml::activeDropDownList($model, "firm_id", $firms, [
@@ -48,5 +48,5 @@
             ]);
         ?>
     </div>
-    <div class="large-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
+    <div class="cols-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
 </div>

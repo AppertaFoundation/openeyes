@@ -17,151 +17,70 @@
  */
 ?>
 
-<div class="element-fields element-eyes row">
+<div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
-        ?> inactive<?php
-    }?>" data-side="right">
-        <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('right_allergic_conjunctivitis_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    $allSlitLampConditions = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[right_allergic_conjunctivitis_id]',
-                        $element->right_allergic_conjunctivitis_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('right_blepharitis_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[right_blepharitis_id]',
-                        $element->right_blepharitis_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('right_dry_eye_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[right_dry_eye_id]',
-                        $element->right_dry_eye_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('right_cornea_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    $allSlitLampCornea = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[right_cornea_id]',
-                        $element->right_cornea_id,
-                        CHtml::listData($allSlitLampCornea, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
+  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+    <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+      <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+        <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <table class="cols-full">
+          <tbody>
+          <tr>
+            <td>
+              <label><?php echo $element->getAttributeLabel($eye_side.'_allergic_conjunctivitis_id')?>:</label>
+            </td>
+            <td>
+                <?php
+                $allSlitLampConditions = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->findAll(array('order' => 'display_order'));
+                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_allergic_conjunctivitis_id]',
+                    $element->{$eye_side.'_allergic_conjunctivitis_id'},
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label><?php echo $element->getAttributeLabel($eye_side.'_blepharitis_id')?>:</label>
+            </td>
+            <td>
+                <?php
+                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_blepharitis_id]',
+                    $element->{$eye_side.'_blepharitis_id'},
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label><?php echo $element->getAttributeLabel($eye_side.'_dry_eye_id')?>:</label>
+            </td>
+            <td>
+                <?php
+                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_dry_eye_id]',
+                    $element->{$eye_side.'_dry_eye_id'},
+                    CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label><?php echo $element->getAttributeLabel($eye_side.'_cornea_id')?>:</label>
+            </td>
+            <td>
+                <?php
+                $allSlitLampCornea = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->findAll(array('order' => 'display_order'));
+                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp['.$eye_side.'_cornea_id]',
+                    $element->{$eye_side.'_cornea_id'},
+                    CHtml::listData($allSlitLampCornea, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+        <div class="add-side">
+          <a href="#">
+            Add <?= $eye_side ?> eye <span class="icon-add-side"></span>
+          </a>
         </div>
-        <div class="inactive-form">
-            <div class="add-side">
-                <a href="#">
-                    Add right side <span class="icon-add-side"></span>
-                </a>
-            </div>
-        </div>
+      </div>
     </div>
-    <div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {
-        ?> inactive<?php
-    }?>" data-side="left">
-        <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('left_allergic_conjunctivitis_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    $allSlitLampConditions = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[left_allergic_conjunctivitis_id]',
-                        $element->left_allergic_conjunctivitis_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('left_blepharitis_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[left_blepharitis_id]',
-                        $element->left_blepharitis_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('left_dry_eye_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[left_dry_eye_id]',
-                        $element->left_dry_eye_id,
-                        CHtml::listData($allSlitLampConditions, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('left_cornea_id')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php
-                    $allSlitLampCornea = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->findAll(array('order' => 'display_order'));
-                    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[left_cornea_id]',
-                        $element->left_cornea_id,
-                        CHtml::listData($allSlitLampCornea, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-        </div>
-        <div class="inactive-form">
-            <div class="add-side">
-                <a href="#">
-                    Add left side <span class="icon-add-side"></span>
-                </a>
-            </div>
-        </div>
-    </div>
+  <?php endforeach; ?>
 </div>

@@ -172,7 +172,11 @@ $logoHelper = new LogoHelper();
 							</tr>
 							<tr>
 								<td>Patient consents to share data:</td>
-								<td><?php echo is_null($service_info) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No')?></td>
+								<td>
+                                    <div class="data-value <?php echo is_null($service_info) ? 'not-recorded' : ''?>">
+                                        <?php echo is_null($service_info) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No')?>
+                                    </div>
+                                </td>
 							</tr>
 							<tr>
 								<th>Referred By (other than GP)</th>

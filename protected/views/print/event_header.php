@@ -27,18 +27,18 @@ $logoHelper = new LogoHelper();
 	<?php echo $logoHelper->render('//base/_logo_seal'); ?>
 	<h1><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
 	</div>
-	<div class="row">
+	<div class="data-group">
 		<!-- Patient details -->
-		<div class="large-4 column patient">
+		<div class="cols-4 column patient">
 			<strong><?php echo $this->patient->contact->fullName?></strong>
 			<br />
 			<p>
 			<?php echo $this->patient->getLetterAddress(array(
-                'delimiter' => '<br/>',
-            ))?>
+			    'delimiter' => '<br/>',
+      ))?>
 			</p>
 		</div>
-		<div class="large-4 column firm">
+		<div class="cols-4 column firm">
 			<?php if ($consultant = $this->event->episode->firm->consultant) {?>
 			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
 			<?php }?>

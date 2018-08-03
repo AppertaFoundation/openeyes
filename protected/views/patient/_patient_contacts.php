@@ -16,13 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="box patient-info patient-contacts js-toggle-container">
-  <h3 class="box-title">Associated contacts:</h3>
-  <a href="#" class="toggle-trigger toggle-hide js-toggle">
-		<span class="icon-showhide">
-			Show/hide this section
-		</span>
-  </a>
+<section class="element patient-info patient-contacts js-toggle-container">
+  <h3 class="element-header">Associated contacts:</h3>
   <div class="js-toggle-body">
     <table class="plain patient-data patient-contacts">
       <thead>
@@ -43,13 +38,12 @@
       </tbody>
     </table>
       <?php if ($this->checkAccess('OprnEditContact')) { ?>
-        <div class="row data-row">
-
-          <div class="large-2 column">
+        <div class="data-group">
+          <div class="cols-2 column">
             <label for="contactname" class="align">Add contact:</label>
           </div>
 
-          <div class="large-4 column">
+          <div class="cols-4 column">
               <?php
               $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                   'name' => 'contactname',
@@ -138,9 +132,7 @@
               ?>
           </div>
 
-          <div class="large-4 column">
-
-
+          <div class="cols-4 column">
             <select id="contactfilter" name="contactfilter">
                 <?php foreach (ContactLabel::getList() as $key => $name) { ?>
                   <option value="<?php echo $key ?>"><?php echo $name ?></option>
@@ -148,8 +140,7 @@
             </select>
           </div>
 
-          <div class="large-2 column">
-            <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="loader hide" alt="loading..."/>
+          <div class="cols-2 column">
             <button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
           </div>
         </div>
@@ -171,8 +162,8 @@
             <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
             <input type="hidden" name="contact_label_id" id="contact_label_id" value=""/>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <div class="data-label">Type:</div>
               </div>
               <div class="<?php echo $form->columns('field'); ?>">
@@ -180,64 +171,64 @@
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="institution_id">Institution:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
                       array('empty' => '- Select -')) ?>
               </div>
             </div>
 
-            <div class="row field-row siteID">
+            <div class="data-group siteID">
               <div class="<?php echo $form->columns('label'); ?>">
                 <label for="site_id">Site:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::dropDownList('site_id', '', array()) ?>
               </div>
             </div>
 
-            <div class="row field-row contactLabel">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group contactLabel">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="label_id">Label:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::dropDownList('label_id', '', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
                       array('empty' => '- Select -')) ?>
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="title">Title:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::textField('title', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="first_name">First name:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::textField('first_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="last_name">Last name:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::textField('last_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="nick_name">Nick name:</label>
               </div>
               <div class="<?php echo $form->columns('field'); ?>">
@@ -245,32 +236,32 @@
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="primary_phone">Primary phone:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::textField('primary_phone', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
-            <div class="row field-row">
-              <div class="<?php echo $form->columns('label'); ?>">
+            <div class="data-group">
+              <div class="cols-<?php echo $form->columns('label'); ?>">
                 <label for="qualifications">Qualifications:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?php echo $form->columns('field'); ?>">
                   <?php echo CHtml::textField('qualifications', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="add_contact_form_errors alert-box alert with-icon hide"></div>
 
-            <div class="row field-row">
-              <div class="large-5 column">
+            <div class="data-group">
+              <div class="cols-5 column">
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
-              <div class="large-7 column text-right">
-                <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_contact_loader" style="display: none;"/>
+              <div class="cols-7 column text-right">
+                <i class="spinner" title="Loading..." style="display: none;"></i>
                 <button class="secondary small btn_save_contact" type="submit">Save</button>
                 <button class="warning small btn_cancel_contact" type="submit">Cancel</button>
               </div>
@@ -299,7 +290,7 @@
             <input type="hidden" name="contact_id" id="contact_id" value=""/>
             <input type="hidden" name="pca_id" id="pca_id" value=""/>
 
-            <div class="row field-row">
+            <div class="data-group">
               <div class="<?php echo $form->columns('label'); ?>">
                 <div class="data-label">Contact:</div>
               </div>
@@ -308,7 +299,7 @@
               </div>
             </div>
 
-            <div class="row field-row">
+            <div class="data-group">
               <div class="<?php echo $form->columns('label'); ?>">
                 <div class="label">Institution:</div>
               </div>
@@ -318,7 +309,7 @@
               </div>
             </div>
 
-            <div class="row field-row siteID">
+            <div class="data-group siteID">
               <div class="<?php echo $form->columns('label'); ?>">
                 <div class="label">Site:</div>
               </div>
@@ -329,12 +320,11 @@
 
             <div class="edit_contact_form_errors alert-box alert with-icon hide"></div>
 
-            <div class="row field-row">
-              <div class="large-5 column">
+            <div class="data-group">
+              <div class="cols-5 column">
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
-              <div class="large-7 column text-right">
-                <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="edit_contact_loader" style="display: none;"/>
+              <div class="cols-7 column text-right">
                 <button class="secondary small btn_save_editcontact" type="submit">Save</button>
                 <button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
               </div>
@@ -360,7 +350,7 @@
                 ),
             ))
             ?>
-          <div class="row field-row">
+          <div class="data-group">
             <div class="<?php echo $form->columns('label'); ?>">
               <label for="newsite_from">From:</label>
             </div>
@@ -369,7 +359,7 @@
                     array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
             </div>
           </div>
-          <div class="row field-row">
+          <div class="data-group">
             <div class="<?php echo $form->columns('label'); ?>">
               <label for="newsite_subject">Subject:</label>
             </div>
@@ -377,7 +367,7 @@
                 <?php echo CHtml::textField('newsite_subject', 'Please add the following site/institution', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
             </div>
           </div>
-          <div class="row field-row">
+          <div class="data-group">
             <div class="<?php echo $form->columns('label'); ?>">
               <label for="newsite_message">Message:</label>
             </div>
@@ -392,7 +382,6 @@
           <div class="buttons">
             <button type="submit" class="secondary small btn_add_site_ok">Send</button>
             <button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
-            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"/>
           </div>
         </div>
       <?php } ?>

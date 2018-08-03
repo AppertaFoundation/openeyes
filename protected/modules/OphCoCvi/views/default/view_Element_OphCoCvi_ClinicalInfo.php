@@ -16,128 +16,118 @@
  */
 
 ?>
+<section class="element full priority	view-<?php echo $element->elementType->name ?>"
+data-element-type-id="<?php echo $element->elementType->id ?>"
+data-element-type-class="<?php echo $element->elementType->class_name ?>"
+data-element-type-name="<?php echo $element->elementType->name ?>"
+data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
 
-<div class="element-data">
-    <div class="row data-row">
-        <div class="large-2 column">
+<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+  <header class=" element-header">
+    <h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
+  </header>
+<?php } ?>
+  <div class="element-data full-width flex-layout flex-top col-gap">
+    <div class="cols-3">
+      <table class="label-value">
+        <tbody>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:</div>
-        </div>
-        <div class="large-10 column end">
+          </td>
+          <td>
             <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
-        </div>
-    </div>
-    <div class="row data-row">
-        <div class="large-2 column">
+          </td>
+        </tr>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?>:</div>
-        </div>
-        <div class="large-10 column end">
+          </td>
+          <td>
             <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
-        </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="row data-row">
-        <div class="large-2 column">
+    <div class="cols-4">
+      <table class="label-value">
+        <tbody>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind')) ?>:
             </div>
-        </div>
-        <div class="large-4 column">
+          </td>
+          <td>
             <div class="data-value"><?php echo $element->displayconsideredblind; ?></div>
-        </div>
-        <div class="large-2 column">
+          </td>
+        </tr>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>:</div>
-        </div>
-        <div class="large-4 column end">
+          </td>
+          <td>
             <div class="data-value"><?php echo $element->displaylightlevels; ?></div>
-        </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div class="indent-correct element-data element-eyes row">
-        <div class="element-eye right-eye column">
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_right_va'))?>:</div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo CHtml::encode($element->unaided_right_va)?></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_right_va'))?>:</div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo CHtml::encode($element->best_corrected_right_va)?></div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="element-eye left-eye column">
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('unaided_left_va'))?>:</div>
-                    </td>
-                    <td>
-                    <div class="data-value"><?php echo CHtml::encode($element->unaided_left_va)?></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_left_va'))?>:</div>
-                    </td>
-                    <td>
-                    <div class="data-value"><?php echo CHtml::encode($element->best_corrected_left_va)?></div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row data-row">
-        <div class="large-3 large-push-2 column">
-            <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('best_corrected_binocular_va')) ?>:</div>
-        </div>
-        <div class="large-3 large-push-2 column end">
-            <div class="data-value"><?php echo CHtml::encode($element->best_corrected_binocular_va) ?></div>
-        </div>
-    </div>
-    <div class="row data-row">
-        <div class="large-2 column">
+    <div class="cols-5">
+      <table>
+        <tbody>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?>:</div>
-        </div>
-        <div class="large-4 column">
+          </td>
+          <td>
             <div class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None' ?></div>
-        </div>
-        <div class="large-2 column">
+          </td>
+        </tr>
+        <tr>
+          <td>
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?>:</div>
-        </div>
-        <div class="large-4 column end">
-            <div
-                class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None' ?></div>
-        </div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None' ?></div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('disorders')) ?>:</div>
-        </div>
+  </div>
+</section>
+<section class="element full priority eye-divider view-visual-acuity">
+    <header class="element-header">
+      <h3 class="element-title">Visual Acuity</h3>
+    </header>
+    <div class="indent-correct element-data element-eyes">
+        <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
+          <div class="element-eye <?= $eye_side ?>-eye column">
+            <div class="data-group">
+              <ul class="dslash-list large-text">
+                <li><?php echo CHtml::encode($element->{'unaided_'.$eye_side.'_va'}.' Unaided'); ?></li>
+                <li><?php echo CHtml::encode($element->{'best_corrected_'.$eye_side.'_va'}.' Best') ?></li>
+                <li><?php echo CHtml::encode($element->best_corrected_binocular_va.' Binocula') ?></li>
+              </ul>
+            </div>
+          </div>
+        <?php } ?>
     </div>
-    <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
-        'element' => $element,
-    ))?>
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div
-                class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered) ?></div>
-        </div>
+</section>
+<section class="element full priority">
+      <header class="element-header">
+        <h3 class="element-title"><?php echo CHtml::encode($element->getAttributeLabel('disorders')) ?>:</h3>
+      </header>
+      <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
+          'element' => $element,
+      ))?>
+    <div class="data-group">
+      <div class="cols-4">
+        <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
+      </div>
+      <div class="cols-8">
+        <div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered) ?></div>
+      </div>
     </div>
-
-</div>
+</section>

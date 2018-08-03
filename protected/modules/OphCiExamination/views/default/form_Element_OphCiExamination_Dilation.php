@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Dilation.js", CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Dilation.js");
 
 $key = 0;
 $dilation_drugs = \OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs::model()->findAll();
@@ -27,111 +27,116 @@ foreach ($dilation_drugs as $d_drug) {
     $dilation_drugs_order[$d_drug['id']] = $d_drug['display_order'];
 }
 ?>
-<div class="element-fields element-eyes row">
-	<input type="hidden" name="dilation_treatments_valid" value="1" />
-	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="field-row">
-				<?php echo $form->dropDownListNoPost('dilation_drug_right', $element->getUnselectedDilationDrugs('right'), '', array('class' => 'inline dilation_drug', 'empty' => '--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
-				<button class="small secondary clearDilation">
-					Clear
-				</button>
-			</div>
-			<table class="plain grid dilation_table"<?php if (!$element->right_treatments) {
-    ?> style="display: none;"<?php 
-}?>>
-				<thead>
-					<tr>
-						<th>Time</th>
-						<th>Drug</th>
-						<th>Drops</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody class="plain" id="dilation_right">
-					<?php foreach ($element->right_treatments as $treatment) {
-    $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-                                'name_stub' => CHtml::modelName($element).'[right_treatments]',
-                                'treatment' => $treatment,
-                                'key' => $key,
-                                'side' => $treatment->side,
-                                'drug_name' => $treatment->drug->name,
-                                'drug_id' => $treatment->drug_id,
-                                'data_order' => $treatment->drug->display_order,
-                            ));
-    ++$key;
-}?>
-				</tbody>
-			</table>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="field-row">
-				<?php echo $form->dropDownListNoPost('dilation_drug_left', $element->getUnselectedDilationDrugs('left'), '', array('class' => 'inline dilation_drug', 'empty' => '--- Please select ---', 'nowrapper' => true, 'display_order' => $dilation_drugs_order))?>
-				<button class="small secondary clearDilation">
-					Clear
-				</button>
-			</div>
-			<table class="plain grid dilation_table"<?php if (!$element->left_treatments) {
-    ?> style="display: none;"<?php 
-}?>>
-				<thead>
-					<tr>
-						<th>Time</th>
-						<th>Drug</th>
-						<th>Drops</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody class="plain" id="dilation_left">
-					<?php foreach ($element->left_treatments as $treatment) {
-    $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-                                'name_stub' => CHtml::modelName($element).'[left_treatments]',
-                                'treatment' => $treatment,
-                                'key' => $key,
-                                'side' => $treatment->side,
-                                'drug_name' => $treatment->drug->name,
-                                'drug_id' => $treatment->drug_id,
-                                'data_order' => $treatment->drug->display_order,
-                            ));
-    ++$key;
-}?>
-				</tbody>
-			</table>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+<div class="element-fields element-eyes edit-Dilation">
+  <input type="hidden" name="dilation_treatments_valid" value="1"/>
+    <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
+        <div class="active-form data-group flex-layout"
+             style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+          <div class="cols-9">
+            <table class="cols-full dilation_table"
+                   style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
+              <tbody class="plain" id="dilation_<?= $eye_side ?>">
+              <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
+                  $this->renderPartial(
+                      'form_Element_OphCiExamination_Dilation_Treatment',
+                      array(
+                          'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_treatments]',
+                          'treatment' => $treatment,
+                          'key' => $key,
+                          'side' => $treatment->side,
+                          'drug_name' => $treatment->drug->name,
+                          'drug_id' => $treatment->drug_id,
+                          'data_order' => $treatment->drug->display_order,
+                      )
+                  );
+                  ++$key;
+              } ?>
+              </tbody>
+            </table>
+          </div>
+          <div class="add-data-actions  flex-item-bottom">
+            <button class="button hint green js-add-select-search" type="button">
+              <i class="oe-i plus pro-theme"></i>
+            </button>
+            <div id="add-to-dilation" class="oe-add-select-search" style="display: none;" type="button">
+              <div class="close-icon-btn">
+                <i class="oe-i remove-circle medium"></i>
+              </div>
+              <button class="button hint green add-icon-btn" type="button">
+                <i class="oe-i plus pro-theme"></i>
+              </button>
+              <table class="select-options">
+                <tbody>
+                <tr>
+                  <td>
+                    <div class="flex-layout flex-top flex-left">
+                      <ul class="add-options" data-multi="false" data-clickadd="false">
+                          <?php foreach ($element->getUnselectedDilationDrugs($eye_side) as $id => $drug): ?>
+                            <li data-str="<?= $id ?>"
+                                data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
+                          <?php endforeach; ?>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="add-side">
+            <a href="#">
+              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript">
+        $(function () {
+          var side = $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation\'] ' +
+            '.<?=$eye_side?>-eye');
+          var popup = side.find('#add-to-dilation');
+
+          var controller = null;
+          $(document).ready(function () {
+            controller = new OpenEyes.OphCiExamination.DilationController(null, side.find('.dilation_table'), popup);
+          });
+
+          popup.find('.add-icon-btn').click(function () {
+            popup.find('li.selected').each(function () {
+              controller.OphCiExamination_Dilation_addTreatment($(this), '<?= $eye_side ?>');
+              $(this).removeClass('selected');
+            });
+          });
+
+          setUpAdder(
+            popup,
+            'multi',
+            null,
+            side.find('.js-add-select-search'),
+            null,
+            popup.find('.close-icon-btn, .add-icon-btn')
+          );
+        })
+      </script>
+    <?php endforeach; ?>
 </div>
 <script id="dilation_treatment_template" type="text/html">
-	<?php
-    $this->renderPartial('form_Element_OphCiExamination_Dilation_Treatment', array(
-            'name_stub' => CHtml::modelName($element).'[{{side}}_treatments]',
+    <?php
+    $this->renderPartial(
+        'form_Element_OphCiExamination_Dilation_Treatment',
+        array(
+            'name_stub' => CHtml::modelName($element) . '[{{side}}_treatments]',
             'key' => '{{key}}',
             'side' => '{{side}}',
             'drug_name' => '{{drug_name}}',
             'drug_id' => '{{drug_id}}',
             'treatment_time' => '{{treatment_time}}',
             'data_order' => '{{data_order}}',
-    ))?>
+        )
+    ); ?>
 </script>

@@ -32,49 +32,49 @@
 	<?php echo $form->textField($firm, 'pas_code', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 	<?php echo $form->textField($firm, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 
-	<div id="div_Firm_subspecialty_id" class="row field-row">
-		<div class="large-2 column">
+	<div id="div_Firm_subspecialty_id" class="data-group">
+		<div class="cols-2 column">
 			<label for="Firm_subspecialty_id">Subspecialty:</label>
 		</div>
-		<div class="large-5 column end">
+		<div class="cols-5 column end">
 			<?php echo CHtml::dropDownList('Firm[subspecialty_id]',
                 $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,
                 CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
 		</div>
 	</div>
-	<div id="div_Firm_consultant_id" class="row field-row">
-		<div class="large-2 column">
+	<div id="div_Firm_consultant_id" class="data-group">
+		<div class="cols-2 column">
 			<label for="Firm_consultant_id">Consultant:</label>
 		</div>
-		<div class="large-5 column end">
+		<div class="cols-5 column end">
 			<?php echo CHtml::dropDownList('Firm[consultant_id]', $firm->consultant_id,
                 CHtml::listData(User::model()->findAll(array('order' => 'first_name,last_name')), 'id', 'fullName'), array('empty' => '- None -')) ?>
 		</div>
 	</div>
 
-    <div id="div_Firm_active" class="row field-row">
-        <div class="large-2 column">
+    <div id="div_Firm_active" class="data-group">
+        <div class="cols-2 column">
             <label for="Firm_can_own_an_episode"><?= ucfirst(Yii::app()->params['service_firm_label']) ?> Enabled:</label>
         </div>
-        <div class="large-5 column end">
+        <div class="cols-5 column end">
             <?php echo CHtml::activeCheckBox($firm, 'can_own_an_episode') ?>
         </div>
     </div>
 
-    <div id="div_Firm_active" class="row field-row">
-        <div class="large-2 column">
+    <div id="div_Firm_active" class="data-group">
+        <div class="cols-2 column">
             <label for="Firm_runtime_selectable"><?= ucfirst(Yii::app()->params['context_firm_label']) ?> Enabled:</label>
         </div>
-        <div class="large-5 column end">
+        <div class="cols-5 column end">
             <?php echo CHtml::activeCheckBox($firm, 'runtime_selectable') ?>
         </div>
     </div>
 
-    <div id="div_Firm_active" class="row field-row">
-		<div class="large-2 column">
+    <div id="div_Firm_active" class="data-group">
+		<div class="cols-2 column">
 			<label for="Firm_active">Active:</label>
 		</div>
-		<div class="large-5 column end">
+		<div class="cols-5 column end">
 			<?php echo CHtml::activeCheckBox($firm, 'active') ?>
 		</div>
 	</div>

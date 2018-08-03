@@ -16,12 +16,12 @@
  */
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-            0 => array('Trabectome', 'SidePort', 'CornealSuture'),
+        0 => array('Trabectome', 'SidePort', 'CornealSuture'),
     ),
     'onReadyCommandArray' => array(
-            array('addDoodle', array('AntSeg')),
-            array('addDoodle', array('Trabectome')),
-            array('deselectDoodles', array()),
+        array('addDoodle', array('AntSeg')),
+        array('addDoodle', array('Trabectome')),
+        array('deselectDoodles', array()),
     ),
     'side' => $this->selectedEyeForEyedraw->shortName,
     'idSuffix' => $element->elementType->id,

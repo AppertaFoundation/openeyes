@@ -16,9 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="button-bar right">
-	<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
-	<?php foreach ($this->event_actions as $action) { ?>
-		<?php echo $action->toHtml();?>
-	<?php } ?>
+<div class="buttons-right">
+  <i class="spinner" title="Loading..." style="display: none;"></i>
+    <?php foreach ($this->event_actions as $action) { ?><?php echo $action->toHtml(); ?><?php } ?>
 </div>

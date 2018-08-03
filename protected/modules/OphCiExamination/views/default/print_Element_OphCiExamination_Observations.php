@@ -17,92 +17,90 @@
  */
 ?>
 
-<div class="element-data row">
-	<div class="large-4 column">
+<div class="element-data data-group">
+	<div class="cols-4 column">
         
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('blood_pressure_systolic')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->blood_pressure_systolic ?> mmHg</label>
         </div>
        
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('blood_glucose')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->blood_glucose ?> mmol/l</label>
         </div>
         
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('weight')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->weight ?> kg</label>
         </div>
     </div>
-    
-    <div class="large-4 column">
+  <div class="cols-4 column">
         
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('blood_pressure_diastolic')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->blood_pressure_diastolic ?> mmHg</label>
         </div>
         
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('hba1c')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->hba1c ?> mmol/mol</label>
         </div>
        
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 BMI:
             </label>
         </div>
-        <div class="large-5 column" id="bmi-container">
+        <div class="cols-5 column" id="bmi-container">
             <label><?= $element->bmiCalculator( $element->weight, $element->height) ?></label>
         </div>    
     </div>
-    
-    <div class="large-4 column">
-        <div class="large-7 column">
+  <div class="cols-4 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('o2_sat')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->o2_sat ?> %</label>
         </div>
        
-        <div class="large-7 column" >
+        <div class="cols-7 column" >
             <label>
                 <?= $element->getAttributeLabel('height')?>:
             </label>
         </div>
-        <div class="large-5 column" id="bmi-height">
+        <div class="cols-5 column" id="bmi-height">
             <label><?= $element->height ?> cm</label>
         </div>
       
-        <div class="large-7 column">
+        <div class="cols-7 column">
             <label>
                 <?= $element->getAttributeLabel('pulse')?>:
             </label>
         </div>
-        <div class="large-5 column">
+        <div class="cols-5 column">
             <label><?= $element->pulse ?> BPM</label>
         </div>
       

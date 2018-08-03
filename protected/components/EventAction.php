@@ -1,8 +1,9 @@
 <?php
+
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -24,8 +25,8 @@ class EventAction
     public $href;
     public $htmlOptions;
     public $options = array(
-            'level' => 'primary',
-            'disabled' => false,
+        'level' => 'primary',
+        'disabled' => false,
     );
 
     public static function button($label, $name, $options = null, $htmlOptions = null)
@@ -36,7 +37,7 @@ class EventAction
             $action->htmlOptions['type'] = 'submit';
         }
         if (!isset($action->htmlOptions['id'])) {
-            $action->htmlOptions['id'] = 'et_'.strtolower($name);
+            $action->htmlOptions['id'] = 'et_' . strtolower($name);
         }
 
         return $action;
@@ -46,6 +47,7 @@ class EventAction
     {
         $options = array_merge(array('level' => 'print'), $options);
         $htmlOptions = array_merge(array('class' => 'button small'), $htmlOptions);
+
         return static::button($label, $name, $options, $htmlOptions);
     }
 
@@ -74,25 +76,26 @@ class EventAction
 
     public function toHtml()
     {
-        $this->htmlOptions['class'] .= ' '.$this->options['level'];
-        $this->htmlOptions['class'] .= ' event-action';
+        $this->htmlOptions['class'] .= ' button header-tab';
         $label = CHtml::encode($this->label);
 
         if ($this->options['level'] === 'save') {
-            $this->htmlOptions['class'] .= ' button secondary small';
+            $this->htmlOptions['class'] .= ' green';
         }
         if ($this->options['level'] === 'delete') {
-            $content = '<span class="icon-button-small-trash-can"></span>';
-            $content .= '<span class="hide-offscreen">'.$label.'</span>';
+            $content = '<i class="oe-i trash"></i>';
             $label = $content;
-            $this->htmlOptions['class'] .= ' button button-icon small';
+            $this->htmlOptions['class'] .= ' header-tab icon red';
+            $this->htmlOptions['id'] = 'js-delete-event-btn';
         }
         if ($this->options['level'] === 'cancel') {
-            $this->htmlOptions['class'] .= ' button small';
+            $this->htmlOptions['class'] .= ' red';
+
         }
         if ($this->options['level'] === 'print') {
-            $label = '<span class="oe-btn-icon print">' . $label . '</span>';
-            $this->htmlOptions['class'] .= ' button oe-oescape-switch';
+            $label = '<i class="oe-i print"></i>';
+            $this->htmlOptions['class'] .= ' icon';
+
         }
 
         if ($this->options['disabled']) {
@@ -100,10 +103,11 @@ class EventAction
             $this->htmlOptions['disabled'] = 'disabled';
         }
 
-        if ($this->type == 'button') {
+        if ($this->type === 'button') {
             return CHtml::htmlButton($label, $this->htmlOptions);
-        } elseif ($this->type == 'link') {
+        } elseif ($this->type === 'link') {
             return CHtml::link($label, $this->href, $this->htmlOptions);
         }
     }
 }
+

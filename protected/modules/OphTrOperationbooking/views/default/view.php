@@ -22,15 +22,14 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 	<?php
     $this->moduleNameCssClass .= ' highlight-fields';
     $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')'?>
 
 <?php if ($warnings) { ?>
-	<div class="row">
-		<div class="large-12 column">
+		<div class="cols-12">
 			<div class="alert-box patient with-icon">
 				<?php foreach ($warnings as $warn) {?>
 					<strong><?php echo $warn['long_msg']; ?></strong>
@@ -38,7 +37,6 @@ $warnings = $this->patient->getWarnings($clinical);
 				}?>
 			</div>
 		</div>
-	</div>
 <?php }?>
 
 	<?php if (!$operation->has_gp) {?>
@@ -68,5 +66,5 @@ $warnings = $this->patient->getWarnings($clinical);
     $this->renderOpenElements($this->action->id);
     $this->renderOptionalElements($this->action->id);
     ?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

@@ -56,6 +56,25 @@ class Element_OphTrOperationnote_Biometry extends Element_OnDemand
     }
 
     /**
+     * Returns a value indicating whether this event has the eye of the given side
+     *
+     * @param string $side The side of the eye to test for (either left or right)
+     * @return bool True if this event has the eye of the given side
+     * @throws InvalidArgumentException Thrown if the given eye is not valid
+     */
+    public function hasEye($side)
+    {
+        switch ($side) {
+            case 'left':
+                return $this->hasLeft();
+            case 'right':
+                return $this->hasRight();
+            default:
+                throw new InvalidArgumentException('Side must be either "left" or "right"');
+        }
+    }
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return ElementOperation the static model class

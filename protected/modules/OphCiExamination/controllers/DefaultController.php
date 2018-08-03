@@ -69,12 +69,11 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Need split event files.
-     *
      * @TODO: determine if this should be defined by controller property
      *
-     * @param CAction $action
-     *
+     * @param $action
      * @return bool
+     * @throws \CHttpException
      */
     protected function beforeAction($action)
     {
@@ -86,8 +85,8 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Applies workflow and filtering to the element retrieval.
-     *
-     * @return BaseEventTypeElement[]
+     * @return \BaseEventTypeElement[]
+     * @throws \CException
      */
     protected function getEventElements()
     {
@@ -332,16 +331,43 @@ class DefaultController extends \BaseEventTypeController
         $this->actionUpdate($id);
     }
 
+    public function renderOpenElements($action, $form = null, $date = null)
+    {
+        if ($action !== 'view') {
+            parent::renderOpenElements($action, $form, $date);
+
+            return;
+        }
+
+        $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
+
+        $elements = $this->getElements($action);
+        $elements = array_filter($elements, function ($element) {
+            return !in_array(get_class($element), array(
+                models\Element_OphCiExamination_History::class,
+                models\PastSurgery::class,
+                models\SystemicDiagnoses::class,
+                models\Element_OphCiExamination_Diagnoses::class,
+                models\HistoryMedications::class,
+                models\FamilyHistory::class,
+                models\SocialHistory::class,
+            ), true);
+        });
+
+        $this->renderElements($elements, $action, $form, $date);
+    }
+
     /**
      * Override action value when action is step to be update.
      *
-     * @param BaseEventTypeElement                $element
-     * @param string                              $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     * @param array                               $view_data
-     * @param bool                                $return
-     * @param bool                                $processOutput
+     * @param \BaseEventTypeElement $element
+     * @param string $action
+     * @param \BaseCActiveBaseEventTypeCActiveForm $form
+     * @param array $data
+     * @param array $view_data
+     * @param bool $return
+     * @param bool $processOutput
+     * @throws \Exception
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
@@ -607,7 +633,8 @@ class DefaultController extends \BaseEventTypeController
         }
 
         header('Content-type: application/json');
-        echo json_encode(array('id' => $disorder->id, 'name' => $disorder->term));
+        // For some reason JSON_HEX_QUOT | JSON_HEX_APOS doesn't escape ?
+        echo json_encode(array('id' => $disorder->id, 'name' => addslashes($disorder->term)));
         Yii::app()->end();
     }
 
@@ -756,7 +783,7 @@ class DefaultController extends \BaseEventTypeController
                     $diagnosis = new models\OphCiExamination_Diagnosis();
                     $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
                     $diagnosis->disorder_id = $disorder_id;
-                    $diagnosis->principal = (@$data['principal_diagnosis'] == $disorder_id);
+                    $diagnosis->principal = (@$data['principal_diagnosis_row_key'] == @$diagnoses_data['row_key'][$i]);
                     $diagnosis->date = isset($diagnoses_data['date'][$i]) ? $diagnoses_data['date'][$i] : null;
                     $diagnoses[] = $diagnosis;
                 }
@@ -956,9 +983,10 @@ class DefaultController extends \BaseEventTypeController
         if (!empty($data[$model_name]['disorder_id'])) {
             foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
                 $diagnoses[] = array(
+                    'id' => $data[$model_name]['id'][$i],
                     'eye_id' => $diagnosis_eyes[$i],
                     'disorder_id' => $disorder_id,
-                    'principal' => (@$data['principal_diagnosis'] == $disorder_id),
+                    'principal' => (@$data['principal_diagnosis_row_key'] == $data[$model_name]['row_key'][$i]),
                     'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
                 );
             }
@@ -1212,12 +1240,11 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
 
+            $et_name = models\HistoryRisks::model()->getElementTypeName();
             foreach ($missing_risks as $missing_risk) {
-                $et_name = models\HistoryRisks::model()->getElementTypeName();
                 $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
             }
         }
-
 
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
@@ -1321,6 +1348,18 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Render the open child elements for the given parent element type;
+     * @param \BaseEventTypeElement $parent_element
+     * @param string $action
+     * @param BaseCActiveBaseEventTypeCActiveForm $form
+     * @param Array $data
+     */
+    public function renderSingleChildOpenElements($element, $action, $form = null, $data = null)
+    {
+            $this->renderElement($element, $action, $form, $data);
+    }
+
+    /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *
@@ -1328,6 +1367,7 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return bool
      */
+
     public function isRequiredInUI(\BaseEventTypeElement $element)
     {
         if (isset($this->mandatoryElements)) {

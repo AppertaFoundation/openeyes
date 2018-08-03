@@ -16,38 +16,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields element-eyes row">
-	<div class="element-eye right-eye column side left eventDetail sideHeaders">
-		<h4>Right side</h4>
-	</div>
-	<div class="element-eye left-eye column side right eventDetail sideHeaders">
-		<h4>Left side</h4>
-	</div>
-</div>
-<div class="element-fields element-eyes row">
+
+<div class="element-fields element-eyes data-group">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye left side column <?php if (!$element->hasRight()) {?> inactive<?php }?>"
-		data-side="right">
-		<div class="active-form">
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
-		</div>
-	</div>
-
-	<div class="element-eye left-eye right side column <?php if (!$element->hasLeft()) {?> inactive<?php }?>"
-		data-side="left">
-		<div class="active-form">
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
-		</div>
-	</div>
-
+  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+  <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+    <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+        <?php $this->renderPartial($element->form_view.'_fields',
+            array('side' =>  $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+    </div>
+    <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+      <div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
+    </div>
+  </div>
+  <?php endforeach; ?>
 </div>
 
 <script id="previntervention_template" type="text/html">

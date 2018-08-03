@@ -15,16 +15,43 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+if ($element->elementType->name!="Clinic Outcome"):
 ?>
-<?php
-    foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
-        $options = CHtml::listData($attribute->getAttributeOptions(), 'slug', 'label');
-        $html_options = array('empty' => '-- '.$attribute->label.' --', 'class' => 'textMacro inline', 'delimited' => true, 'nowrapper' => true);
-        foreach ($attribute->getAttributeOptions() as $option) {
-            $html_options['options'][(string) $option->slug] = array(
-                'data-element-type-id' => $option->attribute_element->element_type_id,
-            );
-        }
-        echo $form->dropDownTextSelection($element, $field, $options, $html_options);
-    }
-?>
+<div class="close-icon-btn">
+  <i class="oe-i remove-circle medium"></i>
+</div>
+<div class="select-icon-btn">
+  <i class="oe-i menu selected"></i>
+</div>
+<button class="button hint green add-icon-btn" type="button">
+  <i class="oe-i plus pro-theme"></i>
+</button>
+<?php endif; ?>
+<table class="select-options cols-full">
+  <tbody>
+  <tr>
+      <?php
+      $firms = Firm::model()->findAll();
+      $firm_name = array();
+      $firm_sub_id = array();
+      foreach ($firms as $firm){
+        array_push($firm_name, $firm->name);
+        array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+          $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+      }
+      foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
+    <td>
+      <div class="flex-layout flex-top flex-left">
+        <ul class="add-options cols-full" data-multi="false" data-clickadd="false">
+            <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
+              <li data-str="<?php echo (string)$option->slug; ?>">
+                <span class="restrict-width"><?php echo (string)$option->slug; ?></span>
+              </li>
+            <?php }
+            } ?>
+        </ul>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

@@ -16,17 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="box patient-info associated-data js-toggle-container">
-	<header class="box-header">
+<section class="element patient-info associated-data js-toggle-container">
+	<header class="element-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Systemic Diagnoses
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide js-toggle">
-			<span class="icon-showhide">
-				Show/hide this section
-			</span>
-		</a>
 	</header>
 
 	<div class="js-toggle-body">
@@ -75,7 +70,7 @@
                         ),
                     ))?>
 
-				<fieldset class="field-row">
+				<fieldset class="data-group">
 
 					<legend><strong>Add Systemic diagnosis</strong></legend>
 
@@ -89,7 +84,7 @@
                             'loader' => 'add_systemic_diagnosis_loader',
                         ))?>
 
-					<div class="row field-row hide" id="add_systemic_diagnosis_loader">
+					<div class="hide" id="add_systemic_diagnosis_loader">
 						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
 							<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 								searching...
@@ -98,7 +93,7 @@
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-					<fieldset class="diagnosis_eye row field-row">
+					<fieldset class="diagnosis_eye data-group">
 						<legend class="<?php echo $form->columns('label');?>">
 							Side:
 						</legend>

@@ -18,13 +18,21 @@
 ?>
 
 <section id="result-output" class="element-fields">
-    <div class="fields-row">
-        <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array(), array('field' => 2));?>
+  <div class="element-fields">
+    <div class="active-form">
+      <table class="cols-11">
+        <tbody>
+          <tr>
+              <?php echo $form->textField($element, 'time', $element->getHtmlOptionsForInput('time'), array());?>
+          </tr>
+          <tr>
+              <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array());?>
+          </tr>
+          <tr>
+              <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array());?>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="fields-row">
-        <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array(), array('field' => 2));?>
-    </div>
-    <div class="fields-row">
-        <?php echo $form->textField($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), array('field' => 6));?>
-    </div>
+  </div>
 </section>

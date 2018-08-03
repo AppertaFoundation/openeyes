@@ -19,7 +19,9 @@
 $this->layout = '//layouts/error';
 ?>
 <h2>Merged patient record</h2>
-<p class="panel"><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
+<div class="alert-box error">
+  <strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong>
+</div>
 <p class="panel">Please contact OpenEyes support for assistance:</p>
 <?php echo $this->renderPartial('//error/support') ?>
 <p class="panel"><?php echo CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl . '/') ?></p>

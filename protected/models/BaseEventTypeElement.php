@@ -92,6 +92,28 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Return the title of the element to be displayed in view mode
+     * Should be overridden by subclasses to customise the title
+     *
+     * @return string The title to be displayed
+     */
+    public function getViewTitle()
+    {
+        return $this->getElementTypeName();
+    }
+
+    /**
+     * Return the title of the element to be displayed in edit mode
+     * Should be overridden by subclasses to customise the title
+     *
+     * @return string The title to be displayed
+     */
+    public function getFormTitle()
+    {
+        return $this->getElementTypeName();
+    }
+
+    /**
      * Can this element be copied (cloned/duplicated)
      * Override to return true if you want an element to be copyable.
      *
@@ -127,6 +149,23 @@ class BaseEventTypeElement extends BaseElement
         return $this->getAttributes();
     }
 
+    /**
+     * Return the width of this element in tiles for viewing
+     * @return null
+     */
+    public function getTileSize($action)
+    {
+        return null;
+    }
+
+    /**
+     * For rendering purpose, if element is not individual, will render the page separate.
+     * @param $action
+     * @return bool
+     */
+    public function isIndividual($action){
+        return true;
+    }
     /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
@@ -453,6 +492,44 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+
+    /**
+     * Return the display order of element, solve the problem elements has different order in different display mode.
+     * @param $action
+     * @return mixed
+     */
+    public function getDisplayOrder($action){
+        return $this->getElementType()->display_order;
+    }
+
+    public function getChildDisplayOrder($action) {
+        if($this->isChild($action)) {
+            return $this->getDisplayOrder($action);
+        } else {
+            return -1;
+        }
+    }
+
+    public function getParentDisplayOrder($action) {
+        if ($this->getElementType($action)->parent_element_type_id) {
+            return $this->getElementType($action)->parent_element_type->display_order;
+        } else {
+            return $this->getDisplayOrder($action);
+        }
+    }
+
+    /**
+     * Return the parent type of element, solve the problem elements has different parent in different display mode.
+     * @param $action
+     * @return mixed
+     */
+    public function getParentType($action){
+        return $this->getElementType()->parent_element_type->class_name;
+    }
+
+    public function isChild($action){
+        return $this->getElementType()->isChild();
+    }
     /**
      * Stub method for audit checking before an element is saved.
      */
@@ -492,4 +569,5 @@ class BaseEventTypeElement extends BaseElement
             $this->audit = array();
         }
     }
+
 }

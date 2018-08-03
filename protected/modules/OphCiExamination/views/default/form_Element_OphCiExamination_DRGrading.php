@@ -15,6 +15,30 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+function getLevelColour($risk_level){
+    switch ($risk_level){
+        case '':
+        case 'none':
+            return 'green';
+            break;
+        case 'pre-prolif':
+        case 'moderate':
+            return 'amber';
+            break;
+        case 'proliferative':
+        case 'maculopathy':
+        case 'severe':
+        case 'high-risk':
+            return 'red';
+            break;
+        case 'ungradable':
+        case 'mild':
+        case 'early':
+            return 'blue';
+        default:
+            return 'blue';
+    }
+}
 ?>
 
 <?php $this->beginClip('element-title-additional');?>
@@ -35,58 +59,34 @@
 </div>
 <?php $this->endClip('element-title-additional');?>
 
-<div class="sub-element-fields">
+<div class="element-fields flex-layout full-width ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<fieldset class="field-row row">
-		<legend class="large-2 column">
+	<fieldset class="data-group">
 				<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
-		</legend>
-		<div class="large-10 column">
 			<?php
-                if ($diabetes = $this->patient->getDiabetesType()) {
-                    echo '<span class="data-value">'.$diabetes->term.'</span>';
-                } else {
-                    $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
-                }
-            ?>
-		</div>
+      if ($diabetes = $this->patient->getDiabetesType()) {
+        echo '<span class="data-value">'.$diabetes->term.'</span>';
+        } else {
+        $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
+        } ?>
 	</fieldset>
 </div>
-<div class="sub-element-fields element-eyes row">
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?><?php if ($element->id || !empty($_POST)) {
-    ?> uninitialised<?php 
-}?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php $this->renderPartial($element->form_view.'_fields', array('side' => 'right', 'element' => $element, 'form' => $form))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right DR Grading
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?><?php if ($element->id || !empty($_POST)) {
-    ?> uninitialised<?php 
-}?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php $this->renderPartial($element->form_view.'_fields', array('side' => 'left', 'element' => $element, 'form' => $form))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left DR Grading
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+<div class="element-fields element-eyes">
+  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+  <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if ($element->id || !empty($_POST)) {
+      ?> uninitialised<?php }?>" data-side="<?= $eye_side ?>">
+    <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <?php $this->renderPartial($element->form_view.'_fields', array('side' =>$eye_side, 'element' => $element, 'form' => $form))?>
+    </div>
+    <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+      <div class="add-side">
+        <a href="#">
+          Add <?= $eye_side ?> DR Grading
+          <span class="icon-add-side"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <?php endforeach; ?>
 </div>

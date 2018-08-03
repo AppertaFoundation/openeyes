@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 	<?php
         // Event actions
@@ -51,5 +51,5 @@
 	<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
 
 	<?php $this->renderOpenElements($this->action->id); ?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>

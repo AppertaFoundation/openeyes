@@ -69,13 +69,33 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('disorder', 'required'),
-            array('has_disorder', 'required', 'message'=>'Status cannot be blank'),
+            array('has_disorder', 'required', 'message' => 'Status cannot be blank'),
             array('date, side_id, disorder, has_disorder', 'safe'),
+            array('side_id', 'sideValidator'),
             array('date', 'OEFuzzyDateValidatorNotFuture'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, date, disorder, has_disorder', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function sideValidator($attribute, $params)
+    {
+        if(!$this->side_id){
+            $this->addError($attribute, "Eye must be selected");
+        }
+
+    }
+
+    public function beforeSave()
+    {
+        //-9 is the N/A option but we do not save it, if null is posted that means
+        //the user did not checked any checkbox so we return error in the validation part
+        if($this->side_id == -9){
+            $this->side_id = null;
+        }
+
+        return parent::beforeSave();
     }
 
     protected function getSecondaryDiagnosisRelation()

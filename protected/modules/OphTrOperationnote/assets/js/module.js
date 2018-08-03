@@ -50,8 +50,9 @@ function callbackAddProcedure(procedure_id) {
                         m[1] = m[1].replace(/ .*$/, '');
 
                         if (m[1] === 'Element_OphTrOperationnote_GenericProcedure' || $('.' + m[1]).length < 1) {
-                            $('.Element_OphTrOperationnote_ProcedureList .sub-elements').append(html);
-                            var $lastMatchedElement = $('.' + m[1] + ':last');
+                          $('.Element_OphTrOperationnote_ProcedureList').next('.sub-elements').append(html);
+
+                          var $lastMatchedElement = $('.' + m[1] + ':last');
                             $lastMatchedElement.attr('style', 'display: none;');
                             $lastMatchedElement.removeClass('hidden');
                             $lastMatchedElement.slideToggle('fast');
@@ -101,6 +102,12 @@ function callbackRemoveProcedure(procedure_id) {
                 $('.' + val).slideToggle('fast', function () {
                     $('.' + val).remove();
                 });
+
+                if (val === 'Element_OphTrOperationnote_Cataract') {
+                  $('#ophTrOperationnotePCRRiskDiv').slideToggle('fast', function() {
+                      $(this).remove();
+                  })
+                }
             });
         }
     });
@@ -119,7 +126,7 @@ function setCataractInput(key, value) {
 }
 
 $(document).ready(function () {
-    handleButton($('#et_save'), function () {
+    $(this).on('click','#et_save', function () {
         if ($('#Element_OphTrOperationnote_Buckle_report').length > 0) {
             $('#Element_OphTrOperationnote_Buckle_report').val(ED.getInstance('ed_drawing_edit_Buckle').report());
         }
@@ -128,7 +135,7 @@ $(document).ready(function () {
         }
     });
 
-    handleButton($('#et_cancel'), function (e) {
+    $(this).on('click','#et_cancel', function (e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
             window.location.href = window.location.href.replace('/update/', '/view/');
         } else {
@@ -137,11 +144,7 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    handleButton($('#et_deleteevent'));
-
-    handleButton($('#et_canceldelete'));
-
-    handleButton($('#et_print'), function (e) {
+    $(this).on('click','#et_print', function (e) {
         e.preventDefault();
         printEvent(null);
     });
@@ -379,7 +382,7 @@ AnaestheticSlide.prototype = {
             });
 */
     }
-}
+};
 
 function AnaestheticGivenBySlide() {
     if (this.init) this.init.apply(this, arguments);
@@ -409,7 +412,7 @@ AnaestheticGivenBySlide.prototype = {
             anaestheticGivenBySlide.anaestheticTypeWitnessSliding = false;
         });
     }
-}
+};
 
 var anaestheticSlide = new AnaestheticSlide;
 var anaestheticGivenBySlide = new AnaestheticGivenBySlide;
@@ -469,7 +472,7 @@ function showHideIOLFields(_drawing, resetPosition) {
 function AngleMarksController(_drawing) {
     var angleMarks,
         $biometry_element = $(".Element_OphTrOperationnote_Biometry"),
-        has_biometry = $biometry_element.find(".element-fields").data('has_biometry'),
+        has_biometry = $biometry_element.find(".element-fields").data('has-biometry'),
         data;
 
     // Register controller for notifications
@@ -484,11 +487,11 @@ function AngleMarksController(_drawing) {
                 this.initAntSegAngleMarks();
                 break;
         }
-    }
+    };
 
     this.initAntSegAngleMarks = function(){
 
-        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry-data");
         angleMarks = _drawing.firstDoodleOfClass('AntSegAngleMarks');
 
         if(!has_biometry && angleMarks){
@@ -505,7 +508,7 @@ function AngleMarksController(_drawing) {
             }
 
         }
-    }
+    };
 
     this.calculateBiometryData = function(data){
         var return_obj = {};
@@ -522,7 +525,7 @@ function AngleMarksController(_drawing) {
     this.setBiometryData = function(){
 
         //Refresh data
-        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry-data");
         let biometry_data = this.calculateBiometryData(data);
 
         if(has_biometry && data && angleMarks){
@@ -532,7 +535,7 @@ function AngleMarksController(_drawing) {
         } else {
             _drawing.deleteDoodle(angleMarks, true);
         }
-    }
+    };
 }
 
 function sidePortController(_drawing) {
@@ -623,7 +626,6 @@ function sidePortController(_drawing) {
                 }
 
                 // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
-                // !isNaN(surgeonRotation) : because at the beginning "rotation" is undefined
                 if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && typeof surgeonRotation === 'number') {
 
                     if (typeof(sidePort1) != 'undefined') {
@@ -841,9 +843,9 @@ function loadBiometryElementData(){
         iolPower = '';
 
     $higlightedEye = $('.highlighted-eye');
-    predictedRefraction = $higlightedEye.find('.predictedRefraction').text();
-    iolPower = $higlightedEye.find('.iolDisplay').text();
-    selectedLens = $higlightedEye.find('.selected_lens').val();
+    predictedRefraction = $higlightedEye.find('.js-predicted-refraction').text().trim();
+    iolPower = $higlightedEye.find('.js-iol-display').text();
+    selectedLens = $higlightedEye.find('.js-selected_lens').val();
 
     if(predictedRefraction &&  ($('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == "" ||  $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0)){
         if(predictedRefraction == "None"){
@@ -871,13 +873,13 @@ function highlightBiometryElement( ){
     // left: 1
     $('#ophTrOperationnotePCRRiskDiv').attr('style', 'display: block;');
     if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
-        $('.right-eye').removeClass('disabled-eye').addClass('highlighted-eye');
-        $('.left-eye').removeClass('highlighted-eye').addClass('disabled-eye');
+        $('.right-eye').removeClass('deactivate').addClass('highlighted-eye');
+        $('.left-eye').addClass('deactivate').removeClass('highlighted-eye');
         $('#ophCiExaminationPCRRiskLeftEye').hide();
         $('#ophCiExaminationPCRRiskRightEye').show();
     }else if($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
-        $('.left-eye').removeClass('disabled-eye').addClass('highlighted-eye');
-        $('.right-eye').removeClass('highlighted-eye').addClass('disabled-eye');
+        $('.left-eye').removeClass('deactivate').addClass('highlighted-eye');
+        $('.right-eye').addClass('deactivate').removeClass('highlighted-eye');
         $('#ophCiExaminationPCRRiskRightEye').hide();
         $('#ophCiExaminationPCRRiskLeftEye').show();
     }

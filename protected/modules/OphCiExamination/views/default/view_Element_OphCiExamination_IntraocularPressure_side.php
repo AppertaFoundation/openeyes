@@ -13,30 +13,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="data-value">
-	<?php if ($element->{"{$side}_values"}): ?>
-		<table>
-			<thead>
-				<tr>
-					<th>Time</th>
-					<th>mm Hg</th>
-					<th>Instrument</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($element->{"{$side}_values"} as $value): ?>
-					<tr>
-						<td><?= substr($value->reading_time, 0, 5) ?></td>
-						<td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name ?></td>
-						<td><?= $value->instrument ? $value->instrument->name : '' ?></td>
-					</tr>
-				<?php endforeach ?>
-			</tbody>
-		</table>
-	<?php endif ?>
-	<div class="field-row">
-		<div class="data-value">
-			<?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
-		</div>
-	</div>
-</div>
+<?php if ($element->{"{$side}_values"}): ?>
+  <table class="large">
+    <colgroup>
+      <col class="cols-4">
+    </colgroup>
+    <tbody>
+    <?php foreach ($element->{"{$side}_values"} as $value): ?>
+      <tr>
+        <td><?= $value->instrument->scale ? $value->qualitative_reading->name : $value->reading->name ?>mm Hg</td>
+        <td>
+          <i class="oe-i time small no-click pad"></i>
+            <?= substr($value->reading_time, 0, 5) ?>
+        </td>
+        <td><?= $value->instrument ? $value->instrument->name : '' ?></td>
+      </tr>
+    <?php endforeach ?>
+    </tbody>
+  </table>
+    <?php if ($element->{"{$side}_comments"}): ?>
+    <span class="large-text" style="padding-left: 5px"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></span>
+    <?php endif; ?>
+<?php endif ?>

@@ -174,7 +174,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      */
     public function __toString()
     {
-        return implode(' // ', $this->orderedDiagnoses);
+        return implode(' <br /> ', $this->orderedDiagnoses);
     }
 
     public $cached_tip_status = null;
@@ -317,5 +317,20 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             $category  = 'entries';
         }
         return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
+    }
+
+    public function getTileSize($action)
+    {
+        return $action === 'view' ? 1 : null;
+    }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 20;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
     }
 }

@@ -16,78 +16,74 @@
  */
 ?>
 <h1><?=$worklist->name?></h1>
-<div class="row">
-
-    <div class="large-12 column">
+<div class="cols-12 column">
+    <?php
+    if (!$worklist_patients->totalItemCount > 0) {?>
+        <div class="alert-box">
+            No patients in this worklist.
+        </div>
         <?php
-        if (!$worklist_patients->totalItemCount > 0) {?>
-            <div class="alert-box">
-                No patients in this worklist.
-            </div>
-            <?php
 
-        } else {
-            $core_api = new CoreAPI();
-            $cols = array(
-                array(
-                    'id' => 'hos_num',
-                    'class' => 'CDataColumn',
-                    'header' => 'Hospital No.',
-                    'value' => '$data->patient->hos_num',
-                ),
-                array(
-                    'id' => 'patient_name',
-                    'class' => 'CLinkColumn',
-                    'header' => 'Name',
-//                    'urlExpression' => '$data->patient->generateEpisodeLink()',
-                    'urlExpression' => function($data) use ($core_api) {
-                        return $core_api->generateEpisodeLink($data->patient, ['worklist_patient_id' => $data->id]);
-                    },
-                    'labelExpression' => '$data->patient->getHSCICName()',
-                ),
-                array(
-                    'id' => 'gender',
-                    'class' => 'CDataColumn',
-                    'header' => 'Gender',
-                    'value' => '$data->patient->genderString',
-                ),
-                array(
-                    'id' => 'dob',
-                    'class' => 'CDataColumn',
-                    'header' => 'DOB',
-                    'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
-                    'htmlOptions' => array('class' => 'date'),
-                ),
-            );
-            if ($worklist->scheduled) {
-                array_unshift($cols, array(
-                    'id' => 'time',
-                    'class' => 'CDataColumn',
-                    'header' => 'Time',
-                    'value' => '$data->scheduledtime',
-                ));
-            }
-
-            foreach ($worklist->displayed_mapping_attributes as $attr) {
-                $cols[] = array(
-                    'id' => "{$worklist->id}-attr-{$attr->id}",
-                    'class' => 'CDataColumn',
-                    'header' => $attr->name,
-                    'value' => function ($data) use ($attr) {
-                        return $data->getWorklistAttributeValue($attr);
-                    },
-                    'type' => 'raw',
-                );
-            }
-
-            $this->widget('zii.widgets.grid.CGridView', array(
-                'itemsCssClass' => 'grid',
-                'dataProvider' => $worklist_patients,
-                'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'style' => 'padding: 0px;'),
-                'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
-                'template' => '{pager}{items}{summary}',
-                'columns' => $cols,
+    } else {
+        $core_api = new CoreAPI();
+        $cols = array(
+            array(
+                'id' => 'hos_num',
+                'class' => 'CDataColumn',
+                'header' => 'Hospital No.',
+                'value' => '$data->patient->hos_num',
+            ),
+            array(
+                'id' => 'patient_name',
+                'class' => 'CLinkColumn',
+                'header' => 'Name',
+                'urlExpression' => function($data) use ($core_api) {
+                    return $core_api->generateEpisodeLink($data->patient, ['worklist_patient_id' => $data->id]);
+                },
+                'labelExpression' => '$data->patient->getHSCICName()',
+            ),
+            array(
+                'id' => 'gender',
+                'class' => 'CDataColumn',
+                'header' => 'Gender',
+                'value' => '$data->patient->genderString',
+            ),
+            array(
+                'id' => 'dob',
+                'class' => 'CDataColumn',
+                'header' => 'DOB',
+                'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
+                'htmlOptions' => array('class' => 'date'),
+            ),
+        );
+        if ($worklist->scheduled) {
+            array_unshift($cols, array(
+                'id' => 'time',
+                'class' => 'CDataColumn',
+                'header' => 'Time',
+                'value' => '$data->scheduledtime',
             ));
-        } ?>
-    </div>
+        }
+
+        foreach ($worklist->displayed_mapping_attributes as $attr) {
+            $cols[] = array(
+                'id' => "{$worklist->id}-attr-{$attr->id}",
+                'class' => 'CDataColumn',
+                'header' => $attr->name,
+                'value' => function ($data) use ($attr) {
+                    return $data->getWorklistAttributeValue($attr);
+                },
+                'type' => 'raw',
+            );
+        }
+
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'itemsCssClass' => 'grid',
+            'dataProvider' => $worklist_patients,
+            'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'style' => 'padding: 0px;'),
+            'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
+            'template' => '{pager}{items}{summary}',
+            'columns' => $cols,
+        ));
+    } ?>
 </div>

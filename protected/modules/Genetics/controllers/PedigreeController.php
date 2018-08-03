@@ -38,8 +38,6 @@ class PedigreeController extends BaseModuleController
      */
     public function beforeAction($action)
     {
-        Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
-
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'));
         Yii::app()->clientScript->registerScriptFile($assetPath.'/gene_validation.js');
 

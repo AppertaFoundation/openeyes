@@ -16,169 +16,183 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row">
-    <div class="large-8 large-centered column">
-        <?php $this->renderPartial('//base/_messages'); ?>
-    </div>
-</div>
-<div class="box content">
-	<div class="oe-header-panel row">
-		<div class="large-12 column">
-			<h1>Theatre Diaries</h1>
-			<div class="panel actions">
-				<div class="label">
-					Use the filters below to view Theatre schedules:
-				</div>
-				<?php if ($this->checkAccess('OprnPrint')) {?>
-					<div class="button-bar">
-						<button id="btn_print_diary" class="small">Print</button>
-						<button id="btn_print_diary_list" class="small">Print list</button>
-					</div>
-				<?php }?>
-			</div>
-		</div>
-	</div>
 
-	<div class="row">
-		<div class="large-12 column">
-			<h2>Search schedules by:</h2>
-		</div>
-	</div>
-	<div class="search-filters theatre-diaries">
-		<?php $this->beginWidget('CActiveForm', array(
-            'id' => 'theatre-filter',
-            'htmlOptions' => array(
-                'class' => 'row',
-            ),
-            'enableAjaxValidation' => false,
-        ))?>
-			<div class="large-12 column">
-				<div class="panel">
-					<div class="row">
-						<div class="large-12 column">
-
-							<table class="grid">
-								<thead>
-								<tr>
-									<th>Site:</th>
-									<th>Theatre:</th>
-									<th>Subspeciality:</th>
-									<th><?php echo Firm::model()->contextLabel()?>:</th>
-									<th>Ward:</th>
-									<th>Emergency list:</th>
-								</tr>
-								</thead>
-								<tbody>
-								<tr>
-									<td>
-										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
-									</td>
-									<td>
-										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty' => 'All theatres', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
-									</td>
-									<td>
-										<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty' => 'All specialties', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
-									</td>
-									<td>
-										<?php if (!@$_POST['subspecialty-id']) {?>
-											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All firms', 'disabled' => 'disabled'))?>
-										<?php } else {?>
-											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],$used_firms, array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
-										<?php }?>
-									</td>
-									<td>
-										<?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array('empty' => 'All wards', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
-									</td>
-									<td>
-										<?php echo CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1))?>
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="row">
-
-						<div class="large-10 column">
-
-							<div class="search-filters-extra clearfix">
-								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_0" value="today"<?php if (@$_POST['date-filter'] == 'today') {?> checked="checked"<?php }?>>
-									Today
-								</label>
-								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_1" value="week"<?php if (@$_POST['date-filter'] == 'week') {?> checked="checked"<?php }?>>
-									Next 7 days
-								</label>
-								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_2" value="month"<?php if (@$_POST['date-filter'] == 'month') {?> checked="checked"<?php }?>>
-									Next 30 days
-								</label>
-								<fieldset class="inline highlight">
-									<label>
-										<input type="radio" name="date-filter" id="date-filter_3" value="custom"<?php if (@$_POST['date-filter'] == 'custom') {?> checked="checked"<?php }?>>
-										or select date range:
-									</label>
-									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                                            'name' => 'date-start',
-                                            'id' => 'date-start',
-                                            'options' => array(
-                                                'showAnim' => 'fold',
-                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                                            ),
-                                            'value' => @$_POST['date-start'],
-                                            'htmlOptions' => array('class' => 'small fixed-width'),
-                                        ))?>
-									<span class="to">to</span>
-									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                                            'name' => 'date-end',
-                                            'id' => 'date-end',
-                                            'options' => array(
-                                                'showAnim' => 'fold',
-                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                                            ),
-                                            'value' => @$_POST['date-end'],
-                                            'htmlOptions' => array('class' => 'small fixed-width'),
-                                        ))?>
-									<ul class="button-group small">
-										<li><a href="#" id="last_week" class="small button">Last week</a></li>
-										<li><a href="#" id="next_week" class="small button">Next week</a></li>
-									</ul>
-								</fieldset>
-							</div>
-						</div>
-						<div class="large-2 column text-right">
-
-							<span style="width: 30px;">
-								<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-							</span>
-
-							<button id="search_button" class="secondary" type="submit">
-								Search
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php $this->endWidget()?>
-	</div>
-
-	<div class="row hide" id="theatre-search-loading">
-		<div class="large-12 column">
-			<div class="alert-box">
-				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" class="spinner" /> <strong>Please wait...</strong>
-			</div>
-		</div>
-	</div>
-
-	<div id="theatreList" class="theatres-list"></div>
-	<div class="printable" id="printable"></div>
+<div class="oe-full-header flex-layout">
+  <div class="title wordcaps">Theatre Diaries</div>
+    <?php if ($this->checkAccess('OprnPrint')) { ?>
+      <div>
+        <button id="btn_print_diary" class="button header-tab">Print</button>
+        <button id="btn_print_diary_list" class="button header-tab">Print list</button>
+      </div>
+    <?php } ?>
 </div>
 
-<div id="iframeprintholder" style="display: none;"></div>
+<div class="oe-full-content oe-theatre-diaries flex-layout flex-top">
+
+    <?php $this->beginWidget('CActiveForm', array(
+        'id' => 'theatre-filter',
+        'htmlOptions' => array(
+            'class' => 'data-group',
+        ),
+        'enableAjaxValidation' => false,
+    )) ?>
+
+  <!-- side panel -->
+  <nav class="oe-full-side-panel diaries-search">
+
+    <p>Use the filters below to view Theatre schedules</p>
+
+    <h3>Search schedules by</h3>
+
+    <!-- search options -->
+    <table class="search-options">
+      <tbody>
+      <tr>
+        <td>Site:</td>
+        <td>
+            <?php echo CHtml::dropDownList('site-id', @$_POST['site-id'],
+                Site::model()->getListForCurrentInstitution(), array(
+                    'empty' => 'All sites',
+                    'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                )) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>Theatre:</td>
+        <td>
+            <?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array(
+                'empty' => 'All theatres',
+                'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+            )) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>Subspeciality:</td>
+        <td>
+            <?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'],
+                Subspecialty::model()->getList(), array(
+                    'empty' => 'All specialties',
+                    'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                )) ?>
+        </td>
+      </tr>
+      <tr>
+        <td><?= Firm::contextLabel() ?>:</td>
+        <td>
+            <?php if (!@$_POST['subspecialty-id']) { ?>
+                <?php echo CHtml::dropDownList('firm-id', '', array(),
+                    array('empty' => 'All firms', 'disabled' => 'disabled')) ?>
+            <?php } else { ?>
+                <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],
+                    Firm::model()->getList(@$_POST['subspecialty-id']), array(
+                        'empty' => 'All firms',
+                        'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                    )) ?>
+            <?php } ?>
+        </td>
+      </tr>
+      <tr>
+        <td>Ward:</td>
+        <td>
+            <?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array(
+                'empty' => 'All wards',
+                'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+            )) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>Emergency list</td>
+        <td>
+            <?php echo CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1)) ?>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+
+    <h3>Select days</h3>
+    <div class="search-date-filters">
+      <div class="common-date-ranges flex-layout">
+
+        <label class="inline highlight">
+          <input type="radio" name="date-filter" id="date-filter_0"
+                 value="today"<?php if (@$_POST['date-filter'] == 'today') { ?> checked="checked"<?php } ?>>
+          Today
+        </label>
+        <label class="inline highlight">
+          <input type="radio" name="date-filter" id="date-filter_1"
+                 value="week"<?php if (@$_POST['date-filter'] == 'week') { ?> checked="checked"<?php } ?>>
+          Next 7 days
+        </label>
+        <label class="inline highlight">
+          <input type="radio" name="date-filter" id="date-filter_2"
+                 value="month"<?php if (@$_POST['date-filter'] == 'month') { ?> checked="checked"<?php } ?>>
+          Next 30 days
+        </label>
+
+      </div><!-- .common-date-ranges -->
+
+
+      <h3>Filter by Date</h3>
+
+      <div class="flex-layout">
+          <?php echo CHtml::textField('date-start', @$_POST['date-start'], array('class' => 'cols-5', 'placeholder'=> 'from')) ?>
+          <?php echo CHtml::textField('date-end', @$_POST['date-end'], array('class' => 'cols-5', 'placeholder' => 'to')) ?>
+      </div>
+
+      <div class="flex-layout v-pad">
+        <button id="last_week" class="button">Last week</button>
+        <button id="next_week" class="button">Next week</button>
+      </div>
+
+
+    </div><!-- search-date-filters -->
+
+    <i class="spinner" style="display:none"></i>
+    <button class="green hint cols-full" id="search_button" type="submit">Search</button>
+
+  </nav>
+
+    <?php $this->endWidget() ?>
+
+  <main class="oe-full-main">
+      <?php $this->renderPartial('//base/_messages'); ?>
+
+    <!--<div class="alert-box info"><strong><span id="result_count">99</span> Results</strong></div>-->
+    <div id="theatreList" class="theatres-list"></div>
+    <div class="printable" id="printable"></div>
+    <div id="iframeprintholder" style="display: none;"></div>
+
+  </main>
+
+</div>
+
+<style>
+  .printable {
+    display: none;
+  }
+
+  .printable * {
+    font-size: 9pt;
+  }
+
+  @media print {
+    .printable {
+      display: block !important;
+      width: 1050px !important;
+    }
+  }
+</style>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		return getDiary();
-	});
+  $(document).ready(function () {
+    pickmeup('#date-start', {
+      format: 'Y-m-d'
+    });
+    pickmeup('#date-end', {
+      format: 'Y-m-d'
+    });
+
+    return getDiary();
+  });
 </script>

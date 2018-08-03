@@ -214,4 +214,9 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
     {
         return true;
     }
+
+    public function getContainer_form_view()
+    {
+        return false;
+    }
 }

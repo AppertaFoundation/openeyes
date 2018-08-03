@@ -50,6 +50,14 @@ function validateFile(input) {
                 valid = false;
             }
 
+            if(file.name.length > max_document_name_length){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'The file you tried to upload exceeds the maximum allowed document name length, which is ' + max_document_name_length + ' characters'
+                }).open();
+
+                valid = false;
+            }
+
             if (allowed_file_types.indexOf(file.type) === -1) {
                 valid = false;
 
@@ -233,13 +241,13 @@ function deleteOPHCOImage(iID, index) {
     });
 }
 
-function createUploadButton(index) {
+function createUploadButton( index ){
     var btn = '<div class="upload-box">' +
-        '<label for="Document_' + index + '" id="upload_box" class="upload-label" ondrop="drop(event)" ondragover="allowDrop(event)">' +
-        '<i class="oe-i download medium"></i>' +
-        '<br> Click to select file or DROP here' +
-        '</label>' +
-        '<input autocomplete="off" type="file" name="Document[' + index + ']" id="Document_' + index + '" style="display:none;">' +
+        '<label for="Document_'+index+'" id="upload_box" class="upload-label" ondrop="drop(event)" ondragover="allowDrop(event)">' +
+      '<i class="oe-i download medium"></i>' +
+      '<br> Click to select file or DROP here' +
+      '</label>'+
+        '<input autocomplete="off" type="file" name="Document['+index+']" id="Document_'+index+'" style="display:none;">' +
         '</div>';
     $('#' + index + '_row').html(btn);
 
@@ -249,28 +257,23 @@ function createUploadButton(index) {
 }
 
 function deleteConfirm(dialogText, okFunc, cancelFunc, dialogTitle) {
-    $('<div style="padding: 10px; max-width: 500px; word-wrap: break-word;">' + dialogText + '</div>').dialog({
-        draggable: false,
-        modal: true,
-        resizable: false,
-        width: 'auto',
-        title: dialogTitle || 'Confirm',
-        minHeight: 75,
-        buttons: {
-            Yes: function () {
-            if (typeof (okFunc) == 'function') {
-                setTimeout(okFunc, 50);
-            }
-            $(this).dialog('destroy');
-            },
-            Cancel: function () {
-                if (typeof (cancelFunc) == 'function') {
-                    setTimeout(cancelFunc, 50);
-                }
-                $(this).dialog('destroy');
-            }
-        }
-    });
+  var dialog = new OpenEyes.UI.Dialog.Confirm({
+    content: dialogText,
+    okButton: 'Yes',
+    cancelButton: 'Cancel',
+    title: dialogTitle,
+  });
+  dialog.open();
+  dialog.on("ok", function () {
+    if (typeof (okFunc) == 'function') {
+      setTimeout(okFunc, 50);
+    }
+  });
+  dialog.on('cancel', function() {
+    if (typeof (cancelFunc) == 'function') {
+      setTimeout(cancelFunc, 50);
+    }
+  });
 }
 
 function clearInputFile(index) {
@@ -306,8 +309,6 @@ $(document).ready(function () {
             enableButtons($('#et_save'));
         }
     });
-
-    handleButton($('#et_deleteevent'));
 
     $('#single_document_uploader').hide();
     $('#double_document_uploader').hide();

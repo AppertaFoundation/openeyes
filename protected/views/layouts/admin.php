@@ -25,7 +25,7 @@
 </head>
 <body class="open-eyes">
 
-    <?php $this->renderPartial('//base/_banner_watermark'); ?>
+<!--    --><?php //$this->renderPartial('//base/_banner_watermark'); ?>
     <?php $this->renderPartial('//base/_debug'); ?>
 
     <div class="container main" role="main">
@@ -35,11 +35,11 @@
         <div class="container content">
 
             <div class="box content admin-content">
-                <div class="row">
-                    <aside class="large-3 column sidebar admin">
+                <div class="data-group">
+                    <aside class="cols-3 column sidebar admin">
                         <?php $this->renderPartial('//admin/sidebar'); ?>
                     </aside>
-                    <div class="large-9 column content admin">
+                    <div class="cols-9 column content admin">
                         <?php $this->renderPartial('//base/_messages'); ?>
                         <?php echo $content; ?>
                     </div>

@@ -70,8 +70,8 @@ function displayConflictMessage(){
     var $patientDataConflictConfirmation = $('#patientDataConflictConfirmation'),
         $input = $patientDataConflictConfirmation.find('input'),
         
-        $row = $('<div>', {'class':'row'}),
-        $column = $('<div>',{'class':'large-12 column'}),
+        $row = $('<div>', {'class':'data-group'}),
+        $column = $('<div>',{'class':'cols-12 column'}),
         $dob = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_dob'}).text('Patients have different personal details : dob'),
         $gender = $('<div>',{'class':'alert-box with-icon warning','id':'flash-merge_error_gender'}).text('Patients have different personal details : gender');
         
@@ -247,7 +247,7 @@ $(document).ready(function(){
     if( OpenEyes.UI.Search.getElement().data('autocomplete') ){
         OpenEyes.UI.Search.getElement().data('autocomplete')._renderItem = function (ul, item) {
             var warningHTML = '';
-                ul.addClass("z-index-1000 patient-ajax-list");
+                ul.addClass("patient-ajax-list");
 
             if(item.warning.length > 0){
                 for(i=0; i<item.warning.length;i++){
@@ -327,11 +327,11 @@ $(document).ready(function(){
         }
         
         if( $('#patientDataConflictConfirmation').length > 0 && $('#patientDataConflictConfirmation').is(':visible') && $('#patientDataConflictConfirmation').find('input').is(':not(:checked)') ){
-            var $row = $('<div>', {'class':'row check-warning'}),
-                $column = $('<div>',{'class':'large-12 column'}),
+            var $row = $('<div>', {'class':'data-group check-warning'}),
+                $column = $('<div>',{'class':'cols-12 column'}),
                 $checkbox = $('<div>',{'class':'alert-box with-icon warning'}).text('Please tick the checkboxes.');
                 
-                if( $('#patientMergeWrapper').find('.row.check-warning').length < 1 ){
+                if( $('#patientMergeWrapper').find('.data-group.check-warning').length < 1 ){
                     $row.append( $column.append($checkbox) );
                     $('#patientDataConflictConfirmation').before($row);
                 }

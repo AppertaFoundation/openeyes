@@ -16,37 +16,39 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<?php if ($element->hasRight()) {
-    ?>
-				<div class="row refraction">
-					<?php $this->renderPartial($element->view_view.'_OEEyeDraw', array('side' => 'right', 'element' => $element));
-    ?>
-				</div>
-			<?php 
-} else {
-    ?>
-				<div class="data-value">Not recorded</div>
-			<?php 
-}?>
-		</div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<?php if ($element->hasLeft()) {
-    ?>
-				<div class="row refraction">
-					<?php $this->renderPartial($element->view_view.'_OEEyeDraw', array('side' => 'left', 'element' => $element));
-    ?>
-				</div>
-			<?php 
-} else {
-    ?>
-				<div class="data-value">Not recorded</div>
-			<?php 
-}?>
-		</div>
-	</div>
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+        <table class="large">
+          <colgroup>
+            <col class="cols-4">
+            <col class="cols-3">
+          </colgroup>
+          <tbody>
+          <tr>
+              <?php if ($element->hasEye($eye_side)): ?>
+                <td>
+                    <?= Yii::app()->format->text($element->getCombined($eye_side)) ?>
+                </td>
+                <td>
+                  SE:
+                    <?= number_format($element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'},
+                        2) ?>
+                </td>
+                <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
+                  <?php if ($element->{$eye_side . '_notes'}): ?>
+                  <td>
+                      <?php echo $element->textWithLineBreaks($eye_side . '_notes') ?>
+                  </td>
+                  <?php endif; ?>
+              <?php else: ?>
+                <td>
+                    <div class="data-value not-recorded">Not recorded</div>
+                </td>
+              <?php endif; ?>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    <?php endforeach; ?>
 </div>

@@ -29,26 +29,51 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
         this.fuzyDateWrapperSelector = this.options.modelName + '_fuzzy_date';
-
+        this.$popupSelector = $('#add-to-past-surgery');
         this.templateText = $("#OEModule_OphCiExamination_models_PastSurgery_operation_template").text();
-
         this.initialiseTriggers();
+        this.initialiseDatepicker();
     }
 
     PreviousSurgeryController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_PastSurgery',
         monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     };
+  /**
+   * Setup Datepicker
+   */
+  PreviousSurgeryController.prototype.initialiseDatepicker = function () {
+      var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key') ;
+      for (var i=0; i<row_count;i++){
+        this.constructDatepicker( i);
+      }
+  };
+  PreviousSurgeryController.prototype.setDatepicker = function () {
+    var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key')-1 ;
+    this.constructDatepicker(row_count);
+  };
 
-    PreviousSurgeryController.prototype.initialiseTriggers = function(){
+  PreviousSurgeryController.prototype.constructDatepicker = function (line_no) {
+    var datepicker_name = '#past-surgery-datepicker-'+line_no;
+    var datepicker= $(this.tableSelector).find(datepicker_name);
+    if (datepicker.length!=0){
+      pickmeup(datepicker_name, {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+    }
+  };
+
+  PreviousSurgeryController.prototype.initialiseTriggers = function(){
 
         var controller = this;
-        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
+        controller.$popupSelector.on('click','.add-icon-btn', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        controller.$table.on('click', 'button.remove', function(e) {
+        controller.$table.on('click', '.remove_item', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
         });
@@ -64,9 +89,8 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             $(this).closest('td').find('.common-operation').val(common_operation);
             $(this).val(null);
         });
-
-        controller.$section.on('change', ('.'+controller.options.modelName + '_sides input[type="radio"]'), function(e) {
-            $(this).closest('td').find('input[type="hidden"]').val($(this).val());
+        controller.$table.on('click', ('.'+controller.options.modelName + '_previous_operation_side'), function(e) {
+            $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
     };
 
@@ -75,17 +99,24 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      * @param data
      * @returns {*}
      */
-    PreviousSurgeryController.prototype.createRow = function(data)
+    PreviousSurgeryController.prototype.createRow = function()
     {
-        if (data === undefined)
-            data = {};
 
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+      var selected_option = $('#past-surgery-option').find('.selected');
+      var newRows = [];
+      var template = this.templateText;
+      var tableSelector = this.tableSelector;
+      selected_option.each(function (e) {
+        data = {};
+        data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
+        data['id'] = $(this).data('id');
+        data['operation'] = $(this).data('str');
+        newRows.push( Mustache.render(
+          template,
+          data ));
+      });
+      return newRows;
 
-        return Mustache.render(
-            template = this.templateText,
-            data
-        );
     };
 
     /**
@@ -93,8 +124,12 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      */
     PreviousSurgeryController.prototype.addEntry = function()
     {
-        var row = this.createRow();
-        this.$table.find('tbody').append(row);
+        var rows= this.createRow();
+        for(var i in rows){
+          this.$table.find('tbody').append(rows[i]);
+          this.setDatepicker();
+        }
+        this.$popupSelector.find('.selected').removeClass('selected');
     };
 
     /**
@@ -153,7 +188,3 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
     return PreviousSurgeryController;
 })();
-
-$(document).ready(function() {
-    new OpenEyes.OphCiExamination.PreviousSurgeryController();
-});

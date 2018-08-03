@@ -25,27 +25,24 @@
     echo CHtml::beginForm('CommonDrugs', 'get', array('id' => 'set_site_subspec_form'));
     ?>
 
-	<div class="row field-row">
-		<div class="large-1 column"><label for="site_id">Site:</label></div>
-		<div class="large-4 column">
+	<div class="data-group">
+		<div class="cols-1 column"><label for="site_id">Site:</label></div>
+		<div class="cols-4 column">
 			<?php
             echo CHtml::dropDownList('site_id', $selectedsite,
                 CHtml::listData(Site::model()->findAll(), 'id', 'short_name'));
             ?>
 		</div>
-		<div class="large-2 column"><label for="site_id">Subspeciality:</label></div>
-		<div class="large-4 column end">
+		<div class="cols-2 column"><label for="site_id">Subspeciality:</label></div>
+		<div class="cols-4 column end">
 			<?php
             echo CHtml::dropDownList('subspecialty_id', $selectedsubspecialty,
                 CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'), array('empty' => '-- Select --'));
             ?>
 		</div>
-
 	</div>
 
-	<?php
-    echo CHtml::endForm();
-    ?>
+	<?php echo CHtml::endForm(); ?>
 	<table class="generic-admin" id="common_drugs_list">
 		<thead>
 		<tr>

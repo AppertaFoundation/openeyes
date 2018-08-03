@@ -25,85 +25,166 @@ if ($event = $element->event) {
 }
 $hide_fluid = true;
 if (@$_POST[CHtml::modelName($element)]) {
-    if ($_POST[CHtml::modelName($element)][$side.'_dry'] == '0') {
+    if ($_POST[CHtml::modelName($element)][$side . '_dry'] == '0') {
         $hide_fluid = false;
     }
 } else {
-    if ($element->{$side.'_dry'} === '0') {
+    if ($element->{$side . '_dry'} === '0') {
         $hide_fluid = false;
     }
 }
 ?>
+<table class="cols-full">
+  <tbody>
+  <tr>
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_method_id'); ?>:</label>
+    </td>
+    <td>
+        <?php echo $form->dropDownList(
+            $element,
+            $side . '_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method',
+            array('nowrapper' => true),
+            false,
+            array('label' => 9, 'field' => 3)
+        ) ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_crt'); ?>:</label>
+    </td>
+    <td>
+        <?php echo $form->textField(
+            $element,
+            $side . '_crt',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true),
+            null,
+            array()
+        ) ?>
+      <span class="field-info">&micro;m</span>
+      <i class="oe-i small-icon" style="visibility: hidden;"></i>
+    </td>
+  </tr>
+  <tr>
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_sft'); ?>:</label>
+    </td>
+    <td>
+        <?php $tooltip_content = null;
+        if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
+            $tooltip_content = "Previous SFT Measurements: <br />";
+            foreach ($past_sft as $previous) {
+                $tooltip_content .= Helper::convertDate2NHS($previous['date']) . ' - ' . $previous['sft'] . '<br /> ';
+            }
+        }
+        echo $form->textField(
+            $element,
+            $side . '_sft',
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true),
+            null,
+            array()) ?>
+      <span class="field-info">&micro;m</span>
+      <i class="oe-i info small-icon js-has-tooltip"
+         style="<?php if (!$tooltip_content): ?>visibility: hidden;<?php endif; ?>"
+         data-tooltip-content="<?php echo $tooltip_content; ?>">
+      </i>
+    </td>
+  </tr>
+  <tr>
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_thickness_increase'); ?>:</label>
+    </td>
+    <td>
+        <?php echo $form->radioBoolean($element, $side . '_thickness_increase', array('nowrapper' => true),
+            array('label' => 9, 'field' => 3)) ?>
+    </td>
+  </tr>
+  <tr>
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_dry'); ?>:</label>
+    </td>
+    <td>
+        <?php echo $form->radioBoolean($element, $side . '_dry', array('nowrapper' => true),
+            array('label' => 9, 'field' => 3)) ?>
+    </td>
+  </tr>
 
-<?php echo $form->dropDownList($element, $side.'_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method', array(), false, array('label' => 4, 'field' => 3)) ?>
+  <tr id="<?php echo CHtml::modelName($element) . '_' . $side; ?>_fluid_fields"
+      style="<?php if ($hide_fluid) { ?>display: none;<?php } ?>"
+  >
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_fluidtypes'); ?>:</label>
+    </td>
+    <td>
+        <?php
+        $html_options = array(
+            'style' => 'margin-bottom: 10px; width: 240px;',
+            'options' => array(),
+            'empty' => '- Please select -',
+            'div_id' => CHtml::modelName($element) . '_' . $side . '_fluidtypes',
+            'label' => 'Findings',
+            'nowrapper' => true,
+        );
+        $fts = \OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType::model()->activeOrPk($element->fluidTypeValues)->findAll();
+        foreach ($fts as $ft) {
+            $html_options['options'][(string)$ft->id] = array('data-order' => $ft->display_order);
+        }
+        echo $form->multiSelectList(
+            $element,
+            CHtml::modelName($element) . '[' . $side . '_fluidtypes]', $side . '_fluidtypes', 'id',
+            CHtml::listData($fts, 'id', 'name'),
+            array(),
+            $html_options, false, false, null, false, false,
+            array('label' => 9, 'field' => 3)
+        );
+        ?>
+    </td>
+  </tr>
+  <tr id="tr_Element_OphCiExamination_OCT_<?= $side ?>_fluidstatus_id"
+      style="<?php if ($hide_fluid) { ?>display: none;<?php } ?>"
+  >
+    <td class="flex-layout flex-top" style="height: auto;">
+      <label><?php echo $element->getAttributeLabel($side . '_fluidstatus_id'); ?>:</label>
+    </td>
+    <td>
+        <?php echo $form->dropDownList(
+            $element,
+            $side . '_fluidstatus_id',
+            '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus',
+            array('empty' => ' - Please Select - ', 'nowrapper' => true,),
+            false,
+            array('label' => 9, 'field' => 3)
+        ); ?>
+    </td>
+  </tr>
+  <tr></tr>
+  </tbody>
+</table>
 
-<?php echo $form->textField($element, $side.'_crt', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'), null, array('label' => 4, 'field' => '3', 'append-text' => '4')) ?>
-
-<div class="data-row row">
-	<div class="large-4 column">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_sft';?>">
-			<?php echo $element->getAttributeLabel($side.'_sft') ?>:
-		</label>
-	</div>
-	<div class="large-3 column">
-		<?php echo $form->textField($element, $side.'_sft', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true)) ?>
-	</div>
-	<div class="large-4 column end collapse in">
-		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
-		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
-    ?>
-			<span id="<?php echo $side;
-    ?>_sft_history_icon" class="sft-history-icon">
-				<img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" />
-			</span>
-			<div class="quicklook sft-history" style="display: none;">
-				<?php
-                echo '<b>Previous SFT Measurements</b><br />';
-    echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
-    foreach ($past_sft as $previous) {
-        echo '<dt>'.Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'&micro;m</dt>';
-    }
-    echo '</dl>';
-    ?>
-			</div>
-		<?php 
-} ?>
-	</div>
+<div class="flex-layout flex-right comment-group">
+      <span class="js-comment-container cols-full flex-layout"
+            id="<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>"
+            style="<?php if (!$element->{$side . '_comments'}): ?>display: none;<?php endif; ?>"
+            data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>">
+            <?php echo $form->textArea(
+                $element, $side . '_comments',
+                array('nowrapper' => true),
+                false,
+                array(
+                    'rows' => 1,
+                    'class' => 'js-comment-field',
+                    'placeholder' => $element->getAttributeLabel($side . '_comments'),
+                )
+            ) ?>
+        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+      </span>
+  <button
+      id="<?= CHtml::modelName($element) . '_' . $side . '_comment_button' ?>"
+      type="button"
+      class="button js-add-comments"
+      style="<?php if ($element->{$side . '_comments'}): ?>visibility: hidden;<?php endif; ?>"
+      data-comment-container="#<?= CHtml::modelName($element) . '_' . $side . '_comment_container' ?>">
+    <i class="oe-i comments small-icon"></i>
+  </button>
 </div>
-
-<?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 4, 'field' => 8))?>
-<?php echo $form->radioBoolean($element, $side.'_dry', array(), array('label' => 4, 'field' => 8)) ?>
-
-<div class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"<?php if ($hide_fluid) {
-    echo ' style="display: none;"';
-}?>>
-	<?php
-    $html_options = array(
-        'style' => 'margin-bottom: 10px; width: 240px;',
-        'options' => array(),
-        'empty' => '- Please select -',
-        'div_id' => CHtml::modelName($element).'_'.$side.'_fluidtypes',
-        'label' => 'Findings', );
-    $fts = \OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType::model()->activeOrPk($element->fluidTypeValues)->findAll();
-    foreach ($fts as $ft) {
-        $html_options['options'][(string) $ft->id] = array('data-order' => $ft->display_order);
-    }
-    echo $form->multiSelectList($element, CHtml::modelName($element).'['.$side.'_fluidtypes]', $side.'_fluidtypes', 'id', CHtml::listData($fts, 'id', 'name'), array(), $html_options, false, false, null, false, false, array('label' => 4, 'field' => 6));
-    ?>
-	<div class="row">
-		<div class="large-4 column">
-			<label for="<?php echo CHtml::modelName($element).'_'.$side.'_fluidstatus_id';?>">
-				<?php echo $element->getAttributeLabel($side.'_fluidstatus_id'); ?>:
-			</label>
-		</div>
-		<div class="large-6 column end">
-			<?php echo $form->dropDownList($element, $side.'_fluidstatus_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus', array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?>
-		</div>
-	</div>
-</div>
-<div class="field-row row">
-    <div class="column large-9 end">
-        <?php echo $form->textArea($element, $side.'_comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_comments')))?>
-    </div>
-</div>
-

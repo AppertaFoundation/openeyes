@@ -20,109 +20,121 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 /** @var \OEModule\OphCiExamination\models\SystemicDiagnoses $element */
 ?>
 
-<script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
-<script type="text/javascript" src="<?=$this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js', true)?>"></script>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('SystemicDiagnoses.js') ?>"></script>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js', true) ?>"></script>
 
 <?php
-    $model_name = CHtml::modelName($element);
-    $missing_req_diagnoses = $this->getMissingRequiredSystemicDiagnoses();
-    $required_diagnoses_ids = array_map(function($r) { return $r->id; }, $this->getRequiredSystemicDiagnoses());
+$model_name = CHtml::modelName($element);
+$missing_req_diagnoses = $this->getMissingRequiredSystemicDiagnoses();
+$required_diagnoses_ids = array_map(function ($r) {
+    return $r->id;
+}, $this->getRequiredSystemicDiagnoses());
 ?>
 
-<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
+<div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
 
-    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_diagnoses_table">
-        <thead>
-        <tr>
-            <th>Diagnosis</th>
-            <th>Status</th>
-            <th>Side</th>
-            <th>Date</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $row_count = 0;
-        foreach ($missing_req_diagnoses as $diagnosis) {
-            $this->render(
-                'SystemicDiagnosesEntry_event_edit',
-                array(
-                    'diagnosis' => $diagnosis,
-                    'form' => $form,
-                    'model_name' => CHtml::modelName($element),
-                    'row_count' => $row_count,
-                    'field_prefix' => $model_name . "[entries][$row_count]",
-                    'removable' => false,
-                    'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
-                )
-            );
-            $row_count++;
-        } ?>
-
-        <?php
-        foreach (array_merge($element->diagnoses, $this->getCheckedRequiredSystemicDiagnoses()) as $diagnosis) {
-            $this->render(
-                'SystemicDiagnosesEntry_event_edit',
-                array(
-                    'diagnosis' => $diagnosis,
-                    'form' => $form,
-                    'model_name' => CHtml::modelName($element),
-                    'row_count' => $row_count,
-                    'field_prefix' => $model_name . "[entries][$row_count]",
-                    'removable' => !in_array($diagnosis->disorder_id, $required_diagnoses_ids),
-                    'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count)
-                )
-            );
-            $row_count++;
-        }
-        ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td><button class="button small primary add-entry">Add</button></td>
-            </tr>
-        </tfoot>
-    </table>
-
-
-    <script type="text/template" class="entry-template hidden">
-        <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
+  <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+  <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
+      <colgroup>
+          <col class="cols-4">
+          <col class="cols-2">
+          <col class="cols-1">
+          <col class="cols-1">
+          <col class="cols-1">
+      </colgroup>
+    <tbody>
+    <?php
+    $row_count = 0;
+    foreach ($missing_req_diagnoses as $diagnosis) {
         $this->render(
             'SystemicDiagnosesEntry_event_edit',
             array(
-                //'diagnosis' => $empty_entry,
+                'diagnosis' => $diagnosis,
                 'form' => $form,
-                'model_name' => $model_name,
-                'field_prefix' => $model_name . '[entries][{{row_count}}]',
-                'row_count' => '{{row_count}}',
-                'removable' => true,
-                'posted_checked_status' => false,
-                'has_disorder' => false,
-                'values' => array(
-                    'id' => '',
-                    'disorder_id' => '{{disorder_id}}',
-                    'disorder_display' => '{{disorder_display}}',
-                    'side_id' => '{{side_id}}',
-                    'side_display' => '{{side_display}}',
-                    'date' => '{{date}}',
-                    'date_display' => '{{date_display}}',
-                    'row_count' => '{{row_count}}',
-                    'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT,
-                )
+                'model_name' => CHtml::modelName($element),
+                'row_count' => $row_count,
+                'field_prefix' => $model_name . "[entries][$row_count]",
+                'removable' => false,
+                'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
             )
         );
-        ?>
-    </script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            new OpenEyes.OphCiExamination.SystemicDiagnosesController({
-                element: $('#<?=$model_name?>_element')
-            });
-        });
-    </script>
+        $row_count++;
+    } ?>
+    <?php
+    foreach (array_merge($element->diagnoses, $this->getCheckedRequiredSystemicDiagnoses()) as $diagnosis) {
+        $this->render(
+            'SystemicDiagnosesEntry_event_edit',
+            array(
+                'diagnosis' => $diagnosis,
+                'form' => $form,
+                'model_name' => CHtml::modelName($element),
+                'row_count' => $row_count,
+                'field_prefix' => $model_name . "[entries][$row_count]",
+                'removable' => !in_array($diagnosis->disorder_id, $required_diagnoses_ids),
+                'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
+            )
+        );
+        $row_count++;
+    }
+    ?>
+    </tbody>
+  </table>
+  <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup">
+    <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+  </div>
 </div>
+<script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element) . '_template' ?>">
+    <?php
+    $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
+    $this->render(
+        'SystemicDiagnosesEntry_event_edit',
+        array(
+            'diagnosis' => $empty_entry,
+            'form' => $form,
+            'model_name' => $model_name,
+            'field_prefix' => $model_name . '[entries][{{row_count}}]',
+            'row_count' => '{{row_count}}',
+            'removable' => true,
+            'posted_checked_status' => false,
+            'has_disorder' => false,
+            'values' => array(
+                'id' => '',
+                'disorder_id' => '{{disorder_id}}',
+                'disorder_display' => '{{disorder_display}}',
+                'side_id' => '{{side_id}}',
+                'side_display' => '{{side_display}}',
+                'date' => '{{date}}',
+                'date_display' => '{{date_display}}',
+                'row_count' => '{{row_count}}',
+                'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT,
+            ),
+        )
+    );
+    ?>
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    var systemicDiagnosesController = new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+      element: $('#<?=$model_name?>_element')
+    });
+
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-history-systemic-diagnoses'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($disorder) {
+              return ['label' => $disorder->term, 'id' => $disorder->id];
+          }, CommonSystemicDisorder::getDisorders())
+      ) ?>, {'multiSelect': true})],
+      onReturn: function (adderDialog, selectedItems) {
+        systemicDiagnosesController.addEntry(selectedItems);
+        return true;
+      },
+      searchOptions: {
+        searchSource: systemicDiagnosesController.options.searchSource,
+        code: systemicDiagnosesController.options.code,
+      }
+    });
+  });
+</script>

@@ -30,7 +30,7 @@ $(document).ready(function() {
 		window.location.href = baseUrl + '/OphCoCorrespondence/admin/addMacro';
 	});
 
-	handleButton($('.cancelEditMacro'),function(e) {
+	$(this).on('click','.cancelEditMacro',function(e) {
 		e.preventDefault();
 
 		window.location.href = baseUrl = '/OphCoCorrespondence/admin/letterMacros';

@@ -16,37 +16,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
 	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasRight()) {
-    ?>
+    <div class="data-value">
+        <?php if ($element->hasRight()) { ?>
 					<?php echo $element->right_value?> &micro;m
 					(<?php echo $element->right_method->name?>)
-				<?php 
-} else {
-    ?>
+				<?php } else { ?>
 					Not recorded
-				<?php 
-}?>
+				<?php } ?>
 			</div>
-		</div>
 	</div>
 	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasLeft()) {
-    ?>
+    <div class="data-value">
+        <?php if ($element->hasLeft()) { ?>
 					<?php echo $element->left_value?> &micro;m
 					(<?php echo $element->left_method->name?>)
-				<?php 
-} else {
-    ?>
+				<?php } else { ?>
 					Not recorded
-				<?php 
-}?>
+				<?php }?>
 			</div>
-		</div>
 	</div>
 </div>

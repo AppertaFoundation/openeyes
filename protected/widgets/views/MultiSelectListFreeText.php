@@ -28,7 +28,7 @@ if (isset($htmlOptions['div_id'])) {
 } else {
     // for legacy, this is the original definition of the div id that was created for the MultiSelectFreeText
     // not recommended as it doesn't allow for sided uniqueness
-    $div_id = 'div_'.CHtml::modelName($element).'_'.@$htmlOptions['label'];
+    $div_id = 'div_' . CHtml::modelName($element) . '_' . @$htmlOptions['label'];
 }
 
 if (isset($htmlOptions['div_class'])) {
@@ -51,79 +51,97 @@ $widgetOptionsJson = json_encode(array(
 ));
 ?>
 
-<?php if (!@$htmlOptions['nowrapper']) {?>
-	<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo $field?>">
-				<?php echo @$htmlOptions['label']?>:
-			</label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-	<?php }?>
-		<div class="multi-select-free-text<?php if (!$inline) echo ' multi-select-free-text-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
-			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectFreeTextList_<?php echo $field?>]" class="multi-select-free-text-list-name" />
-			<div class="multi-select-free-text-dropdown-container">
-				<select id="<?php echo CHtml::getIdByName($field)?>" class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) {?> inline<?php }?><?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" name=""<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>
-					<option value=""><?php echo $htmlOptions['empty']?></option>
-					<?php foreach ($filtered_options as $value => $option) {
-                        $attributes = array('value' => $value);
-                        if (isset($opts[$value])) {
-                            $attributes = array_merge($attributes, $opts[$value]);
-                        }
-                        echo '<option';
-                        foreach ($attributes as $att => $att_val) {
-                            echo ' '.$att.'="'.$att_val.'"';
-                        }
-                        echo '>'.strip_tags($option).'</option>';
-                    }?>
-				</select>
-				<?php if ($showRemoveAllLink) {?>
-					<a href="#" class="remove-all<?php echo !$found ? ' hide' : '';?>">Remove all</a>
-				<?php }?>
-			</div>
-			<?php if ($noSelectionsMessage) {?>
-				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
-			<?php }?>
-			<ul class="MultiSelectFreeTextList multi-select-free-text-selections<?php if (!$found) echo ' hide';?>">
-				<input type="hidden" name="<?php echo $field?>" />
-				<?php foreach ($selected_ids as $i => $id) {
-                    if (isset($options[$id])) {?>
-						<li>
-							<span class="text">
-								<?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false)?>
-							</span>
-							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectFreeTextRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
-							<input type="hidden" name="<?php echo $field?>[<?php echo $i?>][id]" data-i="<?php echo $i?>" value="<?php echo $id?>"
-							<?php if (isset($opts[$id])) {
-                                foreach ($opts[$id] as $key => $val) {
-                                    echo ' '.$key.'="'.$val.'"';
-                                }
-                            }?>
-							/>
-						</li>
-					<?php }?>
-				<?php }?>
-			</ul>
-			<div class="multi-select-free-text-descriptions">
-				<?php foreach ($selected_ids as $i => $id) {
-                    if (isset($descriptions[$id])) {?>
-						<div class="row data-row" data-option="<?php echo $options[$id]?>">
-							<div class="large-2 column">
-								<div class="data-label">
-									<?php echo $options[$id]?>
-								</div>
-							</div>
-							<div class="large-4 column end">
-								<div class="data-value">
-									<?php echo CHtml::textArea($field."[$i][description]", $descriptions[$id])?>
-								</div>
-							</div>
-						</div>
-					<?php }
-}?>
-			</div>
-		</div>
-<?php if (!@$htmlOptions['nowrapper']) {?>
-	</div>
+<?php if (!@$htmlOptions['nowrapper']) { ?>
+<div id="<?php echo $div_id ?>"
+     class="<?php echo $div_class ?> row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
+  <div class="cols-<?php echo $layoutColumns['label']; ?> column">
+    <label for="<?php echo $field ?>">
+        <?php echo @$htmlOptions['label'] ?>:
+    </label>
+  </div>
+  <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
+      <?php } ?>
+    <div class="multi-select-free-text<?php if (!$inline) {
+        echo ' multi-select-free-text-list';
+    } ?>" data-options='<?php echo $widgetOptionsJson; ?>'>
+      <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectFreeTextList_<?php echo $field ?>]"
+             class="multi-select-free-text-list-name"/>
+      <div class="multi-select-free-text-dropdown-container">
+        <select id="<?php echo CHtml::getIdByName($field) ?>"
+                class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                name=""<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
+          <option value=""><?php echo $htmlOptions['empty'] ?></option>
+            <?php foreach ($filtered_options as $value => $option) {
+                $attributes = array('value' => $value);
+                if (isset($opts[$value])) {
+                    $attributes = array_merge($attributes, $opts[$value]);
+                }
+                echo '<option';
+                foreach ($attributes as $att => $att_val) {
+                    echo ' ' . $att . '="' . $att_val . '"';
+                }
+                echo '>' . strip_tags($option) . '</option>';
+            } ?>
+        </select>
+          <?php if ($showRemoveAllLink) { ?>
+            <a href="#" class="remove-all" style="display: <?php echo !$found ? ' none' : 'inline'; ?>">Remove all</a>
+          <?php } ?>
+      </div>
+        <?php if ($noSelectionsMessage) { ?>
+          <div class="no-selections-msg pill"
+              style="display: <?php if ($found) { ?> none<?php } ?>">
+              <?php echo $noSelectionsMessage; ?></div>
+        <?php } ?>
+      <input type="hidden" name="<?php echo $field ?>"/>
+      <ul class="MultiSelectFreeTextList multi-select-selections multi-select-free-text-selections">
+          <?php foreach ($selected_ids as $i => $id) {
+              if (isset($options[$id])) { ?>
+                <li>
+                  <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
+                         value="<?php echo $id ?>"
+                      <?php if (isset($opts[$id])) {
+                          foreach ($opts[$id] as $key => $val) {
+                              echo ' ' . $key . '="' . $val . '"';
+                          }
+                      } ?> />
+                  <span class="text">
+                      <?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
+                  </span>
+                  <span data-text="<?php echo $options[$id] ?>"
+                     class="MultiSelectFreeTextRemove remove-one
+                     <?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                      <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
+                        data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
+                      <?php } ?>
+                      <?php if (isset($htmlOptions['data-linked-values'])) { ?>
+                        data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+                      <?php } ?>>
+                    <i class="oe-i remove-circle small"></i>
+                  </span>
+                </li>
+              <?php } ?>
+          <?php } ?>
+      </ul>
+      <div class="multi-select-free-text-descriptions">
+          <?php foreach ($selected_ids as $i => $id) {
+              if (isset($descriptions[$id])) { ?>
+                <div class="data-group" data-option="<?php echo $options[$id] ?>">
+                  <div class="cols-2">
+                    <div class="data-label">
+                        <?php echo $options[$id] ?>
+                    </div>
+                  </div>
+                  <div class="cols-4">
+                    <div class="data-value">
+                        <?php echo CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
+                    </div>
+                  </div>
+                </div>
+              <?php }
+          } ?>
+      </div>
+    </div>
+      <?php if (!@$htmlOptions['nowrapper']) { ?>
+  </div>
 </div>
-<?php }?>
+<?php } ?>

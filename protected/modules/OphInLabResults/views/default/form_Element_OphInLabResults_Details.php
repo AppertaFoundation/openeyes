@@ -18,11 +18,11 @@
 ?>
 <section class="element-fields lab-results-type">
     <div class="fields-row">
-        <div class="row field-row">
-            <div class="large-2 column">
+        <div class="data-group">
+            <div class="cols-2 column">
                 <label for="Element_OphInLabResults_Details_result_type_id">Type:</label>
             </div>
-            <div class="large-4 column end">
+            <div class="cols-4 column end">
                 <select name="Element_OphInLabResults_Details[result_type_id]" id="Element_OphInLabResults_Details_result_type_id">
                     <option>- Please select -</option>
                     <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>

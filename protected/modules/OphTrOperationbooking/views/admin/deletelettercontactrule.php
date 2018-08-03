@@ -27,67 +27,67 @@
 	<?php echo $form->errorSummary($rule); ?>
 	<input type="hidden" name="delete" value="1" />
 	<div class="panel">
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('parent_rule_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->parent ? $rule->parent->treeName : 'None'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('site_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->site ? $rule->site->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('firm_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->firm ? $rule->firm->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('subspecialty_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->subspecialty ? $rule->subspecialty->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('theatre_id')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->theatre ? $rule->theatre->name : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('refuse_telephone')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->refuse_telephone ? $rule->refuse_telephone : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('refuse_title')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->refuse_title ? $rule->refuse_title : 'Not set'?></div>
 			</div>
 		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<div class="data-label"><?php echo $rule->getAttributeLabel('health_telephone')?>:</div>
 			</div>
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="data-value"><?php echo $rule->health_telephone ? $rule->health_telephone : 'Not set'?></div>
 			</div>
 		</div>
@@ -107,7 +107,7 @@
 	<p><strong><big>Are you sure you want to delete this rule<?php if ($rule->children) {?> and its descendants<?php }?>?</big></strong></p>
 
 	<?php echo $form->errorSummary($rule); ?>
-	<div class="field-row">
+	<div class="data-group">
 		<?php echo EventAction::button('Delete', 'delete', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
 		<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'cancel'))->toHtml()?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

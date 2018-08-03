@@ -17,25 +17,24 @@
  */
 ?>
 <div class="element-data">
-    <div class="data-row">
-        <div class="data-value column large-2">
-            <?php echo $element->getAttributeLabel('diagnosis_id')?>:
-            </div>
-            <div class="data-value column large-2">
-            <?php
-            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome_Diagnosis::model()->getName($element->diagnosis_id);
-            ?>
-
-        </div>
-        <div class="data-value column large-2">
-            <?php echo $element->getAttributeLabel('outcome_id')?>:
-        </div>
-        <div class="data-value column large-2">
-            <?php
-            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome::model()->getName($element->outcome_id);
-            ?>
-        </div>
-        <div class="data-value column large-6">
-            </div>
+  <div class="data-group">
+    <div class="data-value column cols-2">
+        <?php echo $element->getAttributeLabel('diagnosis_id') ?>:
     </div>
+    <div class="data-value column cols-2">
+        <?php
+        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome_Diagnosis::model()->getName($element->diagnosis_id);
+        ?>
+    </div>
+    <div class="data-value column cols-2">
+        <?php echo $element->getAttributeLabel('outcome_id') ?>:
+    </div>
+    <div class="data-value column cols-2">
+        <?php
+        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome::model()->getName($element->outcome_id);
+        ?>
+    </div>
+    <div class="data-value column cols-6">
+    </div>
+  </div>
 </div>

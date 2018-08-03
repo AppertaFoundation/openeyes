@@ -16,31 +16,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasRight()) {
-    echo Yii::app()->format->Ntext($element->right_description);
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->hasLeft()) {
-    echo Yii::app()->format->Ntext($element->left_description);
-} else {
-    ?>
-					Not recorded
-				<?php 
-}?>
-			</div>
-		</div>
-	</div>
+<div class="element-data element-eyes">
+    <div class="element-eye right-eye column">
+        <div class="data-value">
+        <span class="large-text">
+          <?php if ($element->hasRight()) {
+              echo Yii::app()->format->Ntext($element->right_description);
+          } else { ?>
+              Not recorded
+          <?php } ?>
+        </span>
+        </div>
+    </div>
+    <div class="element-eye left-eye column">
+        <div class="data-value">
+      <span class="large-text"><?php if ($element->hasLeft()) {
+              echo Yii::app()->format->Ntext($element->left_description);
+          } else { ?>
+              Not recorded
+          <?php } ?>
+      </span>
+        </div>
+    </div>
 </div>

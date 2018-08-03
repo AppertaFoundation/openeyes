@@ -28,7 +28,4 @@ if (!empty($operation->booking)) {
 
       <span style="display:inline-block; width:160px;">Duration of operation:</span><strong><?php echo $operation->total_duration.' minutes'; ?></strong>
   </div>
-<?php
-
-}
-?>
+<?php } ?>

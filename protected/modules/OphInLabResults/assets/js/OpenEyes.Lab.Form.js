@@ -26,6 +26,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
    */
   function removeResultElement() {
     $resultTypeSelect.val('');
+    $('#result-output').parents('.element').remove();
   }
 
   /**
@@ -38,7 +39,7 @@ OpenEyes.Lab = OpenEyes.Lab || {};
     var option = e.target.options[e.target.selectedIndex];
 
     if(!option.dataset.elementId){
-      $('#result-output').parent().find('.js-remove-element').click();
+      removeResultElement($('#result-output').parent());
       return false;
     }
 
@@ -50,9 +51,9 @@ OpenEyes.Lab = OpenEyes.Lab || {};
       },
       dataType: 'html',
       success: function (data) {
-        var $dataElement  = $('<div></div>').html(data);
+        var $dataElement  = $('<section></section>').html(data);
         $dataElement.find('.js-remove-element').on('click', removeResultElement);
-        $('.lab-results-type').after($dataElement);
+        $('.lab-results-type').parent().after($dataElement);
       }
     });
   }

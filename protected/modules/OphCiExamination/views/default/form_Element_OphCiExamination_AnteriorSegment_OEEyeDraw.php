@@ -67,7 +67,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'maxToolbarButtons' => 7,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
-    'popupDisplaySide' => 'left',
+    'popupDisplaySide' => 'right',
     'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
     'autoReportEditable' => false,
     'fields' => $cross_section_ed

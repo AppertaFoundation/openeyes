@@ -353,6 +353,23 @@ class HistoryMedicationsEntry extends \BaseElement
         return implode(' ', $res);
     }
 
+    public function getStartDateDisplay()
+    {
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';
+    }
+
+    public function getStopDateDisplay()
+    {
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date) . '</div>';
+    }
+
+    public function getStopReasonDisplay(){
+        $res = array();
+        if ($this->stop_reason) {
+            $res[] = "{$this->stop_reason}";
+        }
+        return implode(' ', $res);
+    }
     /**
      * Assumes that all route options indicate laterality.
      *

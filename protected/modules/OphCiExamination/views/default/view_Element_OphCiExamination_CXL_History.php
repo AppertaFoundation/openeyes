@@ -19,150 +19,86 @@
 <?php
 function yesOrNo($item)
 {
-    if($item == 1){
+    if ($item == 1) {
         echo "Yes";
-    }else{
+    } else {
         echo "No";
     }
 }
-?><div class="element-data">
-    <div class="data-row">
-        <div class="data-value column large-3">
-            <?php echo $element->getAttributeLabel('asthma_id')?>:
-        </div>
-            <div class="data-value column large-3">
-            <?php
-            echo yesOrNo($element->asthma_id);
-            ?>
-        </div>
-        <div class="data-value column large-3">
-            <?php echo $element->getAttributeLabel('eczema_id')?>:
-        </div>
-        <div class="data-value column large-3">
-            <?php
-            echo yesOrNo($element->eczema_id);
-            ?>
-        </div>
 
-    </div>
-    <div class="data-row">
-        <div class="data-value column large-3">
-            <?php echo $element->getAttributeLabel('hayfever_id')?>:
-        </div>
-        <div class="data-value column large-3">
-            <?php
-            echo yesOrNo($element->hayfever_id);
-            ?>
-        </div>
-        <div class="data-value column large-3">
-            <?php echo $element->getAttributeLabel('eye_rubber_id')?>:
-        </div>
-        <div class="data-value column large-3">
-            <?php
-            echo yesOrNo($element->eye_rubber_id);
-            ?>
-        </div>
-    </div>
-</div>
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <?php if ($element->hasRight()) {?>
-
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_previous_cxl_value')?>:
-                </div>
-                <div class="large-5 column data-value">
+?>
+<table class="cols-6">
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel('asthma_id') ?>:
+        <?php echo yesOrNo($element->asthma_id); ?>
+    </td>
+    <td>
+        <?php echo $element->getAttributeLabel('eczema_id') ?>:
+        <?php echo yesOrNo($element->eczema_id); ?>
+    </td>
+    <td>
+        <?php echo $element->getAttributeLabel('hayfever_id') ?>:
+        <?php echo yesOrNo($element->hayfever_id); ?>
+    </td>
+    <td>
+        <?php echo $element->getAttributeLabel('eye_rubber_id') ?>:
+        <?php echo yesOrNo($element->eye_rubber_id); ?>
+    </td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+<div class="element-data element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
+        ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->hasEye($eye_side)) { ?>
+            <table>
+              <tbody>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_cxl_value') ?>:
+                </td>
+                <td>
+                    <?php echo yesOrNo($element->{$eye_side . '_previous_cxl_value'}); ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_refractive_value') ?>:
+                </td>
+                <td>
                     <?php
-                    echo yesOrNo($element->right_previous_cxl_value);
+                    echo yesOrNo($element->{$eye_side . '_previous_refractive_value'});
                     ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_previous_refractive_value')?>:
-                </div>
-                <div class="large-5 column data-value">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_intacs_kera_ring_value') ?>:
+                </td>
+                <td>
                     <?php
-                    echo yesOrNo($element->right_previous_refractive_value);
+                    echo yesOrNo($element->{$eye_side . '_intacs_kera_ring_value'});
                     ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_intacs_kera_ring_value')?>:
-                </div>
-                <div class="large-5 column data-value">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_hsk_keratitis_value') ?>:
+                </td>
+                <td>
                     <?php
-                    echo yesOrNo($element->right_intacs_kera_ring_value);
+                    echo yesOrNo($element->{$eye_side . '_previous_hsk_keratitis_value'});
                     ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_previous_hsk_keratitis_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->right_previous_hsk_keratitis_value);
-                    ?>
-                </div>
-            </div>
-<?php
-                } else {
-                    ?>
-                    Not recorded
-                    <?php
-                }?>
-        </div>
-
-    <div class="element-eye left-eye column">
-        <?php if ($element->hasLeft()) {?>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('left_previous_cxl_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->left_previous_cxl_value);
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('left_previous_refractive_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->left_previous_refractive_value);
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('left_intacs_kera_ring_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->left_intacs_kera_ring_value);
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('left_previous_hsk_keratitis_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->left_previous_hsk_keratitis_value);
-                    ?>
-                </div>
-            </div>
-        <?php
-        } else {
-            ?>
-            Not recorded
-            <?php
-        }?>
-    </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          <?php } else { ?> Not recorded
+          <?php } ?>
+      </div>
+    <?php endforeach; ?>
 </div>

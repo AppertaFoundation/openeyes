@@ -58,10 +58,8 @@ $assetManager = Yii::app()->getAssetManager();
                     $type['htmlOptions']
                 );
                 break;
-
-                case 'MultiSelectList':
-                    ?>
-                    <div class="field-row furtherfindings-multi-select">
+                case 'MultiSelectList': ?>
+                    <div class="data-group furtherfindings-multi-select">
                         <?php
                         $through = array();
                         $link = '';
@@ -138,22 +136,19 @@ $assetManager = Yii::app()->getAssetManager();
                         $relations = $admin->getModel()->{$type['relation']};
                     }
                     ?>
-                    <div class="row field-row">
-                        <div class="large-2 column">&nbsp;</div>
-                        <div class="large-5 column end"><hr></div>
+                    <div class="data-group">
+                        <div class="cols-2 column">&nbsp;</div>
+                        <div class="cols-5 column end"><hr></div>
                     </div>
-                    <div class="row field-row">
-                        <div class="large-2 column">
+                    <div class="data-group">
+                        <div class="cols-2 column">
                             <label>Diagnosis</label>
                         </div>
-                        <div class="large-5 column end">
-
-
-                                <?php
-                                    $htmlOptions['empty'] = $type['empty_text'];
-                                    $htmlOptions['id'] = isset($type['id']) ? $type['id'] : 'disorder_dropdown';
-                                    echo CHtml::dropDownList(null,null,$type['options'], $htmlOptions);
-                                ?>
+                        <div class="cols-5 column end">
+                            <?php $htmlOptions['empty'] = $type['empty_text'];
+                            $htmlOptions['id'] = isset($type['id']) ? $type['id'] : 'disorder_dropdown';
+                            echo CHtml::dropDownList(null,null,$type['options'], $htmlOptions);
+                            ?>
                                 <script>
                                     $('#<?=$htmlOptions['id']?>').on('change', function(){
                                         if( $(this).val() ){
@@ -170,18 +165,15 @@ $assetManager = Yii::app()->getAssetManager();
                                                 $(this).val(null);
                                         }
                                     });
-
-
                                 </script>
                             <div style="padding-bottom:5px;"></div>
                             <?php
-
                             $this->renderPartial('//disorder/disorderAutoComplete', array(
                                   'class' => get_class($admin->getModel()),
                                   'name' => $field,
                                   'code' => '',
                                   'value' => $admin->getModel()->$field,
-                                  'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                                  'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
                                   'placeholder' => 'Search for a diagnosis',
                               ));
                             ?>
@@ -191,7 +183,7 @@ $assetManager = Yii::app()->getAssetManager();
                                 foreach($relations as $relation) {
                                     if($relation){
                                         echo '<span>' . $relation->term .
-                                            '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '&nbsp;<i class="oe-i remove-circle small clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
                                             '</span>';
                                     }
                                 } ?>
@@ -199,19 +191,19 @@ $assetManager = Yii::app()->getAssetManager();
                         </div>
                         <div style="padding-bottom:15px;"></div>
                     </div>
-                    <div class="row field-row">
-                        <div class="large-2 column">&nbsp;</div>
-                        <div class="large-5 column end"><hr></div>
+                    <div class="data-group">
+                        <div class="cols-2 column">&nbsp;</div>
+                        <div class="cols-5 column end"><hr></div>
                     </div>
                     <?php
                     break;
                 case 'LinkTo':
                     ?>
-                    <div class="row field-row">
-                        <div class="large-2 column">
+                    <div class="data-group">
+                        <div class="cols-2 column">
                             <label></label>
                         </div>
-                        <div class="large-5 column end">
+                        <div class="cols-5 column end">
                             <?php
                                 echo CHtml::link($type['label'],array( $type['linkTo']));
                             ?>

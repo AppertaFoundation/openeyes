@@ -39,6 +39,7 @@ return array(
             'Risks' => '/OphCiExamination/admin/Risks',
             'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
             'Required Systemic Diagnoses Assignment' => '/OphCiExamination/oeadmin/systemicDiagAssignment',
+            'Required Surgical History Assignment' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment',
             'Surgical History' => array('OphCiExamination' => '/admin/editpreviousoperation'),
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',

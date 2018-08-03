@@ -17,15 +17,44 @@
  */
 ?>
 <div class="element-fields">
-    <?= $form->multiSelectList(
-        $element,
-        'MultiSelect_ability',
-        'abilitys',
-        'ophinvisualfields_condition_ability_id',
-        CHtml::listData(OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-        $element->ophinvisualfields_condition_ability_defaults,
-        array('empty' => '- Please select -', 'label' => 'Ability', 'class' => 'linked-fields', 'data-linked-fields' => 'other', 'data-linked-values' => 'Other')
-    ) ?>
-    <?= $form->textArea($element, 'other', array('rows' => 4), !$element->hasMultiSelectValue('abilitys', 'Other')) ?>
-    <?= $form->radioBoolean($element, 'glasses') ?>
+  <table class="cols-7">
+    <colgroup>
+      <col class="cols-4">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Ability</td>
+      <td >
+          <?= $form->multiSelectList(
+              $element,
+              'MultiSelect_ability',
+              'abilitys',
+              'ophinvisualfields_condition_ability_id',
+              CHtml::listData(OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')),
+                  'id', 'name'),
+              $element->ophinvisualfields_condition_ability_defaults,
+              array(
+                  'empty' => '- Please select -',
+                  'class' => 'linked-fields',
+                  'data-linked-fields' => 'other',
+                  'data-linked-values' => 'Other',
+                  'nowrapper' => true,
+              )
+          ) ?>
+      </td>
+    </tr>
+    <tr style="<?= $element->hasMultiSelectValue('abilitys', 'Other') ? '' : 'display: none;' ?> ">
+      <td></td>
+      <td>
+          <?= $form->textArea($element, 'other', array('rows' => 4, 'nowrapper' => true), true, array('placeholder' => 'Other - please specify')) ?>
+      </td>
+    </tr>
+    <tr>
+      <td><?= $element->getAttributeLabel('glasses') ?></td>
+      <td>
+          <?= $form->radioBoolean($element, 'glasses', array('nowrapper' => true)) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>

@@ -24,77 +24,71 @@ if ($read_check) {
     $viewing_label = 'Unread Messages';
 }
 ?>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#grid_header_form .datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
-    });
-</script>
-<form id="grid_header_form">
-    <div class="row">
-        <div class="messages-filter">
-            <div class="large-3 column">
-            <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=$check_var?>"><?=$link_label?></button>
-            </div>
-            <div class="large-9 column text-right">
-                <label for="OphCoMessaging_from">From:</label><input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
-                <label for="OphCoMessaging_to">To:</label><input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" class="datepicker" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
-                <button type="submit" class="small secondary" name="OphCoMessaging_read" value="<?=intval(!$check_var)?>">Search</button>
-            </div>
-        </div>
-    </div>
-</form>
-
 <?php
 $cols = array(
     array(
-        'name' => 'priority',
-        'value' => function ($data) {
-            $img_url = Yii::app()->assetManager->createUrl('img/alert.png');
-            return $data->urgent ? '<img src="'.$img_url.'" />' : '';
-        },
-        'type' => 'raw',
-        'htmlOptions' => array(
-            'class' => 'text-center',
-        ),
-    ),
-    array(
-        'id' => 'event_date',
-        'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'sort-link')),
-        'value' => 'Helper::convertMySQL2NHS($data->created_date)',
-        'htmlOptions' => array('class' => 'date'),
-    ),
-    array(
         'id' => 'hos_num',
-        'header' => $dp->getSort()->link('hos_num', 'Hospital No.', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('hos_num', 'No.', array('class' => 'sort-link')),
         'value' => '$data->event->episode->patient->hos_num',
+    ),
+    array(
+        'id' => 'gender',
+        'header' => $dp->getSort()->link('gender', 'Gender', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->patient->getGenderString()',
+    ),
+    array(
+        'id' => 'age',
+        'header' => $dp->getSort()->link('age', 'Age', array('class' => 'sort-link')),
+        'value' => '$data->event->episode->patient->getAge() . "y"',
     ),
     array(
         'id' => 'patient_name',
         'class' => 'CLinkColumn',
-        'header' => $dp->getSort()->link('patient_name', 'Name', array('class' => 'sort-link')),
+        'header' => $dp->getSort()->link('patient_name', 'Patient', array('class' => 'sort-link')),
         'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
         'labelExpression' => '$data->event->episode->patient->getHSCICName()',
+        'htmlOptions' => array('class' => 'nowrap patient'),
     ),
     array(
-        'id' => 'dob',
+        'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('dob', 'DOB', array('class' => 'sort-link')),
-        'value' => 'Helper::convertMySQL2NHS($data->event->episode->patient->dob)',
-        'htmlOptions' => array('class' => 'date'),
+        'header' => '<i class="oe-i arrow-down-bold small pad active"></i> Messages',
+        'value' => function ($data) {
+            return '<span class="oe-date">'. Helper::convertDate2HTML(Helper::convertMySQL2NHS($data->created_date)).'</span>';
+        },
+        'type' => 'raw'
+    ),
+    array(
+        'name' => 'priority',
+        'header' => '',
+        'value' => function ($data) {
+            return $data->urgent ? '
+            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+        },
+        'type' => 'raw',
     ),
     array(
         'id' => 'user',
-        'header' => $dp->getSort()->link('user', 'From', array('class' => 'sort-link')),
-        'value' => '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
+        'header' => '',
+        'value' => $message_type === 'sent' ?
+            '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()' :
+            '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
+        'cssClassExpression' => '"nowrap sender"',
     ),
     array(
+        'id' => 'message',
         'name' => 'Message',
+        'cssClassExpression' => '"js-message"',
         'value' => function ($data) {
-            return strlen($data->message_text) > 50 ? \Yii::app()->format->Ntext(substr($data->message_text, 0, 50).' ...') : \Yii::app()->format->Ntext($data->message_text);
+            return '<div class="message">' . Yii::app()->format->Ntext($data->message_text) . '</div>';
         },
         'type' => 'raw',
-        'htmlOptions' => array('class' => 'message'),
+    ),
+    array(
+        'name' => 'expand',
+        'header' => '',
+        'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
+        'type' => 'raw',
     ),
 );
 
@@ -112,8 +106,8 @@ if (!$read_check) {
                 'label' => '<button class="warning small">dismiss</button>',
                 'visible' => function ($row, $data) {
                     return !$data->message_type->reply_required
-                    || $data->comments
-                    || (\Yii::app()->user->id === $data->created_user_id);
+                        || $data->comments
+                        || (\Yii::app()->user->id === $data->created_user_id);
                 },
 
             ),
@@ -125,8 +119,8 @@ if (!$read_check) {
                 'label' => '<button class="secondary small">Reply</button>',
                 'visible' => function ($row, $data) {
                     return $data->message_type->reply_required
-                    && !$data->comments
-                    && (\Yii::app()->user->id !== $data->created_user_id);
+                        && !$data->comments
+                        && (\Yii::app()->user->id !== $data->created_user_id);
                 },
             ),
         ),
@@ -136,11 +130,14 @@ if (!$read_check) {
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';
 
-$this->widget('zii.widgets.grid.CGridView', array(
-    'itemsCssClass' => 'grid message-table',
+$this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', array(
+    'itemsCssClass' => 'messages',
     'dataProvider' => $dp,
     'htmlOptions' => array('id' => 'inbox-table'),
-    'summaryText' => '<h3 style="' . $header_style .'">'.$viewing_label.'<small> {start}-{end} of {count} </small></h3>',
+    'rowCssClassExpression' => '$data->marked_as_read ? "read" : "unread"',
+    'summaryText' => '',
     'columns' => $cols,
+    'enableHistory' => true,
+    'enablePagination' => false,
 ));
 ?>

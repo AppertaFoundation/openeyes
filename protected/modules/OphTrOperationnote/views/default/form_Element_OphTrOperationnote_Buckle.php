@@ -18,24 +18,24 @@
 ?>
 
 <?php
-    $layoutColumns = $form->layoutColumns;
-    $form->layoutColumns = array('label' => 3, 'field' => 9);
+$layoutColumns = $form->layoutColumns;
+$form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
-<div class="element-fields">
-	<div class="eyedraw-row row buckle">
-		<div class="fixed column">
-			<?php $this->renderPartial($element->form_view.'_OEEyeDraw', array(
-                'element' => $element,
-                'form' => $form,
-            ));?>
-		</div>
-		<div class="fluid column">
-			<?php $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
-                'form' => $form,
-                'element' => $element,
-            ));?>
-		</div>
-	</div>
+<div class="element-fields full-width">
+  <div class="cols-11 flex-layout col-gap eyedraw-row buckle">
+    <div class="cols-6">
+        <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
+            'element' => $element,
+            'form' => $form,
+        )); ?>
+    </div>
+    <div class="cols-6">
+        <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
+            'form' => $form,
+            'element' => $element,
+        )); ?>
+    </div>
+  </div>
 </div>
 
-<?php $form->layoutColumns = $layoutColumns;?>
+<?php $form->layoutColumns = $layoutColumns; ?>

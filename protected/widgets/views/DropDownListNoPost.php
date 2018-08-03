@@ -17,16 +17,16 @@
  */
 ?>
 <?php if (!@$htmlOptions['nowrapper']) {?>
-	<div id="div_<?php echo $id?>" class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
+	<div id="div_<?php echo $id?>" class="data-group">
+		<div class="cols-<?php echo $layoutColumns['label'];?> column">
 			<?php if (!@$htmlOptions['nolabel']) {?>
 				<label for="<?php echo $id?>"></label>
 			<?php }?>
 		</div>
 
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
-		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
+		<select style="cols-full" id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
 			<?php if (isset($htmlOptions['empty'])) {?>
 				<option value="" data-order="0"><?php echo $htmlOptions['empty']?></option>
 			<?php }?>

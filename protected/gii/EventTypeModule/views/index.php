@@ -24,7 +24,7 @@ closedir($dh);
 }?> /> Modify existing
 	<input type="hidden" id="has_errors" value="<?php echo empty($this->form_errors) ? '0' : '1'?>" />
 
-	<div class="row" id="EventTypeModuleGenerateDiv">
+	<div class="data-group" id="EventTypeModuleGenerateDiv">
 		<?php if (@$_POST['EventTypeModuleMode'] == 1) {
     ?>
 			<?php echo $this->renderPartial('EventTypeModuleGenerate_ModifyExisting')?>

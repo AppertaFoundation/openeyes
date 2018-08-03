@@ -76,15 +76,16 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     exports.InlinePreviousElement = InlinePreviousElement;
-}(OpenEyes.UI));
+}(this));
 
 $(document).ready(function() {
     // simple encapsulation for use on load and after mutations.
     var runLoader = function(element) {
         if ($(element).data('inline-previous-loader') === undefined) {
-            $(element).data('inline-previous-loader', new OpenEyes.UI.InlinePreviousElement($(element)));
+            $(element).data('inline-previous-loader', new InlinePreviousElement($(element)));
         }
     }
+
     $('.inline-previous-element').each(function() {
         runLoader($(this));
     });

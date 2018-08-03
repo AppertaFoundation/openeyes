@@ -28,6 +28,8 @@ namespace OEModule\OphCiExamination\models;
  * @property int $eye_id
  * @property OphCiExamination_PupillaryAbnormalities_Abnormality $left_abnormality
  * @property OphCiExamination_PupillaryAbnormalities_Abnormality $right_abnormality
+ * @property string $left_comments
+ * @property string $right_comments
  */
 class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeElement
 {
@@ -59,12 +61,17 @@ class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeEle
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id', 'required'),
-                array('left_abnormality_id', 'requiredIfSide', 'side' => 'left'),
-                array('right_abnormality_id', 'requiredIfSide', 'side' => 'right'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, event_id, left_abnormality_id, right_abnormality_id, eye_id', 'safe', 'on' => 'search'),
+            array('eye_id', 'required'),
+            array('left_abnormality_id', 'requiredIfSide', 'side' => 'left'),
+            array('right_abnormality_id', 'requiredIfSide', 'side' => 'right'),
+            array('left_comments, right_comments, left_rapd, right_rapd', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array(
+                'id, event_id, left_abnormality_id, right_abnormality_id, eye_id, left_comments, right_comments, left_rapd, right_rapd',
+                'safe',
+                'on' => 'search',
+            ),
         );
     }
 
@@ -76,19 +83,27 @@ class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeEle
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'left_abnormality' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality', 'left_abnormality_id'),
-                'right_abnormality' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality', 'right_abnormality_id'),
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'left_abnormality' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality',
+                'left_abnormality_id',
+            ),
+            'right_abnormality' => array(
+                self::BELONGS_TO,
+                'OEModule\OphCiExamination\models\OphCiExamination_PupillaryAbnormalities_Abnormality',
+                'right_abnormality_id',
+            ),
         );
     }
 
     public function sidedFields()
     {
-        return array('abnormality_id');
+        return array('abnormality_id', 'comments', 'rapd');
     }
 
     /**
@@ -97,10 +112,14 @@ class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeEle
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'left_abnormality_id' => 'Abnormality',
-                'right_abnormality_id' => 'Abnormality',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'left_abnormality_id' => 'Abnormality',
+            'right_abnormality_id' => 'Abnormality',
+            'left_comments' => 'Comments',
+            'right_comments' => 'Comments',
+            'left_rapd' => 'RAPD',
+            'right_rapd' => 'RAPD',
         );
     }
 
@@ -120,7 +139,35 @@ class Element_OphCiExamination_PupillaryAbnormalities extends \SplitEventTypeEle
         $criteria->compare('event_id', $this->event_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
+    }
+
+    public function afterValidate()
+    {
+        if ($this->scenario == 'formHasNoChildren') {
+            $values = false;
+            if ($this->hasLeft()) {
+                // $this->left_rapd can be 0 for "not checked"
+                if (is_numeric($this->left_rapd) || $this->left_comments) {
+                    $values = true;
+                }
+            }
+            if (!$values && $this->hasRight()) {
+                // $this->right_rapd can be 0 for "not checked"
+                if (is_numeric($this->right_rapd) || $this->right_comments) {
+                    $values = true;
+                }
+            }
+            if (!$values) {
+                $this->addError(null, 'Visual Function requires data');
+            }
+        }
+        parent::afterValidate();
+    }
+
+    public function canViewPrevious()
+    {
+        return true;
     }
 }

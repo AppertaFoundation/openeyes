@@ -54,6 +54,8 @@ class SiteSubspecialtyDrug extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('id, site_id, subspecialty_id,drug_id', 'required'),
+            array('id, site_id,subspecialty_id,  drug_id', 'safe', 'on' => 'search',)
         );
     }
 

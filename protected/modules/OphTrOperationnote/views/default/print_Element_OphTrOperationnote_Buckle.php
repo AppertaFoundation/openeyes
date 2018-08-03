@@ -17,41 +17,41 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> row">
+<section class="element <?php echo $element->elementType->class_name?>">
 	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="row">
-		<div class="large-6 column">
-			<div class="row">
-				<div class="large-6 column text-right">
+	<div class="data-group">
+		<div class="cols-6 column">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')); ?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->drainage_type->name ?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('drain_haem')); ?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->drain_haem ? 'Yes' : 'No'; ?>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="large-6 column text-right">
+			<div class="data-group">
+				<div class="cols-6 column text-right">
 					<div class="data-label">
 						<?php echo CHtml::encode($element->getAttributeLabel('deep_suture')); ?>:
 					</div>
 				</div>
-				<div class="large-6 column">
+				<div class="cols-6 column">
 					<div class="data-value">
 						<?php echo $element->deep_suture ? 'Yes' : 'No'; ?>
 					</div>
@@ -59,21 +59,21 @@
 			</div>
 
 
-			<div class="data-row">
+			<div class="data-group">
 				<h4><?php echo CHtml::encode($element->getAttributeLabel('report')); ?></h4>
 				<div class="details">
 					<div class="data-value"><?php echo CHtml::encode($element->report)?></div>
 				</div>
 			</div>
 
-			<div class="data-row">
+			<div class="data-group">
 				<h4><?php echo CHtml::encode($element->getAttributeLabel('comments')); ?></h4>
 				<div class="details">
 					<div class="data-value"><?= Yii::app()->format->Ntext($element->comments) ?></div>
 				</div>
 			</div>
 		</div>
-		<div class="large-6 column">
+		<div class="cols-6 column">
 			<?php
             $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                 'idSuffix' => 'Buckle',

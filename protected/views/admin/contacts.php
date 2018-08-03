@@ -19,26 +19,25 @@
 <div class="box admin">
 	<h2>Search contacts</h2>
 	<form id="admin_contacts_search">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="q">Search:</label>
 			</div>
-			<div class="large-4 column end">
+			<div class="cols-4 column end">
 				<?php echo CHtml::textField('q', @$_GET['q'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="data-group">
+			<div class="cols-2 column">
 				<label for="label">Label:</label>
 			</div>
-			<div class="large-4 column end">
+			<div class="cols-4 column end">
 				<?php echo CHtml::dropDownList('label', @$_GET['label'], CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Any label -'))?>
 			</div>
 		</div>
-		<div class="row field-row">
-			<div class="large-4 large-offset-2 column end">
+			<div class="cols-4 cols-offset-2 column end">
 				<?php echo EventAction::button('Search', 'search', array(), array('class' => 'small'))->toHtml()?>
-				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
+        <i class="spinner" title="Loading..." style="display: none;"></i>
 			</div>
 		</div>
 	</form>
@@ -51,7 +50,6 @@
 
 	$(document).ready(function() {
 		$('#q').select().focus();
-
 		handleButton($('#et_search'),function(e) {
 			e.preventDefault();
 			if ($('#q').val().length <1) {

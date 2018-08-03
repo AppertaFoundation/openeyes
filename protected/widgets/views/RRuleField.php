@@ -21,15 +21,15 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
     <?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
-    <div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-        <div class="large-<?php echo $layoutColumns['label'];?> column">
+    <div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="data-group"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+        <div class="cols-<?php echo $layoutColumns['label'];?> column">
             <?php
             $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
     $labelText .= ':';
     echo Chtml::label($labelText, Chtml::getIdByName($name));
     ?>
         </div>
-        <div class="large-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
+        <div class="cols-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
             <?php echo CHtml::textField($name, $value, $htmlOptions)?>
             <?php if (!empty($links)) {
     foreach ($links as $link) {

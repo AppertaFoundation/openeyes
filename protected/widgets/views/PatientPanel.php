@@ -19,63 +19,111 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+
 ?>
 
-<div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?><?= $this->patient->isDeceased() ? ' patient-deceased' : ''?>" id="patientID">
-    <div class="patient-details">
-        <?php echo CHtml::link($this->patient->getDisplayName(), array('/patient/view/'.$this->patient->id)) ?>
-        <span class="patient-title">
-			(<?= $this->patient->title ?>)
-            </span>
-    </div>
+<div id="oe-patient-details" class="oe-patient">
+  <div class="patient-name">
+    <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
+    <span class="patient-firstname">
+      <?php echo $this->patient->getFirst_name(); ?>
+      <?php echo $this->patient->getTitle() ? "({$this->patient->getTitle()})" : ''; ?>
+    </span>
+  </div>
+
+  <div class="patient-details">
     <div class="hospital-number">
-		<span>
-			Hospital No.
-		</span>
-        <?php echo $this->patient->hos_num?>
+      <span>No. </span>
+        <?php echo $this->patient->hos_num ?>
     </div>
-    <div class="row">
-        <div class="large-8 column">
-            <!-- NHS number -->
-            <div class="nhs-number warning">
-				<span class="hide-text print-only">
-					NHS number:
-				</span>
-                <?php echo $this->patient->nhsnum?>
-                <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()):?>
-                    <i class="fa fa-asterisk" aria-hidden="true"></i><span class="messages"><?= $this->patient->nhsNumberStatus->description;?></span>
-                <?php endif;?>
-            </div>
-
-            <!-- Gender -->
-            <span class="patient-gender">
-				<?php echo $this->patient->getGenderString() ?>
-			</span>
-
-        </div>
-        <div class="large-4 column end">
-            <div class="row">
-                <div class="patient-summary-anchor">
-                    <?php echo CHtml::link('Summary',array('/patient/view/'.$this->patient->id)); ?>
-                </div>
-            </div>
-            <?php if(Yii::app()->params['allow_clinical_summary']){?>
-                <div class="large-4 column clinical-summary-anchor">
-                    <?php echo CHtml::link('Clinical Summary', array('/dashboard/oescape/'.$this->patient->id), array('target' => '_blank')); ?>
-                </div>
-            <?php }?>
-        </div>
-    </div>
-    <!-- Widgets (extra icons, links etc) -->
-    <ul class="patient-widgets">
-        <?php if($this->patient->isEditable() ):?>
-            <li>
-                <a class="patient-edit-link" href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>"> <span class="fa fa-pencil-square" aria-hidden="true" aria-title="Edit patient"></span></a>
-            </li>
+    <div class="nhs-number">
+      <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
+        <?php echo $this->patient->nhsnum ?>
+        <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()): ?>
+          <i class="oe-i asterisk small" aria-hidden="true"></i><span
+              class="messages"><?= $this->patient->nhsNumberStatus->description; ?></span>
         <?php endif; ?>
-        <?php foreach ($this->widgets as $widget) {
-            echo "<li>{$widget}</li>";
+    </div>
+
+    <div class="patient-gender">
+      <em>Gender</em>
+        <?php echo $this->patient->getGenderString() ?>
+    </div>
+
+    <div class="patient-age">
+      <em>Age</em>
+        <?php echo $this->patient->getAge(); ?>
+    </div>
+
+  </div>
+    <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+      <div class="patient-allergies-risks risk-warning" id="js-allergies-risks-btn">
+          <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
+          <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
+          <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
+      </div>
+    <?php } elseif (!$this->patient->hasAllergyStatus() || !$this->patient->hasRiskStatus()) { ?>
+      <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
+        Allergies, Alerts
+      </div>
+    <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+      <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+        Allergies, Alerts
+      </div>
+    <?php } ?>
+  <div class="patient-demographics" id="js-demographics-btn">
+    <svg viewBox="0 0 60 60" class="icon">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
+    </svg>
+  </div>
+  <div class="patient-management" id="js-management-btn">
+    <svg viewBox="0 0 30 30" class="icon">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
+    </svg>
+  </div>
+  <div class="patient-quicklook" id="js-quicklook-btn">
+    <svg viewBox="0 0 30 30" class="icon">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
+    </svg>
+  </div>
+
+    <?php if ($this->patient->isEditable()): ?>
+      <div class="patient-local-edit" id="js-patient-local-edit-btn">
+        <svg viewBox="0 0 30 30" class="icon">
+          <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
+        </svg>
+      </div>
+    <?php endif; ?>
+
+     <!-- Widgets (extra icons, links etc) -->
+  <ul class="patient-widgets">
+      <?php foreach ($this->widgets as $widget) {
+        echo "<li>{$widget}</li>";
         }?>
-    </ul>
+        </ul>
+  </div>
 </div>
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
+?>
+<script type="text/javascript">
+  $(function () {
+
+    PatientPanel.patientPopups.init();
+
+    $('#js-patient-local-edit-btn').click(function (e) {
+      e.preventDefault();
+      location.href = "<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>";
+      return false;
+    });
+    $('.js-patient-expand-btn').each(function () {
+      $(this).click(function () {
+        $(this).toggleClass('collapse expand');
+        $(this).parents('table').find('tbody').toggle();
+      });
+    });
+  });
+</script>

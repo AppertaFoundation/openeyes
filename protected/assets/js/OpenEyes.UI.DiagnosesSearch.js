@@ -48,55 +48,53 @@ OpenEyes.UI = OpenEyes.UI || {};
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         renderTemplate: true,
         singleTemplate :
-            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
-            "<span class='diagnosis-name'></span></span>" +
-            "<select class='commonly-used-diagnosis'></select>" +
-            "{{#render_secondary_to}}" +
-                "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
-                    "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
-                    "<select class='condition-secondary-to'></select>" +
-                "</div>" +
-            "{{/render_secondary_to}}" +
-            "{{{input_field}}}" +
-            "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
-            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
+        "<span class='medication-display' style='display:none'>" +
+        "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
+        "<span class='diagnosis-name'></span></span>" +
+        "<select class='commonly-used-diagnosis cols-full'></select>" +
+        "{{#render_secondary_to}}" +
+        "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+        "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+        "<select class='condition-secondary-to'></select>" +
+        "</div>" +
+        "{{/render_secondary_to}}" +
+        "{{{input_field}}}" +
+        "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
+        "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
         subspecialtyRefSpec: null,
         renderSecondaryTo: true
     };
 
-    DiagnosesSearchController.prototype.init = function(){
+    DiagnosesSearchController.prototype.init = function () {
         var controller = this;
         var $parent = controller.$inputField.parent();
         var url = controller.commonlyUsedDiagnosesUrl + controller.code;
         controller.$inputField.addClass('diagnoses-search-inputfield');
         var savedDiagnoses;
 
-        if( controller.renderTemplate === true ){
+        if (controller.renderTemplate === true) {
             var html = Mustache.render(
                 this.singleTemplate,
                 {
                     'input_field': controller.$inputField.prop("outerHTML"),
-                    'row_count': OpenEyes.Util.getNextDataKey( $('#' + controller.fieldPrefix + '_diagnoses_table').find('tbody tr'), 'key'),
-                    'field_prefix' : controller.fieldPrefix,
+                    'row_count': OpenEyes.Util.getNextDataKey($('#' + controller.fieldPrefix + '_diagnoses_table').find('tbody tr'), 'key'),
+                    'field_prefix': controller.fieldPrefix,
                     'render_secondary_to': controller.renderSecondaryTo,
-
                 }
             );
 
             $parent.html(html);
             controller.$inputField = controller.$row.find('.diagnoses-search-inputfield');
 
-            if( controller.renderCommonlyUsedDiagnoses === true ){
-                $.getJSON(url, function(data){
-
+            if (controller.renderCommonlyUsedDiagnoses === true) {
+                $.getJSON(url, function (data) {
                     var $select = $parent.find('.commonly-used-diagnosis');
 
-                    $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
-                    $select.append( $('<option>',{'text': '----------', 'disabled':'disabled'}));
-                    $.each(data, function(i, item){
-                        $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
+                    $select.append($('<option>', {'text': 'Select a commonly used diagnosis'}));
+                    $select.append($('<option>', {'text': '----------', 'disabled': 'disabled'}));
+                    $.each(data, function (i, item) {
+                        $select.append($('<option>', {'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
                     });
-
                     controller.$inputField.before($select);
                 });
             }
@@ -104,10 +102,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
-        if(savedDiagnoses && savedDiagnoses.disorder_id){
-            controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
+        if(typeof savedDiagnoses === "string"){
+            savedDiagnoses = JSON.parse(savedDiagnoses);
         }
-    }
+
+        if (savedDiagnoses && savedDiagnoses.disorder_id) {
+            controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
+        }
+    };
 
     /**
      * Diagnosis selected for the row
@@ -183,7 +185,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         // hidden fields that are universally searched for on the page, following the pattern established
         // by the original diagnoses element.
         if (item.is_diabetes) {
-            this.$row.append('<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ');
+            this.$row.prepend('<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ');
         } else {
             this.$row.find('input[name^="diabetic_diagnoses"]').remove();
         }
@@ -245,6 +247,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         controller.$row.on('click', '.diagnosis-rename', function(){
             if(controller.renderCommonlyUsedDiagnoses){
                 controller.$row.find('.commonly-used-diagnosis').show();
+
             }
             controller.$row.find('.diagnoses-search-inputfield').show();
             $(this).closest('.medication-display').hide();
@@ -260,7 +263,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
             $(this).val('');
         });
-    }
+    };
 
     exports.DiagnosesSearchController = DiagnosesSearchController;
 

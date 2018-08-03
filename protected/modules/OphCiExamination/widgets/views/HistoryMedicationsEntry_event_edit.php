@@ -19,15 +19,23 @@
 
 <?php
 
+if (!isset($values)) {
+    $values = array(
+        'id' => $entry->id,
+        'drug_id' => $entry->drug_id?:'',
+        'medication_drug_id' => $entry->medication_drug_id? :'' ,
+        'medication_name' =>$entry->getMedicationDisplay()? :'',
+    );
+}
+
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
-} else {
+    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
+}else {
     $start_sel_day = $start_sel_month = null;
     $start_sel_year = date('Y');
-    $entry->start_date = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
 }
 if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
+    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
 } else {
     $end_sel_day = $end_sel_month = null;
     $end_sel_year = date('Y');
@@ -36,97 +44,82 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
     <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
-        <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
-            <div class="large-1 column text-right">
-                <a href="#" class="start-medication enable date-control has-tooltip" data-tooltip-content="record a start date for this medication" <?php if ($entry->start_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-play-circle"></i></a>
-                <a href="#" class="start-medication cancel date-control has-tooltip" data-tooltip-content="remove the start date for this medication" <?php if (!$entry->start_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-times-circle"></i></a>
-            </div>
-            <div class="large-11 column end">
-                <span class="start-date-wrapper" <?php if (!$entry->start_date) {?>style="display: none;"<?php } ?>">
-                  <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
-                </span>
-            </div>
-        </fieldset>
+      <span class="medication-display">
+        <span class="medication-name">
+          <?= $values['medication_name'] ?>
+        </span>
+      </span>
+      <?php if ($entry->originallyStopped) { ?>
+        <i class="oe-i stop small pad"></i>
+      <?php } ?>
+        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $values['drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $values['medication_drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $values['medication_name'] ?>" />
+    </td>
+        <?php
+        $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
+        $html_options = ['empty' => '- Select -'];
+        $hide_search = strlen($entry->getMedicationDisplay()) > 0;
+        if($hide_search){
+            $html_options['style'] = 'display: none;';
+        }
 
-        <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
-            <div class="large-1 column text-right">
-                <a href="#" class="stop-medication enable date-control has-tooltip" data-tooltip-content="record a stop date for this medication" <?php if ($entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-stop"></i></a>
-                <a href="#" class="stop-medication cancel date-control has-tooltip" data-tooltip-content="remove the stop date for this medication" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-times-circle"></i></a>
-            </div>
-            <div class="large-11 column end">
-              <span class="stop-date-wrapper" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>>
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
-            </span>
-            </div>
-        </fieldset>
+        foreach($select_options as $select_option){
+            $html_options['options'][$select_option['id']] = [
+                'data-tags' => implode(',', $select_option['tags']),
+                'data-tallmanlabel' => $select_option['name'],
+            ];
+        }
+        ?>
+
+    <td>
+      <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
+      <input class="cols-2" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class'=>'cols-3')) ?>
+        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'cols-4')) ?>
+        <?= CHtml::dropDownList($field_prefix . '[option_id]',
+                  $entry->option_id,
+                  CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
+                  array('empty' => '-Select-', 'class'=>'cols-2 admin-route-options', 'style'=>$entry->routeOptions()?'':'display:none' ));  ?>
+
     </td>
     <td>
-        <span class="medication-display"><a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a> <span class="medication-name"><?= $entry->getMedicationDisplay() ?></span></span>
-        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
-        <?php $hide_search = strlen($entry->getMedicationDisplay()) > 0; ?>
-        <?= $this->getFirm() ?
-        CHtml::dropDownList(
-            $field_prefix . '[drug_select]',
-            '',
-            Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
-            ($hide_search ? array('empty' => '- Select -', 'style' => 'display: none;') : array('empty' => '- Select -'))
-        ) : ''; ?>
-        <input type="text" name="<?= $field_prefix ?>[medication_search]" value="<?= $entry->getMedicationDisplay() ?>" class="search" placeholder="Type to search" <?= $hide_search ? 'style="display: none;"': '' ?>/>
+      <fieldset class="data-group fuzzy-date">
+      <?php if (!$entry->start_date||$removable) { ?>
+        <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
+               value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>"
+               style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+        <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+      <?php } else { ?>
+        <i class="oe-i start small pad"></i>
+          <?=Helper::formatFuzzyDate($entry->start_date) ?>
+        <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
+
+      <?php } ?>
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+    <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
+    </fieldset>
+    </td>
+  <td>
+    <fieldset class="data-group fuzzy-date">
+        <?php if (!$entry->end_date||$removable) { ?>
+          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+          <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
+        <?php } else { ?>
+          <i class="oe-i start small pad"></i>
+            <?=Helper::formatFuzzyDate($entry->end_date) ?>
+          <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+        <?php } ?>
+    </fieldset>
+  </td>
+    <td>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
     </td>
     <td>
-        <div class="row">
-          <div class="large-6 column">
-            <div class="row">
-              <div class="large-3 column"><label>Dose:</label></div>
-              <div class="large-9 column end">
-                  <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
-
-                  <?php
-                        $attributes['placeholder'] = $entry->units;
-                        $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
-                        if($entry->units == 'mg'){
-                            $attributes['class'] .= " decimal";
-                        }
-
-                        echo CHtml::textField("{$field_prefix}[dose]", $entry->dose, $attributes);
-                  ?>
-
-              </div>
-            </div>
-            <div class="row">
-              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
-              <div class="large-9 column end">
-                  <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-')) ?>
-              </div>
-            </div>
-          </div>
-          <div class="large-6 column end">
-            <div class="row">
-              <div class="large-3 column"><label>Route:</label></div>
-              <div class="large-9 column end">
-                  <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-')) ?>
-              </div>
-            </div>
-            <div class="row admin-route-options" <?php if (!$entry->routeOptions()) {?>style="display:none;"<?php } ?>>
-              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
-              <div class="large-9 column end route-option-wrapper">
-                  <?= CHtml::dropDownList($field_prefix . '[option_id]',
-                      $entry->option_id,
-                      CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
-                      array('empty' => '-Select-')) ?>
-              </div>
-            </div>
-          </div>
-        </div>
-    </td>
-    <td class="edit-column">
-        <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
+        <?php if ($removable) { ?>
+            <i class="oe-i trash"></i>
+        <?php } else { ?>
+            <i class="oe-i info small-icon"></i>
+        <?php } ?>
     </td>
 </tr>

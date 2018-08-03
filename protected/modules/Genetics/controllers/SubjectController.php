@@ -61,7 +61,6 @@ class SubjectController extends BaseModuleController
         }
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/subjects.js');
-        Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
 
         return parent::beforeAction($action);
     }

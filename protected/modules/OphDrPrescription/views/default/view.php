@@ -19,7 +19,7 @@
 $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
 
 ?>
-<?php $this->beginContent('event_container', ['Element' => $Element]); ?>
+<?php $this->beginContent('//patient/event_container', ['Element' => $Element, 'no_face'=>true]); ?>
 
 	<?php
         // Event actions
@@ -53,5 +53,6 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 		});
 		<?php } ?>
 	</script>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent();?>
+

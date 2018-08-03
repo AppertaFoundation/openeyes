@@ -19,8 +19,8 @@
 <?php
 
 $layoutColumns = array(
-    'label' => 4,
-    'field' => 8,
+    'label' => 6,
+    'field' => 6,
 );
 
 //TODO: can drive this purely off the element attributes when we fix form processing
@@ -67,57 +67,63 @@ if (@$_POST[get_class($element)]) {
     $patient_factors = $element->{$side . '_patient_factors'};
 }
 ?>
+<table>
+  <tbody>
+  <tr>
+    <td class="standard_intervention_exists">
+        <?php echo $form->radioBoolean($element, $side . '_standard_intervention_exists', array(), $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr id="<?php echo get_class($element) . '_' . $side ?>_standard_intervention_details"
+      <?php if (!$exists) {
+          echo 'style="display: none;"';
+      } ?>>
+    <td>
+        <?php echo $form->dropDownList(
+            $element,
+            $side . '_standard_intervention_id',
+            CHtml::listData($element->getStandardInterventionsForSide($side), 'id', 'name'),
+            array('empty' => '- Please select -'),
+            false,
+            array(
+                'label' => 6,
+                'field' => 4,
+            )
+        ) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="standard_previous" id="<?php echo get_class($element) . '_' . $side; ?>_standard_previous">
+        <?php echo $form->radioBoolean($element, $side . '_standard_previous', array(), $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+      <?php
+      $opts = array(
+          'options' => array(),
+      );
+      $interventions = OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findAll();
 
-<div class="standard_intervention_exists">
-    <?php echo $form->radioBoolean($element, $side . '_standard_intervention_exists', array(), $layoutColumns) ?>
-</div>
-
-<div id="<?php echo get_class($element) . '_' . $side ?>_standard_intervention_details"
-<?php
-if (!$exists) {
-    echo 'style="display: none;"';
-}
-?>
-
-<?php
-echo $form->dropDownList(
-    $element,
-    $side . '_standard_intervention_id',
-    CHtml::listData($element->getStandardInterventionsForSide($side), 'id', 'name'),
-    array('empty' => '- Please select -'),
-    false,
-    array(
-        'label' => 4,
-        'field' => 6,
-    )
-) ?>
-
-<div class="standard_previous" id="<?php echo get_class($element) . '_' . $side; ?>_standard_previous">
-    <?php echo $form->radioBoolean($element, $side . '_standard_previous', array(), $layoutColumns) ?>
-</div>
-
-<?php
-$opts = array(
-    'options' => array(),
-);
-$interventions = OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findAll();
-
-foreach ($interventions as $intervention) {
-    $opts['options'][$intervention->id] = array(
-        'data-description-label' => $intervention->description_label,
-        'data-is-deviation' => $intervention->is_deviation
-    );
-}
-?>
-<div class="intervention" id="<?php echo get_class($element) . '_' . $side; ?>_intervention">
-    <?php echo $form->radioButtons($element, $side . '_intervention_id', CHtml::listData($interventions, 'id', 'name'),
-        $element->{$side . '_intervention_id'}, 1, false, false, false, $opts, $layoutColumns) ?>
-</div>
-
-<div class="row field-row"<?php if (!$intervention_id) {
-    echo ' style="display: none;"';
-} ?>>
-    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+      foreach ($interventions as $intervention) {
+          $opts['options'][$intervention->id] = array(
+              'data-description-label' => $intervention->description_label,
+              'data-is-deviation' => $intervention->is_deviation,
+          );
+      }
+      ?>
+    <td class="intervention" id="<?php echo get_class($element) . '_' . $side; ?>_intervention">
+        <?php echo $form->radioButtons($element, $side . '_intervention_id',
+            CHtml::listData($interventions, 'id', 'name'),
+            $element->{$side . '_intervention_id'}, 1, false, false, false, $opts, $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr style="<?php if (!$intervention_id) { echo 'display: none;'; } ?>">
+    <td class="flex-layout flex-left" style="height:auto;">
+      <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <label for="<?php echo get_class($element) . '_' . $side . '_description'; ?>">
             <?php if ($intervention_id) {
                 echo OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findByPk((int)$intervention_id)->description_label;
@@ -125,64 +131,87 @@ foreach ($interventions as $intervention) {
                 $element->getAttributeLabel($side . '_description');
             } ?>
         </label>
-    </div>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
-        <?php echo $form->textArea($element, $side . '_description', array('nowrapper' => true)) ?>
-    </div>
-</div>
+      </div>
+      <div class="cols-<?php echo $layoutColumns['field']; ?>" >
+          <?php echo $form->textArea($element, $side . '_description', array('nowrapper' => true)) ?>
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  <tr id="<?php echo get_class($element) . '_' . $side; ?>_deviation_fields"
+      style=" <?php if (!$need_reason) {echo 'display: none;';} ?>">
+    <td class="flex-layout flex-left"
+        style="height:auto;">
+      <div class="cols-<?php echo $layoutColumns['label']; ?>">
+        <div class="field-label">
+            <?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:
+        </div>
+      </div>
+      <div class="cols-<?php echo $layoutColumns['field']; ?>">
+          <?php
+          $html_options = array(
+              'options' => array(),
+              'empty' => '- Please select -',
+              'div_id' => get_class($element) . '_' . $side . '_deviationreasons',
+              'div_class' => 'elementField',
+              'label' => $element->getAttributeLabel($side . '_deviationreasons'),
+              'nowrapper' => true,
+          );
 
-<div id="<?php echo get_class($element) . '_' . $side; ?>_deviation_fields"
-    <?php if (!$need_reason) { ?>
-        style="display: none;"
-    <?php } ?>>
-    <?php
-    $html_options = array(
-        'options' => array(),
-        'empty' => '- Please select -',
-        'div_id' => get_class($element) . '_' . $side . '_deviationreasons',
-        'div_class' => 'elementField',
-        'label' => $element->getAttributeLabel($side . '_deviationreasons'),
-    );
-
-    echo $form->multiSelectList(
-        $element,
-        get_class($element) . '[' . $side . '_deviationreasons]',
-        $side . '_deviationreasons',
-        'id',
-        CHtml::listData($element->getDeviationReasonsForSide($side), 'id', 'name'),
-        array(),
-        $html_options,
-        false,
-        false,
-        false,
-        false,
-        false,
-        array(
-            'label' => 4,
-            'field' => 6,
-        )
-    );
-    ?>
-</div>
-
-<div id="<?php echo get_class($element) . '_' . $side; ?>_standard_intervention_not_exists"
-<?php if ($exists != '0') {
-    echo 'style="display: none;"';
-} ?>">
-<?php echo $form->radioBoolean($element, $side . '_condition_rare', array(), $layoutColumns); ?>
-<?php echo $form->textArea($element, $side . '_incidence', array(), false, array(), $layoutColumns); ?>
-</div>
-
-<?php echo $form->textArea($element, $side . '_patient_different', array(), false, array(), $layoutColumns); ?>
-<?php echo $form->textArea($element, $side . '_patient_gain', array(), false, array(), $layoutColumns); ?>
-
-<div id="div_<?php echo get_class($element) . '_' . $side; ?>_previnterventions" class="row field-row">
-    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+          echo $form->multiSelectList(
+              $element,
+              get_class($element) . '[' . $side . '_deviationreasons]',
+              $side . '_deviationreasons',
+              'id',
+              CHtml::listData($element->getDeviationReasonsForSide($side), 'id', 'name'),
+              array(),
+              $html_options,
+              false,
+              false,
+              false,
+              false,
+              false,
+              array(
+                  'label' => 4,
+                  'field' => 6,
+              )
+          );
+          ?>
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  <tr id="<?php echo get_class($element) . '_' . $side; ?>_standard_intervention_not_exists"
+      <?php if ($exists != '0') {
+          echo 'style="display: none;"';
+      } ?>>
+    <td>
+        <?php echo $form->radioBoolean($element, $side . '_condition_rare', array(), $layoutColumns); ?>
+        <?php echo $form->textArea($element, $side . '_incidence', array(), false, array(), $layoutColumns); ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textArea($element, $side . '_patient_different', array(), false, array(), $layoutColumns); ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->textArea($element, $side . '_patient_gain', array(), false, array(), $layoutColumns); ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="flex-layout" style="height:auto"
+        id="div_<?php echo get_class($element) . '_' . $side; ?>_previnterventions">
+      <div class="cols-4">
         <div class="field-label">
             <?php echo $element->getAttributeLabel($side . '_previnterventions') ?>:
         </div>
-    </div>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+      </div>
+      <div class="cols-10">
         <div class="previntervention-container">
             <?php
             $key = 0;
@@ -198,22 +227,22 @@ foreach ($interventions as $intervention) {
             }
             ?>
         </div>
-        <button class="addPrevintervention secondary small" type="button">
-            Add
-        </button>
-    </div>
-</div>
-
-<div id="div_<?php echo get_class($element) . '_' . $side; ?>_relevantinterventions" class="row field-row">
-    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+        <button class="addPrevintervention secondary small" type="button">Add</button>
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="flex-layout" style="height: auto"
+        id="div_<?php echo get_class($element) . '_' . $side; ?>_relevantinterventions">
+      <div class="cols-4">
         <div class="field-label">
             <?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?>:
         </div>
-    </div>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+      </div>
+      <div class="cols-10">
         <div class="relevantintervention-container">
-            <?php
-            $key = 0;
+            <?php $key = 0;
             foreach ($relevantinterventions as $relevant) {
                 $this->renderPartial('form_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
                     'key' => $key,
@@ -227,94 +256,125 @@ foreach ($interventions as $intervention) {
             ?>
         </div>
         <button class="addRelevantintervention secondary small" type="button">
-            Add
+          Add
         </button>
-    </div>
-</div>
-
-<div class="patient_factors">
-    <?php echo $form->radioBoolean($element, $side . '_patient_factors', array(), $layoutColumns) ?>
-</div>
-
-<div id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_factor_details"
-    <?php if (!$patient_factors) {
-        echo 'style="display: none;"';
-    } ?>>
-    <?php echo $form->textArea($element, $side . '_patient_factor_details', array(), false, array(), $layoutColumns) ?>
-</div>
-
-<div id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_expectations">
-    <?php echo $form->textArea($element, $side . '_patient_expectations', array(), false, array(), $layoutColumns) ?>
-</div>
-
-<div class="start_period">
-    <?php
-    $posted_sp = null;
-    $urgent = false;
-    if (@$_POST[get_class($element)]) {
-        $posted_sp = $_POST[get_class($element)][$side . '_start_period_id'];
-    } else {
-        $urgent = ($element->{$side . '_start_period'} && $element->{$side . '_start_period'}->urgent);
-    }
-    // get all the start periods and get data attribute for urgency requirements
-    $start_periods = $element->getStartPeriodsForSide($side);
-    $html_options = array('empty' => '- Please select -', 'options' => array());
-    foreach ($start_periods as $sp) {
-        $html_options['options'][$sp->id] = array('data-urgent' => $sp->urgent);
-        if ($posted_sp == $sp->id && $sp->urgent) {
-            $urgent = true;
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="patient_factors">
+        <?php echo $form->radioBoolean($element, $side . '_patient_factors', array(), $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_factor_details"
+      <?php if (!$patient_factors) {
+          echo 'style="display: none;"';
+      } ?>>
+    <td>
+        <?php echo $form->textArea($element, $side . '_patient_factor_details', array(), false, array(),
+            $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td id="div_<?php echo get_class($element) . '_' . $side; ?>_patient_expectations">
+        <?php echo $form->textArea($element, $side . '_patient_expectations', array(), false, array(),
+            $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="start_period">
+        <?php
+        $posted_sp = null;
+        $urgent = false;
+        if (@$_POST[get_class($element)]) {
+            $posted_sp = $_POST[get_class($element)][$side . '_start_period_id'];
+        } else {
+            $urgent = ($element->{$side . '_start_period'} && $element->{$side . '_start_period'}->urgent);
         }
-    }
-    echo $form->dropDownList(
-        $element,
-        $side . '_start_period_id',
-        CHtml::listData($start_periods, 'id', 'name'),
-        $html_options,
-        false,
-        array(
-            'label' => 4,
-            'field' => 6,
-        )
-    );
-    ?>
-</div>
+        // get all the start periods and get data attribute for urgency requirements
+        $start_periods = $element->getStartPeriodsForSide($side);
+        $html_options = array('empty' => '- Please select -', 'options' => array());
+        foreach ($start_periods as $sp) {
+            $html_options['options'][$sp->id] = array('data-urgent' => $sp->urgent);
+            if ($posted_sp == $sp->id && $sp->urgent) {
+                $urgent = true;
+            }
+        }
+        echo $form->dropDownList(
+            $element,
+            $side . '_start_period_id',
+            CHtml::listData($start_periods, 'id', 'name'),
+            $html_options,
+            false,
+            array(
+                'label' => 6,
+                'field' => 6,
+            )
+        );
+        ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr id="<?php echo get_class($element) . '_' . $side ?>_urgency_reason"
+      <?php if (!$urgent) {
+          echo 'style="display: none;"';
+      } ?>>
+    <td>
+        <?php echo $form->textArea($element, $side . '_urgency_reason', array(), false, array(), $layoutColumns) ?>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="flex-layout flex-left" style="height:auto">
+      <div class="cols-<?php echo $layoutColumns['label']; ?>">
+        <div class="field-label">
+            <?php echo $element->getAttributeLabel($side . '_filecollections') ?>:
+        </div>
+      </div>
+      <div class="cols-<?php echo $layoutColumns['field']; ?>">
+          <?php
+          $html_options = array(
+              'options' => array(),
+              'empty' => '- Please select -',
+              'div_id' => get_class($element) . '_' . $side . '_filecollections',
+              'div_class' => 'elementField',
+              'label' => 'File Attachments',
+              'nowrapper' => true,
+          );
+          $collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
+          //TODO: have sorting with display_order when implemented
+          /*
+          $collections = OphCoTherapyapplication_FileCollection::::model()->findAll(array('order'=>'display_order asc'));
+          foreach ($collections as $collection) {
+              $html_options['options'][(string) $collection->id] = array('data-order' => $collection->display_order);
+          }
+          */
+          $form->multiSelectList(
+              $element,
+              get_class($element) . '[' . $side . '_filecollections]',
+              $side . '_filecollections',
+              'id',
+              CHtml::listData($collections, 'id', 'name'),
+              array(),
+              $html_options,
+              false,
+              false,
+              null,
+              false,
+              false,
+              array('label' => 4, 'field' => 6)
+          );
+          ?>
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
 
-<div id="<?php echo get_class($element) . '_' . $side ?>_urgency_reason"
-    <?php if (!$urgent) {
-        echo 'style="display: none;"';
-    } ?>>
-    <?php echo $form->textArea($element, $side . '_urgency_reason', array(), false, array(), $layoutColumns) ?>
-</div>
 
-<?php
-$html_options = array(
-    'options' => array(),
-    'empty' => '- Please select -',
-    'div_id' => get_class($element) . '_' . $side . '_filecollections',
-    'div_class' => 'elementField',
-    'label' => 'File Attachments',
-);
-$collections = OphCoTherapyapplication_FileCollection::model()->activeOrPk($element->getFileCollectionValuesForSide($side))->findAll();
-//TODO: have sorting with display_order when implemented
-/*
-$collections = OphCoTherapyapplication_FileCollection::::model()->findAll(array('order'=>'display_order asc'));
-foreach ($collections as $collection) {
-    $html_options['options'][(string) $collection->id] = array('data-order' => $collection->display_order);
-}
-*/
-$form->multiSelectList(
-    $element,
-    get_class($element) . '[' . $side . '_filecollections]',
-    $side . '_filecollections',
-    'id',
-    CHtml::listData($collections, 'id', 'name'),
-    array(),
-    $html_options,
-    false,
-    false,
-    null,
-    false,
-    false,
-    array('label' => 4, 'field' => 6)
-);
-?>
+

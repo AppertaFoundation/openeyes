@@ -15,23 +15,21 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
+<div class="element-data full-width flex-layout flex-top col-gap">
+  <div class="cols-6">
+    <div class="data-label large-text">
+        <?php echo CHtml::encode($element->getAttributeLabel('benefits')) ?>:
+    </div>
+    <span class="large-text">
+        <?php echo CHtml::encode($element->benefits) ?>
+    </span>
+  </div>
 
-<div class="element-data">
-	<div class="row data-row">
-		<div class="large-3 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('benefits'))?>:</div>
-		</div>
-		<div class="large-9 column">
-			<div class="data-value"><?php echo CHtml::encode($element->benefits)?></div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-3 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('risks'))?>:</div>
-		</div>
-		<div class="large-9 column">
-			<div class="data-value"><?php echo CHtml::encode($element->risks)?></div>
-		</div>
-	</div>
+  <div class="cols-6">
+    <div class="data-label">
+        <?php echo CHtml::encode($element->getAttributeLabel('risks')) ?>:
+    </div>
+      <?php echo CHtml::encode($element->risks) ?>
+  </div>
 </div>

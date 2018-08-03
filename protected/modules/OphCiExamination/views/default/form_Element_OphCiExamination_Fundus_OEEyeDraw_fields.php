@@ -18,7 +18,7 @@
 ?>
 <div class="eyedraw-fields">
 
-    <div class="field-row" style="margin-top: 110px;">
+    <div class="data-group" style="margin-top: 110px;">
         <?php echo $form->multiSelectList($element, CHtml::modelName($element) . '[' . $side . '_vitreous]', $side . '_vitreous', 'id',
             CHtml::listData(OEModule\OphCiExamination\models\Vitreous::model()->findAll(array('order' => 'display_order asc')), 'id', 'name')
             , array(), array('empty' => '- Select -', 'label' => $element->getAttributeLabel('vitreous')), false,
@@ -26,18 +26,16 @@
     </div>
 
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="row">
-        <div class="large-6 column end">
+    <div class="data-group">
+        <div class="cols-6 column end">
             <label>
                 <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
             </label>
         </div>
-        <div class="large-10 column end autoreport-display">
+        <div class="cols-10 column end autoreport-display">
             <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"></span>
         </div>
     </div>
 
-    <div class="field-row">
-        <?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_description'))) ?>
-    </div>
+    <?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_description'))) ?>
 </div>
