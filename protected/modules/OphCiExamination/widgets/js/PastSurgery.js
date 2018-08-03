@@ -92,6 +92,10 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         controller.$table.on('click', ('.'+controller.options.modelName + '_previous_operation_side'), function(e) {
             $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
+
+        var eye_selector = new OpenEyes.UI.EyeSelector({
+            element: controller.$section
+        });
     };
 
     /**
