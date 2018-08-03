@@ -481,7 +481,7 @@ class DefaultController extends BaseEventTypeController
                         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
 
                         // Use ffmpeg to generate a thumbnail of the video
-                        $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' 2>&1';
+                        $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' -y 2>&1';
                         Yii::log('Executing command: ' . $command);
                         $result = shell_exec($command);
                         Yii::log('Result: ' . $result);
@@ -490,6 +490,24 @@ class DefaultController extends BaseEventTypeController
                         $imagick = new Imagick();
                         $imagick->readImage($output_path);
                         $this->scaleImageForThumbnail($imagick);
+
+                        // Add a white triangle to the in the center of the preview
+                        $draw = new \ImagickDraw();
+                        $fillColor = new \ImagickPixel('white');
+                        $draw->setFillColor($fillColor);
+                        $triangleSideLength = $imagick->getImageHeight() / 3;
+                        $triangleWidth = sqrt(3) / 2 * $triangleSideLength;
+                        $centreX = $imagick->getImageWidth() / 2;
+                        $centreY = $imagick->getImageHeight() / 2;
+
+                        $draw->polygon([
+                            ['x' => $centreX - $triangleWidth / 2, 'y' => $centreY - $triangleSideLength / 2],
+                            ['x' => $centreX + $triangleWidth / 2, 'y' => $centreY],
+                            ['x' => $centreX - $triangleWidth / 2, 'y' => $centreY + $triangleSideLength / 2]
+                        ]);
+
+                        $imagick->drawImage($draw);
+
                         if (!$imagick->writeImage($output_path)) {
                             throw new Exception('An error occurred when resizing the video thumbnail');
                         }
