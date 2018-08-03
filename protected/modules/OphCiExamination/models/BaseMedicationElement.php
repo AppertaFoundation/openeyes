@@ -100,7 +100,7 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
             $entry->event_id = $this->event_id;
 
             /* Why do I have to do this? */
-            if(isset($entry->id) && !is_null($entry->id)) {
+            if(isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
             }
 

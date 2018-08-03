@@ -141,7 +141,7 @@ else {
                         <?php echo !is_null($entry->stop_reason_id) ?
                             ' ('.$entry->stopReason->name.')' : ''; ?>
                     <?php else: ?>
-                        stop
+                        stopped?
                     <?php endif; ?>
                 </a>
             </div>

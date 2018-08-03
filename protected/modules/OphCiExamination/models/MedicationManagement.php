@@ -169,7 +169,7 @@ class MedicationManagement extends BaseMedicationElement
             $entry->event_id = $this->event->id;
 
             /* Why do I have to do this? */
-            if(isset($entry->id) && !is_null($entry->id)) {
+            if(isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
             }
 
