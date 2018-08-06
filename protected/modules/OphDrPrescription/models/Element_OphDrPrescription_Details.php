@@ -77,7 +77,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'items' => array(self::HAS_MANY, 'OphDrPrescription_Item', 'prescription_id'),
+            'items' => array(
+                self::HAS_MANY,
+                OphDrPrescription_Item::class,
+                array('event_id' => 'event_id')
+            ),
             'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id')
         );
     }

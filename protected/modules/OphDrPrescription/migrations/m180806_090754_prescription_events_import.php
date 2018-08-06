@@ -30,7 +30,8 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         presc_item.id                       AS temp_prescription_item_id,
                         presc_item.dose                     AS legacy_dose,
                         presc_item.dispense_condition_id    AS ref_dispense_condition_id,
-                        presc_item.dispense_location_id     AS ref_dispense_location_id,  
+                        presc_item.dispense_location_id     AS ref_dispense_location_id,
+                        presc_item.comments                 AS comments
                         ref_medication_laterality.id        AS ref_laterality_id,
                         ref_medication.id                   AS ref_medication_id,
                         ref_medication_form.id              AS ref_medication_form_id,
@@ -115,7 +116,8 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         dispense_location_id, 
                         dispense_condition_id,  
                         temp_prescription_item_id, 
-                        start_date_string_YYYYMMDD
+                        start_date_string_YYYYMMDD,
+                        comments
                     ) values(
                         ".$event['event_id'].",
                         '".$event['class_name']."',
@@ -130,8 +132,11 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         ".$ref_dispense_condition_id.",
                         ".$ref_dispense_location_id.",
                         ".$event['temp_prescription_item_id'].",
-                        '".$event['event_date']."' )
+                        '".$event['event_date']."',
+                        :comments
+                         )
                 ");
+                $command->bindParam(':comments', $event['comments']);
                 $command->execute();
                 $command = null;
             }
