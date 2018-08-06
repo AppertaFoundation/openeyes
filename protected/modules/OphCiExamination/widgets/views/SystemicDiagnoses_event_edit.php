@@ -35,18 +35,13 @@ $required_diagnoses_ids = array_map(function ($r) {
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
-    <thead>
-    <tr>
-      <th></th>
-      <th>Checked</th>
-      <th>Right</th>
-      <th>Both</th>
-      <th>Left</th>
-      <th>N/A</th>
-      <th>Date (optional)</th>
-      <th></th>
-    </tr>
-    </thead>
+      <colgroup>
+          <col class="cols-4">
+          <col class="cols-2">
+          <col class="cols-1">
+          <col class="cols-1">
+          <col class="cols-1">
+      </colgroup>
     <tbody>
     <?php
     $row_count = 0;

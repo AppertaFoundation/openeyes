@@ -41,28 +41,33 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
                 'id' => 'Element_OphTrOperationnote_Cataract_incision_site_id',
                 'attribute' => 'data-value',
             ),
-
-            'PCIOL' => array(
-                'fx' => array('id' => 'Element_OphTrOperationnote_Cataract_iol_position_id'),
+            'incisionType' => array(
+                'id' => 'Element_OphTrOperationnote_Cataract_incision_type_id',
+                'attribute' => 'data-value',
             ),
-        ),
-        'listenerArray' => array(
-            'sidePortController',
-            'AngleMarksController'
+            'incisionLength' => array('id' => 'Element_OphTrOperationnote_Cataract_length'),
+            'incisionMeridian' => array('id' => 'Element_OphTrOperationnote_Cataract_meridian'),
         ),
 
-        'idSuffix' => 'Cataract',
-        'side' => $this->selectedEyeForEyedraw->shortName,
-        'mode' => 'edit',
-        'width' => 300,
-        'height' => 300,
-        'model' => $element,
-        'attribute' => 'eyedraw',
-        'offsetX' => 10,
-        'offsetY' => 10,
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'autoReport' => 'Element_OphTrOperationnote_Cataract_report',
-    )
+        'PCIOL' => array(
+            'fx' => array('id' => 'Element_OphTrOperationnote_Cataract_iol_position_id'),
+        ),
+    ),
+    'listenerArray' => array(
+        'sidePortController',
+        'AngleMarksController'
+    ),
+    'idSuffix' => 'Cataract',
+    'side' => $this->selectedEyeForEyedraw->shortName,
+    'mode' => 'edit',
+    'width' => 300,
+    'height' => 300,
+    'model' => $element,
+    'attribute' => 'eyedraw',
+    'offsetX' => 10,
+    'offsetY' => 10,
+    'template' => 'OEEyeDrawWidget_InlineToolbar',
+    'autoReport' => 'Element_OphTrOperationnote_Cataract_report',
 ));
 ?>
 
