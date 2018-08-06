@@ -43,6 +43,7 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property HistoryMedicationsStopReason $stopReason
  * @property EventMedicationUse $prescriptionItem
  * @property RefMedicationLaterality $refMedicationLaterality
+ * @property DrugDuration $drugDuration
  */
 
 class EventMedicationUse extends BaseElement
@@ -136,7 +137,8 @@ class EventMedicationUse extends BaseElement
 			'route' => array(self::BELONGS_TO, 'RefMedicationRoute', 'route_id'),
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, self::class, 'prescription_item_id'),
-            'refMedicationLaterality' => array(self::BELONGS_TO, RefMedicationLaterality::class, 'laterality')
+            'refMedicationLaterality' => array(self::BELONGS_TO, RefMedicationLaterality::class, 'laterality'),
+            'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration')
 		);
 	}
 
