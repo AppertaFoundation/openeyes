@@ -60,7 +60,8 @@
         </div>
     </div>
 <?php endforeach; ?>
-    <div class="js-foster-images-dialog dialog-content" title="Foster Images">
+  <div style="display: none;">
+    <div class="js-foster-images-dialog">
         <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
         <map name="foster_images_map">
             <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
@@ -71,7 +72,7 @@
             <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
         </map>
     </div>
-
+  </div>
 </div>
 
 
