@@ -69,7 +69,8 @@ $episodes = $this->episode->patient->episodes
                       <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
                   </span>
                 </td>
-                  <?php if($date = $episode->getDisplayDate()){ ?>
+                  <?php $date = $episode->getDisplayDate(); ?>
+                  <?php if($date){ ?>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
                     <?php } else { ?>
                     <td></td>
