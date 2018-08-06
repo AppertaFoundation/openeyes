@@ -22,6 +22,7 @@ class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
     protected $max_document_size = 10485760;
+    protected $max_document_name_length = 255;
     protected $max_content_length = 8388608;
     protected $allowed_file_types = array();
 
@@ -41,6 +42,7 @@ class DefaultController extends BaseEventTypeController
     {
         $this->allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
         $this->max_document_size = $this->return_bytes(ini_get('upload_max_filesize'));
+        $this->jsVars['max_document_name_length'] = $this->max_document_name_length;
         $this->max_content_length = $this->return_bytes(ini_get('upload_max_filesize'));
 
         $this->jsVars['max_document_size'] = $this->max_document_size;
