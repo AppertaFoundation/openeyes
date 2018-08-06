@@ -142,12 +142,14 @@ class DefaultController extends BaseEventTypeController
         // Get prescription details element
         $element = Element_OphDrPrescription_Details::model()->findByAttributes(array('event_id' => $this->event->id));
 
+        /* TODO need to rewrite Patient::hasDrugAllergy
         foreach ($element->items as $item) {
             if ($this->patient->hasDrugAllergy($item->drug_id)) {
                 $this->showAllergyWarning();
                 break;
             }
         }
+        */
     }
 
     /**

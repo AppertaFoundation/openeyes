@@ -29,12 +29,16 @@
     </thead>
     <tbody>
     <?php foreach ($element->items as $key => $item) {
+        /** @var OphDrPrescription_Item $item */
+        /* TODO need to rewrite Patient::hasDrugAllergy
         $additional_class = $this->patient->hasDrugAllergy($item->drug_id) ? ' allergyWarning' : '';
+        */
+        $additional_class = "";
         $additional_class .= (($key % 2) == 0) ? 'even' : ' odd';
         ?>
         <tr class="prescription-item<?= $additional_class ?>">
             <td class="prescription-label">
-                <?php echo $item->drug->tallmanlabel; ?>
+                <?php echo $item->refMedication->preferred_term; ?>
                 <?php if(!is_null($item->comments)): ?>
                     <br/>
                     <i><?php echo CHtml::encode($item->comments); ?></i>
