@@ -55,7 +55,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function relations()
     {
         return array_merge(parent::relations(), array(
-            'tapers' => array(self::HAS_MANY, 'OphDrPrescription_ItemTaper', 'item_id'),
+            'tapers' => array(self::HAS_MANY, OphDrPrescription_ItemTaper::class, 'item_id'),
             'prescription' => array(
                 self::HAS_ONE,
                 Element_OphDrPrescription_Details::class,
@@ -98,5 +98,25 @@ class OphDrPrescription_Item extends EventMedicationUse
                 }
             }
         }
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function stopDateFromDuration()
+    {
+        if (in_array($this->drugDuration->name, array('Other', 'Until review'))) {
+            return null;
+        }
+
+        $start_date = new DateTime($this->prescription->event->event_date);
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->drugDuration->name));
+        foreach ($this->tapers as $taper) {
+            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                return null;
+            }
+            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+        }
+        return $end_date;
     }
 }
