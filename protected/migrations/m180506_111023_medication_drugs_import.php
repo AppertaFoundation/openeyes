@@ -205,7 +205,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
                         values (".$ref_medication_id." ,
                          
-                         (SELECT id FROM ref_set WHERE `name` = :ref_set_name AND id = 
+                         (SELECT id FROM ref_set WHERE `name` = :ref_set_name AND id IN 
                             (SELECT ref_set_id FROM ref_set_rules WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug') 
                          ),
                          
