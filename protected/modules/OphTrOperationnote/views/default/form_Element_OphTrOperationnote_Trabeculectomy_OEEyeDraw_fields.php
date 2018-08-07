@@ -225,8 +225,8 @@
                 $('#<?= CHtml::modelName($element)?>'+field_name).show();
             }
             else {
-                $('#<?=CHtml::modelName($element)?>'+field_name).css("display","none");
-                $('#div_<?= CHtml::modelName($element)?>'+field_name).find('textarea').val('');
+                $('#<?=CHtml::modelName($element)?>'+field_name).hide();
+                $('#<?= CHtml::modelName($element)?>'+field_name).find('textarea').val('');
             }
         }
 
