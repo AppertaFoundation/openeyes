@@ -23,7 +23,8 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div class="flex-layout flex-center">
+  <div class="flex-layout">
+      <div>
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
           <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
@@ -36,6 +37,7 @@ $key = 0;
           <small><em><?php echo $element->unit->information ?></em></small>
         </div>
       <?php } ?>
+      </div>
   </div>
 </div>
 
@@ -43,7 +45,6 @@ $key = 0;
 // CVI alert
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 if ($cvi_api) {
-    echo $cvi_api->renderAlertForVA($this->patient, $element);
     echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
 }
 ?>
