@@ -19,19 +19,12 @@
 <?php $render_date = $form && (($this->action->id === strtolower($this::ACTION_TYPE_CREATE)) || $this->checkAdminAccess()) ?>
 
 <div class="element-fields full-width">
-  <table class="cols-10 last-left">
+  <table class="cols-10 last-left ">
     <colgroup>
-      <col class="cols-5">
-      <col class="cols-5">
+      <col class="cols-4">
+      <col class="cols-4">
+      <col class="cols-4">
     </colgroup>
-    <thead>
-    <tr>
-      <th><?php echo CHtml::encode($element->getAttributeLabel('selected_site_id')) ?></th>
-      <th><?php echo CHtml::encode($element->getAttributeLabel('theatre_id')) ?></th>
-        <?php if ($render_date): ?>
-          <th>Date</th><?php endif; ?>
-    </tr>
-    </thead>
     <tbody>
     <tr class="col-gap">
       <td>
@@ -41,8 +34,10 @@
               'site_id',
               CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
                   'short_name'),
-              array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
-              false);
+              array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+              false,
+              array('label' => 4, 'field' => 8)
+          );
           ?>
       </td>
       <td>
@@ -61,35 +56,34 @@
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => true, 'class' => 'cols-full'),
-                      false);
+                      array('nowrapper' => false, 'class' => 'cols-full'),
+                      false,
+                      array('label' => 4, 'field' => 8)
+                  );
               } else {
                   echo $form->dropDownList(
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
-                      false);
+                      array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                      false,
+                      array('label' => 4, 'field' => 8)
+                  );
               }
           }
           ?>
       </td>
 
         <?php if ($render_date): ?>
-          <td>
+          <td id="opnote_date">
               <?php
               echo $form->datePicker($this->event, 'event_date',
                   array('maxDate' => 'today'),
-                  array(
-                      'style' => 'margin-left:8px',
-                      'nowrapper' => true,
-                  ),
-                  array(
-                      'label' => 2,
-                      'field' => 2,
-                  )
+                  array('style' => 'margin-left:8px','nowrapper' => false,),
+                  array('label' => 4,'field' => 8,)
               );
               ?>
+            <style>#opnote_date input{width: 100%}</style>
           </td>
         <?php endif; ?>
     </tr>
@@ -112,3 +106,4 @@
     });
   });
 </script>
+<style>.Element_OphTrOperationnote_SiteTheatre{min-height: 54px !important;}</style>
