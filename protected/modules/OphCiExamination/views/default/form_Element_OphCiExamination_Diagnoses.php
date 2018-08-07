@@ -131,27 +131,26 @@ foreach ($this->patient->episodes as $ep) {
             subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
         });
         $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
-        <?php
-        $firm_id = Yii::app()->session['selected_firm_id'];
-        $firm = \Firm::model()->findByPk($firm_id);
+      <?php
+      $firm_id = Yii::app()->session['selected_firm_id'];
+      $firm = \Firm::model()->findByPk($firm_id);
 
-        $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
-        ?>
+      $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+      ?>
 
-        new OpenEyes.UI.AdderDialog({
-            openButton: $('#add-ophthalmic-diagnoses'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($disorder_item) {
-                    return ['value' => $disorder_item['label'], 'id' => $disorder_item['id']];
-                }, $disorder_list)
-            ) ?>, {'multiSelect': true})],
-            searchOptions: {
-                searchSource: diagnosesController.options.searchSource,
-            },
-            onReturn: function (adderDialog, selectedItems) {
-                diagnosesController.addEntry(selectedItems);
-                return true;
-            }
-        });
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-ophthalmic-diagnoses'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($disorder_item) {
+              return ['label' =>$disorder_item['label'], 'id' => $disorder_item['id']];
+          }, $disorder_list)
+      ) ?>, {'multiSelect': true})],
+      searchOptions: {
+        searchSource: diagnosesController.options.searchSource,
+      },
+      onReturn: function (adderDialog, selectedItems) {
+        diagnosesController.addEntry(selectedItems);
+        return true;
+      }
     });
 </script>

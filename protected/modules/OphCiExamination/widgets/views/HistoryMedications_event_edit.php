@@ -128,12 +128,12 @@ $element_errors = $element->getErrors();
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $medication) {
-              return ['value' => $medication, 'id' => $key];
+              return ['label' => $medication, 'id' => $key];
           },array_keys($medications),  $medications)
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
-        return 1;
+        return true;
       },
       searchOptions: {
         searchSource: medicationsController.options.searchSource,

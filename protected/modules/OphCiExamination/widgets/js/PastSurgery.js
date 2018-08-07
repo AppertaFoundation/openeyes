@@ -108,7 +108,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         data = {};
         data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
         data['id'] = this['id'];
-        data['operation'] = this['value'];
+        data['operation'] = this['label'];
         newRows.push( Mustache.render(
           template,
           data ));
