@@ -31,15 +31,7 @@ if ($element->event->id > 0) {
             <div class="<?= $eye_side ?>-eye">
                 <?php if ($element->hasEye($eye_side)) { ?>
                   <div class="eye-icon-header">
-                      <span class="oe-eye-lat-icons">
-                    <?php if ($eye_side == 'right') { ?>
-                      <i class="oe-i laterality  R pad"></i>
-                      <i class="oe-i laterality NA pad"></i>
-                    <?php } else { ?>
-                      <i class="oe-i laterality NA pad"></i>
-                      <i class="oe-i laterality  L pad"></i>
-                    <?php } ?>
-                      </span>
+                      <?php $this->widget('EyeLateralityWidget', array('laterality' => $eye_side, 'size' => null)) ?>
                   </div>
                     <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
                         array('side' => $eye_side, 'element' => $element));

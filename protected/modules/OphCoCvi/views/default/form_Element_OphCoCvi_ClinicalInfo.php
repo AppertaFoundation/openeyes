@@ -116,10 +116,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <tbody>
                 <tr>
                   <td>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?= $eye_side == 'right' ? 'R' : 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?= $eye_side == 'left' ? 'L' : 'NA' ?> small pad"></i>
-                    </span>
+                      <?php $this->widget('EyeLateralityWidget', array('laterality' => $eye_side)) ?>
                   </td>
                   <td>
                       <?php echo $element->getAttributeLabel('unaided_'.$eye_side.'_va'); ?>
@@ -131,10 +128,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 </tr>
                 <tr>
                   <td>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?= $eye_side=='right'? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?= $eye_side=='left'? 'L': 'NA' ?> small pad"></i>
-                    </span>
+                      <?php $this->widget('EyeLateralityWidget', array('laterality' => $eye_side)) ?>
                   </td>
                   <td><?php echo $element->getAttributeLabel('best_corrected_'.$eye_side.'_va'); ?></td>
                   <td><?php echo $form->textField($element, 'best_corrected_'.$eye_side.'_va',
@@ -144,10 +138,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <?php if ($eye_side=='right'){ ?>
                 <tr>
                   <td>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality R small pad"></i>
-                      <i class="oe-i laterality L small pad"></i>
-                    </span>
+                      <?php $this->widget('EyeLateralityWidget', array('laterality' => 'both')) ?>
                   </td>
                   <td><?php echo $element->getAttributeLabel('best_corrected_binocular_va'); ?></td>
                   <td>
