@@ -42,7 +42,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
         <?php
 
         $filterEyeMedication = function ($med) {
-            return $med['route_id'] == 1;
+            return $med->option !== null;
         };
 
         $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
@@ -157,7 +157,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
         <?php
 
         $filterSystemicMedication = function ($med) {
-            return $med['route_id'] != 1;
+            return $med->option === null;
         };
 
         $currentSystemicMedications = $medicationsElement ?
