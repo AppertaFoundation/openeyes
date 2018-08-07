@@ -39,21 +39,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     };
 
-    SocialHistoryController.prototype.addEntry = function(selectedItems) {
-      data = {};
-      var postfixes = {
-        'Occupation':'_occupation_id',
-        'Driving Status':'_driving_statuses',
-        'Smoking Status':'_smoking_status_id',
-        'Accommodation':'_accommodation_id',
-        'Alcohol units':'_alcohol_intake'
-      };
+    SocialHistoryController.prototype.addEntry = function (selectedItems) {
 
-      for (i in selectedItems) {
-        var label = selectedItems[i]['optionLabel'];
-        var id = selectedItems[i]['id'];
-        this.$tableSelector.find('#'+this.options.modelName+postfixes[label]).val(id);
-        this.$tableSelector.find('#'+this.options.modelName+postfixes[label]).change();
+      for (var i in selectedItems) {
+        var item = selectedItems[i];
+        var itemSetId = item['itemSet'].options['id'];
+        var $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
+        $field.val(item['id']);
+        $field.change();
       }
 
       this.$popupSelector.find('.selected').removeClass('selected');

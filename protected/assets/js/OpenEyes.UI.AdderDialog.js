@@ -46,6 +46,7 @@
     popupClass: 'oe-add-select-search auto-width',
     liClass: 'auto-width',
     searchOptions: null,
+    width: null,
   };
 
   /**
@@ -56,6 +57,9 @@
     var dialog = this;
 
     var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
+    if(this.options.width) {
+      content.css('width', this.options.width);
+    }
     var $closeButton = $('<div />', {class: 'close-icon-btn'})
       .append($('<i />', {class: 'oe-i remove-circle medium'}));
     content.append($closeButton);
@@ -193,7 +197,7 @@
    */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
-      return this.dataset;
+      return $(this).data();
     }).get();
   };
 
@@ -210,6 +214,7 @@
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['value']).appendTo($listItem);
+      $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
 
