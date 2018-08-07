@@ -135,14 +135,18 @@
     }
 
     function latch() {
-      popup.groupController.lockAll();
+      if (popup.groupController) {
+        popup.groupController.lockAll();
+      }
       popup.isLatched = true;
       popup.show();
       $content.off('mouseenter mouseleave');
     }
 
     function unlatch() {
-      popup.groupController.unlockAll();
+      if (popup.groupController) {
+        popup.groupController.unlockAll();
+      }
       popup.isLatched = false;
       popup.hide();
       $content.on('mouseenter mouseleave');
