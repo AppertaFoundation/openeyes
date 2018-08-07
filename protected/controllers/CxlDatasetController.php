@@ -393,8 +393,7 @@ EOL;
                 EventDate DATE NOT NULL,
                 Eye VARCHAR(5) NOT NULL,
                 CXL VARCHAR(3) NOT NULL,
-                Atopy VARCHAR(100) NOT NULL,
-                PRIMARY KEY (PatientId, EventDate, Eye)
+                Atopy VARCHAR(100) NOT NULL
             );
 EOL;
         return $query;
@@ -578,8 +577,7 @@ EOL;
                 CoefficientOfVariation DECIMAL(5,2),
                 Cornea VARCHAR(128),
                 Diagnosis VARCHAR(255),
-                Outcome VARCHAR(128),
-                PRIMARY KEY (PatientId, EventDate, Eye)
+                Outcome VARCHAR(128)
             );
 EOL;
         return $query;
@@ -617,7 +615,7 @@ EOL;
                        c.event_date,
                        'Right',
                        vau.name,
-                       ( SELECT uv.value
+                       ( SELECT MAX(uv.value)
                          FROM   ophciexamination_visualacuity_reading r
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
@@ -676,7 +674,7 @@ EOL;
                        c.event_date,
                        'Left',
                        vau.name,
-                       ( SELECT uv.value
+                       ( SELECT MAX(uv.value)
                          FROM   ophciexamination_visualacuity_reading r
                          JOIN   ophciexamination_visualacuity_method m ON m.id = r.method_id
                          JOIN   ophciexamination_visual_acuity_unit_value uv ON uv.base_value = r.value
@@ -775,8 +773,7 @@ EOL;
                     UVDuration DECIMAL(5,1),
                     UVContinuousOrPulsed VARCHAR(128),
                     UVTotalEnergy INTEGER(10),
-                    Comments VARCHAR(1024),
-                    PRIMARY KEY (PatientId, EventDate, Eye)
+                    Comments VARCHAR(1024)
                 );
 EOL;
                 
