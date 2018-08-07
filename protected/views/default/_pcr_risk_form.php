@@ -270,33 +270,33 @@ if ($side === 'left') {
 <script type="text/javascript">
   $(document).ready(function () {
     var drop_glaucoma = [
-      {'id':'NK', 'value':'Not Known', 'option-label':'glaucoma'},
-        {'id':'N', 'value':'No Glaucoma', 'option-label':'glaucoma'},
-        {'id':'Y', 'value':'Glaucoma present', 'option-label':'glaucoma'}
+      {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No Glaucoma'},
+        {'id':'Y', 'label':'Glaucoma present'}
         ],
       drop_diabetic = [
-        {'id':'NK', 'value':'Not Known', 'option-label':'diabetic'},
-        {'id':'N', 'value':'No Diabetes', 'option-label':'diabetic'},
-        {'id':'Y', 'value':'Diabetes present', 'option-label':'diabetic'}
+        {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No Diabetes'},
+        {'id':'Y', 'label':'Diabetes present'}
       ],
       drop_lie_flat = [
-        {'id':'N', 'value':'No', 'option-label':'abletolieflat'},
-        {'id':'Y', 'value':'Yes', 'option-label':'abletolieflat'}
+        {'id':'N', 'label':'No'},
+        {'id':'Y', 'label':'Yes'}
         ],
       drop_axial_length = [
-        {'id':'NK', 'value':'Not Known', 'option-label':'axial_length'},
-        {'id': 1, 'value':'< 26', 'option-label':'axial_length'},
-        {'id': 2, 'value':'> or = 26', 'option-label':'axial_length'}
+        {'id':'NK', 'label':'Not Known'},
+        {'id': 1, 'label':'< 26'},
+        {'id': 2, 'label':'> or = 26'}
         ],
       drop_pupil_size = [
-        {'id':'Large', 'value':'Large', 'option-label':'pupil_size' },
-        {'id':'Medium', 'value':'Medium', 'option-label':'pupil_size'},
-        {'id':'Small', 'value':'Small', 'option-label':'pupil_size'}
+        {'id':'Large', 'label':'Large'},
+        {'id':'Medium', 'label':'Medium'},
+        {'id':'Small', 'label':'Small'}
         ],
       drop_item1 = [
-        {'id':'NK', 'value':'Not Known'},
-        {'id':'N', 'value':'No'},
-        {'id':'Y', 'value':'Yes'}
+        {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No'},
+        {'id':'Y', 'label':'Yes'}
       ];
     var drop_fundus = JSON.parse(JSON.stringify(drop_item1));
     var drop_brunescent = JSON.parse(JSON.stringify(drop_item1));
@@ -307,45 +307,43 @@ if ($side === 'left') {
       openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
       itemSets: [
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_glaucoma, {'header':'Glaucoma'}
+          drop_glaucoma, {'header':'Glaucoma', 'id':'glaucoma'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_diabetic, {'header':'Diabetic'}
+          drop_diabetic, {'header':'Diabetic', 'id':'diabetic'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_fundus.map(x=>{x['option-label']='no_fundal_view'; return x}), {'header':'Fundus Obscured'}
-        ),
+          drop_fundus, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_brunescent.map(x=>{x['option-label']='brunescent_white_cataract'; return x}), {'header':'Brunescent/ White Cataract'}
+          drop_brunescent, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(
                 array_map(function ($item) {
-                    return ['value' =>$item->grade,
+                    return ['label' =>$item->grade,
                         'risk-value'=>$item->pcr_risk_value,
-                        'id' => $item->id,
-                        'option-label'=>'_doctor_grade_id'];
-                }, $grades) ) ?>, {'header':'Surgeon Grade'}
+                        'id' => $item->id];
+                }, $grades) ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_pxf.map(x=>{x['option-label'] = 'pxf_phako'; return x}), {'header':'PXF/ Phacodonesis'}
+          drop_pxf, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_pupil_size, {'header':'Pupil Size'}
+          drop_pupil_size, {'header':'Pupil Size', 'id':'pupil_size'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_axial_length, {'header':'Axial Length (mm)'}
+          drop_axial_length, {'header':'Axial Length (mm)', 'id':'axial_length'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_arb.map(x=>{x['option-label'] = 'arb'; return x}), {'header':'Alpha receptor blocker '}
+          drop_arb, {'header':'Alpha receptor blocker', 'id':'arb'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_lie_flat, {'header':'Alpha receptor blocker '}
+          drop_lie_flat, {'header':'Can lie flat', 'id':'abletolieflat'}
         )
       ],
       onReturn: function(adderDialog, selectedItems) {
         for (i in selectedItems) {
-          var label = selectedItems[i]['optionLabel'];
+          var label = selectedItems[i]['itemSet'].options['id'];
           var id = selectedItems[i]['id'];
           var $selector = $('#pcrrisk_<?= $side ?>_'+label);
           $selector.val(id);

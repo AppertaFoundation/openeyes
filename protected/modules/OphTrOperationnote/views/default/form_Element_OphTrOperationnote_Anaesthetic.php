@@ -190,20 +190,18 @@ $is_hidden = function () use ($element) {
       itemSets: [
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
-                return ['value' => $value, 'id' => $key, 'option-label'=>'AnaestheticAgent'];
-            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'multiSelect': true}),
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'id':'AnaestheticAgent', 'multiSelect': true}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item->name,
-                    'id' => $item->id,
-                    'option-label'=>'OphTrOperationnote_AnaestheticComplications'];
-            }, $complications) ) ?>, {'header':'Complications', 'multiSelect': true})
+                return ['label' => $item->name,
+                    'id' => $item->id];
+            }, $complications) ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {
-          var label = selectedItems[i]['optionLabel'];
           var id = selectedItems[i]['id'];
-          var $selector = $('#'+label);
+          var $selector = $('#'+selectedItems[i]['itemSet'].options['id']);
           $selector.val(id);
           $selector.trigger('change');
         }

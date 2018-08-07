@@ -406,20 +406,20 @@
       openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
-              return ['value' =>$item, 'id' => $key, 'label'=>'select'];
+              return ['label' =>$item, 'id' => $key];
           },array_keys($procedures), $procedures)
-      ) ?>, {'multiSelect': true})],
+      ) ?>, {'id':'select','multiSelect': true})],
 
       onReturn: function (adderDialog, selectedItems) {
         var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
         for (i in selectedItems) {
           var id = selectedItems[i]['id'];
-          if (selectedItems[i]['label']==='select'){
+          if ('itemSet' in selectedItems[i]&&selectedItems[i]['itemSet'].options['id']==='select'){
             $selector.val(id);
             $selector.trigger('change');
           }
           else {
-            ProcedureSelectionSelectByName(selectedItems[i]['value'], true, '<?= $identifier ?>');
+            ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
           }
         }
         return true;

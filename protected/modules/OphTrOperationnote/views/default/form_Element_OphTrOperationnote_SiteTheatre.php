@@ -101,16 +101,14 @@
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($item) {
-              return ['value' => $item->short_name,
-                  'id' => $item->id,
-                  'option-label'=>'site_id'];
-          }, OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) ) ?>, {'header':'site'})
+              return ['label' => $item->short_name, 'id' => $item->id];
+          }, OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) ) ?>,
+          {'header':'site', 'id':'site_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {
-          var label = selectedItems[i]['optionLabel'];
           var id = selectedItems[i]['id'];
-          var $selector = $('#<?=CHtml::modelName($element)?>_'+label);
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
           $selector.val(id);
           $selector.trigger('change');
         }

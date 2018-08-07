@@ -68,13 +68,13 @@
       openButton: $('#add-postop-instruction-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
-              return ['value' => $item, 'id' => $key,];
+              return ['label' => $item, 'id' => $key,];
           },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
         $(selectedItems).each(function (key, item) {
           inputText.val(inputText.val() ?
-            inputText.val() + item['value'] : item['value']
+            inputText.val() + item['label'] : item['label']
           );
         });
 

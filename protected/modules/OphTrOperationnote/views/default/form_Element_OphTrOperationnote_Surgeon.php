@@ -75,28 +75,24 @@
       itemSets: [
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item->first_name.' '.$item->last_name,
-                    'id' => $item->id,
-                    'option-label'=>'surgeon_id'];
-            }, $surgeons) ) ?>, {'header':'Surgeon'}),
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item->first_name.' '.$item->last_name,
-                    'id' => $item->id,
-                    'option-label'=>'assistant_id'];
-            }, $surgeons) ) ?>, {'header':'Assistant'}),
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item->first_name.' '.$item->last_name,
-                    'id' => $item->id,
-                    'option-label'=>'supervising_surgeon_id'];
-            }, $surgeons) ) ?>, {'header':'Supervising Surgeon'})
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {
-          var label = selectedItems[i]['optionLabel'];
           var id = selectedItems[i]['id'];
-          var $selector = $('#<?=CHtml::modelName($element)?>_'+label);
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
           $selector.val(id);
         }
         return true;

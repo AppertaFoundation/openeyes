@@ -53,9 +53,8 @@
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $item) {
-              return ['value' => $item,
-                  'id' => $key];
-          }, array_keys($drugs), $drugs))?>, {'multiSelect': true})],
+              return ['label' => $item, 'id' => $key];}, array_keys($drugs), $drugs))?>,
+          {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {
           var id = selectedItems[i]['id'];
