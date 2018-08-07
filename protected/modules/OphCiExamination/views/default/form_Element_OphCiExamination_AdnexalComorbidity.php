@@ -28,12 +28,9 @@
                   <?php echo $form->textArea($element, $eye_side.'_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
               </div>
               <div class="add-data-actions flex-item-bottom">
-                <button class="button hint green js-add-select-search" id="add-examination-adnexal" type="button">
+                <button class="button hint green js-add-select-search" id="add-examination-adnexal-<?= $eye_side?>" type="button">
                   <i class="oe-i plus pro-theme"></i>
                 </button>
-                <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
-                    <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => $eye_side.'_description', 'form' => $form))?>
-                </div>
               </div>
             </div>
             <div class="inactive-form" style="<?=$element->hasEye($eye_side)?"display: none;":""?>">
@@ -44,32 +41,31 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
-            $(function () {
-               var side = $('.<?= str_replace('_', '-', CHtml::modelName($element))?> .<?=$eye_side?>-eye');
-               var popup = side.find('#add-to-adnexal');
-               var adnexText = side.find('#<?=CHtml::modelName($element)?>_<?=$eye_side?>_description');
+    <?php
+    $items = array();
+    foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+        foreach ($attribute->getAttributeOptions() as $option) {
+            $items[] = ['value' => (string)$option->slug];
+        }
+    } ?>
+      <script type="text/javascript">
+        $(function () {
+          var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_<?= $eye_side ?>_description');
 
-               function setAdnexText() {
-                   popup.find('.selected').each(function () {
-                     adnexText.val(adnexText.val() ?
-                       adnexText.val()+$(this).attr('data-str') : $(this).attr('data-str')
-                     );
-                   });
-
-                   adnexText.trigger('oninput');
-                   popup.find('.selected').removeClass('selected');
-               }
-
-               setUpAdder(
-                   popup,
-                   'multi',
-                   setAdnexText,
-                   side.find('.js-add-select-search'),
-                   popup.find('.add-icon-btn'),
-                   popup.find('.close-icon-btn')
-               );
-            });
-        </script>
+          new OpenEyes.UI.AdderDialog({
+            id: 'add-to-adnexal-<?= $eye_side?>',
+            openButton: $('#add-examination-adnexal-<?= $eye_side?>'),
+            itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
+            onReturn: function (adderDialog, selectedItems) {
+              $(selectedItems).each(function (key, item) {
+                inputText.val(inputText.val() ? inputText.val() + item['value'] : item['value']
+                );
+              });
+              inputText.trigger('oninput');
+              return true;
+            }
+          });
+        });
+      </script>
     <?php endforeach;?>
 </div>

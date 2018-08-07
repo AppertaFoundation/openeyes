@@ -40,7 +40,7 @@
 $itemSets = array();
 foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $itemSet = array_map(function ($attr) {
-        return ['id' => $attr['slug'], 'label' => $attr['label']];
+        return ['value' => $attr['slug']];
     }, $attribute->getAttributeOptions());
     $itemSets[] = $itemSet;
 }
@@ -62,7 +62,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         );
 
         var text = $.map(selectedItems, function (item) {
-          return item['label'];
+          return item['value'];
         }).join(' ');
 
         inputText.val(inputText.val() ? inputText.val() + text : text);

@@ -19,6 +19,7 @@
 <?php
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+$co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographies -->
 <div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
@@ -120,8 +121,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         </div>
 
         <div class="group">
-            <span class="data">CVI Status:  <?php echo explode("(",$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"><?php echo Helper::convertDate2NHS($this->patient->getOphInfo()->cvi_status_date );?></span>
+            <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
+            <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDisplayDate($patient) ?>
+            </span>
         </div>
     </div>
     <div class="flex-layout flex-top">
@@ -178,17 +180,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               </tbody>
             </table>
 
-          </div><!-- data -->
-        </div>
-        <!-- group -->
-        <div class="group">
-          <div class="label">CVI Status</div>
-          <div class="data">
-              <?php echo $this->cviStatus; ?>
           </div>
         </div>
-        <!-- group-->
-      </div><!-- popup-overflow -->
+      </div>
 
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -202,15 +196,11 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-        <!-- group-->
           <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
               'patient' => $this->patient,
               'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
           )); ?>
 
-        <!-- group-->
-
-        <!-- group-->
 
         <div class="group">
           <div class="label">Family</div>
@@ -232,13 +222,10 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-      <!-- group-->
       </div><!-- 	.oe-popup-overflow -->
 
     </div><!-- .flex-layout -->
   </div>
-<!-- .row -->
-<!-- .patient-popup-quicklook -->
 
 <div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
 
@@ -250,9 +237,21 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="subtitle">Management Summaries</div>
 
-        <ul class="management-summaries">
+          <ul class="management-summaries">
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              foreach ($summaries as $service => $comments) {
+                  if (!$comments == "") {
+                      ?>
+                      <li>
+                          <h6><?php echo $service ?></h6>
+                          <p><?php echo $comments ?></p>
+                      </li>
+                  <?php } else { ?>
+                      <li></li>
+                  <?php }
+              } ?>
 
-        </ul>
+          </ul>
 
       </div><!-- .popup-overflow -->
 

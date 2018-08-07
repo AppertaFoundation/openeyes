@@ -33,4 +33,5 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'offsetX' => 10,
     'offsetY' => 10,
     'scale' => 0.72,
+    'autoReport'=>'Element_OphTrOperationnote_Trabectome_description',
 ));

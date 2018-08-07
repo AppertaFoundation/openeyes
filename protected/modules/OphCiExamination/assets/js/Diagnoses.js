@@ -270,36 +270,29 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
 
-    DiagnosesController.prototype.createRow = function (data) {
-        var controller = this;
-        var selected_options = [];
-        var newRows = [];
-        var template = this.templateText;
-        var element = this.$element;
+    DiagnosesController.prototype.createRow = function(selectedItems)
+    {
+      var newRows = [];
+      var template = this.templateText;
+      var element = this.$element;
 
-        $(controller.options.selectItems).find('.selected').each(function (e) {
-            selected_options.push(this);
-        });
-        $(controller.options.searchResult).find('.selected').each(function (e) {
-            selected_options.push(this);
-        });
-        for(var i = 0; i < selected_options.length; i++){
-            data = {};
-            data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-            data.disorder_id = $(selected_options[i]).data('id');
-            data.disorder_display = $(selected_options[i]).data('str');
-            newRows.push(Mustache.render(
-                template,
-                data));
-        }
+
+      for (var i in selectedItems) {
+        data = {};
+        data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+        data['disorder_id'] = selectedItems[i]['id'];
+        data['disorder_display'] = selectedItems[i]['value'];
+        newRows.push( Mustache.render(
+          template,
+          data ));
+      }
 
         return newRows;
     };
 
-    DiagnosesController.prototype.addEntry = function ()
+    DiagnosesController.prototype.addEntry = function(selectedItems)
     {
-        console.log('diagnose');
-        var rows = this.createRow();
+        var rows = this.createRow(selectedItems);
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.initialiseRow(this.$table.find('tbody tr:last'));

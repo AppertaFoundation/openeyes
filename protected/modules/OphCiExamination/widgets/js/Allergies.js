@@ -136,7 +136,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var data = {};
           data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
           data['allergy_id'] = this['id'];
-          data['allergy_display'] = this['label'];
+          data['allergy_display'] = this['value'];
           newRows.push( Mustache.render(
              template,
             data ));

@@ -111,13 +111,14 @@
    */
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
-
     if (this.options.itemSets) {
       this.selectWrapper = $('<div />', {class: 'select-options'});
       this.selectWrapper.appendTo(this.popup);
+      var $headers = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.selectWrapper);
       var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
       $container.appendTo(this.selectWrapper);
       $(this.options.itemSets).each(function (index, itemSet) {
+        $('<div />', {class: 'add-options cols-full'}).text(itemSet.options.header).appendTo($headers);
         var $list = dialog.generateItemList(itemSet);
         $list.appendTo($container);
       });
@@ -192,7 +193,7 @@
    */
   AdderDialog.prototype.getSelectedItems = function () {
     return this.popup.find('li.selected').map(function () {
-      return {'id': $(this).data('id'), 'label': $(this).data('label')};
+      return this.dataset;
     }).get();
   };
 
@@ -206,8 +207,9 @@
     var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
 
     itemSet.items.forEach(function (item) {
-      var $listItem = $('<li />', {'data-label': item['label'], 'data-id': item['id']});
-      $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      var dataset = AdderDialog.prototype.constructDataset(item);
+      var $listItem = $('<li />', dataset);
+      $('<span />', {class: dialog.options.liClass}).text(item['value']).appendTo($listItem);
       $listItem.appendTo($list);
     });
 
@@ -308,6 +310,19 @@
     });
   };
 
+  /**
+   * Given an object set of attributes, construct it in the format can be used as html element's dataset.
+   * @param Object item
+   * @returns Object
+   */
+  AdderDialog.prototype.constructDataset =  function(item){
+    var dataset = {};
+    for (var key in item){
+      dataset['data-'+key] = item[key];
+    }
+    return dataset;
+  };
+
   AdderDialog.prototype.return = function () {
     if (this.options.onReturn) {
       var selectedItems = this.getSelectedItems();
@@ -348,7 +363,8 @@
       dialog.noSearchResultsWrapper.toggle(no_data);
 
       $(results).each(function (index, result) {
-        var item = $("<li />", {'data-label': result['value'], 'data-id': result['id']})
+        var dataset = AdderDialog.prototype.constructDataset(result);
+        var item = $("<li />", dataset)
           .append($('<span />', {class: 'auto-width'}).text(result['value']));
         dialog.searchResultList.append(item);
       });

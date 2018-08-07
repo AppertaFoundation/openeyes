@@ -46,6 +46,7 @@ abstract class EpisodeSummaryWidget extends CWidget
 
     public function getOpnoteEvent(){
         $opnote_marking = array('right'=>array(), 'left'=>array());
+        $special_procedure_list = ["Insertion of aqueous shunt"=>"Aqueous Shunt"];
 
         $marking_list = array();
         $subspecialty = Subspecialty::model()->findByAttributes(array('name'=>'Glaucoma'));
@@ -54,7 +55,6 @@ abstract class EpisodeSummaryWidget extends CWidget
                 $marking_list[] = $name;
             }
         }
-
         $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
         $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->episode->patient);
         $eye_side_list = [Eye::LEFT =>['left'], Eye::RIGHT=>['right'], Eye::BOTH=>['left', 'right']];
@@ -66,6 +66,9 @@ abstract class EpisodeSummaryWidget extends CWidget
                 foreach ($eye_side as $side){
                     foreach ($proc_list->procedures as $proc){
                         if (in_array($proc->term, $marking_list)){
+                            if (array_key_exists($proc->term, $special_procedure_list)){
+                                $proc->short_format = $special_procedure_list[$proc->term];
+                            }
                             if (empty($opnote_marking[$side])||!array_key_exists($proc->short_format, $opnote_marking[$side])){
                                 $opnote_marking[$side][$proc->short_format] = array();
                             }
