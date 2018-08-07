@@ -1,3 +1,5 @@
+<?php use OEModule\OphCiExamination\models\AllergyEntry; ?>
+
 <div class="element-data full-width">
     <div class="flex-layout flex-top">
         <div class="cols-11">
@@ -26,9 +28,33 @@
                         </thead>
                         <tbody>
                         <?php
-                        $entries = $this->getEntriesByStatus();
-                        $max_iter = max(count($entries["0"]), count($entries["1"]));
+
+                        $entries = [];
+                        foreach ([(string)AllergyEntry::$NOT_PRESENT, (string)AllergyEntry::$PRESENT] as $key) {
+                            $entries[$key] = array_filter($element->getSortedEntries(), function ($e) use ($key) {
+                                return $e->has_allergy === $key;
+                            });
+                        }
+
+                        $max_iter = max(
+                            count($entries[(string)AllergyEntry::$NOT_PRESENT]),
+                            count($entries[(string)AllergyEntry::$PRESENT])
+                        );
                         ?>
+
+                        <?php for ($i = 0; $i < $max_iter; $i++) : ?>
+                            <tr>
+                                <td>
+                                    <?= isset($entries[(string)AllergyEntry::$PRESENT][$i]) ?
+                                        $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy() : '' ?>
+                                </td>
+                                <td>
+                                    <?= isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i]) ?
+                                        $entries[(string)AllergyEntry::$NOT_PRESENT][$i]->getDisplayAllergy() : '' ?>
+                                </td>
+                            </tr>
+                        <?php endfor; ?>
+
                         <?php for ($i = 0; $i < $max_iter; $i++) : ?>
                             <tr>
                                 <td><?= isset($entries["1"][$i]) ? $entries["1"][$i]->getDisplayAllergy() : '' ?></td>

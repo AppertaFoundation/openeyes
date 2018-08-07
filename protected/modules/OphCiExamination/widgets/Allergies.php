@@ -127,24 +127,4 @@ class Allergies extends \BaseEventElementWidget
         return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries.$row.has_allergy", $_POST)
             == AllergyEntry::$NOT_CHECKED;
     }
-
-    /**
-     * Reruns an AllergyEntry array by status
-     * @return array
-     */
-    public function getEntriesByStatus()
-    {
-        $entries = [
-            "0" => [],
-            "1" => [],
-        ];
-        foreach ($this->element->getSortedEntries() as $entry) {
-            if ($entry->has_allergy === (string) AllergyEntry::$PRESENT) {
-                $entries["1"][] = $entry;
-            } elseif ($entry->has_allergy === (string) AllergyEntry::$NOT_PRESENT) {
-                $entries["0"][] = $entry;
-            }
-        }
-        return $entries;
-    }
 }
