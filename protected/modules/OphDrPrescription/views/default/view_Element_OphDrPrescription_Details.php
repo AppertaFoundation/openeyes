@@ -44,14 +44,14 @@
                     <i><?php echo CHtml::encode($item->comments); ?></i>
                 <?php endif; ?>
             </td>
-            <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
-            <td><?php echo $item->route->name ?>
-                <?php if ($item->route_option) {
-                    echo ' (' . $item->route_option->name . ')';
+            <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
+            <td><?php echo $item->route->term ?>
+                <?php if ($item->laterality) {
+                    echo ' (' . $item->refMedicationLaterality->name . ')';
                 } ?>
             </td>
-            <td><?php echo $item->frequency->name ?></td>
-            <td><?php echo $item->duration->name ?></td>
+            <td><?php echo $item->frequency->term; ?></td>
+            <td><?php echo $item->drugDuration->name ?></td>
             <td><?php echo $item->dispense_condition->name." / ".$item->dispense_location->name ?></td>
         </tr>
         <?php foreach ($item->tapers as $taper) { ?>

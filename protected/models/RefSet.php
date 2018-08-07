@@ -22,6 +22,7 @@
  * @property User $lastModifiedUser
  * @property RefSetRule[] $refSetRules
  * @property RefMedication[] $refMedications
+ * @property RefMedication[] $items
  * @method  RefMedication[] refMedications(array $opts)
  */
 class RefSet extends BaseActiveRecordVersioned
@@ -70,6 +71,17 @@ class RefSet extends BaseActiveRecordVersioned
             'refMedications' => array(self::MANY_MANY, RefMedication::class, 'ref_medication_set(ref_set_id,ref_medication_id)'),
 		);
 	}
+
+    /**
+     * @return RefMedication[]
+     *
+     * Compatibility function to map $this->items to $this->refMedications
+     */
+
+	public function getItems()
+    {
+        return $this->refMedications;
+    }
 
 	/**
 	 * @return array customized attribute labels (name=>label)
