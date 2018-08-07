@@ -66,11 +66,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                 <?php foreach ($stoppedEyeMedications as $entry) { ?>
                   <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                      <span class="oe-eye-lat-icons">
-                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
-                      </span>
+                    <td><?php
+                        $laterality = $entry->getLateralityDisplay();
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
                     </td>
                     <td><?= $entry->getStartDateDisplay() ?></td>
                   </tr>
@@ -92,11 +91,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
             <?php foreach ($currentEyeMedications as $entry) { ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                  <span class="oe-eye-lat-icons">
-                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
-                      </span>
+                <td>
+                  <?php
+                    $laterality = $entry->getLateralityDisplay();
+                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                  ?>
                 </td>
                 <td><?= $entry->getStartDateDisplay() ?></td>
               </tr>

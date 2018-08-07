@@ -60,12 +60,6 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2">
-        <button id="btn-trabectome-report" class="ed_report secondary small">Report</button>
-        <button class="ed_clear secondary small">Clear</button>
-      </td>
-    </tr>
-    <tr>
       <td>
         Complications
       </td>

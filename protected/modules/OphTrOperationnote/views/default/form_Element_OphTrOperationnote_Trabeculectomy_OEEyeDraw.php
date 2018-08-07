@@ -40,6 +40,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'height' => 300,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'scale' => 0.72,
+    'autoReport'=>'Element_OphTrOperationnote_Trabeculectomy_report',
     'listenerArray' => array(
         'trabeculectomyController',
     ),

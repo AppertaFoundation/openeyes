@@ -110,7 +110,7 @@ $comments = $side . '_comments';
       openButton: side.find('.js-add-select-search'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($instrument) {
-              return ['label' => $instrument->name, 'id' => $instrument->id];
+              return ['value' => $instrument->name, 'id' => $instrument->id];
           },
               OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
       ) ?>)],

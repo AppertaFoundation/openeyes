@@ -145,10 +145,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                  <tr>
                    <td><?= $name ?></td>
                    <td>
-                    <span class="oe-eye-lat-icons">
-                       <i class="oe-i laterality <?php echo $side && ($side == 'Right' || $side == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
-                       <i class="oe-i laterality <?php echo $side && ($side == 'Left' || $side == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
-                    </span>
+                       <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                    </td>
                    <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
                  </tr>
@@ -170,10 +167,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                 <tr>
                   <td> <?php echo $diagnosis->disorder->term?></td>
                   <td>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
-                    </span>
+                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
                   </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->dateText) ?></span></td>
                 </tr>
@@ -238,9 +232,21 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 
         <div class="subtitle">Management Summaries</div>
 
-        <ul class="management-summaries">
+          <ul class="management-summaries">
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              foreach ($summaries as $service => $comments) {
+                  if (!$comments == "") {
+                      ?>
+                      <li>
+                          <h6><?php echo $service ?></h6>
+                          <p><?php echo $comments ?></p>
+                      </li>
+                  <?php } else { ?>
+                      <li></li>
+                  <?php }
+              } ?>
 
-        </ul>
+          </ul>
 
       </div><!-- .popup-overflow -->
 

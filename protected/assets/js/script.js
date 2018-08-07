@@ -17,11 +17,11 @@
 
 $(document).ready(function(){
 
-    var openeyes 	= new OpenEyes.UI.NavBtnPopup( 'logo', $('#js-openeyes-btn'), $('#js-openeyes-info') ).useWrapper($('.openeyes-brand'));
-  	$('.openeyes-brand').off('mouseenter');
+    var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapper($('.openeyes-brand'));
+    $('.openeyes-brand').off('mouseenter');
 
-    var shortcuts 	= new OpenEyes.UI.NavBtnPopup( 'shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav') ).useWrapper( $('#js-nav-shortcuts') );
-    var hotlist_nav 	= new OpenEyes.UI.NavBtnPopup( 'hotlist', $('#js-nav-hotlist-btn'), $('#js-hotlist-panel') );
+    var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapper($('#js-nav-shortcuts'));
+    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $('#js-nav-hotlist-btn'), $('#js-hotlist-panel'));
     var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
 
 	// override the behaviour for showing search results

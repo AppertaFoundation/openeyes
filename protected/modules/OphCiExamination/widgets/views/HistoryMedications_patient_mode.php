@@ -48,11 +48,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                  <span class="oe-eye-lat-icons">
-                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                  </span>
+                <td>
+                    <?php
+                    $laterality = $entry->getLateralityDisplay();
+                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality))
+                    ?>
                 </td>
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
               </tr>
@@ -79,9 +79,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 <td>
                     <?php if ($entry->prescription_item): ?>
-                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                          class="js-has-tooltip fa oe-i eye small"
-                          data-tooltip-content="View prescription"></span></a>
+                      <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
+                            class="js-has-tooltip fa oe-i eye small"
+                            data-tooltip-content="View prescription"></span></a>
                     <?php endif; ?>
                 </td>
               </tr>
@@ -110,11 +110,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
-                      <?php $laterality = $entry->getLateralityDisplay(); ?>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                      <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                    </span>
+                      <?php $laterality = $entry->getLateralityDisplay();
+                      $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                      ?>
                   </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 </tr>
@@ -141,10 +139,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                   <td>
                       <?php if ($entry->prescription_item): ?>
-                      <a href="<?= $this->getPrescriptionLink($entry) ?>">
+                        <a href="<?= $this->getPrescriptionLink($entry) ?>">
                           <span class="js-has-tooltip fa oe-i eye small"
                                 data-tooltip-content="View prescription"></span>
-                      </a>
+                        </a>
                       <?php endif; ?>
                   </td>
                 </tr>

@@ -1974,7 +1974,8 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getCviSummary()
     {
-        if ($cvi_api = Yii::app()->moduleAPI->get('OphCoCvi')) {
+        $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        if ($cvi_api) {
             return $cvi_api->getSummaryText($this);
         }
         else {
