@@ -68,6 +68,11 @@ class DefaultController extends BaseEventTypeController
             return false;
         }
 
+        $assetManager = Yii::app()->getAssetManager();
+        $baseAssetsPath = Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+        Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath).'/OpenEyes.UI.InputFieldValidation.js', CClientScript::POS_END);
+
         $this->setCommonDrugMetadata();
         $this->showAllergyWarning();
         // Save and print clicked, stash print flag
@@ -395,6 +400,9 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPrint($id)
     {
+        Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+        Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+
         $this->printInit($id);
         $this->layout = '//layouts/print';
 

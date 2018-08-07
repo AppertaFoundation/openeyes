@@ -18,6 +18,22 @@
 ?>
 <?php
 $copy = $data['copy'];
+
+$header_text = null;
+$footer_text = null;
+
+$allowed_tags='<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
+
+$header_param = Yii::app()->params['prescription_boilerplate_header'];
+if(!is_null($header_param)) {
+    $header_text = strip_tags($header_param, $allowed_tags);
+}
+
+$footer_param = Yii::app()->params['prescription_boilerplate_footer'];
+if(!is_null($footer_param)) {
+    $footer_text = strip_tags($footer_param, $allowed_tags);
+}
+
 ?>
 
 <h1>
@@ -35,6 +51,11 @@ $firm = $element->event->episode->firm;
 $consultantName = $firm->consultant ? $firm->consultant->fullName : 'None';
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
+
+<?php if(!is_null($header_text)): ?>
+    <div class="clearfix"><?=$header_text?></div>
+<?php endif; ?>
+
 <table class="borders prescription_header">
 	<tr>
 		<th>Patient Name</th>
@@ -54,7 +75,12 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		<th>Service</th>
 		<td><?php echo $subspecialty->name ?></td>
 	</tr>
+    <tr>
+		<th>Patient's address</th>
+        <td colspan="3"><?php echo $this->patient->getSummaryAddress(", ") ?></td>
+	</tr>
 </table>
+
 <div class="spacer"></div>
 
 		<?php
@@ -74,7 +100,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<th>Freq.</th>
 				<th>Duration</th>
 				<?php if(strpos($group_name,"Hospital") !== false ){?>
-					<th>Hospital Dispense Location</th>
+					<th>Dispense Location</th>
 					<th>Dispensed</th>
 					<th>Checked</th>
 				<?php }?>
@@ -119,6 +145,16 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 					</tr>
 					<?php
 				}
+
+				if(!is_null($item->comments)) { ?>
+
+                    <tr class="prescriptionComments">
+                        <td class="prescriptionLabel">Comments:</td>
+                        <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
+                    </tr>
+
+                <?php
+				}
 			}
 			?>
 			</tbody>
@@ -126,28 +162,20 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		<?php
 		}?>
 <div class="spacer"></div>
-<b>
-	Other medications patient is taking
-</b>
-<table class="borders prescription_items">
-	<thead>
-	<tr>
 
-	</tr>
-	</thead>
+<table class="borders prescription_items">
 	<tbody>
-    <tr>
-    <td>
-	<?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-		'patient' => $this->patient,
-		'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
-	)); ?>
-    </td>
-    </tr>
+        <tr>
+            <th style="width:25%;">Other medications patient is taking</th>
+            <td style="width:75%;">
+                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+                    'patient' => $this->patient,
+                    'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
+                )); ?>
+            </td>
+        </tr>
     </tbody>
 </table>
-<div class="spacer"></div>
-<p>Trust policy limits supply to a maximum of 4 weeks</p>
 
 <h2>Allergies</h2>
 <table class="borders">
@@ -163,32 +191,6 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	</tr>
 </table>
 
-<h2>Pharmacy Use Only</h2>
-<table class="borders pharmacy_checkboxes">
-	<tr>
-		<th>Used medication before?</th>
-		<td>Yes <span class="checkbox">&#10065;</span> / No <span class="checkbox">❑</span></td>
-		<th>Allergies / reactions</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
-	</tr>
-	<tr>
-		<th>Heart problems</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
-		<th>Respiratory problems</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
-	</tr>
-	<tr>
-		<th>Drug history</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
-	</tr>
-</table>
-<div class="spacer"></div>
-<table  class="borders done_bys">
-	<tr>
-		<th>Patient's address</th>
-		<td><?php echo $this->patient->getSummaryAddress(", ") ?></td>
-	</tr>
-</table>
 <div class="spacer"></div>
 <?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) {?>
 	<table  class="borders done_bys">
@@ -214,13 +216,12 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	</tr>
 	<tr class="handWritten">
 		<th>Clinical Checked by</th>
-		<td></td>
+        <td>&nbsp;</td>
 		<th>Date</th>
-		<td></td>
+		<td>&nbsp;</td>
 	</tr>
 </table>
 
-<?php if (!$data['copy']) {?>
-	<p>Doctor's Signature:</p>
-<?php }?>
-
+<?php if(!is_null($footer_text)): ?>
+    <div><?=$footer_text?></div>
+<?php endif; ?>

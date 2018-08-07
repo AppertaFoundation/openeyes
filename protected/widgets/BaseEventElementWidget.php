@@ -271,6 +271,17 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
+     * @param string $filename
+     * @return mixed
+     */
+    public function getImgPublishedPath($filename = null)
+    {
+        return $this->getPublishedPath('../assets/img', $filename);
+    }
+
+
+
+    /**
      * Determine whether this widget should support editing
      *
      * @return bool

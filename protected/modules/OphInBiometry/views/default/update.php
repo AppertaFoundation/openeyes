@@ -25,6 +25,19 @@ $this->beginContent('//patient/event_container', array());
         ),
     ));
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
+
+        // Add the open in forum button if FORUM integration is enabled
+        $sop=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id))->sop_uid;
+        if (Yii::app()->params['enable_forum_integration'] == 'on' && !empty($sop)){
+        array_unshift(
+        $this->event_actions,
+            EventAction::link('Open In Forum',
+                ('oelauncher:forumsop/'.$sop),
+                null, array('class' => 'button small')
+            ));
+        }
+
+
         $this->displayErrors($errors);
         $this->renderPartial('//patient/event_elements', array(
             'form' => $form,

@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem<?php if (isset($patient)) {
     if ($patient->hasDrugAllergy($item->drug_id)) {?> 
     allergyWarning
@@ -34,13 +35,19 @@
 	</td>
 	<td class="prescriptionItemDose">
 		<?php
-            $method = 'textField';
-            if($item->dose === null || is_numeric($item->dose)){
-                $method = 'numberField';
+
+            $class = '';
+            if($item->dose === null || is_numeric($item->dose) || $item->dose === ''){
+                $class = "input-validate numbers-only";
+                if($item->drug->dose_unit === 'mg'){
+                    $class .= ' decimal';
+                }
             }
-            echo CHtml::$method('prescription_item['.$key.'][dose]', $item->dose, array(
+
+            echo CHtml::textField('prescription_item['.$key.'][dose]', $item->dose, array(
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'placeholder' => $item->drug->dose_unit
+                'placeholder' => $item->drug->dose_unit,
+                'class' => $class
             ));
 
         ?>
@@ -65,7 +72,7 @@
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][duration_id]', $item->duration_id, CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'), array('empty' => '-- Select --'))?>
 	</td>
 	<td class="prescriptionItemActions">
-		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>
+		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Commment</a>
 	</td>
 	<td>
 		<?php
@@ -93,12 +100,18 @@
 	</td>
 	<td>
 		<?php
-            $method = 'textField';
-            if($taper->dose === null || is_numeric($taper->dose)){
-                $method = 'numberField';
+            $class = '';
+            if($taper->dose === null || is_numeric($taper->dose) || $item->dose === ''){
+                $class = "input-validate numbers-only";
+                if($item->drug->dose_unit === 'mg'){
+                    $class .= ' decimal';
+                }
             }
-            echo CHtml::$method('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => $item->drug->dose_unit));
+            echo CHtml::textField('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose, array(
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'placeholder' => $item->drug->dose_unit,
+                    'class' => $class,
+            ));
         ?>
 	</td>
 	<td></td>
@@ -119,3 +132,14 @@
         ++$count;
     }
 ?>
+
+<?php if(!is_null($item->comments)): ?>
+<tr data-key="<?php echo $key; ?>" class="prescription-comments">
+    <td class="prescription-label"><span>Comments:</span></td>
+    <td colspan="5">
+        <textarea name="prescription_item[<?php echo $key; ?>][comments]"><?php echo CHtml::encode($item->comments); ?></textarea>
+    </td>
+    <td class="prescriptionItemActions"><a class="removeComment" href="#">Remove</a></td>
+    <td></td>
+</tr>
+<?php endif; ?>

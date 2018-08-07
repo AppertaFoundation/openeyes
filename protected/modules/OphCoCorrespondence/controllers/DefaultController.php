@@ -39,6 +39,13 @@ class DefaultController extends BaseEventTypeController
 
     protected $pdf_output;
 
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(),[
+            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
+        ]);
+    }
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
@@ -918,5 +925,18 @@ class DefaultController extends BaseEventTypeController
 
         return Event::model()->findAll($criteria);
 
+    }
+
+    /**
+     * Return document sub type if the name is Document if not return the event type name
+     * @param $event
+     */
+    public function getEventSubType($event){
+        if ($event->eventType->name === 'Document') {
+            $document_model = Element_OphCoDocument_Document::model()->findByAttributes(["event_id" => $event->id]);
+            return isset($document_model->sub_type) ? $document_model->sub_type->name : '';
+        } else {
+            return $event->eventType->name;
+        }
     }
 }

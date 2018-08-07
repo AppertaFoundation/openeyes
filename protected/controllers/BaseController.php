@@ -71,6 +71,14 @@ class BaseController extends Controller
         $filter->filter($filterChain);
     }
 
+    public function events()
+    {
+        return [
+            'onBeforeAction' => 'beforeAction',
+            'onAfterAction' => 'afterAction',
+        ];
+    }
+
     /**
      * List of print actions.
      *
@@ -124,8 +132,25 @@ class BaseController extends Controller
         $assetManager->adjustScriptMapping();
     }
 
+    public function onBeforeAction(\CEvent $event)
+    {
+        $this->raiseEvent('onBeforeAction', $event);
+    }
+
+    public function onAfterAction(\CEvent $event)
+    {
+        $this->raiseEvent('onAfterAction', $event);
+    }
+
+    public function afterAction($action)
+    {
+        $this->onAfterAction(new \CEvent($this, ["action" => $action]));
+    }
+
     protected function beforeAction($action)
     {
+        $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
+
         $app = Yii::app();
 
         foreach (SettingMetadata::model()->findAll() as $metadata) {
@@ -211,6 +236,7 @@ class BaseController extends Controller
         $this->jsVars['uservoice_use_logged_in_user'] = Yii::app()->params['uservoice_use_logged_in_user'];
         $this->jsVars['uservoice_override_account_id'] = Yii::app()->params['uservoice_override_account_id'];
         $this->jsVars['uservoice_override_account_name'] = Yii::app()->params['uservoice_override_account_name'];
+        $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
           $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
           $this->jsVars['user_id'] = $user->id;

@@ -159,12 +159,12 @@
                                     <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
                                         $msgs = array();
                                         foreach ($warnings as $warn) {
-                                            $msgs[] = $warn['short_msg'];
+                                            $msgs[] = $warn['long_msg']." - ".$warn['details'];
                                         }
                                         ?>
                                         <img src="<?php echo $assetPath ?>/img/diaryIcons/warning.png"
-                                             alt="<?php echo implode(' / ', $msgs); ?>"
-                                             title="<?php echo implode(' / ', $msgs); ?>" width="17" height="17"/>
+                                             alt="<?php echo implode('&#013;&#010;', $msgs); ?>"
+                                             title="<?php echo implode('&#013;&#010;', $msgs); ?>" width="17" height="17" />
                                     <?php } ?>
                                     <img src="<?php echo $assetPath ?>/img/diaryIcons/confirmed.png" alt="confirmed"
                                          width="17" height="17" class="confirmed"
@@ -202,6 +202,15 @@
                                          alt="Created by: <?php echo $booking->user->fullName . "\n" ?>Last modified by: <?php echo $booking->usermodified->fullName ?>"
                                          title="Created by: <?php echo $booking->user->fullName . "\n" ?>Last modified by: <?php echo $booking->usermodified->fullName ?>"
                                          width="17" height="17"/>
+
+                                    <?php if($booking->operation->is_golden_patient):?>
+                                        <img class="star golden-patient" src="<?php echo $assetPath ?>/img/diaryIcons/filled_yellow_star.png" alt="Golden Patient" title="Golden Patient" />
+                                    <?php endif; ?>
+
+                                    <?php if($booking->operation->complexity !== null && $complexity = "Complexity: " . $booking->operation->getComplexityCaption()):?>
+                                        <img src="<?php echo $assetPath ?>/img/diaryIcons/complexity.png"
+                                             class="complexity <?=$booking->operation->getComplexityCaption();?>" alt="<?=$complexity;?>" title="<?=$complexity;?>"/>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php } ?>

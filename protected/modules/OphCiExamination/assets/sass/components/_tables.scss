@@ -35,4 +35,13 @@ table {
 			margin-top: 3px;
 		}
 	}
+
+	tr{
+		td{
+			&.past-surgery-entry.has-operation{
+				padding-left: 0px;
+				padding-right: 0px;
+			}
+		}
+	}
 }

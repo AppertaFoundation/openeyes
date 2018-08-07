@@ -77,7 +77,7 @@ $warnings = $this->patient->getWarnings($clinical);
     }
 
     if (empty($sessions)) { ?>
-        <div class="alert-box alert">This firm has no scheduled sessions.</div>
+        <div class="alert-box alert">This <?php echo Firm::model()->contextLabel()?> has no scheduled sessions.</div>
         <?php
     }
     ?>
@@ -186,10 +186,10 @@ $warnings = $this->patient->getWarnings($clinical);
 						Viewing the schedule for <strong><?php echo $firm->name ?></strong>
 					</span>
                 <select id="firm_id" class="inline firm-switcher">
-                    <option value="">Select a different firm</option>
+                    <option value="">Select a different  <?php echo Firm::model()->contextLabel()?></option>
                     <option value="EMG">Emergency List</option>
-                    <?php foreach ($firmList as $id => $name) { ?>
-                        <option value="<?php echo $id ?>"><?php echo $name ?></option>
+                    <?php foreach ($firm_list as $_firm) { ?>
+                        <option value="<?=$_firm->id ?>"><?=$_firm->name ?></option>
                     <?php } ?>
                 </select>
             </div>

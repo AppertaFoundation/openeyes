@@ -30,6 +30,29 @@ class PastSurgery extends \BaseEventElementWidget
         return new PastSurgeryElement();
     }
 
+    public function getRequiredOperation()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredSurgicalHistory($this->patient);
+    }
+
+    public function getMissingRequiredOperation()
+    {
+        $current_operations = array_map(function ($e) {
+            return $e->operation;
+        }, $this->element->operations);
+        $missing = [];
+        foreach ($this->getRequiredOperation() as $req_operation) {
+            if (!in_array($req_operation, $current_operations)) {
+                $entry = new PastSurgery_Operation();
+                $entry->operation = $req_operation;
+                $missing[] = $entry;
+            }
+        }
+
+        return $missing;
+    }
+
     /**
      * @param PastSurgeryElement $element
      * @param $data
@@ -37,7 +60,7 @@ class PastSurgery extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if  (!is_a($element, 'OEModule\OphCiExamination\models\PastSurgery')) {
+        if (!is_a($element, 'OEModule\OphCiExamination\models\PastSurgery')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
@@ -58,6 +81,7 @@ class PastSurgery extends \BaseEventElementWidget
                 $op_entry->operation = $operation['operation'];
                 $op_entry->side_id = $operation['side_id'];
                 $op_entry->date = $operation['date'];
+                $op_entry->had_operation = array_key_exists('had_operation', $operation) ? $operation['had_operation'] : null;
                 $operations[] = $op_entry;
             }
             $element->operations = $operations;
@@ -91,9 +115,9 @@ class PastSurgery extends \BaseEventElementWidget
     {
         $res = array_map(
             function ($op) {
-               return array_key_exists('object', $op) ?
-                   (string) $op['object'] :
-                   $this->formatExternalOperation($op);
+                return array_key_exists('object', $op) ?
+                    $op['object']->getDisplayDate() . ' ' .$op['object']->getDisplayOperation(false) :
+                    $this->formatExternalOperation($op);
             }, $this->getMergedOperations());
         return implode($this->popupListSeparator, $res);
     }
@@ -101,16 +125,19 @@ class PastSurgery extends \BaseEventElementWidget
     /**
      * @return array
      */
-    protected function getMergedOperations()
+    protected function getMergedOperations($include_no = false)
     {
         // map the operations that have been recorded as entries in this element
-        $operations = array_map(
-            function($op) {
-                return array(
-                    'date' => $op->date,
-                    'object' => $op
+        $operations = [];
+
+        foreach($this->element->operations as $_operation){
+            if($_operation->had_operation || $include_no){
+                $operations[] = array(
+                    'date' => $_operation->date,
+                    'object' => $_operation
                 );
-            }, $this->element->operations);
+            }
+        }
 
         // append operations from op note
         if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
@@ -118,20 +145,49 @@ class PastSurgery extends \BaseEventElementWidget
         }
 
         // merge by sorting by date
-        uasort($operations, function($a , $b) {
+        uasort($operations, function ($a, $b) {
             return $a['date'] >= $b['date'] ? -1 : 1;
         });
 
         return $operations;
     }
 
+    public function getOperationsArray()
+    {
+        $operations = [];
+        $required = [];
+        $required_operation_list = $this->getRequiredOperation();
+
+        foreach ($this->element->operations as $i => $op) {
+            if(in_array($op->operation, $required_operation_list)){
+                $operations[] = ['op' => $op, 'required' => true, ];
+            } else {
+                $required[] = ['op' => $op, 'required' => false, ];
+            }
+        }
+
+        // append $required to the end of $operations
+        return array_merge($operations, $required);
+    }
+
     /**
      * @return array
      */
-    public  function getViewData()
+    public function getViewData()
     {
         return array_merge(parent::getViewData(), array(
-            'operations' => $this->getMergedOperations()
+            'operations' => $this->getMergedOperations($include_no = true),
         ));
+    }
+
+    /**
+     * @param $row
+     * @return bool
+     */
+    public function postedNotChecked($row)
+    {
+        return \Helper::elementFinder(
+                \CHtml::modelName($this->element) . ".operation.$row.had_operation", $_POST)
+            == PastSurgery_Operation::$NOT_CHECKED;
     }
 }

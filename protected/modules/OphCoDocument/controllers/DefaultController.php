@@ -14,6 +14,10 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+require_once './vendor/setasign/fpdi/pdf_parser.php';
+
+use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
+
 class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
@@ -30,6 +34,8 @@ class DefaultController extends BaseEventTypeController
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
     );
+
+    protected $pdf_output;
 
     public function init()
     {
@@ -227,6 +233,205 @@ class DefaultController extends BaseEventTypeController
         }else {
             $this->renderPartial('form_empty_upload', array('index'=>$index));
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function actionSavePDFprint($id)
+    {
+        $this->initWithEventId($id);
+
+        $imgdir = $this->event->getImageDirectory();
+        if(!file_exists($imgdir)) {
+            mkdir($imgdir, 0775, true);
+        }
+
+        if($this->eventContainsImagesOnly()) {
+            return parent::actionSavePDFprint($id);
+        }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $pdfpath = $this->actionPDFPrint($id, true, $inject_autoprint_js);
+        $pf = ProtectedFile::createFromFile($pdfpath);
+        if ($pf->save()) {
+            $result = array(
+                'success'   => 1,
+                'file_id'   => $pf->id,
+            );
+
+            if( !isset( $_GET['ajax'])){
+                $result['name'] = $pf->name;
+                $result['mime'] = $pf->mimetype;
+                $result['path'] = $pf->getPath();
+
+                return $result;
+            }
+
+        } else {
+            $result = array(
+                'success'   => 0,
+                'message'   => "couldn't save file object".print_r($pf->getErrors(), true)
+            );
+        }
+
+        return $this->renderJSON($result);
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns whether only images are uploaded to this event
+     */
+
+    private function eventContainsImagesOnly()
+    {
+        $document_types = $this->getDocumentTypes();
+        return array_values($document_types) === array('image');
+    }
+
+    /**
+     * @return array
+     *
+     * Returns an array of all different document types uploaded to this event
+     */
+
+    private function getDocumentTypes()
+    {
+        $document_types = array();
+
+        foreach ($this->event->getElements() as $element) {
+            foreach (array("single_document", "left_document", "right_document") as $property) {
+                if(isset($element->$property)) {
+
+                    $mimetype = $element->$property->mimetype;
+                    if(strpos($mimetype, "image/") === 0) {
+                        $document_types[]='image';
+                    }
+                    elseif($mimetype = 'application/pdf') {
+                        $document_types[]='pdf';
+                    }
+                    else {
+                        $document_types[]='other';
+                    }
+                }
+            }
+        }
+
+        return array_unique($document_types);
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function actionPDFPrint($id, $return_pdf_path = false, $inject_autoprint_js = true)
+    {
+        $this->initWithEventId($id);
+
+        if(in_array('other', $this->getDocumentTypes())) {
+            // Other documents cannot be printed
+            throw new Exception("Only images or PDF documents can be printed");
+        }
+
+        // Image(s) only
+        if($this->eventContainsImagesOnly()) {
+            return parent::actionPDFPrint($id);
+        }
+
+        // Pdf(s) only - or - pdf(s) and image(s) mixed
+        else {
+            $this->pdf_output = new PDF_JavaScript();
+            foreach ($this->event->getElements() as $element) {
+                foreach (array("single_document", "left_document", "right_document") as $property) {
+                    if (isset($element->$property)) {
+                        if(strpos($element->$property->mimetype, "image/") === 0) {
+                            $auto_print = Yii::app()->request->getParam('auto_print', true);
+                            $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+                            $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
+
+                            $pdf = $this->event->getPDF($pdf_route);
+                            $this->addPDFToOutput($pdf);
+                        }
+                        else {
+                            $this->addPDFToOutput($element->$property->getPath());
+                        }
+                    }
+                }
+            }
+
+            if($inject_autoprint_js) {
+                $script = 'print(true);';
+                $this->pdf_output->IncludeJS($script);
+
+            }
+
+            $imgdir = $this->event->imageDirectory;
+            $pdf_path = $imgdir.'/event_print.pdf';
+            if(!file_exists($imgdir)) {
+                mkdir($imgdir, 0775, true);
+            }
+            $this->pdf_output->Output("F",   $pdf_path);
+
+            if($return_pdf_path) {
+                return $pdf_path;
+            }
+
+            header('Content-Type: application/pdf');
+            header('Content-Length: '.filesize($pdf_path));
+
+            readfile($pdf_path);
+            return Yii::app()->end();
+        }
+    }
+
+    /**
+     * Merges a PDF file to the end of the output
+     *
+     * @param $pdf_path
+     */
+
+    private function addPDFToOutput($pdf_path)
+    {
+        if((float)$this->getPDFVersion($pdf_path) > 1.4) {
+            $pdf_path = $this->convertPDF($pdf_path);
+        }
+
+        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+        for ($i = 1; $i <= $pagecount; $i++) {
+            $this->pdf_output->AddPage('P');
+            $tplidx = $this->pdf_output->ImportPage($i);
+            $this->pdf_output->useTemplate($tplidx);
+        }
+    }
+
+    /**
+     * @param string $pdf_path
+     * @return string
+     */
+
+    private function getPDFVersion($pdf_path)
+    {
+        $guesser = new RegexGuesser();
+        return $guesser->guess($pdf_path);
+    }
+
+    /**
+     * @param $pdf_path
+     * @param string $version
+     *
+     * @return string Filepath of the converted document
+     */
+
+    private function convertPDF($pdf_path, $version = '1.4')
+    {
+        $tmpfname = tempnam("/tmp", "OE");
+        exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel='.$version.' -dNOPAUSE -dBATCH -sOutputFile='.$tmpfname.' '.$pdf_path);
+        return $tmpfname;
     }
 
 }

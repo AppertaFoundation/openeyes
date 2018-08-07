@@ -1353,6 +1353,18 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterOutcomeFollowUpPeriod($patient, $use_context = false)
     {
+        $follow_up_text = '';
+
+        if ($o = $this->getElementFromLatestVisibleEvent(
+            'models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context)
+        ){
+            if ($o->followup_quantity) {
+                $follow_up_text = $o->followup_quantity . ' ' . $o->followup_period;
+            }
+        }
+
         if ($api = \Yii::app()->moduleAPI->get('PatientTicketing')) {
             if ($patient_ticket_followup = $api->getLatestFollowUp($patient)) {
                 if (@$patient_ticket_followup['followup_quantity'] == 1 && @$patient_ticket_followup['followup_period']) {
@@ -1360,18 +1372,13 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                return $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                    $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
+                }
             }
         }
-        if ($o = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_ClinicOutcome',
-            $patient,
-            $use_context)
-        ){
-            if ($o->followup_quantity) {
-                return $o->followup_quantity . ' ' . $o->followup_period;
-            }
-        }
+
+        return $follow_up_text;
     }
 
     /**
@@ -1892,7 +1899,7 @@ class OphCiExamination_API extends \BaseAPI
 
         if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestVisibleEvent(
-                'models\Element_OphCiExamination_Gonioscopy',
+                'models\VanHerick',
                 $patient,
                 $use_context
         ))) {
@@ -2408,13 +2415,149 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->ophciexamination_risks_entry){
                 foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
-                    $required[] = $ophciexamination_risks->ophciexamination_risk;
+                    $risk = $ophciexamination_risks->ophciexamination_risk;
+                    $required[$risk->id] = $risk;
                 }
             }
         }
 
         return $required;
     }
+
+    /**
+     * Get required allergies
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array
+     */
+    public function getRequiredAllergies(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'allergy_set_entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationAllergySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach($sets as $set){
+            if($set->allergy_set_entries){
+                foreach($set->allergy_set_entries as $allergy_entry){
+                    $allergy = $allergy_entry->ophciexaminationAllergy;
+                    $required[$allergy->id] = $allergy;
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
+     * Returns the required Disorders (Systemic Diagnoses)
+     *
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array of Disorders
+     */
+    public function getRequiredSystemicDiagnoses(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationSystemicDiagnosesSet::model()->findAll($criteria);
+
+        $required = array();
+        foreach($sets as $set){
+            if($set->entries){
+                foreach($set->entries as $entry){
+                    $disorder = $entry->disorder;
+                    $required[$disorder->id] = $disorder;
+                }
+            }
+        }
+
+        return $required;
+    }
+
+    /**
+     * Returns the required Operations for Surgical History Element
+     *
+     * @param Patient $patient
+     * @param null|int $firm_id
+     * @return array of operations
+     */
+    public function getRequiredSurgicalHistory(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\SurgicalHistorySet::model()->findAll($criteria);
+
+        $required = array();
+        foreach($sets as $set){
+            if($set->entries){
+                foreach($set->entries as $entry){
+                    $operation = $entry->operation;
+                    $required[$operation->id] = $operation;
+                }
+            }
+        }
+
+        return $required;
+    }
+
 
     /*
      * Glaucoma Overall Management Plan from latest Examination
@@ -2483,5 +2626,161 @@ class OphCiExamination_API extends \BaseAPI
         }
 
         return $result;
+    }
+    
+    /*
+     * Last Blood Pressure (returned as systolic / diastolic - e.g, 100/80)
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBloodPressure( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->blood_pressure_systolic.'/'.$bp->blood_pressure_diastolic;
+        }
+    }
+    
+    /*
+     * Last O2 Stat
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastO2Stat( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->o2_sat;
+        }
+    }
+    
+    /*
+     * Last Blood Glucose
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBloodGlucose( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->blood_glucose;
+        }
+    }
+    
+    /*
+     * Last HbA1c
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastHbA1c( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->hba1c;
+        }
+    }
+    
+    /*
+     * Last height
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastHeight( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->height;
+        }
+    }
+    
+    /*
+     * Last weight
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastWeight( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->weight;
+        }
+    }
+    
+    /*
+     * Last BMI
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBMI( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            if(ceil($bp->weight) > 0 && ceil($bp->height) > 0){
+                $result = $bp->bmiCalculator( $bp->weight , $bp->height );
+                return $result;
+            } else {
+                return 'N/A';
+            }
+        }
+    }
+    
+    /*
+     * Last Pulse Measurement
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastPulseMeasurement( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->pulse;
+        }
+    }
+
+    public function getPrincipalOphtalmicDiagnosis(\Episode $episode, $disorder_id = null)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = 'JOIN et_ophciexamination_diagnoses et ON t.element_diagnoses_id = et.`id`';
+        $criteria->join .= ' JOIN event ON event.id = et.`event_id`';
+        $criteria->join .= ' JOIN episode ON event.`episode_id` = episode.id';
+        $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
+        $criteria->addCondition("patient_id = :patient_id");
+        $criteria->addCondition("episode_id = :episode_id");
+        $criteria->addCondition("principal = 1");
+
+        $criteria->params=[':patient_id' => $episode->patient_id , ':episode_id' => $episode->id];
+        if($disorder_id){
+            $criteria->addCondition("t.disorder_id = :disorder_id");
+            $criteria->params[':disorder_id'] = $disorder_id;
+        }
+
+        $criteria->order="t.created_date desc";
+
+        $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
+        return $value;
     }
 }

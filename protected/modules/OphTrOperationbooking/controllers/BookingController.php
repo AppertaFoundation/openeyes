@@ -172,7 +172,7 @@ class BookingController extends OphTrOperationbookingEventController
                     }
                 } else {
                     $_POST['Booking']['admission_time'] = substr($session['default_admission_time'], 0, 5);
-                    $_POST['Booking']['ward_id'] = key($operation->getWardOptions($_session));
+                    $_POST['Booking']['ward_id'] = key($operation->getWardOptions($session));
                     $_POST['Session']['comments'] = $session['comments'];
                     $_POST['Operation']['referral_id'] = $operation->referral_id;
                     $_POST['Operation']['comments'] = $operation->comments;
@@ -185,12 +185,19 @@ class BookingController extends OphTrOperationbookingEventController
 
         $this->processJsVars();
 
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('active = 1');
+        $criteria->distinct = true;
+        $criteria->join = "JOIN ophtroperationbooking_operation_session session ON t.id = session.firm_id";
+
+        $booked_firm_list = \Firm::model()->findAll($criteria);
+
         $this->render('schedule', array(
             'event' => $this->event,
             'operation' => $operation,
             'schedule_options' => $schedule_options,
             'firm' => $firm,
-            'firmList' => Firm::model()->listWithSpecialties,
+            'firm_list' => $booked_firm_list,
             'date' => $date,
             'selectedDate' => @$selectedDate,
             'sessions' => $operation->getFirmCalendarForMonth($firm, $date, $schedule_options),

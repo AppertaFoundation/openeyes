@@ -62,7 +62,7 @@
 						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2'))?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->report2)?></div>
+						<div class="data-value"><?php echo CHtml::encode($element->report2) . '<br>'. CHtml::encode($element->comments)?></div>
 					</div>
 				</div>
 				<div class="row data-row">
@@ -101,30 +101,26 @@
 				</div>
 				<div class="row data-row">
 					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php
+						if($element->phaco_cde == ""){
+								echo "not recorded";
+						}else
+						{
+								echo CHtml::encode($element->phaco_cde);
+						}?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
 						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->pcr_risk)?></div>
+						<div class="data-value"><?php echo CHtml::encode($element->pcr_risk)?>%</div>
 					</div>
 				</div>
-				<?php if ($element->getSetting('fife')) {?>
-					<div class="row data-row">
-						<div class="large-4 column">
-							<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id'))?>:</div>
-						</div>
-						<div class="large-8 column">
-							<div class="data-value"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified'?></div>
-						</div>
-					</div>
-					<div class="row data-row">
-						<div class="large-4 column">
-							<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id'))?>:</div>
-						</div>
-						<div class="large-8 column">
-							<div class="data-value"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified'?></div>
-						</div>
-					</div>
-				<?php }?>
 			</div>
 			<div class="large-6 column">
 				<?php

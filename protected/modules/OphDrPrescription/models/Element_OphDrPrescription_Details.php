@@ -330,6 +330,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 $item_model->duration_id = $item['duration_id'];
                 $item_model->dispense_condition_id = $item['dispense_condition_id'];
                 $item_model->dispense_location_id = $item['dispense_location_id'];
+                $item_model->comments = isset($item['comments']) ? $item['comments'] : null;
 
                 $item_model->save();
 

@@ -27,12 +27,17 @@ namespace OEModule\OphCiExamination\models;
  * @property int $allergy_id
  * @property string $other
  * @property string $comments
+ * @property int $has_allergy
  *
  * @property Allergy $allergy
  * @property Allergies $element
  */
 class AllergyEntry extends \BaseElement
 {
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -57,13 +62,15 @@ class AllergyEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, allergy_id, other, comments', 'safe'),
+            array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
+            array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_id, allergy_id, other, comments', 'safe', 'on' => 'search'),
+            array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
         );
     }
+
     /**
      * @return array relational rules.
      */
@@ -99,6 +106,7 @@ class AllergyEntry extends \BaseElement
         $criteria->compare('allergy_id', $this->allergy_id, true);
         $criteria->compare('other', $this->other, true);
         $criteria->compare('comments', $this->comments, true);
+        $criteria->compare('has_allergy', $this->has_allergy, true);
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
@@ -115,6 +123,19 @@ class AllergyEntry extends \BaseElement
     /**
      * @return string
      */
+    public function getDisplayHasAllergy()
+    {
+        if ($this->has_allergy === (string) static::$PRESENT) {
+            return 'Present';
+        } elseif ($this->has_allergy === (string) static::$NOT_PRESENT) {
+            return 'Not present';
+        }
+        return 'Not checked';
+    }
+
+    /**
+     * @return string
+     */
     public function getDisplayAllergy()
     {
         if ($this->other) {
@@ -123,12 +144,13 @@ class AllergyEntry extends \BaseElement
         return $this->allergy ? $this->allergy->name : '';
     }
 
+
     /**
      * @return string
      */
     public function __toString()
     {
-        $res = $this->getDisplayAllergy();
+        $res = '<strong>' . $this->getDisplayHasAllergy() . ':</strong> ' . $this->getDisplayAllergy();
         if ($this->comments) {
             $res .= ' (' . $this->comments . ')';
         }

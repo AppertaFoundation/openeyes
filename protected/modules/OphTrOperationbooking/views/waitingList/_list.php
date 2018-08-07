@@ -41,6 +41,7 @@
 			<th>Firm</th>
 			<th>Decision date</th>
 			<th>Priority</th>
+			<th>Complexity</th>
 			<th>Book status (requires...)</th>
 			<th>
 				<label>
@@ -111,6 +112,7 @@
 					<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</td>
 					<td><?php echo $eo->NHSDate('decision_date') ?></td>
 					<td><?php echo $eo->priority->name?></td>
+					<td><?php echo $eo->getComplexityCaption();?></td>
 					<td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
 					<td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
 

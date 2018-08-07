@@ -250,11 +250,19 @@ $assetManager = Yii::app()->getAssetManager();
     ?>
 
     <?php
+    $form_actions = array();
     if ($admin->getCustomCancelURL() != '') {
-        echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
+        $form_actions = array('cancel-uri' => $admin->getCustomCancelURL());
     } else {
-        echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list'));
+        $form_actions = array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list');
     }
+
+    $extra_buttons = [];
+    if(isset($this->admin) && method_exists($this->admin, 'getExtraButton')){
+        $extra_buttons = $this->admin->getExtraButton();
+    }
+    $form_actions = array_merge($extra_buttons, $form_actions);
+    echo $form->formActions($form_actions);
 
     ?>
 

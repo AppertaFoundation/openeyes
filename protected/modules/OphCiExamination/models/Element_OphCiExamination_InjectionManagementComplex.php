@@ -303,8 +303,8 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
     {
         $side = $params['side'];
 
-        if (($side == 'left' && $this->eye_id != \Eye::RIGHT) ||
-            ($side == 'right' && $this->eye_id != \Eye::LEFT)) {
+        if (($side == 'left' && !$this->left_no_treatment && $this->eye_id != \Eye::RIGHT) ||
+            ($side == 'right' && !$this->right_no_treatment && $this->eye_id != \Eye::LEFT)) {
             $questions = $this->getInjectionQuestionsForSide($side);
 
             $answer_q_ids = array();

@@ -93,22 +93,17 @@
             </div>
         </div>
     </div>
-
-    <div class="mdl-cell mdl-cell--4-col editable">
+    <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand comment">
-                <h2 class="mdl-card__title-text">Comments</h2>
-                <?php if ($this->getWhiteboard()->isEditable()):?>
-                    <div class="mdl-layout-spacer"></div>
-                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
-                <?php endif; ?>
+            <div class="mdl-card__title mdl-card--expand risk">
+                <h2 class="mdl-card__title-text">Alerts/Risks</h2>
             </div>
             <div class="mdl-card__supporting-text" id="comments">
-                <?=nl2br($data->comments)?>
+                <?php echo $this->getWhiteboard()->getPatientRisksDisplay(); ?>
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--8-col mdl-cell--8-col-tablet editable">
+    <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
                 <h2 class="mdl-card__title-text">Predicted additional equipment</h2>
@@ -126,5 +121,18 @@
             </div>
         </div>
     </div>
-
+    <div class="mdl-cell mdl-cell--4-col editable">
+        <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand comment">
+                <h2 class="mdl-card__title-text">Comments</h2>
+                <?php if ($this->getWhiteboard()->isEditable()):?>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons right" data-whiteboard-event-id="<?=$data->event_id?>">create</i>
+                <?php endif; ?>
+            </div>
+            <div class="mdl-card__supporting-text" id="comments">
+                <?=nl2br($data->comments)?>
+            </div>
+        </div>
+    </div>
 </div>

@@ -87,7 +87,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSegAngleMarks</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Angle Marks</TITLE>
-      <INIT_DOODLE_JSON/>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSegAngleMarks","order":0}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSynech</EYEDRAW_CLASS_MNEMONIC>
@@ -395,8 +395,8 @@
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
-      <EYEDRAW_CLASS_MNEMONIC>HardDrusen</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Hard drusen</TITLE>
+      <EYEDRAW_CLASS_MNEMONIC>Drusen</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Drusen</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -1533,6 +1533,17 @@
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
     <DOODLE_USAGE>
+    <EYEDRAW_CLASS_MNEMONIC>AntSegAngleMarks</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+
+    <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>Lens</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
       <ON_TOOLBAR_LOCATION/>
@@ -1671,7 +1682,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
       <ON_TOOLBAR_LOCATION/>
       <ON_TOOLBAR_ORDER/>
       <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
-      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
       <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
     </DOODLE_USAGE>
@@ -1691,7 +1702,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
       <ON_TOOLBAR_LOCATION></ON_TOOLBAR_LOCATION>
       <ON_TOOLBAR_ORDER></ON_TOOLBAR_ORDER>
       <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
-      <INIT_ALWAYS_FLAG></INIT_ALWAYS_FLAG>
+      <INIT_ALWAYS_FLAG>false</INIT_ALWAYS_FLAG>
       <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
       <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
       <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
@@ -1728,20 +1739,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
         <INDEX>
           <PRIMARY_TERM>Examination Risks</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-          <INDEX_LIST>
-            <INDEX>
-              <PRIMARY_TERM>Alpha blockers</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>tr</GOTO_TAG>
-              <GOTO_TEXT>Alpha blockers</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Anticoagulants</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>tr</GOTO_TAG>
-              <GOTO_TEXT>Anticoagulants</GOTO_TEXT>
-            </INDEX>
-          </INDEX_LIST>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Medications</PRIMARY_TERM>
@@ -1779,10 +1776,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Examination Comorbidities</PRIMARY_TERM>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Comorbidities</OPEN_ELEMENT_CLASS_NAME>
-        </INDEX>
-        <INDEX>
           <PRIMARY_TERM>Examiantion Allergies</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
@@ -1792,7 +1785,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
@@ -1845,6 +1838,66 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_substance_misuse_id</GOTO_ID>
             </INDEX>
           </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Observations</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Obs</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+            <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Blood Pressure</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                      <TERM>BP</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_blood_pressure_systolic</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Blood Glucose</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_blood_glucose</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>O2 Saturaation on air</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                      <TERM>O2 Sat</TERM>
+                      <TERM>O2Sat</TERM>
+                      <TERM>Oxygen Saturation</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_o2_sat</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>HbA1c</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_hba1c</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Pulse</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_pulse</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>Height</PRIMARY_TERM>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_height</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>Weight</PRIMARY_TERM>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_weight</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>BMI</PRIMARY_TERM>
+                    <SECONDARY_TERM_LIST>
+                        <TERM>Body Mass Index</TERM>
+                    </SECONDARY_TERM_LIST>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>bmi-container</GOTO_ID>
+                </INDEX>
+            </INDEX_LIST>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Visual Function</PRIMARY_TERM>
@@ -2203,7 +2256,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_%position_values_0_reading_id</GOTO_ID>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Dilation</PRIMARY_TERM>
+          <PRIMARY_TERM>Drops</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Dilation</TERM>
+          </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Dilation</OPEN_ELEMENT_CLASS_NAME>
           <GOTO_ID>dilation_drug_%position</GOTO_ID>
         </INDEX>
@@ -2257,7 +2313,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Diagnoses</PRIMARY_TERM>
+          <PRIMARY_TERM>Ophthalmic Diagnoses</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Diagnosis</TERM>
           </SECONDARY_TERM_LIST>
@@ -2571,10 +2627,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole_%position_description</GOTO_ID>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Hard drusen</PRIMARY_TERM>
-              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/HardDrusen.png</IMG_URL>
+              <PRIMARY_TERM>Drusen</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Drusen.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_DOODLE_CLASS_NAME>HardDrusen</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Drusen</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Geographic</PRIMARY_TERM>
@@ -2587,6 +2643,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CNV.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>RPE Atrophy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RPEAtrophy.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RPEAtrophy</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>RPE detachment</PRIMARY_TERM>
@@ -2772,7 +2834,17 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
               <GOTO_PROPERTY>Text</GOTO_PROPERTY>
             </INDEX>
+			<INDEX>
+				<PRIMARY_TERM>Watzke</PRIMARY_TERM>
+				<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+				<GOTO_DOODLE_CLASS_NAME>MaculaPostPole</GOTO_DOODLE_CLASS_NAME>
+				<GOTO_PROPERTY>Watzke</GOTO_PROPERTY>
+			</INDEX>
           </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Van Herick</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\VanHerick</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Examination Gonioscopy</PRIMARY_TERM>
@@ -2787,11 +2859,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
               <GOTO_TAG>div.field-label</GOTO_TAG>
               <GOTO_TEXT>Angle Open?</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Van Herick</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_van_herick_id</GOTO_ID>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Comments</PRIMARY_TERM>

@@ -77,16 +77,4 @@
 			</div>
 		</div>
 	</div>
-	<div class="data-row">
-		<span class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_van_herick_id') ?>:
-		</span>
-		<span class="data-value">
-			<?php if ($van_herick = $element->{$side.'_van_herick'}) {
-    echo $van_herick->name;
-} else {
-    echo 'NR';
-} ?>
-		</span>
-	</div>
 </div>

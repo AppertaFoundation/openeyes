@@ -60,10 +60,10 @@ class BaseEventTypeController extends BaseModuleController
     const ACTION_TYPE_REQUESTDELETE = 'RequestDelete';
     const ACTION_TYPE_FORM = 'Form';    // AJAX actions that are used during create and update but don't actually modify data themselves
 
-        private $unique_code_elements = array(
-            array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
-            array('event' => 'OphCoCvi', 'element' => array('Element_OphCoCvi_EventInfo')),
-        );
+    private $unique_code_elements = array(
+        array('event' => 'OphTrOperationnote', 'element' => array('Element_OphTrOperationnote_Cataract')),
+        array('event' => 'OphCoCvi', 'element' => array('Element_OphCoCvi_EventInfo')),
+    );
 
     private static $base_action_types = array(
         'create' => self::ACTION_TYPE_CREATE,
@@ -219,6 +219,7 @@ class BaseEventTypeController extends BaseModuleController
                 ? BaseEventElementWidget::$EVENT_PRINT_MODE
                 : BaseEventElementWidget::$EVENT_VIEW_MODE);
     }
+
     /**
      * Sets the patient object on the controller.
      *
@@ -269,6 +270,7 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->renderPartial($view);
     }
+
     /**
      * Get the open elements for the event that are not children.
      *
@@ -308,11 +310,11 @@ class BaseEventTypeController extends BaseModuleController
                 continue;
             }
             $struct = array(
-                'name'          => $et->name,
-                'class_name'    => CHtml::modelName($et->class_name),
-                'id'            => $et->id,
+                'name' => $et->name,
+                'class_name' => CHtml::modelName($et->class_name),
+                'id' => $et->id,
                 'display_order' => $et->display_order,
-                'children'      => array(),
+                'children' => array(),
             );
 
             foreach ($et->child_element_types as $child) {
@@ -320,10 +322,10 @@ class BaseEventTypeController extends BaseModuleController
                     continue;
                 }
                 $struct['children'][] = array(
-                    'name'          => $child->name,
-                    'id'            => $child->id,
+                    'name' => $child->name,
+                    'id' => $child->id,
                     'display_order' => $child->display_order,
-                    'class_name'    => CHtml::modelName($child->class_name),
+                    'class_name' => CHtml::modelName($child->class_name),
                 );
             }
 
@@ -435,7 +437,7 @@ class BaseEventTypeController extends BaseModuleController
             if (!$this->isPrintAction($action->id)) {
                 // nested elements behaviour
                 //TODO: possibly put this into standard js library for events
-                Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "'.$this->getModule()->name.'";', CClientScript::POS_HEAD);
+                Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
             }
         }
@@ -459,7 +461,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function redirectToPatientEpisodes()
     {
-        $this->redirect(array('/patient/episodes/'.$this->patient->id));
+        $this->redirect(array('/patient/episodes/' . $this->patient->id));
     }
 
     /**
@@ -472,7 +474,7 @@ class BaseEventTypeController extends BaseModuleController
      * values of the element (if the controller state is required for this)
      *
      * @param BaseEventTypeElement $element
-     * @param string               $action
+     * @param string $action
      */
     protected function setElementDefaultOptions($element, $action)
     {
@@ -482,7 +484,7 @@ class BaseEventTypeController extends BaseModuleController
             $element->setUpdateOptions();
         }
 
-        $el_method = 'setElementDefaultOptions_'.Helper::getNSShortname($element);
+        $el_method = 'setElementDefaultOptions_' . Helper::getNSShortname($element);
         if (method_exists($this, $el_method)) {
             $this->$el_method($element, $action);
         }
@@ -505,7 +507,7 @@ class BaseEventTypeController extends BaseModuleController
         if ($api = $this->getApp()->moduleAPI->get($this->getModule()->name)) {
             return array_filter(
                 $api->getElements($element_type->class_name, $this->patient, false),
-                function($el) use ($exclude_event_id) {
+                function ($el) use ($exclude_event_id) {
                     return $el->event_id != $exclude_event_id;
                 });
         } else {
@@ -517,7 +519,7 @@ class BaseEventTypeController extends BaseModuleController
      * Are there one or more previous instances of an element?
      *
      * @param ElementType $element_type
-     * @param int         $exclude_event_id
+     * @param int $exclude_event_id
      *
      * @return bool
      */
@@ -596,7 +598,7 @@ class BaseEventTypeController extends BaseModuleController
      * Abstracted to allow overrides in specific module controllers
      *
      * @param ElementType $element_type
-     * @param int         $previous_id
+     * @param int $previous_id
      * @param array()     $additional   - additional attributes for the element
      *
      * @return \BaseEventTypeElement
@@ -633,7 +635,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function initAction($action)
     {
-        $init_method = 'initAction'.ucfirst($action);
+        $init_method = 'initAction' . ucfirst($action);
         if (method_exists($this, $init_method)) {
             $this->$init_method();
         }
@@ -842,9 +844,9 @@ class BaseEventTypeController extends BaseModuleController
                         $transaction->commit();
 
                         if ($this->event->parent_id) {
-                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
                         } else {
-                            $this->redirect(array($this->successUri.$this->event->id));
+                            $this->redirect(array($this->successUri . $this->event->id));
                         }
                     } else {
                         throw new Exception('could not save event');
@@ -860,18 +862,18 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->editable = false;
         $this->event_tabs = array(
-                array(
-                        'label' => 'Create',
-                        'active' => true,
-                ),
+            array(
+                'label' => 'Create',
+                'active' => true,
+            ),
         );
 
-        $cancel_url = ($this->episode) ? '/patient/episode/'.$this->episode->id : '/patient/episodes/'.$this->patient->id;
+        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
         $this->event_actions = array(
-                EventAction::link('Cancel',
-                        Yii::app()->createUrl($cancel_url),
-                        array('level' => 'cancel')
-                ),
+            EventAction::link('Cancel',
+                Yii::app()->createUrl($cancel_url),
+                array('level' => 'cancel')
+            ),
         );
 
         $this->render('create', array(
@@ -907,21 +909,21 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->editable) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
-                'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
             );
         }
 
         if ($this->checkDeleteAccess()) {
             $this->event_actions = array(
                 EventAction::link('Delete',
-                    Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+                    Yii::app()->createUrl($this->event->eventType->class_name . '/default/delete/' . $this->event->id),
                     array('level' => 'delete')
                 ),
             );
         } elseif ($this->checkRequestDeleteAccess()) {
             $this->event_actions = array(
                 EventAction::link('Delete',
-                    Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+                    Yii::app()->createUrl($this->event->eventType->class_name . '/default/requestDeletion/' . $this->event->id),
                     array('level' => 'delete')
                 ),
             );
@@ -952,7 +954,7 @@ class BaseEventTypeController extends BaseModuleController
             // somethings been submitted
             if (isset($_POST['cancel'])) {
                 // Cancel button pressed, so just bounce to view
-                $this->redirect(array('default/view/'.$this->event->id));
+                $this->redirect(array('default/view/' . $this->event->id));
             }
 
             $errors = $this->setAndValidateElementsFromData($_POST);
@@ -975,15 +977,15 @@ class BaseEventTypeController extends BaseModuleController
                         $this->event->user = Yii::app()->user->id;
 
                         if (!$this->event->save()) {
-                            throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(), true));
+                            throw new SystemException('Unable to update event: ' . print_r($this->event->getErrors(), true));
                         }
 
                         OELog::log("Updated event {$this->event->id}");
                         $transaction->commit();
                         if ($this->event->parent_id) {
-                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
                         } else {
-                            $this->redirect(array('default/view/'.$this->event->id));
+                            $this->redirect(array('default/view/' . $this->event->id));
                         }
                     } else {
                         throw new Exception('Unable to save edits to event');
@@ -1000,21 +1002,21 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->editing = true;
         $this->event_tabs = array(
-                array(
-                        'label' => 'View',
-                        'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/view/'.$this->event->id),
-                ),
-                array(
-                        'label' => 'Edit',
-                        'active' => true,
-                ),
+            array(
+                'label' => 'View',
+                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
+            ),
+            array(
+                'label' => 'Edit',
+                'active' => true,
+            ),
         );
 
         $this->event_actions = array(
-                EventAction::link('Cancel',
-                        Yii::app()->createUrl($this->event->eventType->class_name.'/default/view/'.$this->event->id),
-                        array('level' => 'cancel')
-                ),
+            EventAction::link('Cancel',
+                Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
+                array('level' => 'cancel')
+            ),
         );
 
         $this->render($this->action->id, array(
@@ -1103,8 +1105,8 @@ class BaseEventTypeController extends BaseModuleController
 
         $this->renderPartial(
             '_previous', array(
-                'elements' => $this->getPrevious($element_type),
-            ), false, true // Process output to deal with script requirements
+            'elements' => $this->getPrevious($element_type),
+        ), false, true // Process output to deal with script requirements
         );
     }
 
@@ -1172,12 +1174,12 @@ class BaseEventTypeController extends BaseModuleController
      * setComplexAttributes_[element_class_name]($element, $data, $index)
      *
      * @param BaseEventTypeElement $element
-     * @param array                $data
-     * @param int                  $index
+     * @param array $data
+     * @param int $index
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
+        $element_method = 'setComplexAttributes_' . Helper::getNSShortname($element);
         if (method_exists($this, $element_method)) {
             $this->$element_method($element, $data, $index);
         }
@@ -1196,9 +1198,15 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-        if (isset($data[$f_key])) {
-            $keys = array_keys($data[$f_key]);
 
+        $is_removed = !isset($data['element_removed'][$f_key]) || ( isset($data['element_removed'][$f_key]) &&  !$data['element_removed'][$f_key]);
+
+        /**
+         * Check if the element has data , but not the element removed flag
+         * or if the element has removed flag set and if its not set to 0
+         */
+        if (isset($data[$f_key]) && $is_removed) {
+            $keys = array_keys($data[$f_key]);
             if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
                 // there is more than one element of this type
                 $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
@@ -1211,6 +1219,7 @@ class BaseEventTypeController extends BaseModuleController
                     } else {
                         $element = $element_type->getInstance();
                     }
+
                     $this->setElementAttributesFromData($element, $data, $i);
                     $elements[] = $element;
                 }
@@ -1242,11 +1251,12 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->getAllElementTypes() as $element_type) {
+
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required) {
-                $errors[$this->event_type->name][] = $element_type->name.' is required';
+                $errors[$this->event_type->name][] = $element_type->name . ' is required';
                 $elements[] = $element_type->getInstance();
             }
         }
@@ -1274,7 +1284,7 @@ class BaseEventTypeController extends BaseModuleController
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
             $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
-            if(isset($data['Event']['parent_id'])){
+            if (isset($data['Event']['parent_id'])) {
                 $event->parent_id = $data['Event']['parent_id'];
             }
             if (!$event->validate()) {
@@ -1317,7 +1327,7 @@ class BaseEventTypeController extends BaseModuleController
 
         foreach ($this->open_elements as $element) {
             $el_cls_name = get_class($element);
-            $element_method = 'saveComplexAttributes_'.Helper::getNSShortname($element);
+            $element_method = 'saveComplexAttributes_' . Helper::getNSShortname($element);
             if (method_exists($this, $element_method)) {
                 // there's custom behaviour for setting additional relations on this element class
                 if (!isset($counter_by_cls[$el_cls_name])) {
@@ -1367,17 +1377,17 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             if (!$this->event->save()) {
-                OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=".$this->event_type->id);
+                OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
                 throw new Exception('Unable to save event.');
             }
-            OELog::log("Created new event for episode_id={$this->episode->id}, event_type_id=".$this->event_type->id);
+            OELog::log("Created new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
         }
 
         foreach ($this->open_elements as $element) {
             $element->event_id = $this->event->id;
             // No need to validate as it has already been validated and the event id was just generated.
             if (!$element->save(false)) {
-                throw new Exception('Unable to save element '.get_class($element).'.');
+                throw new Exception('Unable to save element ' . get_class($element) . '.');
             }
         }
 
@@ -1431,11 +1441,12 @@ class BaseEventTypeController extends BaseModuleController
     public function getAssetPathForElement(\BaseEventTypeElement $element)
     {
         if ($alias = $this->getElementModulePathAlias($element)) {
-            return Yii::app()->assetManager->getPublishedPathOfAlias($alias.'.assets');
+            return Yii::app()->assetManager->getPublishedPathOfAlias($alias . '.assets');
         } else {
             return $this->assetPath;
         }
     }
+
     /**
      * calculate the alias dot notated path to an element view.
      *
@@ -1446,7 +1457,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function getElementViewPathAlias(\BaseEventTypeElement $element)
     {
         if ($alias = $this->getElementModulePathAlias($element)) {
-            return $alias.'.views.'.$this->getControllerPrefix().'.';
+            return $alias . '.views.' . $this->getControllerPrefix() . '.';
         }
 
         return '';
@@ -1467,12 +1478,12 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($this->show_index_search && in_array($this->getActionType($this->action->id),
                 array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
-          $event_type_id = ($this->event->attributes["event_type_id"]);
-          $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
-          $event_name = $event_type->name;
-          if ($event_name == "Examination") {
-            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
-          }
+            $event_type_id = ($this->event->attributes["event_type_id"]);
+            $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+            $event_name = $event_type->name;
+            if ($event_name == "Examination") {
+                $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name));
+            }
         }
 
     }
@@ -1482,14 +1493,14 @@ class BaseEventTypeController extends BaseModuleController
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
      * @param string $view
-     * @param null   $data
-     * @param bool   $return
-     * @param bool   $processOutput
+     * @param null $data
+     * @param bool $return
+     * @param bool $processOutput
      *
      * @return string
      */
     public function renderPartial($view, $data = null, $return = false, $processOutput = false)
-    {   
+    {
         if ($this->getViewFile($view) === false) {
             foreach ($this->getModule()->getModuleInheritanceList() as $mod) {
                 // assuming that any inheritance maintains the controller name here.
@@ -1508,33 +1519,33 @@ class BaseEventTypeController extends BaseModuleController
      * Render the individual element based on the action provided. Note that view names
      * for the associated actions are set in the model.
      *
-     * @param BaseEventTypeElement                $element
-     * @param string                              $action
+     * @param BaseEventTypeElement $element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     * @param array                               $view_data     Data to be passed to the view.
-     * @param bool                                $return        Whether the rendering result should be returned instead of being displayed to end users.
-     * @param bool                                $processOutput Whether the rendering result should be postprocessed using processOutput.
+     * @param array $data
+     * @param array $view_data Data to be passed to the view.
+     * @param bool $return Whether the rendering result should be returned instead of being displayed to end users.
+     * @param bool $processOutput Whether the rendering result should be postprocessed using processOutput.
      *
      * @throws Exception
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
-       
+
         if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
             $action = 'print';
         }
-        if($action == 'savePDFprint'){
+        if ($action == 'savePDFprint') {
             $action = 'print';
         }
-       
+
         // Get the view names from the model.
-        $view = isset($element->{$action.'_view'})
-            ? $element->{$action.'_view'}
+        $view = isset($element->{$action . '_view'})
+            ? $element->{$action . '_view'}
             : $element->getDefaultView();
 
-        $container_view = isset($element->{'container_'.$action.'_view'})
-            ? $element->{'container_'.$action.'_view'}
+        $container_view = isset($element->{'container_' . $action . '_view'})
+            ? $element->{'container_' . $action . '_view'}
             : $element->getDefaultContainerView();
 
         $use_container_view = ($element->useContainerView && $container_view);
@@ -1550,7 +1561,7 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
-            $widget = $element->widget ? :
+            $widget = $element->widget ?:
                 $this->createWidget($element->widgetClass,
                     array(
                         'patient' => $this->patient,
@@ -1559,9 +1570,9 @@ class BaseEventTypeController extends BaseModuleController
                         'mode' => $this->getElementWidgetMode($action)
                     ));
             $widget->form = $view_data['form'];
-            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
+            $this->renderPartial('//elements/widget_element', array('widget' => $widget), $return, $processOutput);
         } else {
-            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+            $this->renderPartial($this->getElementViewPathAlias($element) . $view, $view_data, $return, $processOutput);
         }
         ($use_container_view) && $this->endContent();
     }
@@ -1569,9 +1580,9 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Render the open elements for the controller state.
      *
-     * @param string                              $action
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      */
@@ -1589,19 +1600,19 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Render an optional element.
      *
-     * @param BaseEventTypeElement                $element
-     * @param string                              $action
+     * @param BaseEventTypeElement $element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      */
     protected function renderOptionalElement($element, $action, $form, $data)
     {
-        $el_view = $this->getElementViewPathAlias($element).'_optional_'.$element->getDefaultView();
+        $el_view = $this->getElementViewPathAlias($element) . '_optional_' . $element->getDefaultView();
         $view = $this->getViewFile($el_view)
             ? $el_view
-            : $this->getElementViewPathAlias($element).'_optional_element';
+            : $this->getElementViewPathAlias($element) . '_optional_element';
 
         $this->renderPartial($view, array(
             'element' => $element,
@@ -1613,10 +1624,10 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Render the open elements that are children of the given parent element type.
      *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
+     * @param BaseEventTypeElement $parent_element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      */
@@ -1631,8 +1642,8 @@ class BaseEventTypeController extends BaseModuleController
      * Render the optional elements for the controller state.
      *
      * @param string $action
-     * @param bool   $form
-     * @param bool   $data
+     * @param bool $form
+     * @param bool $data
      */
     public function renderOptionalElements($action, $form = null, $data = null)
     {
@@ -1644,10 +1655,10 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Render the optional child elements for the given parent element type.
      *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
+     * @param BaseEventTypeElement $parent_element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      */
@@ -1717,10 +1728,10 @@ class BaseEventTypeController extends BaseModuleController
      */
     private function getPDFPrintSuffix()
     {
-        if(method_exists($this,"getSession")) {
+        if (method_exists($this, "getSession")) {
             $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
         } else {
-            $this->pdf_print_suffix .= getmypid().rand();
+            $this->pdf_print_suffix .= getmypid() . rand();
         }
     }
 
@@ -1734,14 +1745,14 @@ class BaseEventTypeController extends BaseModuleController
      * @throws CHttpException
      * @throws Exception
      */
-    public function setPDFprintData($id , $inject_autoprint_js )
+    public function setPDFprintData($id, $inject_autoprint_js)
     {
         if (!isset($id)) {
             throw new CHttpException(400, 'No ID provided');
         }
 
         if (!$this->event = Event::model()->findByPk($id)) {
-            throw new Exception("Method not found: ".$id);
+            throw new Exception("Method not found: " . $id);
         }
 
         $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', null);
@@ -1753,7 +1764,7 @@ class BaseEventTypeController extends BaseModuleController
         if (!$this->event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {
                 ob_start();
-                $this->actionPrint( $this->event->id );
+                $this->actionPrint($this->event->id);
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
@@ -1785,16 +1796,16 @@ class BaseEventTypeController extends BaseModuleController
         $wk->setBarcode($this->event->barcodeHTML);
 
         foreach (array('left', 'middle', 'right') as $section) {
-            if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
-                $setMethod = 'set'.ucfirst($section);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name])) {
+                $setMethod = 'set' . ucfirst($section);
+                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name]);
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-            if (isset(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name])) {
-                $setMethod = 'setMargin'.ucfirst($margin);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name])) {
+                $setMethod = 'setMargin' . ucfirst($margin);
+                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name]);
             }
         }
 
@@ -1804,7 +1815,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean) @$_GET['html'], $inject_autoprint_js);
+        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'], $inject_autoprint_js);
 
         return $this->pdf_print_suffix;
     }
@@ -1815,21 +1826,21 @@ class BaseEventTypeController extends BaseModuleController
      * @param $id
      * @return array
      */
-    public function actionSavePDFprint($id  )
+    public function actionSavePDFprint($id)
     {
 
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
-        $pf = ProtectedFile::createFromFile( $this->event->imageDirectory.'/event_'.$pdf_route.'.pdf');
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
+        $pf = ProtectedFile::createFromFile($this->event->imageDirectory . '/event_' . $pdf_route . '.pdf');
         if ($pf->save()) {
             $result = array(
-                'success'   => 1,
-                'file_id'   => $pf->id,
+                'success' => 1,
+                'file_id' => $pf->id,
             );
 
-            if( !isset( $_GET['ajax'])){
+            if (!isset($_GET['ajax'])) {
                 $result['name'] = $pf->name;
                 $result['mime'] = $pf->mimetype;
                 $result['path'] = $pf->getPath();
@@ -1839,8 +1850,8 @@ class BaseEventTypeController extends BaseModuleController
 
         } else {
             $result = array(
-                'success'   => 0,
-                'message'   => "couldn't save file object".print_r($pf->getErrors(), true)
+                'success' => 0,
+                'message' => "couldn't save file object" . print_r($pf->getErrors(), true)
             );
         }
 
@@ -1856,15 +1867,16 @@ class BaseEventTypeController extends BaseModuleController
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
+        $pdf_route = $this->setPDFprintData($id, $inject_autoprint_js);
         if (@$_GET['html']) {
             return Yii::app()->end();
         }
 
         $pdf = $this->event->getPDF($pdf_route);
 
+
         header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
+        header('Content-Length: ' . filesize($pdf));
 
         readfile($pdf);
         @unlink($pdf);
@@ -1892,9 +1904,9 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Render HTML print layout.
      *
-     * @param int                    $id       event id
+     * @param int $id event id
      * @param BaseEventTypeElement[] $elements
-     * @param string                 $template
+     * @param string $template
      */
     protected function printHTML($id, $elements, $template = 'print')
     {
@@ -1904,7 +1916,7 @@ class BaseEventTypeController extends BaseModuleController
             'eventId' => $id
         ));
     }
-    
+
     public function printHTMLCopy($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/printCopy';
@@ -1912,20 +1924,20 @@ class BaseEventTypeController extends BaseModuleController
             'elements' => $elements,
             'eventId' => $id,
         ), true);
-        
+
         echo $result;
     }
 
     /**
      * Log print action.
      *
-     * @param int  $id  event id
+     * @param int $id event id
      * @param bool $pdf
      */
     protected function printLog($id, $pdf)
     {
         $this->logActivity("printed event (pdf=$pdf)");
-        $this->event->audit('event', ( strpos($this->pdf_print_suffix, 'all') === 0  ? 'print all' : 'print'), false);
+        $this->event->audit('event', (strpos($this->pdf_print_suffix, 'all') === 0 ? 'print all' : 'print'), false);
     }
 
     /**
@@ -1939,15 +1951,14 @@ class BaseEventTypeController extends BaseModuleController
     public function actionDelete($id)
     {
         if (isset($_POST['et_canceldelete'])) {
-            return $this->redirect(array('/'.$this->event_type->class_name.'/default/view/'.$id));
+            return $this->redirect(array('/' . $this->event_type->class_name . '/default/view/' . $id));
         }
 
         if (!empty($_POST)) {
 
             if (Yii::app()->request->getPost('delete_reason', '') === '') {
                 $errors = array('Reason for deletion' => array('Please enter a reason for deleting this event'));
-            }
-            else {
+            } else {
                 $transaction = Yii::app()->db->beginTransaction();
                 try {
                     $this->event->softDelete(Yii::app()->request->getPost('delete_reason', ''));
@@ -1957,7 +1968,7 @@ class BaseEventTypeController extends BaseModuleController
                     if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                         $this->event->episode->deleted = 1;
                         if (!$this->event->episode->save()) {
-                            throw new Exception('Unable to save episode: '.print_r($this->event->episode->getErrors(), true));
+                            throw new Exception('Unable to save episode: ' . print_r($this->event->episode->getErrors(), true));
                         }
 
                         $this->event->episode->audit('episode', 'delete', false);
@@ -1965,7 +1976,7 @@ class BaseEventTypeController extends BaseModuleController
                         $transaction->commit();
 
                         if (!$this->dont_redirect) {
-                            $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
+                            $this->redirect(array('/patient/episodes/' . $this->event->episode->patient->id));
                         } else {
                             return true;
                         }
@@ -1975,7 +1986,7 @@ class BaseEventTypeController extends BaseModuleController
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
-                        $this->redirect(array('/patient/episode/'.$this->event->episode_id));
+                        $this->redirect(array('/patient/episode/' . $this->event->episode_id));
                     }
 
                     return true;
@@ -1986,18 +1997,18 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        $this->title = 'Delete '.$this->event_type->name;
+        $this->title = 'Delete ' . $this->event_type->name;
 
         $this->event_tabs = array(
-                array(
-                        'label' => 'View',
-                        'active' => true,
-                ),
+            array(
+                'label' => 'View',
+                'active' => true,
+            ),
         );
         if ($this->editable) {
             $this->event_tabs[] = array(
-                    'label' => 'Edit',
-                    'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+                'label' => 'Edit',
+                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
             );
         }
 
@@ -2059,14 +2070,15 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($this->patient) {
             $this->jsVars['OE_patient_id'] = $this->patient->id;
+            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;
 
             if (Yii::app()->params['event_print_method'] == 'pdf') {
-                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name.'/default/PDFprint/'.$this->event->id);
+                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name . '/default/PDFprint/' . $this->event->id);
             } else {
-                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name.'/default/print/'.$this->event->id);
+                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name . '/default/print/' . $this->event->id);
             }
         }
         $this->jsVars['OE_asset_path'] = $this->assetPath;
@@ -2103,7 +2115,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         if (isset($_POST['et_canceldelete'])) {
-            return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
+            return $this->redirect(array('/' . $this->event->eventType->class_name . '/default/view/' . $id));
         }
 
         $this->patient = $this->event->episode->patient;
@@ -2122,16 +2134,16 @@ class BaseEventTypeController extends BaseModuleController
 
                 Yii::app()->user->setFlash('success', 'Your request to delete this event has been submitted.');
 
-                header('Location: '.Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/view/'.$this->event->id));
+                header('Location: ' . Yii::app()->createUrl('/' . $this->event_type->class_name . '/default/view/' . $this->event->id));
 
                 return true;
             }
         }
 
-        $this->title = 'Delete '.$this->event_type->name;
+        $this->title = 'Delete ' . $this->event_type->name;
         $this->event_tabs = array(array(
-                'label' => 'View',
-                'active' => true,
+            'label' => 'View',
+            'active' => true,
         ));
 
         $this->render('request_delete', array(
@@ -2191,8 +2203,8 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($event->imageDirectory."/$drawingName.png")) {
-                    if (!@file_put_contents($event->imageDirectory."/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
+                if (!file_exists($event->imageDirectory . "/$drawingName.png")) {
+                    if (!@file_put_contents($event->imageDirectory . "/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
                         throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
                     }
                 }
@@ -2227,17 +2239,17 @@ class BaseEventTypeController extends BaseModuleController
     public function actionEventImage()
     {
         if (!$event = Event::model()->findByPk(@$_GET['event_id'])) {
-            throw new Exception('Event not found: '.@$_GET['event_id']);
+            throw new Exception('Event not found: ' . @$_GET['event_id']);
         }
 
         if (!$event->hasEventImage(@$_GET['image_name'])) {
-            throw new Exception("Event $event->id image missing: ".@$_GET['image_name']);
+            throw new Exception("Event $event->id image missing: " . @$_GET['image_name']);
         }
 
         $path = $event->getImagePath(@$_GET['image_name']);
 
         header('Content-Type: image/png');
-        header('Content-Length: '.filesize($path));
+        header('Content-Length: ' . filesize($path));
         readfile($path);
     }
 

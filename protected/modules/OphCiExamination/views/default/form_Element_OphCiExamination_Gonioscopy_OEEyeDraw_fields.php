@@ -76,29 +76,6 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 		</div>
 	</div>
 
-	<div class="van_herick field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_van_herick_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_van_herick_id'); ?>
-			(
-			<?php echo CHtml::link('images', '#', array('class' => 'foster_images_link')); ?>
-			):
-		</label>
-		<?php echo CHtml::activeDropDownList($element, $side.'_van_herick_id', array(0 => 'NR') + CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Van_Herick::model()->findAll(), 'id', 'name'), array('class' => 'inline clearWithEyedraw')); ?>
-		<div data-side="<?php echo $side?>" class="foster_images_dialog"
-			title="Foster Images">
-			<img usemap="#<?php echo $side ?>_foster_images_map"
-				src="<?php echo $this->assetPath ?>/img/gonioscopy.png">
-			<map name="<?php echo $side ?>_foster_images_map">
-				<area data-vh="5" shape="rect" coords="0,0,225,225" />
-				<area data-vh="15" shape="rect" coords="0,225,225,450" />
-				<area data-vh="25" shape="rect" coords="0,450,225,675" />
-				<area data-vh="30" shape="rect" coords="225,0,450,225" />
-				<area data-vh="75" shape="rect" coords="225,225,450,450" />
-				<area data-vh="100" shape="rect" coords="225,450,450,675" />
-			</map>
-		</div>
-	</div>
-
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="row">
         <div class="large-6 column end">

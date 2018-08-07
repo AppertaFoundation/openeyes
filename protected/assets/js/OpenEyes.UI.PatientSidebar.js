@@ -1,3 +1,4 @@
+
 /**
  * OpenEyes
  *
@@ -90,13 +91,13 @@
         self.$elementContainer = $(document).find(self.options.element_container_selector);
 
         // couple of hooks to keep the menu in sync with the elements on the page.
-        self.$elementContainer.on('click', '.js-remove-element', function(e) {
-            self.removeElememt(e.target);
-        });
+       // self.$elementContainer.on('click', '.js-remove-element', function(e) {
+           // self.removeElement(e.target);
+       // });
 
-        self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
-            self.removeElememt(e.target);
-        });
+     //  self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
+        //    self.removeElement(e.target);
+      //  });
 
         // expand or collapse the menu for the given menu item
         self.$element.on('click', 'a .icon', function(e) {
@@ -114,6 +115,7 @@
                 $(this).removeClass('collapse').addClass('expand');
             }
         });
+
 
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
@@ -143,13 +145,41 @@
      * @param data
      * @param callback
      */
+
+    /**
+     * Get sidebar items where elements are already created , but where the sidebar might not be selected
+     * @param $item
+     * @returns {Array}
+     */
+    PatientSidebar.prototype.getSidebarItemsForExistingElements = function($item) {
+        let existingItems = [];
+        let sidebarChildren = $item.parent().find('ul');
+        $.each(sidebarChildren.children(), function (index, item) {
+            if ($('section[data-element-type-name="' + $(item).find('a').text() + '"]').length) {
+                existingItems.push(item);
+            }
+        });
+        return existingItems;
+    };
+
+    PatientSidebar.prototype.markSidebarItems = function(items){
+       items.forEach(function(item){
+           $(item).find('a').addClass('selected');
+       });
+    };
+
     PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
     {
         var self = this;
+
         if (!$item.hasClass('selected')) {
+            self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+
             if ($item.parent().hasClass('child')) {
                 // child element, need to ensure parent loaded first.
                 var $parent = $item.parents('li:last').find('a:first');
+
+
                 if (!$parent.hasClass('selected')) {
                     $parent.addClass('selected');
                     // construct a callback to run this method with the original target,
@@ -193,7 +223,7 @@
     /**
      * Called when an element is removed from the form to update the menu appropriately.
      */
-    PatientSidebar.prototype.removeElememt = function(element) {
+    PatientSidebar.prototype.removeElement = function(element) {
         var self = this;
         var elementTypeClass = $(element).parents('section:first').data('element-type-class');
 

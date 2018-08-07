@@ -26,7 +26,7 @@
  * @property int $eye_id
  * @property int $consultant_required
  * @property int $any_grade_of_doctor
- * @property int $overnight_stay
+ * @property int $senior_fellow_to_do
  * @property int $site_id
  * @property int $priority_id
  * @property string $decision_date
@@ -34,6 +34,10 @@
  * @property string $comments_rtt
  * @property int $referral_id
  * @property int $rtt_id
+ * @property int $preassessment_booking_required
+ * @property int $overnight_stay_required_id
+ * @property int $complexity
+ * @property tinyint $is_golden_patient
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -48,6 +52,7 @@
  * @property Element_OphTrOperationbooking_Operation_Priority $priority
  * @property Referral $refferal
  * @property RTT $fixed_rtt - Because the active referral can change over time, we lock the operation booking to a specific RTT at the time of booking.
+ * @property OphTrOperationbooking_Overnight_Stay_Required $overnight_stay_required
  */
 class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 {
@@ -67,6 +72,19 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
     const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
     const STATUS_NOTWAITING = null;
+
+    // Other complexity levels may be added later
+    const COMPLEXITY_LOW = 0;
+    const COMPLEXITY_MEDIUM = 5;
+    const COMPLEXITY_HIGH = 10;
+
+    public static $complexity_captions = array(
+        self::COMPLEXITY_LOW => 'Low',
+        self::COMPLEXITY_MEDIUM => 'Medium',
+        self::COMPLEXITY_HIGH => 'High'
+    );
+
+    const OVERNIGHT_STAY_NOT_REQUIRED_ID = 1;
 
     public $service;
 
@@ -106,26 +124,27 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('eye_id, consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, overnight_stay, site_id, priority_id, decision_date, fast_track, fast_track_discussed_with_patient, comments,comments_rtt, anaesthetist_required, anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id', 'safe'),
+            array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
+            array('site_id, anaesthetist_required, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
+            array('status_id, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
+            array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),
             array('total_duration', 'validateDuration'),
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required', 'required'),
-            array('any_grade_of_doctor, senior_fellow_to_do', 'required', 'on' => 'insert'),
-            array('anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication', 'required', 'on' => 'insert'),
+            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
-            array('overnight_stay, site_id, priority_id, decision_date', 'required'),
-            array('fast_track', 'required', 'on' => 'insert'),
-            array('fast_track_discussed_with_patient', 'RequiredIfFieldValidator', 'field' => 'fast_track', 'value' => true),
+            array('site_id, priority_id, decision_date', 'required'),
             array('special_equipment', 'required', 'on' => 'insert'),
             array('special_equipment_details', 'RequiredIfFieldValidator', 'field' => 'special_equipment', 'value' => true),
             array('organising_admission_user_id', 'required', 'on' => 'insert'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, consultant_required, overnight_stay, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
+            array('id, event_id, eye_id, consultant_required, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
         );
     }
 
@@ -165,6 +184,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'fixed_rtt' => array(self::BELONGS_TO, 'RTT', 'rtt_id'),
             'organising_admission_user' => array(self::BELONGS_TO, 'User', 'organising_admission_user_id'),
             'consultant' => array(self::BELONGS_TO, 'User', 'named_consultant_id'),
+            'overnight_stay_required' => array(self::BELONGS_TO, 'OphTrOperationbooking_Overnight_Stay_Required', 'overnight_stay_required_id'),
         );
     }
 
@@ -178,19 +198,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'event_id' => 'Event',
             'eye_id' => 'Eyes',
             'procedures' => 'Operations',
-            'consultant_required' => 'Consultant required',
+            'consultant_required' => 'Named consultant list',
             'any_grade_of_doctor' => 'Any other doctor to do',
             'anaesthetic_type_id' => 'Anaesthetic type',
-            'anaesthetist_preop_assessment' => 'Does the patient require pre-op assessment by an anaesthetist',
             'anaesthetic_choice_id' => 'Anaesthetic choice is',
             'stop_medication' => 'Patient needs to stop medication',
             'stop_medication_details' => 'Please provide details',
-            'overnight_stay' => 'Post operative stay',
             'site_id' => 'Site',
             'priority_id' => 'Priority',
             'decision_date' => 'Decision date',
-            'fast_track' => 'Suitable for high volume (fast track)',
-            'fast_track_discussed_with_patient' => 'Admission discussed with patient',
             'special_equipment' => 'Special equipment required',
             'special_equipment_details' => 'Please specify',
             'comments' => 'Add comments (Scheduling guidance for admissions team)',
@@ -199,8 +215,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'rtt_id' => 'RTT',
             'organising_admission_user_id' => 'Doctor organising admission',
             'senior_fellow_to_do' => 'Senior fellow to do',
-            'named_consultant_id' => 'Named Consultant',
-            'anaesthetic_type' => 'Anaesthetic Type'
+            'named_consultant_id' => 'Consultant',
+            'anaesthetic_type' => 'Anaesthetic Type',
+            'preassessment_booking_required' => 'Pre-assessment booking required',
+            'overnight_stay_required_id' => 'Overnight stay required',
+            'complexity' => 'Complexity',
+            'is_golden_patient' => 'Suitable as golden patient',
         );
     }
 
@@ -223,7 +243,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $criteria->compare('procedures', $this->procedures);
         $criteria->compare('consultant_required', $this->consultant_required);
         $criteria->compare('any_grade_of_doctor', $this->any_grade_of_doctor);
-        $criteria->compare('overnight_stay', $this->overnight_stay);
         $criteria->compare('site_id', $this->site_id);
         $criteria->compare('priority_id', $this->priority_id);
         $criteria->compare('decision_date', $this->decision_date);
@@ -249,7 +268,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         $this->site_id = Yii::app()->session['selected_site_id'];
 
-        $this->senior_fellow_to_do = false;
+        $this->senior_fellow_to_do = null;
+        $this->any_grade_of_doctor = null;
+
         // TODO: determine if this is necessary anymore with Patient being passed in
         if ($patient = Patient::model()->findByPk($patient_id)) {
             $key = $patient->isChild() ? 'ophtroperationbooking_default_anaesthetic_child' : 'ophtroperationbooking_default_anaesthetic';
@@ -261,8 +282,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        $this->fast_track = false;
         $this->special_equipment = false;
+        $this->preassessment_booking_required = 0;
+        $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
 
@@ -289,6 +311,18 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         parent::afterFind();
         $this->_has_bookings = ($this->allBookings) ? true : false;
         $this->_original_referral_id = $this->referral_id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function beforeValidate()
+    {
+        if(!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
+            $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
+        }
+        return parent::beforeValidate();
     }
 
     /**
@@ -1645,5 +1679,16 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         } elseif ($rtt_weeks = Yii::app()->params['ophtroperationboooking_rtt_limit']) {
             return date('Y-m-d', strtotime('+'.$rtt_weeks.' weeks', strtotime($this->decision_date)));
         }
+    }
+
+    /**
+     * Returns complexity name as string
+     *
+     * @return string
+     */
+
+    public function getComplexityCaption()
+    {
+        return array_key_exists($this->complexity, self::$complexity_captions) ? self::$complexity_captions[$this->complexity] : 'N/A';
     }
 }

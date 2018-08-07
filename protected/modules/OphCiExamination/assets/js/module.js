@@ -826,7 +826,9 @@ $(document).ready(function() {
         if(near === 'near'){
             suffix = 'NearVisualAcuity';
         }
-        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
+
+        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true, true);
+
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
         if (el.length) {
             el.addClass('clicked');
@@ -880,20 +882,6 @@ $(document).ready(function() {
         // VA can affect DR
         OphCiExamination_DRGrading_update(side);
         e.preventDefault();
-    });
-
-    $(this).delegate('a.foster_images_link', 'click', function(e) {
-        var side = $(this).closest('[data-side]').attr('data-side');
-        $('.foster_images_dialog[data-side="'+side+'"]').dialog('open');
-        e.preventDefault();
-    });
-    $('body').delegate('.foster_images_dialog area', 'click', function() {
-        var value = $(this).attr('data-vh');
-        var side = $(this).closest('[data-side]').attr('data-side');
-        $('.foster_images_dialog[data-side="'+side+'"]').dialog('close');
-        $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_'+side+'_van_herick_id option').attr('selected', function () {
-            return ($(this).text() == value + '%');
-        });
     });
 
     /**
@@ -1083,46 +1071,6 @@ $(document).ready(function() {
     });
 
     updateTextMacros();
-
-    // Refresh common ophthalmic diagnosis widget when findings element is changed
-    $('.js-active-elements').on('MultiSelectChanged', '#OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings_further_findings_assignment', function() {
-        OphCiExamination_RefreshCommonOphDiagnoses();
-    });
-
-    // Refresh common ophthalmic diagnosis widget when findings element is removed
-    $(document).on('ElementRemoved', '.js-active-elements', function(event, element_class) {
-        if(element_class == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
-            OphCiExamination_RefreshCommonOphDiagnoses();
-        }
-    });
-
-    // Handle removal of diagnoses from diagnosis element and trigger refresh of widget
-    $('.js-active-elements').on('click', 'a.removeDiagnosis', function() {
-        var disorder_id = $(this).attr('rel');
-        var new_principal = false;
-
-        if ($('input[name="principal_diagnosis"]:checked').val() == disorder_id) {
-            new_principal = true;
-        }
-
-        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
-            if ($(this).val() == disorder_id) {
-                $(this).remove();
-            }
-        });
-
-        $(this).parent().parent().remove();
-
-        if (new_principal) {
-            $('input[name="principal_diagnosis"]:first').attr('checked','checked');
-        }
-
-        OphCiExamination_RefreshCommonOphDiagnoses();
-
-        return false;
-    });
-
-    OphCiExamination_GetCurrentConditions();
 
     $('.signField').die('change').live('change',function(e) {
         var sign_id = $(this).val() >0 ? 1 : 2;
@@ -2085,16 +2033,6 @@ function OphCiExamination_InjectionManagementComplex_init() {
 
 // END InjectionManagementComplex
 
-function OphCiExamination_GetCurrentConditions() {
-    var disorders = $("input[name='selected_diagnoses[]']").map(function() {
-        return {'type': 'disorder', 'id': $(this).val()};
-    });
-    var findings = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings .multi-select-free-text-selections li input").map(function() {
-        return {'type': 'finding', 'id': $(this).val()};
-    });
-    return {disorders: disorders, findings: findings};
-}
-
 /**
  * Add disorder or finding to exam
  * @param string type
@@ -2102,15 +2040,6 @@ function OphCiExamination_GetCurrentConditions() {
  * @param string label
  * @constructor
  */
-function OphCiExamination_AddDisorderOrFinding(type, conditionId, label, isDiabetic, isGlaucoma) {
-    if(type == 'disorder') {
-        OphCiExamination_AddDiagnosis(conditionId, label, null, isDiabetic, isGlaucoma);
-    } else if(type == 'finding') {
-        OphCiExamination_AddFinding(conditionId, label);
-    } else {
-        console.log("Error: Unknown type: "+type);
-    }
-}
 
 function OphCiExamination_AddFinding(finding_id, label) {
     var updateFindings = function() {
@@ -2137,6 +2066,9 @@ function OphCiExamination_AddFinding(finding_id, label) {
 }
 
 function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma, external) {
+
+    console.error("OphCiExamination/assets/js/module.js :: OphCiExamination_AddDiagnosis() function is DEPRICATED;");
+
     var max_id = -1;
     var count = 0;
     $('#OphCiExamination_diagnoses').children('tr').not('.read-only').map(function() {
@@ -2202,12 +2134,6 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
 }
 
 function OphCiExamination_Gonioscopy_init() {
-    $(".foster_images_dialog").dialog({
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        width: 480
-    });
 
     ED.Checker.onAllReady(function() {
     $('.gonioscopy-mode').each(function(_, element) {
@@ -2265,10 +2191,6 @@ function OphCiExamination_ClinicOutcome_LoadTemplate(template_id) {
             .val(Element_OphCiExamination_ClinicOutcome_templates[template_id]['followup_period_id']);
 
     }
-}
-
-function OphCiExamination_RefreshCommonOphDiagnoses() {
-    DiagnosisSelection_updateSelections();
 }
 
 function OphCiExamination_AddAllergy(){
@@ -2346,7 +2268,7 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
     else {
         // Get eyedraw report
 
-        var element
+        var element;
         element = $(this).closest('.sub-element');
         if(element.length === 0) {
             element = $(this).closest('.element');
@@ -2370,3 +2292,14 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
         $report_html.text(text);
     }
 });
+
+/*
+ * @params weight kg
+ * @params height meters
+ */
+function bmi_calculator( weight, height){
+    height_meter = height / 100;
+    result = weight / (height_meter * height_meter);
+    return result;
+    
+}

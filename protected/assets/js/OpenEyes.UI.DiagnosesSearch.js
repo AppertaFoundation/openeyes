@@ -29,10 +29,13 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.fieldPrefix = this.options.fieldPrefix;
         this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
+        this.row_key = this.options.row_key;
         this.renderCommonlyUsedDiagnoses = this.options.renderCommonlyUsedDiagnoses;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
         this.renderTemplate = this.options.renderTemplate;
+        this.renderSecondaryTo = this.options.renderSecondaryTo;
+        this.subspecialtyRefSpec = this.options.subspecialtyRefSpec;
 
         this.init();
         this.initialiseAutocomplete();
@@ -49,11 +52,18 @@ OpenEyes.UI = OpenEyes.UI || {};
             "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis'></select>" +
+            "{{#render_secondary_to}}" +
+                "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+                    "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+                    "<select class='condition-secondary-to'></select>" +
+                "</div>" +
+            "{{/render_secondary_to}}" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
-            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>"
+            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
+        subspecialtyRefSpec: null,
+        renderSecondaryTo: true
     };
-
 
     DiagnosesSearchController.prototype.init = function(){
         var controller = this;
@@ -68,7 +78,9 @@ OpenEyes.UI = OpenEyes.UI || {};
                 {
                     'input_field': controller.$inputField.prop("outerHTML"),
                     'row_count': OpenEyes.Util.getNextDataKey( $('#' + controller.fieldPrefix + '_diagnoses_table').find('tbody tr'), 'key'),
-                    'field_prefix' : controller.fieldPrefix
+                    'field_prefix' : controller.fieldPrefix,
+                    'render_secondary_to': controller.renderSecondaryTo,
+
                 }
             );
 
@@ -81,6 +93,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     var $select = $parent.find('.commonly-used-diagnosis');
 
                     $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
+                    $select.append( $('<option>',{'text': '----------', 'disabled':'disabled'}));
                     $.each(data, function(i, item){
                         $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
                     });
@@ -92,10 +105,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
-        if(savedDiagnoses){
+        if(typeof savedDiagnoses === "string"){
+            savedDiagnoses = JSON.parse(savedDiagnoses);
+        }
+
+        if(savedDiagnoses && savedDiagnoses.disorder_id){
             controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
         }
-    }
+    };
 
     /**
      * Diagnosis selected for the row
@@ -123,6 +140,43 @@ OpenEyes.UI = OpenEyes.UI || {};
         controller.$row.find('.commonly-used-diagnosis').hide();
         controller.$row.find('.diagnoses-search-inputfield').hide();
         controller.$row.find('.medication-display').show();
+
+        //Glaucoma special
+        if(controller.subspecialtyRefSpec === 'GL' && controller.renderSecondaryTo === true){
+
+            var $select = controller.$row.find('.commonly-used-diagnosis');
+            var item = $select.find('option:selected').data('item');
+            var $associated_select = controller.$row.find('.condition-secondary-to');
+
+            if(item && item.hasOwnProperty('secondary') && item['secondary'].length > 0){
+
+                $associated_select.append( $('<option>',{'text': '- Please Select -'}));
+
+                if(item['alternate']){
+                    $associated_select.append( $('<option>',
+                        {
+                            'value': item['alternate'].id,
+                            'text': item['alternate'].selection_label,
+                            'data-type': 'alternate',
+                            'data-item': JSON.stringify(item['alternate'])
+                        }));
+                }
+
+                $.each(item['secondary'], function(i, item){
+                    $associated_select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-type': item.type }));
+                });
+
+                controller.$row.find('.condition-secondary-to-wrapper').show();
+            } else {
+                controller.$row.find('.condition-secondary-to-wrapper').hide();
+            }
+
+
+        }
+
+        if(typeof controller.options.afterSelect === 'function'){
+            controller.options.afterSelect.call(controller);
+        }
     };
 
     /**
@@ -199,6 +253,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             }
             controller.$row.find('.diagnoses-search-inputfield').show();
             $(this).closest('.medication-display').hide();
+            controller.$row.find('.condition-secondary-to-wrapper').hide();
 
             controller.$row.find('.savedDiagnosisId').val('');
             controller.$row.find('.savedDiagnosis').val('');
@@ -210,7 +265,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
             $(this).val('');
         });
-    }
+    };
 
     exports.DiagnosesSearchController = DiagnosesSearchController;
 

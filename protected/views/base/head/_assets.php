@@ -35,3 +35,4 @@
 <?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
+<?php $assetManager->registerScriptFile('js/oelauncher.js');?>
