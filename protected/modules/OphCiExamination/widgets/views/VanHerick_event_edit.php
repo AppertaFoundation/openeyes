@@ -33,23 +33,23 @@
             <table class="cols-10">
                 <colgroup>
                     <col class="cols-3">
-                    <col class="cols-2">
                 </colgroup>
 
                 <thead>
                 <tr>
                     <th><?=$element->getAttributeLabel("{$eye_side}_van_herick_id"); ?></th>
                     <th></th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td><?php echo CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
-                    <td><?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster-images-link')); ?></td>
                 </tr>
                 </tbody>
             </table>
+          <div class="add-data-actions flex-item-bottom ">
+            <button class="button hint green js-foster-images-link" type="button"><i class="oe-i plus pro-theme"></i></button>
+          </div>
         </div>
         <div class="inactive-form" style="display: none;">
             <div class="add-side">
