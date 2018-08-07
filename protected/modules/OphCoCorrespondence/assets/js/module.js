@@ -52,7 +52,6 @@ function updateCorrespondence(macro_id)
                 $('#ElementLetter_cc').val('');
                 $('#cc_targets').html('');
                 correspondence_load_data(data);
-                et_oph_correspondence_body_cursor_position = $('#ElementLetter_body').val().length;
                 obj.val('');
                 
                 //set letter type
@@ -542,14 +541,8 @@ $(document).ready(function() {
 				'type': 'GET',
 				'url': baseUrl+'/OphCoCorrespondence/Default/getString?patient_id='+OE_patient_id+'&string_type='+m[1]+'&string_id='+m[2],
 				'success': function(text) {
-					if (ophcocorrespondence_previous_dropdown(obj.attr('id'))) {
-						text = "\n\n"+ucfirst(text);
-					}
-
-					correspondence_append_body(text);
+          element_letter_controller.addAtCursor(text);
 					obj.val('');
-
-					et_oph_correspondence_last_stringgroup = obj.attr('id');
 				}
 			});
 		}
@@ -634,14 +627,6 @@ $(document).ready(function() {
 	});
 
 	$('#ElementLetter_body').unbind('keyup').bind('keyup',function() {
-		et_oph_correspondence_body_cursor_position = $(this).prop('selectionEnd');
-		et_oph_correspondence_last_stringgroup_do = false;
-
-		// turn on the last_stringgroup feature if the user has removed all of the text in the body field
-		if ($(this).val().length == 0) {
-			et_oph_correspondence_last_stringgroup_do = true;
-		}
-
 		if (m = $(this).val().match(/\[([a-z]{3})\]/i)) {
 
 			var text = $(this).val();
@@ -652,15 +637,11 @@ $(document).ready(function() {
 				'data': 'patient_id='+OE_patient_id+'&text='+text+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(resp) {
 					if (resp) {
-						$('#ElementLetter_body').val(resp);
+						element_letter_controller.setContent(resp);
 					}
 				}
 			});
 		}
-	});
-
-	$('#ElementLetter_body').unbind('click').click(function() {
-		et_oph_correspondence_body_cursor_position = $(this).prop('selectionEnd');
 	});
 
 	if ($('#OphCoCorrespondence_printLetter').val() == 1) {
@@ -773,8 +754,6 @@ $(document).ready(function() {
 	});
 
 	var selected_recipient = $('#address_target').val();
-
-	$('#ElementLetter_body').tabby();
         
 	if( $('#dm_table').length > 0 ){
         // we have docman table here
@@ -892,7 +871,6 @@ function savePDFprint( module , event_id , $content, $data_id, title)
     });
 }
 
-
 var checkAttachmentFileExist = function( index ) {
 
     var table = $('#correspondence_attachments_table');
@@ -922,18 +900,19 @@ var checkAttachmentFileExist = function( index ) {
 			checkAttachmentFileExist(++index);
 		}
 	});
-}
+};
 
 
-var et_oph_correspondence_body_cursor_position = 0;
 var re_field = null;
-var et_oph_correspondence_last_stringgroup_do = true;
-var et_oph_correspondence_last_stringgroup = null;
 
 function correspondence_load_data(data) {
 	for (var i in data) {
 		if (m = i.match(/^text_(.*)$/)) {
-			$('#'+m[1]).val(data[i]);
+			if (m[1] == 'ElementLetter_body'){
+        element_letter_controller.setContent(data[i]);
+			} else {
+        $('#'+m[1]).val(data[i]);
+      }
 		} else if (m = i.match(/^sel_(.*)$/)) {
 			if (m[1] == 'address_target') {
 				if (data[i].match(/^Patient/)) {
@@ -964,34 +943,7 @@ function correspondence_load_data(data) {
 }
 
 function correspondence_append_body(text) {
-	var cpos = et_oph_correspondence_body_cursor_position;
-	var insert_prefix = '';
-
-	var current = $('#ElementLetter_body').val();
-
-	text = ucfirst(text);
-
-	if (!text.match(/\.$/) && !text.match(/\n$/)) {
-		text += '. ';
-	}
-
-	if (current == '') {
-		$('#ElementLetter_body').val(text);
-	} else {
-		// attempt to intelligently drop the text in based on what it follows
-		var preceeding_blob = current.substring(0,cpos);
-
-		if (preceeding_blob.match(/\.$/)) {
-			insert_prefix = ' ';
-		} else if (preceeding_blob.match(/[a-zA-Z]+$/)) {
-			insert_prefix = '. ';
-		}
-
-		$('#ElementLetter_body').val(current.substring(0,cpos) + insert_prefix + text + current.substring(cpos,current.length));
-	}
-
-	et_oph_correspondence_body_cursor_position += insert_prefix.length;
-	et_oph_correspondence_body_cursor_position += text.length;
+  element_letter_controller.appendContent(text);
 }
 
 function ucfirst(str) {
@@ -1006,27 +958,6 @@ function uclower(str) {
 	return f + str.substr(1);
 }
 
-function ophcocorrespondence_previous_dropdown(dropdown) {
-	if (!et_oph_correspondence_last_stringgroup_do) {
-		return false;
-	}
-
-	switch (dropdown) {
-		case 'findings':
-			return (et_oph_correspondence_last_stringgroup == "introduction");
-		case 'diagnosis':
-			return inArray(et_oph_correspondence_last_stringgroup, ["introduction","findings"]);
-		case 'management':
-			return inArray(et_oph_correspondence_last_stringgroup, ["introduction","findings","diagnosis"]);
-		case 'drugs':
-			return inArray(et_oph_correspondence_last_stringgroup, ["introduction","findings","diagnosis","management"]);
-		case 'outcome':
-			return inArray(et_oph_correspondence_last_stringgroup, ["introduction","findings","diagnosis","management","drugs"]);
-	}
-
-	return false;
-}
-
 function inArray(needle, haystack) {
 	var length = haystack.length;
 	for (var i = 0; i < length; i++) {
@@ -1036,26 +967,26 @@ function inArray(needle, haystack) {
 }
 
 function OphCoCorrespondence_do_print(all) {
-        
-        var data = {};
-        if(all){
-            data['all'] = 1;
-        }
 
-        if( $('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1 ){
-            data['OphCoCorrespondence_print_checked'] = 1;
-            
-            // remove OphCoCorrespondence_print_checked, so Print and Print all will do what it says
-            $('#OphCoCorrespondence_print_checked').remove();
-            
-        }
-        
-	$.ajax({
-		'type': 'GET',
-		'url': correspondence_markprinted_url,
-		'success': function(html) {
-			printEvent(data);
-			enableButtons();
-		}
-	});
+  var data = {};
+  if (all) {
+    data['all'] = 1;
+  }
+
+  if ($('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1) {
+    data['OphCoCorrespondence_print_checked'] = 1;
+
+    // remove OphCoCorrespondence_print_checked, so Print and Print all will do what it says
+    $('#OphCoCorrespondence_print_checked').remove();
+
+  }
+
+  $.ajax({
+    'type': 'GET',
+    'url': correspondence_markprinted_url,
+    'success': function (html) {
+      printEvent(data);
+      enableButtons();
+    }
+  });
 }

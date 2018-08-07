@@ -998,28 +998,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * get the va from the given episode for the left side of the episode patient.
-     * @param Pateint $patient
+     * @param Patient $patient
      * @param bool $include_nr_values
      * @param string $before_date
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeLeft($patient, $include_nr_values = false, $before_date = NULL, $use_context = false)
+    public function getLetterVisualAcuityForEpisodeLeft(
+        $patient,
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    )
     {
-
-        if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context,
-            $before_date)
-        ){
-            if ($va->hasLeft()) {
-                if ($best = $va->getBestReading('left')) {
-                    return $best->convertTo($best->value, $this->getSnellenUnitId());
-                } elseif ($include_nr_values) {
-                    return $va->getTextForSide('left');
-                }
-            }
-        }
+        $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -1030,22 +1022,49 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeRight($patient, $include_nr_values = false, $before_date = NULL, $use_context = false)
+    public function getLetterVisualAcuityForEpisodeRight(
+        $patient,
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    )
     {
+        $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
+    }
+
+    /**
+     * get the va from the given episode for the right side of the episode patient.
+     * @param Patient $patient
+     * @param string $side
+     * @param bool    $include_nr_values
+     * @param string $before_date
+     * @param bool $use_context
+     * @return models\OphCiExamination_VisualAcuity_Reading
+     * @var models\Element_OphCiExamination_VisualAcuity $va
+     */
+    public function getLetterVisualAcuityForEpisodeSide(
+        $patient,
+        $side = 'left',
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    ){
         if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
             $before_date)
         ){
-            if ($va->hasRight()) {
-                if ($best = $va->getBestReading('right')) {
+            if ($va->hasEye($side)) {
+                if ($best = $va->getBestReading($side)) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
-                } elseif ($include_nr_values) {
-                    return $va->getTextForSide('right');
+                }
+                if ($include_nr_values) {
+                    return $va->getTextForSide($side);
                 }
             }
         }
     }
+
 
     /**
      * Get the VA string for both sides.
