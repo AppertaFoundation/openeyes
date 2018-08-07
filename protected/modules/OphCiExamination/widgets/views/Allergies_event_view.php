@@ -54,13 +54,7 @@
                                 </td>
                             </tr>
                         <?php endfor; ?>
-
-                        <?php for ($i = 0; $i < $max_iter; $i++) : ?>
-                            <tr>
-                                <td><?= isset($entries["1"][$i]) ? $entries["1"][$i]->getDisplayAllergy() : '' ?></td>
-                                <td><?= isset($entries["0"][$i]) ? $entries["0"][$i]->getDisplayAllergy() : '' ?></td>
-                            </tr>
-                        <?php endfor; ?>
+                        
                         </tbody>
                     </table>
                 </div>
