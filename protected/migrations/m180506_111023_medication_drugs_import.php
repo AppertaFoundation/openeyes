@@ -199,8 +199,9 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 /* Add medication to their respective sets */
                 $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->execute();
-                foreach ($drug_sets as $drug_set) {
-                    Yii::app()->db->createCommand("
+                if($drug_sets) {
+                    foreach ($drug_sets as $drug_set) {
+                        Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
                         values (".$ref_medication_id." ,
                          
@@ -213,9 +214,10 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                          ".$drug_freq_id." ,
                          '".$default_dose_unit."' )
                 ")
-                        ->bindValue(':ref_set_name', $drug_set['name'])
-                        ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
-                        ->execute();
+                            ->bindValue(':ref_set_name', $drug_set['name'])
+                            ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
+                            ->execute();
+                    }
                 }
             }
             
