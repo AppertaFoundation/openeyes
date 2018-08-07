@@ -198,7 +198,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ")->execute();
 
                 /* Add medication to their respective sets */
-                $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->execute();
+                $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
                 if($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         Yii::app()->db->createCommand("
