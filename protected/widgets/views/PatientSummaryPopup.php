@@ -116,14 +116,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <span class="data">L <?php echo $correspondence_api->getLastRefraction($patient, 'left')?></span>
             <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient))?></span>
             <?php } else { ?>
-                    <span class="data-value not-available">Not Available</span>
+                    <span class="data-value not-available">Refractive data not entered</span>
             <?php }?>
         </div>
 
         <div class="group">
             <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDisplayDate($patient) ?>
-            </span>
+            <?php if (explode('(',$this->cviStatus)[0] == 'Unknown') { ?>
+                <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDisplayDate($patient) ?></span>
+            <?php }?>
         </div>
     </div>
     <div class="flex-layout flex-top">
@@ -266,113 +267,9 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <input id="create-problem-plan" type="text" placeholder="Add Problem or Plan">
             <div class="add-problem-plan-btn tiny" id="js-add-pp-btn"><i class="oe-i plus pro-theme"></i></div>
           </div>
-            
-        </div>
-      </div>
-      <!-- .oe-popup-overflow -->
-    </div>
-    <!-- .col-right -->
-  </div>
-  <!-- .row -->
-<!--  Old Code -->
-    <!-- Patient icon -->
-    <button
-        class="hide toggle-patient-summary-popup icon-patient-patient-id_small<?= count($this->warnings) ? '-warning' : ''; ?>">
-        Toggle patient summary
-    </button>
+        </div> <!-- .problems-plans -->
 
-    <!-- Quicklook icon -->
-    <button
-        class="toggle-patient-summary-popup icon-alert-quicklook"
-        data-hide-icon="icon-alert-cross"
-        data-show-icon="icon-alert-quicklook">
-        Toggle patient summary
-    </button>
-
-    <div class="panel patient-popup" id="patient-summary-popup">
-        <!-- Help hint -->
-        <span
-            class="help-hint"
-            data-text='{
-                "close": {
-                    "full": "Click to close",
-                    "short": "Close"
-                },
-                "lock": {
-                    "full": "Click to lock",
-                    "short": "Lock"
-                }
-            }'>
-            Click to lock
-        </span>
-
-        <div class="zone2">
-            <div class="row">
-                <div class="large-2 column label">Born</div>
-                <div class="large-10 column">
-                    <b><?= ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
-                    <?= $this->patient->dob ? '(' . $this->patient->getAge() . 'y' .
-                            ($this->patient->isDeceased() ? ' - Deceased' : '') . ')'
-                        : '' ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-2 column label">Address</div>
-                <div class="large-10 column data"><?= $this->patient->getSummaryAddress(', ') ?></div>
-            </div>
-        </div>
-        
-        <!-- Warnings -->
-        <?php if ($this->warnings) { ?>
-            <div class="alert-box patient with-icon">
-                <span>
-                    <?php foreach ($this->warnings as $warn) { ?>
-                        <strong><?php echo $warn['long_msg']; ?></strong>
-                        - <?php echo $warn['details']; ?><br />
-                    <?php } ?>
-                </span>
-            </div>
-        <?php } ?>
-        <div class="oe-popup-overflow">
-            <div class="summary-data">
-              <?php if ($this->ophthalmicDiagnoses) { ?>
-                <div class="row">
-                  <div class="large-2 column label">
-                    Ophthalmic Diagnoses
-                  </div>
-                  <div class="large-10 column data">
-                      <?php echo $this->ophthalmicDiagnoses; ?>
-                  </div>
-                </div>
-                <?php } ?>
-                <?php if ($this->systemicDiagnoses) { ?>
-                  <div class="row">
-                    <div class="large-2 column label">
-                      Systemic Diagnoses
-                    </div>
-                    <div class="large-10 column data">
-                        <?php echo $this->systemicDiagnoses; ?>
-                    </div>
-                  </div>
-                <?php } ?>
-              <div class="row">
-                <div class="large-2 column label">
-                  CVI Status
-                </div>
-                <div class="large-10 column data">
-                    <?php echo $this->cviStatus; ?>
-                </div>
-              </div>
-                <?php if ($this->operations) { ?>
-                  <div class="row surgical-history">
-                    <div class="large-2 column label">
-                      Surgical History
-                    </div>
-                    <div class="large-10 column data">
-                        <?php echo $this->operations; ?>
-                    </div>
-                  </div>
-                <?php } ?>
+      </div><!-- .popup-overflow -->
 
     </div><!-- .cols-right -->
   </div><!-- flex -->
