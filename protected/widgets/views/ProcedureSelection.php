@@ -396,8 +396,7 @@
             callbackAddProcedure(procedure_id);
           }
         }
-      }
-    });
+      });
   }
 
   $(document).ready(function () {

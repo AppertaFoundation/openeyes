@@ -298,10 +298,6 @@ if ($side === 'left') {
         {'id':'N', 'label':'No'},
         {'id':'Y', 'label':'Yes'}
       ];
-    var drop_fundus = JSON.parse(JSON.stringify(drop_item1));
-    var drop_brunescent = JSON.parse(JSON.stringify(drop_item1));
-    var drop_pxf = JSON.parse(JSON.stringify(drop_item1));
-    var drop_arb = JSON.parse(JSON.stringify(drop_item1));
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
@@ -313,9 +309,9 @@ if ($side === 'left') {
           drop_diabetic, {'header':'Diabetic', 'id':'diabetic'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_fundus, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
+          drop_item1, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_brunescent, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
+          drop_item1, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
             <?= CJSON::encode(
@@ -326,7 +322,7 @@ if ($side === 'left') {
                 }, $grades) ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_pxf, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}
+          drop_item1, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
           drop_pupil_size, {'header':'Pupil Size', 'id':'pupil_size'}
@@ -335,7 +331,7 @@ if ($side === 'left') {
           drop_axial_length, {'header':'Axial Length (mm)', 'id':'axial_length'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
-          drop_arb, {'header':'Alpha receptor blocker', 'id':'arb'}
+          drop_item1, {'header':'Alpha receptor blocker', 'id':'arb'}
         ),
         new OpenEyes.UI.AdderDialog.ItemSet(
           drop_lie_flat, {'header':'Can lie flat', 'id':'abletolieflat'}
