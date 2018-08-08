@@ -6,9 +6,31 @@ class EventImageCommand extends CConsoleCommand
 
     private $curlConnection = null;
 
+    public function actionIndex()
+    {
+        $this->getHelp();
+    }
+
     public function getHelp()
     {
-        return 'Creates the preview image for the given event ID, or creates the preview image for the latest event without an image if no event ID is specified';
+        return <<<EOH
+
+        
+EventImage preview manager
+        
+This command creates preview images for events to be used in the lightning viewer and patient sidebar popups
+
+USAGE
+  php yiic.eventimage [action] [parameter]
+        
+Following actions are available:
+
+ - create                              : Create an event image for every event that isn't already imaged or has an outdated image (starting with the most recent event)
+ - create --event-id=[event_id]...     : Creates an event image for the given event(s)
+ - create --patient-id=[patient_id]... : Creates an event image for all the events for the given patients
+ - clean                               : Removes all EventImage records that are not in the CREATED state (i.e. those that failed to generate for some reason)
+ - help                                : Display this help and exit
+EOH;
     }
 
     public function actionClean()
