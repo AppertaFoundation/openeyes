@@ -2453,7 +2453,7 @@ class BaseEventTypeController extends BaseModuleController
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => 1250, 'quality' => 85));
+                array('width' => 1250));
 
             $image_path = $this->event->getImagePath('preview');
             $imagick = new \Imagick($image_path);
@@ -2480,7 +2480,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function getMaxPreviewImageWidth()
     {
-        return 520;
+        return 800;
     }
 
     /**
@@ -2493,7 +2493,7 @@ class BaseEventTypeController extends BaseModuleController
         $width = $this->getMaxPreviewImageWidth();
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
-            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 0.5);
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
         }
     }
 

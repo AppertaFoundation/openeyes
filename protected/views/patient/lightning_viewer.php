@@ -115,7 +115,7 @@ sort($documentTypes);
                   foreach ($eventImages as $eventImage) { ?>
                     <img class="js-lightning-image-preview-page"
                          src="<?= $eventImage->getImageUrl() ?>"
-                         style="width: 520px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
+                         style="<?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
                          alt="No preview available at this time"
                          <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
                     />
