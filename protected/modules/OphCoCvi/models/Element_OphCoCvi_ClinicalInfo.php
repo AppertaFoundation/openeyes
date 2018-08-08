@@ -716,9 +716,4 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return $this->consultant_signature_file_id ? true : false;
     }
-
-    public function isIndividual($action)
-    {
-        return $action!=='view';
-    }
 }

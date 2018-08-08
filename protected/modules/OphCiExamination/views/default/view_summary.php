@@ -25,7 +25,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
     <?php $this->renderElement($historyElement, $action, $form, $data) ?>
 <?php endif; ?>
 
-<div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
+<div class="element-tile-group" data-collapse="expanded">
     <?php $this->renderElement($diagnosesElement, $action, $form, $data) ?>
 
     <?php $this->renderElement($pastSurgeryElement, $action, $form, $data) ?>
@@ -113,7 +113,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
   </div>
 </div>
 
-<div class="element-tile-group" id="tile-group-exam-eyes" data-collapse="expanded">
+<div class="element-tile-group" data-collapse="expanded">
 
     <?php $this->renderElement($systemicDiagnosesElement, $action, $form, $data) ?>
 

@@ -436,7 +436,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
     public function getParentType($action){

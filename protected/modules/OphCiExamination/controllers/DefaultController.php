@@ -333,7 +333,7 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
-        if ($action !== 'view') {
+        if ($action !== 'view' && $action !== 'createImage') {
             parent::renderOpenElements($action, $form, $date);
 
             return;

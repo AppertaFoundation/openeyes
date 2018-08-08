@@ -202,12 +202,7 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' ? 2 : null;
-    }
-
-    public function isIndividual($action)
-    {
-        return $action !=='view';
+        return $action === 'view' || $action === 'createImage' ? 2 : null;
     }
 
     public function getDisplayOrder($action)

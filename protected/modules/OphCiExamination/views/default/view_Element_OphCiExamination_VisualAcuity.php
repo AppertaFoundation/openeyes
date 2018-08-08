@@ -45,7 +45,7 @@ if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
                       <?php echo $element->getCombined($eye_side) ?>
                     </span>
                     <i class="oe-i info small pad js-has-tooltip"
-                       data-tooltip-content="<?= ${'va_tooltip_' . $eye_side} ?>"></i>
+                       data-tooltip-content="<?= CHtml::encode(${'va_tooltip_' . $eye_side}) ?>"></i>
                   <?php else: ?>
                     Not recorded
                       <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
