@@ -525,9 +525,10 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionLightningViewer($id, $document_type = null)
+    public function actionLightningViewer($id, $preview_type = null)
     {
-        if (!$this->patient = Patient::model()->findByPk($id)) {
+        $this->patient = Patient::model()->findByPk($id);
+        if (!$this->patient) {
             throw new SystemException('Patient not found: ' . $id);
         }
 
@@ -538,8 +539,10 @@ class PatientController extends BaseController
         /* @var array(string => Event[]) $eventTypeMap */
         $eventTypeMap = array();
 
-        $documentGroups = ['Letters' => []];
+        // Letters is the fallback if no events exist, so its key is initialised to an empty array
+        $previewGroups = ['Letters' => []];
 
+        // Find all events for this patient
         /* @var EventType $eventType */
         foreach (EventType::model()->findAll() as $eventType) {
             $eventTypeMap[$eventType->name] = array();
@@ -549,69 +552,71 @@ class PatientController extends BaseController
             }
         }
 
+        // For every document sub type...
         /* @var OphCoDocument_Sub_Types $documentTyoe */
         foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
-            $events = array();
 
-            /* @var Event $documentEvent */
-            foreach ($eventTypeMap['Document'] as $documentEvent) {
-                /* @var Element_OphCoDocument_Document $documentElement */
+            // Find the document events for that subtype ...
+            $documentEvents = array_filter($eventTypeMap['Document'], function($documentEvent) use ($documentType) {
                 $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
-                if ($documentElement->sub_type->id === $documentType->id) {
-                    $events[] = $documentEvent;
-                }
-            }
+                return $documentElement->sub_type->id === $documentType->id;
+            });
 
+            // And add them to the preview groups
+            // Referral letters should be put in the Letter bucket, along with correspondence events
             if ($documentType->name === 'Referral Letter') {
-                $documentGroups['Letters'] += $events;
+                $previewGroups['Letters'] += $documentEvents;
             } else {
-                $documentGroups[$documentType->name] = $events;
+                $previewGroups[$documentType->name] = $documentEvents;
             }
         }
 
         foreach ($eventTypeMap as $eventType => $events) {
             switch ($eventType) {
-                case 'OCT':
-                case 'Ultrasound':
-                    $documentGroups[$eventType] += $events;
+                // Document events should be ignored, as they have already been broken down by document sub type
+                case 'Document':
                     break;
+                // Biometry events and report documents should be in the same bucket
                 case 'Biometry':
-                    $documentGroups['Biometry Report'] += $events;
+                    $previewGroups['Biometry Report'] += $events;
                     break;
+                // Correspondence events should go in th 'Letters' bucket
                 case 'Correspondence':
-                    $documentGroups['Letters'] += $events;
+                    $previewGroups['Letters'] += $events;
                     break;
                 default:
-                    $documentGroups[$eventType] = $events;
+                    $previewGroups[$eventType] = $events;
                     break;
             }
         }
 
-        if (!$document_type || !isset($documentGroups[$document_type])) {
-            $document_type = 'Letters';
+        // Default to letters if no other preview type exists
+        if (!$preview_type || !isset($previewGroups[$preview_type])) {
+            $preview_type = 'Letters';
         }
-        $selectedDocuments = $documentGroups[$document_type];
+        $selectedPreviews = $previewGroups[$preview_type];
 
-        $documentChunks = array();
+        $previewsByYear = array();
 
-        if (count($selectedDocuments) > 0) {
-            usort($selectedDocuments, function ($a, $b) {
+        if (count($selectedPreviews) > 0) {
+            // Sort the documents and split them into different years
+            usort($selectedPreviews, function ($a, $b) {
                 return $a->event_date > $b->event_date ? -1 : 1;
             });
 
-            foreach ($selectedDocuments as $event) {
+            foreach ($selectedPreviews as $event) {
                 $year = (new DateTime($event->event_date))->format('Y');
-                if (!isset($documentChunks[$year])) {
-                    $documentChunks[$year] = array();
+                if (!isset($previewsByYear[$year])) {
+                    $previewsByYear[$year] = array();
                 }
-                $documentChunks[$year][] = $event;
+                $previewsByYear[$year][] = $event;
             }
         }
 
         $this->render('lightning_viewer', array(
-            'selectedDocumentType' => $document_type,
-            'documentGroups' => $documentGroups,
-            'documentChunks' => $documentChunks,
+            'selectedPreviewType' => $preview_type,
+            'previewGroups' => $previewGroups,
+            'previewsByYear' => $previewsByYear,
         ));
     }
 

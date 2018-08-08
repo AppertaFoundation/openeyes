@@ -114,6 +114,6 @@ class EventImage extends BaseActiveRecord
             $options['page'] = $this->page;
         }
 
-        return Yii::app()->createUrl('//eventIMage/view', $options);
+        return Yii::app()->createUrl('//eventImage/view', $options);
     }
 }

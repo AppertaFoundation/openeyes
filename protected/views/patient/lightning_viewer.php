@@ -1,15 +1,13 @@
 <?php
 
 /**
- * @var string $selectedDocumentType
- * @var array $documentGroups
- * @var array $documentChunks
+ * @var string $selectedPreviewType
+ * @var array $previewGroups
+ * @var array $previewsByYear
  */
 
 $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
-$documentTypes = array_keys($documentGroups);
-sort($documentTypes);
 ?>
 
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
@@ -27,18 +25,22 @@ sort($documentTypes);
 
       <div class="change-timeline js-change-timeline" style="display: none;">
         <ul>
-            <?php foreach ($documentTypes as $documentType) {
-                $events = $documentGroups[$documentType];
+            <?php
+            $previewTypes = array_keys($previewGroups);
+            sort($previewTypes);
+
+            foreach ($previewTypes as $previewType) {
+                $events = $previewGroups[$previewType];
                 if (count($events) === 0) {
                     continue;
                 }
                 ?>
-              <li class="<?php if ($documentType === $selectedDocumentType): ?>selected<?php endif; ?>">
+              <li class="<?php if ($previewType === $selectedPreviewType): ?>selected<?php endif; ?>">
                 <i class="oe-i-e <?= $events[0]->eventType->getEventIconCssClass() ?>"></i>
                 <a href="<?= Yii::app()->createUrl('/patient/lightningViewer',
-                    array('id' => $this->patient->id, 'document_type' => $documentType)) ?>"
+                    array('id' => $this->patient->id, 'preview_type' => $previewType)) ?>"
                 >
-                    <?= $documentType ?> (<?= count($events) ?>)
+                    <?= $previewType ?> (<?= count($events) ?>)
                 </a>
               </li>
             <?php } ?>
@@ -50,7 +52,7 @@ sort($documentTypes);
       <table>
         <tbody>
         <tr>
-            <?php foreach ($documentChunks as $year => $events) {
+            <?php foreach ($previewsByYear as $year => $events) {
                 if (count($events) === 0) {
                     continue;
                 }
@@ -63,7 +65,7 @@ sort($documentTypes);
         </tr>
         <tr>
             <?php
-            foreach ($documentChunks as $year => $events) {
+            foreach ($previewsByYear as $year => $events) {
                 if (count($events) === 0) {
                     continue;
                 }
@@ -99,7 +101,7 @@ sort($documentTypes);
       </div>
     </div>
     <div class="oe-lightning-quick-view js-lightning-view-image-container">
-        <?php foreach ($documentChunks as $year => $events) {
+        <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
                 $eventImages = EventImage::model()->findAll('event_id = ?', array($event->id));
                 ?>
@@ -107,7 +109,7 @@ sort($documentTypes);
                    data-event-id="<?= $event->id ?>"
                    data-image-count="<?= count($eventImages) ?>"
                    data-paged="<?= isset($eventImages[0]) && $eventImages[0]->page !== null ?>"
-                   data-preview-type="<?= $selectedDocumentType ?>"
+                   data-preview-type="<?= $selectedPreviewType ?>"
                    data-date="<?= CHtml::encode(Helper::convertDate2HTML($event->event_date)) ?>"
                    style="display: none">
                   <?php
@@ -115,7 +117,7 @@ sort($documentTypes);
                   foreach ($eventImages as $eventImage) { ?>
                     <img class="js-lightning-image-preview-page"
                          src="<?= $eventImage->getImageUrl() ?>"
-                         style="<?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
+                         style="width: 800px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
                          alt="No preview available at this time"
                          <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
                     />
@@ -174,21 +176,21 @@ sort($documentTypes);
     $(this).on('click', '.js-lightning-view-icon', function () {
       var event_id = $(this).data('event-id');
       if (selectedEventId === event_id) {
-        deselectDocuemnt();
+        deselectPreview();
       }
       else {
-        deselectDocuemnt();
-        selectDocument(event_id);
+        deselectPreview();
+        selectPreview(event_id);
       }
     });
 
-    function selectDocument(event_id) {
+    function selectPreview(event_id) {
       $('.js-lightning-view-icon[data-event-id="' + event_id + '"]').addClass('selected');
       selectedEventId = event_id;
       changePreview(selectedEventId);
     }
 
-    function deselectDocuemnt() {
+    function deselectPreview() {
       $('.js-lightning-view-icon').removeClass('selected');
       selectedEventId = null;
     }
