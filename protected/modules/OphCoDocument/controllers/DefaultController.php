@@ -493,17 +493,21 @@ class DefaultController extends BaseEventTypeController
 
                         // Add a white triangle to the in the center of the preview
                         $draw = new \ImagickDraw();
-                        $fillColor = new \ImagickPixel('white');
-                        $draw->setFillColor($fillColor);
-                        $triangleSideLength = $imagick->getImageHeight() / 3;
-                        $triangleWidth = sqrt(3) / 2 * $triangleSideLength;
+
                         $centreX = $imagick->getImageWidth() / 2;
                         $centreY = $imagick->getImageHeight() / 2;
+                        $triangleSideLength = $imagick->getImageHeight() / 4;
+                        $triangleWidth = sqrt(3) / 2 * $triangleSideLength;
+
+                        $draw->setFillColor(new ImagickPixel('#4E4E4E'));
+                        $draw->circle($centreX, $centreY, $centreX + $triangleWidth, $centreY);
+
+                        $draw->setFillColor(new \ImagickPixel('white'));
 
                         $draw->polygon([
-                            ['x' => $centreX - $triangleWidth / 2, 'y' => $centreY - $triangleSideLength / 2],
-                            ['x' => $centreX + $triangleWidth / 2, 'y' => $centreY],
-                            ['x' => $centreX - $triangleWidth / 2, 'y' => $centreY + $triangleSideLength / 2]
+                            ['x' => $centreX - $triangleWidth / 3, 'y' => $centreY - $triangleSideLength / 2],
+                            ['x' => $centreX + $triangleWidth * 2 / 3, 'y' => $centreY],
+                            ['x' => $centreX - $triangleWidth / 3, 'y' => $centreY + $triangleSideLength / 2]
                         ]);
 
                         $imagick->drawImage($draw);
