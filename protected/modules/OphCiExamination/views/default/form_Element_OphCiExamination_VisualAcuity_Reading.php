@@ -22,7 +22,8 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
         'reading_value' => (int)$reading->value,
         'reading_display' => $values[$reading->value],
         'method_id' => (int)$reading->method_id,
-        'method_display' => $methods[$reading->method_id]
+        'method_display' => $methods[$reading->method_id],
+        'tooltip' => $val_options[$reading->value]['data-tooltip']
     );
 }
 ?>
@@ -37,7 +38,7 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
           <?= @$selected_data['reading_display']?>
   </td>
   <td class="cols-1">
-    <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip-content="Please select a VA value"></i>
+    <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip='<?= @$selected_data['tooltip'] ?>' data-tooltip-content="Please select a VA value"></i>
   </td>
   <td>
     <input type="hidden" class="method_id" name="<?= $name_stub ?>[<?php echo $key ?>][method_id]" value="<?= @$selected_data['method_id'] ?>"/>

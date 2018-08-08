@@ -127,9 +127,9 @@ if ($cvi_api) {
               'reading_value': selectedItems[0]['id'],
               'reading_display': selectedItems[0]['value'],
               'method_id': selectedItems[1]['id'],
-              'method_display': selectedItems[1]['value']
+              'method_display': selectedItems[1]['value'],
+              'tooltip': <?= CJSON::encode($val_options)?>[selectedItems[0]['id']]['data-tooltip']
           };
-
             OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);
             var newRow =  tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
@@ -159,7 +159,8 @@ if ($cvi_api) {
             'reading_value' => '{{reading_value}}',
             'reading_display' => '{{reading_display}}',
             'method_id' => '{{method_id}}',
-            'method_display' => '{{method_display}}'
+            'method_display' => '{{method_display}}',
+            'tooltip' => '{{tooltip}}'
         )
     ));
     ?>

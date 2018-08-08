@@ -116,7 +116,8 @@ $key = 0;
               'reading_value': selectedItems[0]['id'],
               'reading_display': selectedItems[0]['value'],
               'method_id': selectedItems[1]['id'],
-              'method_display': selectedItems[1]['value']
+              'method_display': selectedItems[1]['value'],
+              'tooltip': <?= CJSON::encode($val_options)?>[selectedItems[0]['id']]['data-tooltip']
             };
               OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
               newRow = tableSelector.find('tbody tr:last');
@@ -147,7 +148,8 @@ $key = 0;
                 'reading_value' => '{{reading_value}}',
                 'reading_display' => '{{reading_display}}',
                 'method_id' => '{{method_id}}',
-                'method_display' => '{{method_display}}'
+                'method_display' => '{{method_display}}',
+                'tooltip' => '{{tooltip}}'
             )
     ));
     ?>
