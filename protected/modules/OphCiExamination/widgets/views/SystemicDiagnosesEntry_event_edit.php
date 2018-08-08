@@ -85,3 +85,9 @@ if (!isset($values)) {
             <i class="oe-i trash"></i>
         </td>
     </tr>
+
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+?>
