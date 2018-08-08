@@ -198,12 +198,10 @@ class DefaultController extends BaseEventTypeController
                 'params' => $params,
             ));
 
-            var_dump($set->items); exit;
-
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
-                    $item_model->drug_id = $item->drug_id;
+                    $item_model->ref_medication_id = $item->id;
                     $item_model->loadDefaults($set);
                     $attr = $item->getAttributes();
                     unset($attr['drug_set_id']);
