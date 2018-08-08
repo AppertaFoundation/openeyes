@@ -16,22 +16,36 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset($reading->method_id)) {
+    $selected_data = array(
+        'reading_value' => (int)$reading->value,
+        'reading_display' => $values[$reading->value],
+        'method_id' => (int)$reading->method_id,
+        'method_display' => $methods[$reading->method_id]
+    );
+}
+
+?>
+<?php if (isset($selected_data['reading_display'])) { ?>
+
 <tr class="nearvisualAcuityReading near-visual-acuity-reading" data-key="<?php echo $key?>">
 	<td>
-		<?php if (isset($reading) && $reading->id) {
-    ?>
+		<?php if (isset($reading) && $reading->id) { ?>
 			<input type="hidden" name="<?=$name_stub ?>[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
-		<?php 
-}?>
-		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][value]', @$reading->value, $values, array('empty' => '--', 'class' => 'va-selector', 'options' => $val_options))?>
+		<?php } ?>
+    <input type="hidden" class="va-selector" name="<?= $name_stub ?>[<?= $key ?>][value]" value="<?= @$selected_data['reading_value'] ?>"/>
+      <?= @$selected_data['reading_display']?>
 	</td>
   <td class="cols-1">
     <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip-content="Please select a VA value"></i>
   </td>
 	<td>
-		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][method_id]', @$reading->method_id, $methods, array('class' => 'method_id'))?>
+    <input type="hidden" class="method_id" name="<?= $name_stub ?>[<?= $key ?>][method_id]" value="<?= @$selected_data['method_id'] ?>"/>
+      <?= @$selected_data['method_display'] ?>
 	</td>
 	<td class="readingActions">
     <i class="oe-i trash removeReading"></i>
   </td>
 </tr>
+<?php } ?>

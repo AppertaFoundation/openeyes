@@ -112,13 +112,14 @@ $key = 0;
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
           if(selectedItems.length){
-            var newRow = tableSelector.find('tbody tr:last');
-            if (newRow.find('.va-selector').val()) {
-              OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>');
+            var selected_data = {
+              'reading_value': selectedItems[0]['id'],
+              'reading_display': selectedItems[0]['value'],
+              'method_id': selectedItems[1]['id'],
+              'method_display': selectedItems[1]['value']
+            };
+              OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
               newRow = tableSelector.find('tbody tr:last');
-            }
-            newRow.find('.va-selector').val(selectedItems[0]['id']);
-            newRow.find('.method_id').val(selectedItems[1]['id']);
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
           }
@@ -142,6 +143,12 @@ $key = 0;
             'methods' => $methods,
             'asset_path' => $this->getAssetPathForElement($element),
             'reading' => $default_reading,
+            'selected_data' => array(
+                'reading_value' => '{{reading_value}}',
+                'reading_display' => '{{reading_display}}',
+                'method_id' => '{{method_id}}',
+                'method_display' => '{{method_display}}'
+            )
     ));
     ?>
 </script>
