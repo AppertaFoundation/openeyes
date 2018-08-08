@@ -23,6 +23,12 @@ class WKHtmlToPDF extends WKHtmlToX
     public $middle;
     public $right;
 
+    protected $barcodes = array();
+    protected $documents = 1;
+    protected $docrefs = array();
+    protected $patients = array();
+    public $custom_tags = array();
+
     public $top_margin;
     public $bottom_margin;
     public $left_margin;
