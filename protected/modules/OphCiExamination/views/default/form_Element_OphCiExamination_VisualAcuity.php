@@ -123,11 +123,15 @@ if ($cvi_api) {
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
           if(selectedItems.length){
-            OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
-            var newRow = tableSelector.find('tbody tr:last');
+            var newRow =  tableSelector.find('tbody tr:last');
+            if (newRow.find('.va-selector').val()) {
+              OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
+              newRow = tableSelector.find('tbody tr:last');
+            }
             newRow.find('.va-selector').val(selectedItems[0]['id']);
             newRow.find('.method_id').val(selectedItems[1]['id']);
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+            newRow.find('.va-selector').trigger('change');
           }
           return true;
         },
