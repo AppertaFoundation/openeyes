@@ -81,7 +81,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                   </li>
                 <?php endforeach; ?>
               <li class="icon-btn">
-                <a href="/v3.0/lightning-viewer" class="lightning-viewer-icon active">
+                <a href="<?= Yii::app()->createUrl('/patient/lightningViewer', array('id' => $this->patient->id)) ?>" class="lightning-viewer-icon active">
                   <svg viewBox="0 0 30 30" width="15" height="15">
                     <use xlink:href="<?= $navIconUrl ?>#lightning-viewer-icon"></use>
                   </svg>
