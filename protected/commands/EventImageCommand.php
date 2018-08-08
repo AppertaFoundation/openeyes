@@ -25,11 +25,12 @@ USAGE
         
 Following actions are available:
 
- - create                              : Create an event image for every event that isn't already imaged or has an outdated image (starting with the most recent event)
- - create --event-id=[event_id]...     : Creates an event image for the given event(s)
- - create --patient-id=[patient_id]... : Creates an event image for all the events for the given patients
- - clean                               : Removes all EventImage records that are not in the CREATED state (i.e. those that failed to generate for some reason)
- - help                                : Display this help and exit
+ - create                           : Create an event image for every event that isn't already imaged or has an outdated image (starting with the most recent event)
+ - create --event=[event_id]...     : Creates an event image for the given event(s)
+ - create --patient=[patient_id]... : Creates an event image for all the events for the given patients
+ - clean                            : Removes all EventImage records that are not in the CREATED state (i.e. those that failed to generate for some reason)
+ - reset                            : Removes all EventImage records
+ - help                             : Display this help and exit
 EOH;
     }
 
@@ -37,6 +38,13 @@ EOH;
     {
         EventIMage::model()->deleteAll('status_id != ?',
             array(EventImageStatus::model()->find('name = "CREATED"')->id));
+    }
+
+    public function actionReset()
+    {
+        if($this->confirm('Remove all EventImages, regardless of status?')) {
+            EventImage::model()->deleteAll();
+        }
     }
 
     public function actionCreate($args, array $patient = null, array $event = null)
