@@ -29,9 +29,6 @@ $form = $this->beginWidget('CActiveForm', array(
 ));
 ?>
 
-<div <?php if (!$queueset) { ?> style="display: none;"<?php } ?>>
-    <button class="button blue hint" id="js-virtual-clinic-btn">Change <?= $category->name ?></button>
-</div>
 <div class="oe-popup-wrap" style="display: none">
     <div class="oe-popup">
         <div class="title">Change Virtual Clinic</div>

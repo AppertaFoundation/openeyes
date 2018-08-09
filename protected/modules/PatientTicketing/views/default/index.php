@@ -42,13 +42,10 @@
         }
     }
 
-    $this->renderPartial('form_queueset_select', array(
-        'category' => $category,
-        'queueset' => $queueset,
-        'cat_id' => $cat_id,
-    ));
-
     ?>
+    <div <?php if (!$queueset) { ?> style="display: none;"<?php } ?>>
+        <button class="button blue hint" id="js-virtual-clinic-btn">Change <?= $category->name ?></button>
+    </div>
 </div>
 <div class="oe-full-content oe-virtual-clinic flex-layout flex-top">
     <?php
@@ -65,3 +62,9 @@
     }
     ?>
 </div>
+<?= $this->renderPartial('form_queueset_select', array(
+    'category' => $category,
+    'queueset' => $queueset,
+    'cat_id' => $cat_id,
+));
+?>
