@@ -28,7 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $id
  * @property int $event_id
  *
- * @property Event $event
+ * @property \Event $event
  * @property OphCiExamination_Diagnosis[] $diagnoses
  *
  * The followings are the available model relations:
@@ -40,7 +40,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @param string $className
      *
-     * @return the static model class
+     * @return string the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -165,7 +165,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 };
             }
             if ($u_disorder['principal']) {
-                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id']);
+                $this->event->episode->setPrincipalDiagnosis($u_disorder['disorder_id'], $u_disorder['eye_id'] ,  $u_disorder['date']);
             } else {
                 //add a secondary diagnosis
                 // Note that this may be creating duplicate diagnoses, but that is okay as the dates on them will differ
@@ -187,7 +187,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         foreach (\SecondaryDiagnosis::model()->findAll('patient_id=?', array($this->event->episode->patient_id)) as $sd) {
             if ($sd->disorder->specialty && $sd->disorder->specialty->code == 130) {
                 if (!in_array($sd->disorder_id, $secondary_disorder_ids)) {
-                    $this->event->episode->patient->removeDiagnosis($sd->id);
+                        $this->event->episode->patient->removeDiagnosis($sd->id);
                 }
             }
         }
@@ -216,6 +216,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * Delete the related diagnoses for this element.
      *
      * @return bool
+     * @throws \CDbException
      */
     protected function beforeDelete()
     {

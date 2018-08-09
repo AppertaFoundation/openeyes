@@ -39,22 +39,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     };
 
-    SocialHistoryController.prototype.addEntry = function() {
-      data = {};
-      var select_lists = ['occupation', 'smoking_status', 'accommodation', 'alcohol'];
-      var postfixes = ['_occupation_id', '_smoking_status_id', '_accommodation_id', '_alcohol_intake'];
-      for (i in select_lists) {
-        data[select_lists[i]] = this.$popupSelector.find('ul.'+select_lists[i]+' .selected').data('id');
-        (data[select_lists[i]] == null)? '' : this.$tableSelector.find('#'+this.options.modelName+postfixes[i]).val(data[select_lists[i]]);
-        this.$tableSelector.find('#'+this.options.modelName+postfixes[i]).change();
-      }
+    SocialHistoryController.prototype.addEntry = function (selectedItems) {
 
-      var driving_statuses =  this.$popupSelector.find('ul.driving_status .selected');
-      for(var i = 0; i < driving_statuses.length; i++) {
-        var id = $(driving_statuses[i]).data('id');
-        $driving_selector = this.$tableSelector.find('#'+this.options.modelName+'_driving_statuses');
-        $driving_selector.val(id);
-        $driving_selector.change();
+      for (var i in selectedItems) {
+        var item = selectedItems[i];
+        var itemSetId = item['itemSet'].options['id'];
+        var $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
+        $field.val(item['id']);
+        $field.change();
       }
 
       this.$popupSelector.find('.selected').removeClass('selected');

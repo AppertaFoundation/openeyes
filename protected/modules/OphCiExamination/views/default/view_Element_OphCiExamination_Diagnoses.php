@@ -19,8 +19,8 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 
 ?>
 <?php
-$principals = $this->episode->patient->episodes;
- ?>
+$episodes = $this->episode->patient->episodes
+;?>
 <div class="element-data">
         <?php if (!$element->id) { ?>
         <div class="data-value not-recorded">No diagnoses recorded during this encounter</div>
@@ -46,33 +46,29 @@ $principals = $this->episode->patient->episodes;
               </strong>
             </td>
             <td>
-              <span class="oe-eye-lat-icons">
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-              </span>
+                <?php $this->widget('EyeLateralityWidget', array('eye' => $principal->eye)) ?>
             </td>
             <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
           </tr>
         <?php }
-        foreach ($principals as $principal) {
-            if ($principal->id != $this->episode->id && $principal->diagnosis ) {
+        foreach ($episodes as $episode) {
+            if ($episode->id != $this->episode->id && $episode->diagnosis ) {
                 ?>
               <tr>
                 <td>
-                    <?= $principal->diagnosis->term ?>
-                  <span class="js-has-tooltip oe-i info small"
-                        data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
+                    <?= $episode->diagnosis->term ?>
+                  <span class="js-$episode-tooltip oe-i info small"
+                        data-tooltip-content="Principal diagnosis for <?= $episode->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('eye' => $episode->eye)) ?>
                 </td>
-                <td>
-                    <?php echo $principal->NHSDate('start_date'); ?>
-                </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
+                  <?php $date = $episode->getDisplayDate(); ?>
+                  <?php if($date){ ?>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
+                    <?php } else { ?>
+                    <td></td>
+                  <?php } ?>
               </tr>
             <?php }
         }
@@ -84,10 +80,7 @@ $principals = $this->episode->patient->episodes;
                 <?php echo $diagnosis->disorder->term ?>
             </td>
             <td>
-              <span class="oe-eye-lat-icons">
-                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-              </span>
+                <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
             </td>
             <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->getDisplayDate()) ?></span></td>
           </tr>

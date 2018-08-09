@@ -1,0 +1,2 @@
+# Files to ignore by eslint CI format checker
+protected/assets/components/*

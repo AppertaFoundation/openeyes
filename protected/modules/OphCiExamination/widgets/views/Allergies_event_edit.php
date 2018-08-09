@@ -28,25 +28,25 @@ $required_allergy_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
 
-        <table id="<?= $model_name ?>_entry_table" class="cols-10">
-            <colgroup>
-                <col class="cols-3">
-                <col class="cols-3">
-                <col class="cols-4">
-            </colgroup>
-            <tbody>
+    <table id="<?= $model_name ?>_entry_table" class="cols-10">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
 
-            <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
-                id="<?= $model_name ?>_no_allergies_wrapper">
-                <td colspan="5" class="align-left">
-                    <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
-                        <?=CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
-                        Confirm patient has no allergies
-                    </label>
-                </td>
-            </tr>
+        <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
+            id="<?= $model_name ?>_no_allergies_wrapper">
+            <td colspan="5" class="align-left">
+                <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
+                    <?=CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
+                    Confirm patient has no allergies
+                </label>
+            </td>
+        </tr>
 
-            <?php
+        <?php
             $row_count = 0;
             foreach ($missing_req_allergies as $entry) {
                 $this->render(
@@ -133,9 +133,9 @@ $required_allergy_ids = array_map(function ($r) {
             openButton: $('#add-allergy-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($allergy) {
-                    return ['label' => $allergy->name, 'id' => $allergy->id];
+                    return ['value' => $allergy->name, 'id' => $allergy->id];
                 }, $element->getAllergyOptions())
-            ) ?>, {'multiSelect': true})],
+            )?>, {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
                 allergyController.addEntry(selectedItems);
                 allergyController.showTable();
@@ -143,4 +143,5 @@ $required_allergy_ids = array_map(function ($r) {
             }
         });
     });
+
 </script>

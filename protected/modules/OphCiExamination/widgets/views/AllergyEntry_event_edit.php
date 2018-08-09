@@ -60,7 +60,7 @@ if (!isset($values)) {
     </td>
     <td>
         <?php if (!$removable): ?>
-            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?= $values['comments'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?= $values['comments'] ?>" autocomplete="off" />
             <?= $values['comments'] ?>
         <?php else: ?>
 

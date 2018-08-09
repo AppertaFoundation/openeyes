@@ -64,8 +64,8 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
   </div>
 </section>
 
-<div id="ophTrOperationnotePCRRiskDiv">
-  <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote js-pcr-left">
+<section id="ophTrOperationnotePCRRiskDiv">
+  <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote">
       <?php
       $this->renderPartial('application.views.default._pcr_risk_form',
           array('form' => $form, 'element' => $element, 'side' => 'left'));
@@ -77,6 +77,6 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
           array('form' => $form, 'element' => $element, 'side' => 'right'));
       ?>
   </div>
-</div>
+</section>
 
 <?php $form->layoutColumns = $layoutColumns; ?>

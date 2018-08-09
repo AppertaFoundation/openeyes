@@ -243,4 +243,29 @@ class OphCoCvi_API extends \BaseAPI
 
         return '';
     }
+
+    /**
+     * Returns the date for the CVI status.
+     * @param $patient
+     * @return string
+     */
+    public function getCviSummaryDate($patient){
+            if ($events = $this->getEvents($patient)) {
+                $latest = array_pop($events);
+                $mgr = $this->getManager();
+                return $mgr->getDisplayStatusDateForEvent($latest);
+            }
+            else {
+                return $patient->getOphInfo()->cvi_status_date;
+        }
+    }
+
+    /**
+     * Returns the display date for the CVI status.
+     * @param $patient
+     * @return string
+     */
+    public function getCviSummaryDisplayDate($patient){
+        return \Helper::convertDate2HTML($this->getCviSummaryDate($patient));
+    }
 }

@@ -23,35 +23,40 @@
       <col class="cols-4">
       <col class="cols-4">
     </colgroup>
-    <thead>
-    <tr>
-      <th>Surgeon</th>
-      <th>Assistant</th>
-      <th>Supervising surgeon</th>
-    </tr>
-    </thead>
     <tbody>
     <tr class="col-gap">
       <td>
-
           <?php echo $form->dropDownList(
-              $element, 'surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true)
-          ); ?>
-      </td>
-      <td>
-          <?php echo $form->dropDownList(
-              $element, 'assistant_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true)
-          ); ?>
-      </td>
-      <td>
-          <?php echo $form->dropDownList($element, 'supervising_surgeon_id',
+              $element,
+              'surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true), false,
-              array('field' => 3)) ?>
+              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4, 'field' => 8)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList(
+              $element,
+              'assistant_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4, 'field' => 8)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList(
+              $element,
+              'supervising_surgeon_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4,'field' => 8)
+          ); ?>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
+<style>.Element_OphTrOperationnote_Surgeon{min-height: 54px !important;}</style>

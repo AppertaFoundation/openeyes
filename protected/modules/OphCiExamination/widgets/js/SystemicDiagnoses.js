@@ -43,6 +43,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   SystemicDiagnosesController.prototype.initialiseTriggers = function () {
     var controller = this;
+    var eye_selector;
 
     // removal button for table entries
     controller.$table.on('click', 'i.trash', function (e) {
@@ -53,8 +54,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // setup current table row behaviours
     controller.$table.find('tbody tr').each(function () {
       controller.initialiseRow($(this));
-
     });
+
+    eye_selector = new OpenEyes.UI.EyeSelector({
+      element: controller.$element.closest('section')
+    });
+
   };
   SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
     var row_count = OpenEyes.Util.getNextDataKey(this.$element.find('table tbody tr'), 'key');
@@ -115,18 +120,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   SystemicDiagnosesController.prototype.createRow = function (selectedOptions) {
-    var newRows = [];
-    var template = this.templateText;
-    var element = this.$element;
+    let newRows = [];
+    let template = this.templateText;
+    let element = this.$element;
 
     $(selectedOptions).each(function (index, option) {
-      data = {};
-      data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
-      data['disorder_id'] = option['id'];
-      data['disorder_display'] = option['label'];
-      newRows.push(Mustache.render(
-        template,
-        data));
+      let data = {};
+      data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
+      data.disorder_id = option.id;
+      data.disorder_display = option.value;
+      newRows.push(Mustache.render(template, data));
     });
 
     return newRows;
