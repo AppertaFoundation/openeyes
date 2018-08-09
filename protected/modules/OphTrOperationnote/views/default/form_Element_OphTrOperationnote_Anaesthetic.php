@@ -168,7 +168,7 @@ $is_hidden = function () use ($element) {
               class="button js-add-comments"
               type="button"
               data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-              style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
+              style="<?= $element->anaesthetic_comment ? 'visibility: hidden;':'' ?>"
       >
         <i class="oe-i comments small-icon"></i>
       </button>
