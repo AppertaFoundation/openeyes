@@ -18,7 +18,9 @@
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem<?php if (isset($patient)) {
-    if ($patient->hasDrugAllergy($item->drug_id)) {?> 
+    /** @var Patient $patient */
+    /** @var OphDrPrescription_Item $item */
+    if ($patient->hasDrugAllergy($item->ref_medication_id)) {?>
     allergyWarning
     <?php
 	}
@@ -31,7 +33,7 @@
 		<?php if ($item->id) {?>
 			<input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php 
         } ?>
-		<input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id?>" />
+		<input type="hidden" name="prescription_item[<?php echo $key ?>][ref_medicatino_id]" value="<?php echo $item->ref_medicatino_id?>" />
 	</td>
 	<td class="prescriptionItemDose">
 		<?php

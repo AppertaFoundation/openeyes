@@ -22,7 +22,7 @@
  * @property User $lastModifiedUser
  * @property RefSetRule[] $refSetRules
  * @property RefMedication[] $refMedications
- * @property RefMedication[] $items
+ * @property RefMedicationSet[] $items
  * @method  RefMedication[] refMedications(array $opts)
  */
 class RefSet extends BaseActiveRecordVersioned
@@ -73,14 +73,14 @@ class RefSet extends BaseActiveRecordVersioned
 	}
 
     /**
-     * @return RefMedication[]
+     * @return RefMedicationSet[]
      *
-     * Compatibility function to map $this->items to $this->refMedications
+     * Compatibility function to map $this->items to $this->refMedicationSets
      */
 
 	public function getItems()
     {
-        return $this->refMedications;
+        return $this->refMedicationSets;
     }
 
 	/**

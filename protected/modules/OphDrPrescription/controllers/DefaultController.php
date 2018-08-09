@@ -211,7 +211,7 @@ class DefaultController extends BaseEventTypeController
 
                     if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
                         if ($apieye = $api->getLastEye($this->patient, false)) {
-                            $item_model->route_option_id = $apieye;
+                            $item_model->laterality = $apieye;
                         }
                     }
 
