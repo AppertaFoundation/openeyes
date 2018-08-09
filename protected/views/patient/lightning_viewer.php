@@ -8,6 +8,8 @@
 
 $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
+$previewWidth = 800;
+
 ?>
 
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
@@ -101,6 +103,9 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
       </div>
     </div>
     <div class="oe-lightning-quick-view js-lightning-view-image-container">
+      <i class="js-preview-image-loader spinner"></i>
+      <div class="js-lightning-view-overlay" style="width: <?= $previewWidth ?>px; min-height: 512px; height: 100%; position: absolute;">
+      </div>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
                 $eventImages = EventImage::model()->findAll('event_id = ?', array($event->id));
@@ -115,12 +120,13 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
                   <?php
 
                   foreach ($eventImages as $eventImage) { ?>
-                    <img class="js-lightning-image-preview-page"
-                         src="<?= $eventImage->getImageUrl() ?>"
-                         style="width: 800px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
+                    <div class="js-lightning-image-preview-page"
+                         data-loaded="0"
+                         data-src="<?= $eventImage->getImageUrl() ?>"
+                         style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
                          alt="No preview available at this time"
                          <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
-                    />
+                    ></div>
                   <?php } ?>
               </div>
             <?php }
@@ -131,15 +137,26 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
 </main>
 
 <script>
-  $('.js-lightning-image-preview').first().show();
-
   $(function () {
 
     var selectedEventId = null;
+    var currentEventId = null;
+    var currentPageNumber = null;
+
+    $('.js-lightning-image-preview-page').each(function () {
+      $('<img />', {src: $(this).data('src')}).on('load error', function () {
+        $(this).closest('.js-lightning-image-preview-page').data('loaded', true);
+      }).appendTo($(this));
+    });
 
     function changePreview(event_id) {
-      $('.js-lightning-image-preview').hide();
       var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+      if (currentEventId === event_id) {
+        return $preview;
+      }
+
+      currentEventId = event_id;
+      $('.js-lightning-image-preview').hide();
       $preview.show();
 
       var $meta = $('.js-lightning-meta');
@@ -148,18 +165,29 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
 
       if ($preview.data('paged')) {
         $preview.find('.js-lightning-image-preview-page').hide();
-        $preview.find('.js-lightning-image-preview-page').first().show();
+        showImage($preview.find('.js-lightning-image-preview-page').first());
       } else {
-        $preview.find('.js-lightning-image-preview-page').show();
+        showImage($preview.find('.js-lightning-image-preview-page'));
       }
       return $preview;
     }
 
+    function showImage($image) {
+      $('.js-preview-image-loader').toggle(!$image.data('loaded'));
+      $image.toggle($image.data('loaded'));
+    }
+
     function changePreviewPage(event_id, page) {
+      if (currentEventId === event_id && currentPageNumber === page) {
+        return;
+      }
+
+      currentPageNumber = page;
+
       var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
       if (page !== null) {
         $preview.find('.js-lightning-image-preview-page').hide();
-        $preview.find('.js-lightning-image-preview-page[data-page-number="' + page + '"]').show();
+        showImage($preview.find('.js-lightning-image-preview-page[data-page-number="' + page + '"]'));
       }
     }
 
@@ -195,7 +223,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
       selectedEventId = null;
     }
 
-    $(this).on('mousemove', '.js-lightning-image-preview', function (e) {
+    $(this).on('mousemove', '.js-lightning-view-overlay', function (e) {
       var parentOffset = $(this).parent().offset();
       var relX = e.pageX - parentOffset.left;
 
@@ -218,7 +246,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
       if ($preview.data('paged')) {
         var relY = e.pageY - parentOffset.top;
         var yPercentage = relY / $(this).height();
-        var page = Math.floor($(this).data('image-count') * yPercentage);
+        var page = Math.floor($preview.data('image-count') * yPercentage);
         changePreviewPage($preview.data('event-id'), page);
       }
     });
