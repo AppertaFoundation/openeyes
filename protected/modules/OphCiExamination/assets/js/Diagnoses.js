@@ -114,13 +114,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$element.on('change', 'select.condition-secondary-to', function () {
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
-                row, $tr;
+                row, $tr, item;
 
             if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
-                var $tr = $(this).closest('tr'),
-                    item = $option.data('item');
+                $tr = $(this).closest('tr');
+                item = $option.data('item');
 
                 if (item) {
                     row = controller.createRow({disorder_id: item.id, disorder_display: item.label});
@@ -146,12 +146,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     DiagnosesController.prototype.initialiseRow = function ($row) {
-        var controller = this,
+        var controller = this;
 
-        // radio buttons
-        $radioButtons.on('change', 'input', function () {
-            $(this).closest('tr').find('.diagnosis-side-value').val($(this).val());
-        });
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -427,9 +423,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]]').val() === id) {
 
                 alreadyInList = true;
-                if ($(this).hasClass('external')) {
+                if ($(this).hasClass('js-external')) {
                     // only want to alter sides for disorders that have been added from external source
                     // at this point
+                    if(side === 1 || side === 3){
+                        $(this).find('.js-left-eye').prop('checked', true);
+                    }
+
+                    if(side === 2 || side === 3){
+                        $(this).find('.js-right-eye').prop('checked', true);
+                    }
+
                     listSide = $(this).find('input[type="radio"]:checked').val();
                     if (listSide !== side) {
                         $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
@@ -445,6 +449,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             // selectItems or searchResult - otherwise it won't add
             controller.appendToSearchResult({id: id, value: name}, true);
             controller.addEntry([{id: id, value: name, eye_id: side}]);
+            $tr = this.$table.find('tbody tr:last');
+            $tr.addClass('js-external');
         }
     };
 
