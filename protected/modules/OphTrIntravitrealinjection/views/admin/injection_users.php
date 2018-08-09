@@ -30,7 +30,7 @@
 	</div>
 	<form id="admin_injection_users">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<?php if (count($injection_users) > 0) {?>

@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Commissioning bodies</h2>
 	<form id="admin_commissioning_bodies">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="commissioning_body" /></th>

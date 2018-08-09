@@ -31,7 +31,7 @@
 	<h2><?php echo $title ?></h2>
 	<?php $this->renderPartial('//base/_messages')?>
 	<form id="admin_file_collections">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>

@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Steps</h2>
 	<form id="admin_workflow_steps">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>Position</th>

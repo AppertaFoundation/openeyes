@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Theatres</h2>
 	<form id="theatres">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 			<tr>
 				<th><input type="checkbox" id="checkall" class="theatres" /></th>

@@ -22,7 +22,7 @@
 	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
 
 	<form id="admin_institutions">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>ID</th>
