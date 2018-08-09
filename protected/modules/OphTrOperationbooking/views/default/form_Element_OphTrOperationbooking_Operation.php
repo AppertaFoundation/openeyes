@@ -211,7 +211,7 @@
                                 null,false, false,
                                 false, false,
                                 array(
-                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''
                                 )
                             ); ?>
                         </td>

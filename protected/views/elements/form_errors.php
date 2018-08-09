@@ -44,9 +44,9 @@
       $field.closest('.element').find('.element-title').addClass('error');
       if ($field.length) {
 			  if ($field.is('tr')||$field.is('input')) {
-			    $field.addClass('highlighted-error');
+			    $field.addClass('highlighted-error error');
         } else {
-          if(!$field.parent().hasClass('highlighted-error')) {
+          if(!$field.parent().hasClass('highlighted-error error')) {
             $field.addClass('highlighted-error');
           }
         }
