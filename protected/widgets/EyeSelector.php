@@ -47,8 +47,29 @@ class EyeSelector extends BaseCWidget
     public function render()
     {
         ob_start();
-        echo preg_replace_callback("/{(\w+)}/",array($this,'renderSection'),$this->template);
+        echo preg_replace_callback("/{(\w+)}/", array($this, 'renderSection'), $this->template);
         ob_end_flush();
+    }
+
+    public function renderRight()
+    {
+        echo CHtml::openTag('label', ['class' => 'inline highlight']);
+        echo CHtml::checkBox($this->inputNamePrefix . "[right_eye]", in_array($this->selectedEyeId, [\Eye::RIGHT, \EYE::BOTH]), ['class' => 'js-right-eye']) . ' R';
+        echo CHtml::closeTag('label');
+    }
+
+    public function renderLeft()
+    {
+        echo CHtml::openTag('label', ['class' => 'inline highlight']);
+        echo CHtml::checkBox($this->inputNamePrefix . "[left_eye]", in_array($this->selectedEyeId, [\Eye::LEFT, \EYE::BOTH]), ['class' => 'js-left-eye']) . ' L';
+        echo CHtml::closeTag('label');
+    }
+
+    public function renderNA()
+    {
+        echo CHtml::openTag('label', ['class' => 'inline highlight']);
+        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => -9]) . ' n/a';
+        echo CHtml::closeTag('label');
     }
 
     /**
@@ -62,33 +83,14 @@ class EyeSelector extends BaseCWidget
     protected function renderSection($matches)
     {
         $method = 'render' . $matches[1];
-        if(method_exists($this, $method)){
+        if (method_exists($this, $method)) {
             $this->$method();
             $html = ob_get_contents();
             ob_clean();
 
             return $html;
-        }
-        else{
+        } else {
             return $matches[0];
         }
-    }
-
-    public function renderRight(){
-        echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[right_eye]", in_array($this->selectedEyeId, [\Eye::RIGHT, \EYE::BOTH]), ['class' => 'js-right-eye']) . ' R';
-        echo CHtml::closeTag('label');
-    }
-
-    public function renderLeft(){
-        echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[left_eye]", in_array($this->selectedEyeId, [\Eye::LEFT, \EYE::BOTH]), ['class' => 'js-left-eye']) . ' L';
-        echo CHtml::closeTag('label');
-    }
-
-    public function renderNA(){
-        echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => -9]) . ' n/a';
-        echo CHtml::closeTag('label');
     }
 }

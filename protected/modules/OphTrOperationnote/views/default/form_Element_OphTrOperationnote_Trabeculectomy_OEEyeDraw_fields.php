@@ -17,7 +17,7 @@
 <div class="cols-full">
   <table class="cols-full last-left">
     <colgroup>
-      <col class="cols-4">
+      <col class="cols-6">
     </colgroup>
     <tbody>
     <tr>
@@ -101,23 +101,10 @@
       </td>
     </tr>
     <tr>
-      <td>
-          <?php echo $element->getAttributeLabel('report') ?>
-      </td>
-      <td>
-          <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false, array('rows' => 4),
-              array('field' => 9)) ?>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <button id="btn-trabeculectomy-report" class="secondary small ed_report">
-          Report
-        </button>
-        <button id="btn-trabeculectomy-clear" class="secondary small ed_clear">
-          Clear
-        </button>
-      </td>
+        <td colspan="2">
+            <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false,
+                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report')) ?>
+        </td>
     </tr>
     <tr>
       <td>

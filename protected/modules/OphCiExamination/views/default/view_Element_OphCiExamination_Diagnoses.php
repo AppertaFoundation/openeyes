@@ -46,10 +46,7 @@ $episodes = $this->episode->patient->episodes
               </strong>
             </td>
             <td>
-              <span class="oe-eye-lat-icons">
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-              </span>
+                <?php $this->widget('EyeLateralityWidget', array('eye' => $principal->eye)) ?>
             </td>
             <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
           </tr>
@@ -64,10 +61,7 @@ $episodes = $this->episode->patient->episodes
                         data-tooltip-content="Principal diagnosis for <?= $episode->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo in_array($episode->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('eye' => $episode->eye)) ?>
                 </td>
                   <?php $date = $episode->getDisplayDate(); ?>
                   <?php if($date){ ?>
@@ -86,10 +80,7 @@ $episodes = $this->episode->patient->episodes
                 <?php echo $diagnosis->disorder->term ?>
             </td>
             <td>
-              <span class="oe-eye-lat-icons">
-                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-              </span>
+                <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
             </td>
             <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->getDisplayDate()) ?></span></td>
           </tr>

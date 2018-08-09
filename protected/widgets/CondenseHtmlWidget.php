@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,23 +16,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
+class CondenseHtmlWidget extends CWidget
+{
+    public function init()
+    {
+        ob_start(function ($buffer) {
+            return preg_replace('/>\s+?</', '><', $buffer);
+        });
+    }
 
-<?php $this->beginWidget('CondenseHtmlWidget') ?>
-
-<?php if ($this->event): ?>
-  <?php echo $this->event->getEventIcon('medium'); ?>
-<?php endif; ?>
-<?php foreach ($this->event_tabs as $tab) { ?>
-    <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button header-tab <?php if (@$tab['active']) { ?>selected<?php } ?>">
-        <?php echo $tab['label'] ?>
-    </a>
-<?php } ?>
-
-<?php if ($this->action->id === 'create' || $this->action->id === 'update'): ?>
-  <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
-    <i class="oe-i search"></i>
-  </button>
-<?php endif; ?>
-
-<?php $this->endWidget() ?>
+    public function run()
+    {
+        ob_get_flush();
+    }
+}

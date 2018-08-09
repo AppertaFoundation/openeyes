@@ -81,11 +81,11 @@
         <td>
             <?php if (!@$_POST['subspecialty-id']) { ?>
                 <?php echo CHtml::dropDownList('firm-id', '', array(),
-                    array('empty' => 'All firms', 'disabled' => 'disabled')) ?>
+                    array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => 'disabled')) ?>
             <?php } else { ?>
                 <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],
                     Firm::model()->getList(@$_POST['subspecialty-id']), array(
-                        'empty' => 'All firms',
+                        'empty' => 'All '.Firm::model()->contextLabel().'s',
                         'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
                     )) ?>
             <?php } ?>

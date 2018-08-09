@@ -17,21 +17,40 @@
  */
 ?>
 
-<?php
-$layoutColumns = array(
-    'label' => 3,
-    'field' => 9,
-); ?>
-
 <div class="element-fields full-width">
   <div class="data-group">
-    <div class="cols-5 column">
-        <?php echo $form->textArea($element, 'comments', array(), false, array('cols' => 30), $layoutColumns) ?>
+    <div class="">
+        <?php echo $form->textArea(
+            $element,
+            'comments',
+            array(),
+            false,
+            array('cols' => 30),
+            array('label' => 2, 'field' => 10)
+        ) ?>
     </div>
-    <div class="cols-7 column">
-        <?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list,
-            array(), $layoutColumns) ?>
-        <?php echo $form->textArea($element, 'postop_instructions', array(), false, array('cols' => 30), $layoutColumns) ?>
+    <div class="flex-layout">
+      <div class="cols-2">
+          <?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list,
+              array(),array('label' => 11, 'field' => 11)
+          ) ?>
+        <style>
+          #div_Element_OphTrOperationnote_Comments_postop_instructions_TextSelection select{
+            min-width: 100%;
+            max-width: 100%;
+          }
+        </style>
+      </div>
+      <div class="cols-10">
+          <?php echo $form->textArea(
+              $element,
+              'postop_instructions',
+              array('nowrapper' => true),
+              false,
+              array('cols' => 30),
+              array('field' => 12)
+          ) ?>
+      </div>
     </div>
   </div>
 </div>

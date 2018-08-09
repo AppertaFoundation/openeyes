@@ -16,6 +16,4 @@
     } ?>
 
     <?php $this->renderPartial('//base/_form'); ?>
-</header><!-- /.header -->
-
-<?php $this->renderPartial('//base/_hotlist'); ?>
+</header>

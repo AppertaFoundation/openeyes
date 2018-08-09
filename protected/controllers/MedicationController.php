@@ -87,7 +87,8 @@ class MedicationController extends BaseController
                 $return[] = array(
                     'name' => $md->name,
                     'label' => $label,
-                    'value' => $md->id,
+                    'value' => $label,
+                    'id' => $md->id,
                     'type' => 'md',
                     'tags' => array_map(function($t) { return $t->id;}, $md->tags)
                 );
@@ -101,8 +102,9 @@ class MedicationController extends BaseController
                 $return[] = array(
                     'name' => $drug->tallmanlabel,
                     'label' => $label,
-                    'value' => $drug->id,
+                    'value' => $label,
                     'type' => 'd',
+                    'id' => $drug->id,
                     'tags' => array_map(function($t) { return $t->id;}, $drug->tags)
                 );
             }
