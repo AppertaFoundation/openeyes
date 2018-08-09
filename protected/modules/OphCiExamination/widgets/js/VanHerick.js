@@ -54,6 +54,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 title: 'Foster Images',
                 content: $dialogContent.clone()
             });
+            // Remove any max-height limits so the images can appear without a scroll bar
+            dialog.content.find('.oe-popup-content').css('max-height', 'unset');
             dialog.open();
 
             $('.' + controller.imgContainerClass).on('click', 'map area', function () {
