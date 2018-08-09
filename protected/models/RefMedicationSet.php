@@ -26,6 +26,7 @@
  * @property RefSet $refSet
  * @property User $createdUser
  * @property User $lastModifiedUser
+ * @property RefMedicationSetTaper[] $tapers
  */
 class RefMedicationSet extends BaseActiveRecordVersioned
 {
@@ -72,6 +73,7 @@ class RefMedicationSet extends BaseActiveRecordVersioned
 			'refSet' => array(self::BELONGS_TO, 'RefSet', 'ref_set_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'tapers' => array(self::HAS_MANY, RefMedicationSetTaper::class, 'ref_medication_set_id')
 		);
 	}
 
@@ -94,6 +96,7 @@ class RefMedicationSet extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+            'tapers' => 'Tapers'
 		);
 	}
 
