@@ -29,11 +29,11 @@
 } ?> 
     <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
 	<td class="prescription-label">
-		<?php echo $item->drug->tallmanlabel; ?>
+		<?php echo $item->refMedication->preferred_term; ?>
 		<?php if ($item->id) {?>
 			<input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php 
         } ?>
-		<input type="hidden" name="prescription_item[<?php echo $key ?>][ref_medicatino_id]" value="<?php echo $item->ref_medicatino_id?>" />
+		<input type="hidden" name="prescription_item[<?php echo $key ?>][ref_medication_id]" value="<?php echo $item->ref_medication_id?>" />
 	</td>
 	<td class="prescriptionItemDose">
 		<?php
@@ -41,37 +41,37 @@
             $class = '';
             if($item->dose === null || is_numeric($item->dose) || $item->dose === ''){
                 $class = "input-validate numbers-only";
-                if($item->drug->dose_unit === 'mg'){
+                if($item->dose_unit_term === 'mg'){
                     $class .= ' decimal';
                 }
             }
 
             echo CHtml::textField('prescription_item['.$key.'][dose]', $item->dose, array(
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'placeholder' => $item->drug->dose_unit,
+                'placeholder' => $item->dose_unit_term,
                 'class' => $class
             ));
 
         ?>
 	</td>
 	<td>
-		<?php echo CHtml::dropDownList('prescription_item['.$key.'][route_id]', $item->route_id, CHtml::listData(DrugRoute::model()->activeOrPk($item->route_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '-- Select --', 'class' => 'drugRoute')); ?>
+		<?php echo CHtml::dropDownList('prescription_item['.$key.'][route_id]', $item->route_id, CHtml::listData(RefMedicationRoute::model()->activeOrPk($item->route_id)->findAll(array()), 'id', 'term'), array('empty' => '-- Select --', 'class' => 'drugRoute')); ?>
 	</td>
 	<?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
 	<td class='route_option_cell'>
 	    
 		<?php if ($item->route && $options = $item->route->options ) {
-            echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', $item->route_option_id, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+            echo CHtml::dropDownList('prescription_item['.$key.'][laterality]', $item->laterality, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
         } else {
             echo '-';
         }?>
 	</td>
 	<?php }?>
 	<td class="prescriptionItemFrequencyId">
-		<?php echo CHtml::dropDownList('prescription_item['.$key.'][frequency_id]', $item->frequency_id, CHtml::listData(DrugFrequency::model()->activeOrPk($item->frequency_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '-- Select --')); ?>
+		<?php echo CHtml::dropDownList('prescription_item['.$key.'][frequency_id]', $item->frequency_id, CHtml::listData(RefMedicationFrequency::model()->activeOrPk($item->frequency_id)->findAll(array()), 'id', 'term'), array('empty' => '-- Select --')); ?>
 	</td>
 	<td class="prescriptionItemDurationId">
-		<?php echo CHtml::dropDownList('prescription_item['.$key.'][duration_id]', $item->duration_id, CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'), array('empty' => '-- Select --'))?>
+		<?php echo CHtml::dropDownList('prescription_item['.$key.'][duration]', $item->duration, CHtml::listData(DrugDuration::model()->activeOrPk($item->duration)->findAll(array('order' => 'display_order')), 'id', 'name'), array('empty' => '-- Select --'))?>
 	</td>
 	<td class="prescriptionItemActions">
 		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Commment</a>
@@ -105,13 +105,13 @@
             $class = '';
             if($taper->dose === null || is_numeric($taper->dose) || $item->dose === ''){
                 $class = "input-validate numbers-only";
-                if($item->drug->dose_unit === 'mg'){
+                if($item->dose_unit_term === 'mg'){
                     $class .= ' decimal';
                 }
             }
             echo CHtml::textField('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose, array(
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'placeholder' => $item->drug->dose_unit,
+                    'placeholder' => $item->dose_unit_term,
                     'class' => $class,
             ));
         ?>
