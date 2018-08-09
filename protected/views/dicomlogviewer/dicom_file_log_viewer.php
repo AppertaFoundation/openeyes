@@ -2,7 +2,7 @@
     <h1 class="badge admin">DICOM Log Viewer</h1>
     <form id="dicom_file_watcher">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <table class="standard">
             <thead>
             <tr>
                 <th>ID</th>

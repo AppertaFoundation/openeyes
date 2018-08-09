@@ -34,7 +34,7 @@ if (!isset($base_data_url)) {
 <div class="box admin">
 	<h2><?= $title ?></h2>
 	<form id="admin_commissioning_body_services">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="commissioning_body_services" /></th>

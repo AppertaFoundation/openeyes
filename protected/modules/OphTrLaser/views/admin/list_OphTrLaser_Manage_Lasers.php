@@ -20,7 +20,7 @@
 <?php $this->renderPartial('//base/_messages')?>
 <div class="box admin">
 	<form id="admin_manage_lasers">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 			<tr>
 				<th>Name</th>

@@ -154,7 +154,7 @@
           </tbody>
         </table>
           <?php if ($durations) { ?>
-            <table class="grid durations">
+            <table class="standard durations">
               <tfoot>
               <tr>
                 <td>
