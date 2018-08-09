@@ -28,7 +28,7 @@ $is_hidden = function () use ($element) {
 
 <div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic">
   <div class="cols-11 flex-layout flex-top col-gap">
-    <div class="cols-7">
+    <div class="cols-8">
       <table class="last-left">
         <colgroup>
           <col class="cols-2">
@@ -82,15 +82,16 @@ $is_hidden = function () use ($element) {
         </tbody>
       </table>
     </div>
-    <div class="cols-5">
+    <div class="cols-4">
       <table>
         <colgroup>
-          <col class="cols-2">
+          <col class="cols-4"/>
+          <col class="cols-8"/>
         </colgroup>
         <tbody>
         <tr>
           <td>Agents</td>
-          <td>
+          <td class="cols-8">
               <?php echo $form->multiSelectList(
                   $element,
                   'AnaestheticAgent',
@@ -125,9 +126,19 @@ $is_hidden = function () use ($element) {
                   null,
                   false,
                   false,
-                  array('field' => 3)
+                  array('field' => 12)
               ) ?>
           </td>
+          <style>
+            #OphTrOperationnote_Anaesthetic .multi-select-list {
+              /*"Inline style to force correct alignment*/
+              width: 228px;
+              text-align: right;
+            }
+            #OphTrOperationnote_Anaesthetic .multi-select-dropdown-container select{
+              max-width: 100%;
+            }
+          </style>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
             style="<?php if (!$element->anaesthetic_comment): ?>display: none;<?php endif ?>"

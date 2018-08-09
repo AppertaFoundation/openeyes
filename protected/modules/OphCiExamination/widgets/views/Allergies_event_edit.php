@@ -126,9 +126,9 @@ $required_allergy_ids = array_map(function ($r) {
       openButton: $('#add-allergy-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($allergy) {
-              return ['label' => $allergy->name, 'id' => $allergy->id];
+              return ['value' => $allergy->name, 'id' => $allergy->id];
           }, $element->getAllergyOptions())
-      ) ?>, {'multiSelect': true})],
+      )?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         allergyController.addEntry(selectedItems);
         allergyController.showTable();

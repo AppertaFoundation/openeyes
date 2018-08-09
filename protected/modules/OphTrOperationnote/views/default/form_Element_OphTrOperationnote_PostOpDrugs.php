@@ -30,6 +30,12 @@
         null,
         false,
         false,
-        array('field' => 3)
+        array('field' => 12)
     ) ?>
+  <style>
+    #div_Element_OphTrOperationnote_PostOpDrugs_Drugs .multi-select-selections li{
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+  </style>
 </div>

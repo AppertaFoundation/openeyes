@@ -19,6 +19,7 @@
 <?php
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+$co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographies -->
 <div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
@@ -115,13 +116,15 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             <span class="data">L <?php echo $correspondence_api->getLastRefraction($patient, 'left')?></span>
             <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient))?></span>
             <?php } else { ?>
-                    <span class="data-value not-available">Not Available</span>
+                    <span class="data-value not-available">Refractive data not entered</span>
             <?php }?>
         </div>
 
         <div class="group">
-            <span class="data">CVI Status:  <?php echo explode("(",$this->cviStatus)[0]; ?></span>
-            <span class="oe-date"><?php echo Helper::convertDate2NHS($this->patient->getOphInfo()->cvi_status_date );?></span>
+            <span class="data">CVI Status:  <?php echo explode('(',$this->cviStatus)[0]; ?></span>
+            <?php if (explode('(',$this->cviStatus)[0] == 'Unknown') { ?>
+                <span class="oe-date"> <?php echo $co_cvi_api->getCviSummaryDisplayDate($patient) ?></span>
+            <?php }?>
         </div>
     </div>
     <div class="flex-layout flex-top">
@@ -142,10 +145,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
                  <tr>
                    <td><?= $name ?></td>
                    <td>
-                    <span class="oe-eye-lat-icons">
-                       <i class="oe-i laterality <?php echo $side && ($side == 'Right' || $side == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
-                       <i class="oe-i laterality <?php echo $side && ($side == 'Left' || $side == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
-                    </span>
+                       <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                    </td>
                    <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
                  </tr>
@@ -167,10 +167,7 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
                 <tr>
                   <td> <?php echo $diagnosis->disorder->term?></td>
                   <td>
-                    <span class="oe-eye-lat-icons">
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
-                    </span>
+                    <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
                   </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->dateText) ?></span></td>
                 </tr>
@@ -178,17 +175,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               </tbody>
             </table>
 
-          </div><!-- data -->
-        </div>
-        <!-- group -->
-        <div class="group">
-          <div class="label">CVI Status</div>
-          <div class="data">
-              <?php echo $this->cviStatus; ?>
           </div>
         </div>
-        <!-- group-->
-      </div><!-- popup-overflow -->
+      </div>
 
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -202,15 +191,11 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-        <!-- group-->
           <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
               'patient' => $this->patient,
               'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
           )); ?>
 
-        <!-- group-->
-
-        <!-- group-->
 
         <div class="group">
           <div class="label">Family</div>
@@ -232,13 +217,10 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
               )); ?>
           </div>
         </div>
-      <!-- group-->
       </div><!-- 	.oe-popup-overflow -->
 
     </div><!-- .flex-layout -->
   </div>
-<!-- .row -->
-<!-- .patient-popup-quicklook -->
 
 <div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
 
@@ -250,9 +232,21 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         <div class="subtitle">Management Summaries</div>
 
-        <ul class="management-summaries">
+          <ul class="management-summaries">
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              foreach ($summaries as $service => $comments) {
+                  if (!$comments == "") {
+                      ?>
+                      <li>
+                          <h6><?php echo $service ?></h6>
+                          <p><?php echo $comments ?></p>
+                      </li>
+                  <?php } else { ?>
+                      <li></li>
+                  <?php }
+              } ?>
 
-        </ul>
+          </ul>
 
       </div><!-- .popup-overflow -->
 
@@ -273,113 +267,9 @@ $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
             <input id="create-problem-plan" type="text" placeholder="Add Problem or Plan">
             <div class="add-problem-plan-btn tiny" id="js-add-pp-btn"><i class="oe-i plus pro-theme"></i></div>
           </div>
-            
-        </div>
-      </div>
-      <!-- .oe-popup-overflow -->
-    </div>
-    <!-- .col-right -->
-  </div>
-  <!-- .row -->
-<!--  Old Code -->
-    <!-- Patient icon -->
-    <button
-        class="hide toggle-patient-summary-popup icon-patient-patient-id_small<?= count($this->warnings) ? '-warning' : ''; ?>">
-        Toggle patient summary
-    </button>
+        </div> <!-- .problems-plans -->
 
-    <!-- Quicklook icon -->
-    <button
-        class="toggle-patient-summary-popup icon-alert-quicklook"
-        data-hide-icon="icon-alert-cross"
-        data-show-icon="icon-alert-quicklook">
-        Toggle patient summary
-    </button>
-
-    <div class="panel patient-popup" id="patient-summary-popup">
-        <!-- Help hint -->
-        <span
-            class="help-hint"
-            data-text='{
-                "close": {
-                    "full": "Click to close",
-                    "short": "Close"
-                },
-                "lock": {
-                    "full": "Click to lock",
-                    "short": "Lock"
-                }
-            }'>
-            Click to lock
-        </span>
-
-        <div class="zone2">
-            <div class="row">
-                <div class="large-2 column label">Born</div>
-                <div class="large-10 column">
-                    <b><?= ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
-                    <?= $this->patient->dob ? '(' . $this->patient->getAge() . 'y' .
-                            ($this->patient->isDeceased() ? ' - Deceased' : '') . ')'
-                        : '' ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-2 column label">Address</div>
-                <div class="large-10 column data"><?= $this->patient->getSummaryAddress(', ') ?></div>
-            </div>
-        </div>
-        
-        <!-- Warnings -->
-        <?php if ($this->warnings) { ?>
-            <div class="alert-box patient with-icon">
-                <span>
-                    <?php foreach ($this->warnings as $warn) { ?>
-                        <strong><?php echo $warn['long_msg']; ?></strong>
-                        - <?php echo $warn['details']; ?><br />
-                    <?php } ?>
-                </span>
-            </div>
-        <?php } ?>
-        <div class="oe-popup-overflow">
-            <div class="summary-data">
-              <?php if ($this->ophthalmicDiagnoses) { ?>
-                <div class="row">
-                  <div class="large-2 column label">
-                    Ophthalmic Diagnoses
-                  </div>
-                  <div class="large-10 column data">
-                      <?php echo $this->ophthalmicDiagnoses; ?>
-                  </div>
-                </div>
-                <?php } ?>
-                <?php if ($this->systemicDiagnoses) { ?>
-                  <div class="row">
-                    <div class="large-2 column label">
-                      Systemic Diagnoses
-                    </div>
-                    <div class="large-10 column data">
-                        <?php echo $this->systemicDiagnoses; ?>
-                    </div>
-                  </div>
-                <?php } ?>
-              <div class="row">
-                <div class="large-2 column label">
-                  CVI Status
-                </div>
-                <div class="large-10 column data">
-                    <?php echo $this->cviStatus; ?>
-                </div>
-              </div>
-                <?php if ($this->operations) { ?>
-                  <div class="row surgical-history">
-                    <div class="large-2 column label">
-                      Surgical History
-                    </div>
-                    <div class="large-10 column data">
-                        <?php echo $this->operations; ?>
-                    </div>
-                  </div>
-                <?php } ?>
+      </div><!-- .popup-overflow -->
 
     </div><!-- .cols-right -->
   </div><!-- flex -->

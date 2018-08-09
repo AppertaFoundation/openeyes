@@ -29,6 +29,9 @@
           activity.fixed(false);
         }
       }
+    } else {
+      activity.useWrapper($('.js-hotlist-panel-wrapper'));
+      activity.latchable = true;
     }
 
     $('.activity-list').find('textarea').autosize();

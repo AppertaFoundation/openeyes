@@ -128,7 +128,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       let data = {};
       data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
       data.disorder_id = option.id;
-      data.disorder_display = option.label;
+      data.disorder_display = option.value;
       newRows.push(Mustache.render(template, data));
     });
 
