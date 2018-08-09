@@ -7,15 +7,17 @@
   HotList.prototype.create = function (activity) {
     var hotlist = this;
 
-    if ($('#js-nav-hotlist-btn').length == 0) {
+    if ($('#js-nav-hotlist-btn').length === 0) {
       return;
     }
 
     // The date to restrict he closed list to. Default to today
     this.selected_date = new Date;
 
+console.log($('#js-nav-hotlist-btn').data('fixable'));
+
     // Fix Activity Panel if design allows it to be fixable!
-    if ($('#js-nav-hotlist-btn').data('fixable') == true) {
+    if ($('#js-nav-hotlist-btn').data('fixable') === true) {
       checkBrowserSize();
 
       $(window).resize(function () {
