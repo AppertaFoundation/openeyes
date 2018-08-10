@@ -26,7 +26,9 @@ $key = 0;
   <div style="text-align: center">
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList('nearvisualacuity_unit_change', @$element->unit_id,
+          <?php echo CHtml::dropDownList(
+              'nearvisualacuity_unit_change',
+              @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
@@ -52,7 +54,7 @@ $key = 0;
       <div class="active-form data-group flex-layout">
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
-          <table class="blank near-va-readings"
+          <table class="cols-full blank near-va-readings"
                  style=" <?= !$element->{$eye_side . '_readings'}? 'display: none; ': '' ?> ">
             <tbody>
             <?php foreach ($element->{$eye_side.'_readings'} as $reading) {
@@ -133,8 +135,6 @@ $key = 0;
 </div>
 <script id="nearvisualacuity_reading_template" type="text/html">
 	<?php
-    $default_reading = OEModule\OphCiExamination\models\OphCiExamination_NearVisualAcuity_Reading::model();
-    $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_NearVisualAcuity_Reading', array(
             'name_stub' => CHtml::modelName($element).'[{{side}}_readings]',
             'key' => '{{key}}',
@@ -143,7 +143,6 @@ $key = 0;
             'val_options' => $val_options,
             'methods' => $methods,
             'asset_path' => $this->getAssetPathForElement($element),
-            'reading' => $default_reading,
             'selected_data' => array(
                 'reading_value' => '{{reading_value}}',
                 'reading_display' => '{{reading_display}}',

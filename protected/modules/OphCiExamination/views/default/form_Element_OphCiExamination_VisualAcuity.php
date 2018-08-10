@@ -144,8 +144,6 @@ if ($cvi_api) {
 </div>
 <script id="visualacuity_reading_template" type="text/html">
     <?php
-    $default_reading = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::model();
-    $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
         'name_stub' => CHtml::modelName($element) . '[{{side}}_readings]',
         'key' => '{{key}}',
@@ -154,7 +152,6 @@ if ($cvi_api) {
         'val_options' => $val_options,
         'methods' => $methods,
         'asset_path' => $this->getAssetPathForElement($element),
-        'reading' => $default_reading,
         'selected_data' => array(
             'reading_value' => '{{reading_value}}',
             'reading_display' => '{{reading_display}}',

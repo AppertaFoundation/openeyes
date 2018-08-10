@@ -1555,7 +1555,7 @@ function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
         var val = sel.val();
         var tooltip_text = '';
         if (val) {
-            var conversions = $(this).closest('tr').find('i.js-has-tooltip').data('tooltip');
+            var conversions = $(this).parents('.js-reading-record').find('.js-has-tooltip').data('tooltip');
             var approx = false;
             for (var i = 0; i < conversions.length; i++) {
                 tooltip_text += conversions[i].name + ": " + conversions[i].value;

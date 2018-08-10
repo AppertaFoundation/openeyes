@@ -29,19 +29,20 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 ?>
 <?php if (isset($selected_data['reading_display'])) { ?>
 
-<tr class="visualAcuityReading visual-acuity-reading" data-key="<?php echo $key ?>">
+<tr class="visualAcuityReading visual-acuity-reading js-reading-record" data-key="<?php echo $key ?>">
   <td class="cols-3">
       <?php if (isset($reading)  && $reading->id) { ?>
-        <input type="hidden" name="<?= $name_stub ?>[<?php echo $key ?>][id]" value="<?php echo @$reading->id ?>"/>
+          <?php echo CHtml::hiddenField( $name_stub .'['. $key.'][id]', @$reading->id)?>
       <?php } ?>
-    <input type="hidden" class="va-selector" name="<?= $name_stub ?>[<?php echo $key ?>][value]" value="<?= @$selected_data['reading_value'] ?>"/>
-          <?= @$selected_data['reading_display']?>
+
+      <?php echo CHtml::hiddenField( $name_stub .'['. $key.'][value]', @$selected_data['reading_value'], array('class' => 'va-selector'))?>
+       <?= @$selected_data['reading_display']?>
   </td>
   <td class="cols-1">
     <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip='<?= @$selected_data['tooltip'] ?>' data-tooltip-content="Please select a VA value"></i>
   </td>
   <td>
-    <input type="hidden" class="method_id" name="<?= $name_stub ?>[<?php echo $key ?>][method_id]" value="<?= @$selected_data['method_id'] ?>"/>
+      <?php echo CHtml::hiddenField( $name_stub .'['. $key.'][method_id]', @$selected_data['method_id'], array('class' => 'method_id'))?>
       <?= @$selected_data['method_display'] ?>
   </td>
   <td class="cols-2 readingActions">
