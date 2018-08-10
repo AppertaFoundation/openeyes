@@ -77,7 +77,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'default_frequency'         => 'INT NULL',
             'default_dose_unit_term'    => 'VARCHAR(255) NULL',
             'deleted_date'              => 'DATE NULL',
-            'default_duration'          => 'INT(10) unsigned NULL'
+            'default_duration'          => 'INT NULL'
         ), true);
         
         $this->createIndex('fk_ref_medications_idx', 'ref_medication_set', 'ref_medication_id');
@@ -92,7 +92,7 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->addForeignKey('fk_default_route', 'ref_medication_set', 'default_route', 'ref_medication_route', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_form', 'ref_medication_set', 'default_form', 'ref_medication_form', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_frequency', 'ref_medication_set', 'default_frequency', 'ref_medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
-        $this->addForeignKey('fk_duration', 'ref_medication_set', 'default_duration', 'drug_duration', 'id');
+        $this->addForeignKey('fk_duration', 'ref_medication_set', 'default_duration', 'ref_medication_duration', 'id');
         
         $this->createOETable('ref_medication_dose', array(
             'id'    => 'pk',
