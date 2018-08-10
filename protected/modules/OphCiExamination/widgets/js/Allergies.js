@@ -68,18 +68,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.dedupeAllergySelectors();
         });
 
-        this.$popupSelector.on('click','.add-icon-btn', function(e) {
+        this.$popupSelector.on('click', '.add-icon-btn', function (e) {
             e.preventDefault();
-            if (controller.$table.hasClass('hidden')){
+            if (controller.$table.hasClass('hidden')) {
                 controller.$table.removeClass('hidden');
             }
             controller.$table.show();
-          if($('#history-allergy-option').find('.selected').length) {
-            controller.addEntry();
-          }
+            if ($('#history-allergy-option').find('.selected').length) {
+                controller.addEntry();
+            }
         });
 
-        this.$table.on('click', 'i.trash', function(e) {
+        this.$table.on('click', 'i.trash', function (e) {
 
             e.preventDefault();
             $(this).closest('tr').remove();
@@ -89,11 +89,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
-                controller.$table.hide();
+                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
+                //in case of mandatory allegies are present
+                controller.setRadioButtonsToNo();
             }
             else {
-              controller.$popupSelector.show();
+                controller.$popupSelector.show();
+                controller.$table.find('tr:not(:first-child)').show();
+                //when we ticked the 'no allergies' checkbox all allergies were set to No(value 0)
+                //now when we un-tick the box we do not want allergies marked No by default - user must select something
+                controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
     };
@@ -125,32 +131,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param data
      * @returns {*}
      */
-    AllergiesController.prototype.createRows = function(allergies)
-    {
+    AllergiesController.prototype.createRows = function (allergies) {
         if (allergies === undefined)
             allergies = {};
         var newRows = [];
         var template = this.templateText;
         var tableSelector = this.tableSelector;
         $(allergies).each(function (e) {
-          var data = {};
-          data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
-          data['allergy_id'] = this['id'];
-          data['allergy_display'] = this['value'];
-          newRows.push( Mustache.render(
-             template,
-            data ));
+            var data = {};
+            data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
+            data['allergy_id'] = this['id'];
+            data['allergy_display'] = this['value'];
+            newRows.push(Mustache.render(
+                template,
+                data));
         });
         return newRows;
     };
 
-    AllergiesController.prototype.updateNoAllergiesState = function()
-    {
+    AllergiesController.prototype.updateNoAllergiesState = function () {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noAllergiesWrapper.show();
             this.$table.hide();
         } else {
-            this.$popupSelector.show();
+            this.$popupSelector.css({'visibility':'visible'});
             this.$noAllergiesWrapper.hide();
             this.$noAllergiesFld.prop('checked', false);
         }
@@ -159,8 +163,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * Add a family history section if its valid.
      */
-    AllergiesController.prototype.addEntry = function(allergies)
-    {
+    AllergiesController.prototype.addEntry = function (allergies) {
         this.$table.find('tbody').append(this.createRows(allergies));
         $('.flex-item-bottom').find('.selected').removeClass('selected');
         this.dedupeAllergySelectors();
@@ -171,7 +174,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * Show the table. (useful for when adding a row to an empty and thus hidden table)
      */
     AllergiesController.prototype.showTable = function () {
-      this.$table.show();
+        this.$table.show();
     };
 
     /**
@@ -182,15 +185,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var self = this;
         var selectedAllergies = [];
 
-        self.$element.find(self.allergySelector).each(function() {
+        self.$element.find(self.allergySelector).each(function () {
             var value = this.getAttribute('value');
-            if (value && !(value == 17)) {
+            if (value && (value !== 17)) {
                 selectedAllergies.push(value);
             }
         });
 
         self.$element.find('li').each(function () {
-            if(inArray(this.getAttribute('data-id'), selectedAllergies)){
+            if (inArray(this.getAttribute('data-id'), selectedAllergies)) {
                 $(this).hide();
             } else {
                 $(this).show();
@@ -200,4 +203,3 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     exports.AllergiesController = AllergiesController;
 
 })(OpenEyes.OphCiExamination);
-
