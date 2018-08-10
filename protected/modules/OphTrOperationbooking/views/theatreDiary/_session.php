@@ -148,7 +148,7 @@
               <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
                   $msgs = array();
                   foreach ($warnings as $warn) {
-                      $msgs[] = $warn['short_msg'];
+                      $msgs[] = $warn['long_msg']." - ".$warn['details'];
                   }
                   ?>
                 <i class="oe-i exclamation medium pad js-has-tooltip"

@@ -30,7 +30,7 @@
 			<?php
             } else {?>
 				<div class="pagination"></div>
-				<table class="grid audit-logs">
+				<table class="standard audit-logs">
 					<thead>
 						<tr>
 							<th>Timestamp</th>

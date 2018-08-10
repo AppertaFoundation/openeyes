@@ -47,7 +47,7 @@
 <div class="box admin">
 	<h2>Sites</h2>
 	<form id="admin_institution_sites">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>ID</th>

@@ -41,7 +41,6 @@ foreach ($this->patient->episodes as $ep) {
         $read_only_diagnoses[] = [
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
-            'date' => $ep->disorder_date,
             'subspecialty' => $ep->getSubspecialtyText(),
         ];
     }
@@ -58,15 +57,10 @@ foreach ($this->patient->episodes as $ep) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table id="<?= $model_name ?>_diagnoses_table" class="cols-10">
-        <thead>
-        <tr>
-            <th>Diagnosis</th>
-            <th>Eye</th>
-            <th>Principal</th>
-            <th>Date (optional)</th>
-            <th></th>
-        </tr>
-        </thead>
+        <colgroup>
+            <col class="cols-6">
+            <col class="cols-1" span="3">
+        </colgroup>
         <tbody id="OphCiExamination_diagnoses" class="js-diagnoses">
         <?php
 
@@ -77,7 +71,6 @@ foreach ($this->patient->episodes as $ep) {
 
         $row = $row_count + 1;
         foreach ($element->diagnoses as $row_count => $diagnosis) {
-
             $row_count = $row + $row_count;
             $this->renderPartial(
                 'DiagnosesEntry_event_edit',
@@ -95,10 +88,11 @@ foreach ($this->patient->episodes as $ep) {
         </tbody>
     </table>
 
-  <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
-    <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
-      <i class="oe-i plus pro-theme"></i>
-    </button>
+    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
+        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+    </div>
 
     <script type="text/template" class="entry-template hidden">
         <?php
@@ -110,6 +104,7 @@ foreach ($this->patient->episodes as $ep) {
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
                 'removable' => true,
+                'is_template' => true,
 
                 'values' => array(
                     'id' => '',
@@ -136,27 +131,27 @@ foreach ($this->patient->episodes as $ep) {
             subspecialtyRefSpec: '<?=$firm->subspecialty->ref_spec;?>'
         });
         $('#OphCiExamination_diagnoses').data('controller', diagnosesController);
-      <?php
-      $firm_id = Yii::app()->session['selected_firm_id'];
-      $firm = \Firm::model()->findByPk($firm_id);
+        <?php
+        $firm_id = Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
 
-      $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
-      ?>
+        $disorder_list = CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        ?>
 
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-ophthalmic-diagnoses'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($disorder_item) {
-              return ['value' =>$disorder_item['label'], 'id' => $disorder_item['id']];
-          }, $disorder_list)
-      ) ?>, {'multiSelect': true})],
-      searchOptions: {
-        searchSource: diagnosesController.options.searchSource,
-      },
-      onReturn: function (adderDialog, selectedItems) {
-        diagnosesController.addEntry(selectedItems);
-        return true;
-      }
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-ophthalmic-diagnoses'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($disorder_item) {
+                    return ['value' => $disorder_item['label'], 'id' => $disorder_item['id']];
+                }, $disorder_list)
+            ) ?>, {'multiSelect': true})],
+            searchOptions: {
+                searchSource: diagnosesController.options.searchSource,
+            },
+            onReturn: function (adderDialog, selectedItems) {
+                diagnosesController.addEntry(selectedItems);
+                return true;
+            }
+        });
     });
-  });
 </script>

@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Wards</h2>
 	<form id="admin_wards">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="wards" /></th>

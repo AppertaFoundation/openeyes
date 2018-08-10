@@ -20,7 +20,7 @@
 	One or more patients has no GP practice, please correct in PAS before printing GP letter.
 </div>
 <div id="transportList">
-	<table class="grid transport">
+	<table class="standard transport">
 		<thead>
 			<tr>
 				<th>Hospital number</th>

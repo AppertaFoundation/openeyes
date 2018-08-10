@@ -24,7 +24,7 @@
     <h2>DICOM File Watcher</h2>
     <form id="dicom_file_watcher">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <table class="standard">
             <thead>
             <tr>
                 <th>Select DICOM File</th>

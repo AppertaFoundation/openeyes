@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Operation name rules</h2>
 	<form id="operation_name_rules">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 			<tr>
 				<th><input type="checkbox" id="checkall" class="operation_name_rules" /></th>

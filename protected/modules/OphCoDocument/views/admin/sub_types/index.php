@@ -27,7 +27,7 @@
 
     <form id="admin_<?=get_class(OphCoDocument_Sub_Types::model());?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <table class="standard">
             <thead>
             <tr>
                 <th>Name</th>

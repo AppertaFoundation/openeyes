@@ -178,25 +178,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     }
 
 
-    public function getEyeIdFromPost(array $data){
-
-        $eye_id = null;
-        $left_eye = \Helper::elementFinder('left_eye', $data);
-        $right_eye = \Helper::elementFinder('right_eye', $data);
-        $na_eye = \Helper::elementFinder('na_eye', $data);
-
-
-
-        if($left_eye && $right_eye){
-            $eye_id = \EYE::BOTH;
-        } else if($left_eye){
-            $eye_id = \EYE::LEFT;
-        } else if($right_eye){
-            $eye_id = \EYE::RIGHT;
-        } else if($na_eye){
-            $eye_id = -9;
-        }
-
-        return $eye_id;
+    public function getEyeIdFromPost(array $data)
+    {
+        return \Helper::getEyeIdFromArray($data);
     }
 }
