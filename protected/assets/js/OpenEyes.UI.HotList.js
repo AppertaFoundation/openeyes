@@ -12,9 +12,7 @@
     }
 
     // The date to restrict he closed list to. Default to today
-    this.selected_date = new Date;
-
-console.log($('#js-nav-hotlist-btn').data('fixable'));
+    this.selected_date = new Date();
 
     // Fix Activity Panel if design allows it to be fixable!
     if ($('#js-nav-hotlist-btn').data('fixable') === true) {
