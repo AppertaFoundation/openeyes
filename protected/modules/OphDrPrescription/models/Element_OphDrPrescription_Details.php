@@ -193,10 +193,10 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $params = array(':subspecialty_id' => $subspecialty_id);
 
-        return DrugSet::model()->findAll(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND active = 1',
-                    'order' => 'name',
-                    'params' => $params,
+        return RefSet::model()->with("refSetRules")->findAll(array(
+            "condition" => "refSetRules.subspecialty_id = :subspecialty_id AND usage_code = 'Drug' AND refSetRules.deleted_date IS NULL",
+            "order" => "name",
+            "params" => $params
         ));
     }
 

@@ -570,13 +570,16 @@ class DefaultController extends BaseEventTypeController
                 $item->tapers = $tapers;
             }
         } else {
-            if (is_a($source, 'DrugSetItem')) {
+            if (is_a($source, RefMedicationSet::class)) {
 
-                // Source is an drug set item which contains frequency and duration data
-                $item->drug_id = $source->drug_id;
-                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'dispense_condition_id', 'dispense_location_id') as $field) {
-                    $item->$field = $source->$field;
-                }
+                /** @var RefMedicationSet $source */
+                $item->ref_medication_id = $source->ref_medication_id;
+                $item->frequency_id = $source->default_frequency;
+                $item->form_id = $source->default_form;
+                $item->dose = $source->default_dose;
+                $item->dose_unit_term = $source->default_dose_unit_term;
+                $item->route_id = $source->default_route;
+
 
                 if ($source->tapers) {
                     $tapers = array();
