@@ -11,8 +11,9 @@
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;
     var sides = ['left', 'right'];
     var chart_Med = {};
+    var series_no = Math.max(Object.keys(meds_data['left']).length, Object.keys(meds_data['right']).length);
     for (var i in sides) {
-      setSeriesNo(Object.keys(meds_data[sides[i]]).length);
+      setSeriesNo(series_no);
       chart_Med[sides[i]] = new Highcharts.chart('highcharts-Meds-'+sides[i], optionsMeds);
       drawMedsSeries(chart_Med[sides[i]], meds_data[sides[i]], sides[i]);
     }
