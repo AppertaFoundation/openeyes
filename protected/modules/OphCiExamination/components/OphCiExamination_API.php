@@ -1137,7 +1137,8 @@ class OphCiExamination_API extends \BaseAPI
         if ($management_summaries) {
             $summary = [];
             foreach ($management_summaries as $summaries) {
-                $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
+                $services = explode(" ", $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name);
+                $service = $services[0];
                 $created_date = date_format(date_create($summaries->event->event_date),'d.m.Y');
                 if(!array_key_exists($service, $summary)){
                     $summary[$service] = $summaries->comments;
