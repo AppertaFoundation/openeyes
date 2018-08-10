@@ -159,7 +159,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         rmf.id  AS ref_form_id,
                         rmf.default_dose_unit_term AS ref_dose_term,
                         rmr.id AS ref_route_id,           
-                        rmfreq.id AS ref_freq_id
+                        rmfreq.id AS ref_freq_id,
+                        d.default_duration_id
                     FROM ".$drugs_table."               AS d
                     LEFT JOIN drug_form                 AS df           ON d.form_id = df.id
                     LEFT JOIN ref_medication_form       AS rmf          ON rmf.default_dose_unit_term = df.name
@@ -190,7 +191,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $drug_route_id = ($drug['ref_route_id'] == null) ? 'NULL' : $drug['ref_route_id'];
                 $drug_freq_id = ($drug['ref_freq_id'] == null) ? 'NULL' : $drug['ref_freq_id'];
                 $default_dose_unit = ($drug['dose_unit'] == null) ? 'NULL' : $drug['dose_unit'];
-                
+                $default_duration_id = ($drug['default_duration_id'] == null) ? 'NULL' : $drug['default_duration_id'];
+
                 /* Add medication to the 'Legacy' set */
                 Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
@@ -202,7 +204,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 if($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         Yii::app()->db->createCommand("
-                    INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
+                    INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term, default_duration )
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM ref_set WHERE `name` = :ref_set_name AND id IN 
@@ -212,7 +214,9 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                          ".$drug_form_id.",
                          ".$drug_route_id.",
                          ".$drug_freq_id." ,
-                         '".$default_dose_unit."' )
+                         '".$default_dose_unit."',
+                          ".$default_duration_id."
+                          )
                 ")
                             ->bindValue(':ref_set_name', $drug_set['name'])
                             ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
