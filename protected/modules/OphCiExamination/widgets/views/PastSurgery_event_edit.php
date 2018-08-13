@@ -31,6 +31,7 @@ $model_name = CHtml::modelName($element);
                 <col class="cols-3">
                 <col class="cols-1">
             </colgroup>
+
             <tbody>
             <?php
             $row_count = 0;

@@ -62,11 +62,16 @@
             </div>
             <div class="col-6" id="js-listview-risks-full" style="display: none;">
             <table class="last-left">
+              <colgroup>
+                <col class="cols-4">
+                <col class="cols-4">
+                <col class="cols-4">
+              </colgroup>
             <thead>
               <tr>
-                <th class="cols-4">Present</th>
-                <th class="cols-4">Not Checked</th>
-                <th class="cols-4">Not Present</th>
+                <th>Present</th>
+                <th>Not Checked</th>
+                <th>Not Present</th>
               </tr>
             </thead>
             <tbody>

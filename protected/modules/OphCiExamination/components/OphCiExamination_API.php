@@ -2150,7 +2150,7 @@ class OphCiExamination_API extends \BaseAPI
                 if ($i === 0) {
                     $lCCT = $this->getCCTLeftNoUnits($patient);
                     $rCCT = $this->getCCTRightNoUnits($patient);
-                    $output .= '<tr><th class="large-6">RE [' . $rCCT . ']</th><th class="large-6">LE [' . $lCCT . ']</th></tr>';
+                    $output .= '<colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [' . $rCCT . ']</th><th>LE [' . $lCCT . ']</th></tr>';
                 }
 
                 $output .= '<tr>';

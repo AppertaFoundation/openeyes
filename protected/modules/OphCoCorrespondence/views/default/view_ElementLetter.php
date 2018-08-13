@@ -24,7 +24,7 @@ if($correspondeceApp === "on") {
         <table class="cols-full">
             <tr>
                 <td class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
-                <td class="large-9 column end">
+                <td class="cols-9 column end">
                     <div class="data-value" style="text-align: right">
                         <?php
                         if($element->is_signed_off == NULL){

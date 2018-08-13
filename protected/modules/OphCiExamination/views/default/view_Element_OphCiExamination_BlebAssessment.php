@@ -22,12 +22,18 @@
     <div class="data-group">
         <?php if ($element->hasEye($eye_side)): ?>
           <table>
+            <colgroup>
+              <col class="cols-3">
+              <col class="cols-3">
+              <col class="cols-3">
+              <col class="cols-3">
+            </colgroup>
             <thead>
               <tr>
-                <th class="center cols-3">Area (Central)</th>
-                <th class="center cols-3">Area (Maximal)</th>
-                <th class="center cols-3">Height</th>
-                <th class="center cols-3">Vascularity</th>
+                <th class="center">Area (Central)</th>
+                <th class="center">Area (Maximal)</th>
+                <th class="center">Height</th>
+                <th class="center">Vascularity</th>
               </tr>
               </thead>
               <tbody>
