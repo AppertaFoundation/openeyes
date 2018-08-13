@@ -25,6 +25,10 @@ $(document).ready(function(){
 		}
 	});
 
+    $('#event-content').on('change', 'select, input, textarea', function() {
+        $(this).closest('.element').addClass('js-changed');
+    });
+
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
 			$(this).prev().click();
@@ -134,8 +138,20 @@ $(document).ready(function(){
 
   $(this).on('click', '.js-remove-element', function (e) {
     e.preventDefault();
-    var parent = $(this).closest('.element');
-    removeElement(parent);
+    var $parent = $(this).closest('.element');
+      if (element_close_warning_enabled === 'on' && $parent.hasClass('js-changed')) {
+          var dialog = new OpenEyes.UI.Dialog.Confirm({
+              content: "Are you sure that you wish to close the " +
+              $parent.data('element-type-name') +
+              " element? All data in this element will be lost"
+          });
+          dialog.on('ok', function () {
+              removeElement($parent);
+          }.bind(this));
+          dialog.open();
+      } else {
+          removeElement($parent);
+      }
   });
 
   $(this).on('click', '.js-tiles-collapse-btn', function () {
