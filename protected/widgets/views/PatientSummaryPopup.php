@@ -97,17 +97,19 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             ?>
             <div class="group">
                 <?php if ($lDate == $rDate) { ?>
-                    <span class="data">R <?php echo $visualAcuityRight ?></span>
-                    <span class="data"><?php echo $exam_api->getLetterVAMethodName($patient, 'right') ?></span>
-                    <span class="data">L <?php echo $visualAcuityLeft ?></span>
-                    <span class="data"><?php echo $exam_api->getLetterVAMethodName($patient, 'left') ?></span>
+                    <span class="data">R <?php echo $visualAcuityRight ? $visualAcuityRight : 'NA'; ?></span>
+                    <span class="data" style="display : <?php echo $visualAcuityRight ? '' : 'none' ?>"><?php echo $exam_api->getLetterVAMethodName($patient, 'right') ?></span>
+                    <span class="data">L <?php echo $visualAcuityLeft ? $visualAcuityLeft : 'NA' ?></span>
+                    <span class="data" style="display : <?php echo $visualAcuityLeft ? '' : 'none' ?>"><?php echo $exam_api->getLetterVAMethodName($patient, 'left') ?></span>
                     <span class="oe-date"
                           style="text-align: left;"><?php echo Helper::convertDate2NHS($rDate); ?></span>
                 <?php } else { ?>
-                    <span class="data">R <?php echo $visualAcuityRight ?></span>
-                    <span class="oe-date"><?php echo Helper::convertDate2NHS($rDate); ?></span>
-                    <span class="data">L <?php echo $visualAcuityLeft ?></span>
-                    <span class="oe-date" style="text-align: left"><?php echo Helper::convertDate2NHS($lDate); ?></span>
+                    <span class="data">R <?php echo $visualAcuityRight ? $visualAcuityRight : 'NA'; ?></span>
+                    <span class="data" style="display : <?php echo $visualAcuityRight ? '' : 'none' ?>"><?php echo $exam_api->getLetterVAMethodName($patient, 'right') ?></span>
+                    <span class="oe-date" style="display : <?php echo $visualAcuityRight ? '' : 'none' ?>"><?php echo Helper::convertDate2NHS($rDate); ?></span>
+                    <span class="data">L <?php echo $visualAcuityLeft ? $visualAcuityLeft : 'NA' ?></span>
+                    <span class="data" style="display : <?php echo $visualAcuityLeft ? '' : 'none' ?>"><?php echo $exam_api->getLetterVAMethodName($patient, 'left') ?></span>
+                    <span class="oe-date" style="text-align: left; display : <?php echo $visualAcuityLeft ? '' : 'none' ?>"><?php echo Helper::convertDate2NHS($lDate); ?></span>
                 <?php } ?>
             </div>
         <?php } else { ?>
@@ -121,8 +123,8 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                 $leftRefraction = $correspondence_api->getLastRefraction($patient, 'left');
                 $rightRefraction = $correspondence_api->getLastRefraction($patient, 'right');
                 if($leftRefraction != null || $rightRefraction != null){?>
-            <span class="data">R <?php echo $rightRefraction?></span>
-            <span class="data">L <?php echo $leftRefraction?></span>
+            <span class="data">R <?php echo $rightRefraction ? $rightRefraction : 'NA'?></span>
+            <span class="data">L <?php echo $leftRefraction ? $leftRefraction : 'NA' ?></span>
             <span class="oe-date" style="text-align: left"><?php echo  Helper::convertDate2NHS($correspondence_api->getLastRefractionDate($patient))?></span>
             <?php } else { ?>
                     <span class="data-value not-available">Refraction: NA</span>
