@@ -50,7 +50,7 @@
   <main class="oe-full-main">
 
       <?php
-      $this->renderPartial('_trialList', array(
+      $this->renderPartial('_trial_list', array(
           'dataProvider' => $interventionTrialDataProvider,
           'title' => 'Intervention Trials',
           'sort_by' => $sort_by,
@@ -59,7 +59,7 @@
       ?>
 
       <?php
-      $this->renderPartial('_trialList', array(
+      $this->renderPartial('_trial_list', array(
           'dataProvider' => $nonInterventionTrialDataProvider,
           'title' => 'Non-Intervention Trials',
           'sort_by' => $sort_by,
