@@ -182,6 +182,12 @@ class HistoryRisksManager
     }
 
     /**
+     * TODO
+     * This will be rewritten to accept this params:
+     * $params (['patient' => \Patient, 'ref_medications' => \RefMedication[])
+     *
+     * also, find all event triggering points (eg. like dispatch('after_medications_save'...))
+     *
      * A relatively simple handler for receiving notifications that drugs and/or medication drugs
      * have been added to the patient, so the relevant risks should be stored on the patient.
      *

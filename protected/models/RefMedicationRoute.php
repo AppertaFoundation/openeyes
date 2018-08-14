@@ -149,6 +149,11 @@ class RefMedicationRoute extends BaseActiveRecordVersioned
         return $this;
     }
 
+    public function getOptions($id = null)
+    {
+        return RefMedicationLaterality::model()->findAll();
+    }
+
     public function __toString()
     {
         return $this->term;

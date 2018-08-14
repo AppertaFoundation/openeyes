@@ -2,19 +2,42 @@
 
 class m180806_090754_prescription_events_import extends CDbMigration
 {
-	public function up()
-	{
+    public function up()
+    {
         echo "> This migration may take a several seconds!\n";
-        $this->runPrescriptionImport();
+        $this->dropTapersFK()
+             ->runPrescriptionImport()
+             ->applyTapersFK();
+
+        return true;
     }
 
-	public function down()
-	{
+    public function down()
+    {
         $this->execute("SET foreign_key_checks = 0");
-
         $this->execute("DELETE FROM event_medication_uses WHERE usage_type = 'OphDrPrescription' ");
         $this->execute("SET foreign_key_checks = 1");
-	}
+
+        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
+        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(10) UNSIGNED NOT NULL');
+
+        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = temp_prescription_item_id");
+
+        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'ophdrprescription_item', 'id');
+    }
+
+    private function dropTapersFK()
+    {
+        $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
+        $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(11) NOT NULL');
+        return $this;
+    }
+
+    private function applyTapersFK()
+    {
+        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'event_medication_uses', 'id');
+        return $this;
+    }
 
     /*
      * Prescription events import
@@ -115,7 +138,6 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         duration, 
                         dispense_location_id, 
                         dispense_condition_id,  
-                        temp_prescription_item_id, 
                         start_date_string_YYYYMMDD,
                         comments
                     ) values(
@@ -131,7 +153,6 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         ".$event['duration_id'].",
                         ".$ref_dispense_condition_id.",
                         ".$ref_dispense_location_id.",
-                        ".$event['temp_prescription_item_id'].",
                         '".$event['event_date']."',
                         :comments
                          )
@@ -139,7 +160,16 @@ class m180806_090754_prescription_events_import extends CDbMigration
                 $command->bindParam(':comments', $event['comments']);
                 $command->execute();
                 $command = null;
+
+                $last_id = Yii::app()->db->getLastInsertID();
+
+                Yii::app()->db->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id, temp_prescription_item_id =:old_id WHERE item_id = :old_id")
+                    ->bindParam(":old_id", $event['temp_prescription_item_id'])
+                    ->binParam(":new_id", $last_id)
+                    ->execute();
             }
         }
+
+        return $this;
     }
 }

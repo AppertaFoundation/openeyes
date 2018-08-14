@@ -363,13 +363,16 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['prescription_item']) {
+        if (get_class($element) == 'Element_OphDrPrescription_Details' && @$data['Element_OphDrPrescription_Details']['items']) {
 
             // Form has been posted, so we should return the submitted values instead
             $items = array();
-            foreach ($data['prescription_item'] as $item) {
+            foreach ($data['Element_OphDrPrescription_Details']['items'] as $item) {
                 $item_model = new OphDrPrescription_Item();
                 $item_model->attributes = $item;
+                if($item_model->start_date_string_YYYYMMDD == '') {
+                    $item_model->start_date = substr($this->event->event_date, 0, 10);
+                }
                 if (isset($item['taper'])) {
                     $tapers = array();
                     foreach ($item['taper'] as $taper) {
@@ -395,7 +398,8 @@ class DefaultController extends BaseEventTypeController
     {
         foreach ($this->open_elements as $element) {
             if (get_class($element) == 'Element_OphDrPrescription_Details') {
-                $element->updateItems(isset($data['prescription_item']) ? $data['prescription_item'] : array());
+                /** @var Element_OphDrPrescription_Details $element */
+                $element->updateItems(isset($data['Element_OphDrPrescription_Details']['items']) ? $data['Element_OphDrPrescription_Details']['items'] : array());
             }
         }
     }
@@ -579,6 +583,7 @@ class DefaultController extends BaseEventTypeController
                 $item->dose = $source->default_dose;
                 $item->dose_unit_term = $source->default_dose_unit_term;
                 $item->route_id = $source->default_route;
+                $item->duration = $source->default_duration;
 
 
                 if ($source->tapers) {
@@ -608,14 +613,14 @@ class DefaultController extends BaseEventTypeController
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {
-                    $route_option_id = DrugRouteOption::model()->find('name = :eye_name',
+                    $lat_id = RefMedicationLaterality::model()->find('name = :eye_name',
                         array(':eye_name' => $principal_eye->name));
-                    $item->route_option_id = ($route_option_id) ? $route_option_id : null;
+                    $item->laterality = ($lat_id) ? $lat_id : null;
                 }
                 //check operation note eye and use instead of original diagnosis
                 if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
                     if ($apieye = $api->getLastEye($this->patient)) {
-                        $item->route_option_id = $apieye;
+                        $item->laterality = $apieye;
                     }
                 }
             }

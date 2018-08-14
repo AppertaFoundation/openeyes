@@ -185,7 +185,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return DrugSet[]
+     * @return RefSet[]
      */
     public function drugSets()
     {
@@ -301,7 +301,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $existing_item_ids = array();
             $existing_taper_ids = array();
             // can't rely on relation, as this will have been set already
-            foreach (OphDrPrescription_Item::model()->findAll('prescription_id = :pid', array(':pid' => $this->id)) as $item) {
+            foreach (OphDrPrescription_Item::model()->findAll("event_id = :eid AND usage_type = 'OphDrPrescription'", array(':eid' => $this->event_id)) as $item) {
                 $existing_item_ids[$item->id] = $item->id;
                 foreach ($item->tapers as $taper) {
                     $existing_taper_ids[$taper->id] = $taper->id;
@@ -317,26 +317,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 } else {
                     // Item is new
                     $item_model = new OphDrPrescription_Item();
-                    $item_model->prescription_id = $this->id;
-                    $item_model->drug_id = $item['drug_id'];
+                    $item_model->event_id = $this->event_id;
+                    $item_model->ref_medication_id = $item['ref_medication_id'];
                 }
 
                 // Save main item attributes
-                $item_model->dose = $item['dose'];
-                $item_model->route_id = $item['route_id'];
 
-                if (isset($item['route_option_id'])) {
-                    $item_model->route_option_id = $item['route_option_id'];
-                } else {
-                    $item_model->route_option_id = null;
-                }
-                $item_model->frequency_id = $item['frequency_id'];
-                $item_model->duration_id = $item['duration_id'];
-                $item_model->dispense_condition_id = $item['dispense_condition_id'];
-                $item_model->dispense_location_id = $item['dispense_location_id'];
-                $item_model->comments = isset($item['comments']) ? $item['comments'] : null;
-
-                $item_model->save();
+                $item_model->setAttributes($item);
+                $item_model->start_date = substr($this->event->event_date, 0, 10);
 
                 // Tapering
                 $new_tapers = (isset($item['taper'])) ? $item['taper'] : array();
@@ -365,7 +353,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+                'ref_medications' => array_map(function($item) {return $item->refMedication; }, $this->items)
             ));
         }
     }
