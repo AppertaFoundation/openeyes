@@ -18,11 +18,11 @@
 
   <div class="worklist-summary flex-layout">
     <h2>
-        <?= $title ?>: viewing <?= $from ?> - <?= $to ?> of <?= $dataProvider->totalItemCount ?>
+        <?= $title ?>
     </h2>
   </div>
 
-  <table class="standard clickable-rows">
+  <table class="standard clickable-rows js-trial-list">
     <colgroup>
       <col class="cols-1">
       <col class="cols-2">

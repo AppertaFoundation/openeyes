@@ -24,10 +24,7 @@
       <input class="cols-5" placeholder="to" type="text">
     </div>
 
-
     <h3>Actions</h3>
-
-
       <?php if (Yii::app()->user->checkAccess('TaskCreateTrial')): ?>
         <ul>
           <li>
@@ -44,11 +41,9 @@
             <?php endif ?>
         </ul>
       <?php endif; ?>
-
   </nav>
 
   <main class="oe-full-main">
-
       <?php
       $this->renderPartial('_trial_list', array(
           'dataProvider' => $interventionTrialDataProvider,
@@ -57,7 +52,6 @@
           'sort_dir' => $sort_dir,
       ));
       ?>
-
       <?php
       $this->renderPartial('_trial_list', array(
           'dataProvider' => $nonInterventionTrialDataProvider,
@@ -70,7 +64,7 @@
 </div>
 
 <script type="text/javascript">
-  $('#patient-grid tr.clickable').click(function () {
+  $('.js-trial-list .clickable').click(function () {
     window.location.href = '<?= $this->createUrl('view')?>/' + $(this).attr('id').match(/[0-9]+/);
     return false;
   });
