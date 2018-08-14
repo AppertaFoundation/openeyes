@@ -43,18 +43,20 @@
       var $field = $('#' + errorObject[k]);
       $field.closest('.element').find('.element-title').addClass('error');
       if ($field.length) {
-			  if ($field.is('input[type="text"]')||$field.is('textarea')||$field.is('select') || $field.is('tr')) {
+			  if ($field.is('input')||$field.is('textarea')||$field.is('select') || $field.is('tr')) {
           $field.addClass('error');
+          $field.parent().addClass('highlight error');
+        } else if ($field.is('label')){
+          $field.addClass('highlight error');
         } else {
-          if(!$field.parent().hasClass('highlighted-error')) {
-            $field.addClass('highlighted-error');
+          if(!$field.parent().hasClass('error')) {
+            $field.addClass('highlight error');
           }
         }
 			} else {
 				if(! $('[id*="' + errorObject[k] + '"]').hasClass('error')) {
           $('[id*="' + errorObject[k] + '"]:not(:hidden)').addClass('error');
-          $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlighted-error');
-
+          $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlight error');
 
         }
 			}
