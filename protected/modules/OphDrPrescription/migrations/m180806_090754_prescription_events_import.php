@@ -165,7 +165,7 @@ class m180806_090754_prescription_events_import extends CDbMigration
 
                 Yii::app()->db->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id, temp_prescription_item_id =:old_id WHERE item_id = :old_id")
                     ->bindParam(":old_id", $event['temp_prescription_item_id'])
-                    ->binParam(":new_id", $last_id)
+                    ->bindParam(":new_id", $last_id)
                     ->execute();
             }
         }
