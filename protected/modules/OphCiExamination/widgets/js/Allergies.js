@@ -138,13 +138,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var template = this.templateText;
         var tableSelector = this.tableSelector;
         $(allergies).each(function (e) {
-            var data = {};
-            data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
-            data['allergy_id'] = this['id'];
-            data['allergy_display'] = this['value'];
-            newRows.push(Mustache.render(
-                template,
-                data));
+          var data = {};
+          data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
+          data['allergy_id'] = this['id'];
+          data['allergy_display'] = this['label'];
+          newRows.push( Mustache.render(
+             template,
+            data ));
         });
         return newRows;
     };

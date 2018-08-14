@@ -124,7 +124,7 @@ $required_diagnoses_ids = array_map(function ($r) {
       openButton: $('#add-history-systemic-diagnoses'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($disorder) {
-              return ['value' => $disorder->term, 'id' => $disorder->id];
+              return ['label' => $disorder->term, 'id' => $disorder->id];
           }, CommonSystemicDisorder::getDisorders())
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {

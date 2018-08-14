@@ -129,19 +129,18 @@ $required_allergy_ids = array_map(function ($r) {
             });
         });
 
-        new OpenEyes.UI.AdderDialog({
-            openButton: $('#add-allergy-btn'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($allergy) {
-                    return ['value' => $allergy->name, 'id' => $allergy->id];
-                }, $element->getAllergyOptions())
-            )?>, {'multiSelect': true})],
-            onReturn: function (adderDialog, selectedItems) {
-                allergyController.addEntry(selectedItems);
-                allergyController.showTable();
-                return true;
-            }
-        });
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-allergy-btn'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($allergy) {
+              return ['label' => $allergy->name, 'id' => $allergy->id];
+          }, $element->getAllergyOptions())
+      )?>, {'multiSelect': true})],
+      onReturn: function (adderDialog, selectedItems) {
+        allergyController.addEntry(selectedItems);
+        allergyController.showTable();
+        return true;
+      }
     });
 
 </script>

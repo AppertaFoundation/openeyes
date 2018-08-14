@@ -150,7 +150,7 @@ $model_name = CHtml::modelName($element);
         openButton: $('#show-add-popup'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($op_item) {
-                return ['value' =>$op_item->name, 'id' => $op_item->id];
+                return ['label' =>$op_item->name, 'id' => $op_item->id];
             }, $op_list)
         ) ?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {

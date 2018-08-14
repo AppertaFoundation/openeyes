@@ -120,17 +120,17 @@
          itemSets: [
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
              array_map(function ($relative_item) {
-                 return ['value' => $relative_item->name, 'id' => $relative_item->id];
+                 return ['label' => $relative_item->name, 'id' => $relative_item->id];
              }, $relative_options)
          ) ?>, {'header':'Relative'}),
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                array_map(function ($side_item) {
-                   return ['value' => $side_item->name, 'id' => $side_item->id];
+                   return ['label' => $side_item->name, 'id' => $side_item->id];
                }, $side_options)
            ) ?>, {'header':'Side'}),
            new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                array_map(function ($condition_item) {
-                   return ['value' => $condition_item->name, 'id' => $condition_item->id];
+                   return ['label' => $condition_item->name, 'id' => $condition_item->id];
                }, $condition_options)
            ) ?>, {'header':'Condition'})
          ],
@@ -139,7 +139,7 @@
            var list = ['relative', 'side', 'condition'];
            for (var i in list){
              data[list[i]+'_id'] =  selectedItems[i]['id'];
-             data[list[i]+'_display'] =  selectedItems[i]['value'];
+             data[list[i]+'_display'] =  selectedItems[i]['label'];
            }
            data['row_count'] = OpenEyes.Util.getNextDataKey('#OEModule_OphCiExamination_models_FamilyHistory_entry_table tbody tr', 'key');
            var newRow =  Mustache.render(
@@ -154,7 +154,7 @@
              row_tem.find('.other_condition_wrapper').show();
            }
            $('#OEModule_OphCiExamination_models_FamilyHistory_entry_table').find('tbody').append(row_tem);
-           return 1;
+           return true;
          }
        });
     });
