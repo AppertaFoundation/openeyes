@@ -325,6 +325,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
                 $item_model->setAttributes($item);
                 $item_model->start_date = substr($this->event->event_date, 0, 10);
+                $item_model->save();
 
                 // Tapering
                 $new_tapers = (isset($item['taper'])) ? $item['taper'] : array();

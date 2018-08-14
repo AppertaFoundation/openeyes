@@ -57,9 +57,9 @@
         <?php foreach ($item->tapers as $taper) { ?>
             <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
                 <td class="prescription-label"><span>then</span></td>
-                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
+                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
                 <td></td>
-                <td><?php echo $taper->frequency->name ?></td>
+                <td><?php echo $taper->frequency->term ?></td>
                 <td><?php echo $taper->duration->name ?></td>
             </tr>
         <?php }
