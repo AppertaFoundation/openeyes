@@ -60,42 +60,68 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         if (!($entry->option_id & $eye_flag)) {
                             continue;
                         }
-
-
-                        if (empty($medication_list[$eye_side]) || !array_key_exists($drug_name, $medication_list[$eye_side])) {
-                            $medication_list[$eye_side][$drug_name] = array(
-                                'low' => $start_date,
-                                'high' => $end_date,
-                            );
-                        } elseif ($medication_list[$eye_side][$drug_name]['low'] > $start_date) {
-                            $medication_list[$eye_side][$drug_name]['low'] = $start_date;
-                        } elseif ($medication_list[$eye_side][$drug_name]['high'] < $end_date) {
-                            $medication_list[$eye_side][$drug_name]['high'] = $end_date;
+                        $new_medi_record = array(
+                            'low' => $start_date,
+                            'high' => $end_date?:$latest_date,
+                            'stop_reason' => $stop_reason
+                        );
+                        if (!in_array($drug_name, array_keys($medication_list[$eye_side]))){
+                            $medication_list[$eye_side][$drug_name] = [];
+                        }
+                        if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ){
+                            $medication_list[$eye_side][$drug_name][] = $new_medi_record;
                         }
 
-                        if ($stop_reason) {
-                            $medication_list[$eye_side][$drug_name]['stop_reason'] = $stop_reason;
-                        }
                     }
                 }
             }
         }
 
+
         foreach (['left', 'right'] as $side) {
+
             foreach ($medication_list[$side] as $key => &$med) {
-                if ($med['low'] === null) {
-                    $med['low'] = $earlist_date;
-                }
-                if ($med['high'] === null) {
-                    $med['high'] = $latest_date;
+                if (sizeof($med)>1){
+                    $med = $this->purifyMedicationSeries($med);
                 }
             }
             uasort($medication_list[$side], function ($item1, $item2){
-                if ($item1['low'] == $item2['low']) return 0;
-                return $item1['low'] < $item2['low'] ? -1 : 1;
+                if ($item1[0]['low'] == $item2[0]['low']) return 0;
+                return $item1[0]['low'] < $item2[0]['low'] ? -1 : 1;
             });
         }
 
         return $medication_list;
+    }
+
+    public function purifyMedicationSeries($medication_series){
+        usort($medication_series, function ($item1, $item2){
+            if ($item1['low'] == $item2['low']) return 0;
+            return $item1['low'] < $item2['low'] ? -1 : 1;
+        });
+
+        $i = 0;
+        $out_series = array();
+
+        while($i<sizeof($medication_series)){
+            $begin = $medication_series[$i]['low'];
+            $end = $medication_series[$i]['high'];
+            $stop_reason = $medication_series[$i]['stop_reason'];
+            while($i<sizeof($medication_series)-1 && $medication_series[$i+1]['low']<$end){
+                if ($medication_series[$i+1]['high']>$end){
+                    $end = $medication_series[$i+1]['high'];
+                    $stop_reason = $medication_series[$i+1]['stop_reason'];
+                }
+                ++$i;
+            }
+            ++$i;
+            $out_series[]= array(
+                'low' => $begin,
+                'high' => $end,
+                'stop_reason' => $stop_reason
+            );
+        }
+
+        return $out_series;
     }
 }
