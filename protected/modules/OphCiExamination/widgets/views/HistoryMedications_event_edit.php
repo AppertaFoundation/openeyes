@@ -123,12 +123,12 @@ $element_errors = $element->getErrors();
       element: $('#<?=$model_name?>_element')
     });
 
-    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());?>
+    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $medication) {
-              return ['value' => $medication, 'id' => $key];
+              return ['value' => $medication['value'], 'id' => $key , 'tags' => $medication['tags']];
           },array_keys($medications),  $medications)
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
