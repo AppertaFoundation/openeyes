@@ -73,24 +73,24 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
       </div>
     <?php } ?>
   <div class="patient-demographics" id="js-demographics-btn">
-    <svg viewBox="0 0 60 60" class="icon">
+    <svg viewBox="0 0 60 60" class="icon" style="pointer-events: none">
       <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
     </svg>
   </div>
   <div class="patient-management" id="js-management-btn">
-    <svg viewBox="0 0 30 30" class="icon">
+    <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
       <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
     </svg>
   </div>
   <div class="patient-quicklook" id="js-quicklook-btn">
-    <svg viewBox="0 0 30 30" class="icon">
+    <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
       <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
     </svg>
   </div>
 
     <?php if ($this->patient->isEditable()): ?>
       <div class="patient-local-edit" id="js-patient-local-edit-btn">
-        <svg viewBox="0 0 30 30" class="icon">
+        <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
           <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
         </svg>
       </div>

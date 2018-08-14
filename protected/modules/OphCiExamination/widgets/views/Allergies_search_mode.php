@@ -18,19 +18,10 @@
 $model_name = CHtml::modelName($element);
 ?>
 
-<?php if (!$element) { ?>
-    <p class="allergy-status-unknown">Patient allergy status is unknown</p>
-<?php } elseif (!count($element->entries) || $element->no_allergies_date) { ?>
-    <div class="allergy-status-none">
-        <h2>Allergies</h2>
-        <p>Patient has no known allergies.</p>
-    </div>
-<?php } else { ?>
-    <div class="alert-box patient">
-        <strong>Allergies</strong><br>
-    </div>
-    <table class="risks alert-box patient">
+<?php if ($element) { ?>
+    <table style="color: white">
         <colgroup>
+            <col class="cols-5">
             <col class="cols-5">
         </colgroup>
         <tbody>
@@ -39,7 +30,6 @@ $model_name = CHtml::modelName($element);
             <tr>
                 <td><?= $entry->getDisplayAllergy() ?></td>
                 <td><?= $entry->comments ?></td>
-                <td></td>
             </tr>
         <?php } ?>
         </tbody>

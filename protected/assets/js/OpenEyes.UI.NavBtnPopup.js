@@ -1,4 +1,5 @@
 (function (exports, Util, EventEmitter) {
+  var latchSingleton;
   function NavBtnPopup(id, $btn, $content) {
 
     var popup = this;
@@ -26,9 +27,12 @@
         changeContent($btn.hasClass(popup.css.open));
       }).mouseenter(function () {
         if (popup.isLatched) return;
-        $btn.addClass(popup.css.active);
-        if (popup.useMouseEvents) {
-          show();
+        //if there is a latched popup, don't bother showing this (potentially over/under)
+        if(!latchSingleton){
+            $btn.addClass(popup.css.active);
+            if (popup.useMouseEvents) {
+                show();
+            }
         }
       }).mouseleave(function () {
         if (popup.isLatched) return;
@@ -68,10 +72,12 @@
           }
           popup.unlatch();
         } else {
-          if (popup.isGrouped) {
-            popup.groupController.closeAll();
+          if(!latchSingleton){
+              if (popup.isGrouped) {
+                  popup.groupController.closeAll();
+              }
+              popup.latch();
           }
-          popup.latch()
         }
       } else if (isOpen) {
         popup.hide();
@@ -87,6 +93,18 @@
       $btn.addClass(popup.css.open);
       $content.show();
       if (popup.useMouseEvents && !popup.isFixed) addContentEvents();
+      //handle popups extending off screen
+      contentBox = $content[0].getBoundingClientRect();
+      mainBox = $('main')[0].getBoundingClientRect();
+      parentBox = $content[0].closest('#oe-patient-details').getBoundingClientRect();
+
+      //moved the popup to above rather than below it's parent if it will go beyond the bottom of the main div
+      if(mainBox.bottom < parentBox.bottom + contentBox.height){
+        $content[0].style.top = (parentBox.top - contentBox.height) + "px";
+      } else {
+          $content[0].style.top = parentBox.bottom + "px";
+      }
+      //TODO: handle scrolling pages. The only place tha scrolls doesn't need this handled atm
     }
 
     function hide() {
@@ -135,6 +153,7 @@
     }
 
     function latch() {
+      latchSingleton = 'locked';
       if (popup.groupController) {
         popup.groupController.lockAll();
       }
@@ -144,6 +163,7 @@
     }
 
     function unlatch() {
+      latchSingleton = null;
       if (popup.groupController) {
         popup.groupController.unlockAll();
       }

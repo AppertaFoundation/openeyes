@@ -124,4 +124,8 @@ class Allergies extends \BaseEventElementWidget
                 \CHtml::modelName($this->element) . ".entries.$row.has_allergy", $_POST)
             == AllergyEntry::$NOT_CHECKED;
     }
+
+    public function renderAllergies(){
+        $this->render('Allergies_patient_mode', $this->getViewData());
+    }
 }
