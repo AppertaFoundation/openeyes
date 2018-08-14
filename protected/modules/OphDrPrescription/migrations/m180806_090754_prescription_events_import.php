@@ -21,7 +21,7 @@ class m180806_090754_prescription_events_import extends CDbMigration
         $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
         $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(10) UNSIGNED NOT NULL');
 
-        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = temp_prescription_item_id");
+        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = (SELECT temp_prescription_item_id FROM event_medication_uses WHERE id = ophdrprescription_item_taper.item_id)");
 
         $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'ophdrprescription_item', 'id');
     }
@@ -139,6 +139,7 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         dispense_location_id, 
                         dispense_condition_id,  
                         start_date_string_YYYYMMDD,
+                        temp_prescription_item_id,
                         comments
                     ) values(
                         ".$event['event_id'].",
@@ -154,6 +155,7 @@ class m180806_090754_prescription_events_import extends CDbMigration
                         ".$ref_dispense_condition_id.",
                         ".$ref_dispense_location_id.",
                         '".$event['event_date']."',
+                        ".$event['temp_prescription_item_id'].",
                         :comments
                          )
                 ");
@@ -163,7 +165,7 @@ class m180806_090754_prescription_events_import extends CDbMigration
 
                 $last_id = Yii::app()->db->getLastInsertID();
 
-                Yii::app()->db->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id, temp_prescription_item_id =:old_id WHERE item_id = :old_id")
+                Yii::app()->db->createCommand("UPDATE ophdrprescription_item_taper SET item_id = :new_id WHERE item_id = :old_id")
                     ->bindParam(":old_id", $event['temp_prescription_item_id'])
                     ->bindParam(":new_id", $last_id)
                     ->execute();
