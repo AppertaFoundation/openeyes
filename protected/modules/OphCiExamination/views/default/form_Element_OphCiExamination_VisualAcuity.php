@@ -114,22 +114,27 @@ if ($cvi_api) {
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
                 return ['label' => $value, 'id' => $key];
-            }, array_keys($values), $values)) ?>),
+            }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                   return ['label' => $method, 'id' => $key];
-              }, array_keys($methods), $methods)) ?>)
+              }, array_keys($methods), $methods)) ?>, {'header':'Method', 'id':'method'})
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
           if(selectedItems.length){
-            var selected_data = {
-              'reading_value': selectedItems[0]['id'],
-              'reading_display': selectedItems[0]['value'],
-              'method_id': selectedItems[1]['id'],
-              'method_display': selectedItems[1]['value'],
-              'tooltip': <?= CJSON::encode($val_options)?>[selectedItems[0]['id']]['data-tooltip']
-          };
+            var selected_data = {};
+            for (i in selectedItems) {
+              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = selectedItems[i]['id'];
+                selected_data.reading_display = selectedItems[i]['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+              }
+              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = selectedItems[i]['id'];
+                selected_data.method_display = selectedItems[i]['label'];
+              }
+            }
             OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);
             var newRow =  tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);

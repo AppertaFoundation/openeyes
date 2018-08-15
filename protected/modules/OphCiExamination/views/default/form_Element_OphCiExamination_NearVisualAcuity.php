@@ -104,11 +104,11 @@ $key = 0;
         openButton: $('#<?= $eye_side ?>-add-near-va-btn'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
-              return ['value' => $value, 'id' => $key];
+              return ['label' => $value, 'id' => $key];
               }, array_keys($values), $values) ) ?>),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
-                return ['value' => $method, 'id' => $key];
+                return ['label' => $method, 'id' => $key];
                 }, array_keys($methods), $methods)) ?>)
          ],
         onReturn: function (adderDialog, selectedItems) {
