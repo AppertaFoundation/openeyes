@@ -17,13 +17,9 @@
  */
 ?>
 <div class="box admin">
-    <div class="row">
-        <div class="large-8 column">
-            <h2>Document Sub Types Settings</h2>
-        </div>
-        <div class="large-4 column">
-        </div>
-    </div>
+  <div class="cols-8 column">
+    <h2>Document Sub Types Settings</h2>
+  </div>
 
     <form id="admin_<?=get_class(OphCoDocument_Sub_Types::model());?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>

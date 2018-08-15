@@ -17,25 +17,18 @@
  */
 ?>
 <div class="element-data element-eyes">
-	<div class="element-eye right-eye column">
-		<?php if ($element->hasRight()) {
-    $this->renderPartial($element->view_view.'_fields', array('side' => 'right', 'element' => $element));
-} else { ?>
-			<div class="data-row">
-				<div class="data-value not-recorded">Not recorded</div>
-			</div>
-		<?php 
-}?>
-	</div>
-	<div class="element-eye left-eye column">
-		<?php if ($element->hasLeft()) {
-    $this->renderPartial($element->view_view.'_fields', array('side' => 'left', 'element' => $element));
-} else {
-    ?>
-			<div class="data-row">
-				<div class="data-value not-recorded">Not recorded</div>
-			</div>
-		<?php 
-}?>
-	</div>
+  <div class="element-eye right-eye column">
+      <?php if ($element->hasRight()) {
+          $this->renderPartial($element->view_view . '_fields', array('side' => 'right', 'element' => $element));
+      } else { ?>
+        <div class="data-value not-recorded">Not recorded</div>
+      <?php } ?>
+  </div>
+  <div class="element-eye left-eye column">
+      <?php if ($element->hasLeft()) {
+          $this->renderPartial($element->view_view . '_fields', array('side' => 'left', 'element' => $element));
+      } else { ?>
+        <div class="data-value not-recorded">Not recorded</div>
+      <?php } ?>
+  </div>
 </div>
