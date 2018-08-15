@@ -314,7 +314,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.updateRowRouteOptions = function($row)
   {
-      console.log('a1231');
       var $routeOptionWrapper = $row.find(this.options.routeOptionWrapperSelector);
       $routeOptionWrapper.hide();
       $routeOptionWrapper.find('option').each(function() {
@@ -327,10 +326,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $.getJSON(this.options.routeOptionSource, {route_id: value}, function(data) {
               if (data.length) {
                   var $select = $routeOptionWrapper;
-
-                  console.log(data);
                   $.each(data, function(i, item) {
-                      console.log(i + "    " + item);
                     $select.append('<option value="' + item.id +'">' + item.name + '</option>');
                   });
                   $routeOptionWrapper.show();
