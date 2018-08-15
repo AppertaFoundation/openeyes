@@ -156,9 +156,6 @@
                    data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
               <?php } ?>
 
-            <i class="oe-i confirmed medium pad js-has-tooltip" data-tooltip-content="<?= implode(' / ', $msgs) ?>"
-                <?php if (!$booking->confirmed) { ?> style="display: none;"<?php } ?>></i>
-
               <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
                 <i class="oe-i info medium pad js-has-tooltip"
                    data-tooltip-content="<?= CHtml::encode($booking->operation->comments, ENT_COMPAT,
