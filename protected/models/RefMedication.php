@@ -183,4 +183,50 @@ class RefMedication extends BaseActiveRecordVersioned
 
         return false;
 	}
+
+    /**
+     * @param $site_id
+     * @param $subspecialty_id
+     * @return RefMedication[]
+     */
+
+	public function getSiteSubspecialtyMedications($site_id, $subspecialty_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = "id IN (SELECT ref_medication_id FROM ref_medication_set WHERE ref_set_id IN 
+                                        (SELECT ref_set_id FROM ref_set_rules WHERE usage_code = 'Common subspecialty medications' 
+                                            AND site_id=:site_id AND subspecialty_id=:subspecialty_id))";
+        $criteria->params = array(":site_id" => $site_id, "subspecialty_id" => $subspecialty_id);
+        $criteria->order = 'preferred_term';
+        return $this->findAll($criteria);
+    }
+
+    /**
+     * @return RefSet[]
+     */
+
+    public function getTypes()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = "id IN (SELECT ref_set_id FROM ref_medication_set WHERE ref_medication_id = :ref_medication_id 
+                                            AND ref_set_id IN (SELECT ref_set_id FROM ref_set_rules WHERE usage_code = 'DrugTag'))";
+        $criteria->params = array(":ref_medication_id" => $this->id);
+        $criteria->order = 'name';
+        return RefSet::model()->findAll($criteria);
+    }
+
+    /**
+     * @return bool
+     */
+
+    public function isPreservativeFree()
+    {
+        foreach ($this->getTypes() as $type) {
+            if($type->name == 'Preservative free') {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

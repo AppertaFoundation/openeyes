@@ -144,21 +144,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return Drug[]
+     * @return RefMedication[]
      */
     public function commonDrugs()
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
 
-        return Drug::model()->active()->findAll(array(
-                    'condition' => 'ssd.subspecialty_id = :subSpecialtyId AND ssd.site_id = :siteId',
-                    'join' => 'JOIN site_subspecialty_drug ssd ON ssd.drug_id = t.id',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -167,17 +161,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      * @param $site_id
      * @param $subspecialty_id
      *
-     * @return SiteSubspecialtyDrug[]
+     * @return RefMedication[]
      */
     public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id)
     {
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
-
-        return SiteSubspecialtyDrug::model()->with('drugs')->findAll(array(
-                    'condition' => 't.subspecialty_id = :subSpecialtyId AND t.site_id = :siteId',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**

@@ -39,7 +39,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {?>
 					</legend>
 					<div class="large-8 column">
 						<div class="field-row">
-							<?php echo CHtml::dropDownList('common_drug_id', null, CHtml::listData($element->commonDrugs(), 'id', 'tallmanlabel'), array('empty' => '-- Select common --')); ?>
+							<?php echo CHtml::dropDownList('common_drug_id', null, CHtml::listData($element->commonDrugs(), 'id', 'preferred_term'), array('empty' => '-- Select common --')); ?>
 						</div>
 						<div class="field-row">
 							<?php

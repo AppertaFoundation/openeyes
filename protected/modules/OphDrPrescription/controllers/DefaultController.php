@@ -54,10 +54,10 @@ class DefaultController extends BaseEventTypeController
     protected function setCommonDrugMetadata()
     {
         $this->jsVars['common_drug_metadata'] = array();
-        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $drug) {
-            $this->jsVars['common_drug_metadata'][$drug->id] = array(
-                    'type_id' => array_map(function($e){ return $e->id; }, $drug->type),
-                    'preservative_free' => (int)$drug->isPreservativeFree(),
+        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $refMedication) {
+            $this->jsVars['common_drug_metadata'][$refMedication->id] = array(
+                    'ref_set_id' => array_map(function($e){ return $e->id; }, $refMedication->getTypes()),
+                    'preservative_free' => (int)$refMedication->isPreservativeFree(),
             );
         }
     }
@@ -142,14 +142,12 @@ class DefaultController extends BaseEventTypeController
         // Get prescription details element
         $element = Element_OphDrPrescription_Details::model()->findByAttributes(array('event_id' => $this->event->id));
 
-        /* TODO need to rewrite Patient::hasDrugAllergy
         foreach ($element->items as $item) {
-            if ($this->patient->hasDrugAllergy($item->drug_id)) {
+            if ($this->patient->hasDrugAllergy($item->ref_medication_id)) {
                 $this->showAllergyWarning();
                 break;
             }
         }
-        */
     }
 
     /**
@@ -539,6 +537,22 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @return RefSet
+     */
+
+    public function getCommonDrugsRefSet()
+    {
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+        $site_id = Yii::app()->session['selected_site_id'];
+        return RefSetRule::model()->findByAttributes(array(
+            'subspecialty_id' => $subspecialty_id,
+            'site_id' => $site_id,
+            'usage_code' => 'Common subspecialty medications'
+        ))->refSet;
+    }
+
+    /**
      * Render the form for a OphDrPrescription_Item, DrugSetItem or Drug (by id).
      *
      * @param $key
@@ -606,8 +620,9 @@ class DefaultController extends BaseEventTypeController
             } elseif (is_int($source) || (int) $source) {
 
                 // Source is an integer, so we use it as a drug_id
-                $item->drug_id = $source;
-                $item->loadDefaults();
+                $item->ref_medication_id = $source;
+                $refSet = $this->getCommonDrugsRefSet();
+                $item->loadDefaults($refSet);
             } else {
                 throw new CException('Invalid prescription item source: '.print_r($source));
             }
