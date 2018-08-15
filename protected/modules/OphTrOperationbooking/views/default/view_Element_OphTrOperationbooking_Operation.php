@@ -18,15 +18,27 @@
 ?>
     <section class="element view full priority view-procedures">
         <header class="element-header">
-            <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?></h3>
+            <h3 class="element-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?>  & OPCS codes</h3>
         </header>
         <div class="element-data full-width">
             <div class="cols-10">
-                <ul>
-                    <?php foreach ($element->procedures as $procedure) {
-                        echo "<li><span class='priority-text'> {$element->eye->adjective} {$procedure->term}</span></li>";
-                    } ?>
-                </ul>
+                <table class="priority-text last-left">
+                    <tbody>
+                    <?php foreach ($element->procedures as $procedure): ?>
+                        <tr>
+                            <td><span class="priority-text">
+              <?php echo $element->eye->adjective ?>
+              <?php echo $procedure->term ?>
+              </span></td>
+                            <td><span class="priority-text">
+                    <?= implode(array_map(function ($x) {
+                        return $x->name;
+                    }, $procedure->opcsCodes), ', '); ?>
+              </span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
