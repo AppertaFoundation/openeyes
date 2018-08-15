@@ -26,7 +26,7 @@
           <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
           <td>
               <?php if (array_key_exists('link', $operation)) { ?>
-                <a href="<?= $operation['link'] ?>"><i class="oe-i eye pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i></a>
+                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i></a>
               <?php } ?>
           </td>
           <td>
