@@ -26,15 +26,19 @@
                     <tbody>
                     <?php foreach ($element->procedures as $procedure): ?>
                         <tr>
-                            <td><span class="priority-text">
-              <?php echo $element->eye->adjective ?>
-              <?php echo $procedure->term ?>
-              </span></td>
-                            <td><span class="priority-text">
-                    <?= implode(array_map(function ($x) {
-                        return $x->name;
-                    }, $procedure->opcsCodes), ', '); ?>
-              </span></td>
+                            <td>
+                                <span class="priority-text">
+                                    <?php echo $element->eye->adjective ?>
+                                    <?php echo $procedure->term ?>
+                                </span>
+                             </td>
+                            <td>
+                                <span class="priority-text">
+                                    <?= implode(array_map(function ($x) {
+                                    return $x->name;
+                                    }, $procedure->opcsCodes), ', '); ?>
+                                </span>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
