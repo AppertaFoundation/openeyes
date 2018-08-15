@@ -28,11 +28,12 @@ $comments = $side . '_comments';
          } ?>">
     <colgroup>
       <col class="cols-3">
+      <col class="cols-2">
     </colgroup>
     <thead>
     <tr>
       <th>Time</th>
-      <th width="64px">mm Hg</th>
+      <th>mm Hg</th>
         <?php if ($element->getSetting('show_instruments')): ?>
           <th>Instrument</th>
         <?php endif ?>

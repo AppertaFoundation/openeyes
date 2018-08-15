@@ -24,7 +24,7 @@ if($correspondeceApp === "on") {
         <table class="cols-full">
             <tr>
                 <td class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
-                <td class="cols-9 column end">
+                <td>
                     <div class="data-value" style="text-align: right">
                         <?php
                         if($element->is_signed_off == NULL){
@@ -42,7 +42,7 @@ if($correspondeceApp === "on") {
                 <td class="data-label">
                     From
                 </td>
-                <td style="text-align: right">
+                <td>
                     <?php
                     echo $element->site->getLetterAddress(array(
                         'include_name' => true,
@@ -56,7 +56,7 @@ if($correspondeceApp === "on") {
                 <td class="data-label">
                     Direct Line
                 </td>
-                <td style="text-align: right">
+                <td>
                     <?php
                     echo $element->direct_line
                     ?>
@@ -66,7 +66,7 @@ if($correspondeceApp === "on") {
                 <td class="data-label">
                     Direct Fax
                 </td>
-                <td style="text-align: right">
+                <td >
                     <?php
                     echo $element->fax
                     ?>
@@ -76,7 +76,7 @@ if($correspondeceApp === "on") {
                 <td class="data-label">
                     Cc
                 </td>
-                <td style="text-align: right">
+                <td>
                     <?php
                     $ccString = "";
                     $toAddress = "";
@@ -111,10 +111,7 @@ if($correspondeceApp === "on") {
             </tr>
         </table>
     </div>
-
-    <?php
-}
-?>
+    <?php } ?>
 
     <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7" style="background-color: white; color: black; padding: 10px;">
         <header>
