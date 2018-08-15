@@ -133,7 +133,7 @@ $element_errors = $element->getErrors();
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
-        return 1;
+        return true;
       },
       searchOptions: {
         searchSource: medicationsController.options.searchSource,

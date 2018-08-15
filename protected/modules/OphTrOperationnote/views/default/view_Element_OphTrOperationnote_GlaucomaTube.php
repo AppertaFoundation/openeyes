@@ -23,7 +23,7 @@
   </header>
   <section class="element-fields full-width">
 
-    <div class="eyedraw flex-layout flex-top flex-left posterior-pole">
+    <div class="eyedraw flex-layout flex-top posterior-pole">
       <div class="eyedraw-canvas">
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
