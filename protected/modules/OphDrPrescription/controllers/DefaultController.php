@@ -346,10 +346,12 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionRouteOptions($key, $route_id)
     {
-        $options = DrugRouteOption::model()->findAllByAttributes(array('drug_route_id' => $route_id));
-        if ($options) {
-            echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
-        } else {
+        $route = RefMedicationRoute::model()->findByPk($route_id);
+        if(in_array($route->term, ['Eye', 'Intravitreal'])) {
+            $options = RefMedicationLaterality::model()->findAll('deleted_date IS NULL');
+            echo CHtml::dropDownList('Element_OphDrPrescription_Details[items]['.$key.'][laterality]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+        }
+        else {
             echo '-';
         }
     }
