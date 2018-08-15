@@ -106,33 +106,29 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
             'BETWEEN' => 'Between',
         );
         ?>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?php echo CHtml::label($this->getLabel(), false); ?>
+      <div class="flex-layout flex-left js-case-search-param">
+        <div style="padding-right: 15px">
+            <p><?= $this->getLabel() ?></p>
         </div>
-        <div class="large-3 column">
+        <div class=""style="padding-right: 15px">
             <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
                 array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...')); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>
-        <div class="dual-value large-3 column"
+        <div class="dual-value"
              style="<?php echo $this->operation === 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>">
-          <div class="row field-row">
               <?php echo CHtml::activeTextField($this, "[$id]minValue", array('placeholder' => 'min')); ?>
               <?php echo CHtml::error($this, "[$id]minValue"); ?>
-          </div>
-          <div class="row field-row">
               <?php echo CHtml::activeTextField($this, "[$id]maxValue", array('placeholder' => 'max')); ?>
               <?php echo CHtml::error($this, "[$id]maxValue"); ?>
-          </div>
         </div>
-        <div class="single-value large-3 column"
+        <div class="single-value"
              style="<?php echo $this->operation !== 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>">
             <?php echo CHtml::activeTextField($this, "[$id]textValue"); ?>
             <?php echo CHtml::error($this, "[$id]textValue"); ?>
         </div>
-        <div class="large-4 column">
-          <p>years of age</p>
+        <div class=""style="padding-left: 15px">
+          <p>years old</p>
         </div>
       </div>
         <?php

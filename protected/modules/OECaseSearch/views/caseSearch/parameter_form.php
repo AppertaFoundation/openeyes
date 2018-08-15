@@ -5,13 +5,19 @@
 /* @var $form CActiveForm */
 ?>
 
-<div id="<?php echo $id; ?>" class="<?php echo $model->name; ?> parameter row field-row">
-    <div class="large-10 column">
+<div id="<?php echo $id; ?>" class="<?php echo $model->name; ?> parameter flex-layout">
+    <div class="cols-10">
         <?php $model->renderParameter($id); ?>
         <?php echo CHtml::activeHiddenField($model, "[$id]id"); ?>
     </div>
-    <div class="large-2 column end">
-        <p><?php echo CHtml::link('Remove', 'javascript:void(0)', array('onclick' => 'removeParam(this)', 'class' => 'remove-link')); ?></p>
+    <div class="cols-2">
+        <i id="<?= $id?>-remove" class="oe-i trash"></i>
+<!--        <p>--><?php //echo CHtml::link('Remove', 'javascript:void(0)', array('onclick' => 'removeParam(this)', 'class' => 'remove-link')); ?><!--</p>-->
     </div>
     <hr/>
 </div>
+<script type="text/javascript">
+    $('#<?= $id?>-remove').on('click', function () {
+        this.closest('.parameter').remove();
+    })
+</script>
