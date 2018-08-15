@@ -127,6 +127,7 @@
             (<?php echo $booking->operation->event->episode->patient->age ?>)
           </td>
           <td class="operation">
+              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
               <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] ' . $booking->operation->getProceduresCommaSeparated() : 'No procedures' ?>
           </td>
           <td class="">
