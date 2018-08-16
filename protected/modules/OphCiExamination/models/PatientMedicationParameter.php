@@ -58,32 +58,30 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
         ?>
 
-      <div class="flex-layout flex-left">
-        <div style="padding-right: 15px;">
-            <p><?= $this->getLabel()?></p>
-        </div>
-        <div  style="padding-right: 15px;">
-            <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-            <?php echo CHtml::error($this, "[$id]operation"); ?>
-        </div>
+        <div class="flex-layout flex-left">
+          <?= $this->getStyledTitle()?>
+            <div style="padding-right: 15px;">
+                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
+                <?php echo CHtml::error($this, "[$id]operation"); ?>
+            </div>
 
-        <div>
-            <?php
-            $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => $this->name . $this->id,
-                'model' => $this,
-                'attribute' => "[$id]textValue",
-                'source' => Yii::app()->controller->createUrl('AutoComplete/commonMedicines'),
-                'options' => array(
-                    'minLength' => 2,
-                ),
-            ), true);
-            Yii::app()->clientScript->render($html);
-            echo $html;
-            ?>
-            <?php echo CHtml::error($this, "[$id]textValue"); ?>
+            <div>
+                <?php
+                $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                    'name' => $this->name . $this->id,
+                    'model' => $this,
+                    'attribute' => "[$id]textValue",
+                    'source' => Yii::app()->controller->createUrl('AutoComplete/commonMedicines'),
+                    'options' => array(
+                        'minLength' => 2,
+                    ),
+                ), true);
+                Yii::app()->clientScript->render($html);
+                echo $html;
+                ?>
+                <?php echo CHtml::error($this, "[$id]textValue"); ?>
+            </div>
         </div>
-      </div>
         <?php
     }
 

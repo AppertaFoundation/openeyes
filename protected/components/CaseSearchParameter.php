@@ -61,4 +61,14 @@ abstract class CaseSearchParameter extends CFormModel
     {
         return null;
     }
+
+    protected function getStyledTitle(){
+        ob_start();
+        ?>
+        <div style="padding-right: 15px;">
+            <p><?= $this->getLabel()?></p>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
 }
