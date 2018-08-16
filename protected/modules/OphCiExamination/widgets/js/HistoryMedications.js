@@ -355,8 +355,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       else {
         data['drug_id'] = selectedItems[i]['id'];
       }
-      data['medication_name'] = selectedItems[i]['value'];
-      this.processRisks(selectedItems[i]['tags'], selectedItems[i]['value']);
+      data['medication_name'] = selectedItems[i]['label'];
+      this.processRisks(selectedItems[i]['tags'], selectedItems[i]['label']);
       newRows.push( Mustache.render(
         template,
         data ));
