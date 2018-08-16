@@ -26,7 +26,7 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
 <div id="oe-patient-details"
      class="oe-patient"
      data-patient-id="<?= $this->patient->id ?>"
-     style="position: unset; background: unset; width: unset;"
+     style="position: unset; background: unset; width: unset; background-color: rgb(20, 30, 43);"
 >
     <div class="patient-name" style="position: unset">
         <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">

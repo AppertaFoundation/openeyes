@@ -7,7 +7,7 @@
 <tr class="parameter" id="<?php echo $id; ?>">
     <td>
         <div class="<?php echo $model->name; ?> flex-layout"
-             style="padding-bottom: 6px; padding-top: 6px"
+             style="padding-bottom: 6px; padding-top: 6px;"
         >
             <div class="cols-10">
                 <?php $model->renderParameter($id); ?>

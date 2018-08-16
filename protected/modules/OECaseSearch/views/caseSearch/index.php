@@ -7,12 +7,15 @@
  * @var $trial Trial
  * @var $form CActiveForm
  */
-$this->pageTitle = 'OpenEyes - Case Search';
+$this->pageTitle = 'Case Search';
 ?>
-<h1 class="badge"><?php echo $this->trialContext === null ? 'Advanced Search' : 'Adding Participants to Trial: ' . $this->trialContext->name; ?></h1>
-
 <main class="main-event">
-
+    <h2 class="event-title">
+        <?= $this->trialContext === null ?
+            'Advanced Search' :
+            'Adding Participants to Trial: ' . $this->trialContext->name;
+        ?>
+    </h2>
     <div class="element">
         <div>
             <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
