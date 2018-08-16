@@ -127,6 +127,7 @@
             (<?php echo $booking->operation->event->episode->patient->age ?>)
           </td>
           <td class="operation">
+              <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
               <?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] ' . $booking->operation->getProceduresCommaSeparated() : 'No procedures' ?>
           </td>
           <td class="">
@@ -154,9 +155,6 @@
                 <i class="oe-i exclamation medium pad js-has-tooltip"
                    data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
               <?php } ?>
-
-            <i class="oe-i confirmed medium pad js-has-tooltip" data-tooltip-content="<?= implode(' / ', $msgs) ?>"
-                <?php if (!$booking->confirmed) { ?> style="display: none;"<?php } ?>></i>
 
               <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
                 <i class="oe-i info medium pad js-has-tooltip"
