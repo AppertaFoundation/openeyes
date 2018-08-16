@@ -684,7 +684,7 @@ class DefaultController extends \BaseModuleController
             throw new Exception('Subspecialty not found: '.@$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id), ['class' => 'cols-11', 'empty' => 'All firms']);
+        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id), ['class' => 'cols-11', 'empty' => 'All '.Firm::ContextLabel.'s']);
     }
 
     public function actionUndoLastStep($id)
