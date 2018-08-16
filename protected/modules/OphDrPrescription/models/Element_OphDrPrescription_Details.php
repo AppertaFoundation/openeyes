@@ -210,19 +210,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     /**
      * Gets listdata for the drugtypes.
      *
-     * @TODO: Should this be a static method on the DrugType model, rather than here?
-     *
-     * @return CHtml::listData
+     * @return array
      */
     public function drugTypes()
     {
-        $drugTypes = CHtml::listData(DrugType::model()->active()->findAll(array(
-                            'order' => 'name',
-                        )), 'id', 'name');
-
-        natcasesort($drugTypes);
-
-        return $drugTypes;
+        return Chtml::listData(RefSet::model()->with("refSetRules")->findAll(array(
+            "condition" => "usage_code = 'DrugTag' AND refSetRules.deleted_date IS NULL",
+            "order" => "name",
+        )), 'id', 'name');
     }
 
     /**

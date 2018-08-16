@@ -152,6 +152,8 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         d.id AS original_id, 
                         CONCAT(d.id,'_drug') AS drug_id, 
                         d.name,
+                        d.tallman,
+                        d.aliases,
                         d.form_id,
                         d.dose_unit,
                         d.default_dose,
@@ -185,8 +187,27 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 ->bindValue(':drug_name', $drug['name'])
                 ->bindValue(':drug_code', $drug['drug_id'])
                 ->execute();
-                $ref_medication_id = $command->getLastInsertID(); 
-                
+                $ref_medication_id = $command->getLastInsertID();
+
+                $alternative_terms = [$drug['name']];
+
+                if(!strcasecmp($drug['tallman'], $drug['name'])) {
+                    $alternative_terms[]=$drug['tallman'];
+                }
+
+                foreach (explode(",", $drug['aliases']) as $alias) {
+                    if(!strcasecmp($alias, $drug['name'])) {
+                        $alternative_terms[]=$alias;
+                    }
+                }
+
+                foreach ($alternative_terms as $term) {
+                    $this->execute("INSERT INTO ref_medications_search_index (ref_medication_id, alternative_term)
+                                    VALUES
+                                    (:id, :term)
+                                    ", array(":id"=>$ref_medication_id, ":term" => $term));
+                }
+
                 $drug_form_id = ($drug['ref_form_id'] == null) ? 'NULL' : $drug['ref_form_id'];
                 $drug_route_id = ($drug['ref_route_id'] == null) ? 'NULL' : $drug['ref_route_id'];
                 $drug_freq_id = ($drug['ref_freq_id'] == null) ? 'NULL' : $drug['ref_freq_id'];
