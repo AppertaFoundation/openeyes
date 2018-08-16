@@ -58,16 +58,16 @@ class PatientMedicationParameter extends CaseSearchParameter implements DBProvid
         );
         ?>
 
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?php echo CHtml::label($this->getLabel(), false); ?>
+      <div class="flex-layout flex-left">
+        <div style="padding-right: 15px;">
+            <p><?= $this->getLabel()?></p>
         </div>
-        <div class="large-3 column">
+        <div  style="padding-right: 15px;">
             <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>
 
-        <div class="large-7 column">
+        <div>
             <?php
             $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => $this->name . $this->id,
