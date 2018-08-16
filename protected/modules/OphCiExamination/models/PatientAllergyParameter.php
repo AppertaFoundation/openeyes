@@ -57,32 +57,34 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
             '!=' => 'Is not allergic to',
         );
         ?>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?php echo CHtml::label($this->getLabel(), false); ?>
-        </div>
-        <div class="large-3 column">
-            <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
-            <?php echo CHtml::error($this, "[$id]operation"); ?>
-        </div>
+        <div class="flex-layout flex-left">
+            <?= $this->getStyledTitle() ?>
+            <div style="padding-right: 15px;">
+                <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
+                <?php echo CHtml::error($this, "[$id]operation"); ?>
+            </div>
 
-        <div class="large-7 column">
-            <?php
-            $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => $this->name . $this->id,
-                'model' => $this,
-                'attribute' => "[$id]textValue",
-                'source' => Yii::app()->controller->createUrl('AutoComplete/commonAllergies'),
-                'options' => array(
-                    'minLength' => 2,
-                ),
-            ), true);
-            Yii::app()->clientScript->render($html);
-            echo $html;
-            ?>
-            <?php echo CHtml::error($this, "[$id]textValue"); ?>
+            <div class="">
+                <?php
+                $html = Yii::app()->controller->widget(
+                    'zii.widgets.jui.CJuiAutoComplete',
+                    array(
+                        'name' => $this->name . $this->id,
+                        'model' => $this,
+                        'attribute' => "[$id]textValue",
+                        'source' => Yii::app()->controller->createUrl('AutoComplete/commonAllergies'),
+                        'options' => array(
+                            'minLength' => 2,
+                        ),
+                    ),
+                    true
+                );
+                Yii::app()->clientScript->render($html);
+                echo $html;
+                ?>
+                <?php echo CHtml::error($this, "[$id]textValue"); ?>
+            </div>
         </div>
-      </div>
         <?php
     }
 
