@@ -97,7 +97,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <td></td>
         <td></td>
     <?php else :?>
-        <?php $this->widget('application.widgets.eyeSelector', [
+        <?php $this->widget('application.widgets.EyeSelector', [
             'inputNamePrefix' => $field_prefix,
             'selectedEyeId' => $values['side_id']
         ]); ?>
