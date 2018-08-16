@@ -68,16 +68,16 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
 
         $firms = Firm::model()->getListWithSpecialties()
         ?>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?php echo CHtml::label($this->getLabel(), false); ?>
+      <div class="flex-layout flex-left">
+        <div style="padding-right: 15px;">
+            <p><?= $this->getLabel()?></p>
         </div>
-        <div class="large-3 column">
+        <div style="padding-right: 15px;">
             <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>
 
-        <div class="large-3 column">
+        <div style="padding-right: 15px;">
             <?php
             $html = Yii::app()->controller->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'name' => $this->name . $this->id,
@@ -96,24 +96,25 @@ class PatientDiagnosisParameter extends CaseSearchParameter implements DBProvide
             ?>
             <?php echo CHtml::error($this, "[$id]term"); ?>
         </div>
-        <div class="large-4 column">
-          <div class="row field-row">
-            <div class="large-2 column">
+        <div class="" style="padding-right: 15px;">
+          <div class="flex-layout flex-left">
+            <div style="padding-right: 15px;">
               <p>by</p>
             </div>
-            <div class="large-10 column end">
-                <?php echo CHtml::activeDropDownList($this, "[$id]firm_id", $firms,
-                    array('empty' => 'Any ' . Firm::contextLabel())); ?>
+            <div class="flex-right cols-6">
+                <?php echo CHtml::activeDropDownList(
+                        $this,
+                        "[$id]firm_id",
+                        $firms,
+                        array('empty' => 'Any ' . Firm::contextLabel(), 'style'=>'width: 100%;')
+                ); ?>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row field-row">
-        <div class="large-2 column"><p></p></div>
-        <div class="large-5 column">
+        <div class="cols-5 ">
           <p style="float: right; margin: 5px">only include patient's latest event</p>
         </div>
-        <div class="large-1 column end">
+        <div class="cols-1 flex-right">
             <?php echo CHtml::activeCheckBox($this, "[$id]only_latest_event"); ?>
         </div>
       </div>
