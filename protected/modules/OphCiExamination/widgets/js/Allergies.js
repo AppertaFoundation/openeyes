@@ -89,6 +89,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
                 //in case of mandatory allegies are present
                 controller.setRadioButtonsToNo();
