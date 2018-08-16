@@ -59,7 +59,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     {
         ?>
         <div class="flex-layout flex-left">
-            <?= $this->getStyledTitle() ?>
+            <?= $this->getDisplayTitle() ?>
                 <?php echo CHtml::activeTextField($this, "[$id]number"); ?>
                 <?php echo CHtml::error($this, "[$id]number"); ?>
         </div>

@@ -62,7 +62,7 @@ abstract class CaseSearchParameter extends CFormModel
         return null;
     }
 
-    protected function getStyledTitle(){
+    protected function getDisplayTitle(){
         ob_start();
         ?>
         <div style="padding-right: 15px;">

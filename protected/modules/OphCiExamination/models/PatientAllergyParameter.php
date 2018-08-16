@@ -58,7 +58,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
         );
         ?>
         <div class="flex-layout flex-left">
-            <?= $this->getStyledTitle() ?>
+            <?= $this->getDisplayTitle() ?>
             <div style="padding-right: 15px;">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops, array('prompt' => 'Select One...')); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>
