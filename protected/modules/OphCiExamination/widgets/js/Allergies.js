@@ -89,7 +89,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
-                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
                 //in case of mandatory allegies are present
                 controller.setRadioButtonsToNo();
@@ -126,6 +125,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
     };
+
     /**
      *
      * @param data
@@ -150,13 +150,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.$table.find('tbody tr').length === 0) {
-            this.$noAllergiesWrapper.show();
-            this.$table.hide();
-        } else {
-            this.$popupSelector.css({'visibility':'visible'});
-            this.$noAllergiesWrapper.hide();
+        if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
             this.$noAllergiesFld.prop('checked', false);
+            this.$popupSelector.show();
+        }
+        if(this.isAllergiesChecked(this.allergyYesValue)){
+            this.$noAllergiesWrapper.hide();
+            this.$popupSelector.show();
+            this.$noAllergiesFld.prop('checked', false);
+        } else {
+            this.$noAllergiesWrapper.show();
         }
     };
 
