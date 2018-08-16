@@ -191,12 +191,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 $alternative_terms = [$drug['name']];
 
-                if(!strcasecmp($drug['tallman'], $drug['name'])) {
+                if(strcasecmp($drug['tallman'], $drug['name']) !== 0) {
                     $alternative_terms[]=$drug['tallman'];
                 }
 
                 foreach (explode(",", $drug['aliases']) as $alias) {
-                    if(!strcasecmp($alias, $drug['name'])) {
+                    if(!strcasecmp($alias, $drug['name']) !== 0) {
                         $alternative_terms[]=$alias;
                     }
                 }
