@@ -20,6 +20,8 @@
 
 class EyeSelector extends BaseCWidget
 {
+    public static $NOT_CHECKED = -9;
+
     /**
      * @var string the template to be used to control the layout of various sections in the view.
      * These tokens are recognized: {Left}, {Right} and {NA}.
@@ -68,7 +70,7 @@ class EyeSelector extends BaseCWidget
     public function renderNA()
     {
         echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => -9]) . ' n/a';
+        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => self::$NOT_CHECKED]) . ' n/a';
         echo CHtml::closeTag('label');
     }
 
