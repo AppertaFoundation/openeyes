@@ -16,52 +16,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="oe-full-header flex-layout">
-    <?php
-    $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
-    ?>
-    <div class="title wordcaps">
-        <b><?= $queueset ? $queueset->name : $category->name ?></b>
+<?php
+$qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
+?>
+
+    <div class="oe-full-header flex-layout">
+        <div class="title wordcaps">
+            <b><?= $queueset ? $queueset->name : $category->name ?></b>
+        </div>
+        <div>
+            <button class="button blue hint" id="js-virtual-clinic-btn">Change Virtual Clinic</button>
+        </div>
     </div>
 
-    <?php
-    if ($queueset) {
-        if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId())) {
-            ?>
-            <br/>
-            <div class="large-12 column">
-                <div class="panel">
-                    <div class="alert-box with-icon success">
-                        <?php echo $flash_message;
-                        ?>
-                    </div>
-                </div>
-            </div>
-            <?php
+    <div class="oe-full-content oe-virtual-clinic">
 
-        }
-    }
-
-    $this->renderPartial('form_queueset_select', array(
-        'category' => $category,
-        'queueset' => $queueset,
-        'cat_id' => $cat_id,
-    ));
-
-    ?>
-</div>
-<div class="oe-full-content oe-virtual-clinic flex-layout flex-top">
-    <?php
-    if ($queueset) {
-        $this->renderPartial('ticketlist', array(
+        <?php $this->renderPartial('_ticketlist_search', [
             'qs_svc' => $qs_svc,
-            'category' => $category,
             'queueset' => $queueset,
-            'tickets' => $tickets,
-            'patient_filter' => $patient_filter,
-            'pages' => $pages,
-            'cat_id' => $cat_id,
-        ));
-    }
-    ?>
-</div>
+            'patient_list' => $patient_list,
+            'cat_id' => $cat_id
+        ]); ?>
+
+        <?php $this->renderPartial('ticketlist', [
+                'tickets' => $tickets,
+                'queueset' => $queueset,
+                'qs_svc' => $qs_svc
+        ]); ?>
+
+    </div>
