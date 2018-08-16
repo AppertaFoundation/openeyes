@@ -48,6 +48,8 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <td>
         <?php if (!$removable || $required) : ?>
             <?= $values['operation'] ?>
+            <?=\CHtml::hiddenField($field_prefix . "[id]", $values['operation']); ?>
+            <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
                 'placeholder' => 'Click the green plus or type',
