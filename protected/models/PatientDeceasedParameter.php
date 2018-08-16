@@ -47,12 +47,13 @@ class PatientDeceasedParameter extends CaseSearchParameter implements DBProvider
         // Initialise any rendering variables here.
         ?>
       <!-- Place screen-rendering code here. -->
-      <div class="large-3 column">
-          <?php echo CHtml::label('Include deceased patients', false); ?>
-      </div>
-      <div class="large-1 column end">
-          <?php echo CHtml::activeCheckBox($this, "[$id]operation"); ?>
-      </div>
+
+        <div class="flex-layout flex-left">
+            <?= $this->getDisplayTitle() ?>
+            <div>
+                <?php echo CHtml::activeCheckBox($this, "[$id]operation"); ?>
+            </div>
+        </div>
         <?php
     }
 
