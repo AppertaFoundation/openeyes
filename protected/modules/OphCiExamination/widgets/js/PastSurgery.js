@@ -96,6 +96,8 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         var eye_selector = new OpenEyes.UI.EyeSelector({
             element: controller.$section
         });
+
+        controller.$table.data('eyeSelector', eye_selector);
     };
 
     /**
