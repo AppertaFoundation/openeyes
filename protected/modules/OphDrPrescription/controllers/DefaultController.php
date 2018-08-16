@@ -256,31 +256,34 @@ class DefaultController extends BaseEventTypeController
     {
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
+
+            $criteria->addCondition('deleted_date IS NULL');
+
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
+                $criteria->addCondition('id IN (SELECT ref_medication_id FROM ref_medications_search_index WHERE LOWER(alternative_term) LIKE :term)');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
 
-                $criteria->addCondition('id IN (SELECT drug_id FROM drug_drug_type WHERE drug_type_id = :type_id)');
+                $criteria->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE ref_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
             }
             if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
-                $tag_id = Yii::app()->params['preservative_free_tag_id'];
-                $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
+                $criteria->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE 
+                                                ref_set_id = (SELECT id FROM ref_set WHERE name = 'Preservative free'))");
             }
-            $criteria->order = 'name';
-            // we don't need 'select *' here
-            $criteria->select = 'id, tallman';
+            $criteria->order = 'preferred_term';
+            $criteria->limit = 10;
+            $criteria->select = 'id, preferred_term';
             $criteria->params = $params;
 
-            $drugs = Drug::model()->active()->findAll($criteria);
+            $drugs = RefMedication::model()->findAll($criteria);
 
             $return = array();
             foreach ($drugs as $drug) {
                 $return[] = array(
-                        'label' => $drug->tallmanlabel,
-                        'value' => $drug->tallman,
+                        'label' => $drug->preferred_term,
+                        'value' => $drug->preferred_term,
                         'id' => $drug->id,
                 );
             }
@@ -567,11 +570,11 @@ class DefaultController extends BaseEventTypeController
 
             // Source is a prescription item, so we should clone it
             foreach (array(
-                         'drug_id',
-                         'duration_id',
+                         'ref_medication_id',
+                         'duration',
                          'frequency_id',
                          'dose',
-                         'route_option_id',
+                         'laterality',
                          'route_id',
                          'dispense_condition_id',
                          'dispense_location_id'
