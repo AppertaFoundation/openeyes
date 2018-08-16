@@ -17,7 +17,6 @@ $this->pageTitle = 'OpenEyes - Case Search';
         <div>
             <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
             <div class="sub-element">
-                <?= $form->errorSummary($params) ?>
                 <table id="param-list" class="cols-full">
                     <tbody>
                     <?php
