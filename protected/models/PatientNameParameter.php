@@ -57,14 +57,10 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     public function renderParameter($id)
     {
         ?>
-        <div class="row field-row">
-            <div class="large-3 column">
-                <?php echo CHtml::label($this->getLabel() . ' is', false); ?>
-            </div>
-            <div class="large-9 column">
-                <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
-                <?php echo CHtml::error($this, "[$id]patient_name"); ?>
-            </div>
+        <div class="flex-layout flex-left">
+            <?= $this->getStyledTitle() ?>
+            <?php echo CHtml::activeTextField($this, "[$id]patient_name"); ?>
+            <?php echo CHtml::error($this, "[$id]patient_name"); ?>
         </div>
         <?php
     }
