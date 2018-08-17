@@ -41,7 +41,8 @@ $('#prescription_items').delegate('i.removeItem', 'click', function () {
 });
 
 // Add taper to item
-$('#prescription_items').delegate('a.taperItem:not(.processing)', 'click', function () {
+$('#prescription_items').delegate('.js-add-taper', 'click', function (event) {
+  event.preventDefault();
   var row = $(this).closest('tr');
   var key = row.attr('data-key');
   var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
@@ -350,20 +351,18 @@ function goBack() {
 }
 
 // Add comments to item
-$('#prescription_items').delegate('a.addComment:not(.processing)', 'click', function () {
+$('#prescription_items').delegate('.js-add-comments', 'click', function () {
     var row = $(this).closest('tr');
     var key = row.attr('data-key');
-    var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
-    // Insert comments row
-    var odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
-    var new_row = $('<tr data-key="' + key + '" class="prescription-comments ' + odd_even + '"></tr>');
-    new_row.append($('<td class="prescription-label"><span>Comments:</span></td><td colspan="5"><textarea name="prescription_item['+key+'][comments]"></textarea></td>'), $('<td class="prescriptionItemActions"><a class="removeComment" href="#">Remove</a></td>'));
-    last_row.after(new_row);
+    $('#comments-' + key).show();
+    row.find('.js-add-comments').hide();
     return false;
 });
 // Remove comments from item
-$('#prescription_items').delegate('a.removeComment', 'click', function () {
+$('#prescription_items').delegate('.js-remove-add-comments', 'click', function () {
     var row = $(this).closest('tr');
-    row.remove();
+    var key = row.attr('data-key');
+    $('#comments-' + key).hide();
+    row.find('.js-add-comments').show();
     return false;
 });
