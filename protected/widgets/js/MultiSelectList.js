@@ -203,7 +203,7 @@ $(document).ready(function () {
     }
 
     if ($(this).hasClass('linked-fields')) {
-      if (inArray($(this).data('text'), $(this).data('linked-values').split(','))) {
+      if (inArray($(this).data('text'), $(this).data('linked-values').split(',')) !== -1) {
         var element_name = container.children('input[type="hidden"]').attr('name').replace(/\[.*$/, '');
         var fields = $(this).data('linked-fields').split(',');
         var values = $(this).data('linked-values').split(',');
