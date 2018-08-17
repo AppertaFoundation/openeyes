@@ -51,7 +51,7 @@
                 } ?>
             </td>
             <td><?php echo $item->frequency->term; ?></td>
-            <td><?php echo $item->drugDuration->name ?></td>
+            <td><?php echo $item->duration ? $item->drugDuration->name : '' ?></td>
             <td><?php echo $item->dispense_condition->name." / ".$item->dispense_location->name ?></td>
         </tr>
         <?php foreach ($item->tapers as $taper) { ?>

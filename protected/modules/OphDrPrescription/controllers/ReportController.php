@@ -44,7 +44,7 @@ class ReportController extends BaseReportController
                 $this->subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
             }
         }
-
+        
         if (!$this->siteId) {
             $this->siteId = Yii::app()->session['selected_site_id'];
         }
@@ -68,7 +68,7 @@ class ReportController extends BaseReportController
             foreach ($drugs as $drug) {
                 $commonDrugs[] = array(
                     'id' => $drug->id,
-                    'label' => $drug->tallmanlabel,
+                    'label' => $drug->preferred_term,
                 );
             }
         }
