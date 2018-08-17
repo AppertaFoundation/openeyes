@@ -158,7 +158,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        console.log('byba');
         if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
             this.$noAllergiesFld.prop('checked', false);
             this.$popupSelector.show();
