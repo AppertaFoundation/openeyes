@@ -351,18 +351,18 @@ function goBack() {
 }
 
 // Add comments to item
-$('#prescription_items').delegate('.js-add-comments', 'click', function () {
-    var row = $(this).closest('tr');
+$('#prescription_items').on('click', '.js-add-comments', function () {
+    var $row = $(this).closest('tr');
     var key = row.attr('data-key');
     $('#comments-' + key).show();
-    row.find('.js-add-comments').hide();
+    $row.find('.js-add-comments').hide();
     return false;
 });
 // Remove comments from item
-$('#prescription_items').delegate('.js-remove-add-comments', 'click', function () {
-    var row = $(this).closest('tr');
-    var key = row.attr('data-key');
+$('#prescription_items').on('click', '.js-remove-add-comments', function () {
+    var $row = $(this).closest('tr');
+    var key = $row.attr('data-key');
     $('#comments-' + key).hide();
-    row.find('.js-add-comments').show();
+    $row.find('.js-add-comments').show();
     return false;
 });
