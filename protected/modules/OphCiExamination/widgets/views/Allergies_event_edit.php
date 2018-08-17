@@ -87,8 +87,7 @@ $required_allergy_ids = array_map(function ($r) {
             </tbody>
         </table>
 
-    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup"
-         style="visibility: <?php echo $element->no_allergies_date ? 'hidden' : 'visible'; ?>">
+    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
         <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
                     class="oe-i plus pro-theme"></i></button>
     </div>

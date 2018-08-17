@@ -51,6 +51,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.initialiseTriggers = function () {
         var controller = this;
 
+        $(document).ready(function(){
+            if (controller.$noAllergiesFld.prop('checked')){
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+            }
+        });
+
         controller.$table.on('change', 'input[type=radio]', function () {
             controller.updateNoAllergiesState();
         });
@@ -151,6 +158,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
+        console.log('byba');
         if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
             this.$noAllergiesFld.prop('checked', false);
             this.$popupSelector.show();
