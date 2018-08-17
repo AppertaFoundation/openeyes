@@ -151,9 +151,6 @@ foreach ($item->tapers as $taper): ?>
       <i class="oe-i trash removeTaper"></i></td>
     </td>
   </tr>
-
     <?php
     ++$count;
-
-
 endforeach; ?>
