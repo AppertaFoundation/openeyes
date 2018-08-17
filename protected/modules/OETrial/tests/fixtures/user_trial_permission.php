@@ -5,18 +5,18 @@ return array(
     'user_trial_permission_1' => array(
         'user_id' => $this->getRecord('user', 'user1')->id,
         'trial_id' => $this->getRecord('trial', 'trial1')->id,
-        'permission' => UserTrialPermission::PERMISSION_MANAGE,
+        'permission' => UserTrialAssignment::PERMISSION_MANAGE,
     ),
 
     'user_trial_permission_2' => array(
         'user_id' => $this->getRecord('user', 'user2')->id,
         'trial_id' => $this->getRecord('trial', 'trial1')->id,
-        'permission' => UserTrialPermission::PERMISSION_VIEW,
+        'permission' => UserTrialAssignment::PERMISSION_VIEW,
     ),
 
     'user_trial_permission_3' => array(
         'user_id' => $this->getRecord('user', 'user3')->id,
         'trial_id' => $this->getRecord('trial', 'trial1')->id,
-        'permission' => UserTrialPermission::PERMISSION_EDIT,
+        'permission' => UserTrialAssignment::PERMISSION_EDIT,
     ),
 );

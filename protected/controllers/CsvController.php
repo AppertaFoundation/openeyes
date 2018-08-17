@@ -117,16 +117,16 @@ class CsvController extends BaseController
         $new_trial = new Trial();
         $new_trial->name = $trial['name'];
         if (empty($trial['trial_type'])) {
-            $trial['trial_type'] = Trial::TRIAL_TYPE_INTERVENTION;
+            $trial['trial_type'] = 'INTERVENTION';
         }
-        $new_trial->trial_type = $trial['trial_type'];
+        $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial['trial_type']))->id;
         $new_trial->description = !empty($trial['description']) ? $trial['description'] : null;
         $new_trial->owner_user_id = Yii::app()->user->id;
         $new_trial->is_open = isset($trial['is_open']) && $trial['is_open'] !== '' ? $trial['is_open'] : false;
         $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
         $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;
         $new_trial->external_data_link = !empty($trial['external_data_link']) ? $trial['external_data_link'] : null;
-        $new_trial->pi_user_id = Yii::app()->user->id;
+        $new_trial->principle_investigator_user_id = Yii::app()->user->id;
 
         if (!$new_trial->save()) {
             $errors = $new_trial->getErrors();

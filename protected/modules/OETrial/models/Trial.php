@@ -8,10 +8,10 @@
  * @property string $name
  * @property string $description
  * @property int $owner_user_id
- * @property int $pi_user_id
+ * @property int $principle_investigator_user_id
  * @property int $coordinator_user_id
  * @property bool $is_open
- * @property int $trial_type
+ * @property int $trial_type_id
  * @property string $started_date
  * @property string $closed_date
  * @property string $external_data_link
@@ -21,26 +21,17 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
+ * @property TrialType $trialType
  * @property User $ownerUser
  * @property User $principalUser
  * @property User $coordinatorUser
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property TrialPatient[] $trialPatients
- * @property UserTrialPermission[] $userPermissions
+ * @property UserTrialAssignment[] $userAssignments
  */
 class Trial extends BaseActiveRecordVersioned
 {
-    /**
-     * The trial type for non-Intervention trial (meaning there are no restrictions on assigning patients to this the trial)
-     */
-    const TRIAL_TYPE_NON_INTERVENTION = 'NON_INTERVENTION';
-
-    /**
-     * The trial type for Intervention trials (meaning a patient can only be assigned to one ongoing Intervention trial at a time)
-     */
-    const TRIAL_TYPE_INTERVENTION = 'INTERVENTION';
-
     /**
      * The success return code for addUserPermission()
      */
@@ -84,59 +75,19 @@ class Trial extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, owner_user_id, pi_user_id', 'required'),
+            array('name, owner_user_id, principle_investigator_user_id, trial_type_id', 'required'),
             array('name', 'length', 'max' => 64),
             array('name', 'unique', 'caseSensitive' => false),
             array('external_data_link', 'url', 'defaultScheme' => 'http'),
             array('external_data_link', 'length', 'max' => 255),
             array(
-                'owner_user_id, pi_user_id, coordinator_user_id, last_modified_user_id, created_user_id',
+                'trial_type_id, owner_user_id, principle_investigator_user_id, coordinator_user_id, last_modified_user_id, created_user_id',
                 'length',
                 'max' => 10,
             ),
-            array('trial_type', 'length', 'max' => 20),
-            array('trial_type', 'in', 'range' => self::getAllowedTrialTypeRange()),
             array('started_date, closed_date', 'dateFormatValidator', 'on' => 'manual'),
             array('description, last_modified_date, created_date', 'safe'),
         );
-    }
-
-    /**
-     * Returns an array of all of the allowable values of "trial_type"
-     * @return int[] The list of types
-     */
-    public static function getAllowedTrialTypeRange()
-    {
-        return array(
-            self::TRIAL_TYPE_NON_INTERVENTION,
-            self::TRIAL_TYPE_INTERVENTION,
-        );
-    }
-
-    /**
-     * Returns an array withs keys of the allowable values of the trial types and values of the label for that type
-     * @return array The array of trial type id/label key/value pairs
-     */
-    public static function getTrialTypeOptions()
-    {
-        return array(
-            self::TRIAL_TYPE_NON_INTERVENTION => 'Non-Intervention',
-            self::TRIAL_TYPE_INTERVENTION => 'Intervention',
-        );
-    }
-
-    /**
-     * Returns the trial type as a string
-     *
-     * @return string The trial type
-     */
-    public function getTypeString()
-    {
-        if (array_key_exists($this->trial_type, self::getTrialTypeOptions())) {
-            return self::getTrialTypeOptions()[$this->trial_type];
-        }
-
-        return $this->trial_type;
     }
 
     /**
@@ -175,13 +126,14 @@ class Trial extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+            'trialType' => array(self::BELONGS_TO, 'TrialType', 'trial_type_id'),
             'ownerUser' => array(self::BELONGS_TO, 'User', 'owner_user_id'),
-            'principalUser' => array(self::BELONGS_TO, 'User', 'pi_user_id'),
+            'principalUser' => array(self::BELONGS_TO, 'User', 'principle_investigator_user_id'),
             'coordinatorUser' => array(self::BELONGS_TO, 'User', 'coordinator_user_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'trialPatients' => array(self::HAS_MANY, 'TrialPatient', 'trial_id'),
-            'userPermissions' => array(self::HAS_MANY, 'UserTrialPermission', 'trial_id'),
+            'userPermissions' => array(self::HAS_MANY, 'UserTrialAssignment', 'trial_id'),
         );
     }
 
@@ -195,7 +147,7 @@ class Trial extends BaseActiveRecordVersioned
             'name' => 'Name',
             'description' => 'Description',
             'owner_user_id' => 'Owner User',
-            'pi_user_id' => 'Principal Investigator',
+            'principle_investigator_user_id' => 'Principal Investigator',
             'coordinator_user_id' => 'Study Coordinator',
             'trial_type' => 'Trial Type',
             'started_date' => 'Start',
@@ -268,10 +220,10 @@ class Trial extends BaseActiveRecordVersioned
         if ($this->getIsNewRecord()) {
 
             // Create a new permission assignment for the user that created the Trial
-            $newPermission = new UserTrialPermission();
+            $newPermission = new UserTrialAssignment();
             $newPermission->user_id = Yii::app()->user->id;
             $newPermission->trial_id = $this->id;
-            $newPermission->permission = UserTrialPermission::PERMISSION_MANAGE;
+            $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
             $newPermission->role = 'Trial Owner';
 
             if (!$newPermission->save()) {
@@ -279,58 +231,6 @@ class Trial extends BaseActiveRecordVersioned
                     . print_r($newPermission->getErrors(), true));
             }
         }
-    }
-
-    /**
-     * Returns whether or not the given user can access the given trial using the given action
-     * @param User $user The user to check access for
-     * @param int $trial_id The ID of the trial
-     * @param string $permission The permission level that is being sought
-     * @return bool True if access is permitted, otherwise false
-     * @throws CDbException Thrown if an error occurs when looking up the user permissions
-     * @throws CHttpException Thrown if the trial cannot be found
-     */
-    public static function checkTrialAccess($user, $trial_id, $permission)
-    {
-        /* @var Trial $model */
-        $model = Trial::model()->findByPk($trial_id);
-        if ($model === null) {
-            throw new CHttpException(404, "Trial with id $trial_id not found");
-        }
-
-        $access_level = $model->getTrialAccess($user);
-
-        if ($access_level === null) {
-            return false;
-        }
-
-        if ($access_level === UserTrialPermission::PERMISSION_MANAGE) {
-            return true;
-        }
-
-        if ($access_level === UserTrialPermission::PERMISSION_EDIT
-            && ($permission === UserTrialPermission::PERMISSION_VIEW || $permission === UserTrialPermission::PERMISSION_EDIT)) {
-            return true;
-        }
-
-        if ($access_level === UserTrialPermission::PERMISSION_VIEW && $permission === UserTrialPermission::PERMISSION_VIEW) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param User $user The user to get access for
-     * @return string The user permission if they have one otherwise null)
-     * @throws CDbException Thrown if an error occurs when executing the SQL statement
-     */
-    public function getTrialAccess($user)
-    {
-        $sql = 'SELECT MAX(permission) FROM user_trial_permission WHERE user_id = :userId AND trial_id = :trialId';
-        $query = $this->getDbConnection()->createCommand($sql);
-
-        return $query->queryScalar(array(':userId' => $user->id, ':trialId' => $this->id));
     }
 
     /**
@@ -499,7 +399,7 @@ class Trial extends BaseActiveRecordVersioned
      */
     public function addUserPermission($user_id, $permission, $role)
     {
-        if (UserTrialPermission::model()->exists(
+        if (UserTrialAssignment::model()->exists(
             'trial_id = :trialId AND user_id = :userId',
             array(
                 ':trialId' => $this->id,
@@ -509,14 +409,14 @@ class Trial extends BaseActiveRecordVersioned
             return self::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS;
         }
 
-        $userPermission = new UserTrialPermission();
+        $userPermission = new UserTrialAssignment();
         $userPermission->trial_id = $this->id;
         $userPermission->user_id = $user_id;
         $userPermission->permission = $permission;
         $userPermission->role = $role;
 
         if (!$userPermission->save()) {
-            throw new Exception('Unable to create UserTrialPermission: ' . print_r($userPermission->getErrors(), true));
+            throw new Exception('Unable to create UserTrialAssignment: ' . print_r($userPermission->getErrors(), true));
         }
 
         $this->audit('trial', 'add-user-permission');
@@ -525,7 +425,7 @@ class Trial extends BaseActiveRecordVersioned
     }
 
     /**
-     * Removes a UserTrialPermission
+     * Removes a UserTrialAssignment
      *
      * @param int $permission_id The ID of the permission to remove
      * @throws CHttpException Thrown if the permission cannot be found
@@ -535,8 +435,8 @@ class Trial extends BaseActiveRecordVersioned
     public function removeUserPermission($permission_id)
     {
         $logMessage = null;
-        /* @var UserTrialPermission $permission */
-        $permission = UserTrialPermission::model()->findByPk($permission_id);
+        /* @var UserTrialAssignment $permission */
+        $permission = UserTrialAssignment::model()->findByPk($permission_id);
         if ($permission->trial->id !== $this->id) {
             throw new Exception('Cannot remove permission from another trial');
         }
@@ -546,11 +446,11 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         // The last Manage permission in a trial can't be removed (there always has to be one manager for a trial)
-        if ($permission->permission === UserTrialPermission::PERMISSION_MANAGE) {
-            $managerCount = UserTrialPermission::model()->count('trial_id = :trialId AND permission = :permission',
+        if ($permission->permission === UserTrialAssignment::PERMISSION_MANAGE) {
+            $managerCount = UserTrialAssignment::model()->count('trial_id = :trialId AND permission = :permission',
                 array(
                     ':trialId' => $this->id,
-                    ':permission' => UserTrialPermission::PERMISSION_MANAGE,
+                    ':permission' => UserTrialAssignment::PERMISSION_MANAGE,
                 )
             );
 
@@ -559,17 +459,17 @@ class Trial extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->pi_user_id === $permission->user_id) {
-            $this->pi_user_id = $this->owner_user_id;
+        if ($this->principle_investigator_user_id === $permission->user_id) {
+            $this->principle_investigator_user_id = $this->owner_user_id;
 
             if (!$this->save()) {
-                throw new Exception('Unable to remove ' . $this->getAttributeLabel('pi_user_id') . ': ' . print_r($this->errors,
+                throw new Exception('Unable to remove ' . $this->getAttributeLabel('principle_investigator_user_id') . ': ' . print_r($this->errors,
                         true));
             }
             $logMessage .= 'Principal Investigator removed. ';
         }
 
-        if ($this->pi_user_id === $permission->user_id) {
+        if ($this->principle_investigator_user_id === $permission->user_id) {
             $this->coordinator_user_id = $this->owner_user_id;
 
             if (!$this->save()) {

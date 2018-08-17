@@ -2,9 +2,13 @@
 
 /**
  * Class TrialController
+ *
+ * @property Trial $model
  */
 class TrialController extends BaseModuleController
 {
+    public $model;
+
     /**
      * @return array action filters
      */
@@ -41,12 +45,12 @@ class TrialController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('view'),
-                'expression' => '$user->checkAccess("TaskViewTrial") && Trial::checkTrialAccess($user, Yii::app()->getRequest()->getQuery("id"), UserTrialPermission::PERMISSION_VIEW)',
+                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_view',
             ),
             array(
                 'allow',
                 'actions' => array('update', 'addPatient', 'removePatient'),
-                'expression' => '$user->checkAccess("TaskViewTrial") && Trial::checkTrialAccess($user, Yii::app()->getRequest()->getParam("id"), UserTrialPermission::PERMISSION_EDIT)',
+                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_edit',
             ),
             array(
                 'allow',
@@ -59,13 +63,26 @@ class TrialController extends BaseModuleController
                     'changePi',
                     'changeCoordinator',
                 ),
-                'expression' => '$user->checkAccess("TaskViewTrial") && Trial::checkTrialAccess($user, Yii::app()->getRequest()->getPost("id"), UserTrialPermission::PERMISSION_MANAGE)',
+                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_manage',
             ),
             array(
                 'deny',  // deny all users
                 'users' => array('*'),
             ),
         );
+    }
+
+    public static function getCurrentUserPermission()
+    {
+        return self::getUserPermission(Yii::app()->user->id, Yii::app()->getRequest()->getQuery("id"));
+    }
+
+    public static function getUserPermission($user_id, $trial_id)
+    {
+        Yii::log('Checking permission for ' . $user_id . '/' . $trial_id);
+        return UserTrialAssignment::model()->find(
+            'user_id = :user_id AND trial_id = :trial_id',
+            array(':user_id' => $user_id, ':trial_id' => $trial_id))->trialPermission;
     }
 
     /**
@@ -87,7 +104,7 @@ class TrialController extends BaseModuleController
      */
     public function actionView($id)
     {
-        $trial = $this->loadModel($id);
+        $this->model = $this->loadModel($id);
         $report = new OETrial_ReportTrialCohort();
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
@@ -117,13 +134,14 @@ class TrialController extends BaseModuleController
 
         $this->breadcrumbs = array(
             'Trials' => array('index'),
-            $trial->name,
+            $this->model->name,
         );
 
         $this->render('view', array(
-            'trial' => $trial,
+            'permission' => self::getCurrentUserPermission(),
+            'trial' => $this->model,
             'report' => $report,
-            'dataProviders' => $trial->getPatientDataProviders($sortBy, $sortDir),
+            'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
             'sort_by' => (int)Yii::app()->request->getParam('sort_by', null),
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', null),
         ));
@@ -153,20 +171,20 @@ class TrialController extends BaseModuleController
      */
     public function actionCreate()
     {
-        $model = new Trial;
-        $model->setScenario('manual');
-        $model->is_open = 1;
-        $model->trial_type = Trial::TRIAL_TYPE_NON_INTERVENTION;
-        $model->owner_user_id = Yii::app()->user->id;
-        $model->pi_user_id = Yii::app()->user->id;
-        $model->started_date = date('d/m/Y');
+        $this->model = new Trial;
+        $this->model->setScenario('manual');
+        $this->model->is_open = 1;
+        $this->model->trial_type_id = TrialType::model()->find('code = ?', array('NON_INTERVENTION'))->id;
+        $this->model->owner_user_id = Yii::app()->user->id;
+        $this->model->principle_investigator_user_id = Yii::app()->user->id;
+        $this->model->started_date = date('d/m/Y');
 
-        $this->performAjaxValidation($model);
+        $this->performAjaxValidation($this->model);
 
         if (isset($_POST['Trial'])) {
-            $model->attributes = $_POST['Trial'];
-            if ($model->save()) {
-                $this->redirect(array('view', 'id' => $model->id));
+            $this->model->attributes = $_POST['Trial'];
+            if ($this->model->save()) {
+                $this->redirect(array('view', 'id' => $this->model->id));
             }
         }
 
@@ -176,7 +194,7 @@ class TrialController extends BaseModuleController
         );
 
         $this->render('create', array(
-            'model' => $model,
+            'model' => $this->model,
         ));
     }
 
@@ -188,24 +206,24 @@ class TrialController extends BaseModuleController
      */
     public function actionUpdate($id)
     {
-        $model = $this->loadModel($id);
-        $model->setScenario('manual');
+        $this->model = $this->loadModel($id);
+        $this->model->setScenario('manual');
 
         if (isset($_POST['Trial'])) {
-            $model->attributes = $_POST['Trial'];
-            if ($model->save()) {
-                $this->redirect(array('view', 'id' => $model->id));
+            $this->model->attributes = $_POST['Trial'];
+            if ($this->model->save()) {
+                $this->redirect(array('view', 'id' => $this->model->id));
             }
         }
 
         $this->breadcrumbs = array(
             'Trials' => array('index'),
-            $model->name => array('view', 'id' => $model->id),
+            $this->model->name => array('view', 'id' => $this->model->id),
             'Edit',
         );
 
         $this->render('update', array(
-            'model' => $model,
+            'model' => $this->model,
         ));
     }
 
@@ -241,8 +259,8 @@ class TrialController extends BaseModuleController
                 break;
         }
 
-        $condition = "trial_type = :trialType AND EXISTS (
-                        SELECT * FROM user_trial_permission utp WHERE utp.user_id = :userId AND utp.trial_id = t.id
+        $condition = "trial_type_id = :trialType AND EXISTS (
+                        SELECT * FROM user_trial_assignment utp WHERE utp.user_id = :userId AND utp.trial_id = t.id
                     ) ORDER BY $sortBy $sortDir, LOWER(t.name) ASC";
 
         $interventionTrialDataProvider = new CActiveDataProvider('Trial', array(
@@ -251,7 +269,7 @@ class TrialController extends BaseModuleController
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => Trial::TRIAL_TYPE_INTERVENTION,
+                    ':trialType' => TrialType::model()->find('code = ?', array('INTERVENTION'))->id,
                 ),
             ),
         ));
@@ -262,14 +280,10 @@ class TrialController extends BaseModuleController
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => Trial::TRIAL_TYPE_NON_INTERVENTION,
+                    ':trialType' => TrialType::model()->find('code = ?', array('NON_INTERVENTION'))->id,
                 ),
             ),
         ));
-
-        $this->breadcrumbs = array(
-            'Trials',
-        );
 
         $this->render('index', array(
             'interventionTrialDataProvider' => $interventionTrialDataProvider,
@@ -286,28 +300,28 @@ class TrialController extends BaseModuleController
      */
     public function actionPermissions($id)
     {
-        $model = Trial::model()->findByPk($id);
+        $this->model = Trial::model()->findByPk($id);
 
-        $permissionDataProvider = new CActiveDataProvider('UserTrialPermission', array(
+        $permissionDataProvider = new CActiveDataProvider('UserTrialAssignment', array(
             'criteria' => array(
                 'condition' => 'trial_id = :trialId',
                 'params' => array(
-                    ':trialId' => $model->id,
+                    ':trialId' => $this->model->id,
                 ),
-                'order' => 'permission DESC',
             ),
         ));
 
-        $newPermission = new UserTrialPermission();
+        $newPermission = new UserTrialAssignment();
 
         $this->breadcrumbs = array(
             'Trials' => array('index'),
-            $model->name => array('view', 'id' => $model->id),
+            $this->model->name => array('view', 'id' => $this->model->id),
             'Permissions',
         );
 
         $this->render('permissions', array(
-            'model' => $model,
+            'trial' => $this->model,
+            'permission' => self::getCurrentUserPermission(),
             'newPermission' => $newPermission,
             'permissionDataProvider' => $permissionDataProvider,
         ));
@@ -349,7 +363,7 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * Removes a UserTrialPermission
+     * Removes a UserTrialAssignment
      *
      * @throws CHttpException Thrown if the permission cannot be found
      * @throws Exception Thrown if the permission cannot be deleted
@@ -445,7 +459,7 @@ class TrialController extends BaseModuleController
             $first_criteria->mergeWith($last_criteria, 'OR');
             $criteria->mergeWith($first_criteria, 'OR');
         }
-        $criteria->addCondition('id NOT IN (SELECT user_id FROM user_trial_permission WHERE trial_id = ' . $model->id . ')');
+        $criteria->addCondition('id NOT IN (SELECT user_id FROM user_trial_assignment WHERE trial_id = ' . $model->id . ')');
         $criteria->addCondition('
             EXISTS(
                 SELECT 1
@@ -472,17 +486,18 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * Change the pi_user_Id to the new value in POST
+     * Change the principle_investigator_user_id to the new value in POST
      *
      * @throws CHttpException Thrown if the change cannot be saved
      */
     public function actionChangePi()
     {
         $trial = $this->loadModel($_POST['id']);
-        $trial->pi_user_id = $_POST['user_id'];
+        $trial->principle_investigator_user_id = $_POST['user_id'];
 
         if (!$trial->save()) {
-            throw new CHttpException(500, 'Unable to change.' . Trial::model()->getAttributeLabel('pi_user_id'));
+            throw new CHttpException(500,
+                'Unable to change.' . Trial::model()->getAttributeLabel('principle_investigator_user_id'));
         }
     }
 

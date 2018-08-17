@@ -1,12 +1,10 @@
 <?php
 /* @var TrialController $this */
 /* @var Trial $trial */
+/* @var TrialPermission $permission */
 /* @var CActiveDataProvider[] $dataProviders * */
 /* @var string $sort_by */
 /* @var string $sort_dir */
-
-$hasEditPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_EDIT);
-$hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_MANAGE);
 ?>
 
 <h1 class="badge">Trial</h1>
@@ -20,7 +18,7 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
           ));
           ?>
 
-          <?php if ($trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION): ?>
+          <?php if ($trial->trialType->code === 'INTERVENTION'): ?>
             <div class="alert-box alert with-icon">
               This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
               Trials
@@ -67,7 +65,7 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
             </div>
           <?php endif; ?>
 
-          <?php if ($hasManagePermissions): ?>
+          <?php if ($permission->can_manage): ?>
             <br/>
               <?php if ($trial->is_open): ?>
                   <?php echo CHtml::beginForm(array('close'), 'post', array('id' => 'close-trial')); ?>
@@ -83,7 +81,10 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
           <?php endif; ?>
       </div>
     </div>
-      <?php $this->renderPartial('_trialActions', array('trial' => $trial)); ?>
+      <?php $this->renderPartial('_trialActions', array(
+          'trial' => $trial,
+          'permission' => $permission,
+      )); ?>
   </div>
 </div>
 

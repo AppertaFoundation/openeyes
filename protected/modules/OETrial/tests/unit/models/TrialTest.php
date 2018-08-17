@@ -7,7 +7,7 @@ class TrialTest extends CDbTestCase
         'trial' => 'Trial',
         'patient' => 'Patient',
         'trial_patient' => 'TrialPatient',
-        'user_trial_permission' => 'UserTrialPermission',
+        'user_trial_permission' => 'UserTrialAssignment',
     );
 
     public static function setupBeforeClass()
@@ -19,7 +19,7 @@ class TrialTest extends CDbTestCase
     {
         $trial = new Trial();
         $trial->name = null;
-        $trial->pi_user_id = $this->user('user1')->id;
+        $trial->principle_investigator_user_id = $this->user('user1')->id;
         $this->assertFalse($trial->save(), 'A Trial cannot be saved with a null name');
     }
 
@@ -161,49 +161,13 @@ class TrialTest extends CDbTestCase
             'Trial2 should have no shortlisted patients');
     }
 
-    public function testCheckTrialAccessManage()
-    {
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user1'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_VIEW), 'user1 should have view access to trial1');
-
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user1'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_EDIT), 'user1 should have edit access to trial1');
-
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user1'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_MANAGE), 'user1 should have manage access to trial1');
-    }
-
-    public function testCheckTrialAccessView()
-    {
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user2'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_VIEW), 'user2 should have view access to trial1');
-
-        $this->assertFalse(Trial::checkTrialAccess($this->user('user2'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_EDIT), 'user2 should not have edit access to trial1');
-
-        $this->assertFalse(Trial::checkTrialAccess($this->user('user2'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_MANAGE), 'user2 should not have manage access to trial1');
-    }
-
-    public function testCheckTrialAccessEdit()
-    {
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user3'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_VIEW), 'user3 should have view access to trial1');
-
-        $this->assertTrue(Trial::checkTrialAccess($this->user('user3'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_EDIT), 'user3 should not have edit access to trial1');
-
-        $this->assertFalse(Trial::checkTrialAccess($this->user('user3'), $this->trial('trial1')->id,
-            UserTrialPermission::PERMISSION_MANAGE), 'user3 should not have manage access to trial1');
-    }
-
     public function testGetTrialAccess()
     {
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
-        $this->assertEquals(UserTrialPermission::PERMISSION_MANAGE, $trial->getTrialAccess($this->user('user1')));
-        $this->assertEquals(UserTrialPermission::PERMISSION_VIEW, $trial->getTrialAccess($this->user('user2')));
-        $this->assertEquals(UserTrialPermission::PERMISSION_EDIT, $trial->getTrialAccess($this->user('user3')));
+        $this->assertEquals(UserTrialAssignment::PERMISSION_MANAGE, $trial->getTrialAccess($this->user('user1')));
+        $this->assertEquals(UserTrialAssignment::PERMISSION_VIEW, $trial->getTrialAccess($this->user('user2')));
+        $this->assertEquals(UserTrialAssignment::PERMISSION_EDIT, $trial->getTrialAccess($this->user('user3')));
     }
 
     public function testAddPatient()
@@ -254,7 +218,7 @@ class TrialTest extends CDbTestCase
         /* @var User $user2 */
         $user2 = $this->user('user2');
 
-        $result = $trial2->addUserPermission($user2->id, UserTrialPermission::PERMISSION_VIEW, null);
+        $result = $trial2->addUserPermission($user2->id, UserTrialAssignment::PERMISSION_VIEW, null);
         $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_OK, $result,
             'The permission should have been added successfully');
     }
@@ -265,7 +229,7 @@ class TrialTest extends CDbTestCase
         $trial = $this->trial('trial1');
         $user1 = $this->user('user1');
 
-        $result = $trial->addUserPermission($user1->id, UserTrialPermission::PERMISSION_VIEW, null);
+        $result = $trial->addUserPermission($user1->id, UserTrialAssignment::PERMISSION_VIEW, null);
         $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS, $result,
             'The permission already exists, and a duplicate should have been prevented');
     }
@@ -274,7 +238,7 @@ class TrialTest extends CDbTestCase
     {
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
-        /* @var UserTrialPermission $userPermission */
+        /* @var UserTrialAssignment $userPermission */
         $userPermission = $this->user_trial_permission('user_trial_permission_2');
 
         $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_SUCCESS, $trial->removeUserPermission($userPermission->id),
@@ -285,7 +249,7 @@ class TrialTest extends CDbTestCase
     {
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
-        /* @var UserTrialPermission $userPermission */
+        /* @var UserTrialAssignment $userPermission */
         $userPermission = $this->user_trial_permission('user_trial_permission_1');
 
         $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST,

@@ -26,7 +26,7 @@ class TrialPatientController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('changeStatus', 'updateExternalId', 'updateTreatmentType'),
-                'expression' => 'TrialPatient::checkTrialPatientAccess($user, Yii::app()->getRequest()->getPost("id"), UserTrialPermission::PERMISSION_EDIT)',
+                'expression' => 'TrialPatient::checkTrialEditAccess($user, Yii::app()->getRequest()->getPost("id"), UserTrialAssignment::PERMISSION_EDIT)',
             ),
             array(
                 'deny',  // deny all users

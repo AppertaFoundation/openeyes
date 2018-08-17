@@ -7,7 +7,7 @@ class TrialPatientTest extends CDbTestCase
         'trial' => 'Trial',
         'patient' => 'Patient',
         'trial_patient' => 'TrialPatient',
-        'user_trial_permission' => 'UserTrialPermission',
+        'user_trial_permission' => 'UserTrialAssignment',
     );
 
     public static function setupBeforeClass()

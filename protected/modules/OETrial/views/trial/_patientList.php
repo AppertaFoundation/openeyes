@@ -45,7 +45,7 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
 
         $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
 
-        if ($trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION && !$trial->is_open && $renderTreatmentType) {
+        if ($trial->trial_type->code === 'INTERVENTION' && !$trial->is_open && $renderTreatmentType) {
             $columns[] = 'Treatment Type';
             $sortableColumns[] = 'Treatment Type';
         }

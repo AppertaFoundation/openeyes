@@ -127,7 +127,7 @@ class TrialPatient extends BaseActiveRecordVersioned
     {
         foreach ($patient->trials as $trialPatient) {
             if ($trialPatient->patient_status === self::STATUS_ACCEPTED &&
-                $trialPatient->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION &&
+                $trialPatient->trial->trial_type->code === 'INTERVENTION'&&
                 $trialPatient->trial->is_open &&
                 ($trial_id === null || $trialPatient->trial_id !== $trial_id)
             ) {
@@ -154,7 +154,7 @@ class TrialPatient extends BaseActiveRecordVersioned
 
         foreach ($patient->trials as $trialPatient) {
             if ($trialPatient->patient_status === self::STATUS_ACCEPTED &&
-                $trialPatient->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION &&
+                $trialPatient->trial->trial_type->code === 'INTERVENTION' &&
                 !$trialPatient->trial->is_open &&
                 ($trial_id === null || $trialPatient->trial_id !== $trial_id)
             ) {
@@ -223,7 +223,7 @@ class TrialPatient extends BaseActiveRecordVersioned
      */
     public function getTreatmentTypeForDisplay()
     {
-        if ($this->trial->trial_type === Trial::TRIAL_TYPE_NON_INTERVENTION) {
+        if ($this->trial->trial_type->code === 'NON_INTERVENTION') {
             return 'N/A';
         }
 
@@ -316,23 +316,6 @@ class TrialPatient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Checks whether a user has access to a certain TrialPatient
-     *
-     * @param User $user The user to check access for
-     * @param int $trial_patient_id The ID of the TrialPatient to check access for
-     * @param string $permission The permission to check
-     * @return bool True if $user is allowed to perform $permission on $trial_patient_id, otherwise false
-     * @throws CDbException Thrown by Trial::checkTrialAccess()
-     */
-    public static function checkTrialPatientAccess($user, $trial_patient_id, $permission)
-    {
-        /* @var TrialPatient $model */
-        $model = TrialPatient::model()->findByPk($trial_patient_id);
-
-        return Trial::checkTrialAccess($user, $model->trial_id, $permission);
-    }
-
-    /**
      * Changes the status of a patient in a trial to a given value
      * @param string $new_status The new status of the TrialPatient
      * @returns string The return code
@@ -342,7 +325,7 @@ class TrialPatient extends BaseActiveRecordVersioned
     {
         Yii::log("New Status $new_status");
         if ($new_status === TrialPatient::STATUS_ACCEPTED &&
-            $this->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION &&
+            $this->trial->trial_type->code === 'INTERVENTION' &&
             TrialPatient::isPatientInInterventionTrial($this->patient)
         ) {
             return self::STATUS_CHANGE_CODE_ALREADY_IN_INTERVENTION;

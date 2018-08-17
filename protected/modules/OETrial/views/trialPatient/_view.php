@@ -1,12 +1,9 @@
 <?php
 /* @var $this TrialPatientController */
 /* @var $data TrialPatient */
-/* @var $userPermission integer */
 /* @var $renderTreatmentType bool */
 
 $isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial($data->patient, $data->trial_id);
-$canEditPatient = Trial::checkTrialAccess(Yii::app()->user, $data->trial_id, UserTrialPermission::PERMISSION_EDIT);
-
 
 $warnings = array();
 foreach ($data->patient->getWarnings(true) as $warn) {
@@ -14,7 +11,7 @@ foreach ($data->patient->getWarnings(true) as $warn) {
 }
 
 if ($isInAnotherInterventionTrial) {
-    $warnings[] = $data->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION ? 'Patient is already in an Intervention trial' : 'Patient is in an intervention trial';
+    $warnings[] = $data->trial->trial_type->code === 'INTERVENTION' ? 'Patient is already in an Intervention trial' : 'Patient is in an intervention trial';
 }
 
 $previousTreatmentType = TrialPatient::getLastPatientTreatmentType($data->patient, $data->trial_id);
@@ -79,7 +76,7 @@ if ($previousTreatmentType === TrialPatient::TREATMENT_TYPE_INTERVENTION) {
       } ?>
 
   </td>
-    <?php if ($renderTreatmentType && !$data->trial->is_open && $data->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION): ?>
+    <?php if ($renderTreatmentType && !$data->trial->is_open && $data->trial->trial_type->code === 'INTERVENTION'): ?>
       <td> <!-- Treatment Type -->
           <?php if ($canEditPatient):
 
@@ -135,7 +132,7 @@ if ($previousTreatmentType === TrialPatient::TREATMENT_TYPE_INTERVENTION) {
             <a href="javascript:void(0)"
                onclick="changePatientStatus(this, <?php echo $data->id; ?>, '<?php echo TrialPatient::STATUS_ACCEPTED; ?>')"
                class="accept-patient-link"
-               <?php if ($data->trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
+               <?php if ($data->trial->trial_type->code === 'INTERVENTION' && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
               Accept
             </a>
           </div>

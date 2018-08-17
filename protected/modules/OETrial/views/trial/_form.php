@@ -5,7 +5,6 @@
 ?>
 
 <nav class="event-header ">
-  <i class="oe-i-e large i-CiExamination"></i>
     <?php if (!$model->getIsNewRecord()): ?>
         <?= CHtml::link('View', $this->createUrl('view', array('id' => $model->id)),
             array('class' => 'button header-tab')) ?>
@@ -107,12 +106,11 @@
             <?= $form->labelEx($model, 'trial_type') ?>
         </div>
         <div class="large-2 column end">
-            <?php foreach (Trial::model()->getTrialTypeOptions() as $trial_type => $type_label): ?>
-
+            <?php foreach (TrialType::model()->findAll() as $trial_type): ?>
               <label>
-                  <?php echo $form->radioButton($model, 'trial_type',
-                      array('value' => $trial_type, 'uncheckValue' => null)); ?>
-                  <?= $type_label ?>
+                  <?php echo $form->radioButton($model, 'trial_type_id',
+                      array('value' => $trial_type->id, 'uncheckValue' => null)); ?>
+                  <?= $trial_type->name ?>
               </label>
             <?php endforeach; ?>
         </div>

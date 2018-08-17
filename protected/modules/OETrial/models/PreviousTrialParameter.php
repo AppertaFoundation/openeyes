@@ -61,8 +61,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             '!=' => 'Is not',
         );
 
-        $types = Trial::getTrialTypeOptions();
-
         $trials = Trial::getTrialList($this->type);
 
         $statusList = array(
@@ -100,7 +98,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             </div>
         </div>
         <div class="row field-row treatment-type-container"
-             <?php if ($this->type !== '' && $this->type !== null && $this->type === Trial::TRIAL_TYPE_NON_INTERVENTION): ?>style="display:none" <?php endif; ?>>
+             <?php if ($this->trial_type && $this->type !== null && $this->trial_type->code === 'NON_INTERVENTION'): ?>style="display:none" <?php endif; ?>>
             <div class="large-2 column">&nbsp;</div>
             <div class="large-2 column">
                 <p style="float: right; margin: 5px">with</p>
@@ -124,7 +122,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 var treatmentTypeContainer = parameterNode.find('.treatment-type-container');
 
                 // Only show the treatment type if the trial type is set to "Any" or "Intervention"
-                treatmentTypeContainer.toggle(!trialType || trialType === '<?php echo Trial::TRIAL_TYPE_INTERVENTION; ?>');
+                treatmentTypeContainer.toggle(!trialType || trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>');
 
                 if (!trialType) {
                     trialList.empty();
@@ -192,7 +190,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                         .'\''.TrialPatient::STATUS_REJECTED.'\')';
                 }
 
-                if (($this->type === '' || $this->type === null || $this->type !== Trial::TRIAL_TYPE_NON_INTERVENTION)
+                if (($this->trial_type === '' || $this->trial_type === null || $this->trial_type->code !== 'NON_INTERVENTION')
                     && $this->treatmentType !== '' && $this->treatmentType !== null
                 ) {
                     $condition .= " AND t_p.treatment_type = :p_t_treatment_type_$this->id";
@@ -232,7 +230,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                       ) ';
                 }
 
-                if (($this->type === '' || $this->type === null || $this->type !== Trial::TRIAL_TYPE_NON_INTERVENTION)
+                if (($this->trial_type === '' || $this->trial_type === null || $this->type !== Trial::TRIAL_TYPE_NON_INTERVENTION)
                     && $this->treatmentType !== '' && $this->treatmentType !== null
                 ) {
                     $condition .= " AND t_p.treatment_type IS NULL OR t_p.treatment_type != :p_t_treatment_type_$this->id";

@@ -1,18 +1,13 @@
 <?php
 /* @var TrialController $this */
 /* @var Trial $trial */
-?>
-
-<?php
-$hasViewPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_VIEW);
-$hasEditPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_EDIT);
-$hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_MANAGE);
+/* @var TrialPermission $permission */
 ?>
 
 <div class="large-3 column">
   <div class="box generic">
 
-      <?php if ($hasViewPermissions): ?>
+      <?php if ($permission->can_view): ?>
         <p>
             <?php if ($this->action->id === 'view'): ?>
               View Trial Details
@@ -25,7 +20,7 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
         </p>
       <?php endif; ?>
 
-      <?php if ($hasEditPermissions): ?>
+      <?php if ($permission->can_edit): ?>
         <p>
           <span class="highlight">
             <?php echo CHtml::link('Edit Trial Details',
@@ -47,7 +42,7 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
         </p>
       <?php endif; ?>
 
-      <?php if ($trial->is_open && $hasEditPermissions): ?>
+      <?php if ($trial->is_open && $permission->can_edit): ?>
         <p>
           <span class="highlight">
             <?php echo CHtml::link('Add Participants',
@@ -71,7 +66,7 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
           <?php echo CHtml::endForm(); ?>
       <?php endif; ?>
 
-      <?php if ($hasManagePermissions): ?>
+      <?php if ($permission->can_manage): ?>
           <?php echo CHtml::beginForm(array('delete'), 'post', array('id' => 'delete-trial-form')); ?>
         <p>
           <span class="highlight">

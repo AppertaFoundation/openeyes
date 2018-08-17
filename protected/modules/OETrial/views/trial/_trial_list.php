@@ -24,11 +24,11 @@
 
   <table class="standard clickable-rows js-trial-list">
     <colgroup>
+      <col class="cols-4">
       <col class="cols-1">
-      <col class="cols-2">
-      <col class="cols-6">
       <col class="cols-1">
-      <col class="cols-2">
+      <col class="cols-3">
+      <col class="cols-1">
     </colgroup>
     <thead>
     <?php foreach (array('Name', 'Date Started', 'Date Closed', 'Owner', 'Status') as $i => $field) { ?>
