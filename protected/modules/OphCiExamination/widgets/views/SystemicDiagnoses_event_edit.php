@@ -36,8 +36,8 @@ $required_diagnoses_ids = array_map(function ($r) {
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
       <colgroup>
-          <col class="cols-4">
-          <col class="cols-4">
+          <col class="cols-3">
+          <col class="cols-3">
           <col class="cols-1">
           <col class="cols-1">
           <col class="cols-1">

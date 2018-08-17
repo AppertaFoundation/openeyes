@@ -57,7 +57,6 @@ if (!isset($values)) {
                 if ($removable) {
                     echo CHtml::hiddenField($field_prefix . '[has_disorder]', (string) SystemicDiagnoses_Diagnosis::$PRESENT);
                 } else {
-
                     ?>
                     <label class="inline highlight">
                         <?php echo \CHtml::radioButton(
@@ -94,7 +93,12 @@ if (!isset($values)) {
         ]); ?>
 
         <td>
-            <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" class="date" placeholder="yyyy-mm-dd"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
+            <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>"
+                   class="date" placeholder="yyyy-mm-dd"
+                   name="<?= $field_prefix ?>[date]"
+                   value="<?=$values['date'] ?>"
+                   style="width: 90px"
+                   autocomplete="off">
         </td>
         <td>
             <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
