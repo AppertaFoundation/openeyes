@@ -16,7 +16,8 @@
  */
 ?>
 <?php
-if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')) {
+$eventtype = EventType::model()->find('class_name = "OphCiExamination"');
+if ($eventtype) {
     $eventtypeid = $eventtype->id;
 }
 ?>
@@ -24,7 +25,8 @@ if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')) {
 $VAdate = " - (Not Recorded)";
 $VA_data = NULL;
 $episode = $this->episode;
-if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+$api = Yii::app()->moduleAPI->get('OphCiExamination');
+if ($api) {
     $chosenVA[] = array('');
     //Get All Events for episode.
     $criteria = new CDbCriteria();
@@ -32,7 +34,8 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     $criteria->order = ' event_date DESC';
     $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
     //For each event, check if =event_id in _visualacuity.
-    if ($events = Event::model()->findAll($criteria)) {
+    $events = Event::model()->findAll($criteria);
+    if ($events)) {
         for ($i = 0; $i < count($events); ++$i) {
             // Get Most Recent VA
             $vaID = $api->getMostRecentVA($events[$i]->id);
@@ -93,38 +96,38 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
             $_data = $eye_side . 'Data';
             $data = $$_data;
             if (count($method_name)) {
-                ?>
+            ?>
+            <div class="data-value">
+                <?php echo $unitname ?>
+            </div>
+            <div class="data-group">
                 <div class="data-value">
-                    <?php echo $unitname ?>
-                </div>
-                <div class="data-group">
-                    <div class="data-value">
-                        <?php
-                        for ($i = 0; $i < count($method_name); ++$i) {
-                            echo $api->getVAvalue($data[$i]->value, $unitId) . " " . $method_name[$i];
-                            if ($i != (count($method_name) - 1)) {
-                                echo ", ";
-                            }
+                    <?php
+                    for ($i = 0; $i < count($method_name); ++$i) {
+                        echo $api->getVAvalue($data[$i]->value, $unitId) . " " . $method_name[$i];
+                        if ($i != (count($method_name) - 1)) {
+                            echo ", ";
                         }
-                        ?>
-                    </div>
+                    }
+                    ?>
                 </div>
-                </div>
-                <?php
-            } else { ?>
-                <div class="data-value not-recorded">
-                    Not recorded
-                </div>
+            </div>
+        </div>
+        <?php
+        } else { ?>
+        <div class="data-value not-recorded">
+            Not recorded
+        </div>
     </div>
-            <?php }
-        endforeach; ?>
+    <?php }
+    endforeach; ?>
     </div>
 </section>
 <?php
 // Near VA
 $NearVAdate = " - (Not Recorded)";
 $NearVAFound = false;
-if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+if ($api) {
     for ($i = 0; $i < count($events); ++$i) {
         // Get Most Recent VA
         $vaID = $api->getMostRecentNearVA($events[$i]->id);
@@ -209,13 +212,15 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 <?php
 // Refraction here
 $refractfound = false;
-if ($eventid = Event::model()->findAll(array(
+$eventid = Event::model()->findAll(array(
     'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
     'order' => 'event_date DESC',
-))){
+));
+if ($eventid){
 // Loop through responses, for ones that have RefractionValues
 for ($i = 0; $i < count($eventid); ++$i) {
-    if ($refraction_values = $api->getRefractionValues($eventid[$i]->id)) {
+    $refraction_values = $api->getRefractionValues($eventid[$i]->id);
+    if ($refraction_values) {
         if (!$refractfound) {
             $refractelement = $refraction_values;
             $refract_event_date = $eventid[$i]->event_date;
