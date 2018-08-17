@@ -41,7 +41,7 @@ $('#prescription_items').delegate('i.removeItem', 'click', function () {
 });
 
 // Add taper to item
-$('#prescription_items').delegate('.js-add-taper', 'click', function (event) {
+$('#prescription_items').on('click', '.js-add-taper', function (event) {
   event.preventDefault();
   var row = $(this).closest('tr');
   var key = row.attr('data-key');
