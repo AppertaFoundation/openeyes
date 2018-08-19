@@ -575,19 +575,24 @@ class PatientController extends BaseController
             switch ($eventType) {
                 // Document events should be ignored, as they have already been broken down by document sub type
                 case 'Document':
-                    break;
+                    continue 2;
                 // Biometry events and report documents should be in the same bucket
                 case 'Biometry':
-                    $previewGroups['Biometry Report'] += $events;
+                    $groupType = 'BiometryReport';
                     break;
                 // Correspondence events should go in th 'Letters' bucket
                 case 'Correspondence':
-                    $previewGroups['Letters'] += $events;
+                    $groupType = 'Letters';
                     break;
                 default:
-                    $previewGroups[$eventType] = $events;
+                    $groupType = $eventType;
                     break;
             }
+
+            if (!array_key_exists($groupType, $previewGroups)) {
+                $previewGroups[$groupType] = [];
+            }
+            $previewGroups[$groupType] += $events;
         }
 
         // Default to letters if no other preview type exists

@@ -38,7 +38,7 @@ $previewWidth = 800;
                 }
                 ?>
               <li class="<?php if ($previewType === $selectedPreviewType): ?>selected<?php endif; ?>">
-                <i class="oe-i-e <?= $events[0]->eventType->getEventIconCssClass() ?>"></i>
+                <i class="oe-i-e <?= count($events) > 0 ? reset($events)->eventType->getEventIconCssClass() : '' ?>"></i>
                 <a href="<?= Yii::app()->createUrl('/patient/lightningViewer',
                     array('id' => $this->patient->id, 'preview_type' => $previewType)) ?>"
                 >
