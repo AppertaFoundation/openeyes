@@ -13,6 +13,7 @@
     this.currentPageNumber = null;
 
     this.optionsDisplayed = false;
+    this.currentPreview = null;
 
     this.create();
   }
@@ -26,7 +27,13 @@
 
     $('.js-lightning-image-preview-page').each(function () {
       $('<img />', {src: $(this).data('src')}).on('load error', function () {
-        $(this).closest('.js-lightning-image-preview-page').data('loaded', true);
+        var $page = $(this).closest('.js-lightning-image-preview-page');
+        $page.data('loaded', true);
+        var $preview = $(this).closest('.js-lightning-image-preview');
+        if ($preview.is(self.currentPreview) && $page.data('page-number') == self.currentPageNumber) {
+          self.showImage($page);
+        }
+
       }).appendTo($(this));
     });
 
@@ -54,29 +61,10 @@
     $(document).on('mousemove', '.js-lightning-view-overlay', function (e) {
       var parentOffset = $(this).parent().offset();
       var relX = e.pageX - parentOffset.left;
-
-      var xPercentage = relX / $(this).width();
-
-      var $icons = $('.js-lightning-view-icon');
-      var xIndex = Math.floor($icons.length * xPercentage);
-      var $icon = $icons.eq(xIndex);
-
-      var $preview;
-
-      if (self.selectedEventId === null) {
-        $('.icon-event').removeClass('js-hover');
-        $icon.addClass('js-hover');
-        $preview = self.changePreview($icon.data('event-id'));
-      } else {
-        $preview = $('.js-lightning-image-preview[data-event-id="' + self.selectedEventId + '"]');
-      }
-
-      if ($preview.data('paged')) {
-        var relY = e.pageY - parentOffset.top;
-        var yPercentage = relY / $(this).height();
-        var page = Math.floor($preview.data('image-count') * yPercentage);
-        self.changePreviewPage($preview.data('event-id'), page);
-      }
+      var relY = e.pageY - parentOffset.top;
+      var xRatio = relX / $(this).width();
+      var yRatio = relY / $(this).height();
+      self.changePreviewCoords(xRatio, yRatio);
     });
 
     $('.js-lightning-options-btn').click(this.changeOptions);
@@ -92,27 +80,51 @@
     });
   };
 
+  LightningViewer.prototype.changePreviewCoords = function (xRatio, yRatio) {
+    var $icons = $('.js-lightning-view-icon');
+    var xIndex = Math.floor($icons.length * xRatio);
+    var $icon = $icons.eq(xIndex);
+
+    if (this.selectedEventId === null) {
+      this.previewEvent($icon.data('event-id'));
+    }
+
+    if (this.currentPreview.data('paged')) {
+      var page = Math.floor(this.currentPreview.data('image-count') * yRatio);
+      this.changePreviewPage(page);
+    }
+  };
+
+  LightningViewer.prototype.previewEvent = function (event_id) {
+    var $icons = $('.js-lightning-view-icon');
+    $icons.removeClass('js-hover');
+    var $icon = $icons.filter('[data-event-id="' + event_id + '"]');
+    $icon.addClass('js-hover');
+
+    this.changePreview(event_id);
+  };
+
   LightningViewer.prototype.changePreview = function (event_id) {
-    var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
     if (this.currentEventId === event_id) {
-      return $preview;
+      return;
     }
 
     this.currentEventId = event_id;
+    this.currentPreview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
+
     $('.js-lightning-image-preview').hide();
-    $preview.show();
+    this.currentPreview.show();
 
     var $meta = $('.js-lightning-meta');
-    $meta.find('.js-lightning-preview-type').text($preview.data('preview-type'));
-    $meta.find('.js-lightning-date').html($preview.data('date'));
+    $meta.find('.js-lightning-preview-type').text(this.currentPreview.data('preview-type'));
+    $meta.find('.js-lightning-date').html(this.currentPreview.data('date'));
 
-    if ($preview.data('paged')) {
-      $preview.find('.js-lightning-image-preview-page').hide();
-      this.showImage($preview.find('.js-lightning-image-preview-page').first());
+    if (this.currentPreview.data('paged')) {
+      this.currentPreview.find('.js-lightning-image-preview-page').hide();
+      this.showImage(this.currentPreview.find('.js-lightning-image-preview-page').first());
     } else {
-      this.showImage($preview.find('.js-lightning-image-preview-page'));
+      this.showImage(this.currentPreview.find('.js-lightning-image-preview-page'));
     }
-    return $preview;
   };
 
   LightningViewer.prototype.showImage = function ($image) {
@@ -120,17 +132,16 @@
     $image.toggle($image.data('loaded'));
   };
 
-  LightningViewer.prototype.changePreviewPage = function (event_id, page) {
-    if (this.currentEventId === event_id && this.currentPageNumber === page) {
+  LightningViewer.prototype.changePreviewPage = function (page) {
+    if (this.currentPageNumber === page) {
       return;
     }
 
     this.currentPageNumber = page;
 
-    var $preview = $('.js-lightning-image-preview[data-event-id="' + event_id + '"]');
     if (page !== null) {
-      $preview.find('.js-lightning-image-preview-page').hide();
-      this.showImage($preview.find('.js-lightning-image-preview-page[data-page-number="' + page + '"]'));
+      this.currentPreview.find('.js-lightning-image-preview-page').hide();
+      this.showImage(this.currentPreview.find('.js-lightning-image-preview-page[data-page-number="' + page + '"]'));
     }
   };
 
