@@ -95,6 +95,8 @@ $previewWidth = 800;
   </div>
 
   <div class="flex-layout flex-left flex-top">
+    <div class="js-lightning-view-overlay"
+         style="width: 100%; min-height: 512px; height: 100%; position: absolute;"></div>
     <div class="oe-lightning-meta js-lightning-meta">
       <div class="letter-type js-lightning-preview-type"></div>
       <div class="date oe-date js-lightning-date"></div>
@@ -104,8 +106,6 @@ $previewWidth = 800;
     </div>
     <div class="oe-lightning-quick-view js-lightning-view-image-container">
       <i class="js-preview-image-loader spinner" style="display: none;"></i>
-      <div class="js-lightning-view-overlay" style="width: <?= $previewWidth ?>px; min-height: 512px; height: 100%; position: absolute;">
-      </div>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
                 $eventImages = EventImage::model()->findAll('event_id = ?', array($event->id));
@@ -124,7 +124,6 @@ $previewWidth = 800;
                          data-loaded="0"
                          data-src="<?= $eventImage->getImageUrl() ?>"
                          style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
-                         alt="No preview available at this time"
                          <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
                     ></div>
                   <?php } ?>
