@@ -1,5 +1,5 @@
 <?php
-class m180706_105034_change_display_order_operation_booking extends CDbMigration
+class m180814_133405_change_display_order_operation_booking extends CDbMigration
 {
     public function up()
     {
