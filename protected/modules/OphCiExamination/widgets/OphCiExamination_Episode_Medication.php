@@ -56,6 +56,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         $earlist_date = $start_date;
                     }
 
+                     // Construct data to store medication records for left and right eye based on drug name.
+                     // Each medication may have one or multiple apply time.
                     foreach ([1 => 'left', 2 => 'right'] as $eye_flag => $eye_side) {
                         if (!($entry->option_id & $eye_flag)) {
                             continue;
@@ -71,7 +73,6 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         if (!in_array($new_medi_record, $medication_list[$eye_side][$drug_name]) ){
                             $medication_list[$eye_side][$drug_name][] = $new_medi_record;
                         }
-
                     }
                 }
             }
@@ -82,7 +83,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 
             foreach ($medication_list[$side] as $key => &$med) {
                 if (sizeof($med)>1){
-                    $med = $this->purifyMedicationSeries($med);
+                    $med = $this->purifyMedicationSeries($med);    //sort and merge each medication's time series
                 }
             }
             uasort($medication_list[$side], function ($item1, $item2){
@@ -94,7 +95,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         return $medication_list;
     }
 
+    /**
+     * Sort each medication's time series by start date and merge overlapped periods.
+     * @param $medication_series
+     * @return array
+     */
     public function purifyMedicationSeries($medication_series){
+        // Sort medication time series by start date
         usort($medication_series, function ($item1, $item2){
             if ($item1['low'] == $item2['low']) return 0;
             return $item1['low'] < $item2['low'] ? -1 : 1;
@@ -103,6 +110,9 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         $i = 0;
         $out_series = array();
 
+        // From the earliest open time, merge overlopped time series into single one,
+        // keep the earliest start time and latest stop time and stop reason
+        // add to result array.
         while($i<sizeof($medication_series)){
             $begin = $medication_series[$i]['low'];
             $end = $medication_series[$i]['high'];
