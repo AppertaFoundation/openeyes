@@ -17,36 +17,41 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$model_name = CHtml::modelName($element);
 ?>
-<?php if (!$element) { ?>
-    <p class="risk-status-unknown">Patient risk status is unknown</p>
-<?php }
-elseif(!count($element->entries) || $element->no_risks_date ){ ?>
-  <div class="risk-status-none">
-    <h2>Alerts</h2>
-    <p>Patient has no known risks.</p>
-  </div>
-<?php } else { ?>
-    <div class="alert-box patient">
-    <strong>Alerts</strong><br>
+
+<?php $model_name = CHtml::modelName($element); ?>
+
+<?php if (!$element) : ?>
+    <div class="alert-box">
+        <strong>Alerts</strong> - Patient risk status is unknown.
     </div>
-  <table class="risks alert-box patient">
-  <colgroup>
-    <col class="cols-5">
-  </colgroup>
-        <tbody>
-        <?php
-        foreach ($element->entries as $entry) {
-            $this->render(
-                'HistoryRisksEntry_patient_mode',
-                array(
-                    'entry' => $entry,
-                    'model_name' => $model_name
-                )
-            );
-        }
-        ?>
-        </tbody>
-  </table>
-<?php } ?>
+<?php elseif (!count($element->entries) || $element->no_risks_date) : ?>
+    <div class="alert-box success">
+        <strong>Alerts</strong> - Patient has no known risks.
+    </div>
+<?php else: ?>
+    <div class="alert-box patient">
+        <strong>Alerts</strong>
+    </div>
+    <div class="popup-overflow">
+        <table class="risks">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <?php foreach ($element->entries as $i => $entry) : ?>
+                <?php if ($entry->getDisplayHasRisk() === 'Present') : ?>
+                    <tr>
+                        <td>
+                            <i class="oe-i warning small pad-right"></i>
+                            <?= $entry->getDisplayRisk() ?>
+                        </td>
+                        <td><?=$entry->comments ?></td>
+                        <td></td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
