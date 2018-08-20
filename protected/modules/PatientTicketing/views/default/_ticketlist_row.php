@@ -18,13 +18,13 @@
 ?>
 
 <?php $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE); ?>
-
 <tr data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
     <td><?= $ticket->current_queue->name ?></td>
     <td><a href="<?= $ticket->getSourceLink() ?>">
 
             <?= $ticket->patient->getHSCICName() ?>
-            <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)</small>
+            <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)
+            </small>
             <br/>
             <small>
                 <span class="fade">No</span>
@@ -35,16 +35,20 @@
                 <span class="fade">NHS</span>
                 <?= (($ticket->patient->nhs_num) ? $ticket->patient->nhs_num : '') ?>
             </small>
-
-        </a></td>
+        </a>
+    </td>
     <td>
         <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->name : ''?> small pad selected"></i>
-    <td><?= Helper::convertDate2NHS($ticket->created_date) ?></td>
-    <td><?= $ticket->getTicketFirm() ?></td>
-    <td><?= $ticket->user->getFullName() ?></td>
+    </td>
+    <td><span class="oe-date"><?= Helper::convertMySQL2HTML($ticket->created_date) ?></span></td>
+    <td>
+        <?php $ticket_context = $ticket->getTicketFirm(); ?>
+        <?= $ticket->getTicketFirm() ?><br>
+        <small class="fade"><?= $ticket->user->getFullName() ?></small>
+    </td>
     <td>
         <div class="clinic-info scroll-content">
-            <?= $ticket->report ? $ticket->report : '-'; ?>
+            <?= $ticket->report ? preg_replace('/^(<br \/>)/', '', $ticket->report) : '-'; ?>
         </div>
     </td>
     <td>
@@ -52,36 +56,25 @@
             <?= nl2br($ticket->getNotes()) ?>
         </div>
     </td>
-    <!-- Ownership functionality not required at the moment.
-	<td><?= $ticket->assignee ? $ticket->assignee->getFullName() : '-' ?></td>
-	 -->
     <td class="actions">
-        <?php
-        if ($can_process) {
-            if (!$ticket->is_complete()) {
-                /*
-                Ownership functionality is not required at the moment. It's expected that this will take place as
-                part of the "move" functionality
+        <ul>
+            <?php if ($can_process && !$ticket->is_complete()) : ?>
+                <li>
+                    <a class="button" href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', [
+                            'ticket_id' => $ticket->id
+                        ]
+                    ); ?>">
+                        <?= $t_svc->getTicketActionLabel($ticket) ?>
+                    </a>
+                </li>
+            <?php endif; ?>
 
-                if ($ticket->assignee) {
-                    if ($ticket->assignee_user_id == Yii::app()->user->id) {
-                        ?><button id="release" class="tiny ticket-release">Release</button><?php
-                    }
-                }
-                else {
-                    ?><button id="take" class="tiny ticket-take">Take</button><?php
-                }
-                */
-                ?>
-                <a href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array('ticket_id' => $ticket->id)); ?>"
-                   class="button"><?= $t_svc->getTicketActionLabel($ticket) ?></a>
-            <?php }
-        } ?>
-        <?php if ($ticket->hasHistory()) { ?>
-            <button class="tiny ticket-history">History</button>
-            <?php if ($this->checkAccess('Patient Tickets admin')) { ?>
-                <button class="tiny undo-last-queue-step">Undo last step</button>
-            <?php } ?>
-        <?php } ?>
+            <?php if ($ticket->hasHistory()) : ?>
+                <li class="button ticket-history">History</li>
+                <?php if ($this->checkAccess('Patient Tickets admin')) : ?>
+                    <li class="button undo-last-queue-step">Undo last step</li>
+                <?php endif; ?>
+            <?php endif; ?>
+        </ul>
     </td>
 </tr>

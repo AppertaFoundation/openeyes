@@ -29,7 +29,7 @@
 		<a href="#" class="close">×</a>
 	</div>
 
-	<table class="grid waiting-list">
+	<table class="standard waiting-list">
 		<thead>
 		<tr>
 			<th>Letters sent</th>

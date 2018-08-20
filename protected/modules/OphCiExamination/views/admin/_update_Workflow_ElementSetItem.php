@@ -27,7 +27,7 @@
 	</div>
 	<form id="admin_workflow_steps">
     <div class="data-group">
-      <table class="grid">
+      <table class="standard">
         <thead>
         <tr>
           <th>Element type</th>

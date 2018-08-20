@@ -18,39 +18,31 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <?php $this->renderPartial('//base/head/_meta'); ?>
-    <?php $this->renderPartial('//base/head/_assets'); ?>
-    <?php $this->renderPartial('//base/head/_tracking'); ?>
-</head>
-<body class="open-eyes">
+    <head>
+        <?php $this->renderPartial('//base/head/_meta'); ?>
+        <?php $this->renderPartial('//base/head/_assets'); ?>
+        <?php $this->renderPartial('//base/head/_tracking'); ?>
+    </head>
+    <body class="open-eyes oe-grid">
 
-<!--    --><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-    <?php $this->renderPartial('//base/_debug'); ?>
+        <?php $this->renderPartial('//base/_debug'); ?>
 
-    <div class="container main" role="main">
+        <!-- Branding (logo) -->
+        <div class="openeyes-brand">
+            <?php $this->renderPartial('//base/_brand'); ?>
+        </div>
 
         <?php $this->renderPartial('//base/_header'); ?>
 
-        <div class="container content">
+        <div class="oe-full-header flex-layout">
+            <div class="title wordcaps">Admin: <b>Users</b></div>
+        </div>
 
-            <div class="box content admin-content">
-                <div class="data-group">
-                    <aside class="cols-3 column sidebar admin">
-                        <?php $this->renderPartial('//admin/sidebar'); ?>
-                    </aside>
-                    <div class="cols-9 column content admin">
-                        <?php $this->renderPartial('//base/_messages'); ?>
-                        <?php echo $content; ?>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- /.content -->
+        <div class="oe-full-content subgrid oe-admin flex-layout flex-top">
+            <?php $this->widget('application.widgets.AdminSidebar'); ?>
+            <?php echo $content; ?>
+        </div>
 
         <?php $this->renderPartial('//base/_footer'); ?>
-
-    </div><!-- /.main.container -->
-</body>
+    </body>
 </html>
-
