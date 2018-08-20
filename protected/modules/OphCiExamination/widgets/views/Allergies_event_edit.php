@@ -142,4 +142,6 @@ $required_allergy_ids = array_map(function ($r) {
             }
         });
     });
+
+
 </script>
