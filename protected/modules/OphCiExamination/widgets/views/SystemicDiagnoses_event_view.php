@@ -67,7 +67,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                     <?= $diag->disorder; ?>
                 </td>
                 <td>
-                  <?php $this->widget('EyeLateralityWidget', array('side' => $diag->side)) ?>
+                  <?php $this->widget('EyeLateralityWidget', array('eye' => $diag->side)) ?>
                 </td>
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
                 <td><strong>Not checked</strong></td>

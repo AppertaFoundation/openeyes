@@ -87,8 +87,7 @@ $required_allergy_ids = array_map(function ($r) {
             </tbody>
         </table>
 
-    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup"
-         style="visibility: <?php echo $element->no_allergies_date ? 'hidden' : ''; ?>">
+    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
         <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
                     class="oe-i plus pro-theme"></i></button>
     </div>
@@ -133,7 +132,7 @@ $required_allergy_ids = array_map(function ($r) {
             openButton: $('#add-allergy-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                 array_map(function ($allergy) {
-                    return ['value' => $allergy->name, 'id' => $allergy->id];
+                    return ['label' => $allergy->name, 'id' => $allergy->id];
                 }, $element->getAllergyOptions())
             )?>, {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
@@ -143,5 +142,4 @@ $required_allergy_ids = array_map(function ($r) {
             }
         });
     });
-
 </script>

@@ -18,8 +18,8 @@
 ?>
 <?php $render_date = $form && (($this->action->id === strtolower($this::ACTION_TYPE_CREATE)) || $this->checkAdminAccess()) ?>
 
-<div class="element-fields full-width">
-  <table class="cols-10 last-left ">
+<div class="element-fields full-width flex-layout">
+  <table class="cols-10 last-left">
     <colgroup>
       <col class="cols-4">
       <col class="cols-4">
@@ -73,7 +73,6 @@
           }
           ?>
       </td>
-
         <?php if ($render_date): ?>
           <td id="opnote_date">
               <?php
@@ -89,9 +88,33 @@
     </tr>
     </tbody>
   </table>
+  <div class="add-data-actions flex-item-bottom " id="change-site-theatre-popup">
+    <button class="button hint green js-add-select-search" id="change-site-theatre-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button><!-- popup to add data to element -->
+  </div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#change-site-theatre-btn'),
+      itemSets:[
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($item) {
+              return ['label' => $item->short_name, 'id' => $item->id];
+          }, OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) ) ?>,
+          {'header':'site', 'id':'site_id'})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
     $('#Element_OphTrOperationnote_SiteTheatre_site_id').change(function () {
       $.ajax({
         type: 'GET',
