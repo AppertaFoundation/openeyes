@@ -19,9 +19,9 @@
  */
 ?>
 
-<tr  style="background-color: <?= $entry->getDisplayHasRisk()=='Not present' ? '#101925': '' ?>">
-  <td><?= $entry->getDisplayRisk() ?></td>
-  <td><?= $entry->getDisplayHasRisk() ?></td>
-  <td><?= $entry->comments ?></td>
-  <td></td>
+<tr style="background-color: <?= $entry->getDisplayHasRisk() == 'Not present' ? '#101925' : '' ?>">
+    <td><?= $entry->getDisplayRisk() ?></td>
+    <td><?php if($entry->getDisplayHasRisk() === 'Not present') echo 'Not Present';?></td>
+    <td><?= $entry->comments ?></td>
+    <td></td>
 </tr>

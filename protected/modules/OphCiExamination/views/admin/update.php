@@ -39,10 +39,10 @@
         ));
         $this->endWidget();
     ?>
+    <?php if (@$related_view) {
+        $this->renderPartial($related_view, array(
+                'model' => $model,
+        ))?>
+    <?php
+    }?>
 </div>
-<?php if (@$related_view) {
-    $this->renderPartial($related_view, array(
-            'model' => $model,
-    ))?>
-<?php 
-}?>

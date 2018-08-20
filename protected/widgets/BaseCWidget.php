@@ -35,7 +35,6 @@ class BaseCWidget extends CWidget
         // if the widget has javascript, load it in
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
             $assetManager = Yii::app()->getAssetManager();
-            $asset_folder = $assetManager->publish('protected/widgets/js');
             $assetManager->registerScriptFile('js/'.get_class($this).'.js', 'application.widgets', $this->scriptPriority);
         }
 
