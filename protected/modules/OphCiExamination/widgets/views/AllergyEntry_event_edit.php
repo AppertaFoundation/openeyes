@@ -40,6 +40,9 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
+        <?php if($removable) {
+            echo CHtml::hiddenField($field_prefix . '[has_allergy]' , (string) AllergyEntry::$PRESENT);
+         } else {?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $posted_not_checked,
                 array('value' => AllergyEntry::$NOT_CHECKED));
@@ -57,6 +60,7 @@ if (!isset($values)) {
                 array('value' => AllergyEntry::$NOT_PRESENT)); ?>
             no
         </label>
+        <?php } ?>
     </td>
     <td>
                 <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
