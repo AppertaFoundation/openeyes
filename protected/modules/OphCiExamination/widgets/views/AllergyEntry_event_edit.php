@@ -59,11 +59,6 @@ if (!isset($values)) {
         </label>
     </td>
     <td>
-        <?php if (!$removable): ?>
-            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?= $values['comments'] ?>" autocomplete="off" />
-            <?= $values['comments'] ?>
-        <?php else: ?>
-
                 <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
                         class="button js-add-comments"
                         data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
@@ -82,8 +77,6 @@ if (!isset($values)) {
                   )) ?>
                         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </span>
-
-        <?php endif; ?>
     </td>
 
 

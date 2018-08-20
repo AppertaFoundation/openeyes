@@ -14,12 +14,11 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-
-<?php
 
 class EyeSelector extends BaseCWidget
 {
+    public static $NOT_CHECKED = -9;
+
     /**
      * @var string the template to be used to control the layout of various sections in the view.
      * These tokens are recognized: {Left}, {Right} and {NA}.
@@ -29,7 +28,7 @@ class EyeSelector extends BaseCWidget
     /**
      * @var int the id of the selected eye.
      * null - nothing is selected
-     * 0 - n/a, 1 - left, 2 - right, 3 - both
+     * -9 - n/a, 1 - left, 2 - right, 3 - both
      */
     public $selectedEyeId;
 
@@ -68,7 +67,7 @@ class EyeSelector extends BaseCWidget
     public function renderNA()
     {
         echo CHtml::openTag('label', ['class' => 'inline highlight']);
-        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => -9]) . ' n/a';
+        echo CHtml::checkBox($this->inputNamePrefix . "[na_eye]", $this->selectedEyeId == -9, ['class' => 'js-na-eye', 'name' => null, 'value' => self::$NOT_CHECKED]) . ' n/a';
         echo CHtml::closeTag('label');
     }
 
