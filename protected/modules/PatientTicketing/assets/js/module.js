@@ -418,8 +418,9 @@
 		$(this).on('change', '#subspecialty-id', function(e) {
 			var subspecialty_id = $(this).val();
 
-			if (subspecialty_id == '') {
-				$('#firm-id').html('<option value="">All firms</option>');
+			if (subspecialty_id === '') {
+                $('#firm-id').find('options').remove();
+                $('#firm-id').append( $('<option>').text("All Contexts") );
 				$('#firm-id').attr('disabled','disabled');
 			} else {
 				$.ajax({

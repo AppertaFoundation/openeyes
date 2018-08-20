@@ -41,7 +41,7 @@
 <div class="box admin">
 	<h2>Patients</h2>
 	<form id="admin_contact_patients">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>Hos num</th>

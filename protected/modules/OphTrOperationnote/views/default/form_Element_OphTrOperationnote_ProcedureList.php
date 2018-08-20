@@ -27,7 +27,7 @@
   </header>
 
   <div class="element-fields full-width">
-    <table class="cols-10 last-left">
+    <table class="cols-full last-left">
       <colgroup>
         <col class="cols-4">
         <col class="cols-8">

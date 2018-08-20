@@ -26,7 +26,7 @@
 		</div>
 	</header>
 
-	<table class="grid">
+	<table class="standard">
 		<thead>
 			<tr>
 				<th>Name</th>

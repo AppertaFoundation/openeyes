@@ -22,7 +22,7 @@
   </div>
 	<form id="admin_anaesthetic_agent">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
+		<table class="standard">
 			<thead>
 			<tr>
 				<th>Agent Name</th>

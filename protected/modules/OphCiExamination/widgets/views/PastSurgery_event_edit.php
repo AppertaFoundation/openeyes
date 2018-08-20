@@ -24,20 +24,13 @@ $model_name = CHtml::modelName($element);
 ?>
 <div class="element-fields flex-layout full-width">
     <div class="data-group cols-10">
-        <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+        <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
         <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
-            <thead>
-            <tr>
-                <th class="cols-3">Procedures</th>
-                <th>Checked status</th>
-                <th>Right</th>
-                <th>Left</th>
-                <th>Both</th>
-                <th>None</th>
-                <th>Date</th>
-                <th>Notes</th>
-            </tr>
-            </thead>
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-3">
+                <col class="cols-1">
+            </colgroup>
             <tbody>
             <?php
             $row_count = 0;
@@ -51,7 +44,8 @@ $model_name = CHtml::modelName($element);
                         'row_count' => ($row_count),
                         'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
-                        //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
+                        //hack here: removable set to true as we need to edit the fields,
+                        // 'required' introduced as we need to hide the remove btn.
                         'removable' => true,
                         'required' => true,
                         'posted_not_checked' => $element->widget->postedNotChecked($row_count)
@@ -70,7 +64,8 @@ $model_name = CHtml::modelName($element);
                         'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
                         'removable' => true,
-                        //hack here: removable set to true as we need to edit the fields, 'required' introduced as we need to hide the remove btn.
+                        //hack here: removable set to true as we need to edit the fields,
+                        // 'required' introduced as we need to hide the remove btn.
                         'required' => $op['required'],
                         'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                     )
@@ -80,7 +75,8 @@ $model_name = CHtml::modelName($element);
             ?>
             </tbody>
         </table>
-        <div id="<?= $model_name ?>-comments" class="field-row-pad-top comment-group js-comment-container flex-layout flex-left"
+        <div id="<?= $model_name ?>-comments"
+             class="field-row-pad-top comment-group js-comment-container flex-layout flex-left"
              style="<?= $element->comments ? '' : 'display: none;' ?>"
              data-comment-button="#<?= $model_name ?>-comment-button">
             <br/>
@@ -99,7 +95,7 @@ $model_name = CHtml::modelName($element);
         </div>
     </div>
 
-    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery" >
+    <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery">
         <button id="<?= $model_name ?>-comment-button"
                 class="button js-add-comments"
                 data-comment-container="#<?= $model_name ?>-comments"
@@ -127,12 +123,12 @@ $model_name = CHtml::modelName($element);
                 'id' => '',
                 'previous_operation_id' => '',
                 'operation' => '{{operation}}',
-                'side_id' => '{{side_id}}',
+                'side_id' => (string) EyeSelector::$NOT_CHECKED,
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
                 'date_display' => '{{date_display}}',
                 'date_display' => '{{date_display}}',
-                'had_operation' => (string) PastSurgery_Operation::$PRESENT,
+                'had_operation' => (string)PastSurgery_Operation::$PRESENT,
             ),
             'posted_not_checked' => false,
         )
@@ -150,7 +146,7 @@ $model_name = CHtml::modelName($element);
         openButton: $('#show-add-popup'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($op_item) {
-                return ['value' =>$op_item->name, 'id' => $op_item->id];
+                return ['label' =>$op_item->name, 'id' => $op_item->id];
             }, $op_list)
         ) ?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
