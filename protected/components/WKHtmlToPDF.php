@@ -220,8 +220,8 @@ class WKHtmlToPDF extends WKHtmlToX
         $left_margin = $this->left_margin ? '-L ' . $this->left_margin : '';
         $right_margin = $this->right_margin ? '-R ' . $this->right_margin : '';
 
-        $nice = Yii::app()->params['wkhtmltox']['pdf']['nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmlto']['pdf']['nice_level'] . ' ' : '';
 
+        $nice = Yii::app()->params['wkhtmltox']['pdf']['nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltox']['pdf']['nice_level'] . ' ' : '';
         $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
