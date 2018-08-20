@@ -54,7 +54,7 @@ if (!isset($uniqueid)) {
             <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 
-            <table class="grid">
+            <table class="standard">
                 <thead>
                 <tr>
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>

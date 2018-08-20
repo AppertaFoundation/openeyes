@@ -38,7 +38,6 @@ if ($side === 'left') {
           pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
         }
       }
-
     }
 
     $.getScript('<?=$jsPath?>', function () {
@@ -57,11 +56,8 @@ if ($side === 'left') {
 
     });
   </script>
-    <?php
-
-}
-$criteria = new CDbCriteria();
-?>
+    <?php }
+    $criteria = new CDbCriteria(); ?>
 
 <div class="sub-element-fields element" id="div_<?php echo CHtml::modelName($element) ?>_pcr_risk">
   <div>
@@ -87,7 +83,7 @@ $criteria = new CDbCriteria();
       echo CHtml::hiddenField('age', $pcr['age_group']);
       echo CHtml::hiddenField('gender', $pcr['gender']);
       ?>
-    <div id="left_eye_pcr" class="cols-full">
+    <div id="<?= $side ?>_eye_pcr" class="cols-11">
       <div class="cols-full flex-layout flex-top col-gap">
         <div class="cols-6">
           <table class="last-left cols-full">
@@ -262,6 +258,95 @@ $criteria = new CDbCriteria();
         </div>
       </div>
     </div>
+    <div class="add-data-actions flex-item-bottom " id="add-pcr-risk-popup-<?= $side ?>">
+      <button class="button hint green js-add-select-search" id="add-pcr-risk-btn-<?= $side ?>" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button><!-- popup to add data to element -->
+    </div>
   </div>
     <?php endif; ?>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    var drop_glaucoma = [
+      {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No Glaucoma'},
+        {'id':'Y', 'label':'Glaucoma present'}
+        ],
+      drop_diabetic = [
+        {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No Diabetes'},
+        {'id':'Y', 'label':'Diabetes present'}
+      ],
+      drop_lie_flat = [
+        {'id':'N', 'label':'No'},
+        {'id':'Y', 'label':'Yes'}
+        ],
+      drop_axial_length = [
+        {'id':'NK', 'label':'Not Known'},
+        {'id': 1, 'label':'< 26'},
+        {'id': 2, 'label':'> or = 26'}
+        ],
+      drop_pupil_size = [
+        {'id':'Large', 'label':'Large'},
+        {'id':'Medium', 'label':'Medium'},
+        {'id':'Small', 'label':'Small'}
+        ],
+      drop_item1 = [
+        {'id':'NK', 'label':'Not Known'},
+        {'id':'N', 'label':'No'},
+        {'id':'Y', 'label':'Yes'}
+      ];
+
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-pcr-risk-btn-<?= $side ?>'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_glaucoma, {'header':'Glaucoma', 'id':'glaucoma'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_diabetic, {'header':'Diabetic', 'id':'diabetic'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_item1, {'header':'Fundus Obscured', 'id':'no_fundal_view'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_item1, {'header':'Brunescent/ White Cataract', 'id':'brunescent_white_cataract'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(
+                array_map(function ($item) {
+                    return ['label' =>$item->grade,
+                        'risk-value'=>$item->pcr_risk_value,
+                        'id' => $item->id];
+                }, $grades) ) ?>, {'header':'Surgeon Grade', 'id':'doctor_grade_id'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_item1, {'header':'PXF/ Phacodonesis', 'id':'pxf_phako'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_pupil_size, {'header':'Pupil Size', 'id':'pupil_size'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_axial_length, {'header':'Axial Length (mm)', 'id':'axial_length'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_item1, {'header':'Alpha receptor blocker', 'id':'arb'}
+        ),
+        new OpenEyes.UI.AdderDialog.ItemSet(
+          drop_lie_flat, {'header':'Can lie flat', 'id':'abletolieflat'}
+        )
+      ],
+      onReturn: function(adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var label = selectedItems[i]['itemSet'].options['id'];
+          var id = selectedItems[i]['id'];
+          var $selector = $('#pcrrisk_<?= $side ?>_'+label);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
+  });
+</script>

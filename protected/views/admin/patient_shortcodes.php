@@ -22,7 +22,7 @@
     <div class="box admin">
         <h2>Shortcodes</h2>
 
-        <table class="grid comfortable">
+        <table class="standard comfortable">
             <thead>
             <tr>
                 <th>Code</th>

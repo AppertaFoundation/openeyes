@@ -45,7 +45,7 @@
     $items = array();
     foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
         foreach ($attribute->getAttributeOptions() as $option) {
-            $items[] = ['value' => (string)$option->slug];
+            $items[] = ['label' => (string)$option->slug];
         }
     } ?>
       <script type="text/javascript">
@@ -58,7 +58,7 @@
             itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
             onReturn: function (adderDialog, selectedItems) {
               $(selectedItems).each(function (key, item) {
-                inputText.val(inputText.val() ? inputText.val() + item['value'] : item['value']
+                inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
                 );
               });
               inputText.trigger('oninput');

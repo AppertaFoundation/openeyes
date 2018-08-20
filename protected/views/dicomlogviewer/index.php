@@ -47,8 +47,6 @@
 			loadingMsg.show();
 			$('#searchResults').empty();
 
-			// $('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
-
 			$('#page').val(1);
 
 			$.ajax({

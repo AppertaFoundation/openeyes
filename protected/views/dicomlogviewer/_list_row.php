@@ -63,7 +63,7 @@
             <p><b><?php echo basename($log['filename']) ?></b></p>
             <button onclick="reprocessFile('<?php echo $log['filename']?>', this)" style="float:right;margin-bottom: 20px;">Reprocess file</button>
             <p><b>History</b> <br>
-            <table class="grid audit-logs">
+            <table class="standard audit-logs">
                 <thead>
                 <tr>
                     <th>Status</th>
@@ -91,7 +91,7 @@
             </p>
 
             <p><b>Machine Details</b></p>
-            <table class="grid audit-logs">
+            <table class="standard audit-logs">
                 <tbody id="machineDetailsData">
                 <tr>
                     <td>Make :</td>

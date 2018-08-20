@@ -34,7 +34,7 @@
 	</div>
 	<form id="admin_event_deletion_requests">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>Date/time</th>

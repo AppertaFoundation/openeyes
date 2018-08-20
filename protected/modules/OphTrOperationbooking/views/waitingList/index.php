@@ -80,7 +80,7 @@
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<div class="cols-12 column">
 			<div class="panel">
-				<table class="grid">
+				<table class="standard">
 					<thead>
 					<tr>
 						<th>Subspeciality:</th>
