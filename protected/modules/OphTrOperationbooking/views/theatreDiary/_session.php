@@ -179,6 +179,9 @@
               <?php } ?>
             <i class="oe-i audit-trail medium pad js-has-tooltip"
                data-tooltip-content="Created by: <?= $booking->user->fullName . "\n" ?>Last modified by: <?= $booking->usermodified->fullName ?>"></i>
+              <?php if($booking->operation->is_golden_patient){ ?>
+                  <i class="oe-i star medium pad js-has-tooltip" data-tooltip-content="Golden Patient"></i>
+            <?php  }?>
           </td>
         </tr>
       <?php } ?>
