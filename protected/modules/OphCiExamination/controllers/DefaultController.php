@@ -250,7 +250,7 @@ class DefaultController extends \BaseEventTypeController
             $diagnoses = array();
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 
-            if($this->episode->diagnosis) {
+            if ($this->episode->diagnosis) {
                 if ($principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id)) {
                     $d = new models\OphCiExamination_Diagnosis();
                     $d->disorder_id = $principal_diagnosis->disorder_id;
@@ -768,79 +768,30 @@ class DefaultController extends \BaseEventTypeController
     {
         $diagnoses = array();
         $model_name = \CHtml::modelName($element);
-        $diagnosis_eyes = [];
+        $principal_diagnosis_row_key = \Yii::app()->request->getPost('principal_diagnosis_row_key', null);
 
         if (isset($data[$model_name])) {
-            foreach ($data[$model_name] as $key => $value) {
-                if (preg_match('/^eye_id_[0-9]+$/', $key)) {
-                    $diagnosis_eyes[] = $value;
-                }
-            }
-        }
-
-        if( isset($data[$model_name]) ){
             $diagnoses_data = $data[$model_name];
-            if( isset($diagnoses_data['disorder_id']) ){
-                foreach ($diagnoses_data['disorder_id'] as $i => $disorder_id) {
-                    $diagnosis = new models\OphCiExamination_Diagnosis();
-                    $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
-                    $diagnosis->disorder_id = $disorder_id;
-                    $diagnosis->principal = (@$data['principal_diagnosis_row_key'] == @$diagnoses_data['row_key'][$i]);
-                    $diagnosis->date = isset($diagnoses_data['date'][$i]) ? $diagnoses_data['date'][$i] : null;
+
+            if (isset($diagnoses_data['entries'])) {
+                foreach ($diagnoses_data['entries'] as $i => $disorder) {
+                    $diagnosis = null;
+                    if (isset($disorder['id']) && $disorder['id']) {
+                        $diagnosis = models\OphCiExamination_Diagnosis::model()->findByPk($disorder['id']);
+                    }
+                    if (!$diagnosis) {
+                        $diagnosis = new models\OphCiExamination_Diagnosis();
+                    }
+
+                    $diagnosis->eye_id = \Helper::getEyeIdFromArray($disorder);
+                    $diagnosis->disorder_id = $disorder['disorder_id'];
+                    $diagnosis->principal = ($principal_diagnosis_row_key == $disorder['row_key']);
+                    $diagnosis->date = isset($disorder['date']) ? $disorder['date'] : null;
                     $diagnoses[] = $diagnosis;
                 }
             }
         }
         $element->diagnoses = $diagnoses;
-    }
-
-    /**
-     * Set the allergies against the Element_OphCiExamination_Allergy element
-     * It's a child element of History.
-     *
-     * @param Element_OphCiExamination_History $element
-     * @param $data
-     * @param $index
-     */
-    protected function setComplexAttributes_Element_OphCiExamination_History($element, $data, $index)
-    {
-        $allergies = array();
-        // we add the original rows
-        foreach ($this->patient->allergyAssignments as $paa) {
-            $allergies[] = $paa;
-        }
-
-        // we remove the deleted ones
-        if (!empty($data['deleted_allergies'])) {
-            $this->deletedAllergies = $data['deleted_allergies'];
-            foreach ($this->deletedAllergies as $deletedAssignmentId) {
-                foreach ($allergies as $key => $allergyRow) {
-                    if ($allergyRow->id == $deletedAssignmentId) {
-                        unset($allergies[$key]);
-                    }
-                }
-            }
-        }
-
-        // and finally we just add the new ones
-        if (!empty($data['selected_allergies'])) {
-            foreach ($data['selected_allergies'] as $i => $allergy_id) {
-                if ($data['other_names'][$i] == 'undefined') {
-                    $data['other_names'][$i] = '';
-                }
-                $newAllergy = new \PatientAllergyAssignment();
-                $newAllergy->allergy_id = $allergy_id;
-                $newAllergy->other = $data['other_names'][$i];
-                $newAllergy->comments = $data['allergy_comments'][$i];
-                $allergies[] = $newAllergy;
-            }
-        }
-
-        $this->allergies = $allergies;
-
-        if (isset($data['no_allergies']) && $data['no_allergies'] && !$this->patient->no_allergies_date) {
-            $this->patient->no_allergies_date = date('Y-m-d');
-        }
     }
 
     /**
@@ -966,31 +917,25 @@ class DefaultController extends \BaseEventTypeController
         // FIXME: the form elements for this are a bit weird, and not consistent in terms of using a standard template
         $model_name = \CHtml::modelName($element);
         $diagnoses = array();
+        $principal_diagnosis_row_key = \Yii::app()->request->getPost('principal_diagnosis_row_key', null);
 
         // This is to accommodate a hack introduced in OE-4409
         if (isset($data[$model_name]) && isset($data[$model_name]['force_validation'])) {
             unset($data[$model_name]['force_validation']);
         }
 
-        $diagnosis_eyes = [];
-
         if (isset($data[$model_name])) {
-            foreach ($data[$model_name] as $key => $value) {
-                if (preg_match('/^eye_id_[0-9]+$/', $key)) {
-                    $diagnosis_eyes[] = $value;
+            $diagnoses_data = $data[$model_name];
+            if (isset($diagnoses_data['entries'])) {
+                foreach ($diagnoses_data['entries'] as $i => $disorder) {
+                    $diagnoses[] = [
+                        'id' => $disorder['id'],
+                        'eye_id' => \Helper::getEyeIdFromArray($disorder),
+                        'disorder_id' => $disorder['disorder_id'],
+                        'principal' => ($principal_diagnosis_row_key == $disorder['row_key']),
+                        'date' => isset($disorder['date']) ? $disorder['date'] : null
+                    ];
                 }
-            }
-        }
-
-        if (!empty($data[$model_name]['disorder_id'])) {
-            foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
-                $diagnoses[] = array(
-                    'id' => $data[$model_name]['id'][$i],
-                    'eye_id' => $diagnosis_eyes[$i],
-                    'disorder_id' => $disorder_id,
-                    'principal' => (@$data['principal_diagnosis_row_key'] == $data[$model_name]['row_key'][$i]),
-                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
-                );
             }
         }
 

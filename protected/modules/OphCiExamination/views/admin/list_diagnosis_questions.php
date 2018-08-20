@@ -46,7 +46,7 @@
       </div>
     <?php } elseif (count($model_list)) { ?>
         <div class="data-group">
-          <table class="grid">
+          <table class="standard">
             <thead>
             <tr>
               <th>Name</th>

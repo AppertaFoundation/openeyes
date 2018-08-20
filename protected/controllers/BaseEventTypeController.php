@@ -111,7 +111,6 @@ class BaseEventTypeController extends BaseModuleController
     private $action_type_map;
     private $episodes = array();
     public $renderPatientPanel = true;
-    public $fixedHotlist = true;
 
     protected $open_elements;
     public $dont_redirect = false;

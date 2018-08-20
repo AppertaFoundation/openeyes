@@ -19,6 +19,7 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesElement;
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
+use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesModel;
 
 class SystemicDiagnoses extends \BaseEventElementWidget
 {
@@ -161,14 +162,14 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     }
 
     /**
-     * Checks if there was a posted has_disoder value
      * @param $row
-     * @return int 0|1|-9 if posted oterwise NULL
+     * @return bool
      */
-    public function getPostedCheckedStatus($row)
+    public function postedNotChecked($row)
     {
-        $value = \Helper::elementFinder(\CHtml::modelName($this->element) . ".has_disorder.$row", $_POST);
-        return ( is_numeric($value) ? $value : null);
+        return \Helper::elementFinder(
+                \CHtml::modelName($this->element) . ".entries.$row.has_disorder", $_POST)
+            == SystemicDiagnosesModel::$NOT_CHECKED;
     }
 
     public function getPostedNaEye($row)
@@ -178,25 +179,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     }
 
 
-    public function getEyeIdFromPost(array $data){
-
-        $eye_id = null;
-        $left_eye = \Helper::elementFinder('left_eye', $data);
-        $right_eye = \Helper::elementFinder('right_eye', $data);
-        $na_eye = \Helper::elementFinder('na_eye', $data);
-
-
-
-        if($left_eye && $right_eye){
-            $eye_id = \EYE::BOTH;
-        } else if($left_eye){
-            $eye_id = \EYE::LEFT;
-        } else if($right_eye){
-            $eye_id = \EYE::RIGHT;
-        } else if($na_eye){
-            $eye_id = -9;
-        }
-
-        return $eye_id;
+    public function getEyeIdFromPost(array $data)
+    {
+        return \Helper::getEyeIdFromArray($data);
     }
 }

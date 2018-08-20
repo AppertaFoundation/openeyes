@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Patient Unavailable Reasons</h2>
 	<form id="admin_patientunavailablereasons">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 			<tr>
 				<th>Enabled</th>

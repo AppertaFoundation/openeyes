@@ -29,7 +29,7 @@
       )) ?>
     <div class="cols-12 column">
       <div class="cols-12 column">
-        <table class="grid">
+        <table class="standard">
               <thead>
               <tr>
                 <th>Subject Id</th>
@@ -68,7 +68,7 @@
               </tr>
               </tbody>
             </table>
-        <table class="grid">
+        <table class="standard">
               <thead>
               <tr>
                 <th>Result date from</th>
@@ -162,7 +162,7 @@
       <?php } ?>
 
       <?php if (!empty($genetic_tests)) { ?>
-        <table class="grid">
+        <table class="standard">
           <thead>
           <tr>
             <th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>

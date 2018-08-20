@@ -2,6 +2,19 @@
 
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2017
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseEventElementWidget extends CWidget
 {
@@ -29,7 +42,7 @@ class BaseEventElementWidget extends CWidget
      * @var \Firm
      */
     public $firm;
-    
+
     public $mode;
     public $view_file;
     public $data;
@@ -82,37 +95,46 @@ class BaseEventElementWidget extends CWidget
      */
     protected function validateMode($mode)
     {
-        return in_array($mode,
-            array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
+        return in_array(
+            $mode,
+            array(
+                static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
-                static::$EVENT_EDIT_MODE, static::$DATA_MODE), true);
+                static::$EVENT_EDIT_MODE, static::$DATA_MODE
+            ),
+            true
+        );
     }
 
     /**
      * @return bool
      */
-    protected function inEditMode() {
+    protected function inEditMode()
+    {
         return $this->mode === static::$EVENT_EDIT_MODE;
     }
 
     /**
      * @return bool
      */
-    protected function showEditTipWarning() {
+    protected function showEditTipWarning()
+    {
         return $this->inEditMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
     /**
      * @return bool
      */
-    protected function inViewMode() {
+    protected function inViewMode()
+    {
         return in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE), true);
     }
 
     /**
      * @return bool
      */
-    protected function showViewTipWarning() {
+    protected function showViewTipWarning()
+    {
         return $this->inViewMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
@@ -138,7 +160,8 @@ class BaseEventElementWidget extends CWidget
      */
     protected function getLatestElement()
     {
-        return $this->getApp()->moduleAPI->get(static::$moduleName)->getLatestElement(get_class($this->getNewElement()), $this->patient);
+        $api = $this->getApp()->moduleAPI->get(static::$moduleName);
+        return $api->getLatestElement(get_class($this->getNewElement()), $this->patient);
     }
 
     /**
@@ -241,7 +264,7 @@ class BaseEventElementWidget extends CWidget
         // remove any null entries prior to implosion
         $elements = array_filter(
             array($root, $path, $filename),
-            function($el) {
+            function ($el) {
                 return $el !== null;
             }
         );
@@ -280,7 +303,6 @@ class BaseEventElementWidget extends CWidget
     }
 
 
-
     /**
      * Determine whether this widget should support editing
      *
@@ -294,7 +316,7 @@ class BaseEventElementWidget extends CWidget
         // elements that were not developed prior to this decision. Use Family History as a model.
         if ($this->mode === static::$PATIENT_SUMMARY_MODE &&
             !$this->getApp()->params['allow_patient_summary_clinic_changes']) {
-            return  false;
+            return false;
         }
         return $this->getApp()->user->checkAccess('OprnCreateEvent', array($this->controller->firm));
     }
@@ -316,7 +338,7 @@ class BaseEventElementWidget extends CWidget
     public function popupList()
     {
         $element = $this->element;
-        return (string) $element;
+        return (string)$element;
     }
 
     /**
@@ -330,14 +352,14 @@ class BaseEventElementWidget extends CWidget
         }
 
         // quick way to get the base class name
-        $short_name = substr(strrchr(get_class($this), '\\'),1);
+        $short_name = substr(strrchr(get_class($this), '\\'), 1);
         switch ($this->mode) {
             case static::$EVENT_VIEW_MODE:
                 return $short_name . '_event_view';
                 break;
             case static::$EVENT_PRINT_MODE:
                 // defaults to the standard view unless widget defines a print view
-                return $this->print_view ? : $short_name . '_event_view';
+                return $this->print_view ?: $short_name . '_event_view';
                 break;
             case static::$EVENT_EDIT_MODE:
                 return $short_name . '_event_edit';
@@ -365,9 +387,10 @@ class BaseEventElementWidget extends CWidget
     }
 
 
-
     /**
      * @return string
+     * @throws CException
+     * @throws SystemException
      */
     public function run()
     {
@@ -382,7 +405,8 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
-     * @return string
+     * @return null|string
+     * @throws CException
      */
     public function renderWarnings()
     {
@@ -394,6 +418,24 @@ class BaseEventElementWidget extends CWidget
                 return $this->render($this->notattip_view_warning, array('element' => $this->element));
             }
         }
+        return null;
+    }
 
+    public function getEyeIdFromPost(array $data)
+    {
+        $eye_id = null;
+        $left_eye = \Helper::elementFinder('left_eye', $data);
+        $right_eye = \Helper::elementFinder('right_eye', $data);
+        $na_eye = \Helper::elementFinder('na_eye', $data);
+        if ($left_eye && $right_eye) {
+            $eye_id = \EYE::BOTH;
+        } elseif ($left_eye) {
+            $eye_id = \EYE::LEFT;
+        } elseif ($right_eye) {
+            $eye_id = \EYE::RIGHT;
+        } elseif ($na_eye) {
+            $eye_id = -9;
+        }
+        return $eye_id;
     }
 }

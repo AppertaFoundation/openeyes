@@ -114,13 +114,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$element.on('change', 'select.condition-secondary-to', function () {
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
-                row, $tr;
+                row, $tr, item;
 
             if (type && type === 'alternate') {
                 // select only the alternate
                 // and only that one - instead of the first/main selected
-                var $tr = $(this).closest('tr'),
-                    item = $option.data('item');
+                $tr = $(this).closest('tr');
+                item = $option.data('item');
 
                 if (item) {
                     row = controller.createRow({disorder_id: item.id, disorder_display: item.label});
@@ -146,54 +146,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     DiagnosesController.prototype.initialiseRow = function ($row) {
-        var controller = this,
-            DiagnosesSearchController = null,
-            $radioButtons = $row.find('.sides-radio-group'),
-            $fuzzy_day = $row.find('.fuzzy_day'),
-            $fuzzy_month = $row.find('.fuzzy_month'),
-            $fuzzy_year = $row.find('.fuzzy_year');
+        var controller = this;
 
-        $row.on('change', '.fuzzy-date select', function (e) {
-            var $fuzzyFieldset = $(this).closest('fieldset');
-            var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
-            $fuzzyFieldset.find('input[type="hidden"]').val(date);
-        });
-
-        DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
-            'inputField': $row.find('.diagnoses-search-autocomplete'),
-            'fieldPrefix': $row.closest('section').data('element-type-class'),
-            'code': "130",
-            'afterSelect': function () {
-                //Adding new element to array doesn't trigger change so do it manually
-                $(":input[name^='diabetic_diagnoses']").trigger('change');
-                $(":input[name^='glaucoma_diagnoses']").trigger('change');
-
-                //this references to DiagnosesSearchController object
-                let disorder_id = this.$row.find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val();
-                this.$row.find('input[name="principal_diagnosis"]').val(disorder_id);
-            },
-            singleTemplate :
-                "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
-                "<span class='diagnosis-name'></span></span>" +
-                "<select class='commonly-used-diagnosis'></select>" +
-                "{{#render_secondary_to}}" +
-                "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
-                "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
-                "<select class='condition-secondary-to'></select>" +
-                "</div>" +
-                "{{/render_secondary_to}}" +
-                "{{{input_field}}}" +
-                "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
-                "<input type='hidden' name='{{field_prefix}}[row_key][]' value=" + $row.data("key") +">" +
-                "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
-            'subspecialtyRefSpec': controller.subspecialtyRefSpec,
-        });
-        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
-
-        // radio buttons
-        $radioButtons.on('change', 'input', function () {
-            $(this).closest('tr').find('.diagnosis-side-value').val($(this).val());
-        });
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -275,16 +229,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var newRows = [];
       var template = this.templateText;
       var element = this.$element;
-
+      var row;
 
       for (var i in selectedItems) {
+
+        if (typeof selectedItems.eye_id === 'undefined') {
+            selectedItems.eye_id = null;
+        }
         data = {};
-        data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-        data['disorder_id'] = selectedItems[i]['id'];
-        data['disorder_display'] = selectedItems[i]['value'];
-        newRows.push( Mustache.render(
-          template,
-          data ));
+        data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+        data.disorder_id = selectedItems[i].id;
+        data.disorder_display = selectedItems[i].label;
+        data.eye_id = selectedItems.eye_id;
+        row = Mustache.render(template, data);
+        newRows.push(row);
       }
 
         return newRows;
@@ -296,7 +254,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.initialiseRow(this.$table.find('tbody tr:last'));
+            this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
+
+        }
+    };
+
+    DiagnosesController.prototype.selectEye = function($tr, eye_id){
+        if(eye_id === 1 || eye_id === 3){
+            $tr.find('.js-left-eye').prop('checked', true);
+        }
+        if(eye_id === 2 || eye_id === 3){
+            $tr.find('.js-right-eye').prop('checked', true);
         }
     };
 
@@ -451,14 +420,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         // iterate over table rows.
         $('#OphCiExamination_diagnoses').children('tr').each(function() {
-            if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val() == id) {
+            if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]]').val() === id) {
+
                 alreadyInList = true;
-                if ($(this).hasClass('external')) {
+                if ($(this).hasClass('js-external')) {
                     // only want to alter sides for disorders that have been added from external source
                     // at this point
+                    if(side === 1 || side === 3){
+                        $(this).find('.js-left-eye').prop('checked', true);
+                    }
+
+                    if(side === 2 || side === 3){
+                        $(this).find('.js-right-eye').prop('checked', true);
+                    }
+
                     listSide = $(this).find('input[type="radio"]:checked').val();
-                    if (listSide != side) {
-                        // the
+                    if (listSide !== side) {
                         $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
                     }
                 }
@@ -471,14 +448,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             // adding this disorder to the search result as createRow will check if there is any selected items in
             // selectItems or searchResult - otherwise it won't add
             controller.appendToSearchResult({id: id, value: name}, true);
-
-            row = controller.createRow({disorder_id: id, disorder_display: name, eye_id:side});
-            controller.$table.find('tbody').append(row);
+            controller.addEntry([{id: id, value: name, eye_id: side}]);
             $tr = this.$table.find('tbody tr:last');
-            $tr.addClass('external');
-            controller.initialiseRow($tr);
-            $tr.find('.sides-radio-group input[value="' + side + '"]').prop("checked", true);
-            controller.setDatepicker();
+            $tr.addClass('js-external');
         }
     };
 
