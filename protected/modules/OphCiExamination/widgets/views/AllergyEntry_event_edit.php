@@ -40,6 +40,9 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
+        <?php if($removable) {
+            echo CHtml::hiddenField($field_prefix . '[has_allergy]' , (string) AllergyEntry::$PRESENT);
+         } else {?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $posted_not_checked,
                 array('value' => AllergyEntry::$NOT_CHECKED));
@@ -57,13 +60,9 @@ if (!isset($values)) {
                 array('value' => AllergyEntry::$NOT_PRESENT)); ?>
             no
         </label>
+        <?php } ?>
     </td>
     <td>
-        <?php if (!$removable): ?>
-            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?= $values['comments'] ?>" autocomplete="off" />
-            <?= $values['comments'] ?>
-        <?php else: ?>
-
                 <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
                         class="button js-add-comments"
                         data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
@@ -82,8 +81,6 @@ if (!isset($values)) {
                   )) ?>
                         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </span>
-
-        <?php endif; ?>
     </td>
 
 

@@ -1056,7 +1056,6 @@ $(document).ready(function() {
     var period = is_follow_up ? selected_period.data('periodId') : null;
     var role = is_follow_up ? selected_role.data('roleId') : null;
     var role_comments = is_follow_up ? $('#follow_up_role_comments').val() : null;
-    var community_patient = is_follow_up ? $('#follow_up_community_patient').is(':checked') : 0;
 
     var model_name = OE_MODEL_PREFIX + 'Element_OphCiExamination_ClinicOutcome';
     $('#' + model_name + '_status_id').val(outcome);
@@ -1064,7 +1063,6 @@ $(document).ready(function() {
     $('#' + model_name + '_followup_period_id').val(period);
     $('#' + model_name + '_role_id').val(role);
     $('#' + model_name + '_role_comments').val(role_comments);
-    $('#' + model_name + '_community_patient').val(community_patient ? 1 : 0);
 
     var followup = !!selected_outcome.data('followup');
     if (followup) {
@@ -2274,7 +2272,6 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   var period = $('#' + model_name + '_followup_period_id').val();
   var role = $('#' + model_name + '_role_id').val();
   var role_comments = $('#' + model_name + '_role_comments').val();
-  var community_patient = $('#' + model_name + '_community_patient').val();
 
   var selected_outcome = $('#follow-up-outcome-options').find('li[data-outcome-id = "' + outcome + '"]');
   var selected_period = $('#follow-up-period-options').find('li[data-period-id="' + period + '"]');
