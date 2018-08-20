@@ -17,8 +17,10 @@
           'enableAjaxValidation' => true,
       )); ?>
 
-      <?= $form->errorSummary($trial) ?>
-
+    <div class="alert-box error with-icon">
+      <p>Please fix the following input errors:</p>
+        <?= $form->errorSummary($trial) ?>
+    </div>
 
     <table class="standard cols-full">
       <colgroup>
@@ -32,7 +34,6 @@
         </td>
         <td>
             <?= $form->textField($trial, 'name', array('size' => 64, 'maxlength' => 64)) ?>
-            <?= $form->error($trial, 'name') ?>
         </td>
       </tr>
       <tr class="col-gap">
@@ -42,7 +43,6 @@
         <td>
             <?= $form->urlField($trial, 'external_data_link',
                 array('size' => 100, 'maxlength' => 255, 'onblur' => 'checkUrl(this)')); ?>
-            <?= $form->error($trial, 'external_data_link') ?>
         </td>
       </tr>
       <tr>
@@ -53,7 +53,6 @@
         <td>
 
             <?= $form->textArea($trial, 'description') ?>
-            <?= $form->error($trial, 'description') ?>
         </td>
       </tr>
 
@@ -72,10 +71,9 @@
                       'style' => 'margin-left:8px',
                       'nowrapper' => true,
                   ),
-                  'value' => $trial->started_date
+                  'value' => $trial->started_date,
               ))
               ?>
-              <?= $form->error($trial, 'started_date') ?>
 
               <?php
               $this->widget('application.widgets.DatePicker', array(
@@ -87,10 +85,9 @@
                       'style' => 'margin-left:8px',
                       'nowrapper' => true,
                   ),
-                  'value' => $trial->closed_date
+                  'value' => $trial->closed_date,
               ))
               ?>
-              <?= $form->error($trial, 'closed_date') ?>
 
           </td>
         </tr>
