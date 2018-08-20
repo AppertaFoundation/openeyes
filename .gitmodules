@@ -1,3 +1,4 @@
-[submodule "protected/modules/newblue"]
+[submodule "protected/assets/newblue"]
 	path = protected/assets/newblue
-	url = git@github.com:openeyes/newblue
+	url = git@github.com:openeyes/newblue.git
+
