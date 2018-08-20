@@ -186,14 +186,19 @@ class Firm extends BaseActiveRecordVersioned
      * Fetch an array of firm IDs and names.
      * @param null $subspecialty_id
      * @param null $include_id
+     * @param null $runtime_selectable
+     * @param null $can_own_an_episode
      * @return array
      */
-    public function getList($subspecialty_id = null, $include_id = null)
+    public function getList($subspecialty_id = null, $include_id = null , $runtime_selectable = null , $can_own_an_episode = null)
     {
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')
             ->from('firm f')
-            ->where('f.active = 1' . ($include_id ? ' or f.id = :include_id' : ''));
+            ->where('f.active = 1 ' .
+                ($runtime_selectable ? 'and f.runtime_selectable = 1' : '') .
+                ($can_own_an_episode ? 'and f.can_own_an_episode = 1' : '') .
+                ($include_id ? ' or f.id = :include_id' : ''));
 
         if ($subspecialty_id) {
             $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
