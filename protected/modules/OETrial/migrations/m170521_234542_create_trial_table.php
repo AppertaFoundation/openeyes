@@ -49,5 +49,6 @@ class m170521_234542_create_trial_table extends OEMigration
     public function down()
     {
         $this->dropOETable('trial', self::VERSIONED);
+        $this->dropOETable('trial_type');
     }
 }

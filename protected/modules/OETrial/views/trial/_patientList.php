@@ -7,16 +7,7 @@
 /* @var int $sort_by */
 /* @var int $sort_dir */
 ?>
-
-<?php
-if ((int)$dataProvider->getTotalItemCount() === 0): ?>
-  <h2>
-      <?php echo $title; ?>
-  </h2>
-  <p>
-    There are no <?php echo $title; ?> to display.
-  </p>
-<?php else: ?>
+<div class="report-summary row divider">
     <?php
     $dataProvided = $dataProvider->getData();
     $items_per_page = $dataProvider->getPagination()->getPageSize();
@@ -29,7 +20,7 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
     of <?php echo $dataProvider->totalItemCount ?>
   </h2>
 
-  <table id="patient-grid" class="grid">
+  <table id="patient-grid" class="standard">
     <thead>
     <tr>
         <?php
@@ -45,7 +36,7 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
 
         $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
 
-        if ($trial->trial_type->code === 'INTERVENTION' && !$trial->is_open && $renderTreatmentType) {
+        if ($trial->trialType->code === 'INTERVENTION' && !$trial->is_open && $renderTreatmentType) {
             $columns[] = 'Treatment Type';
             $sortableColumns[] = 'Treatment Type';
         }
@@ -110,4 +101,4 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
     </tr>
     </tfoot>
   </table>
-<?php endif; ?>
+</div>

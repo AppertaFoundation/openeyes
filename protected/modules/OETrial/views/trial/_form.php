@@ -1,129 +1,112 @@
 <?php
 /* @var $this TrialController */
-/* @var $model Trial */
+/* @var $trial Trial */
 /* @var $form CActiveForm */
 ?>
 
-<nav class="event-header ">
-    <?php if (!$model->getIsNewRecord()): ?>
-        <?= CHtml::link('View', $this->createUrl('view', array('id' => $model->id)),
-            array('class' => 'button header-tab')) ?>
-    <?php endif; ?>
-  <a class="button header-tab selected">Edit</a>
+<?php $this->renderPartial('_trial_header', array(
+    'trial' => $trial,
+    'title' => $trial->getIsNewRecord() ? 'Create Trial' : 'Edit Trial',
+)); ?>
+<div class="oe-full-content subgrid oe-worklists">
+  <main class="oe-full-main">
 
-  <div class="buttons-right">
-    <button class="button header-tab green" name="save" type="submit" form="trial-form">
-        <?= $model->getIsNewRecord() ? 'Create' : 'Save' ?>
-    </button>
 
-      <?= CHtml::link(
-          'Cancel',
-          $model->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('view', array('id' => $model->id)),
-          array('class' => 'button header-tab red')
-      ) ?>
-  </div>
-</nav>
+      <?php $form = $this->beginWidget('CActiveForm', array(
+          'id' => 'trial-form',
+          'enableAjaxValidation' => true,
+      )); ?>
 
-<main class="main-event edit">
-  <h2 class="event-title"><?= $model->getIsNewRecord() ? 'Create Trial' : 'Edit Trial' ?></h2>
+      <?= $form->errorSummary($trial) ?>
 
-  <section class="element edit full edit-xxx">
-    <div class="element-fields">
-        <?php $form = $this->beginWidget('CActiveForm', array(
-            'id' => 'trial-form',
-            'enableAjaxValidation' => true,
-        )); ?>
 
-        <?= $form->errorSummary($model) ?>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?= $form->labelEx($model, 'name') ?>
-        </div>
-        <div class="large-6 column end">
-            <?= $form->textField($model, 'name', array('size' => 64, 'maxlength' => 64)) ?>
-            <?= $form->error($model, 'name') ?>
-        </div>
-      </div>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?= $form->labelEx($model, 'external_data_link') ?>
-        </div>
-        <div class="large-6 column end">
-            <?= $form->urlField($model, 'external_data_link',
+    <table class="standard cols-full">
+      <colgroup>
+        <col class="cols-2">
+        <col class="cols-4">
+      </colgroup>
+      <tbody>
+      <tr class="col-gap">
+        <td>
+            <?= $form->labelEx($trial, 'name') ?>
+        </td>
+        <td>
+            <?= $form->textField($trial, 'name', array('size' => 64, 'maxlength' => 64)) ?>
+            <?= $form->error($trial, 'name') ?>
+        </td>
+      </tr>
+      <tr class="col-gap">
+        <td>
+            <?= $form->labelEx($trial, 'external_data_link') ?>
+        </td>
+        <td>
+            <?= $form->urlField($trial, 'external_data_link',
                 array('size' => 100, 'maxlength' => 255, 'onblur' => 'checkUrl(this)')); ?>
-            <?= $form->error($model, 'external_data_link') ?>
-        </div>
-      </div>
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?= $form->labelEx($model, 'description') ?>
-        </div>
-        <div class="large-6 column end">
-            <?= $form->textArea($model, 'description') ?>
-            <?= $form->error($model, 'description') ?>
-        </div>
-      </div>
+            <?= $form->error($trial, 'external_data_link') ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
 
-        <?php if (!$model->getIsNewRecord()): ?>
-          <div class="row field-row">
-            <div class="large-2 column"><?= $form->labelEx($model, 'started_date') ?></div>
-            <div class="large-2 column">
-                <?php
-                if ((bool)strtotime($model->started_date)) {
-                    $dob = new DateTime($model->started_date);
-                    $model->started_date = $dob->format('d/m/Y');
-                } else {
-                    $model->started_date = str_replace('-', '/', $model->started_date);
-                }
-                ?>
-                <?= $form->textField($model, 'started_date') ?>
-                <?= $form->error($model, 'started_date') ?>
-            </div>
-            <div class="large-2 column end"><label><i>(dd/mm/yyyy)</i></label></div>
-          </div>
+            <?= $form->labelEx($trial, 'description') ?>
+        </td>
+        <td>
 
-          <div class="row field-row">
-            <div class="large-2 column"><?= $form->labelEx($model, 'closed_date') ?></div>
-            <div class="large-2 column">
-                <?php
-                if ((bool)strtotime($model->closed_date)) {
-                    $dob = new DateTime($model->closed_date);
-                    $model->closed_date = $dob->format('d/m/Y');
-                } else {
-                    $model->closed_date = str_replace('-', '/', $model->closed_date);
-                }
-                ?>
-                <?= $form->textField($model, 'closed_date') ?>
-                <?= $form->error($model, 'closed_date') ?>
-            </div>
-            <div class="large-2 column end"><label><i>(dd/mm/yyyy)</i></label></div>
-          </div>
+            <?= $form->textArea($trial, 'description') ?>
+            <?= $form->error($trial, 'description') ?>
+        </td>
+      </tr>
 
-        <?php endif; ?>
+      <?php if (!$trial->getIsNewRecord()): ?>
+        <tr>
+          <td>
+              Date Range
+          </td>
+          <td class="flex-layour cols-full">
+              <?php
+              if ((bool)strtotime($trial->started_date)) {
+                  $dob = new DateTime($trial->started_date);
+                  $trial->started_date = $dob->format('d/m/Y');
+              } else {
+                  $trial->started_date = str_replace('-', '/', $trial->started_date);
+              }
+              ?>
+              <?= $form->textField($trial, 'started_date') ?>
+              <?= $form->error($trial, 'started_date') ?>
 
-      <div class="row field-row">
-        <div class="large-2 column">
-            <?= $form->labelEx($model, 'trial_type') ?>
-        </div>
-        <div class="large-2 column end">
+              <?php
+              if ((bool)strtotime($trial->closed_date)) {
+                  $dob = new DateTime($trial->closed_date);
+                  $trial->closed_date = $dob->format('d/m/Y');
+              } else {
+                  $trial->closed_date = str_replace('-', '/', $trial->closed_date);
+              }
+              ?>
+              <?= $form->textField($trial, 'closed_date') ?>
+              <?= $form->error($trial, 'closed_date') ?>
+
+          </td>
+        </tr>
+      <?php endif; ?>
+      <tr>
+        <td>
+            <?= $form->labelEx($trial, 'trial_type') ?>
+        </td>
+        <td>
             <?php foreach (TrialType::model()->findAll() as $trial_type): ?>
               <label>
-                  <?php echo $form->radioButton($model, 'trial_type_id',
+                  <?php echo $form->radioButton($trial, 'trial_type_id',
                       array('value' => $trial_type->id, 'uncheckValue' => null)); ?>
                   <?= $trial_type->name ?>
               </label>
             <?php endforeach; ?>
-        </div>
-      </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
 
-      <div class="row buttons text-right">
-
-      </div>
-
-        <?php $this->endWidget(); ?>
-    </div>
-  </section>
-</main>
+      <?php $this->endWidget(); ?>
+</div>
 
 
 <script>

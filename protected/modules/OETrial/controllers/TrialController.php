@@ -9,6 +9,8 @@ class TrialController extends BaseModuleController
 {
     public $model;
 
+    public $fixedHotlist = true;
+
     /**
      * @return array action filters
      */
@@ -132,11 +134,6 @@ class TrialController extends BaseModuleController
                 break;
         }
 
-        $this->breadcrumbs = array(
-            'Trials' => array('index'),
-            $this->model->name,
-        );
-
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
             'trial' => $this->model,
@@ -188,13 +185,8 @@ class TrialController extends BaseModuleController
             }
         }
 
-        $this->breadcrumbs = array(
-            'Trials' => array('index'),
-            'Create a Trial',
-        );
-
         $this->render('create', array(
-            'model' => $this->model,
+            'trial' => $this->model,
         ));
     }
 
@@ -216,14 +208,8 @@ class TrialController extends BaseModuleController
             }
         }
 
-        $this->breadcrumbs = array(
-            'Trials' => array('index'),
-            $this->model->name => array('view', 'id' => $this->model->id),
-            'Edit',
-        );
-
         $this->render('update', array(
-            'model' => $this->model,
+            'trial' => $this->model,
         ));
     }
 
@@ -313,12 +299,6 @@ class TrialController extends BaseModuleController
 
         $newPermission = new UserTrialAssignment();
 
-        $this->breadcrumbs = array(
-            'Trials' => array('index'),
-            $this->model->name => array('view', 'id' => $this->model->id),
-            'Permissions',
-        );
-
         $this->render('permissions', array(
             'trial' => $this->model,
             'permission' => self::getCurrentUserPermission(),
@@ -387,16 +367,16 @@ class TrialController extends BaseModuleController
         }
     }
 
-    public function actionClose()
+    public function actionClose($id)
     {
-        $trial = $this->loadModel($_POST['id']);
+        $trial = $this->loadModel($id);
         $trial->close();
         $this->redirect($this->createUrl('view', array('id' => $trial->id)));
     }
 
-    public function actionReopen()
+    public function actionReopen($id)
     {
-        $trial = $this->loadModel($_POST['id']);
+        $trial = $this->loadModel($id);
         $trial->reopen();
         $this->redirect($this->createUrl('view', array('id' => $trial->id)));
     }

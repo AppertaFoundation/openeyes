@@ -53,6 +53,7 @@ class m170526_062300_create_user_trial_permission_table extends OEMigration
 
     public function down()
     {
-        $this->dropTable('user_trial_permission', self::IS_VERSIONED);
+        $this->dropOETable('user_trial_assignment', self::IS_VERSIONED);
+        $this->dropOETable('trial_permission');
     }
 }

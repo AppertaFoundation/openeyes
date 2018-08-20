@@ -14,11 +14,6 @@
   <div class="large-9 column">
 
     <div class="box admin">
-        <?php
-        $this->widget('zii.widgets.CBreadcrumbs', array(
-            'links' => $this->breadcrumbs,
-        ));
-        ?>
 
       <div class="row">
         <div class="large-9 column">
