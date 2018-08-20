@@ -81,7 +81,6 @@ class TrialController extends BaseModuleController
 
     public static function getUserPermission($user_id, $trial_id)
     {
-        Yii::log('Checking permission for ' . $user_id . '/' . $trial_id);
         return UserTrialAssignment::model()->find(
             'user_id = :user_id AND trial_id = :trial_id',
             array(':user_id' => $user_id, ':trial_id' => $trial_id))->trialPermission;
@@ -174,7 +173,7 @@ class TrialController extends BaseModuleController
         $this->model->trial_type_id = TrialType::model()->find('code = ?', array('NON_INTERVENTION'))->id;
         $this->model->owner_user_id = Yii::app()->user->id;
         $this->model->principle_investigator_user_id = Yii::app()->user->id;
-        $this->model->started_date = date('d/m/Y');
+        $this->model->started_date = date('d M Y');
 
         $this->performAjaxValidation($this->model);
 

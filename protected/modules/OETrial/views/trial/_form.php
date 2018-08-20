@@ -60,29 +60,36 @@
       <?php if (!$trial->getIsNewRecord()): ?>
         <tr>
           <td>
-              Date Range
+            Date Range
           </td>
           <td class="flex-layour cols-full">
               <?php
-              if ((bool)strtotime($trial->started_date)) {
-                  $dob = new DateTime($trial->started_date);
-                  $trial->started_date = $dob->format('d/m/Y');
-              } else {
-                  $trial->started_date = str_replace('-', '/', $trial->started_date);
-              }
+              $this->widget('application.widgets.DatePicker', array(
+                  'element' => $trial,
+                  'name' => CHtml::modelName($trial) . '[started_date]',
+                  'field' => 'started_date',
+                  'options' => array(
+                      'style' => 'margin-left:8px',
+                      'nowrapper' => true,
+                  ),
+                  'value' => $trial->started_date
+              ))
               ?>
-              <?= $form->textField($trial, 'started_date') ?>
               <?= $form->error($trial, 'started_date') ?>
 
               <?php
-              if ((bool)strtotime($trial->closed_date)) {
-                  $dob = new DateTime($trial->closed_date);
-                  $trial->closed_date = $dob->format('d/m/Y');
-              } else {
-                  $trial->closed_date = str_replace('-', '/', $trial->closed_date);
-              }
+              $this->widget('application.widgets.DatePicker', array(
+                  'element' => $trial,
+                  'name' => CHtml::modelName($trial) . '[closed_date]',
+                  'field' => 'closed_date',
+                  'options' => array(
+                      'maxDate' => 'today',
+                      'style' => 'margin-left:8px',
+                      'nowrapper' => true,
+                  ),
+                  'value' => $trial->closed_date
+              ))
               ?>
-              <?= $form->textField($trial, 'closed_date') ?>
               <?= $form->error($trial, 'closed_date') ?>
 
           </td>

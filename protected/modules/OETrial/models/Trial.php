@@ -85,7 +85,7 @@ class Trial extends BaseActiveRecordVersioned
                 'length',
                 'max' => 10,
             ),
-            array('started_date, closed_date', 'dateFormatValidator', 'on' => 'manual'),
+            array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
             array('description, last_modified_date, created_date', 'safe'),
         );
     }
@@ -171,24 +171,6 @@ class Trial extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    /**
-     * Overrides CActiveModel::beforeSave()
-     *
-     * @return bool A value indicating whether the model can be saved
-     */
-    public function beforeSave()
-    {
-        foreach (array('started_date', 'closed_date') as $date_column) {
-            $date = $this->{$date_column};
-            if (strtotime($date)) {
-                $this->{$date_column} = date('Y-m-d', strtotime($date));
-            } else {
-                $this->{$date_column} = null;
-            }
-        }
-
-        return parent::beforeSave();
-    }
 
     /**
      * Overrides CActiveModel::beforeValidate()
@@ -202,7 +184,7 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         foreach (array('started_date', 'closed_date') as $date_column) {
-            $this->$date_column = str_replace('/', '-', $this->$date_column);
+            $this->$date_column =  Helper::convertNHS2MySQL($this->$date_column);;
         }
 
         return true;
@@ -572,28 +554,5 @@ class Trial extends BaseActiveRecordVersioned
         $transaction->commit();
 
         return true;
-    }
-
-    /**
-     * This validator is added to the Trial object in TrialController create/update action
-     *
-     * Validating the date format
-     * @param string $attribute The name of the date attribute the validate
-     * @param mixed $params The validator params
-     */
-    public function dateFormatValidator($attribute, $params)
-    {
-        if ($this->$attribute === null || $this->$attribute === '') {
-            return;
-        }
-
-        // because 02/02/198 is valid according to DateTime::createFromFormat('d-m-Y', ...)
-        $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
-
-        $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
-
-        if (!$patient_dob_date || !$format_check) {
-            $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy' . $this->$attribute);
-        }
     }
 }
