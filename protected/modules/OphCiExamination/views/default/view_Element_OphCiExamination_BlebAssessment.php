@@ -30,24 +30,24 @@
             </colgroup>
             <thead>
               <tr>
-                <th class="center">Area (Central)</th>
-                <th class="center">Area (Maximal)</th>
-                <th class="center">Height</th>
-                <th class="center">Vascularity</th>
+                <th>Area (Central)</th>
+                <th>Area (Maximal)</th>
+                <th>Height</th>
+                <th>Vascularity</th>
               </tr>
               </thead>
               <tbody>
               <tr>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_central_area'}->area; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_max_area'}->area; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_height'}->height; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_vasc'}->vascularity; ?>
                 </td>
               </tr>
