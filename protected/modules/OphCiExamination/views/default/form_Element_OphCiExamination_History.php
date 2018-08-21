@@ -56,7 +56,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
     $items = array();
 
     foreach ($attribute->getAttributeOptions() as $option) {
-        $items[] = ['value' => (string)$option->slug];
+        $items[] = ['label' => (string)$option->slug];
     }
 
     $itemSets[] = $items;
@@ -76,7 +76,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
 
         $(selectedItems).each(function (key, item) {
           inputText.val(inputText.val() ?
-            inputText.val() + item['value'] : item['value']
+            inputText.val() + item['label'] : item['label']
           );
         });
 

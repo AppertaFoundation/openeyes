@@ -51,6 +51,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.initialiseTriggers = function () {
         var controller = this;
 
+        $(document).ready(function(){
+            if (controller.$noAllergiesFld.prop('checked')){
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+            }
+        });
+
         controller.$table.on('change', 'input[type=radio]', function () {
             controller.updateNoAllergiesState();
         });
@@ -106,7 +113,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     AllergiesController.prototype.isAllergiesChecked = function (value) {
         var valueChecked = false;
-        this.$table.find('input[type=radio]:checked').each(function (i) {
+        this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function (i) {
             if ($(this).val() === value) {
                 valueChecked = true;
                 return false;
@@ -126,6 +133,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
     };
+
     /**
      *
      * @param data
@@ -138,25 +146,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var template = this.templateText;
         var tableSelector = this.tableSelector;
         $(allergies).each(function (e) {
-            var data = {};
-            data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key') + newRows.length;
-            data['allergy_id'] = this['id'];
-            data['allergy_display'] = this['value'];
-            newRows.push(Mustache.render(
-                template,
-                data));
+          var data = {};
+          data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
+          data['allergy_id'] = this['id'];
+          data['allergy_display'] = this['label'];
+          newRows.push( Mustache.render(
+             template,
+            data ));
         });
         return newRows;
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.$table.find('tbody tr').length === 0) {
-            this.$noAllergiesWrapper.show();
-            this.$table.hide();
-        } else {
-            this.$popupSelector.css({'visibility':'visible'});
-            this.$noAllergiesWrapper.hide();
+        if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
             this.$noAllergiesFld.prop('checked', false);
+            this.$popupSelector.show();
+        }
+        if(this.isAllergiesChecked(this.allergyYesValue)){
+            this.$noAllergiesWrapper.hide();
+            this.$popupSelector.show();
+            this.$noAllergiesFld.prop('checked', false);
+        } else {
+            this.$noAllergiesWrapper.show();
         }
     };
 

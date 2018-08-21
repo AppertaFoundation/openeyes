@@ -1056,7 +1056,6 @@ $(document).ready(function() {
     var period = is_follow_up ? selected_period.data('periodId') : null;
     var role = is_follow_up ? selected_role.data('roleId') : null;
     var role_comments = is_follow_up ? $('#follow_up_role_comments').val() : null;
-    var community_patient = is_follow_up ? $('#follow_up_community_patient').is(':checked') : 0;
 
     var model_name = OE_MODEL_PREFIX + 'Element_OphCiExamination_ClinicOutcome';
     $('#' + model_name + '_status_id').val(outcome);
@@ -1064,7 +1063,6 @@ $(document).ready(function() {
     $('#' + model_name + '_followup_period_id').val(period);
     $('#' + model_name + '_role_id').val(role);
     $('#' + model_name + '_role_comments').val(role_comments);
-    $('#' + model_name + '_community_patient').val(community_patient ? 1 : 0);
 
     var followup = !!selected_outcome.data('followup');
     if (followup) {
@@ -1263,10 +1261,14 @@ $(document).ready(function() {
 
         /* Visual Acuity readings event binding */
 
+        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element', function() {
+            $('.cvi-alert').slideUp(500);
+        });
+
         $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
 
             var $section =  $(this).closest('section');
-            var $cviAlert = $section.find('.cvi-alert');
+            var $cviAlert = $('.cvi-alert');
             var threshold = parseInt($cviAlert.data('threshold'));
 
             if( $section.find('.cvi_alert_dismissed').val() !== "1"){
@@ -1290,21 +1292,21 @@ $(document).ready(function() {
         });
 
         // Dismiss alert box
-        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .dismiss_cva_alert', function(){
-            var $section = $(this).closest('section');
+        $('#event-content').on('click', '.dismiss_cva_alert', function(){
+            var $section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity');
 
             if( $('.ophciexamination.column.event.view').length ) {
                 // viewing
                 $.get( baseUrl + '/OphCiExamination/default/dismissCVIalert', { "element_id": $section.find('.element_id').val() }, function( result ) {
                     var response = $.parseJSON(result);
                     if(response.success === 'true'){
-                        $section.find('.cvi-alert').slideUp(500).remove();
+                        $('.cvi-alert').slideUp(500).remove();
                     }
                 });
             } else {
                 // editing
-                $section.find('.cvi-alert').slideUp(500);
                 $section.find('.cvi_alert_dismissed').val("1");
+                $('.cvi-alert').slideUp(500);
             }
         });
 
@@ -2274,7 +2276,6 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
   var period = $('#' + model_name + '_followup_period_id').val();
   var role = $('#' + model_name + '_role_id').val();
   var role_comments = $('#' + model_name + '_role_comments').val();
-  var community_patient = $('#' + model_name + '_community_patient').val();
 
   var selected_outcome = $('#follow-up-outcome-options').find('li[data-outcome-id = "' + outcome + '"]');
   var selected_period = $('#follow-up-period-options').find('li[data-period-id="' + period + '"]');

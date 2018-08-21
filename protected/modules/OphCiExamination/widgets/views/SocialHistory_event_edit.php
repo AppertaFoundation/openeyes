@@ -192,7 +192,7 @@ $alcohol_options = range(1, 20);
       itemSets: [<?php foreach ($options_list as $key => $options) {?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item, $label) {
-                return ['value' => $item->name, 'id' => $item->id, 'option-label' => $label];
+                return ['label' => $item->name, 'id' => $item->id];
             }, $options['options'], array_fill(0, count($options), $key))
         ) ?>, {
           'header': '<?= $options['header'] ?>', 'id': '<?= $key ?>'
@@ -201,7 +201,7 @@ $alcohol_options = range(1, 20);
           <?php } ?>
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['value' => $item, 'id' => $item];
+                return ['label' => $item, 'id' => $item];
             }, $alcohol_options)
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
       ],
