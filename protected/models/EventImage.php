@@ -73,14 +73,16 @@ class EventImage extends BaseActiveRecord
 
 
     /**
-     * Get the latest event that has not had an image generated for it yet.
+     * Get the latest events that has not had an image generated for it yet.
      * Events that have failed image generation are skipped.
      *
-     * @return Event|null
+     * @param integer $event_count The number of events to find
+     *
+     * @return Event[]
      */
-    public function getNextEventToImage()
+    public function getNextEventsToImage($event_count = 1)
     {
-        $event_id = Yii::app()->db->createCommand()
+        $event_ids = Yii::app()->db->createCommand()
             ->select('event.id')
             ->from('event')
             ->leftJoin('event_image', 'event_image.event_id = event.id')
@@ -94,13 +96,10 @@ class EventImage extends BaseActiveRecord
                   )
                 )')
             ->order('event.last_modified_date DESC')
-            ->queryScalar();
+            ->limit($event_count)
+            ->queryColumn();
 
-        if ($event_id === null) {
-            return null;
-        }
-
-        return Event::model()->findByPk($event_id);
+        return Event::model()->findAllByPk($event_ids);
     }
 
     public function getImageUrl()

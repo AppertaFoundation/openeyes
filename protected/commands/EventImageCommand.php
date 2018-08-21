@@ -42,7 +42,7 @@ EOH;
 
     public function actionReset()
     {
-        if($this->confirm('Remove all EventImages, regardless of status?')) {
+        if ($this->confirm('Remove all EventImages, regardless of status?')) {
             EventImage::model()->deleteAll();
         }
     }
@@ -126,17 +126,10 @@ EOH;
 
     public function createEventImages($imageCount)
     {
-        for ($i = 0; $i < $imageCount; ++$i) {
-            $event = EventImage::model()->getNextEventToImage();
-            if ($event === null) {
-                echo "No out of date events found\n";
-
-                return;
-            }
-
+        $events = EventImage::model()->getNextEventsToImage($imageCount);
+        foreach ($events as $event) {
             $this->createImageForEvent($event);
         }
-
     }
 
     public function createImageForEvent($event)
