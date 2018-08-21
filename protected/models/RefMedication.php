@@ -229,4 +229,26 @@ class RefMedication extends BaseActiveRecordVersioned
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+
+    public function getLabel()
+    {
+        if ($this->isPreservativeFree()) {
+            return $this->preferred_term.' (No Preservative)';
+        } else {
+            return $this->preferred_term;
+        }
+    }
+
+    /**
+     * @return string
+     */
+
+    public function __toString()
+    {
+        return $this->getLabel();
+    }
 }
