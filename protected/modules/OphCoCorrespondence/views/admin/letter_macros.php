@@ -48,7 +48,7 @@
 	<form id="admin_letter_macros">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
     <div class="data-group">
-      <table class="grid">
+      <table class="standard">
         <thead>
         <tr>
           <th><input type="checkbox" name="selectall" id="selectall" /></th>

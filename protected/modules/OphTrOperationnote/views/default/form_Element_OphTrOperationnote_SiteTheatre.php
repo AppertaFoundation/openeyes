@@ -18,20 +18,13 @@
 ?>
 <?php $render_date = $form && (($this->action->id === strtolower($this::ACTION_TYPE_CREATE)) || $this->checkAdminAccess()) ?>
 
-<div class="element-fields full-width">
+<div class="element-fields full-width flex-layout">
   <table class="cols-10 last-left">
     <colgroup>
-      <col class="cols-5">
-      <col class="cols-5">
+      <col class="cols-4">
+      <col class="cols-4">
+      <col class="cols-4">
     </colgroup>
-    <thead>
-    <tr>
-      <th><?php echo CHtml::encode($element->getAttributeLabel('selected_site_id')) ?></th>
-      <th><?php echo CHtml::encode($element->getAttributeLabel('theatre_id')) ?></th>
-        <?php if ($render_date): ?>
-          <th>Date</th><?php endif; ?>
-    </tr>
-    </thead>
     <tbody>
     <tr class="col-gap">
       <td>
@@ -41,8 +34,10 @@
               'site_id',
               CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
                   'short_name'),
-              array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
-              false);
+              array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+              false,
+              array('label' => 4, 'field' => 8)
+          );
           ?>
       </td>
       <td>
@@ -61,43 +56,65 @@
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => true, 'class' => 'cols-full'),
-                      false);
+                      array('nowrapper' => false, 'class' => 'cols-full'),
+                      false,
+                      array('label' => 4, 'field' => 8)
+                  );
               } else {
                   echo $form->dropDownList(
                       $element,
                       'theatre_id',
                       CHtml::listData($getTheatreData, 'id', 'name'),
-                      array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
-                      false);
+                      array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                      false,
+                      array('label' => 4, 'field' => 8)
+                  );
               }
           }
           ?>
       </td>
-
         <?php if ($render_date): ?>
-          <td>
+          <td id="opnote_date">
               <?php
               echo $form->datePicker($this->event, 'event_date',
                   array('maxDate' => 'today'),
-                  array(
-                      'style' => 'margin-left:8px',
-                      'nowrapper' => true,
-                  ),
-                  array(
-                      'label' => 2,
-                      'field' => 2,
-                  )
+                  array('style' => 'margin-left:8px','nowrapper' => false,),
+                  array('label' => 4,'field' => 8,)
               );
               ?>
+            <style>#opnote_date input{width: 100%}</style>
           </td>
         <?php endif; ?>
     </tr>
     </tbody>
   </table>
+  <div class="add-data-actions flex-item-bottom " id="change-site-theatre-popup">
+    <button class="button hint green js-add-select-search" id="change-site-theatre-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button><!-- popup to add data to element -->
+  </div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#change-site-theatre-btn'),
+      itemSets:[
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($item) {
+              return ['label' => $item->short_name, 'id' => $item->id];
+          }, OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) ) ?>,
+          {'header':'site', 'id':'site_id'})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
     $('#Element_OphTrOperationnote_SiteTheatre_site_id').change(function () {
       $.ajax({
         type: 'GET',
@@ -112,3 +129,4 @@
     });
   });
 </script>
+<style>.Element_OphTrOperationnote_SiteTheatre{min-height: 54px !important;}</style>

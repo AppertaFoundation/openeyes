@@ -22,6 +22,6 @@
     </td>
     <td> <?=$values['eye'];?> </td>
     <td> <?=$values['subspecialty'];?> </td>
-    <td></td>
+    <td> <?=$values['date'];?></td>
     <td><span class="js-has-tooltip oe-i info small" data-tooltip-content="You must switch to the <?= $values['subspecialty'] ?> subspecialty to alter this diagnosis"></span></td>
 </tr>

@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>EROD rules</h2>
 	<form id="erod_rules">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="erod_rules" /></th>

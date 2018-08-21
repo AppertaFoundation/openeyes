@@ -10,6 +10,8 @@
 
   ItemSet._default_options = {
     'multiSelect': false,
+    'header': null,
+    'id': null,
   };
 
   ItemSet.prototype.create = function () {

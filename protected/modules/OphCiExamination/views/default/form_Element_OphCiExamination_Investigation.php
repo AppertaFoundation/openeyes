@@ -21,42 +21,43 @@
       <?php echo $form->textArea($element, 'description', array('class' => 'cols-full', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))?>
   </div>
   <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-select-search" type="button">
+    <button class="button hint green js-add-select-search"
+            id="add-investigation-btn" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-to-investigation" class="oe-add-select-search auto-width" style="display: none;">
-        <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
-    </div>
   </div>
 </div>
-
+<?php
+$itemSets = array();
+foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
+    $itemSet = array_map(function ($attr) {
+        return ['label' => $attr['slug']];
+    }, $attribute->getAttributeOptions());
+    $itemSets[] = $itemSet;
+}
+?>
 <script type="text/javascript">
   $(function () {
     var investigationDiv =
       $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation\']');
-    var popup = investigationDiv.find('#add-to-investigation');
 
-    function setInvestigationText() {
-      var inputText = investigationDiv.find(
-        '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
-      );
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-investigation-btn'),
+      itemSets:$.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
+        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+      }),
+      liClass: 'restrict-width',
+      onReturn: function (adderDialog, selectedItems) {
+        var inputText = investigationDiv.find(
+          '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
+        );
 
-      popup.find('.selected').each(function (e) {
-        var selectedStr = $(this).attr('data-str');
-        if (selectedStr == null)return;
-        inputText.val(inputText.val() ? inputText.val() + selectedStr : selectedStr);
-        $(this).removeClass('selected');
-      });
-      inputText.trigger('oninput');
-    }
-
-    setUpAdder(
-      popup,
-      'multi',
-      setInvestigationText,
-      investigationDiv.find('.js-add-select-search'),
-      popup.find('.add-icon-btn'),
-      popup.find('.close-icon-btn')
-    )
+        $(selectedItems).each(function (key, item) {
+          inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']);
+        });
+        inputText.trigger('oninput');
+        return true;
+      }
+    });
   });
 </script>

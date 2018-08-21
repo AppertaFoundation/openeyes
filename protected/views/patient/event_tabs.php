@@ -17,25 +17,22 @@
  */
 ?>
 
-<?php
-// Strip whitespace between HTML tags to prevent gaps between tabs
-ob_start(function ($buffer) {
-    return preg_replace('/>\s+</', '><', $buffer);
-}); ?>
+<?php $this->beginWidget('CondenseHtmlWidget') ?>
 
 <?php if ($this->event): ?>
-  <?php echo $this->event->getEventIcon('medium'); ?>
+    <?php echo $this->event->getEventIcon('medium'); ?>
 <?php endif; ?>
 <?php foreach ($this->event_tabs as $tab) { ?>
-    <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button header-tab <?php if (@$tab['active']) { ?>selected<?php } ?>">
+    <a href="<?php echo @$tab['href'] ? $tab['href'] : '#' ?>"
+       class="button header-tab <?php if (@$tab['active']) { ?>selected<?php } ?>">
         <?php echo $tab['label'] ?>
     </a>
 <?php } ?>
 
-<?php if ($this->action->id === 'create' || $this->action->id === 'update'): ?>
-  <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
-    <i class="oe-i search"></i>
-  </button>
+<?php if (($this->action->id === 'create' || $this->action->id === 'update') && $this->show_index_search) : ?>
+    <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+        <i class="oe-i search"></i>
+    </button>
 <?php endif; ?>
 
-<?php ob_get_flush() ?>
+<?php $this->endWidget() ?>

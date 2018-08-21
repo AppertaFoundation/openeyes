@@ -26,7 +26,7 @@
 		<h3 class="georgia">Post-operative drugs</h3>
 		<div>
 			<form id="drugs">
-				<ul class="grid reduceheight">
+				<ul class="standard reduceheight">
 					<li class="header">
 						<span class="column_name">Name</span>
 					</li>

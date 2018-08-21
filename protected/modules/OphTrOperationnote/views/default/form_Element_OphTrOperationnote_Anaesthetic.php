@@ -28,7 +28,7 @@ $is_hidden = function () use ($element) {
 
 <div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic">
   <div class="cols-11 flex-layout flex-top col-gap">
-    <div class="cols-7">
+    <div class="cols-8">
       <table class="last-left">
         <colgroup>
           <col class="cols-2">
@@ -82,15 +82,16 @@ $is_hidden = function () use ($element) {
         </tbody>
       </table>
     </div>
-    <div class="cols-5">
+    <div class="cols-4">
       <table>
         <colgroup>
-          <col class="cols-2">
+          <col class="cols-4"/>
+          <col class="cols-8"/>
         </colgroup>
         <tbody>
         <tr>
           <td>Agents</td>
-          <td>
+          <td class="cols-8">
               <?php echo $form->multiSelectList(
                   $element,
                   'AnaestheticAgent',
@@ -125,9 +126,19 @@ $is_hidden = function () use ($element) {
                   null,
                   false,
                   false,
-                  array('field' => 3)
+                  array('field' => 12)
               ) ?>
           </td>
+          <style>
+            #OphTrOperationnote_Anaesthetic .multi-select-list {
+              /*"Inline style to force correct alignment*/
+              width: 228px;
+              text-align: right;
+            }
+            #OphTrOperationnote_Anaesthetic .multi-select-dropdown-container select{
+              max-width: 100%;
+            }
+          </style>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
             style="<?php if (!$element->anaesthetic_comment): ?>display: none;<?php endif ?>"
@@ -150,14 +161,52 @@ $is_hidden = function () use ($element) {
       </table>
     </div>
   </div>
-  <div class="flex-item-bottom">
-    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
-            class="button js-add-comments"
-            type="button"
-            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
-    >
-      <i class="oe-i comments small-icon"></i>
-    </button>
+
+  <div class="add-data-actions flex-item-bottom">
+    <div class="flex-item-bottom">
+      <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
+              class="button js-add-comments"
+              type="button"
+              data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+              style="<?= $element->anaesthetic_comment ? 'visibility: hidden;':'' ?>"
+      >
+        <i class="oe-i comments small-icon"></i>
+      </button>
+      <button class="button hint green js-add-select-search" id="add-anaesthetic-btn" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button><!-- popup to add data to element -->
+    </div>
   </div>
 </div>
+<?php
+  $complications = OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll();
+  $agents =  $this->getAnaesthetic_agent_list($element);
+?>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-anaesthetic-btn'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($key, $value) {
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'id':'AnaestheticAgent', 'multiSelect': true}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['label' => $item->name,
+                    'id' => $item->id];
+            }, $complications) ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          var $selector = $('#'+selectedItems[i]['itemSet'].options['id']);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
+  });
+</script>

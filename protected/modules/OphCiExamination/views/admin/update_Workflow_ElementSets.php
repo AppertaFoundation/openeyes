@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Steps</h2>
 	<form id="admin_workflow_steps">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>Position</th>
@@ -38,8 +38,7 @@
                         <?php if($step->isDeletable()):  ?>
                             <a href="#" class="removeElementSet" rel="<?php echo $step->id?>">Remove</a>
                         <?php else: ?>
-                            Remove
-                            <span class="has-tooltip fa fa-info-circle" style="margin-top:3px" data-tooltip-content="Step is in use and cannot be deleted."></span>
+                            <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="Step is in use and cannot be deleted."></i>
                         <?php endif; ?>
                         </td>
 					</tr>
