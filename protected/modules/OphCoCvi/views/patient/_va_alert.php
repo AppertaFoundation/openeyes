@@ -15,19 +15,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<div class="cvi-alert alert-box alert flex-layout" data-alert="CVI may be applicable"
-     data-threshold="<?= $threshold ?>" <?php if (!$visible): ?>style="display: none"<?php endif; ?>>
-  This patient may be eligible for a Certificate of Visual Impairment
-  <span class="right">
+<div class="cvi-alert alert-box issue flex-layout"
+     data-alert="CVI may be applicable"
+     data-threshold="<?= $threshold ?>"
+     style="<?php if (!$visible): ?>display: none;<?php endif; ?>">
+  <div>
+    This patient may be eligible for a CVI
       <?php if ($show_create): ?>
         <a class="button create-cvi hint green"
-                href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
-                    array('patient_id' => $this->patient->id)); ?>">
-
+           href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
+               array('patient_id' => $this->patient->id)); ?>">
           Create CVI
         </a>
+      <?php else: ?>
+        <i class="oe-i info pad-left small js-has-tooltip"
+           data-tooltip-content="You'll be able to create a CVI after saving this Examination"></i>
       <?php endif; ?>
-    <i class="oe-i remove-circle small dismiss_cva_alert dismiss right"></i>
-    </span>
+  </div>
+  <i class="oe-i remove-circle small dismiss_cva_alert dismiss"></i>
 </div>
+

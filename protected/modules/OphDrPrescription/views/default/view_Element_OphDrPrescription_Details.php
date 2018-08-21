@@ -28,6 +28,7 @@
             <th>Frequency</th>
             <th>Duration</th>
             <th>Dispense Condition/Location</th>
+              <th>Comments</th>
           </tr>
           </thead>
           <tbody>
@@ -45,6 +46,11 @@
               <td><?php echo $item->frequency->name ?></td>
               <td><?php echo $item->duration->name ?></td>
               <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
+                <td class="prescription-label">
+                    <?php if(!is_null($item->comments)): ?>
+                        <i><?php echo CHtml::encode($item->comments); ?></i>
+                    <?php endif; ?>
+                </td>
             </tr>
               <?php foreach ($item->tapers as $taper) { ?>
               <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
