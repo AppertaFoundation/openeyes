@@ -19,28 +19,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
-<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
-	<div class="container main" role="main">
-		<?php $this->renderPartial('//base/_header'); ?>
-		<div class="container content">
-			<div class="box content admin-content">
-				<div class="data-group">
-					<aside class="cols-3 column sidebar admin">
-						<?php $this->renderPartial('//report/sidebar'); ?>
-					</aside>
-					<div class="cols-9 column content admin">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php $this->renderPartial('//base/_footer'); ?>
-	</div>
+<body class="open-eyes oe-grid">
+<?php $this->renderPartial('//base/_debug'); ?>
+
+<!-- Branding (logo) -->
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+
+<?php $this->renderPartial('//base/_header'); ?>
+
+<div class="oe-full-header flex-layout">
+
+  <div class="title wordcaps"><b>Reports</b> Example</div>
+
+</div>
+<div class="oe-full-content subgrid oe-reports">
+  <nav class="oe-full-side-panel reports-panels">
+      <?php $this->renderPartial('//report/sidebar'); ?>
+  </nav>
+  <main class="oe-full-main reports-main">
+      <?php echo $content; ?>
+  </main>
+</div>
+
+<?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>

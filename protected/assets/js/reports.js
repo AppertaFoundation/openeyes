@@ -23,7 +23,7 @@ $(document).ready(function() {
 
 function display_report(form)
 {
-	$('div.reportSummary').hide();
+	$('div.report-summary').hide();
 
 	$('.errors').hide();
 
@@ -35,7 +35,7 @@ function display_report(form)
 		'success': function(errors) {
 			if (typeof(errors['_report']) != 'undefined') {
 				enableButtons();
-				$('div.reportSummary').html(errors['_report']).show();
+				$('div.report-summary').html(errors['_report']).show();
 			} else {
 				$('.errors').children('ul').html('');
 
