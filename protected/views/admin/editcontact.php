@@ -43,7 +43,7 @@
 <div class="box admin">
 	<h2>Locations</h2>
 	<form id="admin_contact_locations">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>Type</th>

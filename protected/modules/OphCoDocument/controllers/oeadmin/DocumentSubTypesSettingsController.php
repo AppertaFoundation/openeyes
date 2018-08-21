@@ -23,10 +23,23 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
      */
     public function actionIndex()
     {
-        $this->render('/admin/sub_types/index', array(
-                'sub_types' => OphCoDocument_Sub_Types::model()->findAll(),
-            )
-        );
+        $path = Yii::getPathOfAlias('application.widgets.js');
+        $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js');
+        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
+        //reorder and save
+        if (Yii::app()->request->isPostRequest) {
+            $sub_types = \Yii::app()->request->getPost('OphCoDocument_Sub_Types', []);
+            foreach ($sub_types as $sub_type) {
+                $model = OphCoDocument_Sub_Types::model()->findByPk($sub_type['id']);
+                $model->display_order = $sub_type['display_order'];
+                $model->save();
+            }
+        }
+        $criteria = new \CDbCriteria();
+        $criteria->order = 'display_order';
+        $sub_types = OphCoDocument_Sub_Types::model()->findAll($criteria);
+
+        $this->render('/admin/sub_types/index', [ 'sub_types' => $sub_types ]);
     }
 
     /**

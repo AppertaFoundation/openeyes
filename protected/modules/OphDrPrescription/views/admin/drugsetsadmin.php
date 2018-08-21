@@ -38,7 +38,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="data-group">
 		<div class="cols-2 column"><label for="set_name">Saved sets:</label></div>
 		<div class="cols-4 column">
-			<table class="grid">
+			<table class="standard">
 				<tr>
 					<th>Name</th>
 					<th>Subspecialty</th>

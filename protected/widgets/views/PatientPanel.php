@@ -97,10 +97,10 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
     <?php endif; ?>
 
      <!-- Widgets (extra icons, links etc) -->
-  <ul class="patient-widgets">
-      <?php foreach ($this->widgets as $widget) {
-        echo "<li>{$widget}</li>";
-        }?>
+      <ul class="patient-widgets">
+            <?php foreach ($this->widgets as $widget) {
+              echo "<li>{$widget}</li>";
+              }?>
         </ul>
   </div>
 </div>

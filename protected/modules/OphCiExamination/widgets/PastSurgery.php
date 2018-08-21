@@ -81,7 +81,7 @@ class PastSurgery extends \BaseEventElementWidget
                     $op_entry = $operations_by_id[$id];
                 }
                 $op_entry->operation = $operation['operation'];
-                $op_entry->side_id = $operation['side_id'];
+                $op_entry->side_id = $this->getEyeIdFromPost($operation);
                 $op_entry->had_operation = array_key_exists('had_operation', $operation) ? $operation['had_operation'] : null;
                 if ($operation['date']){
                     list($year, $month, $day) = array_pad(explode('-', $operation['date']), 3,0);
@@ -182,7 +182,7 @@ class PastSurgery extends \BaseEventElementWidget
     public function getViewData()
     {
         return array_merge(parent::getViewData(), array(
-            'operations' => $this->getMergedOperations($include_no = true),
+            'operations' => $this->getMergedOperations($this->mode !== self::$PATIENT_SUMMARY_MODE),
         ));
     }
 

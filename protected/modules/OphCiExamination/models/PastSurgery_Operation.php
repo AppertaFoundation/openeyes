@@ -68,6 +68,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
             array('date, side_id, operation, had_operation', 'safe'),
             array('date', 'OEFuzzyDateValidatorNotFuture'),
             array('had_operation', 'required', 'message' => 'Checked Status cannot be blank'),
+            array('side_id', 'sideValidator'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, date, operation, had_operation', 'safe', 'on' => 'search'),
@@ -95,6 +96,32 @@ class PastSurgery_Operation extends \BaseEventTypeElement
             'date' => 'Date',
             'had_operation' => 'Had operation'
         );
+    }
+
+    /**
+     * Checking whether side_id is not null
+     * @param $attribute
+     * @param $params
+     */
+    public function sideValidator($attribute, $params)
+    {
+        if (!$this->side_id) {
+            $this->addError($attribute, "Eye must be selected");
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function beforeSave()
+    {
+        //-9 is the N/A option but we do not save it, if null is posted that means
+        //the user did not checked any checkbox so we return error in the validation part
+        if ($this->side_id == -9) {
+            $this->side_id = null;
+        }
+        return parent::beforeSave();
     }
 
     /**
