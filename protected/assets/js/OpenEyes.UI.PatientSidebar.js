@@ -83,11 +83,6 @@
 
       self.$elementContainer = $(document).find(self.options.element_container_selector);
 
-      // couple of hooks to keep the menu in sync with the elements on the page.
-      self.$elementContainer.on('click', '.js-remove-element', function(e) {
-        self.removeElement(e.target);
-      });
-
       self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
         self.removeElement(e.target);
       });

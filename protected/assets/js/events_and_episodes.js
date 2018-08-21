@@ -25,9 +25,12 @@ $(document).ready(function(){
 		}
 	});
 
-    $('#event-content').on('change', 'select, input, textarea', function() {
-        $(this).closest('.element').addClass('js-changed');
-    });
+    function markElementDirty(){
+        $(this).closest('.element').addClass('js-dirty');
+    }
+
+    $(document).on('click', '.add-icon-btn' , markElementDirty);
+    $('#event-content').on('change', 'select, input, textarea', markElementDirty);
 
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
@@ -139,7 +142,7 @@ $(document).ready(function(){
   $(this).on('click', '.js-remove-element', function (e) {
     e.preventDefault();
     var $parent = $(this).closest('.element');
-      if (element_close_warning_enabled === 'on' && $parent.hasClass('js-changed')) {
+      if (element_close_warning_enabled === 'on' && $parent.hasClass('js-dirty')) {
           var dialog = new OpenEyes.UI.Dialog.Confirm({
               content: "Are you sure that you wish to close the " +
               $parent.data('element-type-name') +
