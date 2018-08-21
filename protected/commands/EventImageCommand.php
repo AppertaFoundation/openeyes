@@ -8,7 +8,7 @@ class EventImageCommand extends CConsoleCommand
 
     public function actionIndex()
     {
-        $this->getHelp();
+        echo $this->getHelp();
     }
 
     public function getHelp()
@@ -36,7 +36,7 @@ EOH;
 
     public function actionClean()
     {
-        EventIMage::model()->deleteAll('status_id != ?',
+        EventImage::model()->deleteAll('status_id != ?',
             array(EventImageStatus::model()->find('name = "CREATED"')->id));
     }
 
