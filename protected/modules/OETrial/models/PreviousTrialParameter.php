@@ -73,16 +73,14 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
         $treatmentTypeList = TrialPatient::getTreatmentTypeOptions();
         ?>
-        <div class="row field-row">
-            <div class="large-2 column">
-                <?php echo CHtml::label($this->getLabel(), false); ?>
-            </div>
-            <div class="large-2 column">
+        <div class="flex-layout flex-left flex-top">
+            <?= $this->getDisplayTitle()?>
+            <div class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
                     array('prompt' => 'Select One...')); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>
             </div>
-            <div class="large-3 column">
+            <div class="parameter-option">
                 <?php echo CHtml::activeDropDownList(
                     $this,
                     "[$id]status",
@@ -90,28 +88,24 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     array('empty' => 'Involved with'));
                 ?>
             </div>
-            <div class="large-3 column trial-type">
+            <div class="trial-type parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]type", $types,
                     array('empty' => 'Any Trial', 'onchange' => "getTrialList(this, $this->id)")); ?>
             </div>
-            <div class="large-2 column trial-list end">
+            <div class="trial-list parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
                     array('empty' => 'Any', 'style' => 'display: none;')); ?>
             </div>
-        </div>
-        <div class="row field-row treatment-type-container"
-             <?php if ($this->type !== '' && $this->type !== null && $this->type === Trial::TRIAL_TYPE_NON_INTERVENTION): ?>style="display:none" <?php endif; ?>>
-            <div class="large-2 column">&nbsp;</div>
-            <div class="large-2 column">
-                <p style="float: right; margin: 5px">with</p>
-            </div>
-            <div class="large-3 column">
-                <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", $treatmentTypeList,
-                    array('empty' => 'Any')); ?>
-            </div>
-            <div class="large-3 column end">
-                <p style="margin: 5px">treatment</p>
-            </div>
+            <span class="js-treatment-type-container flex-layout flex-left"
+                style="<?= $this->type !== '' && $this->type !== null && $this->type === Trial::TRIAL_TYPE_NON_INTERVENTION ? 'display:none;':''?>"
+            >
+                <p class="parameter-option" style="margin-bottom: 0px;">with</p>
+                <div class="parameter-option">
+                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", $treatmentTypeList,
+                        array('empty' => 'Any')); ?>
+                </div>
+                <p class="parameter-option">treatment</p>
+            </span>
         </div>
 
 
@@ -120,8 +114,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 var parameterNode = $('.parameter#' + parameter_id);
 
                 var trialType = $(target).val();
-                var trialList = parameterNode.find('.trial-list select');
-                var treatmentTypeContainer = parameterNode.find('.treatment-type-container');
+                var trialList = parameterNode.find('.js-trial-list select');
+                var treatmentTypeContainer = parameterNode.find('.js-treatment-type-container');
 
                 // Only show the treatment type if the trial type is set to "Any" or "Intervention"
                 treatmentTypeContainer.toggle(!trialType || trialType === '<?php echo Trial::TRIAL_TYPE_INTERVENTION; ?>');

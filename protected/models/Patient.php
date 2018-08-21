@@ -173,6 +173,8 @@ class Patient extends BaseActiveRecordVersioned
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
+            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
+            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
         );
     }
 

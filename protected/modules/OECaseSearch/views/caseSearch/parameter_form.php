@@ -15,8 +15,6 @@
             </div>
             <div class="cols-2">
                 <i id="<?= $id ?>-remove" class="oe-i trash"></i>
-                <!--        <p>-->
-                <?php //echo CHtml::link('Remove', 'javascript:void(0)', array('onclick' => 'removeParam(this)', 'class' => 'remove-link')); ?><!--</p>-->
             </div>
             <hr/>
         </div>
