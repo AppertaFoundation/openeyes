@@ -26,11 +26,6 @@ foreach ($all_units as $unit) {
     $va_tooltip_left .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('left', $unit->id) . '<br/>';
 }
 
-$cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
-    echo $cvi_api->renderAlertForVA($this->patient, $element, true);
-}
-
 ?>
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
