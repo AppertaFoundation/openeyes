@@ -35,7 +35,7 @@ if ($api) {
     $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
     //For each event, check if =event_id in _visualacuity.
     $events = Event::model()->findAll($criteria);
-    if ($events)) {
+    if ($events) {
         for ($i = 0; $i < count($events); ++$i) {
             // Get Most Recent VA
             $vaID = $api->getMostRecentVA($events[$i]->id);
