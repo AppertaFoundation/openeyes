@@ -8,7 +8,7 @@ return array(
         'owner_user_id' => $this->getRecord('user', 'user1')->id,
         'principle_investigator_user_id' => $this->getRecord('user', 'user1')->id,
         'is_open' => 1,
-        'trial_type_id' => $this->getRecord('type_type', 'trial_type_intervention')->id,
+        'trial_type_id' => $this->getRecord('trial_type', 'trial_type_intervention')->id,
     ),
     'trial2' => array(
         'id' => 2,
@@ -17,7 +17,7 @@ return array(
         'owner_user_id' => $this->getRecord('user', 'user1')->id,
         'principle_investigator_user_id' => $this->getRecord('user', 'user1')->id,
         'is_open' => 1,
-        'trial_type_id' => $this->getRecord('type_type', 'trial_type_intervention')->id,
+        'trial_type_id' => $this->getRecord('trial_type', 'trial_type_intervention')->id,
         'closed_date' => '2000/02/29',
     ),
     'trial3' => array(
@@ -27,7 +27,7 @@ return array(
         'owner_user_id' => $this->getRecord('user', 'user1')->id,
         'principle_investigator_user_id' => $this->getRecord('user', 'user1')->id,
         'is_open' => 0,
-        'trial_type_id' => $this->getRecord('type_type', 'trial_type_intervention')->id,
+        'trial_type_id' => $this->getRecord('trial_type', 'trial_type_intervention')->id,
         'closed_date' => '2000/02/29',
     ),
 
@@ -38,6 +38,6 @@ return array(
         'owner_user_id' => $this->getRecord('user', 'user1')->id,
         'principle_investigator_user_id' => $this->getRecord('user', 'user1')->id,
         'is_open' => 1,
-        'trial_type_id' => $this->getRecord('type_type', 'trial_type_non_intervention')->id,
+        'trial_type_id' => $this->getRecord('trial_type', 'trial_type_non_intervention')->id,
     ),
 );

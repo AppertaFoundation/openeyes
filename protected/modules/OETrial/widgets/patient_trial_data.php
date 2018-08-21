@@ -7,9 +7,9 @@
  */
 $isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial($data,
     $this->trialContext !== null ? $this->trialContext->id : null);
-$shortlistedTrials = TrialPatient::getTrialCount($data, TrialPatient::STATUS_SHORTLISTED);
-$acceptedTrials = TrialPatient::getTrialCount($data, TrialPatient::STATUS_ACCEPTED);
-$rejectedTrials = TrialPatient::getTrialCount($data, TrialPatient::STATUS_REJECTED);
+$shortlistedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "SHORTLISTED"'));
+$acceptedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "ACCEPTED"'));
+$rejectedTrials = TrialPatient::getTrialCount($data, TrialPatientStatus::model()->find('code = "REJECTED"'));
 $trialPatient = $this->trialContext !== null ? TrialPatient::getTrialPatient($data, $this->trialContext->id) : null;
 
 if ($isInAnotherInterventionTrial) {
@@ -17,7 +17,7 @@ if ($isInAnotherInterventionTrial) {
 }
 
 $previousTreatmentType = TrialPatient::getLastPatientTreatmentType($data, $this->trialContext !== null ? $this->trialContext->id : null);
-if ($previousTreatmentType === TrialPatient::TREATMENT_TYPE_INTERVENTION) {
+if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
     $warnings[] = 'Patient has undergone intervention treatment in a previous trial.';
 }
 
@@ -107,7 +107,7 @@ $inOtherTrials = TrialPatient::model()->exists(
     Add to trial shortlist
   </a>
   <a id="remove-from-trial-link-<?php echo $data->id; ?>"
-     href="javascript:void(0)" <?php echo !($inTrial && TrialPatient::getTrialPatient($data, $this->trialContext->id)->patient_status === TrialPatient::STATUS_SHORTLISTED) ? 'style="display:none"' : ''; ?>
+     href="javascript:void(0)" <?php echo !($inTrial && TrialPatient::getTrialPatient($data, $this->trialContext->id)->status->code === 'SHORTLISTED') ? 'style="display:none"' : ''; ?>
      onclick="removePatientFromTrial(<?php echo $data->id; ?>, <?php echo $this->trialContext->id; ?>)">
     Remove from trial shortlist
   </a>

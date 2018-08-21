@@ -72,8 +72,7 @@ class TrialPatientController extends BaseModuleController
     public function actionChangeStatus()
     {
         $trialPatient = $this->loadModel($_POST['id']);
-        $result = $trialPatient->changeStatus($_POST['new_status']);
-        echo $result;
+        $trialPatient->changeStatus($_POST['new_status']);
     }
 
     /**
@@ -95,6 +94,7 @@ class TrialPatientController extends BaseModuleController
     public function actionUpdateTreatmentType()
     {
         $model = $this->loadModel($_POST['id']);
-        $model->updateTreatmentType($_POST['treatment_type']);
+        $treatmentType = TreatmentType::model()->findByPk($_POST['treatment_type']);
+        $model->updateTreatmentType($treatmentType);
     }
 }

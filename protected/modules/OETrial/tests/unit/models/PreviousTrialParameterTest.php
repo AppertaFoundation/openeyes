@@ -37,17 +37,17 @@ class PreviousTrialParameterTest extends CDbTestCase
     {
         $validOps = array(
             '=',
-            '!='
+            '!=',
         );
 
-        foreach ($validOps as $op){
+        foreach ($validOps as $op) {
             try {
                 $this->object->operation = $op;
                 $this->object->query($this->searchProvider);
             } catch (Exception $e) {
-                $this->fail('Failed on valid query operation '.$op);
+                $this->fail('Failed on valid query operation ' . $op . ': ' . $e);
             }
-            $this->assertTrue(TRUE);
+            $this->assertTrue(true);
 
         }
 

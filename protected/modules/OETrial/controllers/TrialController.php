@@ -76,14 +76,8 @@ class TrialController extends BaseModuleController
 
     public static function getCurrentUserPermission()
     {
-        return self::getUserPermission(Yii::app()->user->id, Yii::app()->getRequest()->getQuery("id"));
-    }
-
-    public static function getUserPermission($user_id, $trial_id)
-    {
-        return UserTrialAssignment::model()->find(
-            'user_id = :user_id AND trial_id = :trial_id',
-            array(':user_id' => $user_id, ':trial_id' => $trial_id))->trialPermission;
+        $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getQuery("id"));
+        return $trial->getUserPermission(Yii::app()->user->id);
     }
 
     /**
@@ -129,7 +123,7 @@ class TrialController extends BaseModuleController
                 $sortBy = 'external_reference';
                 break;
             case 6:
-                $sortBy = 'treatment_type';
+                $sortBy = 'treatment_type_id';
                 break;
         }
 
@@ -316,7 +310,7 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_POST['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_POST['patient_id']);
-        $trial->addPatient($patient, TrialPatient::STATUS_SHORTLISTED);
+        $trial->addPatient($patient, TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id);
     }
 
     /**
@@ -350,7 +344,7 @@ class TrialController extends BaseModuleController
     public function actionRemovePermission()
     {
         $trial = $this->loadModel($_POST['id']);
-        $result = $trial->removeUserPermission($_POST['permission_id']);
+        $result = $trial->removeUserAssignment($_POST['permission_id']);
         echo $result;
     }
 

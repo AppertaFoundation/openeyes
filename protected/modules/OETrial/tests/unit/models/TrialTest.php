@@ -4,10 +4,14 @@ class TrialTest extends CDbTestCase
 {
     public $fixtures = array(
         'user' => 'User',
+        'trial_type' => 'TrialType',
         'trial' => 'Trial',
         'patient' => 'Patient',
+        'treatment_type' => 'TreatmentType',
+        'trial_patient_status' => 'TrialPatientStatus',
         'trial_patient' => 'TrialPatient',
-        'user_trial_permission' => 'UserTrialAssignment',
+        'trial_permission' => 'TrialPermission',
+        'user_trial_assignment' => 'UserTrialAssignment',
     );
 
     public static function setupBeforeClass()
@@ -58,12 +62,13 @@ class TrialTest extends CDbTestCase
     public function testDataProvidersExist()
     {
         $providers = $this->trial('trial1')->getPatientDataProviders(null, null);
-        $this->assertArrayHasKey(TrialPatient::STATUS_ACCEPTED, $providers);
+        $this->assertArrayHasKey('ACCEPTED', $providers);
 
         $this->assertGreaterThan(0, count($providers), 'There should be at least one data provider returned');
 
-        foreach (TrialPatient::getAllowedStatusRange() as $status) {
-            $this->assertArrayHasKey($status, $providers, 'A data provider of each patient status should be returned');
+        foreach (TrialPatientStatus::model()->findAll() as $id => $status) {
+            $this->assertArrayHasKey($status->code, $providers,
+                'A data provider of each patient status should be returned');
         }
     }
 
@@ -72,7 +77,7 @@ class TrialTest extends CDbTestCase
         $providers = $this->trial('trial1')->getPatientDataProviders(null, null);
 
         /* @var CActiveDataProvider $shortlistedPatientProvider */
-        $shortlistedPatientProvider = $providers[TrialPatient::STATUS_SHORTLISTED];
+        $shortlistedPatientProvider = $providers['SHORTLISTED'];
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'Trial1 should have exactly 2 shortlisted patients');
     }
@@ -82,15 +87,16 @@ class TrialTest extends CDbTestCase
         $providers = $this->trial('trial2')->getPatientDataProviders(null, null);
 
         /* @var CActiveDataProvider $shortlistedPatientProvider */
-        $shortlistedPatientProvider = $providers[TrialPatient::STATUS_SHORTLISTED];
+        $shortlistedPatientProvider = $providers['SHORTLISTED'];
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(0, $data, 'Trial2 should have no shortlisted patients');
     }
 
     public function testDataProviderNameOrdering()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'name', 'asc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'name', 'asc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -100,8 +106,9 @@ class TrialTest extends CDbTestCase
 
     public function testDataProviderNameOrderingDesc()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'name', 'desc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'name', 'desc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -111,8 +118,9 @@ class TrialTest extends CDbTestCase
 
     public function testDataProviderAgeOrdering()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'age', 'asc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'age', 'asc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -122,8 +130,9 @@ class TrialTest extends CDbTestCase
 
     public function testDataProviderAgeOrderingDesc()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'age', 'desc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'age', 'desc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -133,8 +142,9 @@ class TrialTest extends CDbTestCase
 
     public function testDataProviderExternalRefOrdering()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'external_reference', 'asc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'external_reference', 'asc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -144,8 +154,9 @@ class TrialTest extends CDbTestCase
 
     public function testDataProviderExternalRefOrderingDesc()
     {
-        $shortlistedPatientProvider = $this->trial('trial1')->getPatientDataProvider(TrialPatient::STATUS_SHORTLISTED,
-            'external_reference', 'desc');
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $shortlistedPatientProvider = $this->trial('trial1')
+            ->getPatientDataProvider($shortlisted, 'external_reference', 'desc');
         $data = $shortlistedPatientProvider->getData();
         $this->assertCount(2, $data, 'There should be two patients in trial1');
 
@@ -165,9 +176,17 @@ class TrialTest extends CDbTestCase
     {
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
-        $this->assertEquals(UserTrialAssignment::PERMISSION_MANAGE, $trial->getTrialAccess($this->user('user1')));
-        $this->assertEquals(UserTrialAssignment::PERMISSION_VIEW, $trial->getTrialAccess($this->user('user2')));
-        $this->assertEquals(UserTrialAssignment::PERMISSION_EDIT, $trial->getTrialAccess($this->user('user3')));
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user1')->id)->can_manage);
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user1')->id)->can_edit);
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user1')->id)->can_view);
+
+        $this->assertFalse((bool)$trial->getUserPermission($this->user('user2')->id)->can_manage);
+        $this->assertFalse((bool)$trial->getUserPermission($this->user('user2')->id)->can_edit);
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user2')->id)->can_view);
+
+        $this->assertFalse((bool)$trial->getUserPermission($this->user('user3')->id)->can_manage);
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user3')->id)->can_edit);
+        $this->assertTrue((bool)$trial->getUserPermission($this->user('user3')->id)->can_view);
     }
 
     public function testAddPatient()
@@ -175,13 +194,14 @@ class TrialTest extends CDbTestCase
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
         $patient = $this->patient('patient2');
-        $trialPatient = $trial->addPatient($patient, TrialPatient::STATUS_SHORTLISTED);
+        $shortlisted = $this->trial_patient_status('trial_patient_status_shortlisted');
+        $trialPatient = $trial->addPatient($patient, $shortlisted);
 
         $this->assertNotNull($trialPatient, 'The patient should have been added to the trial');
-        $this->assertEquals(TrialPatient::STATUS_SHORTLISTED, $trialPatient->patient_status,
+        $this->assertEquals($shortlisted->id, $trialPatient->status->id,
             'The patietn status should be shortlisted');
         $this->assertEquals($trial->id, $trialPatient->trial->id, 'The trial id should match the patient trial id');
-        $this->assertEquals(TrialPatient::TREATMENT_TYPE_UNKNOWN, $trialPatient->treatment_type,
+        $this->assertEquals($this->treatment_type('treatment_type_unknown')->id, $trialPatient->treatment_type_id,
             'The patient treatment type should start at unknown');
     }
 
@@ -218,7 +238,7 @@ class TrialTest extends CDbTestCase
         /* @var User $user2 */
         $user2 = $this->user('user2');
 
-        $result = $trial2->addUserPermission($user2->id, UserTrialAssignment::PERMISSION_VIEW, null);
+        $result = $trial2->addUserPermission($user2->id, $this->trial_permission('trial_permission_view'), null);
         $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_OK, $result,
             'The permission should have been added successfully');
     }
@@ -229,7 +249,7 @@ class TrialTest extends CDbTestCase
         $trial = $this->trial('trial1');
         $user1 = $this->user('user1');
 
-        $result = $trial->addUserPermission($user1->id, UserTrialAssignment::PERMISSION_VIEW, null);
+        $result = $trial->addUserPermission($user1->id, $this->trial_permission('trial_permission_view'), null);
         $this->assertEquals(Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS, $result,
             'The permission already exists, and a duplicate should have been prevented');
     }
@@ -239,9 +259,9 @@ class TrialTest extends CDbTestCase
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
         /* @var UserTrialAssignment $userPermission */
-        $userPermission = $this->user_trial_permission('user_trial_permission_2');
+        $userPermission = $this->user_trial_assignment('user_trial_assignment_2');
 
-        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_SUCCESS, $trial->removeUserPermission($userPermission->id),
+        $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_SUCCESS, $trial->removeUserAssignment($userPermission->id),
             'The permission should have been removed successfully');
     }
 
@@ -250,10 +270,10 @@ class TrialTest extends CDbTestCase
         /* @var Trial $trial */
         $trial = $this->trial('trial1');
         /* @var UserTrialAssignment $userPermission */
-        $userPermission = $this->user_trial_permission('user_trial_permission_1');
+        $userPermission = $this->user_trial_assignment('user_trial_assignment_1');
 
         $this->assertEquals(Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST,
-            $trial->removeUserPermission($userPermission->id), 'The last manager should not have been removable');
+            $trial->removeUserAssignment($userPermission->id), 'The last manager should not have been removable');
     }
 
     public function testCloseTrial()

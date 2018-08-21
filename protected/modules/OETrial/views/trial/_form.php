@@ -17,10 +17,12 @@
           'enableAjaxValidation' => true,
       )); ?>
 
-    <div class="alert-box error with-icon">
-      <p>Please fix the following input errors:</p>
-        <?= $form->errorSummary($trial) ?>
-    </div>
+      <?php if ($trial->hasErrors()): ?>
+        <div class="alert-box error with-icon">
+          <p>Please fix the following input errors:</p>
+            <?= $form->errorSummary($trial) ?>
+        </div>
+      <?php endif; ?>
 
     <table class="standard cols-full">
       <colgroup>
@@ -94,7 +96,7 @@
       <?php endif; ?>
       <tr>
         <td>
-            <?= $form->labelEx($trial, 'trial_type') ?>
+            <?= $form->labelEx($trial, 'trial_type_id') ?>
         </td>
         <td>
             <?php foreach (TrialType::model()->findAll() as $trial_type): ?>

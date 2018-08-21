@@ -4,10 +4,14 @@ class TrialPatientTest extends CDbTestCase
 {
     public $fixtures = array(
         'user' => 'User',
+        'trial_type' => 'TrialType',
         'trial' => 'Trial',
         'patient' => 'Patient',
+        'trial_patient_status' => 'TrialPatientStatus',
+        'treatment_type' => 'TreatmentType',
         'trial_patient' => 'TrialPatient',
-        'user_trial_permission' => 'UserTrialAssignment',
+        'trial_permission' => 'TrialPermission',
+        'user_trial_assignment' => 'UserTrialAssignment',
     );
 
     public static function setupBeforeClass()
@@ -19,18 +23,17 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_1');
-        $result = $trialPatient->changeStatus(TrialPatient::STATUS_ACCEPTED);
-        $this->assertEquals(TrialPatient::STATUS_CHANGE_CODE_OK, $result);
-        $this->assertEquals(TrialPatient::STATUS_ACCEPTED, $trialPatient->patient_status);
+        $trialPatient->changeStatus(TrialPatientStatus::model()->find('code = "ACCEPTED"'));
+        $this->assertEquals('ACCEPTED', $trialPatient->status->code);
     }
 
     public function testChangeStatusAlreadyInIntervention()
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_2');
-        $result = $trialPatient->changeStatus(TrialPatient::STATUS_ACCEPTED);
-        $this->assertEquals(TrialPatient::STATUS_CHANGE_CODE_ALREADY_IN_INTERVENTION, $result);
-        $this->assertEquals(TrialPatient::STATUS_SHORTLISTED, $trialPatient->patient_status);
+        $this->setExpectedException(CHttpException::class, 500);
+        $trialPatient->changeStatus(TrialPatientStatus::model()->find('code = "ACCEPTED"'));
+        $this->assertEquals('SHORTLISTED', $trialPatient->status);
     }
 
     public function testUpdateExternalId()
@@ -49,16 +52,9 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_4');
-        $trialPatient->updateTreatmentType(TrialPatient::TREATMENT_TYPE_INTERVENTION);
-        $this->assertEquals(TrialPatient::TREATMENT_TYPE_INTERVENTION, $trialPatient->treatment_type);
-    }
-
-    public function testUpdateTreatmentTypeInvalid()
-    {
-        /* @var TrialPatient $trialPatient */
-        $trialPatient = $this->trial_patient('trial_patient_1');
-        $this->setExpectedException('Exception', 'Invalid treatment type: 1234');
-        $trialPatient->updateTreatmentType(1234);
+        $interventionTreatment = $this->treatment_type('treatment_type_intervention');
+        $trialPatient->updateTreatmentType($interventionTreatment );
+        $this->assertEquals($interventionTreatment ->id, $trialPatient->treatment_type_id);
     }
 
     public function testUpdateTreatmentTypeClosed()
@@ -66,7 +62,7 @@ class TrialPatientTest extends CDbTestCase
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_1');
         $this->setExpectedException('Exception', 'You cannot change the treatment type until the trial is closed.');
-        $trialPatient->updateTreatmentType(TrialPatient::TREATMENT_TYPE_INTERVENTION);
+        $trialPatient->updateTreatmentType($this->treatment_type('treatment_type_intervention'));
     }
 
     public function testIsInInterventionTrial()
@@ -98,8 +94,8 @@ class TrialPatientTest extends CDbTestCase
     {
         /* @var TrialPatient $trialPatient */
         $trialPatient = $this->trial_patient('trial_patient_4');
-        $this->assertEquals(TrialPatient::TREATMENT_TYPE_INTERVENTION,
-            TrialPatient::getLastPatientTreatmentType($trialPatient->patient),
+        $this->assertEquals($this->treatment_type('treatment_type_intervention')->id,
+            TrialPatient::getLastPatientTreatmentType($trialPatient->patient)->id,
             'The patient has been in an intervention trial with intervention treatment, which should be returned.');
 
 

@@ -89,7 +89,7 @@
           'trial' => $trial,
           'renderTreatmentType' => true,
           'title' => 'Accepted Participants',
-          'dataProvider' => $dataProviders[TrialPatient::STATUS_ACCEPTED],
+          'dataProvider' => $dataProviders['ACCEPTED'],
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
@@ -97,7 +97,7 @@
           'trial' => $trial,
           'renderTreatmentType' => false,
           'title' => 'Shortlisted Participants',
-          'dataProvider' => $dataProviders[TrialPatient::STATUS_SHORTLISTED],
+          'dataProvider' => $dataProviders['SHORTLISTED'],
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
@@ -105,7 +105,7 @@
           'trial' => $trial,
           'renderTreatmentType' => false,
           'title' => 'Rejected Participants',
-          'dataProvider' => $dataProviders[TrialPatient::STATUS_REJECTED],
+          'dataProvider' => $dataProviders['REJECTED'],
           'sort_by' => $sort_by,
           'sort_dir' => $sort_dir,
       )); ?>
@@ -115,162 +115,154 @@
     $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
     Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-section.js');
     ?>
+</div>
+<script type="application/javascript">
 
-  <script type="application/javascript">
+  function changePatientStatus(object, trial_patient_id, new_status) {
 
-    function changePatientStatus(object, trial_patient_id, new_status) {
+    $('#action-loader-' + trial_patient_id).show();
+    $.ajax({
+      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
+      data: {id: trial_patient_id, new_status: new_status, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      type: 'POST',
+      success: function (response) {
+        window.location.reload(false);
+      },
+      error: function (response) {
+        $('#action-loader-' + trial_patient_id).hide();
+        new OpenEyes.UI.Dialog.Alert({
+          content: response"
+        }).open();
+      },
+    });
+  }
 
-      $('#action-loader-' + trial_patient_id).show();
-      $.ajax({
-        url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
-        data: {id: trial_patient_id, new_status: new_status, YII_CSRF_TOKEN: $('#csrf_token').val()},
-        type: 'POST',
-        success: function (response) {
-          if (response === '<?php echo TrialPatient::STATUS_CHANGE_CODE_OK; ?>') {
-            window.location.reload(false);
-          } else if (response === '<?php echo TrialPatient::STATUS_CHANGE_CODE_ALREADY_IN_INTERVENTION; ?>') {
-            new OpenEyes.UI.Dialog.Alert({
-              content: "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial."
-            }).open();
-          } else {
-            alert("Unknown response code: " + response_code);
-          }
-        },
-        error: function (response) {
-          $('#action-loader-' + trial_patient_id).hide();
-          new OpenEyes.UI.Dialog.Alert({
-            content: "Sorry, an internal error occurred and we were unable to change the participant status.\n\nPlease contact support for assistance."
-          }).open();
-        },
-      });
-    }
+  function onExternalTrialIdentifierChange(trial_patient_id) {
+    $('#ext-trial-id-actions-' + trial_patient_id).show('fast');
+  }
 
-    function onExternalTrialIdentifierChange(trial_patient_id) {
-      $('#ext-trial-id-actions-' + trial_patient_id).show('fast');
-    }
+  function cancelExternalTrialIdentifier(trial_patient_id) {
+    var oldExternalId = $('#external-trial-id-hidden-' + trial_patient_id).val();
+    $('#ext-trial-id-form-' + trial_patient_id).val(oldExternalId);
+    $('#ext-trial-id-actions-' + trial_patient_id).hide('fast');
+  }
 
-    function cancelExternalTrialIdentifier(trial_patient_id) {
-      var oldExternalId = $('#external-trial-id-hidden-' + trial_patient_id).val();
-      $('#ext-trial-id-form-' + trial_patient_id).val(oldExternalId);
-      $('#ext-trial-id-actions-' + trial_patient_id).hide('fast');
-    }
+  function saveExternalTrialIdentifier(trial_patient_id) {
+    var external_id = $('#ext-trial-id-form-' + trial_patient_id).val();
 
-    function saveExternalTrialIdentifier(trial_patient_id) {
-      var external_id = $('#ext-trial-id-form-' + trial_patient_id).val();
+    $('#ext-trial-id-loader-' + trial_patient_id).show();
 
-      $('#ext-trial-id-loader-' + trial_patient_id).show();
+    $.ajax({
+      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
+      data: {id: trial_patient_id, new_external_id: external_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      type: 'POST',
+      complete: function (response) {
+        $('#ext-trial-id-loader-' + trial_patient_id).hide();
+      },
+      success: function (response) {
+        $('#ext-trial-id-hidden-' + trial_patient_id).val(external_id);
+        $("#ext-trial-id-actions-" + trial_patient_id).hide('fast');
+      },
+      error: function (response) {
+        new OpenEyes.UI.Dialog.Alert({
+          content: "Sorry, an internal error occurred and we were unable to change the external trial identifier.\n\nPlease contact support for assistance."
+        }).open();
+      }
+    });
+  }
 
-      $.ajax({
-        url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
-        data: {id: trial_patient_id, new_external_id: external_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
-        type: 'POST',
-        complete: function (response) {
-          $('#ext-trial-id-loader-' + trial_patient_id).hide();
-        },
-        success: function (response) {
-          $('#ext-trial-id-hidden-' + trial_patient_id).val(external_id);
-          $("#ext-trial-id-actions-" + trial_patient_id).hide('fast');
-        },
-        error: function (response) {
-          new OpenEyes.UI.Dialog.Alert({
-            content: "Sorry, an internal error occurred and we were unable to change the external trial identifier.\n\nPlease contact support for assistance."
-          }).open();
-        }
-      });
-    }
+  function onTreatmentTypeChange(trial_patient_id) {
+    $('#treatment-type-actions-' + trial_patient_id).show('fast');
+  }
 
-    function onTreatmentTypeChange(trial_patient_id) {
-      $('#treatment-type-actions-' + trial_patient_id).show('fast');
-    }
+  function cancelTreatmentType(trial_patient_id) {
+    var oldTreatmentType = $('#treatment-type-hidden-' + trial_patient_id).val();
+    $('#treatment-type-' + trial_patient_id).val(oldTreatmentType);
+    $('#treatment-type-actions-' + trial_patient_id).hide('fast');
+  }
 
-    function cancelTreatmentType(trial_patient_id) {
-      var oldTreatmentType = $('#treatment-type-hidden-' + trial_patient_id).val();
-      $('#treatment-type-' + trial_patient_id).val(oldTreatmentType);
-      $('#treatment-type-actions-' + trial_patient_id).hide('fast');
-    }
+  function updateTreatmentType(trial_patient_id) {
 
-    function updateTreatmentType(trial_patient_id) {
+    var treatment_type = $('#treatment-type-' + trial_patient_id).val();
 
-      var treatment_type = $('#treatment-type-' + trial_patient_id).val();
+    $('#treatment-type-loader-' + trial_patient_id).show();
 
-      $('#treatment-type-loader-' + trial_patient_id).show();
+    $.ajax({
+      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
+      data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      type: 'POST',
+      complete: function (response) {
+        $('#treatment-type-loader-' + trial_patient_id).hide();
+      },
+      success: function (response) {
+        $('#treatment-type-hidden-' + trial_patient_id).val(treatment_type);
+        $('#treatment-type-actions-' + trial_patient_id).hide('fast');
+      },
+      error: function (response) {
+        new OpenEyes.UI.Dialog.Alert({
+          content: "Sorry, an internal error occurred and we were unable to change the treatment type.\n\nPlease contact support for assistance."
+        }).open();
+      }
+    });
+  }
 
-      $.ajax({
-        url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
-        data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: $('#csrf_token').val()},
-        type: 'POST',
-        complete: function (response) {
-          $('#treatment-type-loader-' + trial_patient_id).hide();
-        },
-        success: function (response) {
-          $('#treatment-type-hidden-' + trial_patient_id).val(treatment_type);
-          $('#treatment-type-actions-' + trial_patient_id).hide('fast');
-        },
-        error: function (response) {
-          new OpenEyes.UI.Dialog.Alert({
-            content: "Sorry, an internal error occurred and we were unable to change the treatment type.\n\nPlease contact support for assistance."
-          }).open();
-        }
-      });
-    }
+  $(document).ready(function () {
+    $(".icon-alert-warning").hover(function () {
+        $(this).siblings(".warning").show('fast');
+      },
+      function () {
+        $(this).siblings(".warning").hide('fast');
+      }
+    );
 
-    $(document).ready(function () {
-      $(".icon-alert-warning").hover(function () {
-          $(this).siblings(".warning").show('fast');
-        },
-        function () {
-          $(this).siblings(".warning").hide('fast');
-        }
-      );
-
-      $('#close-trial-submit').click(function (e) {
-        var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
-          title: "Close Trial",
-          content: "Are you sure you want to close this trial?"
-        });
-
-        confirmDialog.content.on('click', '.ok', function () {
-          $('#close-trial').submit();
-        });
-
-        confirmDialog.open();
-        return false;
+    $('#close-trial-submit').click(function (e) {
+      var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
+        title: "Close Trial",
+        content: "Are you sure you want to close this trial?"
       });
 
-      $('#reopen-trial-submit').click(function () {
-        var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
-          title: "Re-open Trial",
-          content: "Are you sure you want to re-open this trial?"
-        });
-
-        confirmDialog.content.on('click', '.ok', function () {
-          $('#reopen-trial').submit();
-        });
-
-        confirmDialog.open();
-        return false;
+      confirmDialog.content.on('click', '.ok', function () {
+        $('#close-trial').submit();
       });
+
+      confirmDialog.open();
+      return false;
     });
 
-    function removePatientFromTrial(trial_patient_id, patient_id, trial_id) {
-
-      $('#action-loader-' + trial_patient_id).show();
-
-      $.ajax({
-        url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
-        data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
-        type: 'POST',
-        result: function (response) {
-          $('#action-loader-' + trial_patient_id).hide();
-        },
-        success: function (response) {
-          window.location.reload(false);
-        },
-        error: function (response) {
-          new OpenEyes.UI.Dialog.Alert({
-            content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial.\n\nPlease contact support for assistance."
-          }).open();
-        }
+    $('#reopen-trial-submit').click(function () {
+      var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
+        title: "Re-open Trial",
+        content: "Are you sure you want to re-open this trial?"
       });
-    }
-  </script>
+
+      confirmDialog.content.on('click', '.ok', function () {
+        $('#reopen-trial').submit();
+      });
+
+      confirmDialog.open();
+      return false;
+    });
+  });
+
+  function removePatientFromTrial(trial_patient_id, patient_id, trial_id) {
+
+    $('#action-loader-' + trial_patient_id).show();
+
+    $.ajax({
+      url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
+      data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      type: 'POST',
+      result: function (response) {
+        $('#action-loader-' + trial_patient_id).hide();
+      },
+      success: function (response) {
+        window.location.reload(false);
+      },
+      error: function (response) {
+        new OpenEyes.UI.Dialog.Alert({
+          content: "Sorry, an internal error occurred and we were unable to remove the patient from the trial.\n\nPlease contact support for assistance."
+        }).open();
+      }
+    });
+  }
+</script>
