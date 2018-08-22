@@ -43,6 +43,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
             'form' => $form,
             'disableOptionalElementActions' => true,
         ));
-        $this->displayErrors($errors, true);
+    $this->renderPartial('_va_view' , ['action' => 'update']);
+    $this->displayErrors($errors, true);
     $this->endWidget();
 $this->endContent();
