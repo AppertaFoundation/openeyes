@@ -74,7 +74,8 @@ if (is_array($ordered_episodes)):
           <?php
           } ?>
         <li class="icon-btn">
-          <a href="<?= Yii::app()->createUrl('/patient/lightningViewer', array('id' => $this->patient->id)) ?>" class="lightning-viewer-icon active">
+          <a href="<?= Yii::app()->createUrl('/patient/lightningViewer', array('id' => $this->patient->id)) ?>"
+             class="lightning-viewer-icon active <?= $this->action->id === 'lightningViewer' ? 'selected' : '' ?>">
             <svg viewBox="0 0 30 30" width="15" height="15">
               <use xlink:href="<?= $navIconUrl ?>#lightning-viewer-icon"></use>
             </svg>
