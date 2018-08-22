@@ -1261,10 +1261,14 @@ $(document).ready(function() {
 
         /* Visual Acuity readings event binding */
 
+        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element', function() {
+            $('.cvi-alert').slideUp(500);
+        });
+
         $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
 
             var $section =  $(this).closest('section');
-            var $cviAlert = $section.find('.cvi-alert');
+            var $cviAlert = $('.cvi-alert');
             var threshold = parseInt($cviAlert.data('threshold'));
 
             if( $section.find('.cvi_alert_dismissed').val() !== "1"){
@@ -1288,21 +1292,21 @@ $(document).ready(function() {
         });
 
         // Dismiss alert box
-        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .dismiss_cva_alert', function(){
-            var $section = $(this).closest('section');
+        $('#event-content').on('click', '.dismiss_cva_alert', function(){
+            var $section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity');
 
             if( $('.ophciexamination.column.event.view').length ) {
                 // viewing
                 $.get( baseUrl + '/OphCiExamination/default/dismissCVIalert', { "element_id": $section.find('.element_id').val() }, function( result ) {
                     var response = $.parseJSON(result);
                     if(response.success === 'true'){
-                        $section.find('.cvi-alert').slideUp(500).remove();
+                        $('.cvi-alert').slideUp(500).remove();
                     }
                 });
             } else {
                 // editing
-                $section.find('.cvi-alert').slideUp(500);
                 $section.find('.cvi_alert_dismissed').val("1");
+                $('.cvi-alert').slideUp(500);
             }
         });
 
