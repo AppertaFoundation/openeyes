@@ -69,6 +69,7 @@ EOH;
                 $this->createImageForEvent($e);
             }
         } else {
+            $this->actionClean();
             $count = isset($args[0]) ? (int)$args[0] : INF;
             $this->createEventImages($count);
         }
