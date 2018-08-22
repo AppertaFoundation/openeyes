@@ -96,7 +96,7 @@ $previewWidth = 800;
 
   <div class="flex-layout flex-left flex-top">
     <div class="js-lightning-view-overlay"
-         style="width: 100%; min-height: 512px; height: 100%; position: absolute;"></div>
+         style="width: 1230px; min-height: 512px; height: 100%; position: absolute;"></div>
     <div class="oe-lightning-meta js-lightning-meta">
       <div class="letter-type js-lightning-preview-type"></div>
       <div class="date oe-date js-lightning-date"></div>
