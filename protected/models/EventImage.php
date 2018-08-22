@@ -75,6 +75,7 @@ class EventImage extends BaseActiveRecord
     /**
      * Get the latest events that has not had an image generated for it yet.
      * Events that have failed image generation are skipped.
+     * Events that don't have their module loaded are also skipped.
      *
      * @param integer $event_count The number of events to find
      *
@@ -99,7 +100,15 @@ class EventImage extends BaseActiveRecord
             ->limit($event_count)
             ->queryColumn();
 
-        return Event::model()->findAllByPk($event_ids);
+
+        /* @var Event[] $events */
+        $events = Event::model()->findAllByPk($event_ids);
+
+        // restrict to only include events from modules that are loaded
+        return array_filter($events, function($event) {
+            /* @var Event $event */
+           return $event->eventType->getApi();
+        });
     }
 
     public function getImageUrl()
