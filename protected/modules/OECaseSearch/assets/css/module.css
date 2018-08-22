@@ -24,3 +24,22 @@
 .parameter-option {
     padding-right: 15px
 }
+
+.oe-pager .page a {
+    color: white;
+}
+.oe-pager .next a {
+    color: white;
+}
+.oe-pager .prev a {
+    color: white;
+}
+.oe-pager .page a:visited {
+    color: white;
+}
+.oe-pager .next a:visited {
+    color: white;
+}
+.oe-pager .prev a:visited {
+    color: white;
+}

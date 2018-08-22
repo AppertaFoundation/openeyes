@@ -17,7 +17,7 @@ $this->pageTitle = 'Case Search';
         ?>
     </div>
 </div>
-<div class="oe-grid oe-full-content">
+<div class="oe-grid oe-full-content pro-theme" style="height: 100%; width: 100%">
     <nav class="oe-full-side-panel">
         <h3>Actions</h3>
         <ul>
@@ -79,56 +79,35 @@ $this->pageTitle = 'Case Search';
                 <?php $this->endWidget('search-form'); ?>
             </div>
             <div class="element">
-                <div class="sub-element">
-                    <?php
-                    if ($patients->itemCount > 0):
-                        //Just create the widget here so we can render it's parts separately
-                        /** @var $searchResults CListView */
-                        $searchResults =
-                            $this->createWidget(
-                                'zii.widgets.CListView',
-                                array(
-                                    'dataProvider' => $patients,
-                                    'itemView' => 'search_results',
-                                    'emptyText' => 'No patients found',
-                                    'viewData' => array(
-                                            'trial' => $this->trialContext
-                                    )
+                <?php
+                if ($patients->itemCount > 0):
+                    //Just create the widget here so we can render it's parts separately
+                    /** @var $searchResults CListView */
+                    $searchResults =
+                        $this->createWidget(
+                            'zii.widgets.CListView',
+                            array(
+                                'dataProvider' => $patients,
+                                'itemView' => 'search_results',
+                                'emptyText' => 'No patients found',
+                                'viewData' => array(
+                                    'trial' => $this->trialContext
                                 )
-                            );
-                        $searchResults->pagerCssClass = 'oe-pager';
-                        $searchResults->renderPager();
-                        ?>
-                        <table id="case-search-results" class="cols-10">
-                            <tbody class=" cols-full">
-                            <?= $searchResults->renderItems(); ?>
-                            </tbody>
-                        </table>
-                        <?php $searchResults->renderPager();
-                    endif;
+                            )
+                        );
+                    $searchResults->pagerCssClass = 'oe-pager';
+                    $searchResults->renderPager();
                     ?>
-                    <style>
-                        .oe-pager .page a {
-                            color: white;
-                        };
-                        .oe-pager .next a {
-                            color: white;
-                        };
-                        .oe-pager .prev a {
-                            color: white;
-                        };
-                        .oe-pager .page a:visited {
-                            color: white;
-                        };
-                        .oe-pager .next a:visited {
-                            color: white;
-                        };
-                        .oe-pager .prev a:visited {
-                            color: white;
-                        };
-                    </style>
+                    <table id="case-search-results" class="cols-10">
+                        <tbody class=" cols-full">
+                        <?= $searchResults->renderItems(); ?>
+                        </tbody>
+                    </table>
+                    <?php $searchResults->renderPager();
+                endif;
+                ?>
+
                 </div>
-            </div>
         </div>
     </main>
 </div>
