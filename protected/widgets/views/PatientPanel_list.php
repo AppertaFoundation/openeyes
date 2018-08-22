@@ -25,7 +25,10 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
  */
 $trialContext = null;
 if ($this->trial){
-    $trialContext = $this->createWidget('application.modules.OETrial.widgets.TrialContext');
+    $trialContext = $this->createWidget(
+            'application.modules.OETrial.widgets.TrialContext',
+            array('patient' => $this->patient, 'trial' => $this->trial)
+    );
 }
 ?>
 
@@ -69,9 +72,7 @@ if ($this->trial){
                 <?php echo $this->patient->getAge(); ?>
             </div>
             <?php if ($trialContext) {
-                echo $trialContext->render('Patient_trial_data',
-                    array('patient' => $this->patient, 'trial' => $this->trial)
-                );
+                echo $trialContext->renderPatientTrialStatus();
                 echo $trialContext->renderAddToTrial();
             }?>
 
