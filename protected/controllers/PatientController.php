@@ -597,6 +597,15 @@ class PatientController extends BaseController
         // Default to letters if no other preview type exists
         if (!$preview_type || !isset($previewGroups[$preview_type])) {
             $preview_type = 'Letters';
+            // but if there aren't any letters, then default to the first non-empty group
+            if (count($previewGroups['Letters']) === 0) {
+                foreach ($previewGroups as $key => $group) {
+                    if (count($group) > 0) {
+                        $preview_type = $key;
+                        break;
+                    }
+                }
+            }
         }
         $selectedPreviews = $previewGroups[$preview_type];
 
