@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -15,13 +14,12 @@
  * @copyright Copyright (c) 2018, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 ?>
-<div class="box reports">
-    <div class="report-fields">
-        <h2>Ready for second eye (unbooked) Report</h2>
-        <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+<h2>Ready for second eye (unbooked) Report</h2>
+
+<div class="row divider">
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'module-report-form',
             'enableAjaxValidation' => false,
             'layoutColumns' => array('label' => 2, 'field' => 10),
@@ -32,16 +30,21 @@
         <input type="hidden" name="report-name" value="ReadyForSecondEyeUnbooked" />
 
         <?php $this->endWidget(); ?>
-    </div>
     <div class="errors alert-box alert with-icon" style="display: none">
         <p>Please fix the following input errors:</p>
         <ul>
         </ul>
     </div>
-  <div class="cols-6 column end">
-    <button type="submit" class="classy blue mini display-module-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
-    <button type="submit" class="classy blue mini download-module-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-    <img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+  <div class="row flex-layout flex-right">
+    <button type="submit" class="button green hint display-module-report" name="run">
+      <span class="button-span button-span-blue">Display report</span>
+    </button>
+    &nbsp;
+    <button type="submit" class="button green hint download-module-report" name="run">
+      <span class="button-span button-span-blue">Download report</span>
+    </button>
+    <img class="loader" style="display: none;"
+         src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
   </div>
     <div class="reportSummary report curvybox white blueborder" style="display: none;">
     </div>
