@@ -88,11 +88,11 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     array('empty' => 'Involved with'));
                 ?>
             </div>
-            <div class="trial-type parameter-option">
+            <div class="js-trial-type parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]type", $types,
                     array('empty' => 'Any Trial', 'onchange' => "getTrialList(this, $this->id)")); ?>
             </div>
-            <div class="trial-list parameter-option">
+            <div class="js-trial-list parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
                     array('empty' => 'Any', 'style' => 'display: none;')); ?>
             </div>
@@ -140,10 +140,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
         <?php
         Yii::app()->clientScript->registerScript('GetTrials', '
-          $(".previous_trial").each(function() {
-            var typeElem = $(this).find(".trial-type select");
+          $(".js-previous_trial").each(function() {
+            var typeElem = $(this).find(".js-trial-type select");
             if (typeElem.val() !== "") {
-              var trialElem = $(this).find(".trial-list select");
+              var trialElem = $(this).find(".js-trial-list select");
               trialElem.show();
             }
           });
