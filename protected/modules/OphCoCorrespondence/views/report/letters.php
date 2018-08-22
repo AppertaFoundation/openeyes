@@ -19,32 +19,32 @@
 <h2>Letters report</h2>
 
 <div class="row divider">
-		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'report-form',
-			'enableAjaxValidation'=>false,
-			'layoutColumns'=>array('label'=>2,'field'=>10),
-			'action' => Yii::app()->createUrl('/OphCoCorrespondence/report/downloadReport'),
-		))?>
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'report-form',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array('label' => 2, 'field' => 10),
+        'action' => Yii::app()->createUrl('/OphCoCorrespondence/report/downloadReport'),
+    )) ?>
 
-		<input type="hidden" name="report-name" value="Letters" />
+  <input type="hidden" name="report-name" value="Letters"/>
 
   <table class="standard cols-full">
     <colgroup>
       <col class="cols-2">
     </colgroup>
     <tbody>
-      <tr>
-        <td>Phrases:</td>
-        <td>
-            <?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]','')?>
-        </td>
-        <td>
-          <button type="submit" class="button green hint" id="add_letter_phrase">
-            <span class="button-span button-span-blue">Add</span>
-          </button>
-        </td>
-      </tr>
+    <tr>
+      <td>Phrases:</td>
+      <td>
+          <?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
+      </td>
+      <td>
+        <button type="submit" class="button green hint" id="add_letter_phrase">
+          <span class="button-span button-span-blue">Add</span>
+        </button>
+      </td>
+    </tr>
     </tbody>
   </table>
 
@@ -58,27 +58,31 @@
       <td>
         <ul>
           <li>
-            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or" checked="checked" />
+            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or"
+                   checked="checked"/>
             <label for="condition_or">
               Must contain <strong>any</strong> of the phrases
             </label>
           </li>
           <li>
-            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and" value="and" />
+            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and"
+                   value="and"/>
             <label for="condition_and">
               Must contain <strong>all</strong> of the phrases
             </label>
           </li>
           <li>
-            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0" />
-            <input type="checkbox" id="match_correspondence" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked" />
+            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0"/>
+            <input type="checkbox" id="match_correspondence"
+                   name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked"/>
             <label for="match_correspondence">
               Match correspondence
             </label>
           </li>
           <li>
-            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0" />
-            <input type="checkbox" id="match_legacy_letters" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked" />
+            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0"/>
+            <input type="checkbox" id="match_legacy_letters"
+                   name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked"/>
             <label for="match_legacy_letters">
               Match legacy letters
             </label>
@@ -104,10 +108,10 @@
               'name' => 'OphCoCorrespondence_ReportLetters[start_date]',
               'options' => array(
                   'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
               ),
-              'value' => date('j M Y',strtotime('-1 year')),
-          ))?>
+              'value' => date('j M Y', strtotime('-1 year')),
+          )) ?>
       </td>
       <td>Date to:</td>
       <td>
@@ -115,10 +119,10 @@
               'name' => 'OphCoCorrespondence_ReportLetters[end_date]',
               'options' => array(
                   'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
               ),
               'value' => date('j M Y'),
-          ))?>
+          )) ?>
       </td>
     </tr>
     </tbody>
@@ -133,7 +137,7 @@
     <tr>
       <td>Author</td>
       <td>
-          <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
+          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
               <?php echo CHtml::dropDownList(
                   'OphCoCorrespondence_ReportLetters[author_id]',
                   '',
@@ -141,13 +145,17 @@
                       array('order' => 'first_name asc,last_name asc')),
                       'id',
                       'fullName'),
-                  array('empty' => '--- Please select ---'))?>
+                  array('empty' => '--- Please select ---')) ?>
           <?php else: ?>
               <?php
               $user = User::model()->findByPk(Yii::app()->user->id);
               echo CHtml::dropDownList(null, '',
                   array(Yii::app()->user->id => $user->fullName),
-                  array('disabled' => 'disabled', 'readonly' => 'readonly', 'style'=>'background-color:#D3D3D3;') //for some reason the chrome doesn't gray out
+                  array(
+                      'disabled' => 'disabled',
+                      'readonly' => 'readonly',
+                      'style' => 'background-color:#D3D3D3;',
+                  ) //for some reason the chrome doesn't gray out
               );
               echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
               ?>
@@ -159,7 +167,7 @@
               'OphCoCorrespondence_ReportLetters[site_id]',
               '',
               Site::model()->getListForCurrentInstitution(),
-              array('empty' => '--- Please select ---'))?>
+              array('empty' => '--- Please select ---')) ?>
       </td>
     </tr>
   </table>
@@ -175,21 +183,22 @@
           $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
           $htmlOptions['separator'] = '';
           $htmlOptions['style'] = 'vertical-align: middle';
-          echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]',null,
-              ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'], $htmlOptions); ?>
+          echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]', null,
+              ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'],
+              $htmlOptions); ?>
       </td>
     </tr>
     </tbody>
 
   </table>
 
-    <?php $this->endWidget()?>
+    <?php $this->endWidget() ?>
 
-	<div class="errors alert-box alert with-icon" style="display: none">
-		<p>Please fix the following input errors:</p>
-		<ul>
-		</ul>
-	</div>
+  <div class="errors alert-box alert with-icon" style="display: none">
+    <p>Please fix the following input errors:</p>
+    <ul>
+    </ul>
+  </div>
 
   <table class="standard cols-full">
     <tbody>
@@ -204,16 +213,16 @@
             <span class="button-span button-span-blue">Download report</span>
           </button>
           <img class="loader" style="display: none;"
-               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
         </div>
       </td>
     </tr>
     </tbody>
   </table>
 
-	<div class="report-summary" style="display: none;">
-	</div>
+  <div class="report-summary" style="display: none;">
+  </div>
 </div>
 <script type="text/javascript">
-	$('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
+  $('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
 </script>

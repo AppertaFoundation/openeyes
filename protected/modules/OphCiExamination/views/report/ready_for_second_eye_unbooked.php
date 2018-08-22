@@ -20,21 +20,20 @@
 <div class="row divider">
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'module-report-form',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array('label' => 2, 'field' => 10),
-            'action' => Yii::app()->createUrl('/'.$this->module->id.'/report/downloadReport'),
-        ));
-        ?>
+        'id' => 'module-report-form',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array('label' => 2, 'field' => 10),
+        'action' => Yii::app()->createUrl('/' . $this->module->id . '/report/downloadReport'),
+    ));
+    ?>
 
-        <input type="hidden" name="report-name" value="ReadyForSecondEyeUnbooked" />
+  <input type="hidden" name="report-name" value="ReadyForSecondEyeUnbooked"/>
 
-        <?php $this->endWidget(); ?>
-    <div class="errors alert-box alert with-icon" style="display: none">
-        <p>Please fix the following input errors:</p>
-        <ul>
-        </ul>
-    </div>
+    <?php $this->endWidget(); ?>
+  <div class="errors alert-box alert with-icon" style="display: none">
+    <p>Please fix the following input errors:</p>
+    <ul></ul>
+  </div>
   <div class="row flex-layout flex-right">
     <button type="submit" class="button green hint display-module-report" name="run">
       <span class="button-span button-span-blue">Display report</span>
@@ -44,8 +43,8 @@
       <span class="button-span button-span-blue">Download report</span>
     </button>
     <img class="loader" style="display: none;"
-         src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+         src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
   </div>
-    <div class="reportSummary report curvybox white blueborder" style="display: none;">
-    </div>
+  <div class="reportSummary report curvybox white blueborder" style="display: none;">
+  </div>
 </div>

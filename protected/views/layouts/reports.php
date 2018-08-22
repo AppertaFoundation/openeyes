@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'application.widgets');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +36,7 @@
 
 <div class="oe-full-header flex-layout">
 
-  <div class="title wordcaps"><b>Reports</b> Example</div>
+  <div class="title wordcaps"><b>Reports</b></div>
 
 </div>
 <div class="oe-full-content subgrid oe-reports">
@@ -50,3 +51,8 @@
 <?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>
+<script type="text/javascript">
+  $(document).ready(function(){
+    window.reportSidebar = new OpenEyes.Admin.Sidebar();
+  });
+</script>

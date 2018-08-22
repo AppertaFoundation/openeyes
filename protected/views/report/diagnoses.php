@@ -19,65 +19,65 @@
 <h2>Diagnoses report</h2>
 
 <div class="row divider">
-		<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'report-form',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array('label' => 2, 'field' => 10),
-            'action' => Yii::app()->createUrl('/report/downloadReport'),
-        ))?>
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'report-form',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array('label' => 2, 'field' => 10),
+        'action' => Yii::app()->createUrl('/report/downloadReport'),
+    )) ?>
 
-		<input type="hidden" name="report-name" value="Diagnoses" />
+  <input type="hidden" name="report-name" value="Diagnoses"/>
 
-    <table class="standard cols-full">
-      <colgroup>
-        <col class="cols-3">
-        <col class="cols-3">
-        <col class="cols-3">
-        <col class="cols-3">
-      </colgroup>
-      <tbody>
-        <tr class="col-gap">
-          <td>Start date:</td>
-          <td>
-              <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                  'name' => 'start_date',
-                  'options' => array(
-                      'showAnim' => 'fold',
-                      'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  ),
-                  'value' => date('j M Y', strtotime('-1 year')),
-              ))?>
-          </td>
-          <td>End date:</td>
-          <td>
-              <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                  'name' => 'end_date',
-                  'options' => array(
-                      'showAnim' => 'fold',
-                      'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  ),
-                  'value' => date('j M Y'),
-              ))?>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-3">
+      <col class="cols-3">
+      <col class="cols-3">
+      <col class="cols-3">
+    </colgroup>
+    <tbody>
+    <tr class="col-gap">
+      <td>Start date:</td>
+      <td>
+          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+              'name' => 'start_date',
+              'options' => array(
+                  'showAnim' => 'fold',
+                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+              ),
+              'value' => date('j M Y', strtotime('-1 year')),
+          )) ?>
+      </td>
+      <td>End date:</td>
+      <td>
+          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+              'name' => 'end_date',
+              'options' => array(
+                  'showAnim' => 'fold',
+                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+              ),
+              'value' => date('j M Y'),
+          )) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
   <table>
     <tbody>
-      <tr>
-        <td>
-          <div id="selected_diagnoses">
-          </div>
-            <?php $this->widget('application.widgets.DiagnosisSelection', array(
-                'field' => 'disorder_id',
-                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-                'layout' => 'minimal',
-                'callback' => 'Reports_AddDiagnosis',
-            ))?>
-        </td>
-      </tr>
+    <tr>
+      <td>
+        <div id="selected_diagnoses">
+        </div>
+          <?php $this->widget('application.widgets.DiagnosisSelection', array(
+              'field' => 'disorder_id',
+              'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+              'layout' => 'minimal',
+              'callback' => 'Reports_AddDiagnosis',
+          )) ?>
+      </td>
+    </tr>
     </tbody>
   </table>
   <table class="standard cols-full">
@@ -99,52 +99,53 @@
 
   <table class="standard cols-full">
     <tbody>
-      <tr>
-        <td>
-          <input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
-        </td>
-        <td>
-          Match patients with <strong>any</strong> of these diagnoses
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <input type="radio" name="condition_type" id="condition_and" value="and" />
-        </td>
-        <td>
-          Match patients with <strong>all</strong> of these diagnoses
-        </td>
-      </tr>
+    <tr>
+      <td>
+        <input type="radio" name="condition_type" id="condition_or" value="or" checked="checked"/>
+      </td>
+      <td>
+        Match patients with <strong>any</strong> of these diagnoses
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="radio" name="condition_type" id="condition_and" value="and"/>
+      </td>
+      <td>
+        Match patients with <strong>all</strong> of these diagnoses
+      </td>
+    </tr>
     </tbody>
   </table>
 
-		<?php $this->endWidget()?>
+    <?php $this->endWidget() ?>
 
-	<div class="errors alert-box alert with-icon" style="display: none">
-		<p>Please fix the following input errors:</p>
-		<ul>
-		</ul>
-	</div>
+  <div class="errors alert-box alert with-icon" style="display: none">
+    <p>Please fix the following input errors:</p>
+    <ul>
+    </ul>
+  </div>
 
   <table class="standard cols-full">
     <tbody>
-      <tr>
-        <td>
-          <div class="row flex-layout flex-right">
-            <button type="submit" class="button green hint display-report" name="run">
-              <span class="button-span button-span-blue">Display report</span>
-            </button>
-            &nbsp;
-            <button type="submit" class="button green hint download-report" name="run">
-              <span class="button-span button-span-blue">Download report</span>
-            </button>
-            <img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-          </div>
-        </td>
-      </tr>
+    <tr>
+      <td>
+        <div class="row flex-layout flex-right">
+          <button type="submit" class="button green hint display-report" name="run">
+            <span class="button-span button-span-blue">Display report</span>
+          </button>
+          &nbsp;
+          <button type="submit" class="button green hint download-report" name="run">
+            <span class="button-span button-span-blue">Download report</span>
+          </button>
+          <img class="loader" style="display: none;"
+               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
 
-	<div class="report-summary" style="display: none;">
-	</div>
+  <div class="report-summary" style="display: none;">
+  </div>
 </div>

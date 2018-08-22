@@ -9,7 +9,7 @@
       <i class="oe-i minus"></i>
     </div>
     <h3 class="collapse-group-header">Core</h3>
-    <ul class="reports-nav collapse-group-content ">
+    <ul class="reports-nav collapse-group-content">
         <?php foreach (
             array( 'Diagnoses' => '/report/diagnoses',) as $title => $uri) {?>
           <li <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {?> class="selected"<?php }?>>
