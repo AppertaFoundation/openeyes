@@ -531,7 +531,6 @@ class PatientController extends BaseController
             throw new SystemException('Patient not found: ' . $id);
         }
 
-        $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
         $this->title = 'Lightning Viewer';
 
