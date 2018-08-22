@@ -239,19 +239,29 @@
       <?php $this->endWidget() ?>
 
   <div class="errors alert-box alert with-icon" style="display: none">
-      <p>Please fix the following input errors:</p>
-      <ul>
-      </ul>
-    </div>
-      <div class="row flex-layout flex-right">
-        <button type="submit" class="classy green hint display-module-report" name="run"><span
-              class="button-span button-span-blue">Display report</span></button>
-        &nbsp;
-        <button type="submit" class="classy green hint download-module-report" name="run"><span
-              class="button-span button-span-blue">Download report</span></button>
-        <img class="loader" style="display: none;"
-             src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
-      </div>
+    <p>Please fix the following input errors:</p>
+    <ul>
+    </ul>
+  </div>
+
+  <table class="standard cols-full">
+    <tbody>
+      <tr>
+        <td>
+          <div class="row flex-layout flex-right">
+            <button type="submit" class="button green hint display-module-report" name="run"><span
+                  class="button-span button-span-blue">Display report</span></button>
+            &nbsp;
+            <button type="submit" class="button green hint download-module-report" name="run"><span
+                  class="button-span button-span-blue">Download report</span></button>
+            <img class="loader" style="display: none;"
+                 src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
     <div class="report-summary" style="display: none; overflow-y:scroll">
     </div>
 </div>
