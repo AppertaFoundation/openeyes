@@ -26,4 +26,3 @@ $data->hasAllergyStatus();
         ?>
     </td>
 </tr>
-
