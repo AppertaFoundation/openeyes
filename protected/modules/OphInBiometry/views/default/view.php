@@ -65,4 +65,5 @@ if ($this->is_auto) {
 }
 $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
+<?php $this->renderPartial('_va_view' , ['action' => 'view']);?>
 <?php $this->endContent()?>
