@@ -155,8 +155,15 @@ class HistoryRisksManager
             $entry->comments = implode(', ', $risk['comments_list']);
             $entries[] = $entry;
         }
-        $element->entries = $entries;
-        $element->save();
+
+        if($element->save()) {
+            foreach ($entries as $entry) {
+                $entry->element_id = $element->id;
+                $entry->element = $element;
+                $entry->save();
+            }
+        }
+
     }
 
     /**

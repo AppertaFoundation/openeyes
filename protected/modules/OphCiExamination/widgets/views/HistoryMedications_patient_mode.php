@@ -31,7 +31,7 @@ $model_name = CHtml::modelName($element);
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->getDatesDisplay() ?></td>
-                    <td><?php if ($entry->prescription_item) { ?>
+                    <td><?php if ($entry->usage_type == 'OphDrPrescription') { ?>
                             <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye"
                                                                                       data-tooltip-content="View prescription"></span></a>
                         <?php } ?></td>
@@ -47,7 +47,7 @@ $model_name = CHtml::modelName($element);
                 <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
                     <td><?= $entry->getDatesDisplay() ?></td>
-                    <td><?php if ($entry->prescription_item) { ?>
+                    <td><?php if ($entry->usage_type == 'OphDrPrescription') { ?>
                             <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye"
                                                                                       data-tooltip-content="View prescription"></span></a>
                         <?php } ?></td>
