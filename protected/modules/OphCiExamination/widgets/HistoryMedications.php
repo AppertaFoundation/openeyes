@@ -52,7 +52,6 @@ class HistoryMedications extends BaseMedicationWidget
      */
     private function getEntriesForUntrackedPrescriptionItems()
     {
-        return array(); // TODO implement new method!
         $untracked = array();
         if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
             $tracked_prescr_item_ids = array_map(
@@ -65,8 +64,9 @@ class HistoryMedications extends BaseMedicationWidget
                 $this->patient, $tracked_prescr_item_ids)
             ) {
                 foreach ($untracked_prescription_items as $item) {
-                    $entry = new HistoryMedicationsEntry();
+                    $entry = new \EventMedicationUse();
                     $entry->loadFromPrescriptionItem($item);
+                    $entry->usage_type = 'OphDrPrescription';
                     $untracked[] = $entry;
                 }
             }
@@ -138,8 +138,6 @@ class HistoryMedications extends BaseMedicationWidget
             }
         }
 
-        // TODO this has to be reworked after the new prescription event is done!
-
         // because the entries cloned into the new element may contain stale data for related
         // prescription data (or that prescription item might have been deleted)
         // we need to update appropriately.
@@ -170,6 +168,7 @@ class HistoryMedications extends BaseMedicationWidget
         $this->setEntriesFromPreviousManagement();
         $this->element->assortEntries();
         return [
+            'debug_info' => print_r($this->element->entries, true),
             'current' => $this->element->current_entries,
             'stopped' => $this->element->closed_entries
         ];
@@ -183,7 +182,6 @@ class HistoryMedications extends BaseMedicationWidget
      * should the need arise.
      *
      * @return array
-     * @deprecated  please use HistoryMedications::getMergedManagementEntries
      */
     public function getMergedEntries()
     {
@@ -201,8 +199,12 @@ class HistoryMedications extends BaseMedicationWidget
                     $untracked);
             }
         }
+
+        $this->element->assortEntries();
         $result['current'] = $this->element->current_entries;
         $result['stopped'] = $this->element->closed_entries;
+        $result['prescribed'] = $this->element->prescribed_entries;
+
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
         $filter = function($entry) {
@@ -210,6 +212,10 @@ class HistoryMedications extends BaseMedicationWidget
         };
         $result['current'] = array_filter($result['current'], $filter);
         $result['stopped'] = array_filter($result['stopped'], $filter);
+        $result['prescribed'] = array_filter($result['prescribed'], $filter);
+
+        $result['current'] = array_merge($result['current'], $result['prescribed']);
+
         return $result;
     }
     /**
@@ -253,7 +259,7 @@ class HistoryMedications extends BaseMedicationWidget
     public function getViewData()
     {
         if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
-            return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
+            return array_merge(parent::getViewData(), $this->getMergedEntries());
         }
         return parent::getViewData();
     }

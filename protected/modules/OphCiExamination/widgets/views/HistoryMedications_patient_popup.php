@@ -22,8 +22,7 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id =  CHtml::modelName($element) . '_popup'; ?>
 
-<?php if ($element && ($current || $stopped)) { ?>
-    <div id="<?= $el_id ?>">
+    <div id="<?php echo $el_id; ?>">
         <div class="row">
             <div class="large-2 column label">
                 Medications
@@ -70,8 +69,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             new OpenEyes.OphCiExamination.HistoryMedicationsViewController({
-                element: $('#<?= $el_id ?>')
+                element: $('#<?php echo $el_id; ?>')
             });
         });
     </script>
-<?php } ?>
