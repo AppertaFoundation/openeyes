@@ -179,6 +179,6 @@
   </table>
 
 
-  <div class="report-summary" style="display: none; overflow: auto">
+  <div class="js-report-summary" style="display: none; overflow: auto">
   </div>
 </div>

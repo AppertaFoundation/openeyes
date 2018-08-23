@@ -146,6 +146,6 @@
     </tbody>
   </table>
 
-  <div class="report-summary" style="display: none;">
+  <div class="js-report-summary" style="display: none;">
   </div>
 </div>
