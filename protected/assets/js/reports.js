@@ -19,6 +19,18 @@ $(document).ready(function() {
 		e.preventDefault();
 		download_report('module-report-form');
 	});
+  pickmeup(".start-date", {
+    format: "d-m-Y",
+    hide_on_select: true,
+    default_date: false,
+		max: new Date(),
+  });
+  pickmeup(".end-date", {
+    format: "d-m-Y",
+    hide_on_select: true,
+    default_date: false,
+		max: new Date(),
+  });
 });
 
 function display_report(form)

@@ -66,36 +66,20 @@
       <td>Date Range</td>
       <td>
         <div class="flex-layout cols-full">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                'name' => 'date_from',
-                'id' => 'date_from',
-                'options' => array(
-                    'showAnim' => 'fold',
-                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                    'maxDate' => 0,
-                    'defaultDate' => '-1y',
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'From',
-                    'class' => 'cols-5',
-                ),
-                'value' => @$_GET['date_from'],
-            )) ?>
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                'name' => 'date_to',
-                'id' => 'date_to',
-                'options' => array(
-                    'showAnim' => 'fold',
-                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                    'maxDate' => 0,
-                    'defaultDate' => 0,
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'To',
-                    'class' => 'cols-5',
-                ),
-                'value' => @$_GET['date_to'],
-            )) ?>
+          <input id="date_from"
+                 placeholder="From"
+                 class="start-date"
+                 name="date_from"
+                 autocomplete="off"
+                 value= <?= @$_GET['date_from']; ?>
+          >
+          <input id="date_to"
+                 placeholder="To"
+                 class="end-date"
+                 name="date_to"
+                 autocomplete="off"
+                 value= <?= @$_GET['date_to']; ?>
+          >
         </div>
       </td>
     </tr>
@@ -261,5 +245,5 @@
     </tr>
     </tbody>
   </table>
-  <div class="js-report-summary" style="display: none; overflow-y:scroll"></div>
+  <div class="js-report-summary report-summary" style="display: none; overflow-y:scroll"></div>
 </div>

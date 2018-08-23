@@ -45,6 +45,6 @@
     <img class="loader" style="display: none;"
          src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
   </div>
-  <div class="js-report-summary" style="display: none;">
+  <div class="js-report-summary report-summary" style="display: none;">
   </div>
 </div>

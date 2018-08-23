@@ -21,7 +21,7 @@ function addItem(item){
         $td = $("<td>");
         $td_action = $("<td>");
         $span_name = $("<span>",{"class": "drug-name"});
-        $a_remove = $("<a>",{"class": "remove"}).text("remove");
+        $a_remove = $("<a>",{"class": "remove"}).append($("<i>", {"class": "oe-i trash"}));
         $hidden = $("<input>",{"type":"hidden", "name":"OphDrPrescription_ReportPrescribedDrugs[drugs][]","value": item.id});
         
         $td.append($span_name.text(item.label));

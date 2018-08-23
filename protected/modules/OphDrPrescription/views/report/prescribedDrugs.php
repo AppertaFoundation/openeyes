@@ -91,25 +91,23 @@
     <tr>
       <td>Date from:</td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'OphDrPrescription_ReportPrescribedDrugs[start_date]',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-              ),
-              'value' => date('j M Y', strtotime('-1 year')),
-          )) ?>
+        <input id="OphDrPrescription_ReportPrescribedDrugs_start_date"
+               placeholder="From"
+               class="start-date"
+               name="OphDrPrescription_ReportPrescribedDrugs[start_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
       <td>Date to:</td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'OphDrPrescription_ReportPrescribedDrugs[end_date]',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-              ),
-              'value' => date('j M Y'),
-          )) ?>
+        <input id="OphDrPrescription_ReportPrescribedDrugs_end_date"
+               placeholder="To"
+               class="end-date"
+               name="OphDrPrescription_ReportPrescribedDrugs[end_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
     </tr>
     <tr>
@@ -179,6 +177,6 @@
   </table>
 
 
-  <div class="js-report-summary" style="display: none; overflow: auto">
+  <div class="js-report-summary report-summary" style="display: none; overflow: auto">
   </div>
 </div>

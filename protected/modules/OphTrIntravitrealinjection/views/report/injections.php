@@ -16,33 +16,25 @@
           <?php echo CHtml::label('Date From', 'date_from') ?>
       </td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'date_from',
-              'id' => 'date_from',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  'maxDate' => 0,
-                  'defaultDate' => '-1y',
-              ),
-              'value' => date('j M Y', strtotime('-1 year')),
-          )) ?>
+        <input id="date_from"
+               placeholder="dd-mm-yyyy"
+               class="start-date"
+               name="date_from"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
       <td>
           <?php echo CHtml::label('Date To', 'date_to') ?>
       </td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'date_to',
-              'id' => 'date_to',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  'maxDate' => 0,
-                  'defaultDate' => 0,
-              ),
-              'value' => date('j M Y'),
-          )) ?>
+        <input id="date_to"
+               placeholder="dd-mm-yyyy"
+               class="end-date"
+               name="date_to"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
     </tr>
     <tr>
@@ -150,6 +142,6 @@
     </tr>
     </tbody>
   </table>
-  <div class="js-report-summary" style="display: none;">
+  <div class="js-report-summary report-summary" style="display: none;">
   </div>
 </div>

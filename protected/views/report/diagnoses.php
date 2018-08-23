@@ -40,25 +40,23 @@
     <tr class="col-gap">
       <td>Start date:</td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'start_date',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-              ),
-              'value' => date('j M Y', strtotime('-1 year')),
-          )) ?>
+        <input id="start_date"
+               class="start-date"
+               placeholder="dd-mm-yyyy"
+               name="start_date"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
       <td>End date:</td>
       <td>
-          <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-              'name' => 'end_date',
-              'options' => array(
-                  'showAnim' => 'fold',
-                  'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-              ),
-              'value' => date('j M Y'),
-          )) ?>
+        <input id="end_date"
+               class="end-date"
+               placeholder="dd-mm-yyyy"
+               name="end_date"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
       </td>
     </tr>
     </tbody>
@@ -146,6 +144,6 @@
     </tbody>
   </table>
 
-  <div class="js-report-summary" style="display: none;">
+  <div class="js-report-summary report-summary" style="display: none;">
   </div>
 </div>
