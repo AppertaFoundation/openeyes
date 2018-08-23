@@ -19,6 +19,7 @@
  * @property RefSet $refSet
  * @property User $createdUser
  * @property User $lastModifiedUser
+ * @property Site $site
  */
 class RefSetRule extends BaseActiveRecordVersioned
 {
@@ -57,6 +58,7 @@ class RefSetRule extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+		    'site' => array(self::BELONGS_TO, Site::class, 'site_id'),
 			'refSet' => array(self::BELONGS_TO, 'RefSet', 'ref_set_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -80,6 +82,7 @@ class RefSetRule extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+            'site.name' => 'Site'
 		);
 	}
 

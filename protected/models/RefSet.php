@@ -43,7 +43,7 @@ class RefSet extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, antecedent_ref_set_id', 'required'),
+			array('name', 'required'),
 			array('antecedent_ref_set_id, display_order', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),

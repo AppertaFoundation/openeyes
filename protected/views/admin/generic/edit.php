@@ -47,6 +47,12 @@ $assetManager = Yii::app()->getAssetManager();
 	<?php foreach ($admin->getEditFields() as $field => $type) {
     if (is_array($type)) {
         switch ($type['widget']) {
+
+            case 'GenericAdmin':
+                echo CHtml::label($type['label'].':', '');
+                $this->widget('GenericAdmin', $type['options']);
+                break;
+
             case 'TagsInput':
                 $form->TagsInput(
                     $type['label'],

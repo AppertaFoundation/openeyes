@@ -22,6 +22,8 @@ class GenericAdmin extends BaseCWidget
     public $description;
     public $cannot_add = false;
     public $cannot_delete = false;
+    public $cannot_save = false;
+    public $no_form = false;
 
     public function init()
     {
