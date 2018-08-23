@@ -92,10 +92,11 @@
         <script type="text/javascript">
           removeAllergyFromSelect(<?= $aa->allergy->id?>, '<?= $aa->allergy->name ?>');
         </script>
-        <tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>"
-            data-allergy-name="<?= $aa->allergy->name ?>">
-          <td><?= CHtml::encode($aa->name) ?>
-          </td>
+        <tr data-assignment-id="<?= $aa->id ?>"
+            data-allergy-id="<?= $aa->allergy->id ?>"
+            data-allergy-name="<?= $aa->allergy->name ?>"
+        >
+          <td><?= CHtml::encode($aa->name) ?></td>
           <td><?= CHtml::encode($aa->comments) ?></td>
             <?php if ($this->checkAccess('OprnEditAllergy')) { ?>
               <td>
