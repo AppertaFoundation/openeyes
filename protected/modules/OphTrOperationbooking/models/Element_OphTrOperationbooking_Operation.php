@@ -451,7 +451,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if( !count($this->anaesthetic_type_assignments)){
             $anaesthetics = AnaestheticType::model()->findAll();
             foreach ($anaesthetics as $anaes){
-                $this->addError($anaes->id, 'Anaesthetic Type cannot be empty.');
+                $this->addError("AnaestheticType_" . $anaes->name, 'Anaesthetic Type cannot be empty.');
             }
         }
 

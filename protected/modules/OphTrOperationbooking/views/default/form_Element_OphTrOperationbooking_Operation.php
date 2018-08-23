@@ -213,7 +213,7 @@
                                 $element, 'AnaestheticType', 'anaesthetic_type',
                                 null, false, false,
                                 false, false,
-                                array()
+                                array('field'=>'AnaestheticType')
                             ); ?>
                         </td>
                     </tr>
