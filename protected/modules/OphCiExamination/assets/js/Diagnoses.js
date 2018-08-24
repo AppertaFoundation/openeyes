@@ -300,7 +300,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosesController.prototype.removeExternalDiagnosis = function(code)
     {
-        this.$table.find('input[type="hidden"][value="' + code + '"].savedDiagnosis').closest('tr').remove();
+        this.$table.find('input[type="hidden"][value="' + code + '"]').closest('tr').remove();
     };
 
     /**
@@ -433,7 +433,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             // adding this disorder to the search result as createRow will check if there is any selected items in
             // selectItems or searchResult - otherwise it won't add
             controller.appendToSearchResult({id: id, value: name}, true);
-            controller.addEntry([{id: id, value: name, eye_id: side}]);
+            controller.addEntry([{id: id, label: name, eye_id: side}]);
             $tr = this.$table.find('tbody tr:last');
             $tr.addClass('js-external');
         }
