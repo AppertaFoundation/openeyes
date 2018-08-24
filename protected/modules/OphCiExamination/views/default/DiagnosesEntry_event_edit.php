@@ -49,6 +49,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <input type="hidden" name="<?= $field_prefix ?>[row_key]" value="<?=$row_count?>" />
 
         <input type="hidden"
+               class="savedDiagnosis"
                name="<?= $field_prefix ?>[disorder_id]"
                value="<?=$values['disorder_id']?>"
         >
