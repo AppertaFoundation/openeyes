@@ -24,6 +24,7 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
         this.$edReportField = this.$container.find("input[id$='" + this.options.side + "_ed_report']");
         this.$edReportDisplay = this.$container.find("span[id$='" + this.options.side + "_ed_report_display']");
 
+        // When the container is removed, remove all the diagnoses it had
         this.$container.on('remove', function() { self.removeAll(); });
 
         this.updateReport();
@@ -60,14 +61,18 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
 
     AutoReportHandler.prototype.removeAll = function()
     {
-        clearTimeout(this.updateTimer);
         OpenEyes.OphCiExamination.Diagnosis.setForSource([], this.$container);
+        // Unassign the container to prevent zombie events from modifying the report further
+        this.$container = $();
     };
 
     AutoReportHandler.prototype.drawingNotifications = function(msgArray)
     {
         clearTimeout(this.updateTimer);
         this.updateTimer = setTimeout(function() {
+            if(!this.$container.length) {
+                return;
+            }
             this.updateReport();
         }.bind(this), 300);
     };
