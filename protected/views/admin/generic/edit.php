@@ -53,6 +53,11 @@ $assetManager = Yii::app()->getAssetManager();
                 $this->widget('GenericAdmin', $type['options']);
                 break;
 
+            case 'RefMedicationLookup':
+                echo CHtml::label($type['label'].':', '');
+                $this->widget('RefMedicationLookup', $type['options']);
+                break;
+
             case 'TagsInput':
                 $form->TagsInput(
                     $type['label'],
@@ -245,6 +250,9 @@ $assetManager = Yii::app()->getAssetManager();
                     break;
                 case 'referer':
                     echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
+                    break;
+                case 'hidden':
+                    echo $form->hiddenInput($admin->getModel(), $field);
                     break;
                 case 'text':
                 default:

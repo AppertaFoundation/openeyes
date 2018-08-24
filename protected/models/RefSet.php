@@ -98,6 +98,8 @@ class RefSet extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+            'adminListAction' => 'Action',
+            'itemsCount' => 'Items count',
 		);
 	}
 
@@ -185,5 +187,15 @@ class RefSet extends BaseActiveRecordVersioned
         $criteria->order = 't.display_order ASC';
 
         return self::model()->findAll($criteria);
+    }
+
+    public function adminListAction()
+    {
+        return '<a href="/OphDrPrescription/refMedicationSetAdmin/list?ref_set_id='.$this->id.'">List medications</a>';
+    }
+
+    public function itemsCount()
+    {
+        return count($this->refMedicationSets);
     }
 }

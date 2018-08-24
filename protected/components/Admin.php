@@ -95,6 +95,12 @@ class Admin
     /**
      * @var string
      */
+
+    protected $customAddURL;
+
+    /**
+     * @var string
+     */
     protected $customCancelURL;
 
     /**
@@ -125,6 +131,58 @@ class Admin
      * @var array
      */
     protected $extraButtons = array();
+
+    /**
+     * Forces to display title even if this is a sublist
+     *
+     * @var bool
+     */
+
+    protected $forceTitleDisplay = false;
+
+    /**
+     * Forces to display form on list page even if this is a sublist
+     *
+     * @var bool
+     */
+
+    protected $forceFormDisplay = false;
+
+    /**
+     * @return bool
+     */
+    public function isForceTitleDisplay()
+    {
+        return $this->forceTitleDisplay;
+    }
+
+    /**
+     * @param bool $forceTitleDisplay
+     * @return Admin
+     */
+    public function setForceTitleDisplay($forceTitleDisplay)
+    {
+        $this->forceTitleDisplay = $forceTitleDisplay;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForceFormDisplay()
+    {
+        return $this->forceFormDisplay;
+    }
+
+    /**
+     * @param bool $forceFormDisplay
+     */
+    public function setForceFormDisplay($forceFormDisplay)
+    {
+        $this->forceFormDisplay = $forceFormDisplay;
+        return $this;
+    }
+
 
     /**
      * @param $filters
@@ -340,6 +398,24 @@ class Admin
     public function getCustomSaveURL()
     {
         return $this->customSaveURL;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomAddURL()
+    {
+        return $this->customAddURL;
+    }
+
+    /**
+     * @param string $customAddURL
+     * @return Admin
+     */
+    public function setCustomAddURL($customAddURL)
+    {
+        $this->customAddURL = $customAddURL;
+        return $this;
     }
 
     /**

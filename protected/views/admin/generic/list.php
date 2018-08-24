@@ -27,7 +27,7 @@ if (!isset($uniqueid)) {
 ?>
 <?php $this->renderPartial('//base/_messages'); ?>
 <div class="admin box">
-    <?php if (!$admin->isSubList()): ?>
+    <?php if (!$admin->isSubList() || $admin->isForceTitleDisplay()): ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
     <?php endif; ?>
     <?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
@@ -36,6 +36,11 @@ if (!isset($uniqueid)) {
     $returnUri = '';
     if ($admin->isSubList()): ?>
     <div id="generic-admin-sublist">
+
+        <?php if ($admin->isForceFormDisplay()): ?>
+        <form id="generic-admin-list">
+            <?php endif; ?>
+
         <?php
         if ($admin->getSubListParent() && is_array($admin->getSubListParent())):
             foreach ($admin->getSubListParent() as $key => $value):
@@ -141,7 +146,7 @@ if (!isset($uniqueid)) {
                                 array(),
                                 array(
                                     'class' => 'small',
-                                    'data-uri' => '/' . $uniqueid . '/edit',
+                                    'data-uri' => $admin->getCustomAddUrl() == '' ? '/' . $uniqueid . '/edit' : $admin->getCustomAddUrl(),
                                     'formmethod' => 'get',
                                 )
                             )->toHtml() ?>
@@ -181,6 +186,11 @@ if (!isset($uniqueid)) {
                 </tfoot>
             </table>
             <?php if ($admin->isSubList()): ?>
+
+            <?php if ($admin->isForceFormDisplay()): ?>
+            </form>
+            <?php endif; ?>
+
     </div>
 <?php else: ?>
     </form>
