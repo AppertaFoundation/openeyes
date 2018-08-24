@@ -57,6 +57,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <?php $this->widget('application.widgets.EyeSelector', [
         'inputNamePrefix' => $field_prefix,
         'selectedEyeId' => $values['eye_id'],
+        'hideNotAvailableOption' => true,
     ]); ?>
 
     <td>
