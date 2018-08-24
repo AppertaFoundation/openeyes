@@ -61,7 +61,26 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
     <td class="past-surgery-entry has-operation">
         <?php if(!$required) {
-            echo CHtml::hiddenField($field_prefix . '[had_operation]' , (string) PastSurgery_Operation::$PRESENT);
+            if ($values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT) { ?>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton(
+                        $field_prefix . '[had_operation]',
+                        $values['had_operation'] === (string)PastSurgery_Operation::$PRESENT,
+                        array('value' => PastSurgery_Operation::$PRESENT)
+                    ); ?>
+                    yes
+                </label>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton(
+                        $field_prefix . '[had_operation]',
+                        $values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT,
+                        array('value' => PastSurgery_Operation::$NOT_PRESENT)
+                    ); ?>
+                    no
+                </label>
+            <?php } else {
+                echo CHtml::hiddenField($field_prefix . '[had_operation]', (string)PastSurgery_Operation::$PRESENT);
+            }
         } else { ?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton(
