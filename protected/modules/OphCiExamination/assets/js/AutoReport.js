@@ -16,11 +16,15 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
 
     AutoReportHandler.prototype.initialise = function()
     {
+        var self = this;
+
         this.drawing.registerForNotifications(this, 'drawingNotifications');
         this.side = this.drawing.eye;
         this.$container = $(this.drawing.canvas).parents(this.options.containerSelector);
         this.$edReportField = this.$container.find("input[id$='" + this.options.side + "_ed_report']");
         this.$edReportDisplay = this.$container.find("span[id$='" + this.options.side + "_ed_report_display']");
+
+        this.$container.on('remove', function() { self.removeAll(); });
 
         this.updateReport();
     };
@@ -52,6 +56,12 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
             sidedDiagnoses.push([diagnoses[i], this.side]);
         }
         OpenEyes.OphCiExamination.Diagnosis.setForSource(sidedDiagnoses, this.$container);
+    };
+
+    AutoReportHandler.prototype.removeAll = function()
+    {
+        clearTimeout(this.updateTimer);
+        OpenEyes.OphCiExamination.Diagnosis.setForSource([], this.$container);
     };
 
     AutoReportHandler.prototype.drawingNotifications = function(msgArray)
