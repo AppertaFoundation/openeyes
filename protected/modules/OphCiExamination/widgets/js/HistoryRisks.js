@@ -33,6 +33,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
     {
+        this.callFunctionOnController('setRisksSelected' , [risks]);
         this.callFunctionOnController('addRisks', [risks, sourceElementName]);
     };
 
@@ -72,7 +73,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.otherSelector = '.' + this.options.modelName + '_other_risk';
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
         this.commentsSelector = '[name$="[comments]"]';
+        this.addCommentsButtonSelector = ".js-add-comments";
         this.pcrRiskLinks = this.options.pcrRiskLinks;
+        this.$risksOptions = $('#history-risks-option');
 
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
@@ -188,7 +191,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksController.prototype.createRow = function()
     {
-      var selected_option = $('#history-risks-option').find('.selected');
+        let selected_option = this.$risksOptions.find('.selected');
 
       var newRows = [];
       var template = this.templateText;
@@ -270,6 +273,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
+     * Mark the Risks as selected as the addRisks method looks
+     * for the selected risks and adds them to the table.
+     * This method is used when risks are coming from medications
+     */
+    HistoryRisksController.prototype.setRisksSelected = function(risks){
+        for(let i = 0 ; i < risks.length ; i++){
+            this.$risksOptions.find('li[data-id="' + risks[i].id + '"]').addClass('selected');
+        }
+    };
+
+    /**
      * Find the table row for the given risk id if it exists.
      *
      * @param risk_id
@@ -325,6 +339,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 finalList.push(comment);
             }
         }
+        row.find(this.addCommentsButtonSelector).trigger('click');
         row.find(this.commentsSelector).val(finalList.join(', '));
     };
 
@@ -398,7 +413,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       .attr('data-str', data['name'])
       .attr('data-id', data['id']);
     list_item.append(span);
-    $('#history-risks-option').append(list_item);
+    this.$risksOptions.append(list_item);
   };
 
   exports.HistoryRisksController = HistoryRisksController;
