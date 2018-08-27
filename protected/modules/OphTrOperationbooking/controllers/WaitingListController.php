@@ -479,11 +479,12 @@ class WaitingListController extends BaseModuleController
         }
 
         $to_address = $to_name."\n".$to_address;
+        $consultantName = $operation->event->episode->firm->consultant ? $operation->event->episode->firm->consultant->fullName : null;
 
         $html = $this->render('../letters/gp_letter', array(
                 'to' => $to_name,
                 'patient' => $patient,
-                'consultantName' => @$operation->event->episode->firm->consultant->fullName,
+                'consultantName' => $consultantName,
                 'toAddress' => $to_address,
                 'site' => $operation->site,
         ), true);
@@ -491,7 +492,7 @@ class WaitingListController extends BaseModuleController
         return $html.$this->render('../letters/gp_letter_patient', array(
                 'to' => $patient->salutationname,
                 'patient' => $patient,
-                'consultantName' => @$operation->event->episode->firm->consultant->fullName,
+                'consultantName' => $consultantName,
                 'toAddress' => $patient->getLetterAddress(array(
                     'include_name' => true,
                     'delimiter' => "\n",
