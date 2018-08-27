@@ -63,7 +63,7 @@ $is_new = isset($is_new) ? $is_new : false;
                 <?= $entry->getMedicationDisplay() ?>
             </a>
         </div>
-          <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+          <div class="alternative-display-element" <?php if(!$direct_edit): ?>style="display: none;"<?php endif; ?>>
                 <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />
           </div>
       </div>

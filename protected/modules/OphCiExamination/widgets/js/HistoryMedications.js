@@ -468,7 +468,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.switchRowToTextualDisplay = function($row)
   {
       this.syncTextualDisplay($row);
-      $cell = $row.find(".dose-frequency-route");
+      var $cell = $row.find(".dose-frequency-route, .medication-display");
       $cell.find(".alternative-display-element.textual").show();
       $cell.find(".alternative-display-element").not(".textual").hide();
       $cell.find(".alt-display-trigger").show();

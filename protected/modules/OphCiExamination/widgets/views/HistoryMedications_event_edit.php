@@ -163,10 +163,12 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
             element: $('#<?=$model_name?>_element'),
             onInit: function(controller) {
                 registerElementController(controller, "HMController", "MMController");
+                /* Don't add automatically
                 if(typeof controller.MMController === "undefined" && $("#OEModule_OphCiExamination_models_MedicationManagement_element").length === 0)  {
                     var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
                     sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_MedicationManagement');
                 }
+                */
             },
             onAddedEntry: function($row, controller) {
                 if(typeof controller.MMController !== "undefined") {
