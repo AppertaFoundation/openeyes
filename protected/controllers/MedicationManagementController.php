@@ -44,12 +44,13 @@
             $criteria = new \CDbCriteria();
 
             if($term !== '') {
-                $criteria->condition = "refMedications.preferred_term LIKE :term";
+                $criteria->condition = "refMedications.preferred_term LIKE :term OR refMedicationsSearchIndexes.alternative_term LIKE :term";
                 $criteria->params['term'] = "%$term%";
             }
 
             $criteria->limit = $limit > 1000 ? 1000 : $limit;
             $criteria->order = "refMedications.preferred_term";
+            $criteria->with = 'refMedicationsSearchIndexes';
 
             foreach ($ref_set->refMedications($criteria) as $med) {
                 $ref_med_set = RefMedicationSet::model()
