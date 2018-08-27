@@ -21,7 +21,7 @@
  * @var Element_OphTrOperationbooking_Operation[] $operations
  */
 
-if (isset($_POST['status']) and $_POST['status'] != '') {
+if (isset($_POST['status']) && $_POST['status'] != '') {
     $operations = array_filter($operations, function ($operation) {
         return $operation->getNextLetter() == $_POST['status'];
     });
@@ -75,7 +75,6 @@ if (isset($_POST['status']) and $_POST['status'] != '') {
           ?>
 
           <?php
-          echo '{' . $eo->getWaitingListStatus() . '}';
           switch ($eo->getWaitingListStatus()) {
               case Element_OphTrOperationbooking_Operation::STATUS_PURPLE:
                   $letterStatusClass = 'send-invitation-letter';
