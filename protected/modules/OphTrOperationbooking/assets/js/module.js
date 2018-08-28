@@ -124,7 +124,7 @@
 			showHide();
 		}
 
-		setDependentField('stop_medication', '#div_Element_OphTrOperationbooking_Operation_stop_medication_details');
+        setDependentField('stop_medication', '#tr_stop_medication_details');
 		setDependentField('special_equipment', '#div_Element_OphTrOperationbooking_Operation_special_equipment_details');
 		setDependentField('consultant_required', '#div_Element_OphTrOperationbooking_Operation_named_consultant_id');
 
@@ -134,6 +134,8 @@
 			$('#Element_OphTrOperationbooking_Operation_organising_admission_user_id').val('');
 			$(this).parent().html('None');
 		});
+
+		$('.autosize').autosize();
 
 		$(this).on('click','#et_print_admission_form',function() {
 			printIFrameUrl(baseUrl + '/OphTrOperationbooking/default/admissionForm/' + OE_event_id);
