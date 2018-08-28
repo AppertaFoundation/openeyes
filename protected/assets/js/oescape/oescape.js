@@ -33,11 +33,7 @@ $(document).ready(function () {
 
   // exit oescape and go back to last viewed (non-oes) page
   $('#js-exit-oescape').click( function(){
-    if(localStorage.getItem("lastPage")){
-      window.location = localStorage.getItem("lastPage");
-    } else {
       window.location.href = $(this).data('link');
-    }
   });
 
 });

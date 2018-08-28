@@ -147,34 +147,33 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				}
 
 				if(!is_null($item->comments)) { ?>
-
-                    <tr class="prescriptionComments">
-                        <td class="prescriptionLabel">Comments:</td>
-                        <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
-                    </tr>
-
-                <?php
-				}
-			}
-			?>
+          <tr class="prescriptionComments">
+            <td class="prescriptionLabel">Comments:</td>
+            <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
+          </tr>
+            <?php }
+			} ?>
 			</tbody>
 		</table>
-		<?php
-		}?>
+		<?php } ?>
 <div class="spacer"></div>
 
 <table class="borders prescription_items">
+  <colgroup>
+    <col width="25%">
+    <col width="75%">
+  </colgroup>
 	<tbody>
-        <tr>
-            <th style="width:25%;">Other medications patient is taking</th>
-            <td style="width:75%;">
-                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                    'patient' => $this->patient,
-                    'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
-                )); ?>
-            </td>
-        </tr>
-    </tbody>
+  <tr>
+    <td>Other medications patient is taking</td>
+    <td>
+        <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+            'patient' => $this->patient,
+            'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
+        )); ?>
+    </td>
+  </tr>
+  </tbody>
 </table>
 
 <h2>Allergies</h2>
