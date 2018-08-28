@@ -34,6 +34,8 @@ class DefaultController extends \BaseEventTypeController
 
     public $demographicsData;
 
+    protected $show_element_sidebar = false;
+
     const ACTION_TYPE_LIST = 'List';
 
     protected static $action_types = array(

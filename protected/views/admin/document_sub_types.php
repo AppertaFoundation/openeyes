@@ -17,15 +17,11 @@
  */
 ?>
 <div class="box admin">
-<div class="row">
-    <div class="large-8 column">
-        <h2>Document sub types</h2>
-    </div>
-</div>
-    <div class="row data-row">
-        <div class="large-4 column end">
-            <?php echo CHtml::htmlButton('Add sub type', array('class' => 'button small addSubType'))?>
-        </div>
-    </div>
+  <div class="cols-8 column">
+    <h2>Document sub types</h2>
+  </div>
+  <div class="cols-4 column end">
+      <?php echo CHtml::htmlButton('Add sub type', array('class' => 'button small addSubType'))?>
+  </div>
 <b> i say yes</b>
 </div>

@@ -60,6 +60,9 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
+        <?php if(!$required) {
+            echo CHtml::hiddenField($field_prefix . '[had_operation]' , (string) PastSurgery_Operation::$PRESENT);
+        } else { ?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton(
                 $field_prefix . '[had_operation]',
@@ -84,6 +87,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             ); ?>
             no
         </label>
+        <?php } ?>
     </td>
     <?php if (!$removable) : ?>
         <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
