@@ -40,6 +40,11 @@ class RefMedicationAdminController extends BaseAdminController
 
     public function actionEdit($id)
     {
+        $this->_getEditAdmin($id)->editModel();
+    }
+
+    private function _getEditAdmin($id)
+    {
         $admin = new Admin(RefMedication::model(), $this);
 
         $admin->setEditFields(array(
@@ -75,11 +80,13 @@ class RefMedicationAdminController extends BaseAdminController
 
         $admin->setCustomSaveURL('/OphDrPrescription/refMedicationAdmin/save/'.$id);
 
-        $admin->editModel();
+        return $admin;
     }
 
     public function actionSave($id)
     {
+        $admin = $this->_getEditAdmin($id);
+
         if(is_null($id)) {
             $model = new RefMedication();
         }
@@ -96,7 +103,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         if(!$model->validate()) {
             $errors = $model->getErrors();
-            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+            $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $errors));
             exit;
         }
 

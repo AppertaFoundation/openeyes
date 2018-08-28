@@ -49,7 +49,8 @@ class RefMedication extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('source_type, preferred_term, preferred_code', 'required'),
-			array('source_type, source_subtype, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+			array('source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+			array('source_subtype', 'length', 'max' => 45),
 			array('preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255),
 			array('deleted_date, last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
