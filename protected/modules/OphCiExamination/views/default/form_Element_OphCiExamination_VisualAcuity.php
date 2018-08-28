@@ -23,7 +23,7 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
@@ -122,7 +122,7 @@ if ($cvi_api) {
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-          if(selectedItems.length){
+          if(selectedItems.length==2){
             var selected_data = {};
             for (i in selectedItems) {
               if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
@@ -139,8 +139,10 @@ if ($cvi_api) {
             var newRow =  tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
           }
-          return true;
         },
       });
     });

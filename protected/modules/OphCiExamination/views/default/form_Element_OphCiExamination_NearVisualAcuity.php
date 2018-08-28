@@ -23,7 +23,7 @@ $key = 0;
 ?>
 
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
           <?php echo CHtml::dropDownList(
@@ -105,28 +105,35 @@ $key = 0;
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
               return ['label' => $value, 'id' => $key];
-              }, array_keys($values), $values) ) ?>),
+              }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
-                }, array_keys($methods), $methods)) ?>)
+                }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
-          if(selectedItems.length){
-            var selected_data = {
-              'reading_value': selectedItems[0]['id'],
-              'reading_display': selectedItems[0]['value'],
-              'method_id': selectedItems[1]['id'],
-              'method_display': selectedItems[1]['value'],
-              'tooltip': <?= CJSON::encode($val_options)?>[selectedItems[0]['id']]['data-tooltip']
-            };
-              OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
-              newRow = tableSelector.find('tbody tr:last');
+          if(selectedItems.length==2){
+            var selected_data = {};
+            for (i in selectedItems) {
+              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = selectedItems[i]['id'];
+                selected_data.reading_display = selectedItems[i]['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+              }
+              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = selectedItems[i]['id'];
+                selected_data.method_display = selectedItems[i]['label'];
+              }
+            }
+            OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
+            newRow = tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
           }
-          return true;
         }
 
       });
