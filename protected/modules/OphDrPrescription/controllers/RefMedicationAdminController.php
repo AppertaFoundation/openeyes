@@ -49,6 +49,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         $admin->setEditFields(array(
             'preferred_term'=>'Preferred term',
+            'short_term'=>'Short term',
             'preferred_code'=>'Preferred code',
             'source_type'=>'Source type',
             'source_subtype'=>'Source subtype',
