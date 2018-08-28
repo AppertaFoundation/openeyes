@@ -234,17 +234,19 @@
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
-
                         </td>
-
                     </tr>
                     <tr id='tr_stop_medication_details' style="display:none">
                         <td>
-                            <?php echo $element->getAttributeLabel('stop_medication_details')?>
+                            <?php echo $element->getAttributeLabel('stop_medication_details') ?>
                         </td>
                         <td>
-                            <?php $form->textArea($element, 'stop_medication_details', array('rows'=>1, 'label'=>false ,  'nowrapper' => true),
-                                true , array('class' => 'autosize')) ?>
+                            <?php $form->textArea(
+                                $element,
+                                'stop_medication_details',
+                                array('rows' => 1, 'label' => false,
+                                    'nowrapper' => true),
+                                true, array('class' => 'autosize')); ?>
                         </td>
                     </tr>
                     <tr>
