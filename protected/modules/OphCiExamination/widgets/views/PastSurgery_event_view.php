@@ -38,7 +38,7 @@ $widget = $this;
                             $is_side = array_key_exists('side', $operation);
                             $is_object = array_key_exists('object', $operation);
 
-                            if (($is_side || $is_object) && $operation['object']->side) {
+                            if ($is_side && $is_object && $operation['object']->side) {
                                 $side = $is_side ? $operation['side'] : $is_object ? $operation['object']->side : '';
                             }
                             ?>
