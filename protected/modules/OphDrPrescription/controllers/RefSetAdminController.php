@@ -30,9 +30,7 @@ class RefSetAdminController extends BaseAdminController
 
         $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->setItemsPerPage(30);
-        $crit = new CDbCriteria();
-        $crit->order = 'id ASC';
-        $admin->getSearch()->setCriteria($crit);
+        $admin->getSearch()->getCriteria()->order = 'name ASC';
 
         $admin->setListFieldsAction('edit');
 
@@ -68,7 +66,12 @@ class RefSetAdminController extends BaseAdminController
                             'type' => 'lookup',
                             'model' => Subspecialty::class,
                             'allow_null' => true
-                        )
+                        ),
+                        array(
+                            'field' => 'usage_code',
+                            'type' => 'text',
+                            'allow_null' => true
+                        ),
                     ),
                     'label_extra_field' => true,
                     'items' => !is_null($id) ? RefSet::model()->findByPk($id)->refSetRules : array(),

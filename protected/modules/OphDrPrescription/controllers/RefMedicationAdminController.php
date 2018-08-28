@@ -20,49 +20,121 @@ class RefMedicationAdminController extends BaseAdminController
 {
     public function actionList()
     {
-        $admin = new AdminListAutocomplete(RefMedicationSet::model(), $this);
+        $admin = new Admin(RefMedication::model(), $this);
         $admin->setListFields(array(
-            'refMedication.id',
-            'refMedication.source_type',
-            'refMedication.preferred_term',
-            'refMedication.vtm_term',
-            'refMedication.vmp_term',
-            'refMedication.amp_term',
-            //'refSet.name'
+            'id',
+            'source_type',
+            'preferred_term',
+            'alternativeTerms',
+            'vtm_term',
+            'vmp_term',
+            'amp_term',
         ));
 
-        if($ref_set_id = Yii::app()->request->getParam('search')['filterid']['ref_set_id']['value']) {
-            if(!$refSet = RefSet::model()->findByPk($ref_set_id)) {
-                throw new CHttpException(404, 'Ref Set not found');
-            }
+        $admin->getSearch()->addSearchItem('preferred_term');
 
-            $admin->setModelDisplayName("Medication list for '".$refSet->name."' set");
-        }
-/*
-        $admin->setFilterFields(
-            array(
-                array(
-                    'label' => 'Ref Set',
-                    'dropDownName' => 'ref_set_id',
-                    'defaultValue' => null,//Yii::app()->session['selected_site_id'],
-                    'listModel' => RefSet::model(),
-                    'listIdField' => 'id',
-                    'listDisplayField' => 'name',
-                ),
-            )
-        );
-
-  */
-
-        $admin->setAutocompleteField(
-            array(
-                'fieldName' => 'refMedication.id',
-                'jsonURL' => '/OphDrPrescription/default/DrugList',
-                'placeholder' => 'search for medications',
-            )
-        );
+        $admin->setModelDisplayName('All Medications');
 
         $admin->listModel();
+    }
+
+    public function actionEdit($id)
+    {
+        $admin = new Admin(RefMedication::model(), $this);
+
+        $admin->setEditFields(array(
+            'preferred_term'=>'Preferred term',
+            'preferred_code'=>'Preferred code',
+            'source_type'=>'Source type',
+            'source_subtype'=>'Source subtype',
+            'vtm_term' => 'VTM term',
+            'vtm_code' => 'VTM code',
+            'vmp_term' => 'VMP term',
+            'vmp_code' => 'VMP code',
+            'amp_term' => 'AMP term',
+            'amp_code' => 'AMP code',
+            'alternative_terms' =>  array(
+                'widget' => 'GenericAdmin',
+                'options' => array(
+                    'model' => RefMedicationsSearchIndex::class,
+                    'label_field' => 'alternative_term',
+                    'label_field_type' => 'text',
+                    'items' => !is_null($id) ? RefMedication::model()->findByPk($id)->refMedicationsSearchIndexes : array(),
+                    'filters_ready' => true,
+                    'cannot_save' => true,
+                    'no_form' => true,
+                ),
+                'label' => 'Alternative terms'
+            ),
+        ));
+
+        $admin->setModelDisplayName("Medication");
+        if($id) {
+            $admin->setModelId($id);
+        }
+
+        $admin->setCustomSaveURL('/OphDrPrescription/refMedicationAdmin/save/'.$id);
+
+        $admin->editModel();
+    }
+
+    public function actionSave($id)
+    {
+        if(is_null($id)) {
+            $model = new RefMedication();
+        }
+        else {
+            if(!$model = RefMedication::model()->findByPk($id)) {
+                throw new CHttpException(404, 'Page not found');
+            }
+        }
+
+        /** @var RefMedication $model */
+
+        $data = Yii::app()->request->getPost('RefMedication');
+        $model->setAttributes($data);
+
+        if(!$model->validate()) {
+            $errors = $model->getErrors();
+            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+            exit;
+        }
+
+        $model->save();
+
+        $existing_ids = array();
+        $updated_ids = array();
+        foreach ($model->refMedicationsSearchIndexes as $alt_term) {
+            $existing_ids[] = $alt_term->id;
+        }
+
+        $ids = Yii::app()->request->getPost('id');
+        if(is_array($ids)) {
+            foreach ($ids as $key => $rid) {
+                if($rid === '') {
+                    $alt_term = new RefMedicationsSearchIndex();
+                }
+                else {
+                    $alt_term = RefMedicationsSearchIndex::model()->findByPk($rid);
+                    $updated_ids[] = $rid;
+                }
+
+                $alt_term->setAttributes(array(
+                    'ref_medication_id' => $model->id,
+                    'alternative_term' => Yii::app()->request->getPost('alternative_term')[$key],
+                ));
+
+                $alt_term->save();
+            }
+        }
+
+        $deleted_ids = array_diff($existing_ids, $updated_ids);
+        if(!empty($deleted_ids)) {
+            RefMedicationsSearchIndex::model()->deleteByPk($deleted_ids);
+        }
+
+        $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
+
     }
 
 

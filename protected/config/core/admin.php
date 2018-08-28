@@ -53,12 +53,11 @@ return array(
                 'OPCS Codes' => '/oeadmin/opcsCode/list',
             ),
             'Drugs' => array(
-                'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonDrugAdmin/list'),
-                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/DrugSetAdmin/list'),
-                'Common Medications List ' => '/oeadmin/commonMedications/list',
-                'Medication List' => '/oeadmin/medication/list',
-                'Formulary Drugs' => '/oeadmin/drug/list',
-                'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
+                'All Sets' => '/OphDrPrescription/refSetAdmin/list',
+                'All Medications' => '/OphDrPrescription/refMedicationAdmin/list',
+                'Common Subspecialty Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSubspecialtyMedicationsAdmin/list'),
+                'Common Systemic Medications' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonSystemicMedicationsAdmin/list'),
+
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/PrescriptionEditOptions'),
                 'Tags' => '/TagsAdmin/list',
