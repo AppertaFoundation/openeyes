@@ -67,11 +67,14 @@
 
     <div class="cols-12 column end">
 				<div class="whiteBox forClinicians">
-					<div class="data_row">
-						<table class="subtleWhite">
+          <table class="subtleWhite cols-full">
+              <colgroup>
+                <col class="cols-5">
+                <col class="cols-3">
+              </colgroup>
 							<thead>
 								<tr>
-									<th style="width: 400px;">Diagnosis</th>
+									<th>Diagnosis</th>
 									<th>Principal</th>
 									<th>Edit</th>
 								</tr>
@@ -79,7 +82,6 @@
 							<tbody id="Reports_diagnoses">
 							</tbody>
 						</table>
-					</div>
 				</div>
 			</div>
 

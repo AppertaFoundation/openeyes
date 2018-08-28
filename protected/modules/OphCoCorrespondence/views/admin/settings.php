@@ -70,8 +70,8 @@
                 <table class="standard" id="to_location_sites_grid">
                     <thead>
                     <tr>
-                        <th style="width:200px">Site</th>
-                        <th >Location Code (XML)</th>
+                        <th>Site</th>
+                        <th>Location Code (XML)</th>
                         <th class="text-center">Is Active</th>
                     </tr>
                     </thead>
@@ -104,7 +104,7 @@
                                 <?php echo CHtml::activeHiddenField($to_location, "[$index]site_id"); ?>
 
                             </td>
-                            <td style="width:150px">
+                            <td>
                                 <?php echo CHtml::activeTextField($site, "[$index]location_code", array("disabled"=>"disabled") ); ?>
                             </td>
 

@@ -49,7 +49,7 @@
 			</thead>
 			<tbody>
 				<?php
-                foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {?>
+        foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {?>
 					<tr class="clickable" data-key="<?php echo $metadata->key?>">
 						<td><?php echo $metadata->name?></td>
 						<td><?php echo $metadata->getSettingName()?></td>
