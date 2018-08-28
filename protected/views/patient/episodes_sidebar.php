@@ -28,9 +28,7 @@ $current_episode = @$this->current_episode;
     <?php } else { ?>
     <nav class="sidebar-header">
         <span class="add-event" title="You do not have permission to create new events">
-        <i class="button add-event disabled">
-            Add Event
-        </i>
+            <i class="button add-event disabled">Add Event</i>
         </span>
     </nav>
     <?php } ?>
