@@ -15,8 +15,12 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var OEModule\PatientTicketing\models\Queue $queue
+ */
 if ($queue) { ?>
-  <table>
+  <table class="cols-full">
       <?php
       foreach ($form_fields as $fld) {
           if (@$fld['type'] == 'widget') {
@@ -27,29 +31,36 @@ if ($queue) { ?>
                   'form_name' => $fld['form_name'],
                   'form_data' => $form_data,
               ));
-          } else { ?>
+          } elseif (@$fld['choices']) { ?>
             <tr>
               <td>
                 <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
               </td>
-              <td>
-                  <?php if (@$fld['choices']) {
-                      echo CHtml::dropDownList(
-                          $fld['form_name'],
-                          @$form_data[$fld['form_name']],
-                          $fld['choices'],
-                          array('empty' => ($fld['required']) ? ' - Please Select - ' : 'None'));
-                  } else {
-                      //may need to expand this beyond textarea and select in the future.
-                      $notes = @$form_data[$fld['form_name']];
-                      ?>
-                    <textarea id="<?= $fld['form_name'] ?>" name="<?= $fld['form_name'] ?>" cols="35"><?= $notes ?></textarea>
-                  <?php } ?>
+              <td> <?= CHtml::dropDownList(
+                      $fld['form_name'],
+                      @$form_data[$fld['form_name']],
+                      $fld['choices'],
+                      array('empty' => ($fld['required']) ? ' - Please Select - ' : 'None'));
+                  ?>
               </td>
             </tr>
-          <?php }
-      }
-      if ($auto_save) {
+          <?php } else {
+              //may need to expand this beyond textarea and select in the future.
+              $notes = @$form_data[$fld['form_name']];
+              ?>
+            <tr>
+              <td colspan="2">
+                <textarea
+                    id="<?= $fld['form_name'] ?>"
+                    name="<?= $fld['form_name'] ?>"
+                    rows="1"
+                    class="cols-full"><?= $notes ?></textarea>
+              </td>
+            </tr>
+          <?php } ?>
+      <?php } ?>
+
+      <?php if ($auto_save) {
           ?>
         <script>
           $(document).ready(function () {
@@ -61,30 +72,29 @@ if ($queue) { ?>
 
       }
       ?>
-      <?php if ($this->patient_id) { ?>
-        <tr>
-          <td>
-            <ul>
-                <?php foreach ($queue->event_types as $et) { ?>
-                  <li>
-                    <a href="<?= Yii::app()->baseURL ?>/<?= $et->class_name ?>/default/create?patient_id=<?= $this->patient_id ?>"
-                       class="button small event-type-link auto-save"
-                       data-queue="<?= $this->current_queue_id ?>"><?= $et->name ?></a></li>
-                <?php }
-                if ($print_letter_event) { ?>
-                  <li>
-                    <a href="<?= Yii::app()->baseURL ?>/<?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
-                       class="button small event-type-link auto-save" data-queue="<?= $this->current_queue_id ?>">Print
-                      Letter</a></li>
-                <?php } ?>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-              <?php echo @$extra_view_data['buttons']; ?>
-          </td>
-        </tr>
-      <?php } ?>
   </table>
+    <?php if ($this->patient_id) { ?>
+    <div class="vc-actions">
+      <div class="row">
+          <?php foreach ($queue->event_types as $et) { ?>
+            <a href="<?= Yii::app()->baseURL ?>/<?= $et->class_name ?>/default/create?patient_id=<?= $this->patient_id ?>"
+               class="button blue hint js-auto-save"
+               data-queue="<?= $this->current_queue_id ?>"
+            >
+                <?= $et->name ?>
+            </a>
+          <?php } ?>
+
+          <?php if ($print_letter_event) { ?>
+            <a href="<?= Yii::app()->baseURL ?>/<?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
+               class="button blue hint js-auto-save"
+               data-queue="<?= $this->current_queue_id ?>"
+            >
+              Print Letter
+            </a>
+          <?php } ?>
+      </div>
+        <?php echo @$extra_view_data['buttons']; ?>
+    </div>
+    <?php } ?>
 <?php } ?>

@@ -18,7 +18,7 @@
 $(document).ready(function() {
 	$(this).on('change', '.outcome-select', function() {
 		var fup = $(this).find('option:selected').data('followup');
-		var formName = $(this).parents('fieldset').data('formname');
+		var formName = $(this).parents('tbody').data('formname');
 		if (fup) {
 			$('#'+formName+'-followup').show();
 		}

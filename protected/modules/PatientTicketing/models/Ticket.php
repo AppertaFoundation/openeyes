@@ -260,6 +260,9 @@ class Ticket extends \BaseActiveRecordVersioned
         return '';
     }
 
+    /**
+     * @return Queue
+     */
     public function getDisplayQueue()
     {
         $current_queue = $this->current_queue;
@@ -281,6 +284,9 @@ class Ticket extends \BaseActiveRecordVersioned
         return $current_queue;
     }
 
+    /**
+     * @return TicketQueueAssignment
+     */
     public function getDisplayQueueAssignment()
     {
         $current_queue = $this->current_queue;
