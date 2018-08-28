@@ -31,8 +31,12 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           <tbody>
           <tr>
             <td>Born</td>
-            <td><b><?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b> (52y)</td>
-          </tr><tr>
+            <td>
+              <b><?= $this->patient->dob ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
+              (<?= $this->patient->getAge() ?>y)
+            </td>
+          </tr>
+          <tr>
             <td>Address</td>
             <td><?php echo $this->patient->getSummaryAddress()?></td>
           </tr><tr>
