@@ -323,9 +323,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               $row.find(".route").val(ui.item.route_id);
               $row.find(".ref_medication_id").val(ui.item.id);
               $row.find("input.medication-name").val(ui.item.preferred_term);
-              controller.updateBoundEntry($row, function ($bound_row, bound_controller) {
-                  $bound_row.find(".medication-display .alternative-display-element").not(".textual").hide();
-              });
+
+              if(!ui.item.will_copy) {
+                  $row.addClass("ignore");
+              }
+              else {
+                  $row.removeClass("ignore");
+              }
+
+              if(typeof controller.MMController !== "undefined") {
+                  if(ui.item.will_copy) {
+                      var $new_row = controller.MMController.addEntry(ui.item, false);
+                      controller.bindEntries($row, $new_row);
+                  }
+                  else {
+                      controller.removeBoundEntry($row);
+                  }
+
+              }
           }
       });
   };
@@ -465,6 +480,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
+    HistoryMedicationsController.prototype.removeBoundEntry = function($row)
+    {
+        var $bound_entry = $row.data("bound_entry");
+        if(typeof $bound_entry === "undefined") {
+            return;
+        }
+
+        $bound_entry.remove();
+    };
+
   HistoryMedicationsController.prototype.switchRowToTextualDisplay = function($row)
   {
       this.syncTextualDisplay($row);
@@ -536,6 +561,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.searchSelect = function($el, event, ui)
   {
     event.preventDefault();
+
     var $container = $el.parents('td');
     this.resetSearchRow($container, false);
 

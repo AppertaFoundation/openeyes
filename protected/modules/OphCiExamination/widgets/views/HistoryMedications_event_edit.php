@@ -169,12 +169,6 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_MedicationManagement');
                 }
                 */
-            },
-            onAddedEntry: function($row, controller) {
-                if(typeof controller.MMController !== "undefined") {
-                    $new_row = controller.MMController.addEntry($row.data("medication_data"), false);
-                    controller.bindEntries($row, $new_row);
-                }
             }
         });
 

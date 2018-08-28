@@ -75,7 +75,8 @@
                         'default_form' => $ref_med_set->default_form,
                         'frequency_id' => $ref_med_set->default_frequency,
                         'route_id' => $ref_med_set->default_route,
-                        'tabsize' => $tabsize
+                        'tabsize' => $tabsize,
+                        'will_copy' => $med->getToBeCopiedIntoMedicationManagement()
                     ]
                 );
             }
