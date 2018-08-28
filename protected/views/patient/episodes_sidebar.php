@@ -25,6 +25,14 @@ $current_episode = @$this->current_episode;
 <nav class="sidebar-header">
     <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
       <button id="add-event" class="button green add-event" type="button">Add Event</button>
+    <?php } else { ?>
+    <nav class="sidebar-header">
+        <span class="add-event" title="You do not have permission to create new events">
+        <i class="button add-event disabled">
+            Add Event
+        </i>
+        </span>
+    </nav>
     <?php } ?>
 </nav>
 
