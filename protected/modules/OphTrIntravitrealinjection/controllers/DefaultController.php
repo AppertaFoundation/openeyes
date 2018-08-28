@@ -2,6 +2,8 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
+
     // The side that should be injected by default
     public $side_to_inject = null;
 
