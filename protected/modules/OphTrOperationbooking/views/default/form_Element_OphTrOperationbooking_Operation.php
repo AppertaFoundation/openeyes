@@ -213,7 +213,10 @@
                                 $element, 'AnaestheticType', 'anaesthetic_type',
                                 null, false, false,
                                 false, false,
-                                array('field'=>'AnaestheticType')
+                                array(
+                                    'field'=>'AnaestheticType',
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''
+                                )
                             ); ?>
                         </td>
                     </tr>

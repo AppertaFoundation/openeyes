@@ -40,7 +40,6 @@
                 foreach ($elements as $element) { ?>
 		var errorObject = <?php $element->getFrontEndErrors(); ?>;
 		for (k = 0; k < errorObject.length; k++) {
-		  console.log(errorObject[k]);
       var $field = $('#' + errorObject[k]);
       $field.closest('.element').find('.element-title').addClass('error');
       if ($field.length) {
