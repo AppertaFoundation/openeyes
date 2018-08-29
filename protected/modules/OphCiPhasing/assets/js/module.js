@@ -41,10 +41,10 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$(this).delegate('.main-event .side .active-form .remove-side', 'click', function(e) {
+	$(this).delegate('.main-event .js-element-eye .active-form .remove-side', 'click', function(e) {
 
 		// Update side field to indicate other side
-		var side = $(this).closest('.side');
+		var side = $(this).closest('.js-element-eye');
 
 		var remove_physical_side = 'left';
 		var show_physical_side = 'right';
@@ -59,22 +59,22 @@ $(document).ready(function() {
 		$(this).closest('.element').find('input.sideField').val(eye_side);
 
 		// If other side is already inactive, then activate it (can't have both sides inactive)
-		$(this).closest('.element').find('.side.'+show_physical_side + ' .active-form').show();
-        $(this).closest('.element').find('.side.'+show_physical_side + ' .inactive-form').hide();
+		$(this).closest('.element').find('.js-element-eye.'+show_physical_side + ' .active-form').show();
+        $(this).closest('.element').find('.js-element-eye.'+show_physical_side + ' .inactive-form').hide();
 
 		// Make this side inactive
-		$(this).closest('.element').find('.side.'+remove_physical_side + ' .active-form').hide();
-        $(this).closest('.element').find('.side.'+remove_physical_side + ' .inactive-form').show();
+		$(this).closest('.element').find('.js-element-eye.'+remove_physical_side + ' .active-form').hide();
+        $(this).closest('.element').find('.js-element-eye.'+remove_physical_side + ' .inactive-form').show();
 
 		e.preventDefault();
 	});
 
-	$(this).delegate('.main-event .side .inactive-form a', 'click', function(e) {
+	$(this).delegate('.main-event .js-element-eye .inactive-form a', 'click', function(e) {
 		var element = $(this).closest('.element');
 		element.find('input.sideField').val(3);  // Both eyes
 
-		element.find('.side .active-form').show();
-        element.find('.side .inactive-form').hide();
+		element.find('.js-element-eye .active-form').show();
+        element.find('.js-element-eye .inactive-form').hide();
 
 		e.preventDefault();
 	});
