@@ -31,10 +31,13 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
         ),
     ))?>
     <div class="family-history-status-none"
-         style="font-style: italic;
-         color: rgba(255,255,255,0.5);
-         display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>">
-        Patient family history is unknown</div>
+         style="
+            font-style: italic;
+            color: rgba(255,255,255,0.5);
+            display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>"
+    >
+            Patient family history is unknown
+    </div>
 
     <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
         <thead>
