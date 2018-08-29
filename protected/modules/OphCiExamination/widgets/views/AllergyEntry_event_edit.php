@@ -45,14 +45,15 @@ if (!isset($values)) {
           echo CHtml::hiddenField($field_prefix . '[has_allergy]', (string)AllergyEntry::$PRESENT);
       } else { ?>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $posted_not_checked,
-                array('value' => AllergyEntry::$NOT_CHECKED));
-            ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_allergy]',
+                $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
+                array('value' => AllergyEntry::$NOT_CHECKED)); ?>
           Not checked
         </label>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_allergy]',
-                $values['has_allergy'] === (string)AllergyEntry::$PRESENT, array('value' => AllergyEntry::$PRESENT)); ?>
+                $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
+                array('value' => AllergyEntry::$PRESENT)); ?>
           yes
         </label>
         <label class="inline highlight">
