@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="standard">
 	<thead>
 		<tr>
 			<?php foreach ($report->getColumns() as $column) {?>
