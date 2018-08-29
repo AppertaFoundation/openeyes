@@ -2550,7 +2550,11 @@ class OphCiExamination_API extends \BaseAPI
             if($set->entries){
                 foreach($set->entries as $entry){
                     $operation = $entry->operation;
-                    $required[$operation->id] = $operation;
+                    if (isset($operation->id)) {
+                        $required[$operation->id] = $operation;
+                    } else {
+                        $required[] = $operation;
+                    }
                 }
             }
         }
