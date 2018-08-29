@@ -14,8 +14,11 @@
  */
 ?>
 <table>
+  <colgroup>
+    <col class="cols-6">
+  </colgroup>
 	<thead>
-		<th class="large-6">Item name</th>
+		<th>Item name</th>
 	</thead>
 	<tbody id="<?= $id ?>">
 	<?php

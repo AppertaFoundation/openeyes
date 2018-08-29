@@ -337,36 +337,37 @@ class BaseEventTypeController extends BaseModuleController
                 continue;
             }
             $struct = array(
-                'name'          => $et->group_title ?: $et->name,
-                'class_name'    => CHtml::modelName($et->class_name),
-                'id'            => $et->id,
+                'name' => $et->group_title ?: $et->name,
+                'class_name' => CHtml::modelName($et->class_name),
+                'id' => $et->id,
                 'display_order' => -1,
                 'parent_display_order' => $et->display_order,
-                'children'      => array(),
+                'children' => array(),
             );
 
-            // Add the parent as its first child with the display name instead of the group title
-            $struct['children'][] = array(
-                'name'          => $et->name,
-                'class_name'    => CHtml::modelName($et->class_name),
-                'id'            => $et->id,
-                'display_order' => -1,
-                'parent_display_order' => $et->display_order,
-            );
-
-            foreach ($et->child_element_types as $child) {
-                if (count($remove_list) && in_array($child->class_name, $remove_list)) {
-                    continue;
-                }
+            if (count($et->child_element_types) > 0) {
+                // Add the parent as its first child with the display name instead of the group title
                 $struct['children'][] = array(
-                    'name' => $child->name,
-                    'id' => $child->id,
-                    'display_order' => $child->display_order,
+                    'name' => $et->name,
+                    'class_name' => CHtml::modelName($et->class_name),
+                    'id' => $et->id,
+                    'display_order' => -1,
                     'parent_display_order' => $et->display_order,
-                    'class_name'    => CHtml::modelName($child->class_name),
                 );
-            }
 
+                foreach ($et->child_element_types as $child) {
+                    if (count($remove_list) && in_array($child->class_name, $remove_list)) {
+                        continue;
+                    }
+                    $struct['children'][] = array(
+                        'name' => $child->name,
+                        'id' => $child->id,
+                        'display_order' => $child->display_order,
+                        'parent_display_order' => $et->display_order,
+                        'class_name' => CHtml::modelName($child->class_name),
+                    );
+                }
+            }
             $element_types_tree[] = $struct;
         }
 

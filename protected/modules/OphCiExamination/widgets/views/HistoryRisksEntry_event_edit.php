@@ -49,6 +49,9 @@ if (!isset($values)) {
     </span>
   </td>
   <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?= $row_count ?>_risk_id_error">
+      <?php if($removable) {
+          echo CHtml::hiddenField($field_prefix . '[has_risk]' , (string) HistoryRisksEntry::$PRESENT);
+      } else { ?>
     <label class="inline highlight">
         <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
             $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
@@ -66,6 +69,7 @@ if (!isset($values)) {
             array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
       Not checked
     </label>
+      <?php } ?>
   </td>
   <td>
     <button

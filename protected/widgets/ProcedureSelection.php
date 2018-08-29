@@ -37,6 +37,7 @@ class ProcedureSelection extends BaseFieldWidget
     public $restrict_common = false;
     public $callback = false;
     public $layout = false;
+    public $popupButton = true;
 
     public function run()
     {

@@ -48,7 +48,7 @@ var optionsMeds = {
       if(this.point.stop_reason){
         stop_reason = '<br/><strong> Stop Reason:'+ this.point.stop_reason +'</strong>'
       }
-      return '<strong>' + this.series.name + '</strong><br /><strong>'
+      return '<strong>' + this.point.name + '</strong><br /><strong>'
         + Highcharts.dateFormat('%d/%m/%Y', this.point.low) + ' - '
         + Highcharts.dateFormat('%d/%m/%Y', this.point.high)+ '</strong>'
         + stop_reason;
@@ -68,7 +68,9 @@ var optionsMeds = {
         padding:0,				// needs to be 0, or else SVG rect shows up with the CSS
         allowOverlap: true,
         formatter: function () {
-          return this.series.name;
+          if (this.point.point_index == 0 && this.y ==this.point.low){
+            return this.point.name;
+          }
         },
       },
       showInLegend:false, 	// no legend
@@ -88,20 +90,28 @@ function setSeriesNo(length){
 
 function drawMedsSeries(chart, data, eye_side){
   chart.setSize(null ,title_height + series_no * series_spacing);
+  var options = {
+    className: "oes-hs-eye-"+eye_side+"-dull",
+    pointWidth: "20",
+    keys: ['low','high','stop_reason']
+  };
+  var data_list = [];
   for (name in data){
-    var options = {
-      className: "oes-hs-eye-"+eye_side+"-dull",
-      pointWidth: "20",
-      keys: ['low','high','stop_reason']
-    };
-    addSeries(chart, name, [data[name]], options );
+    for (i in data[name]){
+        data_list.push({
+          x: chart.xAxis[0]['categories'].indexOf(name),
+          'low':data[name][i]['low'],
+          'high':data[name][i]['high'],
+          'name': name,
+          'point_index': i,
+          'stop_reason': data[name][i]['stop_reason']});
+      }
   }
-  for (var i = Object.keys(data).length; i < series_no; i++){
-    var options = {
-      className: "oes-hs-eye-"+eye_side+"-dull",
-      pointWidth: "20",
-      keys: ['low','high','stop_reason']
-    };
-    addSeries(chart, '', {'low': 0, 'high': 0, 'stop_reason': ''}, options );
+
+  //fill empty columns to make sure both eye side display equal height.
+  for (var j = Object.keys(data).length; j < series_no; j++){
+    data_list.push({x: j, 'low': null, 'high': null, 'stop_reason':''});
   }
+  addSeries(chart, '', data_list, options );
+
 }

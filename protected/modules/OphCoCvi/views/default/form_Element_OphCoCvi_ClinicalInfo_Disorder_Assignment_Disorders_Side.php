@@ -9,9 +9,9 @@
         $field_base_name = CHtml::modelName($element) . "[{$side}_disorders][{$disorder->id}]"; ?>
       <tr>
         <td>
-          <label><?php echo $disorder->name; ?></label>
+          <?php echo $disorder->name; ?>
         </td>
-        <td class="cols-full">
+        <td>
           <label class="inline highlight">
               <?php echo CHtml::radioButton(
                   $field_base_name . "[affected]",
