@@ -2546,15 +2546,10 @@ class OphCiExamination_API extends \BaseAPI
         $sets = models\SurgicalHistorySet::model()->findAll($criteria);
 
         $required = array();
-        foreach($sets as $set){
-            if($set->entries){
-                foreach($set->entries as $entry){
-                    $operation = $entry->operation;
-                    if (isset($operation->id)) {
-                        $required[$operation->id] = $operation;
-                    } else {
-                        $required[] = $operation;
-                    }
+        foreach ($sets as $set) {
+            if ($set->entries) {
+                foreach ($set->entries as $entry) {
+                    $required[] = $entry->operation;
                 }
             }
         }
@@ -2631,7 +2626,7 @@ class OphCiExamination_API extends \BaseAPI
 
         return $result;
     }
-    
+
     /*
      * Last Blood Pressure (returned as systolic / diastolic - e.g, 100/80)
      * @param $patient
@@ -2647,7 +2642,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->blood_pressure_systolic.'/'.$bp->blood_pressure_diastolic;
         }
     }
-    
+
     /*
      * Last O2 Stat
      * @param $patient
@@ -2663,7 +2658,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->o2_sat;
         }
     }
-    
+
     /*
      * Last Blood Glucose
      * @param $patient
@@ -2679,7 +2674,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->blood_glucose;
         }
     }
-    
+
     /*
      * Last HbA1c
      * @param $patient
@@ -2695,7 +2690,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->hba1c;
         }
     }
-    
+
     /*
      * Last height
      * @param $patient
@@ -2711,7 +2706,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->height;
         }
     }
-    
+
     /*
      * Last weight
      * @param $patient
@@ -2727,7 +2722,7 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->weight;
         }
     }
-    
+
     /*
      * Last BMI
      * @param $patient
@@ -2748,7 +2743,7 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
     }
-    
+
     /*
      * Last Pulse Measurement
      * @param $patient
