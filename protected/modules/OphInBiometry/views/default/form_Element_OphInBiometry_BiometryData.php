@@ -21,7 +21,7 @@
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div class="<?= $eye_side ?>-eye <?= !$element->hasEye($eye_side) ? 'inactive' : ''; ?>"
            data-side="<?= $eye_side ?>">
-        <div class="active-form field-row flex-layout"
+        <div class="active-form flex-layout"
              style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
             <?php $this->renderPartial('form_Element_OphInBiometry_BiometryData_fields', array(
                 'side' => $eye_side,
