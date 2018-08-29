@@ -73,7 +73,7 @@ function getLevelColour($risk_level){
 </div>
 <div class="element-fields element-eyes">
   <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-  <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if ($element->id || !empty($_POST)) {
+  <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if ($element->id || !empty($_POST)) {
       ?> uninitialised<?php }?>" data-side="<?= $eye_side ?>">
     <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>

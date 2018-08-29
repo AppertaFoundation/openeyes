@@ -103,7 +103,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
     </header>
     <div class="indent-correct element-data element-eyes">
         <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-          <div class="element-eye <?= $eye_side ?>-eye column">
+          <div class="js-element-eye <?= $eye_side ?>-eye column">
             <div class="data-group">
               <ul class="dslash-list large-text">
                 <li><?php echo CHtml::encode($element->{'unaided_'.$eye_side.'_va'}.' Unaided'); ?></li>

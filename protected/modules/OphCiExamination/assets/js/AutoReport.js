@@ -11,7 +11,7 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
     }
 
     AutoReportHandler._defaultOptions = {
-        containerSelector: '.element-eye.column.side'
+        containerSelector: '.js-element-eye.column.side'
     };
 
     AutoReportHandler.prototype.initialise = function()

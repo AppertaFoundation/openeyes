@@ -44,7 +44,7 @@ foreach ($lasertypes as $lt) {
 	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
 	<div
-      class="element-eye <?=$eye?>-eye column <?=$side?> side <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
+      class="js-element-eye <?=$eye?>-eye column <?=$side?> side <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
       data-side="<?=$eye?>"
   >
 		<div class="active-form">

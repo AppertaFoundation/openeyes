@@ -20,7 +20,7 @@
 <div class="element-eyes sub-element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye): ?>
-      <div class="element-eye <?=$eye?>-eye column <?=$side?> side" data-side="<?=$eye?>">
+      <div class="js-element-eye <?=$eye?>-eye column <?=$side?> side" data-side="<?=$eye?>">
       <div class="active-form" style="<?= !$element->hasEye($eye) ? "display: none;" : ""?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
       <div class="cols-full flex-layout">

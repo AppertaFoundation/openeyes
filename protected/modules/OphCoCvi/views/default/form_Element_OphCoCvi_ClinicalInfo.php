@@ -110,7 +110,7 @@ if ($this->checkClinicalEditAccess()) { ?>
         </div>
         <div class="indent-correct element-eyes element-fields">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-          <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
+          <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
             <div class="active-form data-group">
               <table class="cols-full">
                 <tbody>

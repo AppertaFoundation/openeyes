@@ -36,7 +36,7 @@ $(document).ready(function() {
 	});
 
 	$(this).delegate('.addReading', 'click', function(e) {
-		var side = $(this).closest('.element-eye').attr('data-side');
+		var side = $(this).closest('.js-element-eye').attr('data-side');
 		OphCiPhasing_IntraocularPressure_addReading(side);
 		e.preventDefault();
 	});

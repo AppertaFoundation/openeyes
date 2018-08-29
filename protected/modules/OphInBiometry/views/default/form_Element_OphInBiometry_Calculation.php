@@ -17,48 +17,49 @@
  */
 ?>
 <style>
-    .readonly-div {
-        height: auto;
-        border: 1px solid #6b8aaa;
-        background-color: #dddddd;
-    }
+  .readonly-div {
+    height: auto;
+    border: 1px solid #6b8aaa;
+    background-color: #dddddd;
+  }
 </style>
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-        <div id="<?php echo $eye_side ?>-eye-calculation"
-             class="element-eye <?php echo $eye_side ?>-eye <?php echo $page_side?> side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
-             data-side="<?php echo $eye_side ?>">
-            <div class="active-form">
-                <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                    array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-            </div>
-            <div class="inactive-form">
-                <div class="add-side">
-                    Set <?php echo $eye_side ?> side lens type
-                </div>
-            </div>
+      <div id="<?php echo $eye_side ?>-eye-calculation"
+           class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+           data-side="<?php echo $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+            <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
+                array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
         </div>
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+          <div class="add-side">
+            Set <?php echo $eye_side ?> side lens type
+          </div>
+        </div>
+      </div>
     <?php endforeach; ?>
 </div>
 <div class="element-fields element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-        <div id="<?php echo $eye_side ?>-eye-comments" class="element-eye <?php echo $eye_side ?>-eye <?php echo $page_side?> side disabled"
-             data-side="<?php echo $eye_side ?>">
-            <div class="active-form">
-                <div class="element-fields">
-                    <span class="field-info">General Comments:</span>
-                </div>
-            </div>
-            <div class="active-form">
-                <div class="element-fields">
-                    <?php echo $form->textArea($element, 'comments_'.$eye_side,
-                        array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-                        array('class' => 'comments_'.$eye_side)) ?>
-                </div>
-            </div>
+      <div id="<?php echo $eye_side ?>-eye-comments"
+           class="js-element-eye <?php echo $eye_side ?>-eye <?php echo $page_side ?> side disabled"
+           data-side="<?php echo $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+          <div class="element-fields">
+            <span class="field-info">General Comments:</span>
+          </div>
         </div>
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+          <div class="element-fields">
+              <?php echo $form->textArea($element, 'comments_' . $eye_side,
+                  array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
+                  array('class' => 'comments_' . $eye_side)) ?>
+          </div>
+        </div>
+      </div>
     <?php endforeach; ?>
 
 </div>
@@ -66,36 +67,17 @@
 <div id="comments" style="background-color: inherit">
 	<span class="field-info large-12">
         <?php
-    if ($this->is_auto) {
-        if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
-            echo 'Device Comments:';
-            echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
+        if ($this->is_auto) {
+            if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
+                echo 'Device Comments:';
+                echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
+            }
+        } else {
+            ?>
+          <span class="field-info">Comments:</span>
+            <?php
+            echo $form->textField($element, 'comments', array('style' => 'width:1027px;', 'nowrapper' => true), null);
         }
-    } else {
         ?>
-        <span class="field-info">Comments:</span>
-        <?php
-        echo $form->textField($element, 'comments', array('style' => 'width:1027px;', 'nowrapper'=>true), null);
-    }
-    ?>
 	</span>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        if ($('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').hasClass('inactive')) {
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').hide();
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').show();
-        } else {
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').show();
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').hide();
-        }
-        if ($('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').hasClass('inactive')) {
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').hide();
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').show();
-        } else {
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').show();
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').hide();
-        }
-    });
-</script>

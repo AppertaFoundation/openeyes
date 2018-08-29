@@ -1377,7 +1377,7 @@ function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
  * Show other type field only if type is set to "Other"
  */
 function OphCiExamination_Refraction_updateType(field) {
-    var other = $(field).closest('.element-eye').find('.refraction-type-other');
+    var other = $(field).closest('.js-element-eye').find('.refraction-type-other');
     if ($(field).val() == '') {
         other.show();
         other.find('.refraction-type-other-field').focus();

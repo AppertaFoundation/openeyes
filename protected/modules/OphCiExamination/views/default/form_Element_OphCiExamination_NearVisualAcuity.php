@@ -51,7 +51,7 @@ $key = 0;
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
           data-side="<?= $eye_side ?>"
     >
       <div class="active-form data-group flex-layout"

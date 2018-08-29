@@ -26,10 +26,10 @@ if ($right_emails || $left_emails) {
 	</header>
 
 	<div class="element-data element-eyes">
-		<div class="element-eye right-eye column">
+		<div class="js-element-eye right-eye column">
 			<?php $this->renderPartial('emails_side', array('emails' => $right_emails)); ?>
 		</div>
-		<div class="element-eye left-eye column">
+		<div class="js-element-eye left-eye column">
 			<?php $this->renderPartial('emails_side', array('emails' => $left_emails)); ?>
 		</div>
 	</div>
