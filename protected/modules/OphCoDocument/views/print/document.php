@@ -31,24 +31,28 @@
     <?php endif; ?>
     <?php if(($element->right_document_id) || ($element->left_document_id)): ?>
         <table border="0">
+          <colgroup>
+            <col class="cols-6">
+            <col class="cols-6">
+          </colgroup>
             <thead>
                 <tr>
-                    <th width="50%">
+                    <th>
                         <?php if($element->right_document_id): ?>Right side<?php endif; ?>
                     </th>
-                    <th width="50%">
+                    <th>
                         <?php if($element->left_document_id): ?>Left side<?php endif; ?>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td width="50%">
+                    <td>
                         <?php if($element->right_document_id): ?>
                             <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document')); ?>
                         <?php endif; ?>
                     </td>
-                    <td width="50%">
+                    <td>
                         <?php if($element->left_document_id): ?>
                             <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
                         <?php endif; ?>
