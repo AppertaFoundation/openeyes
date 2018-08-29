@@ -19,7 +19,7 @@
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
 <div class="sub-element-fields element-eyes data-group">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="js-element-eye <?= $eye_side ?>-eye column optional side <?= $page_side ?>
+      <div class="js-element-eye <?= $eye_side ?>-eye column optional <?= $page_side ?>
     <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
            data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">

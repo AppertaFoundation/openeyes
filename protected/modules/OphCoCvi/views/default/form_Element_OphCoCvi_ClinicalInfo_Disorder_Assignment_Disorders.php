@@ -17,7 +17,7 @@
     <?php if ($disorder_section->disorders) { ?>
       <div class="element-fields element-eyes data-group">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-        <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
+        <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?= $eye_side?>">
           <div class="active-form">
               <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                   'side' => $eye_side,

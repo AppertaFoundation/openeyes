@@ -40,7 +40,7 @@ if ($element->event != null && $element->event->id > 0) {
                 <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
                     $element->hasEye($eye_side);
                     ?>
-                    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
+                    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
                          data-side="<?= $eye_side ?>">
                         <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
                             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>

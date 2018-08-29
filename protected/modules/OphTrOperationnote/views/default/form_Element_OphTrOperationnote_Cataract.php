@@ -40,7 +40,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
       <div class="alert-box alert">This element is missing and needs to be completed</div>
     <?php } ?>
 
-  <div class="element-fields full-width js-side" data-side="<?=$element->eye?>">
+  <div class="element-fields full-width" data-side="<?=$element->eye?>">
     <div class="eyedraw-row cataract cols-11 flex-layout col-gap"
          data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
       <div class="cols-6">

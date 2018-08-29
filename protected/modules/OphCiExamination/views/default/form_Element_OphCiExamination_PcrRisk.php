@@ -99,7 +99,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
     foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
         $pcrRisk = new PcrRisk();
         $display = ($element->{'has'.ucfirst($eye)}()) ? 'block' : 'none'; ?>
-      <div class="js-element-eye <?=$eye?>-eye column <?=$side?> side" data-side="<?=$eye?>" >
+      <div class="js-element-eye <?=$eye?>-eye column <?=$side?>" data-side="<?=$eye?>" >
           <?php
           if($this->event){
               $patientId = $this->event->episode->patient->id;

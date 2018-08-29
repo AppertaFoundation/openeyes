@@ -106,7 +106,7 @@ $label_width = 5;
           $hasEyeFunc = 'has' . ucfirst($eye);
           ?>
         <div
-            class="js-element-eye <?= $eye ?>-eye column <?= $side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
+            class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
             data-side="<?= $eye ?>">
           <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -121,7 +121,7 @@ $label_width = 5;
               </div>
             </div>
           </div>
-          <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : "" ?>">
+          <div class="inactive-form" style="<?= $element->$hasEyeFunc() ? "display: none;" : "" ?>">
             <div class="add-side">
               <a href="#">
                 Add <?= $eye ?> eye <span class="icon-add-side"></span>

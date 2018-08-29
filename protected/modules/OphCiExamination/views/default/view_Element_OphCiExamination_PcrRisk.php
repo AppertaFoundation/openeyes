@@ -5,7 +5,7 @@
     foreach (array('right', 'left') as $eye_side):
         $page_side = ($eye_side === 'right') ? 'left' : 'right';
         ?>
-      <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side "
+      <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>"
            data-side="<?= $eye_side ?>">
     <?php
         if ($element->{$eye_side . '_glaucoma'}) { ?>

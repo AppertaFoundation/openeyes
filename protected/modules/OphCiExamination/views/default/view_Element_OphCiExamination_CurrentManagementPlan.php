@@ -27,7 +27,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
     $hasEyeFunc = "has".ucfirst($eye);
   ?>
-	<section class="js-element-eye <?=$side?> side <?=$eye?>-eye">
+	<section class="js-element-eye <?=$side?> <?=$eye?>-eye">
     <?php if ($element->$hasEyeFunc()):?>
     <div class="data-group">
       <table>
