@@ -191,10 +191,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.initialiseSearch($row.find('input.search'));
 
       $row.on('change', controller.options.drugSelectSelector, function(e) {
+          var $option = $(this).find('option:selected'),
+              tags = "" + $option.data('tags');
           controller.selectMedication($(this).parents('td'), {
-              value: $(this).val(),
-              label: $(this).find('option:selected').text(),
-              type: 'd' // only have pre-selected drugs available at the moment.
+              value: $option.val(),
+              label: $option.text(),
+              name: $option.data('tallmanlabel'),
+              type: 'd', // only have pre-selected drugs available at the moment.
+              tags: tags.split(',')
           });
       });
 

@@ -21,7 +21,7 @@
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
-<div class="element-fields">
+<div class="element-fields js-side" data-side="<?=$element->eye?>">
     <div class="row eyedraw-row cataract" data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
         <div class="fixed column">
             <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
@@ -42,13 +42,13 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
     </span>
 
     <div id="ophTrOperationnotePCRRiskDiv">
-        <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote">
+        <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote js-pcr-left">
             <?php
             $this->renderPartial('application.views.default._pcr_risk_form',
                 array('form' => $form, 'element' => $element, 'side' => 'left'));
             ?>
         </div>
-        <div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote">
+        <div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote js-pcr-right">
             <?php
             $this->renderPartial('application.views.default._pcr_risk_form',
                 array('form' => $form, 'element' => $element, 'side' => 'right'));

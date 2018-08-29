@@ -46,6 +46,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <td style="width:290px;padding-top:15px;padding-bottom:15px;">
 
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[row_key][]" value="<?=$row_count?>" />
 
         <input type="text"
                class="diagnoses-search-autocomplete"
@@ -54,8 +55,8 @@ if (isset($values['date']) && strtotime($values['date'])) {
                     'id' => $values['id'],
                     'name' => $values['disorder_display'],
                     'disorder_id' => $values['disorder_id'])); ?>'
-
-        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
+               >
+        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][<?= $row_count?>]" value="">
     </td>
 
     <td>
@@ -73,9 +74,11 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
     <td>
         <input type="radio"
-               name="principal_diagnosis"
-               value="<?php echo $values['disorder_id']; ?>"
-               <?php if ($values['is_principal'] == 1) {?>checked="checked" <?php } ?>/>
+               name="principal_diagnosis_row_key"
+               value="<?php echo $row_count; ?>"
+               <?php if ($values['is_principal'] == 1) {
+                   ?>checked="checked" <?php } ?>/>
+
     </td>
     <td>
         <fieldset class="row field-row fuzzy-date">

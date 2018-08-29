@@ -162,7 +162,7 @@ class DrugController extends BaseAdminController
                     'name'
                 )),*/
                 'htmlOptions' => array(
-                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
+                    'autocomplete_url' => $this->createUrl('/oeadmin/drug/tagsAutocomplete')
                 )
             ),
             'national_code' => 'text',

@@ -14,7 +14,7 @@
             <button class="mdl-button mdl-js-button mdl-button--raised"
                     id="exit-button">
                 Exit
-                <i class="material-icons right">close</i>
+                <i class="material-icons">close</i>
             </button>
             <?php if ($this->isRefreshable() ):?>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
@@ -22,7 +22,7 @@
                     formaction="/OphTrOperationbooking/whiteboard/reload/<?=$this->getWhiteboard()->event_id?>"
                     title="Valid as at <?=date_create_from_format('Y-m-d H:i:s', $this->getWhiteboard()->last_modified_date)->format('j M Y H:i:s')?>">
                     Refresh
-                    <i class="material-icons right">refresh</i>
+                    <i class="material-icons">refresh</i>
                 </button>
             <?php endif;?>
         <?php $this->endWidget()?>

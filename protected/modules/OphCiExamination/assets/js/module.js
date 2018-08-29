@@ -826,7 +826,9 @@ $(document).ready(function() {
         if(near === 'near'){
             suffix = 'NearVisualAcuity';
         }
-        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
+
+        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true, true);
+
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
         if (el.length) {
             el.addClass('clicked');
@@ -880,20 +882,6 @@ $(document).ready(function() {
         // VA can affect DR
         OphCiExamination_DRGrading_update(side);
         e.preventDefault();
-    });
-
-    $(this).delegate('a.foster_images_link', 'click', function(e) {
-        var side = $(this).closest('[data-side]').attr('data-side');
-        $('.foster_images_dialog[data-side="'+side+'"]').dialog('open');
-        e.preventDefault();
-    });
-    $('body').delegate('.foster_images_dialog area', 'click', function() {
-        var value = $(this).attr('data-vh');
-        var side = $(this).closest('[data-side]').attr('data-side');
-        $('.foster_images_dialog[data-side="'+side+'"]').dialog('close');
-        $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_'+side+'_van_herick_id option').attr('selected', function () {
-            return ($(this).text() == value + '%');
-        });
     });
 
     /**
@@ -2146,12 +2134,6 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
 }
 
 function OphCiExamination_Gonioscopy_init() {
-    $(".foster_images_dialog").dialog({
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        width: 480
-    });
 
     ED.Checker.onAllReady(function() {
     $('.gonioscopy-mode').each(function(_, element) {

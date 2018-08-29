@@ -142,9 +142,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
     {
-        if (Yii::app()->params['fife']) {
-            $element->witness_required = true;
-        }
         if ($action == 'create') {
             if ($this->booking_operation) {
                 $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
@@ -649,6 +646,11 @@ class DefaultController extends BaseEventTypeController
                 $complications[] = OphTrOperationnote_CataractComplications::model()->findByPk($c_id);
             }
         }
+
+        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])){
+            $element->setEye( \Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']) );
+        }
+
         $element->complications = $complications;
 
         $devices = array();

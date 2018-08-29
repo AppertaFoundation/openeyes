@@ -184,16 +184,16 @@ class Firm extends BaseActiveRecordVersioned
 
     /**
      * Fetch an array of firm IDs and names.
-     *
+     * @param null $subspecialty_id
+     * @param null $include_id
      * @return array
      */
     public function getList($subspecialty_id = null, $include_id = null)
     {
-        return CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed($subspecialty_id), "id", "name");
         $cmd = Yii::app()->db->createCommand()
             ->select('f.id, f.name')
             ->from('firm f')
-            ->where('f.active = 1'.($include_id ? ' or f.id = :include_id' : ''));
+            ->where('f.active = 1' . ($include_id ? ' or f.id = :include_id' : ''));
 
         if ($subspecialty_id) {
             $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
@@ -221,8 +221,9 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($include_non_subspecialty = false, $subspecialty_id = null, $only_used_firms = false)
+    public function getListWithSpecialties($include_non_subspecialty = false, $subspecialty_id = null)
     {
+
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
 
         $command = Yii::app()->db->createCommand()
@@ -232,12 +233,8 @@ class Firm extends BaseActiveRecordVersioned
             ->$join_method('subspecialty s', 'ssa.subspecialty_id = s.id')
             ->where('f.active = 1');
 
-        if($subspecialty_id){
+        if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
-        }
-
-        if($only_used_firms){
-            $command->join('ophtroperationbooking_operation_session session',' f.id = session.firm_id');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();
@@ -246,7 +243,7 @@ class Firm extends BaseActiveRecordVersioned
         foreach ($firms as $firm) {
             $display = $firm['name'];
             if ($firm['subspecialty']) {
-                $display .= ' ('.$firm['subspecialty'].')';
+                $display .= ' (' . $firm['subspecialty'] . ')';
             }
             $data[$firm['id']] = $display;
         }
@@ -274,7 +271,7 @@ class Firm extends BaseActiveRecordVersioned
     public function getConsultantName()
     {
         if ($consultant = $this->consultant) {
-            return $consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name;
+            return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
         }
 
         return 'NO CONSULTANT';
@@ -294,7 +291,7 @@ class Firm extends BaseActiveRecordVersioned
     public function getNameAndSubspecialty()
     {
         if ($this->serviceSubspecialtyAssignment) {
-            return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->name.')';
+            return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
         } else {
             return $this->name;
         }
@@ -306,7 +303,7 @@ class Firm extends BaseActiveRecordVersioned
     public function getNameAndSubspecialtyCode()
     {
         if ($this->serviceSubspecialtyAssignment) {
-            return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec.')';
+            return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec . ')';
         } else {
             return $this->name;
         }
@@ -351,7 +348,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public function getTreeName()
     {
-        return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
+        return $this->name . ' ' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
     }
 
     /**

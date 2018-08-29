@@ -1785,7 +1785,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>
@@ -2841,7 +2841,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<GOTO_PROPERTY>Watzke</GOTO_PROPERTY>
 			</INDEX>
           </INDEX_LIST>
-		  
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Van Herick</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\VanHerick</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Examination Gonioscopy</PRIMARY_TERM>
@@ -2856,11 +2859,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
               <GOTO_TAG>div.field-label</GOTO_TAG>
               <GOTO_TEXT>Angle Open?</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Van Herick</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_van_herick_id</GOTO_ID>
             </INDEX>
             <INDEX>
               <PRIMARY_TERM>Comments</PRIMARY_TERM>

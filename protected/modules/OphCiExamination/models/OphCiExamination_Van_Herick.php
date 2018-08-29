@@ -16,20 +16,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "et_ophtroperationnote_preparation_skin_preparation".
+ * This is the model class for table "ophciexamination_gonioscopy_van_herick".
  *
- * The followings are the available columns in table 'et_ophtroperationnote_preparation_skin_preparation':
- *
- * @property string $id
- * @property varchar $name
+ * @property int $id
+ * @property string $name
  */
-class OphTrOperationnote_PreparationSkinPreparation extends BaseActiveRecordVersioned
+class OphCiExamination_Van_Herick extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @return OphCiExamination_Van_Herick the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -41,7 +41,7 @@ class OphTrOperationnote_PreparationSkinPreparation extends BaseActiveRecordVers
      */
     public function tableName()
     {
-        return 'ophtroperationnote_preparation_skin_preparation';
+        return 'ophciexamination_van_herick';
     }
 
     public function defaultScope()
@@ -54,9 +54,9 @@ class OphTrOperationnote_PreparationSkinPreparation extends BaseActiveRecordVers
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
         return array(
+                array('name', 'required'),
+                array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -65,26 +65,7 @@ class OphTrOperationnote_PreparationSkinPreparation extends BaseActiveRecordVers
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-        );
-    }
-
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels()
-    {
-        return array(
-        );
-    }
-
-    public function behaviors()
-    {
-        return array(
-            'LookupTable' => 'LookupTable',
-        );
+        return array();
     }
 
     /**
@@ -94,15 +75,12 @@ class OphTrOperationnote_PreparationSkinPreparation extends BaseActiveRecordVers
      */
     public function search()
     {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
-
-        $criteria = new CDbCriteria();
-
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
-            ));
+        ));
     }
 }

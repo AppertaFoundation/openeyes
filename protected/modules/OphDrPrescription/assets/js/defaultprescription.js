@@ -142,7 +142,7 @@ function addRepeat() {
     key: getNextKey(),
     patient_id: OE_patient_id
   }, function (data) {
-    $('#prescription_items').append(data);
+    $('#prescription_items tbody').append(data);
     decorateRows();
     markUsed();
     applyFilter();
@@ -158,7 +158,7 @@ function addSet(set_id) {
       patient_id: OE_patient_id,
       set_id: set_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
       markUsed();
       applyFilter();
@@ -171,7 +171,7 @@ function addSet(set_id) {
       $('#set_name').val(data.drugsetName);
       $('#subspecialty_id').val(data.drugsetSubspecialtyId);
       clear_prescription();
-      $('#prescription_items').append(data.tableRows);
+      $('#prescription_items tbody').append(data.tableRows);
       decorateRows();
       markUsed();
       applyFilter();
@@ -188,7 +188,7 @@ function addItem(label, item_id) {
       patient_id: OE_patient_id,
       drug_id: item_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
     });
   } else {
@@ -196,7 +196,7 @@ function addItem(label, item_id) {
       key: getNextKey(),
       drug_id: item_id
     }, function (data) {
-      $('#prescription_items').append(data);
+      $('#prescription_items tbody').append(data);
       decorateRows();
     });
   }

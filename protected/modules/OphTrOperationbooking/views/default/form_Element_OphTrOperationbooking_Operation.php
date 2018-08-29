@@ -68,7 +68,7 @@
     ?>
 	<?php echo $form->radioButtons($element, 'priority_id', CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
-        if (Yii::app()->params['ophtroperationbooking_referral_link']) {
+        if (Yii::app()->params['ophtroperationbooking_referral_link'])  {
             ?>
 		<div class="row field-row">
 	<?php
@@ -117,6 +117,7 @@
 	<?php $form->textArea($element, 'special_equipment_details', array(), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
     <?php echo $form->radioBoolean($element, 'preassessment_booking_required'); ?>
     <?php echo $form->radioButtons($element, 'overnight_stay_required_id', 'OphTrOperationbooking_Overnight_Stay_Required'); ?>
+    <?php if ( Yii::app()->params['disable_theatre_diary'] == 'off' ) { echo $form->checkBox($element, 'is_golden_patient');} ?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<?php echo $form->textArea($element, 'comments_rtt', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<div class="row field-row">

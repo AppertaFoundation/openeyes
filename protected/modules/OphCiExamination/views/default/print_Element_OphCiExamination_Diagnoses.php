@@ -37,7 +37,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
         } foreach($right_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?= ($disorder[0]->getDisplayDate() . ' ' . $disorder[0]->term) ?><sup>*</sup></span>
+                    <?= ($disorder[0]->term) ?><sup>*</sup></span>
                 </div>
             </div>
             <?php
@@ -71,7 +71,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
         foreach($left_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?= ($disorder[0]->getDisplayDate() . ' ' . $disorder[0]->term) ?><sup>*</sup></span>
+                    <?= ($disorder[0]->term) ?><sup>*</sup></span>
                 </div>
             </div>
             <?php

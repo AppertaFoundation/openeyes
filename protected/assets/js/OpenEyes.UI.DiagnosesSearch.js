@@ -29,6 +29,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.fieldPrefix = this.options.fieldPrefix;
         this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
+        this.row_key = this.options.row_key;
         this.renderCommonlyUsedDiagnoses = this.options.renderCommonlyUsedDiagnoses;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
@@ -104,10 +105,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
+        if(typeof savedDiagnoses === "string" && savedDiagnoses){
+            savedDiagnoses = JSON.parse(savedDiagnoses);
+        }
+
         if(savedDiagnoses && savedDiagnoses.disorder_id){
             controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
         }
-    }
+    };
 
     /**
      * Diagnosis selected for the row
@@ -260,7 +265,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
             $(this).val('');
         });
-    }
+    };
 
     exports.DiagnosesSearchController = DiagnosesSearchController;
 

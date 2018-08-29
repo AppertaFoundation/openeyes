@@ -16,27 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<?php if ($element->getSetting('fife')) {?>
-	<div class="element-fields">
-		<?php echo $form->dropDownListRow(
-            $element,
-            array(
-                'scrub_nurse_id',
-                'floor_nurse_id',
-                'accompanying_nurse_id',
-            ),
-            array(
-                CHtml::listData($element->scrub_nurses, 'id', 'FullName'),
-                CHtml::listData($element->floor_nurses, 'id', 'FullName'),
-                CHtml::listData($element->accompanying_nurses, 'id', 'FullName'),
-            ),
-            array(
-                array('empty' => '- Please select -'),
-                array('empty' => '- Please select -'),
-                array('empty' => '- Please select -'),
-            )
-        )?>
-		<?php echo $form->dropDownList($element, 'operating_department_practitioner_id', CHtml::listData($element->operating_department_practitioners, 'id', 'FullName'), array('empty' => '- Please select -'), $element->operating_department_practitioner_id)?>
-	</div>
-<?php }?>
+<div class="box admin">
+<div class="row">
+    <div class="large-8 column">
+        <h2>Document sub types</h2>
+    </div>
+</div>
+    <div class="row data-row">
+        <div class="large-4 column end">
+            <?php echo CHtml::htmlButton('Add sub type', array('class' => 'button small addSubType'))?>
+        </div>
+    </div>
+<b> i say yes</b>
+</div>
