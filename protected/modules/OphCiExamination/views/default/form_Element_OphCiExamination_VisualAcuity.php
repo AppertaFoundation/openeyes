@@ -58,7 +58,7 @@ if ($cvi_api) {
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table class="cols-full blank va_readings"
-                   style="<?= !$element->{$eye_side . '_readings'}? 'display: none;': '' ?>" >
+                   style="<?= ($element->isNewRecord==1 || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>" >
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -78,10 +78,7 @@ if ($cvi_api) {
               </tbody>
             </table>
             <div class="data-group noReadings"
-                style="<?= $element->{$eye_side . '_readings'}? 'display: none;':'' ?>">
-              <div class="cols-4 column">
-                <div class="data-value not-recorded">Not recorded</div>
-              </div>
+                style="<?= ($element->isNewRecord==1 || !sizeof($element->{$eye_side .'_readings'}))? '':'display: none;' ?>">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
