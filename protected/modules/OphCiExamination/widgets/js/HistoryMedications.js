@@ -169,7 +169,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.initialiseRow = function($row)
   {
       var controller = this;
-
       $row.on('change', controller.options.drugSelectSelector, function(e) {
           var $option = $(this).find('option:selected'),
               tags = "" + $option.data('tags');
@@ -228,9 +227,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
 
-  HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
+  HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
-      $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
+      let drug_id = $row.find("input[name*='[drug_id]']").val();
+      $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
           for (var name in res) {
               var $input = $row.find('[name$="[' + name +']"]');
               if (name === 'dose') {
@@ -366,7 +366,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     var rows = this.createRow(selectedItems);
     for(var i in rows){
       this.$table.find('tbody').append(rows[i]);
-      this.initialiseRow(this.$table.find('tbody tr:last'));
+      let $lastRow = this.$table.find('tbody tr:last');
+      this.initialiseRow($lastRow);
+      this.loadDrugDefaults($lastRow);
     }
 
     $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
@@ -374,24 +376,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $(this.options.medicationSearchResult).empty();
   };
 
-  HistoryMedicationsController.prototype.selectMedication = function($container, item)
-    {
-        var displayText = this.getItemDisplayValue(item);
-        if (item.type === 't') {
-            $container.find(this.options.asTypedFieldSelector).val(item.value);
-        }
-        else if (item.type === 'd') {
-            $container.find(this.options.drugFieldSelector).val(item.value);
-            this.loadDrugDefaults($container.parents('tr'), item);
-        } else {
-            $container.find(this.options.medicationFieldSelector).val(item.value);
-        }
-        $container.find(this.options.medicationNameSelector).text(displayText);
-        $container.find(this.options.medicationDisplaySelector).show();
-        $container.find(this.options.medicationSearchSelector).hide();
-        $container.find(this.options.drugSelectSelector).hide();
-        this.processRisks(item);
-    };
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
     {
         if (item.type === 't') {
