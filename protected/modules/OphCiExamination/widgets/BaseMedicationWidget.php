@@ -123,16 +123,15 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     $entry->end_date = null;
                 }
 
-                $entries[] = $entry;
-
                 if(in_array('prescribe', $entry->attributeNames()) && $entry->prescribe) {
                     $entry->setScenario("to_be_prescribed");
-                    $to_prescription[] = $entry;
                 }
+
+                $entries[] = $entry;
+
             }
 
             $element->entries = $entries;
-            $element->entries_to_prescribe = $to_prescription;
 
         }
         else {

@@ -27,6 +27,14 @@
 class OphDrPrescription_Item extends EventMedicationUse
 {
     /**
+     * @var int
+     *
+     * The item from which this item was copied
+     */
+
+    public $original_item_id;
+
+    /**
      * Returns the static model of the specified AR class.
      */
 

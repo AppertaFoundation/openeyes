@@ -26,7 +26,7 @@
  *
  * The followings are the available model relations:
  * @property Event $event
- * @property Item[] $items
+ * @property OphDrPrescription_Item[] $items
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {

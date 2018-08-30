@@ -186,7 +186,17 @@ class MedicationManagement extends BaseMedicationElement
                 }
                 return false;
             }
+
+            /* Why do I have to do this? */
+
+            $id = \Yii::app()->db->getLastInsertID();;
+            $entry->id = $id;
+
             $saved_ids[] = $entry->id;
+
+            if($entry->prescribe) {
+                $this->entries_to_prescribe[] = $entry;
+            }
         }
 
         foreach ($orig_entries as $orig_entry) {
@@ -194,6 +204,7 @@ class MedicationManagement extends BaseMedicationElement
                 $orig_entry->delete();
             }
         }
+
         if(count($this->entries_to_prescribe) > 0) {
             $this->generatePrescriptionEvent();
         }
@@ -211,18 +222,29 @@ class MedicationManagement extends BaseMedicationElement
         $prescription->event_type_id = $prescription_event_type[0]->id;
         $prescription->event_date = $this->event->event_date;
         if(!$prescription->save()) {
-            die(print_r($prescription->errors, true));
+            \Yii::trace(print_r($prescription->errors, true));
         }
         $prescription_details = $this->getPrescriptionDetails();
         $prescription_details->event_id = $prescription->id;
         if(!$prescription_details->save()){
-            die(print_r($prescription_details->errors, true));
+            \Yii::trace(print_r($prescription_details->errors, true));
         }
         foreach($prescription_details->items as $item){
             $item->event_id = $prescription->id;
             if(!$item->save()) {
                 \Yii::trace(print_r($item->errors, true));
             }
+
+            $item->id = \Yii::app()->db->getLastInsertId();
+
+            $original_item_id = $item->original_item_id;
+            $orig_item = MedicationManagementEntry::model()->findByPk($original_item_id);
+            $orig_item->setAttribute('prescription_item_id', $item->id);
+
+            if(!$orig_item->save()) {
+                \Yii::trace(print_r($orig_item->errors, true));
+            }
+
         }
     }
 
@@ -233,7 +255,9 @@ class MedicationManagement extends BaseMedicationElement
             $prescription_details = new \Element_OphDrPrescription_Details();
             $prescription_items = array();
             foreach($entries as $entry) {
-                $prescription_items[] = $this->getPrescriptionItem($entry);
+                $prescription_item = $this->getPrescriptionItem($entry);
+                $prescription_item->original_item_id = $entry->id;
+                $prescription_items[] = $prescription_item;
             }
             $prescription_details->items = $prescription_items;
             $this->prescription_details = $prescription_details;
