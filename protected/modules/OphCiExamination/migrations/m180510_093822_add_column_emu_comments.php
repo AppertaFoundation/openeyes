@@ -1,6 +1,6 @@
 <?php
 
-class m180806_090000_add_column_emu_comments extends CDbMigration
+class m180510_093822_add_column_emu_comments extends CDbMigration
 {
 	public function up()
 	{
