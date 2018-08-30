@@ -19,7 +19,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
     <?php foreach ($medications as $medication): ?>
         <table class="plain patient-data">
             <tr>
-                <th width="128">Medication</th>
+                <th>Medication</th>
                 <td><?= $medication->getDrugLabel() ?></td>
             </tr>
             <tr>

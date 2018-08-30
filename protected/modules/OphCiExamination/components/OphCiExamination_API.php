@@ -1133,21 +1133,23 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getManagementSummaries($patient, $use_context = false)
     {
-        $management_summaries = $this->getElements('models\Element_OphCiExamination_Management',$patient,$use_context);
+        $management_summaries = $this->getElements('models\Element_OphCiExamination_Management', $patient,
+            $use_context);
         if ($management_summaries) {
             $summary = [];
             foreach ($management_summaries as $summaries) {
-                $services = explode(" ", $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name);
-                $service = $services[0];
-                $created_date = date_format(date_create($summaries->event->event_date),'d.m.Y');
-                if(!array_key_exists($service, $summary)){
+                $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
+                $created_date = date_format(date_create($summaries->event->event_date), 'd.m.Y');
+                if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service.' ['.$created_date.']'] = $summaries->comments;
+                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments;
                 }
             }
+
             return $summary_with_dates;
         }
         $summary = [];
+
         return $summary;
     }
 
@@ -2151,7 +2153,7 @@ class OphCiExamination_API extends \BaseAPI
                 if ($i === 0) {
                     $lCCT = $this->getCCTLeftNoUnits($patient);
                     $rCCT = $this->getCCTRightNoUnits($patient);
-                    $output .= '<tr><th class="large-6">RE [' . $rCCT . ']</th><th class="large-6">LE [' . $lCCT . ']</th></tr>';
+                    $output .= '<colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [' . $rCCT . ']</th><th>LE [' . $lCCT . ']</th></tr>';
                 }
 
                 $output .= '<tr>';

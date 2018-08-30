@@ -1,16 +1,18 @@
 <?php $this->renderPartial('//base/_messages'); ?>
-<div class="box reports">
-    <div class="report-fields">
-        <h2>Pending Therapy Applications Report</h2>
-        <?php if ($sent):?>
-            <span>Report sent</span>
-        <?php else:?>
-            <form>
-                <button type="submit" name="report" value="generate"
-                        <?php echo !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ? 'disabled' : ''; ?>
-                >Generate</button>
-            </form>
-        <?php endif;?>
-    </div>
+<h2>Pending Therapy Applications Report</h2>
+<div class="row divider">
+    <?php if ($sent): ?>
+      <span>Report sent</span>
+    <?php else: ?>
+      <form>
+        <div class="row flex-layout flex-right">
+          <button type="submit" name="report" value="generate" class="button green hint"
+              <?php echo !Yii::app()->getAuthManager()->checkAccess('Report',
+                  Yii::app()->user->id) ? 'disabled' : ''; ?>
+          >Generate
+          </button> &nbsp; &nbsp;
+        </div>
+      </form>
+    <?php endif; ?>
 </div>
-<?php  ?>
+

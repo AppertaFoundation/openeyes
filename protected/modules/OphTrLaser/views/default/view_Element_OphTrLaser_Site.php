@@ -30,11 +30,16 @@
 
         <div class="col-6 data-group" id="js-listview-info-full" style="display: none;">
           <table class="last-left">
+            <colgroup>
+              <col class="cols-4">
+              <col class="cols-4">
+              <col class="cols-4">
+            </colgroup>
             <thead>
             <tr>
-              <th class="cols-4"><?php echo $element->getAttributeLabel('site_id') ?></th>
-              <th class="cols-4"><?php echo $element->getAttributeLabel('laser_id') ?></th>
-              <th class="cols-4"><?php echo $element->getAttributeLabel('operator_id') ?></th>
+              <th><?php echo $element->getAttributeLabel('site_id') ?></th>
+              <th><?php echo $element->getAttributeLabel('laser_id') ?></th>
+              <th><?php echo $element->getAttributeLabel('operator_id') ?></th>
             </tr>
             </thead>
             <tbody>
