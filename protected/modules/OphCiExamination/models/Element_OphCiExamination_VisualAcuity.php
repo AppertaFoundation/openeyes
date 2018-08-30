@@ -290,11 +290,19 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     public function getCombined($side, $unit_id = null)
     {
         $combined = array();
-        foreach ($this->{$side.'_readings'} as $reading) {
-            $combined[] = $reading->convertTo($reading->value, $unit_id).' '.$reading->method->name;
+        foreach ($this->getNamedReadings($side, $unit_id) as $method => $value) {
+            $combined[] = $value.' '.$method;
         }
 
         return implode(', ', $combined);
+    }
+
+    public function getNamedReadings($side, $unit_id = null){
+        $readings = array();
+        foreach ($this->{$side.'_readings'} as $reading) {
+            $readings[$reading->method->name] = $reading->convertTo($reading->value, $unit_id);
+        }
+        return $readings;
     }
 
     /**
@@ -381,8 +389,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getTextForSide($side)
     {
-        $checkFunc = 'has'.ucfirst($side);
-        if ($this->$checkFunc() && !$this->{$side.'_readings'}) {
+        if ($this->hasEye($side) && !$this->{$side.'_readings'}) {
             if ($this->{$side.'_unable_to_assess'}) {
                 $text = $this->getAttributeLabel($side.'_unable_to_assess');
                 if ($this->{$side.'_eye_missing'}) {
@@ -430,36 +437,26 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
-        if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']))) {
-            throw new Exception('Configured visual acuity correspondence unit was not found: '.Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
+        if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
+            'name = ?',
+            array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
+        )) {
+            throw new Exception('Configured visual acuity correspondence unit was not found: '
+                .Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']
+            );
         }
 
-        $text = "Visual acuity:\n";
-
-        if ($this->hasRight()) {
-            $text .= 'Right Eye: ';
-            if ($this->getCombined('right')) {
-                $text .= $this->getCombined('right', $unit->id);
-            } else {
-                $text .= $this->getTextForSide('right');
-            }
-        } else {
-            $text .= 'Right Eye: not recorded';
-        }
-        $text .= "\n";
-
-        if ($this->hasLeft()) {
-            $text .= 'Left Eye: ';
-            if ($this->getCombined('left')) {
-                $text .= $this->getCombined('left', $unit->id);
-            } else {
-                $text .= $this->getTextForSide('left');
-            }
-        } else {
-            $text .= 'Left Eye: not recorded';
-        }
-
-        return $text."\n";
+        ob_start();
+        Yii::app()->controller->renderPartial(
+            'application.modules.OphCiExamination.views.default.letter.va',
+            array(
+                'left' => $this->getNamedReadings('left'),
+                'right' => $this->getNamedReadings('right')
+            )
+        );
+        $str_return = ob_get_contents();
+        ob_end_clean();
+        return $str_return;
     }
 
     /**

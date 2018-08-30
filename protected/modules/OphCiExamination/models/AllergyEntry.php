@@ -37,6 +37,7 @@ class AllergyEntry extends \BaseElement
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
+    public static $OTHER_VAL = 17;
 
     /**
      * Returns the static model of the specified AR class.
@@ -155,5 +156,20 @@ class AllergyEntry extends \BaseElement
             $res .= ' (' . $this->comments . ')';
         }
         return $res;
+    }
+
+    /***
+     * Checks if this allergy entry is 'Other' so it can be edited
+     *
+     * @throws Exception if record is new as it does not have a allergy_id to check against
+     * @return bool true if entry is 'Other' (ie not in the standard list so needs editable field)
+     */
+    public function isOther(){
+        if(!$this->isNewRecord){
+            return $this->allergy_id == AllergyEntry::$OTHER_VAL;
+        } else {
+            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id, 
+            new records do not have allergy_id set, please use staticIsOther($allergy_id)');
+        }
     }
 }
