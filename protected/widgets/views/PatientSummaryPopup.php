@@ -254,7 +254,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="oe-popup-overflow quicklook-data-groups">
       <!-- Data -->
       <div class="group">
-        <div class="label">Eye procedures</div>
+        <div class="label">Surgical History</div>
         <div class="data">
             <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class , array(
                 'patient' => $this->patient,

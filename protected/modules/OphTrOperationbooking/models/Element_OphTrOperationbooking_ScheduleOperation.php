@@ -181,8 +181,14 @@ class Element_OphTrOperationbooking_ScheduleOperation extends BaseEventTypeEleme
         foreach ($this->patient_unavailables as $i => $unavailable) {
             if (!$unavailable->validate()) {
                 foreach ($unavailable->getErrors() as $fld => $err) {
-                    $this->addError('patient_unavailables', $this->getAttributeLabel('patient_unavailables').
+                    if ($fld){
+                        $this->addError('patient_unavailables_'. $i .'_'.$fld, $this->getAttributeLabel('patient_unavailables').
                             ' ('.($i + 1).'): '.implode(', ', $err));
+                    }
+                    else {
+                        $this->addError('patient_unavailables', $this->getAttributeLabel('patient_unavailables').
+                            ' ('.($i + 1).'): '.implode(', ', $err));
+                    }
                 }
             }
         }
