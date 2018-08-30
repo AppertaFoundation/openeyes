@@ -1,6 +1,6 @@
 <?php
 
-class m180613_113201_add_comments_field_to_presc_item extends OEMigration
+class m180510_093823_add_comments_field_to_presc_item extends OEMigration
 {
     public function up()
     {
