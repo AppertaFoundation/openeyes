@@ -34,14 +34,19 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $drug_sets = null;
             $command = null;
         }
-        
-        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Drug Legacy')")->execute();
-        $ref_set_ID = Yii::app()->db->createCommand("SELECT id FROM ref_set WHERE name = 'Drug Legacy' ")->queryRow();
 
-        $legacy_set_id = $ref_set_ID['id'];
+        /* Set for formulary drugs */
+        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Formulary')")->execute();
+        $formulary_id = $this->dbConnection->getLastInsertID();
 
-        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$ref_set_ID['id'].", 'Drug')")->execute();
-        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$ref_set_ID['id'].", 'MedicationDrug')")->execute();
+        /* Set for medication drugs */
+
+        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Medication Drugs')")->execute();
+        $medication_drugs_id = $this->dbConnection->getLastInsertID();
+
+        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$formulary_id.", 'Drug')")->execute();
+        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$formulary_id.", 'Formulary')")->execute();
+        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$medication_drugs_id.", 'MedicationDrug')")->execute();
         
         
         /* 
@@ -132,7 +137,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 
                 Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id )
-                        values (".$ref_medication_id." , ".$ref_set_ID['id']." )
+                        values (".$ref_medication_id." , ".$medication_drugs_id." )
                 ")->execute();
             }
             
@@ -220,7 +225,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 /* Add medication to the 'Legacy' set */
                 Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
-                        values (".$ref_medication_id." , ".$legacy_set_id.", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
+                        values (".$ref_medication_id." , ".$formulary_id.", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
                 ")->execute();
 
                 /* Add medication to their respective sets */
