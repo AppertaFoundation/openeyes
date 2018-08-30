@@ -38,7 +38,9 @@ $is_hidden = function () use ($element) {
           <td>Type</td>
           <td>
               <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
-                  false, false, false, false, array(), array('field' => 12)); ?>
+                  false, false, false, false,
+                  array('fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''),
+                  array('field' => 12)); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
