@@ -440,14 +440,14 @@ class EventMedicationUse extends BaseElement
             $this->cloneFromPrescriptionItem($item);
         } else {
             // need to check if the prescription item still has the same values
-            foreach (array('drug_id', 'dose', 'route_id', 'frequency_id') as $attr) {
+            foreach (array('ref_medication_id', 'dose', 'route_id', 'frequency_id') as $attr) {
                 if ($this->$attr != $item->$attr) {
                     $this->prescription_not_synced = true;
                     break;
                 }
             }
-            // TODO: resolve the disparity in attribute names here
-            if ($this->laterality !== $item->route_option_id) {
+
+            if ($this->laterality !== $item->laterality) {
                 $this->prescription_not_synced = true;
             }
         }

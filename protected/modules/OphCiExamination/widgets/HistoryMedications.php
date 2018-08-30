@@ -157,6 +157,7 @@ class HistoryMedications extends BaseMedicationWidget
                 $entries,
                 $untracked);
         }
+
     }
 
     /**
