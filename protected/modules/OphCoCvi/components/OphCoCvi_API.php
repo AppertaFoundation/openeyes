@@ -227,7 +227,6 @@ class OphCoCvi_API extends \BaseAPI
     {
         $show_alert = false;
         $base_values = array();
-        \Yii::log(print_r(func_get_args(), true));
         if($element) {
 
             $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
