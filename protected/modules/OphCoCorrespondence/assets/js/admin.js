@@ -66,11 +66,10 @@ $(document).ready(function() {
 		macro_cursor_position = $(this).prop('selectionEnd');
 	});
 
+	//Add a shortcode to the current editor at the cursor position
 	$('#shortcode').change(function() {
 		if ($(this).val() !== '') {
-			var current = $('#LetterMacro_body').val();
-
-			$('#LetterMacro_body').val(current.substring(0,macro_cursor_position) + '[' + $(this).val() + ']' + current.substring(macro_cursor_position,current.length));
+      tinyMCE.activeEditor.execCommand('mceInsertContent', false, '['+$(this).val()+']');
 			$(this).val('');
 		}
 	});

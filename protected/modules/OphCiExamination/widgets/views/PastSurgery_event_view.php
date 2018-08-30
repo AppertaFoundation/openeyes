@@ -33,16 +33,8 @@ $widget = $this;
                                 $operation) ? $operation['object']->operation : $operation['operation']; ?>
                         </td>
                         <td>
-                            <?php
-                            $side = null;
-                            $is_side = array_key_exists('side', $operation);
-                            $is_object = array_key_exists('object', $operation);
-
-                            if ($is_side && $is_object && $operation['object']->side) {
-                                $side = $is_side ? $operation['side'] : $is_object ? $operation['object']->side : '';
-                            }
-                            ?>
-                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)); ?>
+                            <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>
                         <td>
                             <div class="oe-date">

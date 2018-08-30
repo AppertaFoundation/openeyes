@@ -52,7 +52,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Click the green plus or type',
+                'placeholder' => 'Enter procedure name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
             )); ?>
