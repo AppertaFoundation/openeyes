@@ -116,16 +116,19 @@ $previewWidth = 800;
                    data-paged="<?= isset($eventImages[0]) && $eventImages[0]->page !== null ?>"
                    data-preview-type="<?= $selectedPreviewType ?>"
                    data-date="<?= CHtml::encode(Helper::convertDate2HTML($event->event_date)) ?>"
-                   style="display: none">
-                  <?php
-
-                  foreach ($eventImages as $eventImage) { ?>
-                    <div class="js-lightning-image-preview-page"
-                         data-loaded="0"
-                         data-src="<?= $eventImage->getImageUrl() ?>"
-                         style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
-                         <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
-                    ></div>
+                   style="display: none"
+              >
+                  <?php if (count($eventImages) === 0) { ?>
+                    <p class="no-lightning-image">No preview is available at this time</p>
+                  <?php } else { ?>
+                      <?php foreach ($eventImages as $eventImage) { ?>
+                      <div class="js-lightning-image-preview-page"
+                           data-loaded="0"
+                           data-src="<?= $eventImage->getImageUrl() ?>"
+                           style="max-width: <?= $previewWidth ?>px; <?php if ($eventImage->page): ?>display: none;<?php endif; ?>"
+                           <?php if ($eventImage->page !== null): ?>data-page-number="<?= $eventImage->page ?>"<?php endif; ?>
+                      ></div>
+                      <?php } ?>
                   <?php } ?>
               </div>
             <?php }
