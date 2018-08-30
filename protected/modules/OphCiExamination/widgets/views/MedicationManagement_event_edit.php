@@ -159,7 +159,6 @@ $element_errors = $element->getErrors();
                     var hidden = $row.hasClass("ignore");
                     data.hidden = hidden ? 1 : 0;
 
-                    data.bound_entry = $row;
                     data.is_new = 0;
                     var newrow = window.MMController.createRow(data);
                     var $newrow = $(newrow);
@@ -172,8 +171,9 @@ $element_errors = $element->getErrors();
 
                     $newrow.find(".trash").remove();
                     $newrow.appendTo(window.MMController.$table.find("tbody"));
-                    window.MMController.setRowData($newrow, data);
+                    window.HMController.bindEntries($row, $newrow);
 
+                    window.MMController.setRowData($newrow, data);
 
                     $newrow.find(".rgroup").val("inherited");
                     window.MMController.initialiseRow($newrow);

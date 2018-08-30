@@ -67,9 +67,9 @@ else {
     <td>
         <div class="medication-display alternative-display-inline">
             <div class="medication-name alternative-display-element textual">
-                <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                <span class="textual-display">
                     <?= $entry->getMedicationDisplay() ?>
-                </a>
+                </span>
             </div>
             <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
                 <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />

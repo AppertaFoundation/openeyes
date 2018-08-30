@@ -243,6 +243,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       $row.on("click", '.chk_prescribe', function (e) {
           var $this_row = $(e.target).closest('tr');
+          var $newrow;
+          var $prescribed_row;
 
           if($(e.target).attr("disabled") === "disabled") {
               return false;
@@ -268,7 +270,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       $row.on("focus", ".dose, .frequency, .route, .laterality", function(e){
-          $(e.target).attr("data-oldvalue", $(e.target).val())
+          $(e.target).attr("data-oldvalue", $(e.target).val());
       });
 
       $row.on("change", ".laterality", function(e){
@@ -455,7 +457,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
 
       $row.find(".rgroup").val($row.closest("tbody").attr("data-group"));
-      $row.find('.medication-name a').text(data.medication_name);
+      $row.find('.medication-name .textual-display').text(data.medication_name);
       $row.find(".dose-unit-term").text(data.dose_unit_term);
 
       self.updateFuzzySelect($row);
