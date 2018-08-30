@@ -19,11 +19,23 @@ $(document).ready(function() {
 		e.preventDefault();
 		download_report('module-report-form');
 	});
+  pickmeup(".start-date", {
+    format: "d-m-Y",
+    hide_on_select: true,
+    default_date: false,
+		max: new Date(),
+  });
+  pickmeup(".end-date", {
+    format: "d-m-Y",
+    hide_on_select: true,
+    default_date: false,
+		max: new Date(),
+  });
 });
 
 function display_report(form)
 {
-	$('div.reportSummary').hide();
+	$('div.js-report-summary').hide();
 
 	$('.errors').hide();
 
@@ -35,7 +47,7 @@ function display_report(form)
 		'success': function(errors) {
 			if (typeof(errors['_report']) != 'undefined') {
 				enableButtons();
-				$('div.reportSummary').html(errors['_report']).show();
+				$('div.js-report-summary').html(errors['_report']).show();
 			} else {
 				$('.errors').children('ul').html('');
 
