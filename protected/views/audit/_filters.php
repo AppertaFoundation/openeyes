@@ -43,11 +43,11 @@
         </table>
     </div>
     <h4>Action</h4>
-    <?php echo CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions'))?>
+    <?php echo CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions', 'class' => 'cols-full'))?>
     <h4>Target</h4>
-    <?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All targets'))?>
+    <?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All targets', 'class' => 'cols-full'))?>
     <h4>Event Types</h4>
-    <?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types'))?>
+    <?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
     <h4>User</h4>
     <?php
     $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
