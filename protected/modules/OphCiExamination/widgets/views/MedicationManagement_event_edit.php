@@ -56,7 +56,7 @@ $element_errors = $element->getErrors();
                 <th>Started<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
                 <th>Stopped<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
                 <th>Cnt</th>
-                <th>Rx</th>
+                <th>Px</th>
                 <th></th>
             </tr>
             </thead>
