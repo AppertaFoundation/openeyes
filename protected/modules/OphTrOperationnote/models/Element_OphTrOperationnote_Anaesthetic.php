@@ -397,7 +397,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function afterValidate()
     {
         if( !count($this->anaesthetic_type_assignments)){
-            $this->addError('AnaestheticType', 'Type cannot be empty.');
+            $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
         $type_ga =  AnaestheticType::model()->findByAttributes(array('code' => 'GA'));
