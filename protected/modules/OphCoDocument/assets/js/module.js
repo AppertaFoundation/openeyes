@@ -361,15 +361,15 @@ window.addEventListener("paste", function (event) {
                 var dialog = $('<h2 class="text-center">Do you want to upload left or right document ?</h2>').data('files', files).dialog({
                     buttons: [
                         {
-                            'text': 'Left(L)',
-                            click: function () {
-                                uploadPastedImage($(this), "left");
-                            }
-                        },
-                        {
                             'text': 'Right(R)',
                             click: function () {
                                 uploadPastedImage($(this), "right");
+                            }
+                        },
+                        {
+                            'text': 'Left(L)',
+                            click: function () {
+                                uploadPastedImage($(this), "left");
                             }
                         },
                     ],
