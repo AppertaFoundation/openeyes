@@ -16,41 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-12 column">
-  <h2>Results:</h2>
-</div>
+<?php
+if (empty($data['items'])) {?>
+    <div class="alert-box">
+        No audit logs match the search criteria.
+    </div>
+    <?php
+} else {?>
+<table class="standard audit-logs">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>Site</th>
+        <th>Firm</th>
+        <th>User</th>
+        <th>Action</th>
+        <th>Target type</th>
+        <th>Event type</th>
+        <th>Patient</th>
+        <th>Episode</th>
+    </tr>
+    </thead>
+    <tbody id="auditListData">
+    <?php foreach ($data['items'] as $i => $log) {
+        $this->renderPartial('_list_row', array('i' => $i, 'log' => $log));
+    }?>
+    </tbody>
+</table>
+    <div class="pagination last"></div>
 
-<div class="cols-12 column">
-		<div class="box generic">
-			<?php
-            if (empty($data['items'])) {?>
-				<div class="alert-box">
-					No audit logs match the search criteria.
-				</div>
-			<?php
-            } else {?>
-				<div class="pagination"></div>
-				<table class="standard audit-logs">
-					<thead>
-						<tr>
-							<th>Timestamp</th>
-							<th>Site</th>
-							<th>Firm</th>
-							<th>User</th>
-							<th>Action</th>
-							<th>Target type</th>
-							<th>Event type</th>
-							<th>Patient</th>
-							<th>Episode</th>
-						</tr>
-					</thead>
-					<tbody id="auditListData">
-						<?php foreach ($data['items'] as $i => $log) {
-                            $this->renderPartial('_list_row', array('i' => $i, 'log' => $log));
-                        }?>
-					</tbody>
-				</table>
-				<div class="pagination last"></div>
-			<?php }?>
-		</div>
-	</div>
+<?php } ?>
+
