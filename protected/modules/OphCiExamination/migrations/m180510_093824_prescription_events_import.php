@@ -1,6 +1,13 @@
 <?php
 
-class m180806_090754_prescription_events_import extends CDbMigration
+/**
+ * Class m180510093824_prescription_events_import
+ *
+ * This is not the right place for this migration, but we must ensure
+ * that it runs right before the examination import.
+ */
+
+class m180510_093824_prescription_events_import extends CDbMigration
 {
     public function up()
     {
