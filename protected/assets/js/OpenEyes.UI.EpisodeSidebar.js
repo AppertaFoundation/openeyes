@@ -150,7 +150,12 @@
     });
 
     // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
-    self.element.find('li.event').each(function () {
+    self.element.find('li.event:not(.subspecialty)').each(function () {
+      var $container = $('.oe-event-quickview .quickview-screenshots');
+      if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
+        return
+      }
+
       var $img = $('<img />', {
         class: 'js-quickview-image',
         src: $(this).data('event-image-url'),
@@ -158,7 +163,7 @@
         alt: 'No preview available at this time',
         'data-event-id': $(this).data('event-id'),
       });
-      var $container = $('.oe-event-quickview .quickview-screenshots');
+
       $container.append($img);
     });
   };
