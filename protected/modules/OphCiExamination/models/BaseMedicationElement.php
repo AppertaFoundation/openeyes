@@ -104,6 +104,10 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
                 $entry->setIsNewRecord(false);
             }
 
+            /* ensure corrent usage type and subtype */
+            $entry->usage_type = $class::getUsagetype();
+            $entry->usage_subtype = $class::getUsageSubtype();
+
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {
                     $this->addError('entries', implode(', ', $err));

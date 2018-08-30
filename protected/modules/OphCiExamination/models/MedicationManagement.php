@@ -164,6 +164,7 @@ class MedicationManagement extends BaseMedicationElement
         $criteria->params['event_id'] = $this->event->id;
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
         $saved_ids = array();
+        $class = self::$entry_class;
         foreach ($this->entries as $entry) {
             /** @var MedicationManagementEntry $entry */
             $entry->event_id = $this->event->id;
@@ -172,6 +173,10 @@ class MedicationManagement extends BaseMedicationElement
             if(isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
             }
+
+            /* ensure corrent usage type and subtype */
+            $entry->usage_type = $class::getUsagetype();
+            $entry->usage_subtype = $class::getUsageSubtype();
 
             if(!$entry->save()) {
                 foreach ($entry->errors as $err) {

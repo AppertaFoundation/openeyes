@@ -53,6 +53,8 @@ class HistoryMedications extends BaseMedicationElement
         foreach ($element->entries as $entry) {
             $new = new \EventMedicationUse();
             $new->loadFromExisting($entry);
+            $new->usage_type = \EventMedicationUse::getUsageType();
+            $new->usage_subtype = \EventMedicationUse::getUsageSubtype();
             $entries[] = $new;
         }
         $this->entries = $entries;
