@@ -113,9 +113,11 @@ class MedicationManagement extends BaseMedicationElement
      * @return MedicationManagementEntry[]
      */
 
-    public function getPrescribedEntries()
+    public function getPrescribedEntries($visible_only = true)
     {
-        return array_filter($this->visible_entries, function($e){
+        $property = $visible_only ? "visible_entries" : "entries";
+
+        return array_filter($this->$property, function($e){
             return $e->prescribe == 1;
         });
     }
@@ -192,7 +194,7 @@ class MedicationManagement extends BaseMedicationElement
                 $orig_entry->delete();
             }
         }
-        if(count($this->getPrescribedEntries()) > 0) {
+        if(count($this->entries_to_prescribe) > 0) {
             $this->generatePrescriptionEvent();
         }
         return true;
@@ -209,15 +211,15 @@ class MedicationManagement extends BaseMedicationElement
         $prescription->event_type_id = $prescription_event_type[0]->id;
         $prescription->event_date = $this->event->event_date;
         if(!$prescription->save()) {
-            \Yii::trace(print_r($prescription->errors, true));
+            die(print_r($prescription->errors, true));
         }
         $prescription_details = $this->getPrescriptionDetails();
         $prescription_details->event_id = $prescription->id;
         if(!$prescription_details->save()){
-            \Yii::trace(print_r($prescription_details->errors, true));
+            die(print_r($prescription_details->errors, true));
         }
         foreach($prescription_details->items as $item){
-            $item->prescription_id = $prescription_details->id;
+            $item->event_id = $prescription->id;
             if(!$item->save()) {
                 \Yii::trace(print_r($item->errors, true));
             }
@@ -226,15 +228,12 @@ class MedicationManagement extends BaseMedicationElement
 
     private function getPrescriptionDetails()
     {
-        $entries = $this->getPrescribedEntries();
+        $entries = $this->entries_to_prescribe;
         if(is_null($this->prescription_details)) {
             $prescription_details = new \Element_OphDrPrescription_Details();
             $prescription_items = array();
             foreach($entries as $entry) {
-                // search for the medication by name in the OLD drug table
-                // insert if not found!!
-                // same for route, frequency, duration!!!
-                $prescription_items[] = $this->getPresciptionItem($entry);
+                $prescription_items[] = $this->getPrescriptionItem($entry);
             }
             $prescription_details->items = $prescription_items;
             $this->prescription_details = $prescription_details;
@@ -242,66 +241,26 @@ class MedicationManagement extends BaseMedicationElement
         return $this->prescription_details;
     }
 
-    private function getPresciptionItem( $entry )
+    private function getPrescriptionItem(\EventMedicationUse $entry)
     {
         $item = new \OphDrPrescription_Item();
         $item->dose = $entry->dose;
-        if($entry->frequency_id) {
-            $selected_frequency = \RefMedicationFrequency::model()->findByPk($entry->frequency_id);
-            $f_criteria = new \CDbCriteria();
-            $f_criteria->addCondition("name = :name");
-            $f_criteria->params['name'] = $selected_frequency->code;
-            $frequency = \DrugFrequency::model()->findAll($f_criteria);
-            if (count($frequency) > 0) {
-                $item->frequency_id = $frequency[0]->id;
-            } else {
-                $new_freq = new \DrugFrequency();
-                $new_freq->name = $selected_frequency->code;
-                $new_freq->long_name = $selected_frequency->term;
-                $new_freq->save();
-                $item->frequency_id = $new_freq->id;
-            }
-        }
-        if($entry->route_id) {
-            $selected_route = \RefMedicationRoute::model()->findByPk($entry->route_id);
-            $r_criteria = new \CDbCriteria();
-            $r_criteria->addCondition("name = :name");
-            $r_criteria->params['name'] = $selected_route->term;
-            $route = \DrugRoute::model()->findAll($r_criteria);
-            if (count($route) > 0) {
-                $item->route_id = $route[0]->id;
-            } else {
-                $new_route = new \DrugRoute();
-                $new_route->name = $selected_route->term;
-                $new_route->save();
-                $item->route_id = $new_route->id;
-            }
-        }
-        $selected_drug = \RefMedication::model()->findByPk($entry->ref_medication_id);
-        $d_criteria = new \CDbCriteria();
-        $d_criteria->addCondition("name = :name");
-        $d_criteria->params['name'] = $selected_drug->preferred_term;
-        $drug = \Drug::model()->findAll($d_criteria);
-        if(count($drug) > 0)
-        {
-            $item->drug_id = $drug[0]->id;
-        }else
-        {
-            $new_drug = new \Drug();
-            $new_drug->name = $selected_drug->preferred_term;
-            $new_drug->tallman = $selected_drug->preferred_term;
-            $new_drug->form_id = 4;
-            if(!$new_drug->save())
-            {
-                print_r($new_drug->getErrors());
-                die;
-            }
-            $item->drug_id = $new_drug->id;
-        }
-        $item->route_option_id = $entry->laterality;
-        $item->duration_id = 13;
-        $item->dispense_condition_id = 1;
-        $item->dispense_location_id = 1;
+        $item->frequency_id = $entry->frequency_id;
+        $item->route_id = $entry->route_id;
+        $item->ref_medication_id = $entry->ref_medication_id;
+
+        /* We can't get defaults as we don't know from which set the medication comes - so we're hard-coding :-( */
+
+        $item->duration= 13; /* 'Until review */
+        $item->dispense_condition_id = 1; /* Hospital to supply */
+        $item->dispense_location_id = 2; /* Pharmacy */
+
+        $item->laterality = $entry->laterality;
+        $item->usage_type = \OphDrPrescription_Item::getUsageType();
+        $item->usage_subtype = \OphDrPrescription_Item::getUsageSubtype();
+
+        $item->start_date_string_YYYYMMDD = $entry->start_date_string_YYYYMMDD;
+
         return $item;
     }
 
