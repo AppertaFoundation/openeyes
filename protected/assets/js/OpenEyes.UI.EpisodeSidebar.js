@@ -150,7 +150,7 @@
     });
 
     // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
-    self.element.find('li.event:not(.subspecialty)').each(function () {
+    this.element.find(this.options.event_list_selector).each(function () {
       var $container = $('.oe-event-quickview .quickview-screenshots');
       if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
         return
