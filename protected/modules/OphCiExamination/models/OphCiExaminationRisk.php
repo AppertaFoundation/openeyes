@@ -119,6 +119,13 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * @param $tag_ids
+     * @return array|\CActiveRecord[]|mixed|null
+     *
+     * @deprecated use findForRefSetIds
+     */
+
     public static function findForTagIds($tag_ids)
     {
         $criteria = new \CDbCriteria();

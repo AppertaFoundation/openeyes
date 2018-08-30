@@ -345,6 +345,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                   }
 
               }
+
+              controller.processRisks(ui.item);
           }
       });
   };
@@ -618,12 +620,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.processRisks = function(item)
   {
-      if (!item.hasOwnProperty('tags') || !item.tags.length) {
-          return;
-      }
-      var self = this;
-      $.getJSON('/OphCiExamination/Risks/forTags', { tag_ids: item.tags.join(",") }, function (res) {
-          self.addDrugForRisks(item.name, res);
+     var self = this;
+      $.getJSON('/OphCiExamination/Risks/forRefMedication/'+item.id, function (res) {
+          self.addDrugForRisks(item.preferred_term, res);
       });
   };
 
@@ -638,7 +637,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var risksMap = [];
       for (var i in risks) {
           if (risks.hasOwnProperty(i)) {
-              risksMap.push({id: risks[i], comments: [drugName]})
+              risksMap.push({id: risks[i], comments: [drugName]});
           }
       }
 
