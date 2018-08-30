@@ -88,18 +88,15 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
         );
 
-        $treatmentTypeList = TrialPatient::getTreatmentTypeOptions();
         ?>
-        <div class="row field-row">
-            <div class="large-2 column">
-                <?php echo CHtml::label($this->getLabel(), false); ?>
-            </div>
-            <div class="large-2 column">
+        <div class="flex-layout flex-left flex-top">
+            <?= $this->getDisplayTitle()?>
+            <div class="parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
                     array('prompt' => 'Select One...')); ?>
                 <?php echo CHtml::error($this, "[$id]operation"); ?>
             </div>
-            <div class="large-3 column">
+            <div class="parameter-option">
                 <?php echo CHtml::activeDropDownList(
                     $this,
                     "[$id]status",
@@ -107,14 +104,24 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     array('empty' => 'Involved with'));
                 ?>
             </div>
-            <div class="large-3 column trial-type">
-            <?php echo CHtml::activeDropDownList($this, "[$id]trialType", $types,
+            <div class="js-trial-type parameter-option">
+            <?php echo CHtml::activeDropDownList($this, "[$id]trialTypeId", TrialType::getOptions(),
                     array('empty' => 'Any Trial', 'onchange' => "getTrialList(this, $this->id)")); ?>
             </div>
-            <div class="large-2 column trial-list end">
+            <div class="js-trial-list parameter-option">
                 <?php echo CHtml::activeDropDownList($this, "[$id]trial", $trials,
                     array('empty' => 'Any', 'style' => 'display: none;')); ?>
             </div>
+            <span class="js-treatment-type-container flex-layout flex-left"
+                style="<?= $this->trialType && $this->trialType->code = 'NON_INTERVENTION' ? 'display:none;':''?>"
+            >
+                <p class="parameter-option" style="margin-bottom: 0px;">with</p>
+                <div class="parameter-option">
+                    <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", TreatmentType::getOptions(),
+                        array('empty' => 'Any')); ?>
+                </div>
+                <p class="parameter-option">treatment</p>
+            </span>
         </div>
         <div class="row field-row treatment-type-container"
            <?php if ($this->trialType && $this->trialType->code === 'NON_INTERVENTION'): ?>style="display:none;" <?php endif; ?>>
@@ -123,7 +130,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 <p style="float: right; margin: 5px">with</p>
             </div>
             <div class="large-3 column">
-                <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", $treatmentTypeList,
+                <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", TreatmentType::getOptions(),
                     array('empty' => 'Any')); ?>
             </div>
             <div class="large-3 column end">
@@ -137,8 +144,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 var parameterNode = $('.parameter#' + parameter_id);
 
                 var trialType = $(target).val();
-                var trialList = parameterNode.find('.trial-list select');
-                var treatmentTypeContainer = parameterNode.find('.treatment-type-container');
+                var trialList = parameterNode.find('.js-trial-list select');
+                var treatmentTypeContainer = parameterNode.find('.js-treatment-type-container');
 
                 // Only show the treatment type if the trial type is set to "Any" or "Intervention"
                 treatmentTypeContainer.toggle(!trialType || trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>');
@@ -163,10 +170,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
 
         <?php
         Yii::app()->clientScript->registerScript('GetTrials', '
-          $(".previous_trial").each(function() {
-            var typeElem = $(this).find(".trial-type select");
+          $(".js-previous_trial").each(function() {
+            var typeElem = $(this).find(".js-trial-type select");
             if (typeElem.val() !== "") {
-              var trialElem = $(this).find(".trial-list select");
+              var trialElem = $(this).find(".js-trial-list select");
               trialElem.show();
             }
           });
@@ -300,18 +307,18 @@ WHERE $condition";
      */
     public function getAuditData()
     {
-        $trialTypes = Trial::getTrialTypeOptions();
+        $trialTypes = TrialType::getOptions();
 
         $statusList = array(
             TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id => 'Shortlisted in',
             TrialPatientStatus::model()->find('code = "ACCEPTED"')->id => 'Accepted in',
             TrialPatientStatus::model()->find('code = "REJECTED"')->id => 'Rejected from',
         );
-        $trials = Trial::getTrialList($this->type);
-        $treatmentTypeList = TrialPatient::getTreatmentTypeOptions();
+        $trials = Trial::getTrialList($this->trialType);
+        $treatmentTypeList = TreatmentType::getOptions();
 
         $status = $this->status === null || $this->status === '' ? 'Included in' : $statusList[$this->status];
-        $type = !$this->trialType ? 'Any Trial Type with' : $trialTypes[$this->trialType];
+        $type = !$this->trialType ? 'Any Trial Type with' : $trialTypes[$this->trialTypeId];
         $trial = $this->trial === null || $this->trial === '' ? 'Any trial with' : $trials[$this->trial] . ' with ';
         $treatment = $this->treatmentType === null || $this->treatmentType === '' ? 'Any Treatment' : $treatmentTypeList[$this->treatmentType];
 

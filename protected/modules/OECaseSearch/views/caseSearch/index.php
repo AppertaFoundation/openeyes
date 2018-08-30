@@ -9,118 +9,110 @@
  */
 $this->pageTitle = 'Case Search';
 ?>
-<main class="main-event">
-    <h2 class="event-title">
+<div class="oe-full-header">
+    <div class="title wordcaps">
         <?= $this->trialContext === null ?
             'Advanced Search' :
             'Adding Participants to Trial: ' . $this->trialContext->name;
         ?>
-    </h2>
-    <div class="element">
-        <div>
-            <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
-            <div class="sub-element">
-                <table id="param-list" class="cols-full">
-                    <tbody>
-                    <?php
-                    if (isset($params)):
-                        foreach ($params as $id => $param):?>
-                            <?php $this->renderPartial('parameter_form', array(
+    </div>
+</div>
+<div class="oe-grid oe-full-content pro-theme" style="height: 100%; width: 100%">
+    <nav class="oe-full-side-panel">
+        <h3>Actions</h3>
+        <ul>
+            <?php if ($this->trialContext):?>
+            <li>
+                <a href="/OETrial/trial/view/<?=$this->trialContext->id?>">Back to Trial</a>
+            </li>
+            <?php endif;?>
+        </ul>
+    </nav>
+    <main class="oe-full-main">
+        <div class="main-event" style="padding-top: 0px">
+            <div class="element">
+                <div>
+                    <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
+                    <div class="sub-element">
+                        <table id="param-list" class="cols-full">
+                            <tbody>
+                            <?php
+                            if (isset($params)):
+                                foreach ($params as $id => $param):?>
+                                    <?php $this->renderPartial('parameter_form', array(
+                                        'model' => $param,
+                                        'id' => $id,
+                                    )); ?>
+                                <?php endforeach;
+                            endif; ?>
+                            </tbody>
+                        </table>
+                        <?php foreach ($fixedParams as $id => $param):
+                            $this->renderPartial('fixed_parameter_form', array(
                                 'model' => $param,
-                                'id' => $id,
-                            )); ?>
-                        <?php endforeach;
-                    endif; ?>
-                    </tbody>
-                </table>
-                <?php foreach ($fixedParams as $id => $param):
-                    $this->renderPartial('fixed_parameter_form', array(
-                        'model' => $param,
-                        'id' => $id,
-                    ));
-                endforeach; ?>
+                                'id' => $id
+                            ));
+                        endforeach; ?>
+                    </div>
+                </div>
+                <div class="sub-element">
+                    <div class="new-param row field-row">
+                        <div class="cols-3 column">
+                            <?php echo CHtml::dropDownList(
+                                'Add Parameter: ',
+                                null,
+                                $paramList,
+                                array('empty' => '- Add a parameter -', 'id' => 'param'));
+                            ?>
+                        </div>
+                    </div>
+                    <div class="search-actions flex-layout flex-left">
+                        <div class="column">
+                            <?php echo CHtml::submitButton('Search'); ?>
+                        </div>
+                        <div class="column end" style="padding-left: 5px">
+                            <?php echo CHtml::button('Clear',
+                                array('id' => 'clear-search', 'class' => 'button event-action cancel')) ?>
+                        </div>
+                    </div>
+                </div>
+                <?php $this->endWidget('search-form'); ?>
             </div>
-        </div>
-        <div class="sub-element">
-            <div class="new-param row field-row">
-                <div class="cols-3 column">
-                    <?php echo CHtml::dropDownList(
-                        'Add Parameter: ',
-                        null,
-                        $paramList,
-                        array('empty' => '- Add a parameter -', 'id' => 'param'));
+            <div class="element">
+                <?php
+                if ($patients->itemCount > 0):
+                    //Just create the widget here so we can render it's parts separately
+                    /** @var $searchResults CListView */
+                    $searchResults =
+                        $this->createWidget(
+                            'zii.widgets.CListView',
+                            array(
+                                'dataProvider' => $patients,
+                                'itemView' => 'search_results',
+                                'emptyText' => 'No patients found',
+                                'viewData' => array(
+                                    'trial' => $this->trialContext
+                                )
+                            )
+                        );
+                    $searchResults->pagerCssClass = 'oe-pager';
+                    $searchResults->renderPager();
                     ?>
-                </div>
-            </div>
-            <div class="search-actions flex-layout flex-left">
-                <div class="column">
-                    <?php echo CHtml::submitButton('Search'); ?>
-                </div>
-                <div class="column end" style="padding-left: 5px">
-                    <?php echo CHtml::button('Clear',
-                        array('id' => 'clear-search', 'class' => 'button event-action cancel')) ?>
-                </div>
-            </div>
-        </div>
-        <?php $this->endWidget('search-form'); ?>
-    </div>
-    <div class="element">
-        <div class="sub-element">
-            <?php
-            if ($patients->itemCount > 0):
-                //Just create the widget here so we can render it's parts separately
-                /** @var $searchResults CListView */
-                $searchResults =
-                    $this->createWidget(
-                        'zii.widgets.CListView',
-                        array(
-                            'dataProvider' => $patients,
-                            'itemView' => 'search_results',
-                            'emptyText' => 'No patients found',
-                        )
-                    );
-                $searchResults->pagerCssClass = 'oe-pager';
-                $searchResults->renderPager();
+                    <table id="case-search-results" class="cols-10">
+                        <tbody class=" cols-full">
+                        <?= $searchResults->renderItems(); ?>
+                        </tbody>
+                    </table>
+                    <?php $searchResults->renderPager();
+                endif;
                 ?>
-                <table id="case-search-results" class="cols-10">
-                    <tbody class=" cols-full">
-                    <?= $searchResults->renderItems(); ?>
-                    </tbody>
-                </table>
-                <?php $searchResults->renderPager();
-            endif;
-            ?>
-            <style>
-                .oe-pager .page a {
-                    color: white;
-                };
-                .oe-pager .next a {
-                    color: white;
-                };
-                .oe-pager .prev a {
-                    color: white;
-                };
-                .oe-pager .page a:visited {
-                    color: white;
-                };
-                .oe-pager .next a:visited {
-                    color: white;
-                };
-                .oe-pager .prev a:visited {
-                    color: white;
-                };
-            </style>
+
+                </div>
         </div>
-    </div>
-    <?php if ($this->trialContext !== null): ?>
-        <div class="cols-4 column end">
-            <div class="box generic">
-                <p><?php echo CHtml::link('Back to Trial',
-                        Yii::app()->createUrl('/OETrial/trial/view/' . $this->trialContext->id)); ?></p>
-            </div>
-        </div>
-    <?php endif; ?>
-</main>
+    </main>
+</div>
+
+
 
 <script type="text/javascript">
     function addPatientToTrial(patient_id, trial_id) {

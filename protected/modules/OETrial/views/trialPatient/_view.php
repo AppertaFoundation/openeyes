@@ -83,7 +83,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
               echo CHtml::dropDownList(
                   'treatment-type',
                   $data->treatment_type,
-                  TrialPatient::getTreatmentTypeOptions(),
+                  TreatmentType::getOptions(),
                   array(
                       'id' => "treatment-type-$data->id",
                       'data-trial-patient-id' => $data->id,

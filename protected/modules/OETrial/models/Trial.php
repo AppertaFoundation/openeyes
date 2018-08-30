@@ -304,16 +304,16 @@ class Trial extends BaseActiveRecordVersioned
 
     /**
      * Get a list of trials for a specific trial type. The output of this can be used to render drop-down lists.
-     * @param string $type The trial type.
+     * @param TrialType $type The trial type.
      * @return array A list of trials of the specified trial type.
      */
     public static function getTrialList($type)
     {
-        if ($type === null || $type === '') {
+        if (!$type) {
             return array();
         }
 
-        $trialModels = Trial::model()->findAll('trial_type=:type', array(':type' => $type));
+        $trialModels = Trial::model()->findAll('trial_type=:type', array(':trial_type_id' => $type->id));
 
         return CHtml::listData($trialModels, 'id', 'name');
     }

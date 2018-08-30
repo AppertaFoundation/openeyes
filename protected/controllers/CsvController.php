@@ -478,7 +478,7 @@ class CsvController extends BaseController
         $new_trial_pat = new TrialPatient();
         $trial_pat_cols = array(
             array('var_name' => 'external_trial_identifier', 'default' => null,),
-            array('var_name' => 'patient_status'           , 'default' => TrialPatientStatus::model()->find('code = "SHORTLISTED"'),
+            array('var_name' => 'patient_status'           , 'default' => TrialPatientStatus::model()->find('code = "SHORTLISTED"')),
             array('var_name' => 'treatment_type'           , 'default' => null,),
             array('var_name' => 'created_date'             , 'default' => null,),
         );

@@ -20,7 +20,16 @@
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
 $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
-
+/***
+ * @var $trialContext TrialContext
+ */
+$trialContext = null;
+if ($this->trial){
+    $trialContext = $this->createWidget(
+            'application.modules.OETrial.widgets.TrialContext',
+            array('patient' => $this->patient, 'trial' => $this->trial)
+    );
+}
 ?>
 
 <div id="oe-patient-details"
@@ -62,6 +71,10 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
                 <em>Age</em>
                 <?php echo $this->patient->getAge(); ?>
             </div>
+            <?php if ($trialContext) {
+                echo $trialContext->renderPatientTrialStatus();
+                echo $trialContext->renderAddToTrial();
+            }?>
 
         </div>
         <div class="flex-layout flex-left">

@@ -1,29 +1,45 @@
-.trial-count {
-    width: 34px;
-    height: 34px;
-    border-radius: 17px;
-    text-align: center;
-    padding-top: 3px;
+.trial-count{
+    display: inline-block;
+    padding: 0 6px 5px 6px;
+    border-left: 1px solid #26303d;
+}
+
+.trial-count em{
+    opacity: 0.5;
 }
 
 .trial-count.shortlisted {
-    border: 2px solid #3682A3;
-    background-color: rgba(85,159,191,0.5);
-    color: #1D6F93;
 }
 
 .trial-count.accepted {
-    border: 2px solid #3CCA45;
-    background-color: rgba(91,218,99,0.5);
-    color: #1DB727;
 }
 
 .trial-count.rejected {
-    border: 2px solid #FF514C;
-    background-color: rgba(255,111,107,0.5);
-    color: #E92A25;
 }
 
 .current-status {
     text-align: right;
+}
+
+.parameter-option {
+    padding-right: 15px
+}
+
+.oe-pager .page a {
+    color: white;
+}
+.oe-pager .next a {
+    color: white;
+}
+.oe-pager .prev a {
+    color: white;
+}
+.oe-pager .page a:visited {
+    color: white;
+}
+.oe-pager .next a:visited {
+    color: white;
+}
+.oe-pager .prev a:visited {
+    color: white;
 }

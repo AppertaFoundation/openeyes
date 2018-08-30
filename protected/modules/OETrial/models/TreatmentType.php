@@ -69,6 +69,16 @@ class TreatmentType extends BaseActiveRecordVersioned
     }
 
     /**
+     * Gets all treatment type options as 'id' => 'name' (for use in dropdown lists)
+     *
+     * @return array
+     */
+    public static function getOptions()
+    {
+        return CHtml::listData(self::model()->findAll(), 'id', 'name');
+    }
+
+    /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.

@@ -22,6 +22,7 @@ class PatientPanel extends BaseCWidget
     public $age;
     public $allow_clinical;
     public $layout = 'PatientPanel';
+    public $trial;
 
     public function init()
     {
