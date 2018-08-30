@@ -63,9 +63,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
           <?php if ($stopped_systemic_meds): ?>
           <table>
+            <colgroup>
+              <col class="cols-7">
+            </colgroup>
             <thead>
             <tr>
-              <th class="cols-7">Stopped</th>
+              <th>Stopped</th>
               <th></th>
               <th>
                 <i class="oe-i small js-patient-expand-btn pad expand"></i>
@@ -123,9 +126,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
             <?php if ($stopped_eye_meds): ?>
             <table>
+              <colgroup>
+                <col class="cols-7">
+              </colgroup>
               <thead>
               <tr>
-                <th class="cols-7">Stopped</th>
+                <th>Stopped</th>
                 <th></th>
                 <th>
                   <i class="oe-i small pad js-patient-expand-btn expand"></i>

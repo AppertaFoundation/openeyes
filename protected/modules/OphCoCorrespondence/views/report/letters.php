@@ -16,191 +16,211 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box reports">
-	<div class="report-fields lettersReport">
-		<h2>Letters report</h2>
-		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'report-form',
-			'enableAjaxValidation'=>false,
-			'layoutColumns'=>array('label'=>2,'field'=>10),
-			'action' => Yii::app()->createUrl('/OphCoCorrespondence/report/downloadReport'),
-		))?>
+<h2>Letters report</h2>
 
-		<input type="hidden" name="report-name" value="Letters" />
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="phrases">
-					Phrases:
-				</label>
-			</div>
-			<div class="cols-5 column end phraseList">
-				<div>
-					<?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]','')?>
-				</div>
-			</div>
-		</div>
+<div class="row divider">
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'report-form',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array('label' => 2, 'field' => 10),
+        'action' => Yii::app()->createUrl('/OphCoCorrespondence/report/downloadReport'),
+    )) ?>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label></label>
-			</div>
-			<div class="cols-2 column end">
-				<button type="submit" class="classy blue mini small" id="add_letter_phrase"><span class="button-span button-span-blue">Add</span></button>
-			</div>
-		</div>
+  <input type="hidden" name="report-name" value="Letters"/>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label>
-					Search method:
-				</label>
-			</div>
-			<div class="cols-9 column end">
-				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or" checked="checked" />
-				<label for="condition_or">
-					Must contain <strong>any</strong> of the phrases
-				</label>
-			</div>
-		</div>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Phrases:</td>
+      <td>
+          <?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
+      </td>
+      <td>
+        <button type="submit" class="button green hint" id="add_letter_phrase">
+          <span class="button-span button-span-blue">Add</span>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label></label>
-			</div>
-			<div class="cols-9 column end">
-				<input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and" value="and" />
-				<label for="condition_and">
-					Must contain <strong>all</strong> of the phrases
-				</label>
-			</div>
-		</div>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Search method:</td>
+      <td>
+        <ul>
+          <li>
+            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_or" value="or"
+                   checked="checked"/>
+            <label for="condition_or">
+              Must contain <strong>any</strong> of the phrases
+            </label>
+          </li>
+          <li>
+            <input type="radio" name="OphCoCorrespondence_ReportLetters[condition_type]" id="condition_and"
+                   value="and"/>
+            <label for="condition_and">
+              Must contain <strong>all</strong> of the phrases
+            </label>
+          </li>
+          <li>
+            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0"/>
+            <input type="checkbox" id="match_correspondence"
+                   name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked"/>
+            <label for="match_correspondence">
+              Match correspondence
+            </label>
+          </li>
+          <li>
+            <input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0"/>
+            <input type="checkbox" id="match_legacy_letters"
+                   name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked"/>
+            <label for="match_legacy_letters">
+              Match legacy letters
+            </label>
+          </li>
+        </ul>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label></label>
-			</div>
-			<div class="cols-9 column end">
-				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="0" />
-				<input type="checkbox" id="match_correspondence" name="OphCoCorrespondence_ReportLetters[match_correspondence]" value="1" checked="checked" />
-				<label for="match_correspondence">
-					Match correspondence
-				</label>
-			</div>
-		</div>
+  <table class="standard  cols-full">
+    <colgroup>
+      <col class="cols-2">
+      <col class="cols-4">
+      <col class="cols-2">
+      <col class="cols-4">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Date from:</td>
+      <td>
+        <input id="OphCoCorrespondence_ReportLetters_start_date"
+               placeholder="dd-mm-yyyy"
+               class="start-date"
+               name="OphCoCorrespondence_ReportLetters[start_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+      <td>Date to:</td>
+      <td>
+        <input id="OphCoCorrespondence_ReportLetters_end_date"
+               placeholder="dd-mm-yyyy"
+               class="end-date"
+               name="OphCoCorrespondence_ReportLetters[end_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+      <col class="cols-4">
+      <col class="cols-2">
+      <col class="cols-4">
+    </colgroup>
+    <tr>
+      <td>Author</td>
+      <td>
+          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
+              <?php echo CHtml::dropDownList(
+                  'OphCoCorrespondence_ReportLetters[author_id]',
+                  '',
+                  CHtml::listData(User::model()->findAll(
+                      array('order' => 'first_name asc,last_name asc')),
+                      'id',
+                      'fullName'),
+                  array('empty' => '--- Please select ---')) ?>
+          <?php else: ?>
+              <?php
+              $user = User::model()->findByPk(Yii::app()->user->id);
+              echo CHtml::dropDownList(null, '',
+                  array(Yii::app()->user->id => $user->fullName),
+                  array(
+                      'disabled' => 'disabled',
+                      'readonly' => 'readonly',
+                      'style' => 'background-color:#D3D3D3;',
+                  ) //for some reason the chrome doesn't gray out
+              );
+              echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
+              ?>
+          <?php endif ?>
+      </td>
+      <td>Site</td>
+      <td>
+          <?php echo CHtml::dropDownList(
+              'OphCoCorrespondence_ReportLetters[site_id]',
+              '',
+              Site::model()->getListForCurrentInstitution(),
+              array('empty' => '--- Please select ---')) ?>
+      </td>
+    </tr>
+  </table>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Status</td>
+      <td>
+          <?php
+          $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
+          $htmlOptions['separator'] = '';
+          $htmlOptions['style'] = 'vertical-align: middle';
+          echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]', null,
+              ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'],
+              $htmlOptions); ?>
+      </td>
+    </tr>
+    </tbody>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label></label>
-			</div>
-			<div class="cols-9 column end">
-				<input type="hidden" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="0" />
-				<input type="checkbox" id="match_legacy_letters" name="OphCoCorrespondence_ReportLetters[match_legacy_letters]" value="1" checked="checked" />
-				<label for="match_legacy_letters">
-					Match legacy letters
-				</label>
-			</div>
-		</div>
+  </table>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="OphCoCorrespondence_ReportLetters_start_date">
-					Date from:
-				</label>
-			</div>
-			<div class="cols-2 column end">
-				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'OphCoCorrespondence_ReportLetters[start_date]',
-					'options' => array(
-						'showAnim' => 'fold',
-						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
-					),
-					'value' => date('j M Y',strtotime('-1 year')),
-				))?>
-			</div>
-		</div>
+    <?php $this->endWidget() ?>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="OphCoCorrespondence_ReportLetters_end_date">
-					Date to:
-				</label>
-			</div>
-			<div class="cols-2 column end">
-				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'OphCoCorrespondence_ReportLetters[end_date]',
-					'options' => array(
-						'showAnim' => 'fold',
-						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
-					),
-					'value' => date('j M Y'),
-				))?>
-			</div>
-		</div>
+  <div class="errors alert-box alert with-icon" style="display: none">
+    <p>Please fix the following input errors:</p>
+    <ul>
+    </ul>
+  </div>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="author_id">
-					Author
-				</label>
-			</div>
-			<div class="cols-3 column end">
-                <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
-				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[author_id]','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
-                <?php else: ?>
-                    <?php
-                        $user = User::model()->findByPk(Yii::app()->user->id);
-                        echo CHtml::dropDownList(null, '',
-                            array(Yii::app()->user->id => $user->fullName),
-                            array('disabled' => 'disabled', 'readonly' => 'readonly', 'style'=>'background-color:#D3D3D3;') //for some reason the chrome doesn't gray out
-                            );
-                        echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
-                    ?>
-                <?php endif ?>
+  <table class="standard cols-full">
+    <tbody>
+    <tr>
+      <td>
+        <div class="row flex-layout flex-right">
+          <button type="submit" class="button green hint display-report" name="run">
+            <span class="button-span button-span-blue">Display report</span>
+          </button>
+          &nbsp;
+          <button type="submit" class="button green hint download-report" name="run">
+            <span class="button-span button-span-blue">Download report</span>
+          </button>
+          <img class="loader" style="display: none;"
+               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-			</div>
-		</div>
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="site_id">
-					Site
-				</label>
-			</div>
-			<div class="cols-3 column end">
-				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
-			</div>
-		</div>
-    <div class="data-group">
-      <div class="cols-2 column">
-            <label for="site_id">Status</label>
-          </div>
-			<div class="cols-6 column end">
-                <?php
-                    $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
-                    $htmlOptions['separator'] = '';
-                    $htmlOptions['style'] = 'vertical-align: middle';
-                    echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]',null,
-                        ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'], $htmlOptions); ?>
-			</div>
-		</div>
-		<?php $this->endWidget()?>
-	</div>
-
-	<div class="errors alert-box alert with-icon" style="display: none">
-		<p>Please fix the following input errors:</p>
-		<ul>
-		</ul>
-	</div>
-
-	<div style="margin-top: 2em;">
-		<button type="submit" class="classy blue mini display-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
-		<button type="submit" class="classy blue mini download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-		<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-	</div>
-
-	<div class="reportSummary report curvybox white blueborder" style="display: none;">
-	</div>
+  <div class="js-report-summary report-summary" style="display: none;">
+  </div>
 </div>
 <script type="text/javascript">
-	$('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
+  $('input[name="OphCoCorrespondence_ReportLetters[phrases][]"]').focus();
 </script>

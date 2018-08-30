@@ -23,9 +23,7 @@
     $this->renderPartial($element->view_view.'_fields',
                 array('eye' => $eye, 'element' => $element));
     else:?>
-			<div class="data-row">
-				<div class="data-value not-recorded">Not recorded</div>
-			</div>
+      <div class="data-value not-recorded">Not recorded</div>
 		<?php endif;?>
 	</div>
   <?php endforeach;?>

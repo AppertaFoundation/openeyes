@@ -300,7 +300,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosesController.prototype.removeExternalDiagnosis = function(code)
     {
-        this.$table.find('input[type="hidden"][value="' + code + '"].savedDiagnosis').closest('tr').remove();
+        this.$table.find('input[type="hidden"][value="' + code + '"]').closest('tr').remove();
     };
 
     /**
