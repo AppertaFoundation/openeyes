@@ -8,7 +8,7 @@
 
 $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
-$previewWidth = 800;
+$previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 
 ?>
 

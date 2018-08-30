@@ -968,7 +968,7 @@ class DefaultController extends BaseEventTypeController
             $pdf_path = $this->getPdfPath($this->event);
             $this->createPdfPreviewImages($pdf_path);
 
-            if (!$this->keepPreviewImageTempFiles()) {
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
                 @unlink($pdf_path);
             }
 

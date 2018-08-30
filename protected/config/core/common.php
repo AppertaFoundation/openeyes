@@ -509,5 +509,15 @@ return array(
             // overrides admin > Opbooking > whiteboard settings
             //'refresh_after_opbooking_completed' => 24, //hours or false
         ),
+
+        /**
+         * Lighnting Viewer
+         */
+
+        'lightning_viewer' => array(
+            'image_width' => 800,
+            'pdf_render_width' => 1250,
+            'keep_temp_files' => false,
+        ),
     ),
 );

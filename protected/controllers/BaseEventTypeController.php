@@ -2453,7 +2453,7 @@ class BaseEventTypeController extends BaseModuleController
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => 1250));
+                array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
 
             $image_path = $this->event->getImagePath('preview');
             $imagick = new \Imagick($image_path);
@@ -2462,7 +2462,7 @@ class BaseEventTypeController extends BaseModuleController
 
             $this->saveEventImage('CREATED', ['image_path' => $image_path]);
 
-            if (!$this->keepPreviewImageTempFiles()) {
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
                 $image->deleteFile($image_path);
             }
 
@@ -2474,37 +2474,17 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
-     * Gets the maximum width to be used for the preview image
-     *
-     * @return int
-     */
-    protected function getMaxPreviewImageWidth()
-    {
-        return 800;
-    }
-
-    /**
      * Scales down the input image if it is larger than the maximum width
      *
      * @param $imagick
      */
     protected function scaleImageForThumbnail($imagick)
     {
-        $width = $this->getMaxPreviewImageWidth();
+        $width = Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
         }
-    }
-
-    /**
-     * Returns a value indicating whether temporary files should be deleted
-     *
-     * @return bool
-     */
-    protected function keepPreviewImageTempFiles()
-    {
-        return false;
     }
 
     /**
@@ -2596,7 +2576,7 @@ class BaseEventTypeController extends BaseModuleController
         if(isset($options['image_path'])) {
             $eventImage->image_data = file_get_contents($options['image_path']);
 
-            if (!$this->keepPreviewImageTempFiles()) {
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
                 @unlink($options['image_path']);
             }
         }
@@ -2678,7 +2658,7 @@ class BaseEventTypeController extends BaseModuleController
         $imagickPage->writeImage($pagePreviewPath);
         $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
 
-        if(!$this->keepPreviewImageTempFiles()) {
+        if(!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
             @unlink($pagePreviewPath);
         }
 
