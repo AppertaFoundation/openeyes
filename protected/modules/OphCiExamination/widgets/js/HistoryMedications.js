@@ -350,6 +350,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
               }
 
+              controller.updateRowRouteOptions($row);
               controller.processRisks(ui.item);
           }
       });
