@@ -112,7 +112,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", 
 
   <div class="data-group">
     <p>Attachments</p>
-    <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
+    <table class="standard" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
       <thead>
       <tr>
         <td>Hidden</td>

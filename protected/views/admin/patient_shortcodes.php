@@ -22,14 +22,14 @@
     <div class="box admin">
         <h2>Shortcodes</h2>
 
-        <table class="grid comfortable">
+        <table class="standard comfortable">
             <thead>
             <tr>
                 <th>Code</th>
                 <th>Default Code</th>
-                <th style="width: 200px;">Description</th>
+                <th>Description</th>
                 <th>Event Type</th>
-                <th style="width: 200px;">Method</th>
+                <th>Method</th>
                 <th>Code Documentation</th>
             </tr>
             </thead>

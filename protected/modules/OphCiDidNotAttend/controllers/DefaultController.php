@@ -2,6 +2,8 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
+
     public function actionCreate()
     {
         parent::actionCreate();

@@ -19,7 +19,7 @@
 <div id="searchResults" class="box admin">
 	<h2>Contacts</h2>
 	<form id="admin_contacts">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>ID</th>

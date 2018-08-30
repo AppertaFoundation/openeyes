@@ -76,7 +76,7 @@
         }
         ?>
             <div class="data-group">
-                <table class="grid">
+                <table class="standard">
                     <thead>
                     <tr>
                         <?php foreach ($admin->getListFields() as $listItem): ?>

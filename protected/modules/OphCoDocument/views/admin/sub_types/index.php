@@ -17,17 +17,13 @@
  */
 ?>
 <div class="box admin">
-    <div class="row">
-        <div class="large-8 column">
-            <h2>Document Sub Types Settings</h2>
-        </div>
-        <div class="large-4 column">
-        </div>
-    </div>
+  <div class="cols-8 column">
+    <h2>Document Sub Types Settings</h2>
+  </div>
 
-    <form id="admin_<?=get_class(OphCoDocument_Sub_Types::model());?>">
+    <form id="admin_<?= get_class(OphCoDocument_Sub_Types::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="grid">
+        <table class="standard generic-admin sortable">
             <thead>
             <tr>
                 <th>Name</th>
@@ -42,18 +38,23 @@
         <?php echo EventAction::button(
             'Add',
             'add',
-            array(),
-            array(
+            [],
+            [
                 'class' => 'small',
                 'data-uri' => '/OphCoDocument/oeadmin/documentSubTypesSettings/create',
                 'formmethod' => 'get',
-            )
+            ]
         )->toHtml() ?>
+        <?php echo EventAction::button(
+            'Save',
+            'save',
+            [],
+            [
+                'id' => 'et_admin-save',
+                'class' => 'generic-admin-save small primary primary event-action',
+                'formmethod' => 'post',
+            ])->toHtml();
+        ?>
     </form>
-<!--    <div class="row field-row">-->
-<!--        <div class="large-4 column end">-->
-<!--            --><?php //echo CHtml::htmlButton('Delete sub types', array('class' => 'button small deleteSubTypes')) ?>
-<!--        </div>-->
-<!--    </div>-->
 
 

@@ -19,7 +19,7 @@
 <div class="admin box">
 	<h2>Data sources</h2>
 	<form id="admin_data_sources">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="sources" /></th>

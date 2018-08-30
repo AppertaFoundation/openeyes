@@ -27,7 +27,7 @@
 
     <form id="whiteboard_settings">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-        <table class="grid">
+        <table class="standard">
             <thead>
             <tr>
                 <th>Setting</th>
@@ -38,7 +38,7 @@
             <?php
             foreach ($settings as $metadata) {?>
                 <tr class="clickable" data-key="<?php echo $metadata->key?>" data-uri='OphTrOperationbooking/oeadmin/WhiteboardSettings/editSetting?key=<?=$metadata->key;?>'>
-                    <td style="width:50%"><?php echo $metadata->name?></td>
+                    <td><?php echo $metadata->name?></td>
                     <td><?php echo $metadata->getSettingName()?></td>
                 </tr>
             <?php }?>

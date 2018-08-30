@@ -27,10 +27,14 @@
         </div>
         <div id="js-listview-info-full data-group" class="cols-6" style="display: none;">
           <table class="large-text last-left cols-6">
+            <colgroup>
+              <col class="cols-4">
+              <col class="cols-4">
+            </colgroup>
             <thead>
             <tr>
-              <th class="cols-4">Patient</th>
-              <th class="cols-4">Signature date</th>
+              <th>Patient</th>
+              <th>Signature date</th>
             </tr>
             </thead>
             <tbody>

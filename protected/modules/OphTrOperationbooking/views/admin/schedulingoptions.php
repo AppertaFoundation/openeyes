@@ -19,7 +19,7 @@
 <div class="box admin">
 	<h2>Scheduling options</h2>
 	<form id="admin_schedulingoptions">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="scheduleoptions" /></th>

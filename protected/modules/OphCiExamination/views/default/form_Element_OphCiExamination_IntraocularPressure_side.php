@@ -26,10 +26,14 @@ $comments = $side . '_comments';
          class="cols-full<?php if (!$element->{"{$side}_values"}) {
              echo 'hidden "';
          } ?>">
+    <colgroup>
+      <col class="cols-3">
+      <col class="cols-2">
+    </colgroup>
     <thead>
     <tr>
-      <th class="cols-3">Time</th>
-      <th width="64px">mm Hg</th>
+      <th>Time</th>
+      <th>mm Hg</th>
         <?php if ($element->getSetting('show_instruments')): ?>
           <th>Instrument</th>
         <?php endif ?>
@@ -110,7 +114,7 @@ $comments = $side . '_comments';
       openButton: side.find('.js-add-select-search'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($instrument) {
-              return ['value' => $instrument->name, 'id' => $instrument->id];
+              return ['label' => $instrument->name, 'id' => $instrument->id];
           },
               OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
       ) ?>)],

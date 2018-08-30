@@ -25,13 +25,37 @@
   <?php endif; ?>
   <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
 
-  <td><i class="oe-i child-arrow medium"></i></td>
+  <td>
+      <button class="js-add-taper">
+          <i class="oe-i child-arrow small"></i>
+      </button>
+  </td>
   <td>
       <?php echo $item->drug->tallmanlabel; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php
       } ?>
     <input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id ?>"/>
+      <?php if($item->comments){ ?>
+        <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=CHtml::encode($item->comments);?>"></i>
+       <?php } else { ?>
+        <i class="oe-i comments medium-icon pad js-add-comments"style=""></i>
+       <?php } ?>
+
+      <div id="comments-<?=$key?>" class="cols-full prescription-comments" style="display:none" data-key="<?php echo $key; ?>">
+          <!-- comment-group, textarea + icon -->
+          <div class="comment-group flex-layout flex-left" style="padding-top:5px">
+              <?php
+                $htmlOptions = [
+                        'placeholder'=>'Comments' , 'autocomplete'=>'off',
+                    'rows'=>'1', 'class'=>'js-input-comments cols-full ' ,
+                    'style'=>'overflow-x: hidden;word-wrap: break-word;'
+                ];
+              echo CHtml::textArea('prescription_item[' . $key . '][comments]' ,CHtml::encode($item->comments) ,$htmlOptions) ?>
+              <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
+          </div>
+      </div>
+
   </td>
   <td class="prescriptionItemDose">
       <?php echo CHtml::textField('prescription_item[' . $key . '][dose]', $item->dose,
@@ -82,7 +106,6 @@
       ?>
   </td>
   <td>
-    <a class="taperItem" href="#">+Taper</a>
     <i class="oe-i trash removeItem"></i>
   </td>
 </tr>

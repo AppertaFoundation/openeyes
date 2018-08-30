@@ -24,7 +24,7 @@
   <div class="cols-12 column">
 			<div class="panel">
         <div class="cols-12 column">
-						<table class="grid">
+						<table class="standard">
 							<thead>
 								<tr>
 									<th>Site:</th>

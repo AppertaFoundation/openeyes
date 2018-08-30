@@ -82,7 +82,7 @@
     ?>
 
 
-    <table class="grid">
+    <table class="standard">
         <tbody>
             <tr>
                 <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (recommended dimensions is less than 500x100 pixels)</td>

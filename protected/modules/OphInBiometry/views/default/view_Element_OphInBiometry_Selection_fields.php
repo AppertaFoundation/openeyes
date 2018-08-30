@@ -4,7 +4,7 @@
         ?>
       <div class="cols-12 column">
         <div class="field-info">
-            <?php echo 'No selection has been made - use edit mode to select a lens.'; ?>
+            <?php echo 'No selection has been made - click the "Choose Lens" button to select a lens.'; ?>
         </div>
       </div>
         <?php } else {
