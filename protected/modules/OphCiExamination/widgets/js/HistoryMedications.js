@@ -48,7 +48,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     medicationSearchOptions: '.history-medication-search-options',
     medicationSearchInput: '#history-medication-search-field',
     medicationSearchResult: '#history-medication-search-results',
-    drugSelectSelector: 'select[name$="[drug_select]"]',
     medicationNameSelector: '.medication-name',
     medicationDisplaySelector: '.medication-display',
     startDateButtonSelector: '.start-medication.enable',
@@ -169,17 +168,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.initialiseRow = function($row)
   {
       var controller = this;
-      $row.on('change', controller.options.drugSelectSelector, function(e) {
-          var $option = $(this).find('option:selected'),
-              tags = "" + $option.data('tags');
-          controller.selectMedication($(this).parents('td'), {
-              value: $option.val(),
-              label: $option.text(),
-              name: $option.data('tallmanlabel'),
-              type: 'd', // only have pre-selected drugs available at the moment.
-              tags: tags.split(',')
-          });
-      });
 
       $row.on('click', '.medication-rename', function(e) {
           e.preventDefault();
