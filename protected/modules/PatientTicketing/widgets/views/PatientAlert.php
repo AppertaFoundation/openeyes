@@ -24,10 +24,10 @@
 
 
 <?php
-if ($closing_flsh = Yii::app()->user->getFlash('patient-ticketing-closing')) {
+if ($closing_flash = Yii::app()->user->getFlash('patient-ticketing-closing')) {
     ?>
   <div class="alert-box with-icon success">
-      <?= $closing_flsh; ?>
+      <?= $closing_flash; ?>
   </div>
 <?php } ?>
 
@@ -60,26 +60,6 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
     </div>
   </div>
 
-  <script>
-    $(function () {
-
-      $('.vc-floating-input').draggable();
-
-      var storageKey = 'sratchpad_' + OE_patient_id;
-      var oldScratchValue = window.localStorage.getItem(storageKey);
-      var $scratchInput = $('.vc-floating-input textarea');
-      if (oldScratchValue) {
-        $scratchInput.val(oldScratchValue);
-        $('.vc-floating-input').show();
-        $scratchInput.autosize().input();
-      }
-
-      $scratchInput.change(function () {
-        console.log('!!!');
-        window.localStorage.setItem(storageKey, $(this).val());
-      });
-    });
-  </script>
 
   <div id="patient-alert-patientticketing"
        class="oe-hotlist-panel"
@@ -98,22 +78,38 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
               <div class="scratchpad">
                 <button id="js-vc-scratchpad" class="blue hint">ScratchPad</button>
               </div>
-              <script>
-                $(document).on('click', '#js-vc-scratchpad', function () {
-                  $('#oe-vc-scratchpad').toggle();
-
-                  var txt = $('#oe-vc-scratchpad').is(':visible') ? 'Hide ScratchPad' : 'ScratchPad';
-                  $(this).text(txt);
-                });
-              </script>
 
               <h3>VC: <b><?= strtoupper(trim($ticket->patient->last_name)) ?>,
                       <?= $ticket->patient->first_name ?></b></h3>
 
               <div class="row divider">
                 <ul class="vc-steps">
-                  <li class="selected">1. VC Step one</li>
-                  <li>2. VC Step two</li>
+                    <?php
+                    // Get all queues this ticket has been assigned to ...
+                    /* @var \OEModule\PatientTicketing\models\Queue[] $queues */
+                    $queues = array_map(function (\OEModule\PatientTicketing\models\TicketQueueAssignment $qa) {
+                        return $qa->queue;
+                    }, $ticket->queue_assignments);
+                    $step_number = 0;
+                    $pastCurrentQueue = false;
+                    while (count($queues) > 0) {
+                        /* @var \OEModule\PatientTicketing\models\Queue $queue */
+                        $queue = array_shift($queues);
+                        $pastCurrentQueue = $pastCurrentQueue ?: $queue->id === $ticket->current_queue->id;
+                        // ... if we reach the end of the queues, then follow the outcomes until the end
+                        // TODO: If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list instead of the tree that it is
+                        if ($pastCurrentQueue) {
+                            foreach ($queue->outcomes as $outcome) {
+                                $queues[] = $outcome->outcome_queue;
+                            }
+                        }
+                        $step_number++;
+                        // And display the queues as we go
+                        ?>
+                      <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
+                          <?= $step_number ?>. <?= $queue->name ?>
+                      </li>
+                    <?php } ?>
                 </ul>
               </div>
 
@@ -123,7 +119,8 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
                       : <?= Helper::convertDate2NHS($ticket->event->event_date) ?></div>
                     <div class="data-value">
                           <textarea readonly="" rows="1" class="cols-full"
-                                    style="overflow: hidden; overflow-wrap: break-word; height: 25px;">No significant issues reported</textarea>
+                                    style="overflow: hidden; overflow-wrap: break-word; height: 25px;"
+                          ><?= $ticket->current_queue_assignment->notes ?></textarea>
                     </div>
                   </div>
                 <?php } ?>
@@ -146,4 +143,32 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
       </div>
     </div>
   </div>
+
+  <script>
+    $(function () {
+
+      $('.vc-floating-input').draggable();
+
+      var storageKey = 'sratchpad_' + OE_patient_id;
+      var oldScratchValue = window.localStorage.getItem(storageKey);
+      var $scratchInput = $('.vc-floating-input textarea');
+      if (oldScratchValue) {
+        $scratchInput.val(oldScratchValue);
+        $('.vc-floating-input').show();
+        $scratchInput.autosize().input();
+      }
+
+      $scratchInput.change(function () {
+        window.localStorage.setItem(storageKey, $(this).val());
+      });
+
+      $(document).on('click', '#js-vc-scratchpad', function () {
+        $('#oe-vc-scratchpad').toggle();
+
+        var txt = $('#oe-vc-scratchpad').is(':visible') ? 'Hide ScratchPad' : 'ScratchPad';
+        $(this).text(txt);
+      });
+    });
+  </script>
+
 <?php } ?>
