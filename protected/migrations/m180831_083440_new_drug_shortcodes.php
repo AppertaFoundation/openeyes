@@ -21,8 +21,8 @@ class m180831_083440_new_drug_shortcodes extends CDbMigration
         $this->registerShortcode(
             $event_type,
             'dct',
-            'getLetterDrugsChangedToday',
-            'Drugs changed today');
+            'getLetterDrugsContinuedToday',
+            'Drugs continued today');
     }
 
     public function down()
