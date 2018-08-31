@@ -16,48 +16,37 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box reports">
-  <div class="report-fields lettersReport">
-    <h2>Prescribed drugs report</h2>
-      <?php
-      $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+<h2>Prescribed drugs report</h2>
+
+<div class="row divider">
+    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           'id' => 'report-form',
           'enableAjaxValidation' => false,
           'layoutColumns' => array('label' => 2, 'field' => 10),
           'action' => Yii::app()->createUrl('/OphDrPrescription/report/downloadReport'),
       )) ?>
-
     <input type="hidden" name="report-name" value="PrescribedDrugs"/>
 
-    <div class="data-group">
-      <div class="cols-6 column">
-        <div class="data-group">
-          <div class="cols-2 column">
-            <label for="phrases">Drugs:</label>
-          </div>
-          <div class="cols-10 column">
-              <?php
-              // set name to null as it is not required to send this value to the server
-              echo CHtml::dropDownList(null, null,
-                  CHtml::listData($drugs, 'id', 'tallmanlabel'), array('empty' => '-- Select --', 'id' => 'drug_id'));
-              ?>
-          </div>
-        </div>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Drugs:</td>
+      <td>
+          <?php
+          // set name to null as it is not required to send this value to the server
+          echo CHtml::dropDownList(null, null,
+              CHtml::listData($drugs, 'id', 'tallmanlabel'), array('empty' => '-- Select --', 'id' => 'drug_id'));
+          ?>
+          <?php
+          $defaultURL = '/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController;
 
-        <div class="data-group">
-          <div class="cols-2 column">
-            <label for="phrases">
-            </label>
-          </div>
-          <div class="cols-9 column end phraseList">
-            <div>
-                <?php
-                $defaultURL = '/' . Yii::app()->getModule('OphDrPrescription')->id . '/' . Yii::app()->getModule('OphDrPrescription')->defaultController;
-
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => 'drug_id',
-                    'id' => 'autocomplete_drug_id',
-                    'source' => "js:function(request, response) {
+          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+              'name' => 'drug_id',
+              'id' => 'autocomplete_drug_id',
+              'source' => "js:function(request, response) {
                       $.ajax({
                         dataType: 'json',
                         url: '" . $defaultURL . "/DrugList',
@@ -70,8 +59,8 @@
                           beforeSend: function(){ $('.autocomplete-loader').show(); }
                          });
                      }",
-                    'options' => array(
-                        'select' => "js:function(event, ui) {
+              'options' => array(
+                  'select' => "js:function(event, ui) {
                           var tr = $('#report-drug-list').find('tr#' + ui.item.id);
                             if( tr.length == 0 ){
                               $('.no-drugs').hide();
@@ -80,123 +69,114 @@
                               $(this).val('');
                               return false;
                           }",
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'search for drugs',
-                    ),
-                )); ?>
-            </div>
-          </div>
-          <div class="cols-1 column end">
-            <img class="autocomplete-loader" style="display: none;"
-                 src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading...">
-          </div>
-        </div>
+              ),
+              'htmlOptions' => array(
+                  'placeholder' => 'search for drugs',
+              ),
+          )); ?>
+      </td>
+      <td>
+        <img class="autocomplete-loader" style="display: none;"
+             src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading...">
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-2">
+      <col class="cols-4">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Date from:</td>
+      <td>
+        <input id="OphDrPrescription_ReportPrescribedDrugs_start_date"
+               placeholder="From"
+               class="start-date"
+               name="OphDrPrescription_ReportPrescribedDrugs[start_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+      <td>Date to:</td>
+      <td>
+        <input id="OphDrPrescription_ReportPrescribedDrugs_end_date"
+               placeholder="To"
+               class="end-date"
+               name="OphDrPrescription_ReportPrescribedDrugs[end_date]"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>User</td>
+      <td>
+          <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
+              <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+                  CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
+          <?php else: ?>
+              <?php
+              $user = User::model()->findByPk(Yii::app()->user->id);
+              echo CHtml::dropDownList(null, '',
+                  array(Yii::app()->user->id => $user->fullName),
+                  array(
+                      'disabled' => 'disabled',
+                      'readonly' => 'readonly',
+                      'style' => 'background-color:#D3D3D3;',
+                  ) //for some reason the chrome doesn't gray out
+              );
+              echo CHtml::hiddenField('OphDrPrescription_ReportPrescribedDrugs[user_id]', Yii::app()->user->id);
+              ?>
+          <?php endif ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="standard cols-6" id="report-drug-list">
+    <colgroup>
+      <col class="cols-6">
+    </colgroup>
+    <thead>
+    <tr>
+      <th>Drug name</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="no-drugs">
+      <td>No drugs selected</td>
+    </tr>
+    </tbody>
+  </table>
 
-        <div class="data-group">
-          <div class="cols-12 column"></div>
-        </div>
-        <div class="data-group">
-          <div class="cols-2 column" style="padding-right:0px;">
-            <label for="start_date">
-              Date from:
-            </label>
-          </div>
-          <div class="cols-3 column end">
-              <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                  'name' => 'OphDrPrescription_ReportPrescribedDrugs[start_date]',
-                  'options' => array(
-                      'showAnim' => 'fold',
-                      'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  ),
-                  'value' => date('j M Y', strtotime('-1 year')),
-              )) ?>
-          </div>
-        </div>
-
-        <div class="data-group">
-          <div class="cols-2 column">
-            <label for="end_date">
-              Date to:
-            </label>
-          </div>
-          <div class="cols-3 column end">
-              <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                  'name' => 'OphDrPrescription_ReportPrescribedDrugs[end_date]',
-                  'options' => array(
-                      'showAnim' => 'fold',
-                      'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                  ),
-                  'value' => date('j M Y'),
-              )) ?>
-          </div>
-        </div>
-        <div class="cols-12 column"></div>
-        <div class="data-group">
-          <div class="cols-2 column">
-            <label for="author_id">User</label>
-          </div>
-          <div class="cols-7 column end">
-              <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-                  <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
-                      CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
-              <?php else: ?>
-                  <?php
-                  $user = User::model()->findByPk(Yii::app()->user->id);
-                  echo CHtml::dropDownList(null, '',
-                      array(Yii::app()->user->id => $user->fullName),
-                      array(
-                          'disabled' => 'disabled',
-                          'readonly' => 'readonly',
-                          'style' => 'background-color:#D3D3D3;',
-                      ) //for some reason the chrome doesn't gray out
-                  );
-                  echo CHtml::hiddenField('OphDrPrescription_ReportPrescribedDrugs[user_id]', Yii::app()->user->id);
-                  ?>
-              <?php endif ?>
-          </div>
-        </div>
-
-        <div class="cols-12 column">
-          <div style="margin-top: 2em;">
-            <button type="submit" class="classy blue mini display-report" name="run"><span
-                    class="button-span button-span-blue">Display report</span></button>
-            <button type="submit" class="classy blue mini download-report" name="run"><span
-                    class="button-span button-span-blue">Download report</span></button>
-            <img class="loader" style="display: none;"
-                   src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
-          </div>
-        </div>
-      </div>
-      <div class="cols-6 column">
-        <div style="" class="panel procedures">
-          <table class="plain" id="report-drug-list">
-            <thead>
-            <tr>
-              <th>Drug name</th>
-              <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody class="body">
-            <tr class="no-drugs">
-              <td>No drugs selected</td>
-              <td class="right"></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-      <?php $this->endWidget() ?>
-  </div>
+    <?php $this->endWidget() ?>
 
   <div class="errors alert-box alert with-icon" style="display: none">
     <p>Please fix the following input errors:</p>
     <ul></ul>
   </div>
 
+  <table class="standard cols-full">
+    <tbody>
+    <tr>
+      <td>
+        <div class="row flex-layout flex-right">
+          <button type="submit" class="button green hint display-report" name="run"><span
+                class="button-span button-span-blue">Display report</span></button>
+          &nbsp;
+          <button type="submit" class="button green hint download-report" name="run"><span
+                class="button-span button-span-blue">Download report</span></button>
+          <img class="loader" style="display: none;"
+               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-  <div class="reportSummary report curvybox white blueborder" style="display: none; overflow: auto">
+
+  <div class="js-report-summary report-summary" style="display: none; overflow: auto">
   </div>
 </div>

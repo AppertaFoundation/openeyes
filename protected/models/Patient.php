@@ -56,6 +56,9 @@
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  *
+ * The following are available through get methods
+ * @property SecondaryDiagnosis[] $systemicDiagnoses
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
