@@ -264,7 +264,7 @@ class Ticket extends \BaseActiveRecordVersioned
             }
 
             // ... if we reach the end of the queues, then follow the outcomes until the end
-            // TODO: If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list instead of the tree that it is
+            // If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list
             if ($pastCurrentQueue) {
                 foreach ($queue->outcomes as $outcome) {
                     $queues[] = $outcome->outcome_queue;

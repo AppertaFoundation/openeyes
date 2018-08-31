@@ -24,7 +24,8 @@
 
 
 <?php
-if ($closing_flash = Yii::app()->user->getFlash('patient-ticketing-closing')) {
+$closing_flash = Yii::app()->user->getFlash('patient-ticketing-closing');
+if ($closing_flash) {
     ?>
   <div class="alert-box with-icon success">
       <?= $closing_flash; ?>

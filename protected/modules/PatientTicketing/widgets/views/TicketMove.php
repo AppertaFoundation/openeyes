@@ -20,7 +20,8 @@
 <?php
 $t_svc = Yii::app()->service->getService('PatientTicketing_Ticket');
 $q_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $q_svc->getQueueSetForTicket($this->ticket->id)->getId())) {
+$flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $q_svc->getQueueSetForTicket($this->ticket->id)->getId());
+if ($flash_message) {
     ?>
   <div class="alert-box with-icon success">
       <?php echo $flash_message; ?>
@@ -62,7 +63,7 @@ if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $q_svc->g
 
       $buttons_drawn = false;
       if ($this->outcome_queue_id) {
-          $this->widget('OEModule\PatientTicketing\widgets\QueueAssign', array(
+          $this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
               'queue_id' => $this->outcome_queue_id,
               'patient_id' => $this->ticket->patient_id,
               'current_queue_id' => $this->ticket->current_queue->id,
