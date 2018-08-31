@@ -361,10 +361,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $row.find(".end-date-column").find(".alternative-display-element").show();
       $row.find(".end-date-column").find(".alternative-display-element.textual").hide();
 
-      var $cnt_input = $row.find(".btn-continue input");
-      $cnt_input.attr("data-prev-state", $cnt_input.prop("checked") ? '1' : '0');
-      $cnt_input.prop("checked", false).attr("disabled", "disabled");
-
       var $rx_input = $row.find(".btn-prescribe input");
       $rx_input.attr("data-prev-state", $rx_input.prop("checked") ? '1' : '0');
       $rx_input.prop("checked", false).attr("disabled", "disabled");
@@ -385,11 +381,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $stop_reason.val("");
 
       $row.find(".end.date").val("");
-
-      var $cnt_input = $row.find(".btn-continue input");
-      var state = $cnt_input.attr("data-prev-state");
-      $cnt_input.attr("data-prev-state", $cnt_input.prop("checked") ? '1' : '0');
-      $cnt_input.prop("checked", state === "1").removeAttr("disabled");
 
       var $rx_input = $row.find(".btn-prescribe input");
       state = $rx_input.attr("data-prev-state");
@@ -674,7 +665,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         $row.find(".fuzzy-date").each(function(i, fieldset) {
             var $hidden_input = $(fieldset).find("input[type=hidden]");
-            $hidden_input.val($(fieldset).find(".fuzzy_year").val()+''+$(fieldset).find(".fuzzy_month").val().padStart(2, "0")+''+$(fieldset).find(".fuzzy_day").val().padStart(2, "0"));
+            var value = $(fieldset).find(".fuzzy_year").val()+''+$(fieldset).find(".fuzzy_month").val().padStart(2, "0")+''+$(fieldset).find(".fuzzy_day").val().padStart(2, "0");
+            if(value != '00000000') {
+                $hidden_input.val(value);
+            }
+            else {
+                $hidden_input.val('');
+            }
         });
     };
 

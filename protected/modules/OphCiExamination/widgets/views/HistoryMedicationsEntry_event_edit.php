@@ -44,7 +44,6 @@ if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
     $end_sel_year = date('Y');
 }
 
-$chk_continue =  isset($entry->chk_continue) ? $entry->chk_continue : false;
 $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;

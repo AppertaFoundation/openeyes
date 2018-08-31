@@ -61,7 +61,6 @@ class EventMedicationUse extends BaseElement
 
     /* temporaryly saved properties to keep edit mode consistent through pages */
     public $group;
-    public $chk_continue;
     public $chk_prescribe;
     public $chk_stop;
 
@@ -92,7 +91,7 @@ class EventMedicationUse extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('usage_type, ref_medication_id, start_date_string_YYYYMMDD', 'required'),
-			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, continue, prescribe, hidden', 'numerical', 'integerOnly'=>true),
+			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),

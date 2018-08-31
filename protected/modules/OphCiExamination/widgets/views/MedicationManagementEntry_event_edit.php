@@ -44,7 +44,7 @@ if (isset($entry->end_date_string_YYYYMMDD) && !is_null($entry->end_date_string_
     $end_sel_month = date('m');
     $end_sel_year = date('Y');
 }
-$continue =  isset($entry->continue) ? $entry->continue : false;
+
 $prescribe = isset($entry->prescribe) ? $entry->prescribe : ($row_type == "prescribed");
 $stop = isset($entry->stop) ? $entry->stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
@@ -149,13 +149,6 @@ $is_new = isset($is_new) ? $is_new : false;
             </fieldset>
         </div>
     </td>
-
-    <td>
-        <span class="icon-switch btn-continue">
-            <input type="checkbox" name="<?= $field_prefix ?>[continue]" <?php echo $entry->continue == 1 ? "checked" : ""; ?> />
-        </span>
-    </td>
-
     <td>
          <span class="icon-switch btn-prescribe">
             <input type="checkbox" name="<?= $field_prefix ?>[prescribe]" <?php echo $entry->prescribe == 1 ? "checked" : ""; ?> <?php if(!$prescribe_access): ?>onclick="return false;"<?php endif; ?> />

@@ -97,7 +97,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                          as $k) {
                     if(array_key_exists($k, $entry_data) && in_array($k, $entry->attributeNames())) {
 
-                        if(in_array($k, ['continue', 'prescribe', 'stop'])) {
+                        if(in_array($k, ['prescribe', 'stop'])) {
                              continue;
                         }
                         $entry->setAttribute($k, $entry_data[$k]);
@@ -105,7 +105,6 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                 }
 
                 if(is_a($entry, MedicationManagementEntry::class)) {
-                    $entry->continue = isset($entry_data['continue']) && $entry_data['continue'] == 'on' ? 1 : 0;
                     $entry->prescribe = isset($entry_data['prescribe']) && $entry_data['prescribe'] == 'on' ? 1 : 0;
                 }
 

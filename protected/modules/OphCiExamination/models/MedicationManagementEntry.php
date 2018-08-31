@@ -55,7 +55,6 @@
         public function attributeLabels()
         {
             return array_merge(parent::attributeLabels(), array(
-                'continue' => 'Continue',
                 'prescribe' => 'Prescribe'
             ));
         }
