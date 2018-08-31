@@ -1,5 +1,4 @@
 (function () {
-  console.trace();
 
   function TicketMoveController(options) {
     this.options = $.extend(true, {}, TicketMoveController._defaultOptions, options);
@@ -15,7 +14,11 @@
     queueAssignmentPlaceholderSelector: "#PatientTicketing-queue-assignment",
     ticketMoveURI: "/PatientTicketing/default/moveTicket/",
     ticketNavigateToEventURI: "/PatientTicketing/default/navigateToEvent/",
-    patientAlertSelector: "#patient-alert-patientticketing"
+    patientAlertSelector: "#patient-alert-patientticketing",
+
+    scratchpadButtonSelector: '#js-vc-scratchpad',
+    scratchpadPopupSelector: '#oe-vc-scratchpad',
+    scratchpadInputSelector: '#oe-vc-scratchpad textarea'
   };
 
   /**
@@ -168,8 +171,49 @@
     })
   };
 
+
+  TicketMoveController.prototype.showScratchpad = function () {
+    this.toggleScratchpad(true);
+  };
+
+  TicketMoveController.prototype.hideScratchpad = function () {
+    this.toggleScratchpad(false);
+  };
+
+  TicketMoveController.prototype.toggleScratchpad = function (showScratchpad) {
+    $(this.options.scratchpadPopupSelector).toggle(showScratchpad);
+    var txt = showScratchpad ? 'Hide Scratchpad' : 'Scratchpad';
+    $(this.options.scratchpadButtonSelector).text(txt);
+
+    if (showScratchpad) {
+      console.log($(this.options.scratchpadInputSelector));
+      $(this.options.scratchpadInputSelector).autosize();
+      $(this.options.scratchpadPopupSelector).draggable();
+    }
+  };
+
+  TicketMoveController.prototype.loadScratchpadData = function () {
+    var storageKey = this.getScratchpadStorageKey();
+    var oldScratchValue = window.localStorage.getItem(storageKey);
+    var $scratchInput = $(this.options.scratchpadInputSelector);
+    if (oldScratchValue) {
+      $scratchInput.val(oldScratchValue);
+      this.showScratchpad();
+    }
+  };
+
+  TicketMoveController.prototype.saveScratchpadData = function (data) {
+    var storageKey = this.getScratchpadStorageKey();
+    window.localStorage.setItem(storageKey, data);
+  };
+
+  TicketMoveController.prototype.getScratchpadStorageKey = function () {
+    return 'sratchpad_' + OE_patient_id;
+  };
+
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
+    ticketMoveController.loadScratchpadData();
 
     $(document).on('click', ticketMoveController.options.formClass + ' .js-ok', function (e) {
       e.preventDefault();
@@ -189,6 +233,13 @@
       e.preventDefault();
       ticketMoveController.navigateToEvent(($(this).closest('form')), $(this).attr('href'));
     });
-  });
 
+    $(this).on('change', ticketMoveController.options.scratchpadInputSelector, function () {
+      ticketMoveController.saveScratchpadData($(this).val());
+    });
+
+    $(this).on('click', ticketMoveController.options.scratchpadButtonSelector, function () {
+      ticketMoveController.toggleScratchpad(!$(ticketMoveController.options.scratchpadPopupSelector).is(':visible'));
+    });
+  });
 })();

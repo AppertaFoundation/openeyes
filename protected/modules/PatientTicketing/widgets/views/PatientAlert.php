@@ -143,32 +143,4 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
       </div>
     </div>
   </div>
-
-  <script>
-    $(function () {
-
-      $('.vc-floating-input').draggable();
-
-      var storageKey = 'sratchpad_' + OE_patient_id;
-      var oldScratchValue = window.localStorage.getItem(storageKey);
-      var $scratchInput = $('.vc-floating-input textarea');
-      if (oldScratchValue) {
-        $scratchInput.val(oldScratchValue);
-        $('.vc-floating-input').show();
-        $scratchInput.autosize().input();
-      }
-
-      $scratchInput.change(function () {
-        window.localStorage.setItem(storageKey, $(this).val());
-      });
-
-      $(document).on('click', '#js-vc-scratchpad', function () {
-        $('#oe-vc-scratchpad').toggle();
-
-        var txt = $('#oe-vc-scratchpad').is(':visible') ? 'Hide ScratchPad' : 'ScratchPad';
-        $(this).text(txt);
-      });
-    });
-  </script>
-
 <?php } ?>
