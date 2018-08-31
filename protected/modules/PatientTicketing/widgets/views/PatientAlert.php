@@ -85,29 +85,9 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
               <div class="row divider">
                 <ul class="vc-steps">
                     <?php
-                    // Get all queues this ticket has been assigned to ...
-                    /* @var \OEModule\PatientTicketing\models\Queue[] $queues */
-                    $queues = array_map(function (\OEModule\PatientTicketing\models\TicketQueueAssignment $qa) {
-                        return $qa->queue;
-                    }, $ticket->queue_assignments);
-                    $step_number = 0;
-                    $pastCurrentQueue = false;
-                    while (count($queues) > 0) {
-                        /* @var \OEModule\PatientTicketing\models\Queue $queue */
-                        $queue = array_shift($queues);
-                        $pastCurrentQueue = $pastCurrentQueue ?: $queue->id === $ticket->current_queue->id;
-                        // ... if we reach the end of the queues, then follow the outcomes until the end
-                        // TODO: If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list instead of the tree that it is
-                        if ($pastCurrentQueue) {
-                            foreach ($queue->outcomes as $outcome) {
-                                $queues[] = $outcome->outcome_queue;
-                            }
-                        }
-                        $step_number++;
-                        // And display the queues as we go
-                        ?>
+                    foreach ($ticket->getQueueSteps(2) as $step => $queue) { ?>
                       <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
-                          <?= $step_number ?>. <?= $queue->name ?>
+                          <?= $step ?>. <?= $queue->name ?>
                       </li>
                     <?php } ?>
                 </ul>

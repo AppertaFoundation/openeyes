@@ -74,7 +74,7 @@ class Ticket extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('patient_id', 'required'),
+            array('patient_id', 'required'),
         );
     }
 
@@ -90,12 +90,44 @@ class Ticket extends \BaseActiveRecordVersioned
             'priority' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Priority', 'priority_id'),
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'queue_assignments' => array(self::HAS_MANY, 'OEModule\PatientTicketing\models\TicketQueueAssignment', 'ticket_id', 'order' => 'queue_assignments.assignment_date asc'),
-            'reversed_queue_assignments' => array(self::HAS_MANY, 'OEModule\PatientTicketing\models\TicketQueueAssignment', 'ticket_id', 'order' => 'reversed_queue_assignments.assignment_date desc'),
-            'initial_queue_assignment' => array(self::HAS_ONE, 'OEModule\PatientTicketing\models\TicketQueueAssignment', 'ticket_id', 'order' => 'initial_queue_assignment.assignment_date'),
-            'current_queue_assignment' => array(self::HAS_ONE, 'OEModule\PatientTicketing\models\TicketQueueAssignment', 'ticket_id', 'order' => 'current_queue_assignment.assignment_date desc'),
-            'initial_queue' => array(self::HAS_ONE, 'OEModule\PatientTicketing\models\Queue', 'queue_id', 'through' => 'queue_assignments', 'order' => 'queue_assignments.assignment_date asc'),
-            'current_queue' => array(self::HAS_ONE, 'OEModule\PatientTicketing\models\Queue', 'queue_id', 'through' => 'reversed_queue_assignments', 'order' => 'reversed_queue_assignments.assignment_date desc'),
+            'queue_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\PatientTicketing\models\TicketQueueAssignment',
+                'ticket_id',
+                'order' => 'queue_assignments.assignment_date asc',
+            ),
+            'reversed_queue_assignments' => array(
+                self::HAS_MANY,
+                'OEModule\PatientTicketing\models\TicketQueueAssignment',
+                'ticket_id',
+                'order' => 'reversed_queue_assignments.assignment_date desc',
+            ),
+            'initial_queue_assignment' => array(
+                self::HAS_ONE,
+                'OEModule\PatientTicketing\models\TicketQueueAssignment',
+                'ticket_id',
+                'order' => 'initial_queue_assignment.assignment_date',
+            ),
+            'current_queue_assignment' => array(
+                self::HAS_ONE,
+                'OEModule\PatientTicketing\models\TicketQueueAssignment',
+                'ticket_id',
+                'order' => 'current_queue_assignment.assignment_date desc',
+            ),
+            'initial_queue' => array(
+                self::HAS_ONE,
+                'OEModule\PatientTicketing\models\Queue',
+                'queue_id',
+                'through' => 'queue_assignments',
+                'order' => 'queue_assignments.assignment_date asc',
+            ),
+            'current_queue' => array(
+                self::HAS_ONE,
+                'OEModule\PatientTicketing\models\Queue',
+                'queue_id',
+                'through' => 'reversed_queue_assignments',
+                'order' => 'reversed_queue_assignments.assignment_date desc',
+            ),
         );
     }
 
@@ -124,7 +156,7 @@ class Ticket extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -141,7 +173,8 @@ class Ticket extends \BaseActiveRecordVersioned
                 return Yii::app()->createUrl('/patient/episode/view/', array('id' => $this->event->episode_id));
             }
 
-            return Yii::app()->createURL('/'.$this->event->eventType->class_name.'/default/view/', array('id' => $this->event_id));
+            return Yii::app()->createURL('/' . $this->event->eventType->class_name . '/default/view/',
+                array('id' => $this->event_id));
         }
 
         return Yii::app()->createURL('/patient/view/', array('id' => $this->patient_id));
@@ -156,7 +189,7 @@ class Ticket extends \BaseActiveRecordVersioned
     {
         if ($this->event) {
             if ($this->initial_queue_assignment->queue->summary_link) {
-                return $this->initial_queue_assignment->assignment_firm->getSubspecialtyText().' Episode';
+                return $this->initial_queue_assignment->assignment_firm->getSubspecialtyText() . ' Episode';
             }
 
             return $this->event->eventType->name;
@@ -199,6 +232,60 @@ class Ticket extends \BaseActiveRecordVersioned
         }
 
         return array();
+    }
+
+    /**
+     * Gets an associative array of queues before and after this ticket
+     * Returned in the format $step => $queue where $step is the step number of the queue item
+     *
+     * @param int $stepsBeforeAndAfter If >= 0 then the number of queue items is restricted to only those within
+     *                                 that many steps before and after this tickets "step"
+     * @return Queue[]
+     */
+    public function getQueueSteps($stepsBeforeAndAfter = -1)
+    {
+        // Get all queues this ticket has been assigned to ...
+        /* @var \OEModule\PatientTicketing\models\Queue[] $queues */
+        $queues = array_map(function (TicketQueueAssignment $qa) {
+            return $qa->queue;
+        }, $this->queue_assignments);
+
+        /* @var \OEModule\PatientTicketing\models\Queue[] $queueSteps */
+        $queueSteps = [];
+
+        $step_number = 1;
+        $pastCurrentQueue = false;
+        $currentQueueStep = null;
+        while (count($queues) > 0) {
+            $queue = array_shift($queues);
+            if (!$pastCurrentQueue && $queue->id === $this->current_queue->id) {
+                $currentQueueStep = $step_number;
+                $pastCurrentQueue = true;
+            }
+
+            // ... if we reach the end of the queues, then follow the outcomes until the end
+            // TODO: If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list instead of the tree that it is
+            if ($pastCurrentQueue) {
+                foreach ($queue->outcomes as $outcome) {
+                    $queues[] = $outcome->outcome_queue;
+                }
+            }
+            $queueSteps[$step_number] = $queue;
+
+            $step_number++;
+        }
+
+        // Restrict to only queue items that are within $stepsBeforeAndAfter steps of the current step
+        if ($stepsBeforeAndAfter >= 0) {
+            $allowedKeys = array_filter(array_keys($queueSteps),
+                function ($key) use ($currentQueueStep, $stepsBeforeAndAfter) {
+                    return abs($key - $currentQueueStep) <= $stepsBeforeAndAfter;
+                });
+
+            return array_intersect_key($queueSteps, array_flip($allowedKeys));
+        }
+
+        return $queueSteps;
     }
 
     /**
