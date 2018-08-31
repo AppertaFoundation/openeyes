@@ -193,7 +193,9 @@ function removeElement(element, is_child, force) {
         container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
     } else {
         container = $('.optional-elements-list');
-        markElementChilds(element , 1);
+        if(!force) {
+            markElementChilds(element, 1);
+        }
     }
 
     // If the element has element removed flag hide it instead of removing it
