@@ -107,4 +107,62 @@ class OphDrPrescription_API extends BaseAPI
         }
         return false;
     }
+
+    /**
+     * Handler routine for DST shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
+    public function getLetterDrugsStartedToday($patient, $use_context = false)
+    {
+        $events = $this->getEvents($patient, $use_context);
+        $event_ids = array_map(function($e){ return $e->id; }, $events);
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('event_id', $event_ids);
+        $criteria->addCondition('start_date_string_YYYYMMDD = :today');
+        $criteria->params = array_merge($criteria->params, array(':today' => date('Ymd')));
+
+        $meds = \EventMedicationUse::model()->findAll($criteria);
+
+        if(empty($meds)) {
+            return "";
+        }
+
+        return implode(PHP_EOL, array_map(function($med){
+            /** @var EventMedicationUse $med */
+            return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
+        }, $meds));
+    }
+
+    /**
+     * Handler routine for DSP shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
+    public function getLetterDrugsStoppedToday($patient, $use_context = false)
+    {
+        $events = $this->getEvents($patient, $use_context);
+        $event_ids = array_map(function($e){ return $e->id; }, $events);
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('event_id', $event_ids);
+        $criteria->addCondition('end_date_string_YYYYMMDD = :today');
+        $criteria->params = array_merge($criteria->params, array(':today' => date('Ymd')));
+
+        $meds = \EventMedicationUse::model()->findAll($criteria);
+
+        if(empty($meds)) {
+            return "";
+        }
+
+        return implode(PHP_EOL, array_map(function($med){
+            /** @var EventMedicationUse $med */
+            return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay().' '.$med->getDatesDisplay();
+        }, $meds));
+    }
 }
