@@ -2782,4 +2782,71 @@ class OphCiExamination_API extends \BaseAPI
         $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
         return $value;
     }
+
+
+    /**
+     * Handler routine for DST shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
+    public function getLetterDrugsStartedToday($patient, $use_context = false)
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
+        if(!is_null($element)) {
+            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
+            $meds = $element->getEntriesStartedToday();
+            return implode(PHP_EOL, array_map(function($med){
+                /** @var EventMedicationUse $med */
+                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
+            }, $meds));
+        }
+
+        return "";
+    }
+
+    /**
+     * Handler routine for DSP shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
+    public function getLetterDrugsStoppedToday($patient, $use_context = false)
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
+        if(!is_null($element)) {
+            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
+            $meds = $element->getEntriesStartedToday();
+            return implode(PHP_EOL, array_map(function($med){
+                /** @var \EventMedicationUse $med */
+                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
+            }, $meds));
+        }
+
+        return "";
+    }
+
+    /**
+     * Handler routine for DCT shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+
+    public function getLetterDrugsContinuedToday($patient, $use_context = false)
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
+        if(!is_null($element)) {
+            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
+            $meds = $element->getContinuedEntries();
+            return implode(PHP_EOL, array_map(function($med){
+                /** @var \EventMedicationUse $med */
+                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
+            }, $meds));
+        }
+
+        return "";
+    }
 }

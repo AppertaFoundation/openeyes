@@ -4,7 +4,7 @@ class m180831_083440_new_drug_shortcodes extends CDbMigration
 {
     public function up()
     {
-        $event_type = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphDrPrescription'))->queryRow();
+        $event_type = $this->dbConnection->createCommand()->select('*')->from('event_type')->where('class_name = :class_name', array(':class_name' => 'OphCiExamination'))->queryRow();
 
         $this->registerShortcode(
             $event_type,
