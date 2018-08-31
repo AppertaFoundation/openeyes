@@ -15,6 +15,12 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\PatientTicketing\models\Ticket $ticket
+ *
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_TicketService $t_svc
+ */
 ?>
 
 <?php $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE); ?>
@@ -33,7 +39,7 @@
       <br/>
       <small>
         <span class="fade">NHS</span>
-          <?= (($ticket->patient->nhs_num) ? $ticket->patient->nhs_num : '') ?>
+          <?= $ticket->patient->nhs_num ?: '' ?>
       </small>
     </a>
   </td>

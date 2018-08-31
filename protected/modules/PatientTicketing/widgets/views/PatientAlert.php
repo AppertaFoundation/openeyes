@@ -76,7 +76,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
                 <?php } ?>
 
               <div class="scratchpad">
-                <button id="js-vc-scratchpad" class="blue hint">ScratchPad</button>
+                <button id="js-vc-scratchpad" class="blue hint">Scratchpad</button>
               </div>
 
               <h3>VC: <b><?= strtoupper(trim($ticket->patient->last_name)) ?>,

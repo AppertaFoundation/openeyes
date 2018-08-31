@@ -223,7 +223,7 @@ class Ticket extends \BaseActiveRecordVersioned
     /**
      * Get the past Queue Assignments for the ticket.
      *
-     * @return array
+     * @return TicketQueueAssignment[]
      */
     public function getPastQueueAssignments()
     {
