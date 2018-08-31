@@ -103,6 +103,23 @@ $(document).ready(function () {
     e.preventDefault();
   });
 
+  /**
+   * If one of the noReading checkboxes is checked, the add button will be hided.
+   */
+  for (let element of ['NearVisualAcuity', 'VisualAcuity']){
+    for (let side of ['right', 'left']){
+      $(this).delegate('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess,' +
+        '#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing', 'click', function () {
+
+        if ($('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess')[0].checked ||
+          $('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing')[0].checked){
+          $('#'+side+'-add-'+element+'-reading').hide();
+        } else {
+          $('#'+side+'-add-'+element+'-reading').show();
+        }
+      });
+    }
+  }
 });
 
 /**

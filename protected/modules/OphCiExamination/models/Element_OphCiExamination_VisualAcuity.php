@@ -145,7 +145,10 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             $check = 'has'.ucfirst($side);
             if ($this->$check()) {
                 if ($this->{$side.'_readings'}) {
+
                     foreach ($this->{$side.'_readings'} as $i => $reading) {
+                        Yii::log($side);
+                        Yii::log(var_export($reading, true));
                         if (!$reading->validate()) {
                             foreach ($reading->getErrors() as $fld => $err) {
                                 $this->addError($side.'_readings', ucfirst($side).' reading('.($i + 1).'): '.implode(', ', $err));
@@ -153,6 +156,8 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
                         }
                     }
                     foreach ($contra_flags as $f) {
+                        Yii::log($f);
+                        Yii::log($this->{$side.$f});
                         if ($this->{$side.$f}) {
                             $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
                         }

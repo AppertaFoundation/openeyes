@@ -33,13 +33,12 @@ $key = 0;
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
               array('class' => 'inline'));
-          ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-        <div class="info">
-          <small><em><?php echo $element->unit->information ?></em></small>
-        </div>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <div class="info">
+              <small><em><?php echo $element->unit->information ?></em></small>
+            </div>
+              <?php
+          } } ?>
   </div>
 </div>
 
@@ -82,7 +81,7 @@ $key = 0;
             </div>
           </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-near-va-reading">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading">
           <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>

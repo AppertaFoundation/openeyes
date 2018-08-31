@@ -29,12 +29,11 @@ $key = 0;
             <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
-            ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-          <span class="js-has-tooltip fa oe-i info small"
-                data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <span class="js-has-tooltip fa oe-i info small"
+                  data-tooltip-content="<?php echo $element->unit->information ?>"></span>
+              <?php }
+      } ?>
       </div>
 </div>
 
@@ -87,7 +86,7 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-reading">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading">
             <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
