@@ -1,5 +1,6 @@
 (function () {
   console.trace();
+
   function TicketMoveController(options) {
     this.options = $.extend(true, {}, TicketMoveController._defaultOptions, options);
     this.queueAssForms = {};
@@ -170,9 +171,9 @@
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
 
-    $(document).on('click', ticketMoveController.options.formClass + ' .ok', function (e) {
+    $(document).on('click', ticketMoveController.options.formClass + ' .js-ok', function (e) {
       e.preventDefault();
-      ticketMoveController.submitForm($(this).parents('form'));
+      ticketMoveController.submitForm($(this).closest('form'));
     });
 
     $(document).on('click', ticketMoveController.options.formClass + ' .js-cancel', function (e) {
@@ -186,7 +187,7 @@
 
     $(document).on('click', '.js-auto-save', function (e) {
       e.preventDefault();
-      ticketMoveController.navigateToEvent(($(this).parents('form')), $(this).attr('href'));
+      ticketMoveController.navigateToEvent(($(this).closest('form')), $(this).attr('href'));
     });
   });
 
