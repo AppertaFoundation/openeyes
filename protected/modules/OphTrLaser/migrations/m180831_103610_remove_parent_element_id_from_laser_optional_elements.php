@@ -11,18 +11,8 @@ class m180831_103610_remove_parent_element_id_from_laser_optional_elements exten
 
 	public function down()
 	{
-		echo "m180831_103610_remove_parent_element_id_from_laser_optional_elements does not support migration down.\n";
-		return false;
+        $this->update('element_type', ['parent_element_type_id' => 382] , 'class_name = "Element_OphTrLaser_AnteriorSegment"');
+        $this->update('element_type', ['parent_element_type_id' => 382] , 'class_name = "Element_OphTrLaser_PosteriorPole"');
+        $this->update('element_type', ['parent_element_type_id' => 382] , 'class_name = "Element_OphTrLaser_Fundus"');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
