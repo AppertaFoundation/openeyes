@@ -27,7 +27,8 @@ $this->beginContent('//patient/event_container', array());
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
 
         // Add the open in forum button if FORUM integration is enabled
-        $sop=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id))->sop_uid;
+        $biometry_imported_events =OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+        $sop=isset($biometry_events->sop_uid) ? $biometry_events->sop_uid : array();
         if (Yii::app()->params['enable_forum_integration'] == 'on' && !empty($sop)){
         array_unshift(
         $this->event_actions,
