@@ -23,7 +23,7 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
