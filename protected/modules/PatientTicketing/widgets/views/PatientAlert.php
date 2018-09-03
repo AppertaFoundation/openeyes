@@ -50,12 +50,6 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
 
     <?php if ($this->assetFolder) { ?>
     <script type="text/javascript" src="<?php echo $this->assetFolder ?>/<?php echo $this->shortName ?>.js"></script>
-    <script>
-      $(function () {
-        // Add the Virtual Clinic "vc" class to the hotlist menu button to show that the hotlist is inaccessible for now
-        $('#js-nav-hotlist-btn').find('svg').get(0).classList.add('vc');
-      });
-    </script>
     <?php } ?>
 
   <div id="oe-vc-scratchpad" class="oe-vc-mode vc-floating-input" draggable="true" style="display:none;">
