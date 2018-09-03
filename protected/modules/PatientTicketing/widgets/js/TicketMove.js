@@ -186,7 +186,6 @@
     $(this.options.scratchpadButtonSelector).text(txt);
 
     if (showScratchpad) {
-      console.log($(this.options.scratchpadInputSelector));
       $(this.options.scratchpadInputSelector).autosize();
       $(this.options.scratchpadPopupSelector).draggable();
     }
