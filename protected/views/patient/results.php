@@ -54,6 +54,8 @@ $based_on = implode(', ', $based_on);
       }
       ?>
     <table class="standard search-results clickable-rows">
+        <colgroup>
+        </colgroup>
       <thead>
       <tr>
           <?php foreach (array(
@@ -71,7 +73,8 @@ $based_on = implode(', ', $based_on);
                 $new_sort_dir = 0;
                 if ($i == $sort_by) {
                     $new_sort_dir = 1 - $sort_dir; ?>
-                  <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
+                    <a class="sortable" href="#">
+                        <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i></a>
                 <?php }
                 echo CHtml::link(
                     $field,
