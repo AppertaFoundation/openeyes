@@ -115,9 +115,9 @@
         });
         formDialog.open();
         // suppress default ok behaviour
-        formDialog.content.off('click', '.js-ok');
+        formDialog.content.off('click', '.ok');
         // manage form submission and response
-        formDialog.content.on('click', '.js-ok', function () {
+        formDialog.content.on('click', '.ok', function () {
           this.submitQueueSetForm(formDialog, this.options.addQueueSetURI)
         }.bind(this));
       }.bind(this)
