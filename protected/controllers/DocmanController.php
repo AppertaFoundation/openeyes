@@ -147,11 +147,11 @@ class DocmanController extends BaseController
             $contact_id = $patient->contact_id;
         } else {
             if ($selected_contact_type == 'GP') {
-                if (isset($patient->gp->contact)) {
-                    $contact_id = $patient->gp->contact->id;
+                if (isset($patient->practice)) {
+                    $contact_id = $patient->practice->contact->id;
                 } else {
-                    if (isset($patient->practice)) {
-                        $contact_id = $patient->practice->contact->id;
+                    if (isset($patient->gp->contact)) {
+                        $contact_id = $patient->gp->contact->id;
                     }
                 }
             }
