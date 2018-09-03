@@ -108,9 +108,13 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
       <i class="js-preview-image-loader spinner" style="display: none;"></i>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
-                $eventImages = EventImage::model()->findAll('event_id = ?', array($event->id));
+                $criteria = new CDbCriteria();
+                $criteria->compare('event_id', $event->id);
+                $criteria->join = 'LEFT JOIN eye ON eye.id = eye_id';
+                $criteria->order = 'eye.display_order, page';
+                $eventImages = EventImage::model()->findAll($criteria);
                 ?>
-              <div class="js-lightning-image-preview flex-layout"
+              <div class="js-lightning-image-preview"
                    data-event-id="<?= $event->id ?>"
                    data-image-count="<?= count($eventImages) ?>"
                    data-paged="<?= isset($eventImages[0]) && $eventImages[0]->page !== null ?>"
