@@ -128,7 +128,6 @@ $model_name = CHtml::modelName($element);
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
                 'date_display' => '{{date_display}}',
-                'date_display' => '{{date_display}}',
                 'had_operation' => (string)PastSurgery_Operation::$PRESENT,
             ),
             'posted_not_checked' => false,
@@ -143,13 +142,16 @@ $model_name = CHtml::modelName($element);
       controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
 
       <?php  $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc')); ?>
+
+      var item_list = <?= CJSON::encode(
+          array_map(function ($op_item) {
+              return ['label' =>$op_item->name, 'id' => $op_item->id];
+          }, $op_list)
+      ) ?>;
+      item_list.push({'label':'Other', 'id':''});
       new OpenEyes.UI.AdderDialog({
         openButton: $('#show-add-popup'),
-        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($op_item) {
-                return ['label' =>$op_item->name, 'id' => $op_item->id];
-            }, $op_list)
-        ) ?>, {'multiSelect': true})],
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(item_list, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
           controller.addEntry(selectedItems);
           return true;

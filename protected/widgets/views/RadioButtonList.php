@@ -55,30 +55,29 @@
 		<?php if (!$no_element) {?>
 			<input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
 		<?php }?>
-		<div class="cols-<?php echo $layoutColumns['field'];?> column">
-			<?php $i = 0; ?>
-			<?php if ($label_above) {?>
-				<label for="">
-					<?php echo CHtml::encode($element->getAttributeLabel($field))?>
-				</label>
-			<?php }?>
-			<?php foreach ($data as $id => $data_value) {?>
-                <?php
-                    $label_style = '';
-                    if(isset($htmlOptions['labelOptions'][$id])){
-                        $label_style = 'style="' . $htmlOptions['labelOptions'][$id] . '"';
-                    }
-                ?>
+    <div class="cols-<?php echo $layoutColumns['field']; ?> column">
+        <?php $i = 0; ?>
+        <?php if ($label_above) { ?>
+          <label for="">
+              <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>
+          </label>
+        <?php } ?>
+        <?php foreach ($data as $id => $data_value) { ?>
+            <?php
+            $label_style = '';
+            if (isset($htmlOptions['labelOptions'][$id])) {
+                $label_style = 'style="' . $htmlOptions['labelOptions'][$id] . '"';
+            }
+            ?>
 
-                <label class="inline highlight" <?=$label_style;?>>
-					<?php
-                        $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$field.'_'.$id);
+          <label class="inline highlight" <?= $label_style; ?>>
+              <?php $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
 
-    if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-        foreach ($htmlOptions['options'][$id] as $k => $v) {
-            $options[$k] = $v;
-        }
-    }
+              if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+                  foreach ($htmlOptions['options'][$id] as $k => $v) {
+                      $options[$k] = $v;
+                  }
+              }
 
     $class = isset($options['class']) ? ($options['class'] . " ") : '';
     $options['class'] = $class . str_replace(' ', '', $data_value);

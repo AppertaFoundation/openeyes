@@ -36,6 +36,7 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        $this->fixedHotlist = false;
         $this->layout = 'home';
         $this->render('index');
     }

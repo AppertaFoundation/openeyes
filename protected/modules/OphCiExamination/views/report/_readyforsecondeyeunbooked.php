@@ -17,7 +17,7 @@
  */
 
 ?>
-<table>
+<table class="standard">
     <thead>
         <tr>
             <th><?php echo Event::model()->getAttributeLabel('event_date'); ?></th>

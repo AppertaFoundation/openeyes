@@ -102,7 +102,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
-        if(typeof savedDiagnoses === "string"){
+        if(typeof savedDiagnoses === "string" && savedDiagnoses){
             savedDiagnoses = JSON.parse(savedDiagnoses);
         }
 
