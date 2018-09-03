@@ -45,7 +45,7 @@ if ($cvi_api) {
 }
 ?>
 <div class="element-fields element-eyes">
-  <input type="hidden" name="visualacuity_readings_valid" value="1"/>
+    <input type="hidden" name="visualacuity_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
@@ -86,7 +86,8 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
+               style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>">
             <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>

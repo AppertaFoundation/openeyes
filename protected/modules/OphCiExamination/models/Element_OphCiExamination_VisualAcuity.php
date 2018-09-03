@@ -144,22 +144,22 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         foreach (array('left', 'right') as $side) {
             $check = 'has'.ucfirst($side);
             if ($this->$check()) {
+                foreach ($contra_flags as $f) {
+                    if ($this->{$side.$f}) {
+                        if (isset($_POST[$side.'_readings'])){
+                            $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
+                        }
+                        else {
+                            $this->{$side.'_readings'} = null;
+                        }
+                    }
+                }
                 if ($this->{$side.'_readings'}) {
-
                     foreach ($this->{$side.'_readings'} as $i => $reading) {
-                        Yii::log($side);
-                        Yii::log(var_export($reading, true));
                         if (!$reading->validate()) {
                             foreach ($reading->getErrors() as $fld => $err) {
                                 $this->addError($side.'_readings', ucfirst($side).' reading('.($i + 1).'): '.implode(', ', $err));
                             }
-                        }
-                    }
-                    foreach ($contra_flags as $f) {
-                        Yii::log($f);
-                        Yii::log($this->{$side.$f});
-                        if ($this->{$side.$f}) {
-                            $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
                         }
                     }
                 } else {

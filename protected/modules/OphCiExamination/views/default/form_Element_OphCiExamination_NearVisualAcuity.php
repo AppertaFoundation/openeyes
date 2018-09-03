@@ -81,7 +81,8 @@ $key = 0;
             </div>
           </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
+             style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ? 'display: none; ': '' ?> ">
           <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
