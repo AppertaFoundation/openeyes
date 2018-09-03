@@ -17,7 +17,7 @@
 if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
     <div class="family-history-status-unknown"
          style="font-style: italic; color: rgba(255,255,255,0.5);">
-        Nil Recorded
+        Patient family history is unknown
     </div>
 <?php } else {
     Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_BEGIN);
@@ -36,7 +36,7 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
             color: rgba(255,255,255,0.5);
             display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>"
     >
-            Patient family history is unknown
+        Patient has no family history
     </div>
 
     <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
