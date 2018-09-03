@@ -192,6 +192,7 @@ class HistoryMedications extends BaseMedicationWidget
         // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
         // and this is where the untracked elements are loaded into the $this->element->entries
         // so if it isn't a new element ->entries only contains tracked medications
+
         if(!$this->element->isNewRecord){
             if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
                 // tracking prescription items.
@@ -260,7 +261,7 @@ class HistoryMedications extends BaseMedicationWidget
     public function getViewData()
     {
         if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
-            return array_merge(parent::getViewData(), $this->getMergedEntries());
+            return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
     }
