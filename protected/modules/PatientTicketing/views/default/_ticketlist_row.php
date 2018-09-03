@@ -62,23 +62,25 @@
         <?= nl2br($ticket->getNotes()) ?>
     </div>
   </td>
-  <td>
-    <div class="vc-actions">
-      <div class="row">
-          <?php if ($can_process && !$ticket->is_complete()) : ?>
+  <td class="actions">
+    <ul>
+        <?php if ($can_process && !$ticket->is_complete()) : ?>
+          <li>
             <a class="button blue hint"
                href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array(
                    'ticket_id' => $ticket->id,
                )); ?>">
                 <?= $t_svc->getTicketActionLabel($ticket) ?>
             </a>
-          <?php endif; ?>
+          </li>
+        <?php endif; ?>
 
-          <?php if ($ticket->hasHistory()) : ?>
-            <li class="button ticket-history">History</li>
-              <?php if ($this->checkAccess('Patient Tickets admin')) : ?>
-              <li class="button undo-last-queue-step">Undo last step</li>
-              <?php endif; ?>
-          <?php endif; ?>
+        <?php if ($ticket->hasHistory()) : ?>
+          <li class="button ticket-history">History</li>
+            <?php if ($this->checkAccess('Patient Tickets admin')) : ?>
+            <li class="button undo-last-queue-step">Undo last step</li>
+            <?php endif; ?>
+        <?php endif; ?>
+    </ul>
   </td>
 </tr>
