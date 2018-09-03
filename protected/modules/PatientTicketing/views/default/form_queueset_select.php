@@ -36,9 +36,6 @@ $form = $this->beginWidget('CActiveForm', array(
 ));
 ?>
 
-<div <?php if (!$queueset) { ?> style="display: none;"<?php } ?>>
-  <button class="button blue hint" id="js-virtual-clinic-btn">Change <?= $category->name ?></button>
-</div>
 <div class="oe-popup-wrap" style="display: none">
   <div class="oe-popup">
     <div class="title">Change Virtual Clinic</div>
@@ -49,8 +46,10 @@ $form = $this->beginWidget('CActiveForm', array(
       <input type="hidden" name="cat_id" value="<?= $cat_id; ?>"/>
         <?php echo CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
       <ul class="oe-btn-list">
-          <?php foreach ($queueset_list as $item) { ?>
-            <li><a id="<?php echo $item ?>"><?php echo $item ?></a></li>
+          <?php foreach ($queueset_list as $id => $item) { ?>
+            <li id="<?= $id ?>" class="<?= $queueset && (integer)$queueset_id === $id ? 'selected' : '' ?>">
+              <a><?= $item ?></a>
+            </li>
           <?php } ?>
       </ul>
     </div>
@@ -73,7 +72,9 @@ $this->endWidget(); ?>
 
   $(".oe-btn-list").ready(function () {
     $("li").click(function (event) {
-      $('#ticket-filter').submit();
+      var $ticketFilter = $('#ticket-filter');
+      $ticketFilter.find('input[name="queueset_id"]').val($(this).attr('id'));
+      $ticketFilter.submit();
     });
   });
 </script>

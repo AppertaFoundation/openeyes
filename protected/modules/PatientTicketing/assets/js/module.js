@@ -369,7 +369,7 @@
       });
     });
 
-    $(this).on('click', '#queueset-select-toggle', function (e) {
+    $(this).on('click', '#js-virtual-clinic-btn', function (e) {
       e.preventDefault();
       $('#queueset-select-toggle-wrapper').fadeTo(300, 0.0, function () {
         $(this).slideUp();

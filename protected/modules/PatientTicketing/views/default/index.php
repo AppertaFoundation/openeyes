@@ -39,6 +39,13 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 
 <div class="oe-full-content oe-virtual-clinic">
 
+    <?php $this->renderPartial('form_queueset_select', [
+        'qs_svc' => $qs_svc,
+        'queueset' => $queueset,
+        'cat_id' => $cat_id,
+        'category' => $category
+    ]); ?>
+
     <?php $this->renderPartial('_ticketlist_search', [
         'qs_svc' => $qs_svc,
         'queueset' => $queueset,
