@@ -36,6 +36,7 @@ class BaseCWidget extends CWidget
         if (file_exists('protected/widgets/js/'.get_class($this).'.js')) {
             $assetManager = Yii::app()->getAssetManager();
             $assetManager->registerScriptFile('js/'.get_class($this).'.js', 'application.widgets', $this->scriptPriority);
+            $assetManager->registerFiles();
         }
 
         $this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];
