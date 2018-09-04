@@ -2476,7 +2476,7 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Scales down the input image if it is larger than the maximum width
      *
-     * @param $imagick
+     * @param Imagick $imagick
      */
     protected function scaleImageForThumbnail($imagick)
     {
@@ -2516,10 +2516,11 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Gets the image path that will be used to store a temporary preview image
      *
-     * @param array $options  Additional options, including the page number, and eye
+     * @param array $options Additional options, including the page number, and eye
+     * @param string $extension The file extension of the path (defaults to '.png')
      * @return string The path of the image
      */
-    public function getPreviewImagePath(array $options = array())
+    public function getPreviewImagePath(array $options = array(), $extension = '.png')
     {
         $filename = 'preview';
 
@@ -2531,7 +2532,7 @@ class BaseEventTypeController extends BaseModuleController
             $filename .= '-' . $options['page'];
         }
 
-        $path = $this->event->getImagePath($filename);
+        $path = $this->event->getImagePath($filename, $extension);
 
         if (!file_exists(dirname($path))) {
             mkdir(dirname($path));

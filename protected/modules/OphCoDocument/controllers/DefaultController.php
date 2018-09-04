@@ -471,14 +471,18 @@ class DefaultController extends BaseEventTypeController
                         $imagick = new Imagick();
                         $imagick->readImage($document->getPath());
                         $this->scaleImageForThumbnail($imagick);
-                        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+
+                        $parts = explode('/', $document->mimetype);
+                        $format = end($parts);
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye], '.' . $format);
+
                         $imagick->writeImage($output_path);
                         $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
                         break;
                     case 'video/mp4':
                     case 'video/ogg':
                     case 'video/quicktime':
-                        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye], '.jpg');
 
                         // Use ffmpeg to generate a thumbnail of the video
                         $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' -y 2>&1';
