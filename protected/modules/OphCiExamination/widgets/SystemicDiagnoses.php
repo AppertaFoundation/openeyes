@@ -19,6 +19,7 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesElement;
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
+use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesModel;
 
 class SystemicDiagnoses extends \BaseEventElementWidget
 {
@@ -44,7 +45,8 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     protected function setElementFromDefaults()
     {
         $this->element->storePatientUpdateStatus();
-        parent::setElementFromDefaults();
+        // OE-7573 Hack
+        //parent::setElementFromDefaults();
     }
 
     /**
@@ -149,7 +151,7 @@ class SystemicDiagnoses extends \BaseEventElementWidget
                 $entry->disorder_id = $entry_data['disorder_id'];
                 $entry->side_id = $this->getEyeIdFromPost($entry_data);
                 $entry->date = $entry_data['date'];
-                $entry->has_disorder = $entry_data['has_disorder'];
+                $entry->has_disorder = isset($entry_data['has_disorder'])? $entry_data['has_disorder']:SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
 
                 $entries[] = $entry;
             }
@@ -161,14 +163,14 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     }
 
     /**
-     * Checks if there was a posted has_disoder value
      * @param $row
-     * @return int 0|1|-9 if posted oterwise NULL
+     * @return bool
      */
-    public function getPostedCheckedStatus($row)
+    public function postedNotChecked($row)
     {
-        $value = \Helper::elementFinder(\CHtml::modelName($this->element) . ".has_disorder.$row", $_POST);
-        return ( is_numeric($value) ? $value : null);
+        return \Helper::elementFinder(
+                \CHtml::modelName($this->element) . ".entries.$row.has_disorder", $_POST)
+            == SystemicDiagnosesModel::$NOT_CHECKED;
     }
 
     public function getPostedNaEye($row)

@@ -52,7 +52,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Click the green plus or type',
+                'placeholder' => 'Enter procedure name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
             )); ?>
@@ -60,6 +60,28 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
+        <?php if(!$required) {
+            if ($values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT) { ?>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton(
+                        $field_prefix . '[had_operation]',
+                        $values['had_operation'] === (string)PastSurgery_Operation::$PRESENT,
+                        array('value' => PastSurgery_Operation::$PRESENT)
+                    ); ?>
+                    yes
+                </label>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton(
+                        $field_prefix . '[had_operation]',
+                        $values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT,
+                        array('value' => PastSurgery_Operation::$NOT_PRESENT)
+                    ); ?>
+                    no
+                </label>
+            <?php } else {
+                echo CHtml::hiddenField($field_prefix . '[had_operation]', (string)PastSurgery_Operation::$PRESENT);
+            }
+        } else { ?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton(
                 $field_prefix . '[had_operation]',
@@ -84,6 +106,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             ); ?>
             no
         </label>
+        <?php } ?>
     </td>
     <?php if (!$removable) : ?>
         <td class="<?= $model_name ?>_sides" style="white-space:nowrap">

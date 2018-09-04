@@ -35,6 +35,11 @@ use OEModule\PASAPI\resources\Patient;
  */
 class SystemicDiagnoses extends \BaseEventTypeElement
 {
+
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
+
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicDiagnoses';
     protected $default_from_previous = true;

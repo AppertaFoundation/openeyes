@@ -16,101 +16,111 @@
  */
 ?>
 
-<div >
-	<div class="element-fields full-width flex-layout flex-top col-gap">
-        <div class="cols-5">
-            <table class="cols-full">
-                <colgroup>
-                    <col class="cols-6">
-                    <col class="cols-6">
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td>
-                            <label for="find-user">For the attention of:  <span class="js-has-tooltip fa oe-i info small" data-tooltip-content="Cannot be changed after message creation."></span></label>
-                        </td>
-                        <td  style="text-align: right;>
-                            <?php if ($element->isNewRecord) { ?>
-                                <div class="cols-8 autocomplete-row">
-                                <span id="fao-field">
-                                <span id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
-                            <?php
-                            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                'name' => 'find_user',
-                                'id' => 'find-user',
-                                'value' => '',
-                                'source' => "js:function(request, response) {
-                                        $.ajax({
-                                            'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
-                                            'type':'GET',
-                                            'data':{'term': request.term},
-                                            'success':function(data) {
-                                                data = $.parseJSON(data);
-                                                response(data);
-                                            }
-                                        });
-                                    }",
-                                'options' => array(
-                                    'minLength' => '3',
-                                    'select' => "js:function(event, ui) {
-                                            $('#fao_user_display').html(ui.item.label);
-                                            $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
-                                            $('#find-user').val('');
-                                            return false;
-                                        }",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'search by name or username',
-                                'class' => 'cols-12'
-                            ),
-                        ));
-                        ?>
+<div>
+  <div class="element-fields full-width flex-layout flex-top col-gap">
+    <div class="cols-5">
+      <table class="cols-full">
+        <colgroup>
+          <col class="cols-6">
+          <col class="cols-6">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>
+            <label for="find-user">For the attention of: <span class="js-has-tooltip fa oe-i info small"
+                                                               data-tooltip-content="Cannot be changed after message creation."></span></label>
+          </td>
+          <td style="text-align: right;">
+              <?php if ($element->isNewRecord) { ?>
+                <div class="autocomplete-row">
+                  <span id="fao-field">
+                    <span
+                        id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
+                      <?php
+                      $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                          'name' => 'find_user',
+                          'id' => 'find-user',
+                          'value' => '',
+                          'source' => "js:function(request, response) {
+                             $.ajax({
+                                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
+                                 'type':'GET',
+                                 'data':{'term': request.term},
+                                  'success':function(data) {
+                                   data = $.parseJSON(data);
+                                    response(data);
+                                   }
+                                  });
+                              }",
+                          'options' => array(
+                              'minLength' => '3',
+                              'select' => "js:function(event, ui) {
+                                 $('#fao_user_display').html(ui.item.label);
+                                 $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
+                                  $('#find-user').val('');
+                                     return false;
+                                  }",
+                          ),
+                          'htmlOptions' => array(
+                              'placeholder' => 'search by name or username',
+                              'class' => 'cols-12',
+                          ),
+                      ));
+                      ?>
                     </span>
-                                </div>
-                            <?php } else { ?>
-                                <div class="cols-4"><div class="data-value"><?= $element->for_the_attention_of_user->getFullnameAndTitle(); ?></div></div>
-                            <?php } ?>
-                            <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Type:
-                        </td>
-                        <td class="cols-full" >
-                            <?php echo $form->dropDownList($element, 'message_type_id', CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -', 'nolabel' => true), false, array('label' => 0, 'field' => 12))?>
-                            
-                        </td>
-                    </tr>
-                <tr>
-                    <td>
-                        Urgent:
-                    </td>
-                    <td style="text-align: right;">
-                        <?php echo $form->checkbox($element, 'urgent', array('nowrapper' => true, 'no-label' => true ), array( 'field' => 11))?>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="cols-7">
-            <table class="cols-full">
-                <colgroup>
-                    <col>
-                    <col class="cols-9">
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td>
-                            Message
-                        </td>
-                        <td >
-                            <?php echo $form->textArea($element, 'message_text', array('rows' => 4, 'cols' => 500, 'no_label' => true), false, array('placeholder' => 'Your Message...'), array('label' => 2, 'field' => 12))?>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                </div>
+              <?php } else { ?>
+                <div class="cols-4">
+                  <div class="data-value"><?= $element->for_the_attention_of_user->getFullnameAndTitle(); ?></div>
+                </div>
+              <?php } ?>
+              <?php echo $form->hiddenField($element, 'for_the_attention_of_user_id'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Type:
+          </td>
+          <td>
+              <?php echo $form->dropDownList($element, 'message_type_id',
+                  CHtml::listData(OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
+                      'id', 'name'), array('empty' => '- Please select -', 'nolabel' => true), false,
+                  array('label' => 0, 'field' => 12)) ?>
 
-        </div>
-	</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Urgent:
+          </td>
+          <td style="text-align: right;">
+              <?php echo $form->checkbox($element, 'urgent', array('nowrapper' => true, 'no-label' => true),
+                  array('field' => 11)) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols-7">
+      <table class="cols-full">
+        <colgroup>
+          <col>
+          <col class="cols-9">
+        </colgroup>
+        <tbody>
+        <tr>
+          <td>
+            Message
+          </td>
+          <td>
+              <?php echo $form->textArea($element, 'message_text',
+                  array('rows' => 4, 'cols' => 500, 'no_label' => true), false,
+                  array('placeholder' => 'Your Message...'), array('label' => 2, 'field' => 12)) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
 </div>

@@ -19,6 +19,8 @@
  */
 ?>
 
+<?php echo CHtml::errorSummary(array_merge(array($model), $model->entries), null, null, array("class"=>"alert-box alert with-icon")); ?>
+
 <?php
 
     echo $form->textField($model, "name");

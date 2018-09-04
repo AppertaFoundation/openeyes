@@ -18,10 +18,7 @@
 
 namespace OEModule\OphCoCvi\components;
 
-use \Patient;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+use Patient;
 
 /**
  * Class OphCoCvi_API
@@ -227,6 +224,30 @@ class OphCoCvi_API extends \BaseAPI
      * @return mixed
      */
     public function renderAlertForVA(Patient $patient, $element, $show_create = false)
+    {
+        $show_alert = false;
+        $base_values = array();
+        if($element) {
+
+            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
+            foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
+                $base_values[] = $reading->value;
+            }
+        }
+        return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
+            'element' => $element,
+            'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
+            'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
+            'show_create' => $show_create,
+        ));
+    }
+
+    /**
+     * @param Patient $patient
+     * @param         $element
+     * @return boolean
+     */
+    public function renderAlertForCVI(Patient $patient, $element, $show_create = false)
     {
         if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
             $base_values = array();

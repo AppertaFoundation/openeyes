@@ -23,26 +23,25 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div class="flex-layout flex-center">
+  <div style="text-align: center">
       <?php if ($element->isNewRecord) { ?>
-        <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-              CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
-                  'id', 'name'), array('class' => 'inline'));
-          ?>
+          <span class="data-label">VA Scale &nbsp;&nbsp;</span>
+            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                    'id', 'name'), array('class' => 'inline'));
+            ?>
       <?php } ?>
       <?php if ($element->unit->information) { ?>
           <span class="js-has-tooltip fa oe-i info small"
                 data-tooltip-content="<?php echo $element->unit->information ?>"></span>
       <?php } ?>
-  </div>
+      </div>
 </div>
 
 <?php
 // CVI alert
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 if ($cvi_api) {
-    echo $cvi_api->renderAlertForVA($this->patient, $element);
     echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
 }
 ?>
@@ -58,8 +57,8 @@ if ($cvi_api) {
         <div class="active-form data-group flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table
-                class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
+            <table class="cols-full blank va_readings"
+                   style="<?= !$element->{$eye_side . '_readings'}? 'display: none;': '' ?>" >
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -79,7 +78,7 @@ if ($cvi_api) {
               </tbody>
             </table>
             <div class="data-group noReadings"
-                style="<?php if ($element->{$eye_side . '_readings'}) { ?>display: none;<?php } ?>">
+                style="<?= $element->{$eye_side . '_readings'}? 'display: none;':'' ?>">
               <div class="cols-4 column">
                 <div class="data-value not-recorded">Not recorded</div>
               </div>
@@ -115,19 +114,32 @@ if ($cvi_api) {
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
                 return ['label' => $value, 'id' => $key];
-            }, array_keys($values), $values)) ?>),
+            }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                   return ['label' => $method, 'id' => $key];
-              }, array_keys($methods), $methods)) ?>)
+              }, array_keys($methods), $methods)) ?>, {'header':'Method', 'id':'method'})
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-          OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
-          var newRow = tableSelector.find('tbody tr:last');
-          newRow.find('.va-selector').val(selectedItems[0]['id']);
-          newRow.find('.method_id').val(selectedItems[1]['id']);
-          OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+          if(selectedItems.length){
+            var selected_data = {};
+            for (i in selectedItems) {
+              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = selectedItems[i]['id'];
+                selected_data.reading_display = selectedItems[i]['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+              }
+              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = selectedItems[i]['id'];
+                selected_data.method_display = selectedItems[i]['label'];
+              }
+            }
+            OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);
+            var newRow =  tableSelector.find('tbody tr:last');
+            OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+            newRow.find('.va-selector').trigger('change');
+          }
           return true;
         },
       });
@@ -137,8 +149,6 @@ if ($cvi_api) {
 </div>
 <script id="visualacuity_reading_template" type="text/html">
     <?php
-    $default_reading = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::model();
-    $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
         'name_stub' => CHtml::modelName($element) . '[{{side}}_readings]',
         'key' => '{{key}}',
@@ -147,7 +157,13 @@ if ($cvi_api) {
         'val_options' => $val_options,
         'methods' => $methods,
         'asset_path' => $this->getAssetPathForElement($element),
-        'reading' => $default_reading,
+        'selected_data' => array(
+            'reading_value' => '{{reading_value}}',
+            'reading_display' => '{{reading_display}}',
+            'method_id' => '{{method_id}}',
+            'method_display' => '{{method_display}}',
+            'tooltip' => '{{tooltip}}'
+        )
     ));
     ?>
 </script>
