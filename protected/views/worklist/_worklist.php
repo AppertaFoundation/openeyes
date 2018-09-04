@@ -27,23 +27,10 @@ $worklist_patients->pagination->pageVar = 'page' . $worklist->id;
 // Get data so that pagination  works
 $worklist_patients->getData();
 ?>
-
+<div class="worklist-group" id="js-worklist-<?= strtolower(str_replace(' ','-',$worklist->name))?>">
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
-  <div class="summary">
 
-      <?php
-      $this->widget('LinkPager', array(
-              'pages' => $worklist_patients->getPagination(),
-              'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-              'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-              'htmlOptions' => array(
-                  'class' => 'pagination',
-              ),
-          )
-      );
-      ?>
-  </div>
 </div>
 
 <?php
@@ -65,12 +52,13 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
         ),
         array(
             'id' => 'patient_name',
-            'class' => 'CLinkColumn',
+            'class' => 'CDataColumn',
             'header' => 'Name',
-            'urlExpression' => function ($data) use ($core_api) {
-                return $core_api->generateEpisodeLink($data->patient);
-            },
-            'labelExpression' => '$data->patient->getHSCICName()',
+            'value' => '$data->patient->getHSCICName()',
+//            'urlExpression' => function ($data) use ($core_api) {
+//                return $core_api->generateEpisodeLink($data->patient);
+//            },
+//            'labelExpression' => '$data->patient->getHSCICName()',
             'headerHtmlOptions' => array('colgroup' => 'cols-6'),
         ),
         array(
@@ -114,7 +102,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
     }
 
     $this->widget('application.widgets.ColGroupGridView', array(
-        'itemsCssClass' => 'standard',
+        'itemsCssClass' => 'standard clickable-rows',
         'dataProvider' => $worklist_patients,
         'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
         'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
@@ -124,3 +112,4 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
         'enablePagination' => false,
     ));
 } ?>
+</div>

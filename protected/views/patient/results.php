@@ -71,17 +71,18 @@ $based_on = implode(', ', $based_on);
             <th id="patient-grid_c<?php echo $i; ?>">
                 <?php
                 $new_sort_dir = 0;
-                if ($i == $sort_by) {
-                    $new_sort_dir = 1 - $sort_dir; ?>
-                    <a class="sortable" href="#">
-                        <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i></a>
-                <?php }
                 echo CHtml::link(
                     $field,
                     Yii::app()->createUrl('patient/search',
                         array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
                 );
-                ?>
+                if ($i == 0 || $i == 2 || $i == 4 || $i == 5) {
+                    $new_sort_dir = 1 - $sort_dir; ?>
+                    <a class="sortable" href=<?= Yii::app()->createUrl('patient/search',
+                        array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)) ?>>
+                        <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i></a>
+                <?php } ?>
+
             </th>
           <?php } ?>
       </tr>
@@ -108,7 +109,7 @@ $based_on = implode(', ', $based_on);
         </tr>
       <?php } ?>
       </tbody>
-      <tfoot class="pagination-container">
+      <tfoot>
       <tr>
         <td colspan="8">
           <div class="pagination">
