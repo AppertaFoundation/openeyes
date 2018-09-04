@@ -26,7 +26,7 @@ $current_episode = @$this->current_episode;
     <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
         <button id="add-event" class="button green add-event" type="button">Add Event</button>
     <?php } else { ?>
-        <button class="button add-event disabled">No "Add Event" permission</button>
+        <button class="button add-event disabled">You have View Only rights</button>
     <?php } ?>
 </nav>
 
