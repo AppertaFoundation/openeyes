@@ -33,17 +33,32 @@ if (!isset($values)) {
     );
 }
 ?>
+
 <tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
-  <td>
-    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
-    <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
-      <?= $values['allergy_display']; ?>
-    <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
-  </td>
-  <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
-      <?php if ($removable) {
-          echo CHtml::hiddenField($field_prefix . '[has_allergy]', (string)AllergyEntry::$PRESENT);
-      } else { ?>
+    <td>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
+        <?= $values['allergy_display']; ?>
+        <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
+    </td>
+    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
+        <?php if ($removable) {
+            if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton($field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT, array('value' => AllergyEntry::$PRESENT)); ?>
+                    yes
+                </label>
+                <label class="inline highlight">
+                    <?php echo CHtml::radioButton($field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
+                        array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+                    no
+                </label>
+            <?php } else {
+                echo CHtml::hiddenField($field_prefix . '[has_allergy]', (string)AllergyEntry::$PRESENT);
+            }
+        } else { ?>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_allergy]',
                 $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
