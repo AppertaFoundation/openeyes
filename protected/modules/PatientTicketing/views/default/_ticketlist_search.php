@@ -122,7 +122,12 @@
                     <?php if (!@$_POST['subspecialty-id']) {?>
                         <?php echo CHtml::dropDownList('firm-id', '', array(), array('class' => 'cols-11', 'empty' => 'All '. Firm::contextLabel() . 's', 'disabled' => 'disabled'))?>
                     <?php } else {?>
-                        <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('class' => 'cols-11', 'empty' => 'All '.Firm::ContextLabel().'s', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
+                        <?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],
+                            Firm::model()->getList(@$_POST['subspecialty-id']), array(
+                                'class' => 'cols-11',
+                                'empty' => 'All ' . Firm::contextLabel() . 's',
+                                'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
+                            )) ?>
                     <?php }?>
                 </td>
                 <td colspan="2">
