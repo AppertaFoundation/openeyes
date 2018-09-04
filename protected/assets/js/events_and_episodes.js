@@ -25,12 +25,30 @@ $(document).ready(function(){
 		}
 	});
 
-    function markElementDirty(){
-        $(this).closest('.element').addClass('js-dirty');
+    function markElementDirty(element) {
+        if (typeof element !== "undefined" && element) {
+            $(element).addClass('js-dirty');
+        } else {
+            $(this).closest('.element').addClass('js-dirty');
+        }
     }
 
-    $(document).on('click', '.add-icon-btn' , markElementDirty);
-    $('#event-content').on('change', 'select, input, textarea', markElementDirty);
+    $(document).on('click', '.add-icon-btn', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+    $('#event-content').on('change', 'select, input, textarea', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+
+    $('.js-active-elements').on('mouseup', '.ed-widget', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+
+    if (typeof is_workflow_step !== "undefined" && is_workflow_step) {
+        $.each($(this).find('.element'), function (index, element) {
+            markElementDirty(element);
+        })
+    }
 
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {

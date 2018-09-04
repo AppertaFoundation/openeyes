@@ -327,6 +327,7 @@ class DefaultController extends \BaseEventTypeController
     public function actionStep($id)
     {
         $this->step = $this->getCurrentStep()->getNextStep();
+        $this->jsVars['is_workflow_step'] = true;
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
     }
