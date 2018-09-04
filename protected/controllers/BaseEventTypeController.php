@@ -2484,7 +2484,10 @@ class BaseEventTypeController extends BaseModuleController
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
+            return true;
         }
+
+        return false;
     }
 
     /**
