@@ -58,7 +58,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <?php $this->widget('application.widgets.EyeSelector', [
         'inputNamePrefix' => $field_prefix,
         'selectedEyeId' => $values['eye_id'],
-        'hideNotAvailableOption' => isset($hide_not_available_eye_option) ? $hide_not_available_eye_option : false,
+        'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
     ]); ?>
 
     <td>

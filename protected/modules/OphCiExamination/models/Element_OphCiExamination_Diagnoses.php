@@ -47,8 +47,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return parent::model($className);
     }
 
-    public $hide_not_available_eye_option = true;
-
     /**
      * @return string the associated database table name
      */
