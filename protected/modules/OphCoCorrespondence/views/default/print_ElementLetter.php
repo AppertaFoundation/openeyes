@@ -16,7 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (!@$no_header) {?>
+<?php
+/**
+ * @var $element ElementLetter
+ * @var $no_header bool
+ */
+
+if (!@$no_header) {?>
 	<header>
 	<?php 
         $ccString = $element->getCCString();

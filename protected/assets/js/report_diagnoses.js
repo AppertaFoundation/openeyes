@@ -1,6 +1,12 @@
 
 function Reports_AddDiagnosis(disorder_id, name) {
-	$('#Reports_diagnoses').append('<tr><td>'+name+'</td><td><input type="checkbox" class="principalCheckbox" name="principal[]" value="'+disorder_id+'" /></td><td><a href="#" class="small removeDiagnosis" rel="'+disorder_id+'"><strong>Remove</strong></a></td></tr>');
+	$('#Reports_diagnoses').append('<tr>' +
+		'<td>'+name+'</td>' +
+		'<td><input type="checkbox" class="principalCheckbox" name="principal[]" value="'+disorder_id+'" />' +
+		'</td>' +
+		'<td>' +
+		'<a href="#" class="small removeDiagnosis" rel="'+disorder_id+'"><i class="oe-i trash"></i></a>' +
+		'</td></tr>');
 	$('#selected_diagnoses').append('<input type="hidden" name="secondary[]" value="'+disorder_id+'" />');
 }
 
