@@ -361,15 +361,16 @@ class TheatreDiaryController extends BaseModuleController
     public function actionFilterFirms()
     {
         if (@$_POST['empty']) {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('- '.Firm::ContextLabel().' -'), true);
+            echo CHtml::tag('option', array('value' => ''), CHtml::encode('- ' . Firm::contextLabel() . ' -'), true);
         } else {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('All '.Firm::ContextLabel().'s'), true);
+            echo CHtml::tag('option', array('value' => ''), CHtml::encode('All ' . Firm::contextLabel() . 's'), true);
         }
 
         if (!empty($_POST['subspecialty_id'])) {
             $subspecialty_id = $_POST['subspecialty_id'];
         } elseif (!empty($_POST['service_id'])) {
-            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find('service_id=?', array($_POST['service_id']))->subspecialty_id;
+            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find('service_id=?',
+                array($_POST['service_id']))->subspecialty_id;
         }
 
         if (isset($subspecialty_id)) {
