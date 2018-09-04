@@ -60,12 +60,12 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php
 $this->endWidget(); ?>
 <script>
-  $(document).on('click', '.button.blue.hint', function (e) {
+  $(document).on('click', '#js-virtual-clinic-btn', function (e) {
     e.preventDefault();
     $('.oe-popup-wrap').show();
   });
 
-  $(document).on('click', '.oe-i.remove-circle.pro-theme', function (e) {
+  $(document).on('click', '.oe-popup .close-icon-btn', function (e) {
     e.preventDefault();
     $('.oe-popup-wrap').hide();
   });
