@@ -42,7 +42,6 @@
             <td>
                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
             </td>
-            </td>
         </tr>
         <tr>
             <td>K1:</td>

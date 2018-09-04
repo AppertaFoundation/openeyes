@@ -366,8 +366,6 @@ class DefaultController extends \BaseEventTypeController
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
-                models\HistoryRisks::class,
-                models\Allergies::class,
             ), true);
         });
 

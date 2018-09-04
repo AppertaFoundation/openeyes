@@ -15,12 +15,13 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * Class PatientSummaryPopup
+ * @property Patient $patient
+ */
 class PatientSummaryPopup extends BaseCWidget
 {
-
-    /**
-     * @var Patient
-     */
     public $patient;
 
     public static $LIST_SEPARATOR = '<br/>';
@@ -73,7 +74,7 @@ class PatientSummaryPopup extends BaseCWidget
         $widget = $this->createWidget('OEModule\OphCiExamination\widgets\PastSurgery', array(
             'patient' => $this->patient,
             'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE,
-            'popupListSeparator' => self::$LIST_SEPARATOR
+            'popupListSeparator' => self::$LIST_SEPARATOR,
         ));
         $this->operations = $widget->run();
 

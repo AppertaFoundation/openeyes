@@ -28,6 +28,9 @@
 <div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
 </div>
+<div id="oe-restrict-print">
+    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+</div>
 <?php $this->renderPartial('//base/_header'); ?>
 <div class="oe-full-header flex-layout">
   <div class="title wordcaps">User:

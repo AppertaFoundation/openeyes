@@ -318,10 +318,15 @@
      */
     PatientSidebar.prototype.buildTreeItem = function(itemData) {
         var self = this;
-        var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
-        var itemClass = "collapse-group";
+      var item;
 
-        var item = $("<div>")
+      if (!itemData.children || itemData.children.length === 0) {
+        item = self.buildTreeChildList([itemData]);
+      } else {
+        var itemClass = 'collapse-group';
+        var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
+
+        item = $("<div>")
           .data('element-type-class', itemData.class_name)
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
@@ -335,15 +340,33 @@
 
       item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
 
-      //children
-      if (itemData.children && itemData.children.length) {
+        var subList = self.buildTreeChildList(itemData.children);
+
+        if (!open) {
+          subList.hide();
+        }
+
+        item.append(subList);
+        item.addClass('has-children');
+      }
+
+      return item;
+    };
+
+  /**
+   * Builds the children of a tree item and returns them
+   *
+   * @param childItems The child data to create elements for
+   * @returns jQuery The list of children
+   */
+    PatientSidebar.prototype.buildTreeChildList = function (childItems) {
+      var self = this;
         var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
 
-        $.each(itemData.children, function () {
+      $.each(childItems, function () {
 
           var id_name = this.name.replace(/\s+/g,'-');
           var subListItem = $("<li>")
-            .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
             .data('element-type-class', this.class_name)
             .data('element-type-id', this.id)
             .data('element-display-order', this.display_order)
@@ -364,13 +387,7 @@
           subList.append(subListItem);
         });
 
-        if (!open) {
-          subList.hide();
-        }
-        item.append(subList);
-        item.addClass('has-children');
-      }
-      return item;
+      return subList;
     };
 
   /**

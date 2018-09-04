@@ -19,10 +19,12 @@ class MultiSelectDropDownList extends BaseCWidget
      * @var string the template to be used to control the layout of various sections in the view.
      * These tokens are recognized: {DropDown}, {List}, {Label}.
      */
-    public $template = "<td class='fade'>{Label}</td>" .
-    "<td class='js-multiselect-dropdown-wrapper'>" .
-    "{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div>" .
-    "</td>";
+    public $template = "
+    <td class='fade'>{Label}</td>
+    <td class='js-multiselect-dropdown-wrapper'>
+      {DropDown}
+      <div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div>
+    </td>";
 
     public $options = [];
 

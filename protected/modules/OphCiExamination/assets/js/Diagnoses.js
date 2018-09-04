@@ -135,6 +135,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             $(this).closest('.condition-secondary-to-wrapper').hide();
         });
+
+        eye_selector = new OpenEyes.UI.EyeSelector({
+            element: controller.$element.closest('section')
+        });
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -300,7 +304,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosesController.prototype.removeExternalDiagnosis = function(code)
     {
-        this.$table.find('input[type="hidden"][value="' + code + '"].savedDiagnosis').closest('tr').remove();
+        this.$table.find('input[type="hidden"][value="' + code + '"]').closest('tr').remove();
     };
 
     /**
