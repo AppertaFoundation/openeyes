@@ -17,13 +17,22 @@
  */
 
 /**
+ * @var $this \OEModule\PatientTicketing\widgets\QueueAssign
+ *
  * @var OEModule\PatientTicketing\models\Queue $queue
+ * @var $form_fields array(array('id' => string, 'required' => boolean, 'choices' => array(), 'label' => string, 'type' => string))
+ * @var boolean $auto_save
+ * @var array $form_data
  */
 if ($queue) { ?>
   <table class="cols-full">
+    <colgroup>
+      <col class="cols-4">
+      <col class="cols-2">
+    </colgroup>
       <?php
       foreach ($form_fields as $fld) {
-          if (@$fld['type'] == 'widget') {
+          if (@$fld['type'] === 'widget') {
               $this->widget('OEModule\PatientTicketing\widgets\\' . $fld['widget_name'], array(
                   'ticket' => $this->ticket,
                   'label_width' => $this->label_width,
@@ -31,30 +40,26 @@ if ($queue) { ?>
                   'form_name' => $fld['form_name'],
                   'form_data' => $form_data,
               ));
-          } elseif (@$fld['choices']) { ?>
+          } else { ?>
             <tr>
               <td>
                 <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
               </td>
-              <td> <?= CHtml::dropDownList(
-                      $fld['form_name'],
-                      @$form_data[$fld['form_name']],
-                      $fld['choices'],
-                      array('empty' => ($fld['required']) ? ' - Please Select - ' : 'None'));
-                  ?>
-              </td>
-            </tr>
-          <?php } else {
-              //may need to expand this beyond textarea and select in the future.
-              $notes = @$form_data[$fld['form_name']];
-              ?>
-            <tr>
-              <td colspan="2">
-                <textarea
-                    id="<?= $fld['form_name'] ?>"
-                    name="<?= $fld['form_name'] ?>"
-                    rows="1"
-                    class="cols-full"><?= $notes ?></textarea>
+              <td>
+                  <?php if (@$fld['choices']) { ?>
+                      <?= CHtml::dropDownList(
+                          $fld['form_name'],
+                          @$form_data[$fld['form_name']],
+                          $fld['choices'],
+                          array('empty' => ($fld['required']) ? ' - Please Select - ' : 'None')) ?>
+                  <?php } else {
+                      //may need to expand this beyond textarea and select in the future.
+                      $notes = @$form_data[$fld['form_name']];
+                      ?>
+                    <textarea id="<?= $fld['form_name'] ?>"
+                              name="<?= $fld['form_name'] ?>"
+                              cols="35"><?= $notes ?></textarea>
+                  <?php } ?>
               </td>
             </tr>
           <?php } ?>
