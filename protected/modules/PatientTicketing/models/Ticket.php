@@ -235,14 +235,14 @@ class Ticket extends \BaseActiveRecordVersioned
     }
 
     /**
-     * Gets an associative array of queues before and after this ticket
+     * Gets an associative array of queues before and after the current queue for this ticket
      * Returned in the format $step => $queue where $step is the step number of the queue item
      *
      * @param int $stepsBeforeAndAfter If >= 0 then the number of queue items is restricted to only those within
      *                                 that many steps before and after this tickets "step"
      * @return Queue[]
      */
-    public function getQueueSteps($stepsBeforeAndAfter = -1)
+    public function getNearestQueuesInStepOrder($stepsBeforeAndAfter = -1)
     {
         // Get all queues this ticket has been assigned to ...
         /* @var \OEModule\PatientTicketing\models\Queue[] $queues */
@@ -250,42 +250,42 @@ class Ticket extends \BaseActiveRecordVersioned
             return $qa->queue;
         }, $this->queue_assignments);
 
-        /* @var \OEModule\PatientTicketing\models\Queue[] $queueSteps */
-        $queueSteps = [];
+        /* @var \OEModule\PatientTicketing\models\Queue[] $stepToQueueMap */
+        $stepToQueueMap = [];
 
-        $step_number = 1;
+        $stepNumber = 1;
         $pastCurrentQueue = false;
         $currentQueueStep = null;
         while (count($queues) > 0) {
             $queue = array_shift($queues);
             if (!$pastCurrentQueue && $queue->id === $this->current_queue->id) {
-                $currentQueueStep = $step_number;
+                $currentQueueStep = $stepNumber;
                 $pastCurrentQueue = true;
             }
 
             // ... if we reach the end of the queues, then follow the outcomes until the end
-            // If a queue has multiple outcomes, this will follow them depth first, and show the output as a flat list
+            // If a queue has multiple outcomes, this will follow them breadth first, and show the output as a flat list
             if ($pastCurrentQueue) {
                 foreach ($queue->outcomes as $outcome) {
                     $queues[] = $outcome->outcome_queue;
                 }
             }
-            $queueSteps[$step_number] = $queue;
+            $stepToQueueMap[$stepNumber] = $queue;
 
-            $step_number++;
+            $stepNumber++;
         }
 
         // Restrict to only queue items that are within $stepsBeforeAndAfter steps of the current step
         if ($stepsBeforeAndAfter >= 0) {
-            $allowedKeys = array_filter(array_keys($queueSteps),
+            $allowedKeys = array_filter(array_keys($stepToQueueMap),
                 function ($key) use ($currentQueueStep, $stepsBeforeAndAfter) {
                     return abs($key - $currentQueueStep) <= $stepsBeforeAndAfter;
                 });
 
-            return array_intersect_key($queueSteps, array_flip($allowedKeys));
+            return array_intersect_key($stepToQueueMap, array_flip($allowedKeys));
         }
 
-        return $queueSteps;
+        return $stepToQueueMap;
     }
 
     /**

@@ -86,7 +86,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
               <div class="row divider">
                 <ul class="vc-steps">
                     <?php
-                    foreach ($ticket->getQueueSteps(2) as $step => $queue) { ?>
+                    foreach ($ticket->getNearestQueuesInStepOrder(2) as $step => $queue) { ?>
                       <li class="<?= $queue->id === $ticket->current_queue->id ? 'selected' : '' ?>">
                           <?= $step ?>. <?= $queue->name ?>
                       </li>
