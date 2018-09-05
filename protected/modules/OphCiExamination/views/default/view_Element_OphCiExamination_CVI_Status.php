@@ -3,7 +3,7 @@
         <tbody>
         <tr>
             <td>
-                <?= $element->cvi_status_id ?>
+                <?= $element->cviStatus->name ?>
             </td>
             <td>
                 <?= $element->element_date ?>

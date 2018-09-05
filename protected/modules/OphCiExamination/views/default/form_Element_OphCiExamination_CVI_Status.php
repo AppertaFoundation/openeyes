@@ -1,4 +1,9 @@
-
+<?php $cvi_status = PatientOphInfoCviStatus::model()->active()->findAll(array('order' => 'display_order'));
+$cvi_status_list = array();
+foreach ($cvi_status as $item) {
+  $cvi_status_list[$item->id] = $item->name;
+}
+?>
 <div class="element-fields flex-layout full-width">
     <table class="last-left cols-10">
         <colgroup>
@@ -13,12 +18,7 @@
                 CVI status
             </td>
             <td>
-                <?php echo $form->radioButtons($element, 'cvi_status_id', array(
-                    1 => $element::$UNKNOWN_STATUS,
-                    3 => $element::$NOT_BLIND_STATUS,
-                    4 => $element::$BLIND_STATUS,
-                    5 => $element::$NOT_ELIGIBLE_STATUS,
-                ),
+                <?php echo $form->radioButtons($element, 'cvi_status_id', $cvi_status_list,
                     $element->cvi_status_id,
                     false, false, false, false,
                     array('nowrapper' => true)
