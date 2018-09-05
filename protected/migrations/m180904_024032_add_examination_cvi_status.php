@@ -1,13 +1,13 @@
 <?php
 
-class m180904_024032_add_examination_cvi_status extends CDbMigration
+class m180904_024032_add_examination_cvi_status extends OEMigration
 {
 
 	// Use safeUp/safeDown to do migration with transaction
 	public function safeUp()
 	{
 	    //create new table to store the examination history cvi status
-	    $this->createTable('et_ophciexamination_cvi_status', array(
+	    $this->createOETable('et_ophciexamination_cvi_status', array(
 	        'id' => 'pk',
             'event_id' => 'int(10) unsigned NOT NULL',
             'cvi_status_id' => 'int(10) unsigned NOT NULL',
@@ -16,7 +16,7 @@ class m180904_024032_add_examination_cvi_status extends CDbMigration
             'created_user_id' => 'int(10) unsigned',
             'last_modified_date' => 'datetime ',
             'last_modified_user_id' => 'int(10) unsigned',
-        ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+        ), true);
 
 	    $this->addForeignKey('et_ophciexamination_cvi_status_event_id_fk', 'et_ophciexamination_cvi_status',
             'event_id', 'event', 'id');

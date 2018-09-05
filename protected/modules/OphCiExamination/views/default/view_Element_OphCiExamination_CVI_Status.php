@@ -6,7 +6,8 @@
                 <?= $element->cviStatus->name ?>
             </td>
             <td>
-                <?= $element->element_date ?>
+                <?php $date = new DateTime($element->element_date);
+                echo $date->format('d M Y'); ?>
             </td>
         </tr>
         </tbody>
