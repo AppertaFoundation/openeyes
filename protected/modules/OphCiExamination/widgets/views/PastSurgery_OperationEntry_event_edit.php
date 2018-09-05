@@ -55,6 +55,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
                 'placeholder' => 'Enter procedure name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
+                'readonly'=> true
             )); ?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php endif; ?>

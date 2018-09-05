@@ -45,6 +45,7 @@ $model_name = CHtml::modelName($element);
                         'row_count' => ($row_count),
                         'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
+                        'read_only' => true,
                         //hack here: removable set to true as we need to edit the fields,
                         // 'required' introduced as we need to hide the remove btn.
                         'removable' => true,
@@ -65,6 +66,7 @@ $model_name = CHtml::modelName($element);
                         'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
                         'removable' => true,
+                        'read_only' => true,
                         //hack here: removable set to true as we need to edit the fields,
                         // 'required' introduced as we need to hide the remove btn.
                         'required' => $op['required'],
