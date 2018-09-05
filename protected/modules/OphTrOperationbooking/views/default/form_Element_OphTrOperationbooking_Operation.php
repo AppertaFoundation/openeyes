@@ -263,7 +263,7 @@
                             ?>
                         </td>
                     </tr>
-                    <?php if (Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
                         <tr>
                             <td><?= $element->getAttributeLabel('is_golden_patient'); ?> </td>
                             <td>
