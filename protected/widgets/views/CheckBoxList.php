@@ -65,7 +65,7 @@
                 </label>
             <?php }?>
             <?php foreach ($data as $id => $data_value) {?>
-                <label class="inline highlight">
+                <label class="inline highlight" id="">
                     <?php
                     $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$id);
 
@@ -76,7 +76,7 @@
                     }
                     $class = isset($options['class']) ? ($options['class'] . " ") : '';
                     $options['class'] = $class . str_replace(' ', '', $data_value);
-
+                    $options['id'] = CHtml::modelName($element) . '_' . @$htmlOptions['field'] . '_' . $data_value;
                     $is_checked = in_array($id, $selected_items);
                     echo CHtml::checkBox("{$name}[]", $is_checked, $options);
                     ?>

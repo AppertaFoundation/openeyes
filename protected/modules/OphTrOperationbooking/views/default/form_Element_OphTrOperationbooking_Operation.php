@@ -145,8 +145,8 @@
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'special_equipment', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'special_equipment_details', array(), true, array(),
-                                array_merge($form->layoutColumns, array('field' => 4))) ?>
+                            <?php $form->textArea($element, 'special_equipment_details', array('rows' => 1), true, array(),
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
                     </tr>
                     <?php
@@ -214,7 +214,8 @@
                                 null, false, false,
                                 false, false,
                                 array(
-                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+                                    'field'=>'AnaestheticType',
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''
                                 )
                             ); ?>
                         </td>
@@ -234,6 +235,8 @@
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
+                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true, array(),
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
                     </tr>
                     <tr id='tr_stop_medication_details' style="display:none">

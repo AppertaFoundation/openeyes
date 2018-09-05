@@ -30,7 +30,6 @@
       <?php } else { ?>
     <div class="cols-6" id="procedure-selector-container">
         <?php } ?>
-      <fieldset>
           <?php if ($headertext) { ?>
             <p><em><?php echo $headertext ?></em></p>
           <?php } ?>
@@ -109,7 +108,6 @@
               'htmlOptions' => array('placeholder' => 'or enter procedure here'),
           ));
           ?>
-      </fieldset>
     </div><?php $totalDuration = 0; ?>
     <div class="cols-6">
       <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
@@ -181,11 +179,13 @@
           <?php } ?>
       </div>
     </div>
+    <?php if ($popupButton) { ?>
     <div class="add-data-actions flex-item-bottom">
       <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
         <i class="oe-i plus pro-theme"></i>
       </button>
     </div>
+    <?php } ?>
 </div>
 
   <script type="text/javascript">
