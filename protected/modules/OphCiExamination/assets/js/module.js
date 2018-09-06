@@ -856,7 +856,31 @@ $(document).ready(function() {
         'click', function(e) {
         var activeForm = $(this).closest('.active-form');
 
+        var $section =  $(this).parents('section');
+        var $cviAlert = $('.cvi-alert');
+        var threshold = parseInt($cviAlert.data('threshold'));
+
         $(this).closest('tr').remove();
+
+        if( $section.find('.cvi_alert_dismissed').val() !== "1"){
+          var show_alert = false;
+          $section.find('.va-selector').each(function(k,v){
+            var val = parseInt($(this).val());
+            if (val < threshold) {
+              show_alert = true;
+            } else {
+              show_alert = false;
+            }
+            return;
+          });
+          if (show_alert) {
+            $cviAlert.slideDown(500);
+          } else {
+            $cviAlert.slideUp(500);
+          }
+        }
+
+
         if ($('tbody', activeForm).children('tr').length == 0) {
             $('.noReadings', activeForm).show();
             $('table', activeForm).hide();
@@ -1266,7 +1290,6 @@ $(document).ready(function() {
         });
 
         $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
-
             var $section =  $(this).closest('section');
             var $cviAlert = $('.cvi-alert');
             var threshold = parseInt($cviAlert.data('threshold'));
@@ -1290,6 +1313,7 @@ $(document).ready(function() {
                 }
             }
         });
+
 
         // Dismiss alert box
         $('#event-content').on('click', '.dismiss_cva_alert', function(){

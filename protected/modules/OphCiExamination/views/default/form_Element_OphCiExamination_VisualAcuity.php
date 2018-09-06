@@ -23,7 +23,7 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
@@ -58,7 +58,7 @@ if ($cvi_api) {
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table class="cols-full blank va_readings"
-                   style="<?= !$element->{$eye_side . '_readings'}? 'display: none;': '' ?>" >
+                   style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>" >
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -78,10 +78,7 @@ if ($cvi_api) {
               </tbody>
             </table>
             <div class="data-group noReadings"
-                style="<?= $element->{$eye_side . '_readings'}? 'display: none;':'' ?>">
-              <div class="cols-4 column">
-                <div class="data-value not-recorded">Not recorded</div>
-              </div>
+                style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? '':'display: none;' ?>">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
@@ -122,7 +119,7 @@ if ($cvi_api) {
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-          if(selectedItems.length){
+          if(selectedItems.length==2){
             var selected_data = {};
             for (i in selectedItems) {
               if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
@@ -139,8 +136,10 @@ if ($cvi_api) {
             var newRow =  tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
           }
-          return true;
         },
       });
     });

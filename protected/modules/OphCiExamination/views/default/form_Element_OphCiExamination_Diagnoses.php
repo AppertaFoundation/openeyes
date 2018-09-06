@@ -80,7 +80,6 @@ foreach ($this->patient->episodes as $ep) {
                     'model_name' => CHtml::modelName($element),
                     'row_count' => $row_count,
                     'field_prefix' => $model_name . "[entries][$row_count]",
-                    'hide_not_available_eye_option' => $element->hide_not_available_eye_option,
                     'removable' => true,
                 )
             );
