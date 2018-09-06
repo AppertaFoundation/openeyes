@@ -44,7 +44,9 @@ class AdminController extends BaseAdminController
     public function actionEditCommonOphthalmicDisorder()
     {
         $models = CommonOphthalmicDisorderGroup::model()->findAll();
-        $data = array_map(create_function('$model','return $model->getAttributes(array("id", "name"));'), $models);
+        $data = array_map(function($model){
+            return $model->getAttributes(array("id", "name"));
+        }, $models);
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
@@ -409,6 +411,7 @@ class AdminController extends BaseAdminController
 
         $pagination = $this->initPagination(User::model(), $criteria);
         $search = !empty($_GET['search']) ? $_GET['search'] : '';
+
         $this->render('/admin/users', array(
             'users' => User::model()->findAll($criteria),
             'pagination' => $pagination,

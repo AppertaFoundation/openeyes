@@ -31,18 +31,7 @@ $worklist_patients->getData();
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
   <div class="summary">
-
-      <?php
-      $this->widget('LinkPager', array(
-              'pages' => $worklist_patients->getPagination(),
-              'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-              'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-              'htmlOptions' => array(
-                  'class' => 'pagination',
-              ),
-          )
-      );
-      ?>
+    <?php $this->widget('LinkPager', ['pages' => $worklist_patients->getPagination()]); ?>
   </div>
 </div>
 

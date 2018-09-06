@@ -18,7 +18,14 @@
 ?>
 
 <main class="oe-full-main admin-main">
-    <div class="row">
+
+    <?php if (!$users) :?>
+    <div class="row divider">
+        <div class="alert-box issue"><b>No results found</b></div>
+    </div>
+    <?php endif; ?>
+
+    <div class="row divider">
         <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', [
             'id' => 'searchform',
@@ -27,8 +34,8 @@
             'action' => Yii::app()->createUrl('/admin/users'),
             'method' => 'get',
         ]) ?>
-        Search Users: <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-                             name="search" id="search" placeholder="Enter search query..."
+        <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+                             name="search" id="search" placeholder="Search Users..."
                              value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"/>
         <?php $this->endWidget() ?>
     </div>
@@ -87,15 +94,8 @@
                         ['class' => 'button large', 'data-object' => 'users']
                     )->toHtml(); ?>
                 </td>
-                <td colspan="4" style="text-align: right">
-                    <?php $this->widget('LinkPager', [
-                        'pages' => $pagination,
-                        'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                        'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                        'htmlOptions' => [
-                            'class' => 'pagination',
-                        ],]);
-                ?>
+                <td colspan="4">
+                    <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
                 </td>
             </tr>
             </tfoot>
