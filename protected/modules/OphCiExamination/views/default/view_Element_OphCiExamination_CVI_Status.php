@@ -6,8 +6,7 @@
                 <?= $element->cviStatus->name ?>
             </td>
             <td>
-                <?php $date = new DateTime($element->element_date);
-                echo $date->format('d M Y'); ?>
+                <?= Helper::convertMySQL2NHS($element->element_date)?>
             </td>
         </tr>
         </tbody>
