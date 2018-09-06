@@ -29,18 +29,83 @@
             'field' => 5,
         ),
     ))?>
-	<?php echo $form->dropDownList($site, 'institution_id', 'Institution', array('style' => 'margin-bottom:6px;'))?>
-	<?php echo $form->textField($site, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => '50'))?>
-	<?php echo $form->textField($site, 'short_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($site, 'remote_id', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-	<?php echo $form->textField($address, 'address1', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($address, 'address2', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($address, 'city', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($address, 'county', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($address, 'postcode', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($site, 'telephone', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->textField($site, 'fax', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-	<?php echo $form->dropDownList($address, 'country_id', 'Country')?>
-	<?php echo $form->formActions(array('cancel-uri' => '/admin/sites'));?>
+
+    <div class="cols-5">
+        <table class="standard cols-full"> <!-- adjust as necessary -->
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr class="col-gap">
+                <td>Institution</td>
+                <td >
+                    <?php echo CHtml::activeDropDownList($site, 'institution_id',
+                        CHtml::listData( Institution::model()->findAll() , 'id', 'name'),['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($site, 'name', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Short Name</td>
+                <td> <?php echo CHtml::activeTextField($site, 'short_name', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Code</td>
+                <td> <?php echo CHtml::activeTextField($site, 'remote_id', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Address 1</td>
+                <td> <?php echo CHtml::activeTextField($address, 'address1', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Address 2</td>
+                <td> <?php echo CHtml::activeTextField($address, 'address2', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>City</td>
+                <td> <?php echo CHtml::activeTextField($address, 'city', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>County</td>
+                <td> <?php echo CHtml::activeTextField($address, 'county', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Postcode</td>
+                <td> <?php echo CHtml::activeTextField($address, 'postcode', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Telephone</td>
+                <td> <?php echo CHtml::activeTextField($site, 'telephone', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr>
+                <td>Fax</td>
+                <td> <?php echo CHtml::activeTextField($site, 'fax', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            <tr class="col-gap">
+                <td>Country</td>
+                <td >
+                    <?php echo CHtml::activeDropDownList($address, 'country_id',
+                        CHtml::listData( Country::model()->findAll() , 'id', 'name'), ['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+            </tbody>
+
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => '/admin/sites', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 	<?php $this->endWidget()?>
+
 </div>

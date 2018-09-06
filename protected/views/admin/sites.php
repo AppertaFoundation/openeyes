@@ -16,24 +16,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<div class="data-group">
-		<div class="cols-8 column">
-			<h2>Sites</h2>
-		</div>
-		<div class="cols-4 column">
-			<?php
-            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                'id' => 'searchform',
-                'enableAjaxValidation' => false,
-                'focus' => '#search',
-                'action' => Yii::app()->createUrl('/admin/sites'),
-            ))?>
-					<div class="cols-12 column">
-						<input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
-					</div>
-			<?php $this->endWidget()?>
-		</div>
+<main class="oe-full-main admin-main">
+
+    <?php if (!$sites) :?>
+    <div class="row divider">
+        <div class="alert-box issue"><b>No results found</b></div>
+    </div>
+    <?php endif; ?>
+
+    <div class="row divider">
+        <?php
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'searchform',
+            'enableAjaxValidation' => false,
+            'focus' => '#search',
+            'action' => Yii::app()->createUrl('/admin/sites'),
+        ))?>
+
+        <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+               name="search" id="search" placeholder="Enter search query..."
+               value="<?php echo strip_tags(@$_POST['search'])?>" />
+        <?php $this->endWidget()?>
 	</div>
 	<form id="admin_institution_sites">
 		<table class="standard">
@@ -57,14 +60,14 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="4">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('_pagination', array(
-                            'pagination' => $pagination,
-                        ))?>
-					</td>
+                    <td colspan="5">
+                        <?php echo CHtml::button('Add Site', ['class' => 'button large', 'id' => 'et_add']); ?>
+                    </td>
+                    <td colspan="4">
+                        <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
+                    </td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
-</div>
+</main>

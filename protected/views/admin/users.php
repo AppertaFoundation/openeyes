@@ -86,13 +86,9 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?php echo EventAction::button('Add User', 'add', null, ['class' => 'button large'])->toHtml(); ?>
-                    <?php echo EventAction::button(
-                        'Deactivate Users',
-                        'delete',
-                        null,
-                        ['class' => 'button large', 'data-object' => 'users']
-                    )->toHtml(); ?>
+                    <?php echo CHtml::button('Add User', ['class' => 'button large', 'id' => 'et_add']); ?>
+                    <?php echo CHtml::button('Deactivate Users', ['class' => 'button large', 'name' => 'delete',
+                        'data-object' => 'users', 'id' => 'et_delete']); ?>
                 </td>
                 <td colspan="4">
                     <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
