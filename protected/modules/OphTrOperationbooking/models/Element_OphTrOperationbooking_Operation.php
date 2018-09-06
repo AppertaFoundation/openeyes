@@ -448,7 +448,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if( !count($this->anaesthetic_type_assignments)){;
+        if( !count($this->anaesthetic_type_assignments)){
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 

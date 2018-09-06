@@ -21,14 +21,18 @@ extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
 ?>
 
-<?php if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
+<?php if($noEpisodes) { ?>
   <div class="oe-sem-no-events">
     <h3>No Events</h3>
     <div class="alert-box alert">
       There are currently no events for this patient.<br>Click the "Add Event" button to begin recording events.
     </div>
     <nav class="sidebar-header">
-      <button id="add-event" class="button green add-event" type="button">Add Event</button>
+        <?php if ($this->checkAccess('OprnCreateEpisode')) { ?>
+            <button id="add-event" class="button green add-event" type="button">Add Event</button>
+        <?php } else { ?>
+            <button class="button add-event disabled">You have View Only rights and cannot create events</button>
+        <?php } ?>
     </nav>
   </div>
     <?php $this->renderPartial('//patient/add_new_event',array(

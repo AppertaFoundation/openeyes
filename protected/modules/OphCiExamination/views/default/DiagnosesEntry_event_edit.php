@@ -58,6 +58,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <?php $this->widget('application.widgets.EyeSelector', [
         'inputNamePrefix' => $field_prefix,
         'selectedEyeId' => $values['eye_id'],
+        'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
     ]); ?>
 
     <td>
@@ -86,3 +87,8 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
 </tr>
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+?>

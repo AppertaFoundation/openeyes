@@ -299,6 +299,11 @@ return array(
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
+        'tinymce_default_options' => array(
+            'plugins' => 'table lists',
+            'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
+            'valid_children' => '+body[style]'
+        ),
         'menu_bar_items' => array(
                 'admin' => array(
                     'title' => 'Admin',

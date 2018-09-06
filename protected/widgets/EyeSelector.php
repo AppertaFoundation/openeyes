@@ -46,7 +46,10 @@ class EyeSelector extends BaseCWidget
     public function render()
     {
         ob_start();
-        echo preg_replace_callback("/{(\w+)}/", array($this, 'renderSection'), $this->template);
+        echo preg_replace_callback(
+            "/{(\w+)}/",
+            array($this, 'renderSection'),
+            $this->template);
         ob_end_flush();
     }
 
