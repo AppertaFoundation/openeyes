@@ -487,4 +487,12 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         return $this->getElementTypeName() . ' <small>' . $this->unit->name . '</small>';
     }
+
+    /***
+     * @param $eye_side 'left'|'right' which side
+     * @return bool whether the eye is marked as assessable (not missing or otherwise unassessable)
+     */
+    public function eyeAssesable($eye_side){
+        return !($this->{$eye_side.'_unable_to_assess'} || $this->{$eye_side.'_eye_missing'});
+    }
 }

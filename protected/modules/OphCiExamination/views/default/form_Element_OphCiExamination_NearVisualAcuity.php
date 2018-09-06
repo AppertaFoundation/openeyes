@@ -17,6 +17,9 @@
  */
 ?>
 <?php
+/***
+ * @var $element \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity
+ */
 list($values, $val_options) = $element->getUnitValuesForForm(null, true);
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
 $key = 0;
@@ -82,7 +85,7 @@ $key = 0;
           </div>
         </div>
         <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
-             style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ? 'display: none; ': '' ?> ">
+             style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?> ">
           <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
