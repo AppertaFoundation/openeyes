@@ -21,6 +21,17 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
 {
 
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return Element_OphCiExamination_CVI_Status the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
     public static $BLIND_STATUS = 'Severely Sight Impaired';
     public static $NOT_BLIND_STATUS = 'Sight Impaired';
     public static $NOT_ELIGIBLE_STATUS = 'Not eligible';
@@ -45,7 +56,6 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
             array('event_id, cvi_status_id, created_user_id, last_modified_user_id', 'length', 'max'=>10),
             array('event_id, element_date, created_date, last_modified_date', 'safe'),
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
             array('id, event_id, cvi_status_id, element_date, created_date, created_user_id, last_modified_date, last_modified_user_id', 'safe', 'on'=>'search'),
         );
     }
@@ -94,7 +104,6 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
      */
     public function search()
     {
-        // @todo Please modify the following code to remove attributes that should not be searched.
 
         $criteria=new CDbCriteria;
 
@@ -112,14 +121,4 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
         ));
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Element_OphCiExamination_CVI_Status the static model class
-     */
-    public static function model($className=__CLASS__)
-    {
-        return parent::model($className);
-    }
 }
