@@ -16,46 +16,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<div class="data-group">
-		<div class="cols-8 column">
-			<h2>Settings</h2>
-		</div>
-		<div class="cols-4 column">
-			<?php
-            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                'id' => 'searchform',
-                'enableAjaxValidation' => false,
-                'focus' => '#search',
-                'action' => Yii::app()->createUrl('/admin/settings'),
-            ))?>
-					<div class="cols-12 column">
-						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
-					</div>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
-	<p>
-		Settings added here will be overridden by any settings in local config files. eg common.php or core.php
-	</p>
-	<form id="admin_settings">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-				<tr>
-					<th>Setting</th>
-					<th>Value</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-        foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {?>
-					<tr class="clickable" data-key="<?php echo $metadata->key?>">
-						<td><?php echo $metadata->name?></td>
-						<td><?php echo $metadata->getSettingName()?></td>
-					</tr>
-				<?php }?>
-			</tbody>
-		</table>
-	</form>
-</div>
+
+<main class="oe-full-main admin-main">
+
+    <div class="alert-box info">
+        <b>Info</b> Settings added here will be overridden by any settings in local config files. eg common or
+        core.php
+    </div>
+
+    <table class="standard">
+        <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) { ?>
+            <tr class="clickable" data-uri="admin/editSetting?key=<?=$metadata->key;?>">
+                <td><?php echo $metadata->name ?></td>
+                <td>
+                    <?php
+                    if ($metadata->getSettingName()) {
+                        echo CHtml::htmlButton($metadata->getSettingName(), ['class' => 'oe-filter-btn']);
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+</main>

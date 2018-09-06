@@ -19,7 +19,7 @@ $(document).ready(function () {
 
         if (uri) {
             var url = uri.split('/');
-            url.unshift(baseUrl);
+            url.unshift(window.baseUrl);
             window.location.href = url.join('/');
         }
     });
