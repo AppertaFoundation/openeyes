@@ -87,7 +87,7 @@ if ($cvi_api) {
             </div>
           </div>
           <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
-               style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>">
+               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
             <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
