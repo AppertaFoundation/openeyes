@@ -236,6 +236,7 @@ class PatientController extends BaseController
         } else {
             $this->renderPatientPanel = false;
 
+            $this->fixedHotlist = false;
             $this->render('results', array(
                 'data_provider' => $dataProvider,
                 'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
@@ -371,7 +372,6 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
-        $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
 
