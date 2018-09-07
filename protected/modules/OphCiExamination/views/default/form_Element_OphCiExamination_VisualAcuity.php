@@ -51,9 +51,12 @@ if ($cvi_api) {
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-        <div class="active-form data-group flex-layout">
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
+          data-side="<?= $eye_side ?>"
+      >
+        <div class="active-form data-group flex-layout"
+             style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+        >
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table class="cols-full blank va_readings"
@@ -96,7 +99,7 @@ if ($cvi_api) {
           <!--flex bottom-->
         </div>
         <!-- active form-->
-        <div class="inactive-form" style="display: none">
+        <div class="inactive-form"  style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>

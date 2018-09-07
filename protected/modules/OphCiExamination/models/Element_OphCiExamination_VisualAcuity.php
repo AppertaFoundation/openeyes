@@ -141,73 +141,25 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     protected function afterValidate()
     {
         $model = str_replace('\\', '_', $this->elementType->class_name);
-        Yii::log($model);
         $va = $_POST[$model];
-//        $near_va = $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity'];
-//        Yii::log(var_export($va, true));
-//        Yii::log(var_export($near_va, true));
-//        Yii::log(var_export($_POST, true));
-        $contra_flags = array('_unable_to_assess', '_eye_missing');
         foreach (array('left', 'right') as $side) {
             if (!$this->eyeHasSide($side, $va['eye_id'])){
                 continue;
             }
-//            Yii::log($side.'_readings: '.var_dump(isset($_POST[$side.'_readings'])));
             $isAssessable =!($va[$side.'_unable_to_assess'] || $va[$side.'_eye_missing']);
             $hasReadings = array_key_exists($side.'_readings', $va);
-//            Yii::log('Side: '.$side);
-//            Yii::log("Is Assessable: ".$isAssessable);
-//            Yii::log("Has Reading: ".$hasReadings);
 
-            if ($hasReadings){
-                Yii::log(var_export($va[$side.'_readings'], true));
-
-            }
             if (($isAssessable&&$hasReadings)||(!$isAssessable&&!$hasReadings)) {
             } elseif ($isAssessable&&!$hasReadings) {
                 $this->addError($side, ucfirst($side).' side has no data.');
             } else {
-                $this->addError($side, 'Cannot be '.$this->getAttributeLabel($side).' with VA readings.');
+                if ($va[$side.'_unable_to_assess']){
+                    $this->addError($side.'_unable_to_assess', 'Cannot be '.$this->getAttributeLabel($side.'_unable_to_assess').' with VA readings.');
+                }
+                if ($va[$side.'_eye_missing']){
+                    $this->addError($side.'_eye_missing', 'Cannot be '.$this->getAttributeLabel($side.'_eye_missing').' with VA readings.');
+                }
             }
-
-
-
-
-//
-//            $check = 'has'.ucfirst($side);
-//            if ($this->$check()) {
-//
-//                foreach ($contra_flags as $f) {
-//                    if ($this->{$side.$f}) {
-//                        if (isset($_POST[$side.'_readings'])){
-//                            $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
-//                        }
-//                        else {
-//                            $this->{$side.'_readings'} = null;
-//                        }
-//                    }
-//
-//                }
-//                if (isset($_POST[$side.'_readings']) && $this->{$side.'_readings'} ) {
-//                    foreach ($this->{$side.'_readings'} as $i => $reading) {
-//                        if (!$reading->validate()) {
-//                            foreach ($reading->getErrors() as $fld => $err) {
-//                                $this->addError($side.'_readings', ucfirst($side).' reading('.($i + 1).'): '.implode(', ', $err));
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    $valid = false;
-//                    foreach ($contra_flags as $f) {
-//                        if ($this->{$side.$f}) {
-//                            $valid = true;
-//                        }
-//                    }
-//                    if (!$valid) {
-//                        $this->addError($side, ucfirst($side).' side has no data.');
-//                    }
-//                }
-//            }
         }
 
         parent::afterValidate();
