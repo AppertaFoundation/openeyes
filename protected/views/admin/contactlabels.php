@@ -17,7 +17,6 @@
  */
 ?>
 <div class="admin box">
-	<h2>Contact labels</h2>
 	<form id="admin_contactlabels">
 		<table class="standard">
 			<thead>
@@ -37,8 +36,10 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+                    <td colspan="5">
+                        <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
+                    </td>
+					<td colspan="4">
 						<?php echo $this->renderPartial('_pagination', array(
                             'pagination' => $pagination,
                         ))?>

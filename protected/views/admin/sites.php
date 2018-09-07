@@ -38,6 +38,7 @@
                value="<?php echo strip_tags(@$_POST['search'])?>" />
         <?php $this->endWidget()?>
 	</div>
+
 	<form id="admin_institution_sites">
 		<table class="standard">
 			<thead>

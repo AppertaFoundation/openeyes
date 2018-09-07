@@ -17,8 +17,8 @@
  */
 ?>
 <div class="admin box">
-	<h2>Data sources</h2>
 	<form id="admin_data_sources">
+        <div class="cols-5">
 		<table class="standard">
 			<thead>
 				<tr>
@@ -37,11 +37,13 @@
 			</tbody>
 			<tfoot>
 				<td colspan="2">
-					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+                    <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
+                    <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete',
+                        'data-object' => 'admin_data_sources', 'id' => 'et_delete']); ?>
 				</td>
 			</tfoot>
 		</table>
+        </div>
 	</form>
 </div>
 <script type="text/javascript">

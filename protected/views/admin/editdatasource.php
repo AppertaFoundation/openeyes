@@ -29,7 +29,30 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($source, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->formActions(array('cancel-uri' => '/admin/datasources'));?>
+
+    <div class="cols-5">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?> </td>
+            </tr>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                    'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                    'data-uri' => '/admin/datasources', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+            </td>
+        </tr>
+        </tfoot>
+        </table>
+    </div>
 	<?php $this->endWidget()?>
 </div>

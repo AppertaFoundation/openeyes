@@ -31,7 +31,7 @@
     ))?>
 
     <div class="cols-5">
-        <table class="standard cols-full"> <!-- adjust as necessary -->
+        <table class="standard cols-full">
             <colgroup>
                 <col class="cols-3">
                 <col class="cols-5">

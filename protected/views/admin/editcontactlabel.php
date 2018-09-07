@@ -29,11 +29,34 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($contactlabel, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-         	<?php echo $form->formActions(array(
-            'cancel-uri' => '/admin/contactlabels',
-            'delete' => 'Delete',
-        ));?>
+
+    <div class="cols-5">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($contactlabel, 'name', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            </tbody>
+
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => '/admin/contactlabels', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                    <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete', 'id' => 'et_delete']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">

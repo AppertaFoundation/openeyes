@@ -17,9 +17,6 @@
  */
 ?>
 <div class="admin box">
-
-	<h2><?php echo Firm::contextLabel() . 's and ' . Firm::serviceLabel() ?>s</h2>
-
 	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
 
 	<form id="admin_firms">
@@ -57,9 +54,12 @@
 			</tbody>
 			<tfoot class="pagination-container">
 			<tr>
-				<td colspan="6">
-					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml() ?>
-					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml() ?>
+                <td colspan="5">
+                    <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
+                    <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete', 'id' => 'et_delete',
+                        'data-object' => 'firms']); ?>
+                </td>
+				<td colspan="4">
 					<?php echo $this->renderPartial('_pagination', array(
                         'pagination' => $pagination,
                     )) ?>
