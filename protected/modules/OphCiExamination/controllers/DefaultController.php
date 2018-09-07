@@ -333,6 +333,20 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
+        $elements = $this->getElements($action);
+
+        /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
+        $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        /* @var models\Element_OphCiExamination_VisualAcuity $element */
+        $visualAcuity = array_shift(array_values(array_filter($elements, function ($element) {
+            return get_class($element) === models\Element_OphCiExamination_VisualAcuity::class;
+        })));
+
+        // Render the CVI alert above all th other elements
+        if ($cvi_api) {
+            echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
+        }
+
         if ($action !== 'view') {
             parent::renderOpenElements($action, $form, $date);
 
@@ -341,9 +355,9 @@ class DefaultController extends \BaseEventTypeController
 
         $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
 
-        $elements = $this->getElements($action);
-        $elements = array_filter($elements, function ($element) {
+        $filteredElements = array_filter($elements, function ($element) {
             return !in_array(get_class($element), array(
+                // Ignore elements that are displayed in the view summary
                 models\Element_OphCiExamination_History::class,
                 models\PastSurgery::class,
                 models\SystemicDiagnoses::class,
@@ -351,12 +365,10 @@ class DefaultController extends \BaseEventTypeController
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
-                models\HistoryRisks::class,
-                models\Allergies::class,
             ), true);
         });
 
-        $this->renderElements($elements, $action, $form, $date);
+        $this->renderElements($filteredElements, $action, $form, $date);
     }
 
     /**

@@ -67,7 +67,7 @@
     <table class="cols-6">
       <tbody>
       <tr class="flex-layout ">
-        <td class="cols-6 column">
+        <td>
           <label for="<?php echo get_class($element) . '_suitable_for_surgeon_id'; ?>">
               <?php echo $element->getAttributeLabel('suitable_for_surgeon_id') ?>:
           </label>

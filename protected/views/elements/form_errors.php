@@ -43,17 +43,22 @@
       var $field = $('#' + errorObject[k]);
       $field.closest('.element').find('.element-title').addClass('error');
       if ($field.length) {
-			  if ($field.is('tr')||$field.is('input')) {
-			    $field.addClass('highlighted-error');
+			  if ($field.is('input')||$field.is('textarea')||$field.is('select') || $field.is('tr')) {
+          $field.addClass('error');
+          $field.parent().addClass('highlight error');
+        } else if ($field.is('label')){
+          $field.addClass('highlight error');
         } else {
-          if(!$field.parent().hasClass('highlighted-error')) {
-            $field.addClass('highlighted-error');
+          if(!$field.parent().hasClass('error')) {
+            $field.addClass('highlight error');
           }
         }
 			} else {
-				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
-					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap('<div class="highlighted-error cols-full" style="display: inherit;" ></div>');
-				}
+				if(! $('[id*="' + errorObject[k] + '"]').hasClass('error')) {
+          $('[id*="' + errorObject[k] + '"]:not(:hidden)').addClass('error');
+          $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlight error');
+
+        }
 			}
 		}
 		<?php }
