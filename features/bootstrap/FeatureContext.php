@@ -64,7 +64,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		if (isset ( $this->environment [$environment] )) {
 			$homepage = $this->getPage ( 'HomePage' );
 			$homepage->open ();
-			$homepage->checkOpenEyesTitle ( 'Please login' );
+			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login' );
 		} else {
 			throw new \Exception ( "Environment $environment doesn't exist" );
 		}
@@ -167,6 +167,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		}
 	}
 	private function saveScreenshots() {
+	    return;
 		foreach ( $this->screenshots as $screenshot ) {
 			try {
 				if (! @is_dir ( dirname ( $screenshot ['filename'] ) )) {

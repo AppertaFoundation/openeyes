@@ -18,7 +18,42 @@ class Examination extends OpenEyesPage {
 		'duration' => array (
 			'xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_History_description']//*[@value='1 week, ']"
 		),
-
+        'activeElements' => array(
+            'css' => ".js-active-elements"
+        ),
+        'removeIcon' => array(
+            'css' => ".js-remove-element"
+        ),
+        'NVA' => array (
+            'css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity"
+        ),
+        'leftEye' => array(
+            'css' => ".left-eye"
+        ),
+        'rightEye' => array(
+            'css' => ".right-eye"
+        ),
+        'addSide' => array(
+            'css' => ".add-side"
+        ),
+        'NVAMethod' => array(
+            'css' => ".add-options[data-id=method]"
+        ),
+        'NVAReading' => array(
+            'css' => ".add-options[data-id=reading_val]"
+        ),
+        'addReading' => array(
+            'css' => ".addReading"
+        ),
+        'confirmAdderButton' => array(
+            'css' => ".oe-add-select-search button"
+        ),
+        'addLeftNVA' => array (
+          'xpath' => "//*[@class='OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity']//*[@class='left-eye']//*[@class='add-side']"
+        ),
+		'addRightNVA' => array (
+		    'xpath' => "//*[@class='OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity']//*[@class='right-eye']//*[@class='add-side']"
+        ),
 		'openComorbidities' => array (
 			'xpath' => "//div[@class='sub-elements inactive']//*[@data-element-type-name='Comorbidities']"
 		),
@@ -29,14 +64,14 @@ class Examination extends OpenEyesPage {
 			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Visual Acuity')]"
 		),
 		'expandNearVisualAcuity' => array (
-			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Near Visual Acuity')]"
+			'xpath' => "//*[@id='side-element-Near-Visual-Acuity']"
 		),
 
 		'expandAnteriorSegment' => array (
 			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Anterior Segment')]"
 		),
 		'expandVisualFunction' => array (
-			'xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Function')]"
+			'xpath' => "//*[@class='collapse-group-header'][contains(text(),'Visual Function')]"
 		),
 		'visualAcuityUnitChange' => array (
 			'xpath' => "//*[@id='visualacuity_unit_change']"
@@ -659,7 +694,7 @@ class Examination extends OpenEyesPage {
 			'xpath' => "//*[@class='add-all']"
 		),
 		'removeAllElements' => array (
-			'xpath' => "//*[@class='remove-all']"
+			'xpath' => "//section[@class='element']"
 		),
 		'removeAllValidationError' => array (
 			//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"
@@ -971,7 +1006,7 @@ class Examination extends OpenEyesPage {
 			$element = $this->getElement ( 'expandVisualFunction' );
 			//$this->scrollWindowToElement ( $element );
 			$element->click ();
-			$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
+			$this->getSession ()->wait ( 1000, 'window.$ && $.active == 0' );
 		}
 	}
 	public function selectVisualAcuity($unit) {
@@ -995,10 +1030,55 @@ class Examination extends OpenEyesPage {
 		$this->getElement ( 'firstLeftVisualAcuityCorrection' )->selectOption ( $method );
 	}
 
+	public function ensureNVA($side){
+	    $this->openVisualFunction();
+	    $this->openNearVisualAcuity();
+        $this->getElement('expandNearVisualAcuity')->click();
+        $this->waitForElementDisplayBlock(
+            '.OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity',
+            2000
+        );
+        $addNva = $this->getElementAtChain(array('NVA', $side.'Eye', 'addSide'));
+        if ($addNva->isValid() && $addNva->isVisible()){
+            $addNva->click();
+        }
+    }
+
+    public function addNVAReading($side, $reading, $method){
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'addReading'))->click();
+        $this->elements['NVAReading_val'] = array(
+            'css' => 'li[data-id='.$reading.']'
+        );
+        $this->elements['NVAMethod_val'] = array(
+            'css' => 'li[data-id='.$method.']'
+        );
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAReading', 'NVAReading_val'))->click();
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAMethod', 'NVAMethod_val'))->click();
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAdderButton'))->click();
+
+    }
+
+    /***
+     * @param $links array(string) the various elements to be pathed through
+     * @return null|\Behat\Mink\Element\NodeElement|mixed|null|\SensioLabs\Behat\PageObjectExtension\PageObject\Element
+     *          Returns the element at the end of the chain, or null
+     */
+    public function getElementAtChain($links){
+        $finalElement = $this->getElement($links[0]);
+        foreach ($links as $index => $linkElement){
+            if ($index === 0){continue;}
+            $finalElement = $finalElement->find('xpath', $this->getElement($linkElement)->getXpath());
+        }
+        return $finalElement;
+    }
+
+
+
 	public function selectRightNVA($metre, $method) {
 		$this->getElement ( 'firstRightNearVisualAcuityReading' )->selectOption ( $metre );
 		$this->getElement ( 'firstRightNearVisualAcuityCorrection' )->selectOption ( $method );
 	}
+
 	public function selectLeftNVA($metre, $method) {
 		$this->getElement ( 'firstLeftNearVisualAcuityReading' )->selectOption ( $metre );
 		$this->getElement ( 'firstLeftNearVisualAcuityCorrection' )->selectOption ( $method );
@@ -1514,7 +1594,7 @@ class Examination extends OpenEyesPage {
 		$this->waitForElementDisplayBlock('examSavedOk');
 		//$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 		if ($this->hasExaminationSaved ()) {
-			print "Examination has been saved OK";
+//			print "Examination has been saved OK";
 		}
 
 		else {
@@ -1570,10 +1650,13 @@ class Examination extends OpenEyesPage {
 		}
 	}
 	public function removeAllElements() {
-		$element = $this->getElement ( 'removeAllElements' );
-		$this->scrollWindowToElement ( $element );
-		$element->click ();
-		$this->getSession ()->wait ( 8000, 'window.$ && $.active == 0' );
+		$element = $this->getElement ( 'activeElements' );
+		//Why not get them all and just close them all in one? Because they all get explicit xpath indexes
+        // [4] for instance, which causes crashes when [1] through [3] are already gone and
+        // there is no [4]
+		while ($closeElement = $element->find('css', '.js-remove-element')){
+            $closeElement->click();
+        }
 	}
 	public function removeAllValidationError() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'removeAllValidationError' )->getXpath () );
