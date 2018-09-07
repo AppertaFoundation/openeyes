@@ -26,12 +26,6 @@ class EyeSelector extends BaseCWidget
     public $template = "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td><td><span class='oe-eye-lat-icons'>{NA}</span></td>";
 
     /**
-     * @var string the template to be used to control the layout of various sections in the view.
-     * These tokens are recognized: {Left} and {Right} .
-     */
-    public $templateWithoutNA = "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>";
-
-    /**
      * @var int the id of the selected eye.
      * null - nothing is selected
      * -9 - n/a, 1 - left, 2 - right, 3 - both
@@ -42,11 +36,6 @@ class EyeSelector extends BaseCWidget
      * @var string prefix of the input fields name attribute
      */
     public $inputNamePrefix;
-
-    /**
-     * @var An optional value to indicate if a Not Available Eye option should be shown
-     */
-    public $hideNotAvailableOption;
 
     /**
      * Renders the main content of the view.
@@ -60,7 +49,7 @@ class EyeSelector extends BaseCWidget
         echo preg_replace_callback(
             "/{(\w+)}/",
             array($this, 'renderSection'),
-            $this->hideNotAvailableOption ? $this->templateWithoutNA :$this->template);
+            $this->template);
         ob_end_flush();
     }
 
