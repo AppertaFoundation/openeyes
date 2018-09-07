@@ -28,9 +28,9 @@ class FirmController extends BaseController
      * Returns the consultants by subspecialty
      * @param null $subspecialty_id
      */
-    public function actionGetFirmsBySubspecialty($subspecialty_id = null)
+    public function actionGetFirmsBySubspecialty($subspecialty_id = null , $runtime_selectable = null)
     {
-        $firms = \Firm::model()->getList($subspecialty_id);
+        $firms = \Firm::model()->getList($subspecialty_id , null , $runtime_selectable);
         echo \CJSON::encode($firms);
 
         \Yii::app()->end();
