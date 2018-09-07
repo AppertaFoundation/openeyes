@@ -150,7 +150,7 @@ class SystemicDiagnoses extends \BaseEventElementWidget
                 $entry->disorder_id = $entry_data['disorder_id'];
                 $entry->side_id = $this->getEyeIdFromPost($entry_data);
                 $entry->date = $entry_data['date'];
-                $entry->has_disorder = $entry_data['has_disorder'];
+                $entry->has_disorder = isset($entry_data['has_disorder'])? $entry_data['has_disorder']:SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
 
                 $entries[] = $entry;
             }
