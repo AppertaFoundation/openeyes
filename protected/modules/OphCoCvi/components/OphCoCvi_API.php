@@ -18,10 +18,7 @@
 
 namespace OEModule\OphCoCvi\components;
 
-use \Patient;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
+use Patient;
 
 /**
  * Class OphCoCvi_API
@@ -228,6 +225,30 @@ class OphCoCvi_API extends \BaseAPI
      */
     public function renderAlertForVA(Patient $patient, $element, $show_create = false)
     {
+        $show_alert = false;
+        $base_values = array();
+        if($element) {
+
+            $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);
+            foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
+                $base_values[] = $reading->value;
+            }
+        }
+        return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
+            'element' => $element,
+            'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
+            'visible' => $show_alert && $this->isVaBelowThreshold($base_values),
+            'show_create' => $show_create,
+        ));
+    }
+
+    /**
+     * @param Patient $patient
+     * @param         $element
+     * @return boolean
+     */
+    public function renderAlertForCVI(Patient $patient, $element, $show_create = false)
+    {
         if (!$element->cvi_alert_dismissed && !$this->hasCVI($patient)) {
             $base_values = array();
             foreach (array_merge($element->right_readings, $element->left_readings) as $reading) {
@@ -242,5 +263,30 @@ class OphCoCvi_API extends \BaseAPI
         }
 
         return '';
+    }
+
+    /**
+     * Returns the date for the CVI status.
+     * @param $patient
+     * @return string
+     */
+    public function getCviSummaryDate($patient){
+            if ($events = $this->getEvents($patient)) {
+                $latest = array_pop($events);
+                $mgr = $this->getManager();
+                return $mgr->getDisplayStatusDateForEvent($latest);
+            }
+            else {
+                return $patient->getOphInfo()->cvi_status_date;
+        }
+    }
+
+    /**
+     * Returns the display date for the CVI status.
+     * @param $patient
+     * @return string
+     */
+    public function getCviSummaryDisplayDate($patient){
+        return \Helper::convertDate2HTML($this->getCviSummaryDate($patient));
     }
 }

@@ -40,7 +40,7 @@
 $itemSets = array();
 foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
     $itemSet = array_map(function ($attr) {
-        return ['id' => $attr['slug'], 'label' => $attr['label']];
+        return ['label' => $attr['slug']];
     }, $attribute->getAttributeOptions());
     $itemSets[] = $itemSet;
 }

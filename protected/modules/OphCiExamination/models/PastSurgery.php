@@ -158,12 +158,7 @@ class PastSurgery extends \BaseEventTypeElement
     {
         return $action === 'view' ? 1 : null;
     }
-
-    public function getViewTitle()
-    {
-        return 'Eye Procedures';
-    }
-
+    
     public function getDisplayOrder($action)
     {
         if ($action=='view'){

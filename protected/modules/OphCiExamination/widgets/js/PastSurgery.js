@@ -92,6 +92,12 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         controller.$table.on('click', ('.'+controller.options.modelName + '_previous_operation_side'), function(e) {
             $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
         });
+
+        var eye_selector = new OpenEyes.UI.EyeSelector({
+            element: controller.$section
+        });
+
+        controller.$table.data('eyeSelector', eye_selector);
     };
 
     /**
@@ -99,18 +105,20 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      * @param data
      * @returns {*}
      */
-    PreviousSurgeryController.prototype.createRow = function()
+    PreviousSurgeryController.prototype.createRow = function(selectedItems)
     {
-
-      var selected_option = $('#past-surgery-option').find('.selected');
       var newRows = [];
       var template = this.templateText;
       var tableSelector = this.tableSelector;
-      selected_option.each(function (e) {
-        data = {};
+      $(selectedItems).each(function (e) {
+        var data = {};
         data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
-        data['id'] = $(this).data('id');
-        data['operation'] = $(this).data('str');
+        data['id'] = this['id'];
+        if (this['label']==='Other'){
+          data['operation'] = '';
+        } else {
+          data['operation'] = this['label'];
+        }
         newRows.push( Mustache.render(
           template,
           data ));
@@ -122,9 +130,9 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     /**
      * Add a family history section if its valid.
      */
-    PreviousSurgeryController.prototype.addEntry = function()
+    PreviousSurgeryController.prototype.addEntry = function(selectedItems)
     {
-        var rows= this.createRow();
+        var rows= this.createRow(selectedItems);
         for(var i in rows){
           this.$table.find('tbody').append(rows[i]);
           this.setDatepicker();

@@ -19,7 +19,7 @@
 <div class="admin box">
 	<h2>Contact labels</h2>
 	<form id="admin_contactlabels">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th>ID</th>

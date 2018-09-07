@@ -24,7 +24,7 @@
     <div class="large-12 column">
       <div class="panel">
         <div class="cols-12 column">
-          <table class="grid">
+          <table class="standard">
             <thead>
             <tr>
               <th>Station ID:</th>
@@ -48,7 +48,7 @@
           </table>
         </div>
         <div class="cols-12 column">
-          <table class="grid">
+          <table class="standard">
             <thead>
             <tr>
               <th>Type:</th>

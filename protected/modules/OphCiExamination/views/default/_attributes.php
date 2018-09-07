@@ -44,7 +44,7 @@ if ($element->elementType->name!="Clinic Outcome"):
       <div class="flex-layout flex-top flex-left">
         <ul class="add-options cols-full" data-multi="false" data-clickadd="false">
             <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
-              <li data-str="<?php echo (string)$option->slug; ?>">
+              <li data-value="<?php echo (string)$option->slug; ?>">
                 <span class="restrict-width"><?php echo (string)$option->slug; ?></span>
               </li>
             <?php }

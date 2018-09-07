@@ -38,6 +38,7 @@ $this->renderPartial('//patient/event_elements', array(
     'disableOptionalElementActions' => true,
 ));
 
+$this->renderPartial('_va_view' , ['action' => 'view']);
 $this->displayErrors($errors, true);
 $this->endWidget();
 $this->endContent();

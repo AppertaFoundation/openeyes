@@ -17,11 +17,11 @@
 <?php if ($patient->medications) { ?>
 	<table class="plain patient-data">
 		<tr>
-			<th width="128">Adherence</th>
+			<th>Adherence</th>
 			<td><?=@$patient->adherence ? $patient->adherence->level->name : 'Not Recorded'?></td>
 		</tr>
 		<tr>
-			<th width="128">Comments</th>
+			<th>Comments</th>
 			<td><?=@$patient->adherence->comments ? $patient->adherence->textWithLineBreaks('comments') : 'Not Recorded'?></td>
 		</tr>
 		<?php if ($this->checkAccess('OprnEditMedication')) { ?>

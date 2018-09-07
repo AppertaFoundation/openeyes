@@ -27,67 +27,73 @@ $required_allergy_ids = array_map(function ($r) {
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-  <div class="data-group cols-full">
-    <div class="<?= $this->isAllergiesSetYes($element) ? ' hidden' : '' ?>"
-         id="<?= $model_name ?>_no_allergies_wrapper">
-      <label for="<?= $model_name ?>_no_allergies">Confirm patient has no allergies:</label>
-        <?php echo CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false); ?>
+
+    <table id="<?= $model_name ?>_entry_table" class="cols-10">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-3">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+
+        <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
+            id="<?= $model_name ?>_no_allergies_wrapper">
+            <td colspan="5" class="align-left">
+                <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
+                    <?=CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
+                    Confirm patient has no allergies
+                </label>
+            </td>
+        </tr>
+
+        <?php
+            $row_count = 0;
+            foreach ($missing_req_allergies as $entry) {
+                $this->render(
+                    'AllergyEntry_event_edit',
+                    array(
+                        'entry' => $entry,
+                        'form' => $form,
+                        'model_name' => $model_name,
+                        'removable' => false,
+                        'allergies' => $element->getAllergyOptions(),
+                        'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                        'row_count' => $row_count,
+                        'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                        'has_allergy' => $entry->has_allergy,
+                    )
+                );
+                $row_count++;
+            }
+
+            foreach ($element->entries as $i => $entry) {
+                $this->render(
+                    'AllergyEntry_event_edit',
+                    array(
+                        'entry' => $entry,
+                        'form' => $form,
+                        'model_name' => $model_name,
+                        'removable' => !in_array($entry->allergy_id, $required_allergy_ids),
+                        'allergies' => $element->getAllergyOptions(),
+                        'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                        'row_count' => $row_count,
+                        'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                        'has_allergy' => $entry->has_allergy,
+                    )
+                );
+                $row_count++;
+            }
+            ?>
+            </tbody>
+        </table>
+
+    <div class="add-data-actions flex-item-bottom" id="history-allergy-popup">
+        <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
+                    class="oe-i plus pro-theme"></i></button>
     </div>
-
-    <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-
-    <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' : '' ?>">
-      <tbody>
-
-      <?php
-      $row_count = 0;
-      foreach ($missing_req_allergies as $entry) {
-          $this->render(
-              'AllergyEntry_event_edit',
-              array(
-                  'entry' => $entry,
-                  'form' => $form,
-                  'model_name' => $model_name,
-                  'removable' => false,
-                  'allergies' => $element->getAllergyOptions(),
-                  'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                  'row_count' => $row_count,
-                  'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                  'has_allergy' => $entry->has_allergy,
-              )
-          );
-          $row_count++;
-      }
-
-      foreach ($element->entries as $i => $entry) {
-          $this->render(
-              'AllergyEntry_event_edit',
-              array(
-                  'entry' => $entry,
-                  'form' => $form,
-                  'model_name' => $model_name,
-                  'removable' => !in_array($entry->allergy_id, $required_allergy_ids),
-                  'allergies' => $element->getAllergyOptions(),
-                  'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                  'row_count' => $row_count,
-                  'posted_not_checked' => $element->widget->postedNotChecked($row_count),
-                  'has_allergy' => $entry->has_allergy,
-              )
-          );
-          $row_count++;
-      }
-      ?>
-      </tbody>
-    </table>
-  </div>
-  <div class="add-data-actions flex-item-bottom" id="history-allergy-popup"
-       style="display: <?php echo $element->no_allergies_date ? 'none' : ''; ?>">
-    <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
-          class="oe-i plus pro-theme"></i></button>
-  </div>
 </div>
 
-<script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" class="hidden">
+<script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" style="display:none">
     <?php
     $empty_entry = new \OEModule\OphCiExamination\models\AllergyEntry();
     $this->render(
@@ -113,28 +119,30 @@ $required_allergy_ids = array_map(function ($r) {
     );
     ?>
 </script>
+
 <script type="text/javascript">
-  $(function () {
-    var allergyController;
-    $(document).ready(function () {
-      allergyController = new OpenEyes.OphCiExamination.AllergiesController({
-        element: $('#<?=$model_name?>_element')
+    
+    $(function () {
+      var allergyController;
+      $(document).ready(function () {
+        allergyController = new OpenEyes.OphCiExamination.AllergiesController({
+          element: $('#<?=$model_name?>_element')
+        });
+      });
+
+      new OpenEyes.UI.AdderDialog({
+        openButton: $('#add-allergy-btn'),
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($allergy) {
+                return ['label' => $allergy->name, 'id' => $allergy->id];
+            }, $element->getAllergyOptions())
+        )?>, {'multiSelect': true})],
+        onReturn: function (adderDialog, selectedItems) {
+          allergyController.addEntry(selectedItems);
+          allergyController.showTable();
+          return true;
+        }
       });
     });
-
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-allergy-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($allergy) {
-              return ['label' => $allergy->name, 'id' => $allergy->id];
-          }, $element->getAllergyOptions())
-      ) ?>, {'multiSelect': true})],
-      onReturn: function (adderDialog, selectedItems) {
-        allergyController.addEntry(selectedItems);
-        allergyController.showTable();
-        return true;
-      }
-    });
-  });
 
 </script>

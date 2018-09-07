@@ -56,6 +56,9 @@
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  *
+ * The following are available through get methods
+ * @property SecondaryDiagnosis[] $systemicDiagnoses
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
@@ -1974,7 +1977,8 @@ class Patient extends BaseActiveRecordVersioned
      */
     public function getCviSummary()
     {
-        if ($cvi_api = Yii::app()->moduleAPI->get('OphCoCvi')) {
+        $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        if ($cvi_api) {
             return $cvi_api->getSummaryText($this);
         }
         else {

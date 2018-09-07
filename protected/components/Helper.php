@@ -463,4 +463,30 @@ class Helper
             return substr($date, 0, 10) . ' ' . substr($datetime, -8);
         }
     }
+
+    /**
+     * Fetch Eye id from array - based on array keys: left_eye, right_eye, na_eye
+     *
+     * @param array $data
+     * @return int|null
+     */
+    public static function getEyeIdFromArray(array $data)
+    {
+        $eye_id = null;
+        $left_eye = \Helper::elementFinder('left_eye', $data);
+        $right_eye = \Helper::elementFinder('right_eye', $data);
+        $na_eye = \Helper::elementFinder('na_eye', $data);
+
+        if ($left_eye && $right_eye) {
+            $eye_id = \EYE::BOTH;
+        } elseif ($left_eye) {
+            $eye_id = \EYE::LEFT;
+        } elseif ($right_eye) {
+            $eye_id = \EYE::RIGHT;
+        } elseif ($na_eye) {
+            $eye_id = -9;
+        }
+
+        return $eye_id;
+    }
 }

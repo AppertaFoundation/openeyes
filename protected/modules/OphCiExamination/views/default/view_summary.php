@@ -42,7 +42,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
         <?php
 
         $filterEyeMedication = function ($med) {
-            return $med['route_id'] == 1;
+            return $med->option !== null;
         };
 
         $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
@@ -66,11 +66,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                 <?php foreach ($stoppedEyeMedications as $entry) { ?>
                   <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                      <span class="oe-eye-lat-icons">
-                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
-                      </span>
+                    <td><?php
+                        $laterality = $entry->getLateralityDisplay();
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
                     </td>
                     <td><?= $entry->getStartDateDisplay() ?></td>
                   </tr>
@@ -92,20 +91,20 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
             <?php foreach ($currentEyeMedications as $entry) { ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                  <span class="oe-eye-lat-icons">
-                        <i class="oe-i laterality small <?php echo $laterality === 'R' || $laterality === 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality === 'L' || $laterality === 'B' ? 'L' : 'NA' ?>"></i>
-                      </span>
-                </td>
-                <td><?= $entry->getStartDateDisplay() ?></td>
-              </tr>
-            <?php } ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-          <?php } ?>
+                <td>
+                  <?php
+                    $laterality = $entry->getLateralityDisplay();
+                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                  ?>
+                    </td>
+                    <td><?= $entry->getStartDateDisplay() ?></td>
+                  </tr>
+                <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <?php } ?>
     </div>
   </section>
 
@@ -125,9 +124,9 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
     <div class="element-data">
         <?php $entries = array_merge($familyHistoryElement->entries, $socialHistoryElement->getDisplayAllEntries());
         if (!$entries) { ?>
-            <div class="data-value not-recorded">
-              No family or social history recorded during this encounter
-            </div>
+          <div class="data-value not-recorded">
+            No family or social history recorded during this encounter
+          </div>
         <?php } else { ?>
           <div class="data-value">
             <div class="tile-data-overflow">
@@ -155,29 +154,56 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
       <h3 class="element-title">Systemic Medications</h3>
     </header>
     <div class="element-data">
-        <?php if (!$medicationsElement || !$medicationsElement->orderedEntries) { ?>
-          <div class="data-value not-recorded">
-            No medications recorded during this encounter
-          </div>
-        <?php } else { ?>
-          <div class="data-value">
-            <div class="tile-data-overflow">
+        <?php
+
+        $filterSystemicMedication = function ($med) {
+            return $med->option === null;
+        };
+
+        $currentSystemicMedications = $medicationsElement ?
+            array_filter($medicationsElement->currentOrderedEntries, $filterSystemicMedication) : [];
+        $stoppedSystemicMedications = $medicationsElement ?
+            array_filter($medicationsElement->stoppedOrderedEntries, $filterSystemicMedication) : [];
+        ?>
+
+        <?php if (!$currentSystemicMedications) { ?>
+            <?php if (!$stoppedSystemicMedications) { ?>
+            <div class="data-value not-recorded">
+              No medications recorded during this encounter
+            </div>
+            <?php } else { ?>
+            <div class="data-value">
+              Stopped Medications:
               <table>
                 <colgroup>
                   <col class="cols-7">
                 </colgroup>
                 <tbody>
-                <?php foreach ($medicationsElement->orderedEntries as $entry) {
-                    if ($entry['route_id'] != 1) { ?>
-                      <tr>
-                        <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td><?= $entry->getStartDateDisplay() ?></td>
-                      </tr>
-                    <?php }
-                } ?>
+                <?php foreach ($stoppedSystemicMedications as $entry) { ?>
+                  <tr>
+                    <td><?= $entry->getMedicationDisplay() ?></td>
+                    <td><?= $entry->getStartDateDisplay() ?></td>
+                  </tr>
+                <?php } ?>
                 </tbody>
               </table>
             </div>
+            <?php } ?>
+        <?php } else { ?>
+          <div class="data-value">
+            <table>
+              <colgroup>
+                <col class="cols-7">
+              </colgroup>
+              <tbody>
+              <?php foreach ($currentSystemicMedications as $entry) { ?>
+                <tr>
+                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td><?= $entry->getStartDateDisplay() ?></td>
+                </tr>
+              <?php } ?>
+              </tbody>
+            </table>
           </div>
         <?php } ?>
     </div>

@@ -23,35 +23,80 @@
       <col class="cols-4">
       <col class="cols-4">
     </colgroup>
-    <thead>
-    <tr>
-      <th>Surgeon</th>
-      <th>Assistant</th>
-      <th>Supervising surgeon</th>
-    </tr>
-    </thead>
     <tbody>
     <tr class="col-gap">
       <td>
-
           <?php echo $form->dropDownList(
-              $element, 'surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true)
-          ); ?>
-      </td>
-      <td>
-          <?php echo $form->dropDownList(
-              $element, 'assistant_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true)
-          ); ?>
-      </td>
-      <td>
-          <?php echo $form->dropDownList($element, 'supervising_surgeon_id',
+              $element,
+              'surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true), false,
-              array('field' => 3)) ?>
+              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4, 'field' => 8)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList(
+              $element,
+              'assistant_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4, 'field' => 8)
+          ); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList(
+              $element,
+              'supervising_surgeon_id',
+              CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+              false,
+              array('label' => 4,'field' => 8)
+          ); ?>
       </td>
     </tr>
     </tbody>
   </table>
+  <div class="add-data-actions flex-item-bottom " id="add-surgeon-popup">
+    <button class="button hint green js-add-select-search" id="add-surgeon-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button><!-- popup to add data to element -->
+  </div>
 </div>
+<style>.Element_OphTrOperationnote_Surgeon{min-height: 54px !important;}</style>
+
+<?php $surgeons = $element->surgeons; ?>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-surgeon-btn'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['label' => $item->first_name.' '.$item->last_name,
+                    'id' => $item->id];
+            }, $surgeons) ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
+          $selector.val(id);
+        }
+        return true;
+      }
+    });
+  });
+</script>

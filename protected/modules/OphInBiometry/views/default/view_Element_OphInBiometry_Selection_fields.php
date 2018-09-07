@@ -4,7 +4,7 @@
         ?>
       <div class="cols-12 column">
         <div class="field-info">
-            <?php echo 'No selection has been made - use edit mode to select a lens.'; ?>
+            <?php echo 'No selection has been made - click the "Choose Lens" button to select a lens.'; ?>
         </div>
       </div>
         <?php } else {
@@ -31,15 +31,7 @@
                     </td>
                     <td colspan="2"></td>
                     <td>
-                        <span class="oe-eye-lat-icons">
-                          <?php if ($side == 'right') { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                          <?php } else { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                          <?php } ?>
-                        </span>
+                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                     </td>
                 </tr>
                 <tr>
@@ -59,15 +51,7 @@
                     </td>
                     <td colspan="2"></td>
                     <td>
-                      <span class="oe-eye-lat-icons">
-                        <?php if ($side == 'right') { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                        <?php } else { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                        <?php } ?>
-                      </span>
+                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                     </td>
                 </tr>
                 <tr>
@@ -96,15 +80,7 @@
                     </td>
                     <td colspan="2"></td>
                     <td>
-                      <span class="oe-eye-lat-icons">
-                          <?php if ($side == 'right') { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                          <?php } else { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                          <?php } ?>
-                      </span>
+                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                     </td>
                 </tr>
                 <tr>
@@ -122,15 +98,7 @@
                     </td>
                     <td colspan="2"></td>
                     <td>
-                      <span class="oe-eye-lat-icons">
-                        <?php if ($side == 'right') { ?>
-                          <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                          <i class="oe-i laterality NA small pad"></i>
-                        <?php } else { ?>
-                          <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                          <i class="oe-i laterality NA small pad"></i>
-                        <?php } ?>
-                      </span>
+                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                     </td>
                 </tr>
                 <tr>
@@ -149,15 +117,7 @@
                     </td>
                     <td colspan="2"></td>
                     <td>
-                      <span class="oe-eye-lat-icons">
-                        <?php if ($side == 'right') { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                        <?php } else { ?>
-                            <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                            <i class="oe-i laterality NA small pad"></i>
-                        <?php } ?>
-                      </span>
+                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                     </td>
                 </tr>
                 </tbody>

@@ -19,6 +19,7 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesElement;
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
+use OEModule\OphCiExamination\models\SystemicDiagnoses as SystemicDiagnosesModel;
 
 class SystemicDiagnoses extends \BaseEventElementWidget
 {
@@ -132,40 +133,54 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         $element->storePatientUpdateStatus();
 
         // pre-cache current entries so any entries that remain in place will use the same db row
-        $diagnoses_by_id = array();
+        $entries_by_id = array();
         foreach ($element->diagnoses as $entry) {
-            $diagnoses_by_id[$entry->id] = $entry;
+            $entries_by_id[$entry->id] = $entry;
         }
 
-        if (array_key_exists('disorder_id', $data)) {
-            $diagnoses = array();
-            foreach ($data['disorder_id'] as $i => $disorder_id) {
-                $diagnosis_entry = new SystemicDiagnoses_Diagnosis();
-                $id = $data['id'][$i];
-                if ($id && array_key_exists($id, $diagnoses_by_id)) {
-                    $diagnosis_entry = $diagnoses_by_id[$id];
-                }
-                $diagnosis_entry->disorder_id = $disorder_id;
-                $diagnosis_entry->side_id = $data['side_id'][$i];
-                $diagnosis_entry->date = $data['date'][$i];
-                $diagnosis_entry->has_disorder = $data['has_disorder'][$i];
-                $diagnoses[] = $diagnosis_entry;
+        if (array_key_exists('entries', $data)) {
+            $entries = array();
+            foreach ($data['entries'] as $entry_data) {
+
+                $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
+                $entry = ($id && array_key_exists($id, $entries_by_id)) ?
+                    $entries_by_id[$id] :
+                    new SystemicDiagnoses_Diagnosis();
+
+                $entry->disorder_id = $entry_data['disorder_id'];
+                $entry->side_id = $this->getEyeIdFromPost($entry_data);
+                $entry->date = $entry_data['date'];
+                $entry->has_disorder = isset($entry_data['has_disorder'])? $entry_data['has_disorder']:SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
+
+                $entries[] = $entry;
             }
-            $element->diagnoses = $diagnoses;
+
+            $element->diagnoses = $entries;
         } else {
             $element->diagnoses = array();
         }
     }
 
     /**
-     * Checks if there was a posted has_disoder value
      * @param $row
-     * @return 0|1|-9 if posted oterwise NULL
+     * @return bool
      */
-    public function getPostedCheckedStatus($row)
+    public function postedNotChecked($row)
     {
-        $value = \Helper::elementFinder(\CHtml::modelName($this->element) . ".has_disorder.$row", $_POST);
+        return \Helper::elementFinder(
+                \CHtml::modelName($this->element) . ".entries.$row.has_disorder", $_POST)
+            == SystemicDiagnosesModel::$NOT_CHECKED;
+    }
+
+    public function getPostedNaEye($row)
+    {
+        $value = \Helper::elementFinder(\CHtml::modelName($this->element) . ".na_eye.$row", $_POST);
         return ( is_numeric($value) ? $value : null);
     }
 
+
+    public function getEyeIdFromPost(array $data)
+    {
+        return \Helper::getEyeIdFromArray($data);
+    }
 }

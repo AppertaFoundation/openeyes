@@ -52,13 +52,7 @@ $biometry_data = [
                 </td>
                 <td colspan="2"></td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
+                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             <tr>
@@ -105,13 +99,7 @@ $biometry_data = [
                 </td>
                 <td colspan="2"></td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             <tr>
@@ -123,13 +111,7 @@ $biometry_data = [
                 </td>
                 <td colspan="2"></td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             <tr>
@@ -141,15 +123,7 @@ $biometry_data = [
                 </td>
                 <td>@</td>
                 <td><?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
-                <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
-                </td>
+                <td><?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?></td>
             </tr>
             <tr>
                 <td>
@@ -163,15 +137,7 @@ $biometry_data = [
                 </td>
                 <td>@</td>
                 <td><?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;</td>
-                <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
-                </td>
+                <td><?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?></td>
             </tr>
             <tr>
                 <td>
@@ -187,13 +153,7 @@ $biometry_data = [
                     <?php echo CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
                 </td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             <tr>
@@ -206,13 +166,7 @@ $biometry_data = [
                 <td></td>
                 <td></td>
                 <td>
-                  <span class="oe-eye-lat-icons">
-                    <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
-                    <?php } else { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
-                    <?php } ?>
-                  </span>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
             </tr>
             </tbody>

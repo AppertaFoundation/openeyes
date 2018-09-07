@@ -23,13 +23,14 @@ if ($this->checkPrintAccess()) {
 }
 
 // Add the open in forum button if FORUM integration is enabled
-$sop = OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+$biometry_imported_events =OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+$sop=isset($biometry_events->sop_uid) ? $biometry_events->sop_uid : array();
 
-if (!empty($sop->uid) && Yii::app()->params['enable_forum_integration'] === 'on') {
+if (!empty($sop->sop_uid) && Yii::app()->params['enable_forum_integration'] === 'on') {
     array_unshift(
         $this->event_actions,
         EventAction::link('Open In Forum',
-            ('oelauncher:forumsop/' . $sop->uid),
+            ('oelauncher:forumsop/' . $sop->sop_uid),
             null, array('class' => 'button small')
         ));
 }
@@ -65,4 +66,5 @@ if ($this->is_auto) {
 }
 $this->renderOpenElements($this->action->id); ?>
 <?php $this->renderPartial('//default/delete');?>
+<?php $this->renderPartial('_va_view' , ['action' => 'view']);?>
 <?php $this->endContent()?>

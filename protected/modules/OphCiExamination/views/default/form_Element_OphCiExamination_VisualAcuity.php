@@ -23,44 +23,44 @@ $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Vis
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div class="flex-layout flex-center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
-        <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-              CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
-                  'id', 'name'), array('class' => 'inline'));
-          ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-        <div class="info">
-          <small><em><?php echo $element->unit->information ?></em></small>
-        </div>
-      <?php } ?>
-  </div>
+          <span class="data-label">VA Scale &nbsp;&nbsp;</span>
+            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                    'id', 'name'), array('class' => 'inline'));
+          if ($element->unit->information) { ?>
+            <span class="js-has-tooltip fa oe-i info small"
+                  data-tooltip-content="<?php echo $element->unit->information ?>"></span>
+              <?php }
+      } ?>
+      </div>
 </div>
 
 <?php
 // CVI alert
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 if ($cvi_api) {
-    echo $cvi_api->renderAlertForVA($this->patient, $element);
     echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
 }
 ?>
 <div class="element-fields element-eyes">
-  <input type="hidden" name="visualacuity_readings_valid" value="1"/>
+    <input type="hidden" name="visualacuity_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-        <div class="active-form data-group flex-layout">
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
+          data-side="<?= $eye_side ?>"
+      >
+        <div class="active-form data-group flex-layout"
+             style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+        >
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table
-                class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
+            <table class="cols-full blank va_readings"
+                   style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>" >
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -80,10 +80,7 @@ if ($cvi_api) {
               </tbody>
             </table>
             <div class="data-group noReadings"
-                style="<?php if ($element->{$eye_side . '_readings'}) { ?>display: none;<?php } ?>">
-              <div class="cols-4 column">
-                <div class="data-value not-recorded">Not recorded</div>
-              </div>
+                style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? '':'display: none;' ?>">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
@@ -92,45 +89,17 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="flex-item-bottom" id="<?= $eye_side ?>-add-reading">
-            <button class="button hint green addReading" type="button">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
+               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
+            <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- oe-add-select-search -->
-
-            <div id="<?= $eye_side ?>-add-visual-acuity" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-              <div id="<?= $eye_side ?>-close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-              <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
-              <table class="select-options">
-                <tbody>
-                <tr>
-                  <td>
-                    <ul id="visual-acuity-value-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-                        <?php foreach ($values as $id=>$item) { ?>
-                              <li data-str="<?php echo $item; ?>" data-id="<?= $id; ?>">
-                                <span class="restrict-width"><?php echo $item; ?></span>
-                              </li>
-                        <?php } ?>
-                    </ul>
-                  </td>
-                  <td>
-                    <ul id="visual-acuity-method-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-                        <?php foreach ($methods as $id=>$item) { ?>
-                          <li data-id="<?= $id ?>" data-str="<?php echo $item; ?>">
-                            <span class="restrict-width"><?php echo $item; ?></span>
-                          </li>
-                        <?php } ?>
-                    </ul>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
           <!--flex bottom-->
         </div>
         <!-- active form-->
-        <div class="inactive-form" style="display: none">
+        <div class="inactive-form"  style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>
@@ -140,35 +109,48 @@ if ($cvi_api) {
       </div>
   <script type="text/javascript">
     $(function () {
-      var adder = $('#<?= $eye_side ?>-add-reading');
-      var popup = $('#<?= $eye_side ?>-add-visual-acuity');
-      function addVA() {
-        var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-        var va_value = $(popup).find('#visual-acuity-value-option .selected');
-        var va_method = $(popup).find('#visual-acuity-method-option .selected');
-        OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>');
-        var newRow = tableSelector.find('tbody tr:last');
-        newRow.find('.va-selector').val(va_value.data('id'));
-        newRow.find('.method_id').val(va_method.data('id'));
-        OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
-      }
-
-      setUpAdder(
-        popup,
-        'single',
-        addVA,
-        adder.find('.addReading'),
-        popup.find('.add-icon-btn'),
-        adder.find('#<?= $eye_side ?>-close-btn, .add-icon-btn')
-      );
+      new OpenEyes.UI.AdderDialog({
+        openButton:$('#add-reading-btn-<?= $eye_side?>'),
+        itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($key, $value) {
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+              array_map(function ($key, $method) {
+                  return ['label' => $method, 'id' => $key];
+              }, array_keys($methods), $methods)) ?>, {'header':'Method', 'id':'method'})
+        ],
+        onReturn: function(adderDialog, selectedItems){
+          var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
+          if(selectedItems.length==2){
+            var selected_data = {};
+            for (i in selectedItems) {
+              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = selectedItems[i]['id'];
+                selected_data.reading_display = selectedItems[i]['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+              }
+              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = selectedItems[i]['id'];
+                selected_data.method_display = selectedItems[i]['label'];
+              }
+            }
+            OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);
+            var newRow =  tableSelector.find('tbody tr:last');
+            OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
+            newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
+          }
+        },
+      });
     });
   </script>
     <?php endforeach; ?>
 </div>
 <script id="visualacuity_reading_template" type="text/html">
     <?php
-    $default_reading = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::model();
-    $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
         'name_stub' => CHtml::modelName($element) . '[{{side}}_readings]',
         'key' => '{{key}}',
@@ -177,7 +159,13 @@ if ($cvi_api) {
         'val_options' => $val_options,
         'methods' => $methods,
         'asset_path' => $this->getAssetPathForElement($element),
-        'reading' => $default_reading,
+        'selected_data' => array(
+            'reading_value' => '{{reading_value}}',
+            'reading_display' => '{{reading_display}}',
+            'method_id' => '{{method_id}}',
+            'method_display' => '{{method_display}}',
+            'tooltip' => '{{tooltip}}'
+        )
     ));
     ?>
 </script>

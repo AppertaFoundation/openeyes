@@ -35,18 +35,13 @@ $required_diagnoses_ids = array_map(function ($r) {
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
-    <thead>
-    <tr>
-      <th></th>
-      <th>Checked</th>
-      <th>Right</th>
-      <th>Both</th>
-      <th>Left</th>
-      <th>N/A</th>
-      <th>Date (optional)</th>
-      <th></th>
-    </tr>
-    </thead>
+      <colgroup>
+          <col class="cols-3">
+          <col class="cols-3">
+          <col class="cols-1">
+          <col class="cols-1">
+          <col class="cols-1">
+      </colgroup>
     <tbody>
     <?php
     $row_count = 0;
@@ -60,7 +55,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'row_count' => $row_count,
                 'field_prefix' => $model_name . "[entries][$row_count]",
                 'removable' => false,
-                'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
+                'posted_not_checked' => $element->widget->postedNotChecked($row_count)
             )
         );
         $row_count++;
@@ -76,7 +71,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'row_count' => $row_count,
                 'field_prefix' => $model_name . "[entries][$row_count]",
                 'removable' => !in_array($diagnosis->disorder_id, $required_diagnoses_ids),
-                'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
+                'posted_not_checked' => $element->widget->postedNotChecked($row_count),
             )
         );
         $row_count++;
@@ -102,13 +97,13 @@ $required_diagnoses_ids = array_map(function ($r) {
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'removable' => true,
-            'posted_checked_status' => false,
+            'posted_not_checked' => false,
             'has_disorder' => false,
             'values' => array(
                 'id' => '',
                 'disorder_id' => '{{disorder_id}}',
                 'disorder_display' => '{{disorder_display}}',
-                'side_id' => '{{side_id}}',
+                'side_id' => (string) EyeSelector::$NOT_CHECKED,
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
                 'date_display' => '{{date_display}}',

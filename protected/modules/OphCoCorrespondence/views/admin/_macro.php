@@ -16,6 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+/**
+ * @var $form BaseEventTypeCActiveForm
+ * @var $macro LetterMacro
+ * @var $none_option String
+ */
 ?>
 
 <div class="box admin">
@@ -50,22 +56,39 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
 
         $recipients_data = $recipients_data + $none_option;
     ?>
-
-    <?php
-        echo $form->dropDownList($macro, 'type', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()), array('empty' => '- Type -'));
-        echo $form->dropDownList($macro, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'), array('empty' => '- Letter type -'));
-        echo $form->dropDownList($macro, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -', 'div-class' => 'typeSite'), $macro->type != 'site');
-        echo $form->dropDownList($macro, 'subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty');
-        echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true), array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm'), $macro->type != 'firm');
-        echo $form->textField($macro, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']));
-        echo $form->radioButtons($macro, 'recipient_id', $recipients_data, (!$macro->recipient_id ? '0' : null), false, false, false, false, array('empty' => 'None', 'labelOptions' => $label_options, 'empty-after' => true));;
-        echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right'));
-        echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right'));
-        echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right'));
-        echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right'));
-        echo $form->dropDownList($macro, 'episode_status_id', CHtml::listData(EpisodeStatus::model()->findAll(array('order' => 'id asc')), 'id', 'name'), array('empty' => '- None -'));
-        echo $form->textArea($macro, 'body');
-    ?>
+    <?php echo $form->dropDownList($macro, 'type',
+        array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()),
+        array('empty' => '- Type -')) ?>
+    <?php echo $form->dropDownList($macro, 'letter_type_id',
+        CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
+        array('empty' => '- Letter type -')) ?>
+    <?php echo $form->dropDownList($macro, 'site_id', Site::model()->getListForCurrentInstitution(),
+        array('empty' => '- Site -', 'div-class' => 'typeSite'), $macro->type != 'site') ?>
+    <?php echo $form->dropDownList($macro, 'subspecialty_id',
+        CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+        array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty') ?>
+    <?php echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true),
+        array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm'), $macro->type != 'firm') ?>
+    <?php echo $form->textField($macro, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->radioButtons(
+        $macro,
+        'recipient_id',
+        $recipients_data + $none_option,
+        (!$macro->recipient_id ? '0' : null),
+        false,
+        false,
+        false,
+        false,
+        array('empty' => 'None', 'labelOptions' => $label_options, 'empty-after' => true)
+    );?>
+    <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right')) ?>
+    <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right')) ?>
+    <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right')) ?>
+    <?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right')) ?>
+    <?php echo $form->dropDownList($macro, 'episode_status_id',
+        CHtml::listData(EpisodeStatus::model()->findAll(array('order' => 'id asc')), 'id', 'name'),
+        array('empty' => '- None -')) ?>
+    <?php echo $form->textArea($macro, 'body', array(), false, array(), array('field' => 6)) ?>
 
   <div class="cols-10 large-offset-2 column shortCodeDescription">&nbsp;</div>
   <div class="cols-8 large-offset-2 column">
@@ -89,7 +112,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
 
   <div class="data-group">
     <p>Attachments</p>
-    <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
+    <table class="standard" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
       <thead>
       <tr>
         <td>Hidden</td>
@@ -170,5 +193,12 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
     new OpenEyes.OphCoCorrespondence.InitMethodController();
     $(".sortable").sortable();
     $(".sortable").disableSelection();
+
+    var macroController = new OpenEyes.OphCoCorrespondence.LetterMacroController(
+      "LetterMacro_body",
+        <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
+    );
+    macroController.connectDropdown($("select#shortcode"));
   });
+
 </script>

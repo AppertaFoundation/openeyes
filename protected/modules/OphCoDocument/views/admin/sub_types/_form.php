@@ -20,4 +20,4 @@
 <?php echo $form->textField($model, 'name') ?>
 <?php echo $form->textField($model, 'display_order') ?>
 <?php echo $form->radioBoolean($model, 'is_active') ?>
-<?php echo $form->formActions() ?>
+<?php echo $form->formActions(['cancel-uri' => '/'.  $this->module->id .'/' . $this->id])?>

@@ -30,16 +30,23 @@ $element_errors = $element->getErrors();
   <div class="data-group flex-layout">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error' : '' ?>">
+      <colgroup>
+        <col class="cols-2">
+        <col class="cols-5">
+        <col>
+        <col>
+        <col class="cols-1">
+      </colgroup>
         <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
-            <th class="cols-2">
+            <th>
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
             </th>
-            <th class="cols-5"></th>
+            <th></th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
-            <th class="cols-1">Reason</th>
+            <th>Reason</th>
             <th></th>
         </tr>
         </thead>
@@ -86,65 +93,9 @@ $element_errors = $element->getErrors();
       <button class="button hint green js-add-select-search" id="add-medication-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
-
-      <div id="add-to-medication" class="oe-add-select-search" style="display: none;">
-        <!-- icon btns -->
-        <div class="close-icon-btn" id="history-medication-close-popup" type="button"><i class="oe-i remove-circle medium"></i></div>
-        <div class="select-icon-btn" type="button"><i id="history-medication-select-btn" class="oe-i menu"></i></div>
-        <button class="button hint green add-icon-btn" type="button">
-          <i class="oe-i plus pro-theme"></i>
-        </button>
-        <!-- select (and search) options for element -->
-        <table class="select-options" id="history-medication-select-options">
-          <tbody>
-          <tr>
-            <td>
-              <div class="flex-layout flex-top flex-left">
-                <ul class="add-options" data-multi="true" data-clickadd="false" id="history-medication-option">
-                    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());
-                    foreach ($medications as $id=>$medication) { ?>
-                      <li data-str="<?php echo $medication ?>" data-drug-id="<?php echo $id?>">
-                        <span class="auto-width">
-                          <?php echo $medication; ?>
-                        </span>
-                      </li>
-                    <?php } ?>
-                </ul>
-              </div>
-              <!-- flex-layout -->
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="search-icon-btn"><i id="history-medication-search-btn" class="oe-i search"></i></div>
-        <div class="history-medication-search-options" style="display: none;">
-          <table class="cols-full last-left">
-            <thead>
-            <tr>
-              <th>
-                <input id="history-medication-search-field"
-                       class="search"
-                       placeholder="Search for Medications"
-                       type="text">
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <ul id="history-medication-search-results" class="add-options" data-multi="true" style="width: 100%;">
-                </ul>
-                <span id="history-medication-search-no-results">No results found</span>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div><!-- oe-add-select-search -->
-
     </div>
   </div>
-    <script type="text/template" class="entry-template hidden">
+    <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_entry_template' ?>">
         <?php
         $empty_entry = new \OEModule\OphCiExamination\models\HistoryMedicationsEntry();
         $this->render(
@@ -178,20 +129,23 @@ $element_errors = $element->getErrors();
     medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
       element: $('#<?=$model_name?>_element')
     });
+
+    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-medication-btn'),
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          array_map(function ($key, $medication) {
+              return ['label' => $medication['value'], 'id' => $key , 'tags' => $medication['tags']];
+          },array_keys($medications),  $medications)
+      ) ?>, {'multiSelect': true})],
+      onReturn: function (adderDialog, selectedItems) {
+        medicationsController.addEntry(selectedItems);
+        return true;
+      },
+      searchOptions: {
+        searchSource: medicationsController.options.searchSource,
+      }
+    });
   });
 
-  var popup = $('#add-to-medication');
-
-  function addMedication() {
-    medicationsController.addEntry();
-  }
-
-  setUpAdder(
-    popup,
-    'multi',
-    addMedication,
-    $('#add-medication-btn'),
-    popup.find('.add-icon-btn'),
-    $('#history-medication-close-popup, .add-icon-btn')
-  );
 </script>

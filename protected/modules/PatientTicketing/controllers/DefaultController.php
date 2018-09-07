@@ -21,6 +21,7 @@ namespace OEModule\PatientTicketing\controllers;
 use OEModule\PatientTicketing\models;
 use OEModule\PatientTicketing\services;
 use OEModule\PatientTicketing\components\AutoSaveTicket;
+use services\Patient;
 use Yii;
 
 class DefaultController extends \BaseModuleController
@@ -140,6 +141,9 @@ class DefaultController extends \BaseModuleController
                 $criteria->join .= 'JOIN '.\Firm::model()->tableName().' f ON f.id = cqa.assignment_firm_id JOIN '.\ServiceSubspecialtyAssignment::model()->tableName().' ssa ON ssa.id = f.service_subspecialty_assignment_id';
                 $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
             }
+            if (isset($filter_options['patient-ids'])) {
+                $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
+            }
         }
 
         $criteria->order = 't.created_date asc';
@@ -172,6 +176,7 @@ class DefaultController extends \BaseModuleController
         $tickets = null;
         $pages = null;
         $patient_filter = null;
+        $patient_list = [];
 
         if ($queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id)) {
             // default to the single queueset if that is all that is available to the user
@@ -194,7 +199,7 @@ class DefaultController extends \BaseModuleController
 
             if ($queueset) {
                 // build the filter
-                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets');
+                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids');
                 $filter_options = array();
 
                 if (empty($_POST)) {
@@ -226,6 +231,16 @@ class DefaultController extends \BaseModuleController
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
                 \Audit::add('queueset', 'view', $queueset->getId());
+
+                $criteria = new \CDbCriteria();
+                $criteria->join = "JOIN patientticketing_ticket pt ON pt.patient_id = t.id";
+                $criteria->join .= " JOIN patientticketing_ticketqueue_assignment a ON a.ticket_id = pt.id";
+                $criteria->addCondition('queue_id', $queueset->getId());
+
+                $patients = \Patient::model()->findAll($criteria);
+                $patient_list = \CHtml::listData($patients, 'id', function ($patient) {
+                    return strtoupper($patient->last_name) . ', ' . $patient->first_name;
+                });
             }
         }
 
@@ -237,6 +252,7 @@ class DefaultController extends \BaseModuleController
                 'patient_filter' => $patient_filter,
                 'pages' => $pages,
                 'cat_id' => $cat_id,
+                'patient_list' => $patient_list,
             ));
     }
 
@@ -665,10 +681,11 @@ class DefaultController extends \BaseModuleController
     public function actionGetFirmsForSubspecialty()
     {
         if (!$subspecialty = \Subspecialty::model()->findByPk(@$_GET['subspecialty_id'])) {
-            throw new Exception('Subspecialty not found: '.@$_GET['subspecialty_id']);
+            throw new Exception('Subspecialty not found: ' . @$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id), array('empty' => 'All firms'));
+        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
+            ['class' => 'cols-11', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
     }
 
     public function actionUndoLastStep($id)

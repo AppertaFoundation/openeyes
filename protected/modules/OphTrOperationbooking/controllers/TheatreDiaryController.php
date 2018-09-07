@@ -56,8 +56,6 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionIndex()
     {
-        $this->fixedHotlist = true;
-
         //TODO: determine whether we actually need this check
         $firm = Firm::model()->findByPk($this->selectedFirmId);
 
@@ -363,15 +361,16 @@ class TheatreDiaryController extends BaseModuleController
     public function actionFilterFirms()
     {
         if (@$_POST['empty']) {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('- Firm -'), true);
+            echo CHtml::tag('option', array('value' => ''), CHtml::encode('- ' . Firm::contextLabel() . ' -'), true);
         } else {
-            echo CHtml::tag('option', array('value' => ''), CHtml::encode('All firms'), true);
+            echo CHtml::tag('option', array('value' => ''), CHtml::encode('All ' . Firm::contextLabel() . 's'), true);
         }
 
         if (!empty($_POST['subspecialty_id'])) {
             $subspecialty_id = $_POST['subspecialty_id'];
         } elseif (!empty($_POST['service_id'])) {
-            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find('service_id=?', array($_POST['service_id']))->subspecialty_id;
+            $subspecialty_id = ServiceSubspecialtyAssignment::model()->find('service_id=?',
+                array($_POST['service_id']))->subspecialty_id;
         }
 
         if (isset($subspecialty_id)) {
@@ -428,7 +427,7 @@ class TheatreDiaryController extends BaseModuleController
     {
         $order_is_changed = false;
         $comments_is_changed = false;
-        
+
         if (!$session = OphTrOperationbooking_Operation_Session::model()->findByPk(@$_POST['session_id'])) {
             throw new Exception('Session not found: '.@$_POST['session_id']);
         }
@@ -486,13 +485,13 @@ class TheatreDiaryController extends BaseModuleController
                 $session->max_procedures = $_POST['max_procedures_'.$session->id];
             }
 
-            
+
             $old_comments = $session->comments;
             $session->comments = $_POST['comments_'.$session->id];
             if($session->comments!=$old_comments){
                 $comments_is_changed = true;
             }
-            
+
             if (!$session->save()) {
                 foreach ($session->getErrors() as $k => $v) {
                     $errors[$session->getAttributeLabel($k)] = $v;
@@ -508,7 +507,7 @@ class TheatreDiaryController extends BaseModuleController
             }
             $original_booking_ids = array();
             ksort($original_bookings);
-            
+
             foreach ($original_bookings as $booking_ids) {
                 sort($booking_ids);
                 foreach ($booking_ids as $booking_id) {
@@ -542,23 +541,23 @@ class TheatreDiaryController extends BaseModuleController
                         throw new Exception('Unable to save booking');
                     }
                 }
-                
+
             }
             if (empty($errors)) {
                 $transaction->commit();
-                
+
                 $booking_data_id = null;
                 if( isset($booking_data) ){
                     $booking_data_id = $booking_data['booking_id'];
                 }
-                
+
                 if($order_is_changed) {
                     Audit::add('diary', 'change-of-order', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
-                
+
                 if($comments_is_changed){
                     if( isset($booking_data) )
-                    
+
                     Audit::add('diary', 'change-of-comment', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
             } else {

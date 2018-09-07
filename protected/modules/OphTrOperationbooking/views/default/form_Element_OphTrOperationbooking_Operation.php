@@ -53,7 +53,7 @@
                         <?php $form->widget('application.widgets.ProcedureSelection', array(
                             'element' => $element,
                             'durations' => true,
-                            'label'=>''
+                            'label' => ''
                         )) ?>
                     </td>
                 </tr>
@@ -145,8 +145,8 @@
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'special_equipment', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'special_equipment_details', array(), true, array(),
-                                array_merge($form->layoutColumns, array('field' => 4))) ?>
+                            <?php $form->textArea($element, 'special_equipment_details', array('rows' => 1), true, array(),
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
                     </tr>
                     <?php
@@ -155,7 +155,9 @@
                         <tr>
                             <div class="data-groupw">
                                 <?php if ($element->canChangeReferral()) { ?>
-                                    <td><label for="Element_OphTrOperationbooking_Operation_referral_id"><?= $element->getAttributeLabel('referral_id'); ?></label></td>
+                                    <td>
+                                        <label for="Element_OphTrOperationbooking_Operation_referral_id"><?= $element->getAttributeLabel('referral_id'); ?></label>
+                                    </td>
                                     <td>
                                         <?php
                                         $html_options = array(
@@ -180,7 +182,8 @@
                                         ?>
                                     </td>
                                     <td>
-                                        <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
+                                        <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
+                                                    id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
                                     </td>
                                     <?php
                                 } else { ?>
@@ -208,10 +211,11 @@
                         <td>
                             <?php echo $form->checkBoxes(
                                 $element, 'AnaestheticType', 'anaesthetic_type',
-                                null,false, false,
+                                null, false, false,
                                 false, false,
                                 array(
-                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+                                    'field'=>'AnaestheticType',
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''
                                 )
                             ); ?>
                         </td>
@@ -231,8 +235,8 @@
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(),
-                                array_merge($form->layoutColumns, array('field' => 4))) ?>
+                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true, array(),
+                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
 
                     </tr>
@@ -258,11 +262,17 @@
                             );
                             ?>
                         </td>
-
-                        <?php if(Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
-                        <td><?=$form->checkBox($element, 'is_golden_patient');?></td>
-                        <?php endif; ?>
-
+                    </tr>
+                    <?php if (Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+                        <tr>
+                            <td><?= $element->getAttributeLabel('is_golden_patient'); ?> </td>
+                            <td>
+                                <?= CHtml::openTag('label', ['class' => 'inline highlight']); ?>
+                                <?= CHTML::activeCheckBox($element, 'is_golden_patient'); ?>
+                                <?= CHtml::closeTag('label'); ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                     </tr>
                     </tbody>
                 </table>
@@ -275,7 +285,7 @@
                     Add Comments:
                 </td>
                 <td>
-                    <?php echo $form->textArea($element, 'comments', array('rows' => 1, 'nowrapper' => true), '', array( 'placeholder' =>
+                    <?php echo $form->textArea($element, 'comments', array('rows' => 1, 'nowrapper' => true), '', array('placeholder' =>
                         'Scheduling guidance for admissions team', 'class' => 'cols-full')) ?>
                 </td>
             </tr>
@@ -284,7 +294,7 @@
                     Add RTT comments:
                 </td>
                 <td>
-                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper'=>true), '', array(),
+                    <?php echo $form->textArea($element, 'comments_rtt', array('rows' => 1, 'nowrapper' => true), '', array(),
                         array_merge($form->layoutColumns, array('field' => 4))) ?>
                 </td>
             </tr>
