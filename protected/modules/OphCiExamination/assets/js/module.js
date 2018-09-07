@@ -1181,60 +1181,6 @@ $(document).ready(function() {
 
         /** End of Post Operative Complication Event Bindings **/
 
-<<<<<<< HEAD
-        /* Visual Acuity readings event binding */
-
-        $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element', function() {
-            $('.cvi-alert').slideUp(500);
-        });
-
-        $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function(){
-            var $section =  $(this).closest('section');
-            var $cviAlert = $('.cvi-alert');
-            var threshold = parseInt($cviAlert.data('threshold'));
-
-            if( $section.find('.cvi_alert_dismissed').val() !== "1"){
-                var show_alert = null;
-                $section.find('.va-selector').each(function(k,v){
-                    var val = parseInt($(this).val());
-                    if (val < threshold) {
-                        show_alert = (show_alert === null) ? true : show_alert;
-                    } else {
-                        show_alert = false;
-                    }
-                    return;
-                });
-
-                if (show_alert) {
-                    $cviAlert.slideDown(500);
-                } else {
-                    $cviAlert.slideUp(500);
-                }
-            }
-        });
-
-
-        // Dismiss alert box
-        $('#event-content').on('click', '.dismiss_cva_alert', function(){
-            var $section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity');
-
-            if( $('.ophciexamination.column.event.view').length ) {
-                // viewing
-                $.get( baseUrl + '/OphCiExamination/default/dismissCVIalert', { "element_id": $section.find('.element_id').val() }, function( result ) {
-                    var response = $.parseJSON(result);
-                    if(response.success === 'true'){
-                        $('.cvi-alert').slideUp(500).remove();
-                    }
-                });
-            } else {
-                // editing
-                $section.find('.cvi_alert_dismissed').val("1");
-                $('.cvi-alert').slideUp(500);
-            }
-        });
-=======
->>>>>>> OE-7595, separate VA/NVA js actions
-
 });
     /** Post Operative Complication function **/
      function setPostOpComplicationTableText()
