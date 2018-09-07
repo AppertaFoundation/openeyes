@@ -488,19 +488,19 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionOEscape($id){
-        if (!$this->episode = Episode::model()->findByPk($id)) {
-            throw new SystemException('Episode not found: '.$id);
-        }
+    public function actionOEscape($subspecialty_id, $patient_id){
 
+        $subspecialty = Subspecialty::model()->findAllByPk($subspecialty_id)[0];
+        $patient = Patient::model()->findAllByPk($patient_id)[0];
+
+        $this->patient = $patient;
         $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
-        $this->patient = $this->episode->patient;
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
 
-        $episodes = $this->patient->episodes;
+//        $episodes = $this->patient->episodes;
 
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -511,14 +511,14 @@ class PatientController extends BaseController
             ),
         );
 
-        $this->current_episode = $this->episode;
-        $status = Yii::app()->session['episode_hide_status'];
-        $status[$id] = true;
-        Yii::app()->session['episode_hide_status'] = $status;
+//        $this->current_episode = $this->episode;
+//        $status = Yii::app()->session['episode_hide_status'];
+//        $status[$id] = true;
+//        Yii::app()->session['episode_hide_status'] = $status;
 
         $this->render('oescapes', array(
             'title' => '' ,
-            'episodes' => $episodes,
+            '$subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
         ));

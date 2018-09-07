@@ -21,39 +21,42 @@ extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
 ?>
 
-<?php if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
-  <div class="oe-sem-no-events">
-    <h3>No Events</h3>
-    <div class="alert-box alert">
-      There are currently no events for this patient.<br>Click the "Add Event" button to begin recording events.
-    </div>
-    <nav class="sidebar-header">
-      <button id="add-event" class="button green add-event" type="button">Add Event</button>
-    </nav>
-  </div>
-    <?php $this->renderPartial('//patient/add_new_event',array(
-        'button_selector' => '#add-event',
-        'episodes' => array(),
-        'context_firm' => $this->firm,
-        'patient_id' => $this->patient->id,
-        'eventTypes' => EventType::model()->getEventTypeModules(),
-    ));?>
-<?php } else {
+<?php
+//if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
+<!--  <div class="oe-sem-no-events">-->
+<!--    <h3>No Events</h3>-->
+<!--    <div class="alert-box alert">-->
+<!--      There are currently no events for this patient.<br>Click the "Add Event" button to begin recording events.-->
+<!--    </div>-->
+<!--    <nav class="sidebar-header">-->
+<!--      <button id="add-event" class="button green add-event" type="button">Add Event</button>-->
+<!--    </nav>-->
+<!--  </div>-->
+<!--    --><?php //$this->renderPartial('//patient/add_new_event',array(
+//        'button_selector' => '#add-event',
+//        'episodes' => array(),
+//        'context_firm' => $this->firm,
+//        'patient_id' => $this->patient->id,
+//        'eventTypes' => EventType::model()->getEventTypeModules(),
+//    ));?>
+<?php //} else {
     $this->beginContent('//patient/oescapes_container', array(
         'cssClass' => isset($cssClass) ? $cssClass : '',
-        'episode' => isset($current_episode)? $current_episode: ''
+//        'episode' => isset($current_episode)? $current_episode: ''
     ));
 
     if ($current_episode) {
       $this->renderPartial('/clinical/oescapeSummary',
           array('episode' => $current_episode)
       );
-
-    } elseif (count($legacyepisodes)) {?>
-		<h2>No OEscapes</h2>
-		<div class="alert-box alert with-icon">
-			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
-		</div>
-	<?php }
+    }
+//    elseif (count($legacyepisodes)) {?>
+<!--		<h2>No OEscapes</h2>-->
+<!--		<div class="alert-box alert with-icon">-->
+<!--			There are currently no events for this patient, please click the Add --><?//= strtolower(Episode::getEpisodeLabel()) ?><!-- button to begin recording events.-->
+<!--		</div>-->
+	<?php
+//}
     $this->endContent();
-}?>
+//}
+?>
