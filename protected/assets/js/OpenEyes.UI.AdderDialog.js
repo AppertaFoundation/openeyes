@@ -57,7 +57,7 @@
     var dialog = this;
 
     var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
-    if(this.options.width) {
+    if (this.options.width) {
       content.css('width', this.options.width);
     }
     var $closeButton = $('<div />', {class: 'close-icon-btn'})
@@ -320,31 +320,30 @@
    * @param Object item
    * @returns Object
    */
-  AdderDialog.prototype.constructDataset =  function(item){
+  AdderDialog.prototype.constructDataset = function (item) {
     var dataset = {};
-    if(typeof item === 'string'){
+    if (typeof item === 'string') {
       dataset['data-label'] = item;
     } else {
-      for (var key in item){
-        dataset['data-'+key] = item[key];
+      for (var key in item) {
+        dataset['data-' + key] = item[key];
       }
     }
     return dataset;
   };
 
   AdderDialog.prototype.return = function () {
+    var shouldClose = true;
     if (this.options.onReturn) {
       var selectedItems = this.getSelectedItems();
-      var result = this.options.onReturn(this, selectedItems);
-      if (result) {
-        this.close();
-      }
-    } else {
-      this.close();
+      shouldClose = this.options.onReturn(this, selectedItems) !== false;
     }
 
-    if (this.options.deselectOnReturn) {
-      this.popup.find('li').removeClass('selected');
+    if (shouldClose) {
+      if (this.options.deselectOnReturn) {
+        this.popup.find('li').removeClass('selected');
+      }
+      this.close();
     }
   };
 

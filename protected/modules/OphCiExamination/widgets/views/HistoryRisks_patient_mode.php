@@ -21,13 +21,13 @@
 
 <?php $model_name = CHtml::modelName($element); ?>
 
-<?php if (!$element) : ?>
-    <div class="alert-box">
-        <strong>Alerts</strong> - Patient risk status is unknown.
+<?php if (!$this->patient->hasRiskStatus()) : ?>
+    <div class="alert-box info">
+        <strong>Alerts</strong> - Patients alert status is unknown.
     </div>
-<?php elseif (!count($element->entries) || $element->no_risks_date) : ?>
+<?php elseif ($element->no_risks_date) : ?>
     <div class="alert-box success">
-        <strong>Alerts</strong> - Patient has no known risks.
+        <strong>Alerts</strong> - Patient has no known alerts.
     </div>
 <?php else: ?>
     <div class="alert-box patient">
