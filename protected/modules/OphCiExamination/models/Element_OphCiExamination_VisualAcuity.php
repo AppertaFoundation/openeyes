@@ -150,6 +150,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             $hasReadings = array_key_exists($side.'_readings', $va);
 
             if (($isAssessable&&$hasReadings)||(!$isAssessable&&!$hasReadings)) {
+                continue;
             } elseif ($isAssessable&&!$hasReadings) {
                 $this->addError($side, ucfirst($side).' side has no data.');
             } else {

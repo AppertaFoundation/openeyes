@@ -22,11 +22,11 @@ $(document).ready(function () {
 
   }
 
-  $(this).delegate('#nearvisualacuity_unit_change', 'change', function(e) {
+  $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
 
-  $(this).delegate('#visualacuity_unit_change', 'change', function(e) {
+  $(this).delegate('#visualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, '');
   });
 
@@ -43,7 +43,7 @@ $(document).ready(function () {
 
       if( $section.find('.cvi_alert_dismissed').val() !== "1"){
         var show_alert = false;
-        $section.find('.va-selector').each(function(k,v){
+        $section.find('.va-selector').each(function(){
           var val = parseInt($(this).val());
           if (val < threshold) {
             show_alert = true;
@@ -134,7 +134,7 @@ $(document).ready(function () {
 
     if( $section.find('.cvi_alert_dismissed').val() !== "1"){
       var show_alert = null;
-      $section.find('.va-selector').each(function(k,v){
+      $section.find('.va-selector').each(function(){
         var val = parseInt($(this).val());
         if (val < threshold) {
           show_alert = (show_alert === null) ? true : show_alert;
@@ -181,7 +181,7 @@ $(document).ready(function () {
 function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
   var iconHover = row.find('.va-info-icon:last');
 
-  iconHover.hover(function(e) {
+  iconHover.hover(function() {
     var sel = $(this).closest('tr').find('input.va-selector');
     var val = sel.val();
     var tooltip_text = '';
@@ -296,22 +296,4 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
     return best;
   }
   return null;
-}
-
-function OphCiExamination_VisualAcuity_init() {
-  // ensure tooltip works when loading for an edit
-  $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity .side').each(function() {
-    $(this).find('tr.visualAcuityReading').each(function() {
-      OphCiExamination_VisualAcuity_ReadingTooltip($(this));
-    });
-  });
-}
-
-function OphCiExamination_NearVisualAcuity_init() {
-  // ensure tooltip works when loading for an edit
-  $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_NearVisualAcuity .side').each(function() {
-    $(this).find('tr.nearvisualAcuityReading').each(function() {
-      OphCiExamination_VisualAcuity_ReadingTooltip($(this));
-    });
-  });
 }
