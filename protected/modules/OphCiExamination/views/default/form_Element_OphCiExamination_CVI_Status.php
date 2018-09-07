@@ -56,10 +56,11 @@
       openButton: $('#show-add-popup'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet($cvi_status_list)],
       onReturn: function (adderDialog, selectedItems) {
-        console.log(selectedItems);
-        $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_cvi_status_id').val(selectedItems[0]['id']);
-        $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_text').text(selectedItems[0]['label']);
-        $('#js-examination-cvi-status').show();
+        if (selectedItems.length){
+          $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_cvi_status_id').val(selectedItems[0]['id']);
+          $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_text').text(selectedItems[0]['label']);
+          $('#js-examination-cvi-status').show();
+        }
         return true;
       }
     });
