@@ -21,17 +21,6 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
 {
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Element_OphCiExamination_CVI_Status the static model class
-     */
-    public static function model($className=__CLASS__)
-    {
-        return parent::model($className);
-    }
-
     public static $BLIND_STATUS = 'Severely Sight Impaired';
     public static $NOT_BLIND_STATUS = 'Sight Impaired';
     public static $NOT_ELIGIBLE_STATUS = 'Not eligible';
@@ -88,37 +77,6 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
             'last_modified_date' => 'Last Modified Date',
             'last_modified_user_id' => 'Last Modified User',
         );
-    }
-
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * Typical usecase:
-     * - Initialize the model fields with values from filter form.
-     * - Execute this method to get CActiveDataProvider instance which will filter
-     * models according to data in model fields.
-     * - Pass data provider to CGridView, CListView or any similar widget.
-     *
-     * @return CActiveDataProvider the data provider that can return the models
-     * based on the search/filter conditions.
-     */
-    public function search()
-    {
-
-        $criteria=new CDbCriteria;
-
-        $criteria->compare('id',$this->id);
-        $criteria->compare('event_id',$this->event_id,true);
-        $criteria->compare('cvi_status_id',$this->cvi_status_id,true);
-        $criteria->compare('element_date',$this->element_date,true);
-        $criteria->compare('created_date',$this->created_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
-        ));
     }
 
 }
