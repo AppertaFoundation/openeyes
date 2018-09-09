@@ -16,17 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php
-
-$all_units = $element->getUnits($element->unit->id, false);
-$va_tooltip_right = "";
-$va_tooltip_left = "";
-foreach ($all_units as $unit) {
-    $va_tooltip_right .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('right', $unit->id) . '<br/>';
-    $va_tooltip_left .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('left', $unit->id) . '<br/>';
-}
-
-?>
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
@@ -39,8 +28,8 @@ foreach ($all_units as $unit) {
                     <span class="priority-text">
                       <?php echo $element->getCombined($eye_side) ?>
                     </span>
-                    <i class="oe-i info small pad js-has-tooltip"
-                       data-tooltip-content="<?= CHtml::encode(${'va_tooltip_' . $eye_side}) ?>"></i>
+                      <?php echo $this->renderPartial('_visual_acuity_tooltip',
+                          array('element' => $element, 'side' => $eye_side, 'is_near' => false)); ?>
                   <?php else: ?>
                     Not recorded
                       <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>

@@ -63,11 +63,20 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                //array('diagnoses', 'required'),
+                array('diagnoses' ,'disorderIdIsSet', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function disorderIdIsSet($attributeName)
+    {
+        foreach ($this->$attributeName as $key => $value) {
+            if (!$value->disorder_id) {
+                $this->addError($attributeName, "Diagnosis cannot be empty");
+            }
+        }
     }
 
     /**

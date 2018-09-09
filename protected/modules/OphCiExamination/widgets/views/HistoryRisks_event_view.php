@@ -26,7 +26,7 @@
 	-->
   <div class="element-data full-width">
     <div class="data-group">
-      <?php if ($element->no_risks_date) { ?>
+      <?php if (!$this->patient->hasRiskStatus()) { ?>
         <div class="data-value flex-layout flex-top">Patient has no known risks.</div>
       <?php } else { ?>
           <div class="data-value flex-layout flex-top">
@@ -43,21 +43,36 @@
                         $alphablockers = true;
                     }
                 ?>
-                <ul class="dslash-list">
-                    <li><?php if ($element->present) {  echo $element->getEntriesDisplay('present') .' : YES'; } ?> </li>
-                    <li><?php if ($element->not_checked) { echo $element->getEntriesDisplay('not_checked').' : Not Checked'; }
-                        else {
-                            if ($anticoagulants == false and $alphablockers == false) {
-                                echo 'Anticoagulants, Anti Blockers : Not Checked';
-                            } elseif ($anticoagulants == false) {
-                                echo 'Anticoagulants : Not Checked';
-                            } elseif ($alphablockers == false) {
-                                echo 'Alpha blockers : Not Checked';
-                            }
-                        }
-                        ?>
-                    </li>
-                    <li><?php if ($element->not_present) { echo $element->getEntriesDisplay('not_present').' : NO'; } ?></li>
+                <ul class="dslash-list large">
+                    <?php if ($element->present) {?>
+                      <li>Present:</li>
+                        <?php foreach ($element->getEntriesDisplay('present') as $entry){ ?>
+                        <li><?= $entry ?></li>
+                     <?php }; } ?>
+                </ul>
+              <ul class="dslash-list large">
+                  <?php if ($element->not_checked) { ?>
+                    <li>Not Checked:</li>
+                    <?php foreach ($element->getEntriesDisplay('not_checked') as $entry){ ?>
+                        <li><?= $entry ?></li>
+                      <?php };
+                  } else {
+                      if ($anticoagulants == false and $alphablockers == false) {
+                          echo 'Anticoagulants, Anti Blockers : Not Checked';
+                      } elseif ($anticoagulants == false) {
+                          echo 'Anticoagulants : Not Checked';
+                      } elseif ($alphablockers == false) {
+                          echo 'Alpha blockers : Not Checked';
+                      }
+                  } ?>
+                </ul>
+              <ul class="dslash-list large">
+                  <?php if ($element->not_present) { ?>
+                    <li>Not Present:</li>
+                      <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
+                      <li><?= $entry ?></li>
+                      <?php }
+                  }?>
                 </ul>
             </div>
             <div class="col-6" id="js-listview-risks-full" style="display: none;">
@@ -77,13 +92,13 @@
             <tbody>
               <tr>
                 <td><?php if ($element->present) { ?>
-                    <span class="large-text"><?= $element->getEntriesDisplay('present') ?></span>
+                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('present'))?></span>
                     <?php } ?></td>
                 <td><?php if ($element->not_checked) { ?>
-                    <span class="large-text"><?= $element->getEntriesDisplay('not_checked') ?></span>
+                    <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('not_checked')) ?></span>
                     <?php } ?></td>
                 <td> <?php if ($element->not_present) { ?>
-                    <span class="large-text"><?= $element->getEntriesDisplay('not_present') ?></span>
+                    <span class="large-text"><?= implode('<br>',$element->getEntriesDisplay('not_present'))?></span>
                     <?php } ?></td>
               </tr>
             </tbody>

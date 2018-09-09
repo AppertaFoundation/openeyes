@@ -31,5 +31,8 @@
     "grunt-modernizr": "^1.0.2",
     "jshint-stylish": "^2.2.0",
     "load-grunt-tasks": "^3.5.0"
+  },
+  "dependencies": {
+    "tinymce": "^4.8.2"
   }
 }

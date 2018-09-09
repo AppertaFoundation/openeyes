@@ -159,7 +159,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     {
 
         if ($patient) {
-            $diagnoses = array();
+            $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
             $both = array(true, false);
             foreach ($both as $present) {
