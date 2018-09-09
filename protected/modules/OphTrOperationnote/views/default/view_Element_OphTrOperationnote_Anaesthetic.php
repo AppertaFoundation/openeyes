@@ -28,19 +28,6 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="data-group">
       <div class="data-value flex-layout flex-top">
         <div class="cols-full">
