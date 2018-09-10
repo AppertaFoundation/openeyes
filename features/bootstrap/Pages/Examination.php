@@ -24,6 +24,15 @@ class Examination extends OpenEyesPage {
         'removeIcon' => array(
             'css' => ".js-remove-element"
         ),
+        'Allergy' => array(
+            'css' => ".OEModule_OphCiExamination_models_Allergies"
+        ),
+        'allergyPopup' => array(
+            'xpath' => "//*[@id='history-allergy-popup']"
+        ),
+        'addAllergyBtn' => array(
+            'xpath' => "//*[@id='add-allergy-btn']"
+        ),
         'NVA' => array (
             'css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity"
         ),
@@ -66,6 +75,9 @@ class Examination extends OpenEyesPage {
 		'expandNearVisualAcuity' => array (
 			'xpath' => "//*[@id='side-element-Near-Visual-Acuity']"
 		),
+        'expandAllergies' => array (
+            'xpath' => "//*[@id='side-element-Allergies']"
+        ),
 
 		'expandAnteriorSegment' => array (
 			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Anterior Segment')]"
@@ -73,6 +85,9 @@ class Examination extends OpenEyesPage {
 		'expandVisualFunction' => array (
 			'xpath' => "//*[@class='collapse-group-header'][contains(text(),'Visual Function')]"
 		),
+        'expandHistory' => array (
+            'xpath' => "//*[@class='collapse-group-header'][contains(text(),'History')]"
+        ),
 		'visualAcuityUnitChange' => array (
 			'xpath' => "//*[@id='visualacuity_unit_change']"
 		),
@@ -980,8 +995,14 @@ class Examination extends OpenEyesPage {
 
 	public function openNearVisualAcuity() {
 		$element = $this->getElement ( 'expandNearVisualAcuity' );
-		//$this->scrollWindowToElement ( $element );
-		//$this->getSession ()->wait ( 2000 );
+
+		$element->click ();
+		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
+	}
+
+	public function openAllergies() {
+		$element = $this->getElement ( 'expandAllergies' );
+
 		$element->click ();
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 	}
@@ -1030,20 +1051,34 @@ class Examination extends OpenEyesPage {
 		$this->getElement ( 'firstLeftVisualAcuityCorrection' )->selectOption ( $method );
 	}
 
-	public function ensureNVA($side){
-	    $this->openVisualFunction();
-	    $this->openNearVisualAcuity();
-        $this->getElement('expandNearVisualAcuity')->click();
-        $this->waitForElementDisplayBlock(
-            '.OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity',
-            2000
-        );
+
+	public function ensureNVASide($side){
+	    //not sure if this will work without the wait on a slower machine
+//        $this->waitForElementDisplayBlock(
+//            '.OEModule_OphCiExamination_models_Element_OphCiExamination_NearVisualAcuity',
+//            2000
+//        );
         $addNva = $this->getElementAtChain(array('NVA', $side.'Eye', 'addSide'));
         if ($addNva->isValid() && $addNva->isVisible()){
             $addNva->click();
         }
     }
 
+    public function addAllergyReading($allergy){
+        $this->getElementAtChain(['Allergy', 'addAllergyBtn'])->click();
+        $this->elements['Allergy_val'] = array(
+            'css' => 'li[data-label='.$allergy.']'
+        );
+        $this->getElementAtChain(['Allergy', 'allergyPopup', 'Allergy_val'])->click();
+        $this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAdderButton'])->click();
+    }
+
+    /***
+     * Adds a visual acuity reading
+     * @param $side [left|right] which eye to add to
+     * @param $reading string reading for the eye
+     * @param $method string how the measurement was made (glasses, unaided etc)
+     */
     public function addNVAReading($side, $reading, $method){
         $this->getElementAtChain(array('NVA', $side.'Eye', 'addReading'))->click();
         $this->elements['NVAReading_val'] = array(
@@ -1921,10 +1956,13 @@ class Examination extends OpenEyesPage {
 	public function rightRAPDComments($comments) {
 		$this->getElement ( 'rightRAPDComments' )->setValue ( $comments );
 	}
+
+	public function openHistory(){
+        $this->getElement('expandHistory')->click();
+    }
+
 	public function openColourVision() {
 		$element = $this->getElement ( 'expandColourVision' );
-		//$this->scrollWindowToElement ( $element );
-		//$this->getSession()->wait(2000);
 		$element->click ();
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
 	}

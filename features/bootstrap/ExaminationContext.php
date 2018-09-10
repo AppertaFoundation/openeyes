@@ -195,6 +195,44 @@ class ExaminationContext extends PageObjectContext
         $examination->selectVisualAcuity($unit);
     }
 
+    /**
+     * @Given /^I add Near Visual Acuity$/
+     */
+    public function iAddNearVisualAcuity()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination = $this->getPage('Examination');
+        $examination->openVisualFunction();
+        $examination->openNearVisualAcuity();
+    }
+
+    /**
+     * @Given /^I add Allergy Element$/
+     */
+    public function iAddAllergyElement()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination = $this->getPage('Examination');
+        $examination->openHistory();
+        $examination->openAllergies();
+    }
+
+    /**
+     * @Then /^I Add Allergy "([^"]*)"$/
+     */
+    public function iAddAllergy($allergy)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination = $this->getPage('Examination');
+        $examination->addAllergyReading($allergy);
+    }
+
 
     /**
      * @Then /^I select a "([^"]*)" Near Visual Acuity of "([^"]*)" using "([^"]*)"$/
@@ -204,7 +242,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination = $this->getPage('Examination');
-        $examination->ensureNVA($side);
+        $examination->ensureNVASide($side);
         $examination->addNVAReading($side, $reading, $method);
     }
 

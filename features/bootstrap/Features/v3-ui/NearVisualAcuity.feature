@@ -1,14 +1,12 @@
 @examination @regression
-Feature: Anaesthetic Satisfaction Audit Regression Tests
-@EXAM
-@javascript
-  Regression coverage of this event is 100%
-  Across 2 Sites and 4 Firms
+Feature: Near Visual Acuity test
+  @EXAM
+  @javascript
 
   Scenario Outline:
-            Route 1: Login and create a near visual acuity:
-            Site :  Kings
-            Firm :  MR Clinic (Medical Retina)
+  Route 1: Login and create a near visual acuity:
+  Site :  Kings
+  Firm :  MR Clinic (Medical Retina)
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
@@ -27,5 +25,5 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
     Then I Save the Event and confirm it has been created successfully
 
     Examples:
-    |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            |
-    |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiExamination |
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiExamination |

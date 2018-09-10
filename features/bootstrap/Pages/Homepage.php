@@ -97,7 +97,6 @@ class Homepage extends OpenEyesPage {
 			'xpath' => "//*[@id='{$mysite}']"
 		);
         $this->waitForElementDisplayBlock('siteID');
-        $this->getElement('siteID')->click();
 		$this->getElement ( 'siteID' )->selectOption ( $siteAddress );
 	}
 	public function selectFirm($firm) {
