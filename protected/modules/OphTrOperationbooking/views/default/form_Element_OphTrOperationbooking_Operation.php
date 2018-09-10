@@ -238,7 +238,19 @@
                             <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true, array(),
                                 array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
-
+                    </tr>
+                    <tr id='tr_stop_medication_details' style="display:none">
+                        <td>
+                            <?php echo $element->getAttributeLabel('stop_medication_details') ?>
+                        </td>
+                        <td>
+                            <?php $form->textArea(
+                                $element,
+                                'stop_medication_details',
+                                array('rows' => 1, 'label' => false,
+                                    'nowrapper' => true),
+                                true, array('class' => 'autosize')); ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>
