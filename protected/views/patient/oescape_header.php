@@ -26,7 +26,7 @@
   </div>
 
   <div class="nav-title">
-    <div class="title"><?= isset($episode) ? $episode : 'OEscape' ?></div>
+    <div class="title"><?= 'OEscape' ?></div>
             <ul class="oescape-icon-btns" style="font-size: 0;">
                 <?php
                 $subspecialties = array_map(function ($v) {
@@ -55,9 +55,9 @@
   </div>
 
   <!-- exit oes and go back to previous page -->
-<!--  <div id="js-exit-oescape"-->
-<!--       data-link="--><?php //$core_api = new CoreAPI();
-//       echo $core_api->generateEpisodeLink($this->patient) ?><!--">-->
-<!--    <i class="oe-i remove-circle"></i>-->
-<!--  </div>-->
+  <div id="js-exit-oescape"
+       data-link="<?php $core_api = new CoreAPI();
+       echo $core_api->generateEpisodeLink($this->patient) ?>">
+    <i class="oe-i remove-circle"></i>
+  </div>
 </nav>

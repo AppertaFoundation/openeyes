@@ -15,14 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (!empty($subspecialty)) {
-
-//$episode->audit('episode summary', 'view');
-?>
+if (!empty($subspecialty)) { ?>
 <script src="https://code.highcharts.com/stock/js/highstock.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oes-highchart-tools.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
@@ -30,16 +26,20 @@ if (!empty($subspecialty)) {
   <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
 
     <?php $summaryItems = array();
+    Yii::log($subspecialty->id);
         $summaryItems = OescapeSummaryItem::model()->enabled($subspecialty->id)->findAll();
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
-    } ?>
+    }
+    Yii::log(count($summaryItems));
+    ?>
 
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems as $summaryItem) {
+          Yii::log("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
-//            'episode' => $episode,
+            'patient' => $this->patient,
             'event_type' => $summaryItem->event_type,
         )); ?>
         <?php $widget->run_oescape(count($summaryItems));  }

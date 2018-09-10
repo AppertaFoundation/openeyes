@@ -500,8 +500,6 @@ class PatientController extends BaseController
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
 
-//        $episodes = $this->patient->episodes;
-
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
         $this->event_tabs = array(
@@ -511,14 +509,9 @@ class PatientController extends BaseController
             ),
         );
 
-//        $this->current_episode = $this->episode;
-//        $status = Yii::app()->session['episode_hide_status'];
-//        $status[$id] = true;
-//        Yii::app()->session['episode_hide_status'] = $status;
-
         $this->render('oescapes', array(
             'title' => '' ,
-            '$subspecialty' => $subspecialty,
+            'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
         ));
