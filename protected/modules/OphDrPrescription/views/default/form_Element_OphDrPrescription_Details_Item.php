@@ -18,18 +18,18 @@
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem<?php if (isset($patient)) {
-    if ($patient->hasDrugAllergy($item->drug_id)) {?> 
+    if ($patient->hasDrugAllergy($item->drug_id)) {?>
     allergyWarning
     <?php
 	}
 } ?><?php if ($item->getErrors()) {
-    ?> errors<?php 
-} ?> 
+    ?> errors<?php
+} ?>
     <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
 	<td class="prescription-label">
 		<?php echo $item->drug->tallmanlabel; ?>
 		<?php if ($item->id) {?>
-			<input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php 
+			<input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php
         } ?>
 		<input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id?>" />
 	</td>
@@ -57,7 +57,7 @@
 	</td>
 	<?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
 	<td class='route_option_cell'>
-	    
+
 		<?php if ($item->route && $options = $item->route->options ) {
             echo CHtml::dropDownList('prescription_item['.$key.'][route_option_id]', $item->route_option_id, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
         } else {
@@ -72,7 +72,7 @@
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][duration_id]', $item->duration_id, CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')), 'id', 'name'), array('empty' => '-- Select --'))?>
 	</td>
 	<td class="prescriptionItemActions">
-		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Commment</a>
+		<a class="removeItem"	href="#">Remove</a>&nbsp;|&nbsp;<a class="taperItem"	href="#">+Taper</a>&nbsp;|&nbsp;<a class="addComment"	href="#">+Comment</a>
 	</td>
 	<td>
 		<?php
