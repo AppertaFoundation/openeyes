@@ -121,7 +121,7 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     protected function setElementFromDefaults()
     {
-        parent::setElementFromDefaults();
+
         // because the entries cloned into the new element may contain stale data for related
         // prescription data (or that prescription item might have been deleted)
         // we need to update appropriately.
