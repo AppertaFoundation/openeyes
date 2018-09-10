@@ -221,11 +221,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 return false;
             }
         });
-        if (valueChecked) {
-            return true;
-        } else {
-            return false;
-        }
+        return valueChecked;
 
     };
 
