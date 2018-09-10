@@ -215,7 +215,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController.prototype.isRisksChecked = function(value){
         var valueChecked = false;
 
-        this.$table.find('input[type=radio]:checked').each(function (i) {
+        this.$table.find('input[type=radio]:checked').each(function () {
             if ($(this).val() === value) {
                 valueChecked = true;
                 return false;
