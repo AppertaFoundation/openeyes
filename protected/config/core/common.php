@@ -516,13 +516,14 @@ return array(
         ),
 
         /**
-         * Lighnting Viewer
+         * Lightning Viewer
          */
 
         'lightning_viewer' => array(
             'image_width' => 800,
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
+            'compression_quality' => 50,
         ),
     ),
 );

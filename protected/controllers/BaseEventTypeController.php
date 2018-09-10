@@ -2455,15 +2455,17 @@ class BaseEventTypeController extends BaseModuleController
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
                 array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
 
-            $image_path = $this->event->getImagePath('preview');
-            $imagick = new \Imagick($image_path);
+            $input_path = $this->event->getImagePath('preview');
+            $output_path = $this->event->getImagePath('preview', '.jpg');
+            $imagick = new Imagick($input_path);
             $this->scaleImageForThumbnail($imagick);
-            $imagick->writeImage($image_path);
+            $imagick->writeImage($output_path);
 
-            $this->saveEventImage('CREATED', ['image_path' => $image_path]);
+            $this->saveEventImage('CREATED', ['image_path' => $output_path]);
 
             if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
-                $image->deleteFile($image_path);
+                $image->deleteFile($input_path);
+                $image->deleteFile($output_path);
             }
 
         } catch (Exception $ex) {
@@ -2480,6 +2482,8 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function scaleImageForThumbnail($imagick)
     {
+        $imagick->setImageCompressionQuality(Yii::app()->params['lightning_viewer']['compression_quality']);
+
         $width = Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
