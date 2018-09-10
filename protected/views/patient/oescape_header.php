@@ -26,7 +26,7 @@
   </div>
 
   <div class="nav-title">
-    <div class="title"><?= 'OEscape' ?></div>
+    <div class="title"><?= 'OEscape: '. $subspecialty->name ?></div>
             <ul class="oescape-icon-btns" style="font-size: 0;">
                 <?php
                 $subspecialties = array_map(function ($v) {

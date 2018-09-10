@@ -26,6 +26,7 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 <?php
     $this->beginContent('//patient/oescapes_container', array(
         'cssClass' => isset($cssClass) ? $cssClass : '',
+        'subspecialty' => $subspecialty
     ));
 
       $this->renderPartial('/clinical/oescapeSummary',

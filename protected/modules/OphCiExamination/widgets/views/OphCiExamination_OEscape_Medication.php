@@ -5,7 +5,6 @@
     <div id="highcharts-Meds-left" class="highcharts-Meds highcharts-left highchart-section" style="display: none;"></div>
 </div>
 
-<?php Yii::log($this->patient->id); ?>
 <script type="text/javascript">
   $(document).ready(function () {
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;

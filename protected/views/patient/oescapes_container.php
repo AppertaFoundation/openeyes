@@ -23,7 +23,9 @@
   </div>
 <?php } ?>
 
-<?php $this->renderPartial('//patient/oescape_header') ?>
+<?php $this->renderPartial('//patient/oescape_header', array(
+    'subspecialty' => $subspecialty
+)) ?>
 <?php $this->renderPartial('//patient/oescape_content', array(
     'cssClass' => $cssClass,
     'content' => $content,
