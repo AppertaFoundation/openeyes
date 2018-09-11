@@ -108,7 +108,7 @@ if (!isset($values)) {
 
         <?php $this->widget('application.widgets.EyeSelector', [
                 'inputNamePrefix' => $field_prefix,
-                'selectedEyeId' => $values['side_id']
+                'selectedEyeId' => $values['side_id'] ? $values['side_id'] : EyeSelector::$NOT_CHECKED
         ]); ?>
 
         <td>
