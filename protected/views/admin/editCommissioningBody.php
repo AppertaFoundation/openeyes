@@ -46,15 +46,29 @@
                 </td>
             </tr>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['name', 'code'],
-                'page' => $cb
-            )) ?>
+            <?php foreach (['name', 'code'] as $field) : ?>
+                <tr>
+                    <td><?= $cb->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($cb, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['address1', 'address2', 'city', 'county', 'postcode'],
-                'page' => $address
-            )) ?>
+            <?php foreach (['address1', 'address2', 'city', 'county', 'postcode'] as $field) : ?>
+                <tr>
+                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($address, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
             <tr>
                 <td>Country</td>

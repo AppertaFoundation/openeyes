@@ -435,8 +435,9 @@ class AdminController extends BaseAdminController
      */
     public function actionEditUser($id=null)
     {
-        if (!$id)
+        if (!$id) {
             $user = new User();
+        }
         if ($id && !$user = User::model()->findByPk($id)) {
             throw new Exception("User not found: $id");
         }
@@ -501,8 +502,9 @@ class AdminController extends BaseAdminController
                 }
             }
         } else {
-            if ($id)
+            if ($id) {
                 Audit::add('admin-User', 'view', $id);
+            }
         }
 
         $user->password = '';
@@ -1918,16 +1920,16 @@ class AdminController extends BaseAdminController
     public function actionViewAnaestheticAgent()
     {
 
-        if (Yii::app()->request->isPostRequest) {
-            echo "<pre>" . print_r($_POST, true) . "</pre>";
-            die;
+//        if (Yii::app()->request->isPostRequest) {
+//            echo "<pre>" . print_r($_POST, true) . "</pre>";
+//            die;
+//
+//            //save data here
+//        }
 
-            //save data here
-        }
+//        $this->render('anaestheticagent', ['anaesthetic_agent' => AnaestheticAgent::model()->findAll() ]);
 
-       // $this->render('anaestheticagent', ['anaesthetic_agent' => AnaestheticAgent::model()->findAll() ]);
-
-       // $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
+        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
 
         /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
 
