@@ -40,7 +40,7 @@ namespace OEModule\PatientTicketing\models;
  * The followings are the available model relations:
  * @property \User $user
  * @property \User $usermodified
- * @property \OEModule\PatientTicketing\models\Outcome[] $outcomes
+ * @property \OEModule\PatientTicketing\models\QueueOutcome[] $outcomes
  * @property \OEModule\PatientTicketing\models\Queue[] $outcome_queues
  * @property \OEModule\PatientTicketing\models\QueueEventType[] $event_type_assignments
  * @property \EventType[] $event_types

@@ -88,7 +88,7 @@ $model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebA
     });
   </script>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye <?= $page_side ?> side" data-side="<?= $eye_side ?>">
+      <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">

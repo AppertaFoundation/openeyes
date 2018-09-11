@@ -12,13 +12,13 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
     public function getMedicationList()
     {
         $medication_list = array('right' => array(), 'left' => array());
-        $events = $this->event_type->api->getEvents($this->episode->patient, false);
+        $events = $this->event_type->api->getEvents($this->patient, false);
         $earlist_date = time() * 1000;
         $latest_date = time() * 1000;
         foreach ($events as $event) {
             if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')) {
                 $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                    'patient' => $this->episode->patient,
+                    'patient' => $this->patient,
                 ));
 
                 $untracked = $widget->getEntriesForUntrackedPrescriptionItems();

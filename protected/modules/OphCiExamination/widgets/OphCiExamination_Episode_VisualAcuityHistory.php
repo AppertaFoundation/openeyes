@@ -113,7 +113,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $va_data_list = array('right'=>array(), 'left'=>array());
         foreach ($this->event_type->api->getElements(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $this->episode->patient,
+            $this->patient,
             false
         ) as $va) {
             foreach (['left', 'right'] as $side){

@@ -154,7 +154,7 @@
                         </td>
                         <td>
                             <div class="data-value <?= $element->phaco_cde == "" ? 'not-recorded' : '' ?>">
-                                <?= $element->phaco_cde == "" ? 'not recorded' : CHtml::encode($element->phaco_cde) ?>
+                                <?= $element->phaco_cde == "" ? 'Not recorded' : CHtml::encode($element->phaco_cde) ?>
                             </div>
                         </td>
                     </tr>

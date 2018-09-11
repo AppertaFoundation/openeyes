@@ -24,7 +24,7 @@ $key = 0;
      data-element-display-order="<?php echo $element->elementType->display_order ?>">
   <input type="hidden" name="intraocularpressure_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-  <div class="element-eye right-eye column side left"
+  <div class="js-element-eye right-eye column left"
        data-side="right">
     <div class="active-form<?php if (!$element->hasRight()) { ?> hidden<?php } ?>">
       <i class="oe-i remove-circle remove-side small"></i>
@@ -87,7 +87,7 @@ $key = 0;
       </div>
     </div>
   </div>
-  <div class="element-eye left-eye column side right"
+  <div class="js-element-eye left-eye column right"
        data-side="left">
     <div class="active-form<?php if (!$element->hasLeft()) { ?> hidden<?php } ?>">
       <i class="oe-i remove-circle remove-side small"></i>

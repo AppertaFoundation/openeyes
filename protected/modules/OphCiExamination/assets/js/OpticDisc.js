@@ -3,7 +3,7 @@ var leftCdSelector = '#OEModule_OphCiExamination_models_Element_OphCiExamination
 
 function OphCiExamination_OpticDisc_updateCDRatio(field) {
     var cdratio_field = $(field).closest('.eyedraw-fields').find('.cd-ratio');
-    var _drawing = ED.getInstance($(field).closest('.side').find('canvas').first().attr('data-drawing-name'));
+    var _drawing = ED.getInstance($(field).closest('.js-element-eye').find('canvas').first().attr('data-drawing-name'));
     if($(field).val() == 'Basic') {
         $(field).closest('.eyedraw-fields').find('.cd-ratio-readonly').remove();
         _drawing.unRegisterForNotifications(this);

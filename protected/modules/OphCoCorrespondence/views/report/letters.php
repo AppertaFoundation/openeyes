@@ -18,7 +18,7 @@
 ?>
 <h2>Letters report</h2>
 
-<div class="row divider">
+<div class="row divider lettersReport">
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'report-form',
@@ -36,11 +36,11 @@
     <tbody>
     <tr>
       <td>Phrases:</td>
-      <td>
+      <td class="phraseList">
           <?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
       </td>
       <td>
-        <button type="submit" class="button green hint" id="add_letter_phrase">
+        <button type="button" class="button green hint" id="add_letter_phrase">
           <span class="button-span button-span-blue">Add</span>
         </button>
       </td>
@@ -210,8 +210,7 @@
           <button type="submit" class="button green hint download-report" name="run">
             <span class="button-span button-span-blue">Download report</span>
           </button>
-          <img class="loader" style="display: none;"
-               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+          <i class="spinner loader" style="display: none;" ></i>
         </div>
       </td>
     </tr>
