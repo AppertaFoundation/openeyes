@@ -24,19 +24,14 @@ if (!empty($subspecialty)) { ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">
   <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
-
     <?php $summaryItems = array();
-    Yii::log($subspecialty->id);
         $summaryItems = OescapeSummaryItem::model()->enabled($subspecialty->id)->findAll();
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
-    }
-    Yii::log(count($summaryItems));
-    ?>
+    } ?>
 
     <?php if (count($summaryItems)) { ?>
         <?php foreach ($summaryItems as $summaryItem) {
-          Yii::log("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
             'patient' => $this->patient,

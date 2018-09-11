@@ -29,24 +29,27 @@
     <div class="title"><?= 'OEscape: '. $subspecialty->name ?></div>
             <ul class="oescape-icon-btns" style="font-size: 0;">
                 <?php
-                $subspecialties = array_map(function ($v) {
-                    return array($v->id, $v->name, $v->ref_spec);
-                }, Subspecialty::model()->findAllByAttributes(array(
+                $subspecialties =  Subspecialty::model()->findAllByAttributes(array(
                     'name' => array(
                         'Cataract',
                         'Glaucoma',
                         'Medical Retina',
                         'General Ophthalmology',
                     ),
-                )));
+                ));
                 ?>
                 <?php foreach ($subspecialties as $subspecialty): ?>
                   <li class="icon-btn"
-                      data-subspecialty-id="<?= $subspecialty[0] ?>">
+                      data-subspecialty-id="<?= $subspecialty->id ?>">
                     <a class="active"
-                          href="<?= Yii::app()->createUrl('/patient/oescape/?subspecialty_id=' . $subspecialty[0] . '&patient_id=' . $this->patient->id) ?>"
+                    href="<?= Yii::app()->createUrl(
+                        '/patient/oescape/',
+                        array(
+                            'subspecialty_id' => $subspecialty->id,
+                            'patient_id' => $this->patient->id)
+                    ) ?>"
                     >
-                        <?= $subspecialty[2] ?>
+                        <?= $subspecialty->ref_spec ?>
                     </a>
                   </li>
                 <?php endforeach; ?>

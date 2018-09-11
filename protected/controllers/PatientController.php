@@ -490,8 +490,8 @@ class PatientController extends BaseController
 
     public function actionOEscape($subspecialty_id, $patient_id){
 
-        $subspecialty = Subspecialty::model()->findAllByPk($subspecialty_id)[0];
-        $patient = Patient::model()->findAllByPk($patient_id)[0];
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+        $patient = Patient::model()->findByPk($patient_id);
 
         $this->patient = $patient;
         $this->fixedHotlist = false;
