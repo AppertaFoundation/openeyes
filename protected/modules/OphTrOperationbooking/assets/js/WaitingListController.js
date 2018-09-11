@@ -64,7 +64,7 @@ $(function () {
   });
 
   $(this).on('click', '#btn_confirm_selected', function (e) {
-    var data = [];
+    var data = {};
     data['adminconfirmto'] = $('#adminconfirmto').val();
     data['adminconfirmdate'] = $('#adminconfirmdate').val();
 
