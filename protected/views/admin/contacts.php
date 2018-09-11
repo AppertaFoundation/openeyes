@@ -16,55 +16,72 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Search contacts</h2>
-	<form id="admin_contacts_search">
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="q">Search:</label>
-			</div>
-			<div class="cols-4 column end">
-				<?php echo CHtml::textField('q', @$_GET['q'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-			</div>
-		</div>
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="label">Label:</label>
-			</div>
-			<div class="cols-4 column end">
-				<?php echo CHtml::dropDownList('label', @$_GET['label'], CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- Any label -'))?>
-			</div>
-		</div>
-			<div class="cols-4 cols-offset-2 column end">
-				<?php echo EventAction::button('Search', 'search', array(), array('class' => 'small'))->toHtml()?>
-        <i class="spinner" title="Loading..." style="display: none;"></i>
-			</div>
-		</div>
-	</form>
-</div>
-<?php if (@$contacts) {?>
-		<?php echo $this->renderPartial('/admin/_contacts_list', array('contacts' => $contacts))?>
-<?php }?>
-<script type="text/javascript">
-	var resultCache = {};
+<main class="oe-full-main admin-main">
+    <?php if (!$contacts) : ?>
+        <div class="row divider">
+            <div class="alert-box issue"><b>No results found</b></div>
+        </div>
+    <?php endif; ?>
 
-	$(document).ready(function() {
-		$('#q').select().focus();
-		handleButton($('#et_search'),function(e) {
-			e.preventDefault();
-			if ($('#q').val().length <1) {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Please enter a search term"
-				})
-				.on('close', function() {
-					enableButtons();
-					$('#q').focus;
-				})
-				.open();
-				enableButtons();
-			} else {
-				window.location.href = baseUrl+'/admin/contacts?q='+$('#q').val()+'&label='+$('#label').val();
-			}
-		});
-	});
-</script>
+    <div class="row divider">
+        <form id="admin_contacts_search">
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-6">
+                    <col class="cols-3" span="2">
+                </colgroup>
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <?=CHtml::textField('q',(isset($_GET['q']) ? $_GET['q'] : ''), ['class' => 'cols-full', 'placeholder' => "Name"]); ?>
+                    </td>
+                    <td>
+                        <?php echo CHtml::dropDownList(
+                                'label',
+                                isset($_GET['label']) ? $_GET['label'] :'',
+                                CHtml::listData(
+                                        ContactLabel::model()->active()->findAll(['order' => 'name']), 'id', 'name'),
+                                ['empty' => '- Any label -']) ?>
+                    </td>
+                    <td>
+                        <button class="blue hint" name="search" type="submit" id="et_search">Search</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <table class="standard">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Qualifications</th>
+            <th>Label</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($contacts['contacts'] as $i => $contact) {?>
+            <tr class="clickable" data-id="<?php echo $contact->id?>" data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
+                <td><?php echo $contact->id?></td>
+                <td><?php echo $contact->title?></td>
+                <td><?php echo $contact->first_name?></td>
+                <td><?php echo $contact->last_name?></td>
+                <td><?php echo $contact->qualifications?></td>
+                <td><?php echo $contact->label ? $contact->label->name : 'None'?></td>
+            </tr>
+        <?php }?>
+        </tbody>
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="6">
+                <?=CHtml::htmlButton('Add', ['class' => 'button large', 'type' => 'submit', 'id' => 'et_add']);?>
+                <?php $this->widget('LinkPager', [ 'pages' => $contacts['pagination'] ]); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</main>

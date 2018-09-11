@@ -54,6 +54,11 @@
     <?php echo $form->radioBoolean($user, 'active') ?>
     <?php echo $form->radioBoolean($user, 'global_firm_rights') ?>
     <?php
+
+    $htmlOptions = ['label' => 'Firms', 'empty' => '-- Add --','nowrapper' => true];
+    if($user->global_firm_rights){
+        $htmlOptions['style'] = 'display:none';
+    }
     echo $form->multiSelectList(
         $user,
         'User[firms]',
@@ -61,7 +66,7 @@
         'id',
         CHtml::listData(Firm::model()->findAll(), 'id', 'name'),
         array(),
-        array('label' => 'Firms', 'empty' => '-- Add --')
+        $htmlOptions
     ); ?>
 
 
@@ -83,7 +88,7 @@
         'name',
         CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'),
         array(),
-        array('label' => 'Roles', 'empty' => '-- Add --')
+        array('label' => 'Roles', 'empty' => '-- Add --', 'nowrapper' => true,)
     ); ?>
     <?php echo $form->formActions(); ?>
     <?php $this->endWidget() ?>

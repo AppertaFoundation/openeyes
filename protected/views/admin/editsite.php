@@ -103,6 +103,5 @@
             </tr>
             </tfoot>
         </table>
-    </div>
 	<?php $this->endWidget()?>
 </div>

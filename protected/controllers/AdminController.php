@@ -713,7 +713,7 @@ class AdminController extends BaseAdminController
         $contacts = $this->searchContacts();
         Audit::add('admin-Contact', 'list');
 
-        $this->render('/admin/contacts', array('contacts' => @$contacts));
+        $this->render('/admin/contacts', array('contacts' => $contacts));
     }
 
     public function actionContactlabels($id = false)
@@ -731,32 +731,32 @@ class AdminController extends BaseAdminController
 
     public function searchContacts()
     {
+        $q = \Yii::app()->request->getQuery('q');
+        $label = \Yii::app()->request->getQuery('label');
+
         $criteria = new CDbCriteria();
-        Audit::add('admin-Contact', 'search', @$_GET['q']);
-
-        $ex = explode(' ', @$_GET['q']);
-
-        if (empty($ex)) {
-            throw new Exception("Empty search query string, this shouldn't happen");
-        }
-
         $criteria->addCondition('t.first_name != :blank or t.last_name != :blank');
         $criteria->params[':blank'] = '';
+        Audit::add('admin-Contact', 'search', $q);
 
-        if (count($ex) == 1) {
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$_GET['q']), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$_GET['q']), false, 'OR');
-        } elseif (count($ex) == 2) {
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$ex[0]), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$ex[1]), false);
-        } elseif (count($ex) >= 3) {
-            $criteria->addSearchCondition('lower(`t`.title)', strtolower(@$ex[0]), false);
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$ex[1]), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$ex[2]), false);
+        if($q){
+            $query = explode(' ', $q);
+
+            if (count($query) == 1) {
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($q), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($q), false, 'OR');
+            } elseif (count($query) == 2) {
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[0]), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[1]), false);
+            } elseif (count($query) >= 3) {
+                $criteria->addSearchCondition('lower(`t`.title)', strtolower($query[0]), false);
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[1]), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[2]), false);
+            }
         }
 
-        if (@$_GET['label']) {
-            $criteria->compare('contact_label_id', @$_GET['label']);
+        if ($label) {
+            $criteria->compare('contact_label_id', $label);
         }
 
         $criteria->order = 'title, first_name, last_name';
@@ -765,10 +765,7 @@ class AdminController extends BaseAdminController
         $contacts = Contact::model()->findAll($criteria);
 
         if (count($contacts) == 1) {
-            foreach ($contacts as $contact) {
-            }
-            $this->redirect(array('/admin/editContact?contact_id=' . $contact->id));
-
+            $this->redirect(array('/admin/editContact?contact_id=' . $contacts[0]->id));
             return;
         }
 
