@@ -58,15 +58,29 @@ if (is_array($ordered_episodes)):
                   $episodes_list[$id] = $episode;
               }
           }
-          $subspecialties = array_map(function ($v) {
-              return array($v->id, $v->name, $v->ref_spec);
-          }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina','General Ophthalmology'))));
+          $subspecialties = Subspecialty::model()->findAllByAttributes(
+              array(
+                  'name'=> array(
+                      'Cataract',
+                      'Glaucoma',
+                      'Medical Retina',
+                      'General Ophthalmology'
+                  )
+              )
+          );
+
           foreach ($subspecialties as $subspecialty) { ?>
               <li class="icon-btn"
-                  data-subspecialty-id="<?= $subspecialty[0] ?>">
-                <a class="<?= in_array($subspecialty[0], array_keys($episodes_list))?'active':'inactive' ?>"
-                   href=" <?= in_array($subspecialty[0], array_keys($episodes_list))?Yii::app()->createUrl('/patient/oescape/' . $episodes_list[$subspecialty[0]]->id):'' ?>">
-                    <?= $subspecialty[2] ?>
+                  data-subspecialty-id="<?= $subspecialty->id ?>">
+                <a class="<?= in_array($subspecialty->id, array_keys($episodes_list))?'active':'inactive' ?>"
+                   href="<?= Yii::app()->createUrl(
+                       '/patient/oescape/',
+                       array(
+                           'subspecialty_id' => $subspecialty->id,
+                           'patient_id' => $this->patient->id)
+                   ) ?>"
+                >
+                    <?= $subspecialty->ref_spec ?>
                 </a>
               </li>
           <?php

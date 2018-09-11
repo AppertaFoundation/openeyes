@@ -51,6 +51,17 @@ class SplitEventTypeElement extends BaseEventTypeElement
         }
     }
 
+    public static function eyeHasSide($side, $eye_id)
+    {
+        if ($side === 'left'){
+            return $eye_id != Eye::RIGHT;
+        } elseif ($side === 'right') {
+            return $eye_id != Eye::LEFT;
+        }  else {
+            return false;
+        }
+    }
+
     /**
      * An array of field suffixes that we should treat as "sided".
      * e.g. 'example' would indicate 'left_example' and 'right_example'.
