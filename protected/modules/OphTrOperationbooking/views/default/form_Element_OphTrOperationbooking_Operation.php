@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($this->open_elements);
 ?>
 
 <div class="element-fields full-width">
@@ -33,15 +34,22 @@
                         <?php
                         if ($episode->getSubspecialtyText() == "Cataract" And Yii::app()->params['opbooking_disable_both_eyes'] == true) {
                             ?>
-                            <?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array(
+                            <?php echo $form->radioButtons($element, 'eye_id',
+                                CHtml::listData(Eye::model()->findAll(array(
                                 'condition' => 'name != "Both"',
                                 'order' => 'display_order asc',
-                            )), 'id', 'name'), $element->eye_id, '', '', '', '', array('nowrapper' => true)) ?>
+                            )), 'id', 'name'),
+                                $element->eye_id, '', '', '', '',
+                                array(
+                                    'nowrapper' => true,
+                                    'label-class' => $event_errors ? 'error' : '')) ?>
                             <?php
                         } else {
                             ?>
                             <?php echo $form->radioButtons($element, 'eye_id',
-                                CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name')) ?>
+                                CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+                                null, '', '', '', '',
+                                array('label-class' => $event_errors ? 'error' : '')) ?>
                             <?php
                         }
                         ?>
@@ -215,7 +223,7 @@
                                 false, false,
                                 array(
                                     'field'=>'AnaestheticType',
-                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''
+                                    'label-class' => $element->getError('anaesthetic_type') ? 'error' : ''
                                 )
                             ); ?>
                         </td>
