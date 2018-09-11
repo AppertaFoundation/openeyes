@@ -71,9 +71,7 @@ class LinkPager extends CLinkPager
      * @return array Previous/next buttons
      */
     protected function createPageButtons()
-    {
-        if(($pageCount=$this->getPageCount())<=1)
-            return array();
+    {   $pageCount=$this->getPageCount();
 
         $currentPage=$this->getCurrentPage(false); // currentPage is calculated in getPageRange()
         $buttons=array();
@@ -81,12 +79,12 @@ class LinkPager extends CLinkPager
         // prev page
         if(($page=$currentPage-1)<0)
             $page=0;
-        $buttons[]=$this->createPageButton($this->prevPageLabel,$page,$this->previousPageCssClass,$currentPage<=0,false);
+        $buttons[]=$this->createPageButton($this->prevPageLabel,$page,$currentPage <= 0 ? $this->previousPageCssClass.' disabled': $this->previousPageCssClass,false,false);
 
         // next page
         if(($page=$currentPage+1)>=$pageCount-1)
             $page=$pageCount-1;
-        $buttons[]=$this->createPageButton($this->nextPageLabel,$page,$this->nextPageCssClass,$currentPage>=$pageCount-1,false);
+        $buttons[]=$this->createPageButton($this->nextPageLabel,$page, $currentPage>=$pageCount-1 ? $this->nextPageCssClass.' disabled' : $this->nextPageCssClass,false,false);
 
         return $buttons;
     }
@@ -101,8 +99,13 @@ class LinkPager extends CLinkPager
      */
     protected function createPageButton($label,$page,$class,$hidden,$selected)
     {
-        if($hidden || $selected)
-            $class.=' '.($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
-        return CHtml::link('<i class="'.$class.'"></i>',$this->createPageUrl($page));
+        if ($hidden || $selected)
+            $class .= ' ' . ($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
+        return CHtml::link('<i class="' . $class . '"></i>', $this->createPageUrl($page),
+            strpos($class, 'disabled') ?
+                array('style' => '
+            cursor: default;
+            pointer-events: none;') :
+                array());
     }
 }

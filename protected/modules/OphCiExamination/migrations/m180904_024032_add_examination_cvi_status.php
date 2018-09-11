@@ -21,7 +21,7 @@ class m180904_024032_add_examination_cvi_status extends OEMigration
 	        'id' => 'pk',
             'event_id' => 'int(10) unsigned NOT NULL',
             'cvi_status_id' => 'int(10) unsigned NOT NULL',
-            'element_date' => 'datetime',
+            'element_date' => 'date',
             'created_date' =>'datetime',
             'created_user_id' => 'int(10) unsigned',
             'last_modified_date' => 'datetime ',

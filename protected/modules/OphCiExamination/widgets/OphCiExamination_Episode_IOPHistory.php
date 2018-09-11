@@ -103,7 +103,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     public function getIOPData(){
         $iop_data_list = array('right'=>array(), 'left'=>array());
-        $events = $this->event_type->api->getEvents($this->episode->patient, false);
+        $events = $this->event_type->api->getEvents($this->patient, false);
         foreach ($events as $event) {
             if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
@@ -127,7 +127,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         $iop_target = array();
         $plan = $this->event_type->api->getLatestElement(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
-            $this->episode->patient,
+            $this->patient,
             false
         );
         if ($plan) {
