@@ -38,15 +38,30 @@
             </colgroup>
             <tbody>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['name', 'remote_id'],
-                'page' => $institution
-            )) ?>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['address1', 'address2', 'city', 'county', 'postcode'],
-                'page' => $address
-            )) ?>
+            <?php foreach (['name', 'remote_id'] as $field) : ?>
+                <tr>
+                    <td><?= $institution->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($institution, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+
+            <?php foreach (['address1', 'address2', 'city', 'county', 'postcode'] as $field) : ?>
+                <tr>
+                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($address, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
             <tr>
                 <td>Country</td>
