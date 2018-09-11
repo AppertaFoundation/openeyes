@@ -16,33 +16,31 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column">
+      <div class="js-element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)): ?>
-              <?php if ($element->getCombined($eye_side)): ?>
-                <div class="data-value">
-                    <?php echo $element->unit->name ?><?php echo $this->renderPartial('_visual_acuity_tooltip',
-                        array('element' => $element, 'side' => $eye_side, 'is_near' => true)); ?>
-                </div>
-                <div class="data-value">
-                    <?php echo $element->getCombined($eye_side) ?>
-                </div>
+            <div class="data-value">
+              <?php if ($element->getCombined($eye_side)):
+                  echo $element->unit->name ?>
+              <span class="priority-text">
+                <?php echo $element->getCombined($eye_side) ?>
+              </span>
+                  <?php echo $this->renderPartial('_visual_acuity_tooltip',
+                      array('element' => $element, 'side' => $eye_side, 'is_near' => true)); ?>
               <?php else: ?>
-                <div class="data-value">
                   Not recorded
                     <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
                       (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}): ?>, eye missing<?php endif; ?>)
                     <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
                       (Eye missing)
                     <?php endif; ?>
-                </div>
               <?php endif; ?>
+            </div>
           <?php else: ?>
-              <div class="data-value not-recorded">
-                Not recorded
-              </div>
+            <div class="data-value not-recorded">
+              Not recorded
+            </div>
           <?php endif; ?>
       </div>
     <?php endforeach; ?>

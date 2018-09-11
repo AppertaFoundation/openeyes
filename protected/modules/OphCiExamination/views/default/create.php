@@ -49,3 +49,4 @@
 
 	<?php $this->endWidget()?>
 <?php $this->endContent();?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>

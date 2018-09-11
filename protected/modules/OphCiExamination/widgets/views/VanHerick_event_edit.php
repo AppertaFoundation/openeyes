@@ -26,7 +26,7 @@
 
 <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
 
-    <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
+    <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
 
         <div class="active-form flex-layout">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -82,7 +82,7 @@
 
         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-        <div class="element-eye right-eye column side left<?=!$element->hasRight() ? ' inactive': '';?>" data-side="right">
+        <div class="js-element-eye right-eye column left<?=!$element->hasRight() ? ' inactive': '';?>" data-side="right">
 
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <div class="element-eye left-eye column side right<?=!$element->hasLeft() ? ' inactive': '';?>" data-side="left">
+        <div class="js-element-eye left-eye column right<?=!$element->hasLeft() ? ' inactive': '';?>" data-side="left">
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
                 <div class="van_herick field-row">

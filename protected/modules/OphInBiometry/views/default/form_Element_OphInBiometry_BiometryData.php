@@ -18,40 +18,23 @@
 ?>
 <div class="element-fields element-eyes data-group">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-
-
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
-        <div class="<?=$eye_side?>-eye <?=!$element->hasEye($eye_side) ? 'inactive':''; ?>"
-             data-side="<?= $eye_side ?>">
-            <div class="active-form field-row flex-layout">
-                <?php $this->renderPartial('form_Element_OphInBiometry_BiometryData_fields', array(
-                    'side' => $eye_side,
-                    'element' => $element,
-                    'form' => $form,
-                    'data' => $data,
-                )) ?>
-            </div>
-            <div class="inactive-form">
-                <div class="add-side">
-                    Set <?=$eye_side?> side lens type
-                </div>
-            </div>
+      <div class="<?= $eye_side ?>-eye <?= !$element->hasEye($eye_side) ? 'inactive' : ''; ?>"
+           data-side="<?= $eye_side ?>">
+        <div class="active-form flex-layout"
+             style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+            <?php $this->renderPartial('form_Element_OphInBiometry_BiometryData_fields', array(
+                'side' => $eye_side,
+                'element' => $element,
+                'form' => $form,
+                'data' => $data,
+            )) ?>
         </div>
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+          <div class="add-side">
+            Set <?= $eye_side ?> side lens type
+          </div>
+        </div>
+      </div>
     <?php endforeach; ?>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        // Needs refactoring after R2
-        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.right-eye').hasClass('inactive')) {
-            $('section.Element_OphInBiometry_BiometryData').find('.element-eye.right-eye').find('.active-form').hide();
-            $('section.Element_OphInBiometry_BiometryData').find('.element-eye.right-eye').find('.inactive-form').show();
-            $('section.Element_OphInBiometry_BiometryData').find('.sideField').val(1);
-        } else if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.left-eye').hasClass('inactive')) {
-            $('section.Element_OphInBiometry_BiometryData').find('.element-eye.left-eye').find('.active-form').hide();
-            $('section.Element_OphInBiometry_BiometryData').find('.element-eye.left-eye').find('.inactive-form').show();
-            $('section.Element_OphInBiometry_BiometryData').find('.sideField').val(2);
-        } else {
-            $('section.Element_OphInBiometry_BiometryData').find('.sideField').val(3);
-        }
-    });
-</script>
