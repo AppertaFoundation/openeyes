@@ -45,20 +45,41 @@
                 </td>
             </tr>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['name', 'short_name', 'remote_id'],
-                'page' => $site
-            )) ?>
+            <?php foreach (['name', 'short_name', 'remote_id'] as $field) : ?>
+                <tr>
+                    <td><?= $site->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($site, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['address1', 'address2', 'city', 'county', 'postcode'],
-                'page' => $address
-            )) ?>
+            <?php foreach (['address1', 'address2', 'city', 'county', 'postcode'] as $field) : ?>
+                <tr>
+                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($address, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['telephone', 'fax'],
-                'page' => $site
-            )) ?>
+            <?php foreach (['telephone', 'fax'] as $field) : ?>
+                <tr>
+                    <td><?= $site->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($site, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
             <tr>
                 <td>Country</td>
