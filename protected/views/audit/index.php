@@ -17,7 +17,13 @@
  */
 ?>
 
-<div class="box content">
+<div class="oe-full-header flex-layout">
+    <div class="title wordcaps">Audit</div>
+    <div>
+        <!-- no header buttons -->
+    </div>
+</div>
+<div class="oe-full-content subgrid oe-audit">
 	<form method="post" action="/audit/search" id="auditList-filter" class="clearfix">
 		<input type="hidden" id="previous_site_id" value="<?php echo @$_POST['site_id']?>" />
 		<input type="hidden" id="previous_firm_id" value="<?php echo @$_POST['firm_id']?>" />
@@ -29,13 +35,14 @@
 		<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
 		<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
 		<?php echo $this->renderPartial('_filters');?>
-		<div id="searchResults"></div>
+
 		<div id="search-loading-msg" class="large-12 column hidden">
 			<div class="alert-box">
 				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" class="spinner" /> <strong>Searching, please wait...</strong>
 			</div>
 		</div>
 	</form>
+    <main id="searchResults" class="oe-full-main audit-main"></main>
 </div>
 
 <script type="text/javascript">

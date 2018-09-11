@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="element view full">
+<section class="element view">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
