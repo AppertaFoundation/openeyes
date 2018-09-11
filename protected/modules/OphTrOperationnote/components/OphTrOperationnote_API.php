@@ -340,7 +340,7 @@ class OphTrOperationnote_API extends BaseAPI
                 'operation' => implode(', ',
                     array_map(
                         function($proc) {
-                            return $proc->term;
+                            return $proc->short_format;
                         },
                         $element->procedures
                     )

@@ -457,6 +457,7 @@ class DefaultController extends \BaseModuleController
      */
     public function actionGetTicketTableRowHistory($id)
     {
+        /* @var models\Ticket $ticket */
         if (!$ticket = models\Ticket::model()->with(array('queue_assignments', 'queue_assignments.queue'))->findByPk($id)) {
             throw new \CHttpException(404, 'Invalid ticket id.');
         }

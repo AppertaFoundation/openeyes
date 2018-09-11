@@ -18,48 +18,46 @@
 $api = Yii::app()->moduleAPI->get('PatientTicketing');
 if ($outcome = $api->getFollowUp($this->ticket->id)) {
     ?>
-
-<fieldset class="data-group" data-formName="<?=$this->form_name ?>">
-	<div class="cols-<?= $this->label_width ?> column">
-		<label for="site">Follow-up appointment:</label>
-	</div>
-	<div class="cols-<?= $this->data_width ?> data-group column">
-    <table class="blank">
-
-	<thead>
-	<tr>
-		<th>Date</th>
-		<th>Time (HH:MM)</th>
-	</tr>
-	</thead>
-	<tbody class="readings-right">
-	<tr>
-		<td>
-			<?php
-            $value = @$this->form_data[$this->form_name]['appointment_date'];
-    $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                'name' => $this->form_name.'[appointment_date]',
-                'id' => $this->form_name.'_appointment_date',
-                // additional javascript options for the date picker plugin
-                'options' => array(
-                    'showAnim' => 'fold',
-                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                    'minDate' => 'new Date()',
-                ),
-                'value' => (preg_match('/^[0
-				-9]{4}-[0-9]{2}-[0-9]{2}$/', $value) ? Helper::convertMySQL2NHS($value) : $value),
-                'htmlOptions' => null,
-            )); ?>
-		</td>
-		<td>
-			<?php echo CHtml::textField($this->form_name.'[appointment_time]', @$this->form_data[$this->form_name]['appointment_time'])?>
-		</td>
-
-	</tr>
-	</tbody>
-</table>
-  </div>
-</fieldset>
+  <tbody data-formName="<?= $this->form_name ?>">
+  <tr>
+    <td>Follow-up appointment:</td>
+    <td>
+      <table class="blank">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time (HH:MM)</th>
+        </tr>
+        </thead>
+        <tbody class="readings-right">
+        <tr>
+          <td>
+              <?php
+              $value = @$this->form_data[$this->form_name]['appointment_date'];
+              $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                  'name' => $this->form_name . '[appointment_date]',
+                  'id' => $this->form_name . '_appointment_date',
+                  // additional javascript options for the date picker plugin
+                  'options' => array(
+                      'showAnim' => 'fold',
+                      'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                      'minDate' => 'new Date()',
+                  ),
+                  'value' => preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)
+                      ? Helper::convertMySQL2NHS($value) : $value,
+                  'htmlOptions' => null,
+              )); ?>
+          </td>
+          <td>
+              <?php echo CHtml::textField($this->form_name . '[appointment_time]',
+                  @$this->form_data[$this->form_name]['appointment_time']) ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  </tbody>
 <?php } ?>
 
 
