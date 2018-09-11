@@ -17,7 +17,7 @@
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 ?>
-<div class="home-messages flex-layout flex-top">
+<div class="home-messages subgrid">
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
