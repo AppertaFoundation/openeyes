@@ -45,7 +45,7 @@ class Phasing extends OpenEyesPage {
 			),
 			
 			'phasingReadingAddLeft' => array (
-					'xpath' => "//*[@class='element-eye left-eye column side right']//*[contains(text(),'Add')]" 
+					'xpath' => "//*[@class='js-element-eye left-eye column side right']//*[contains(text(),'Add')]"
 			),
 			'phasingReadingTimeLeft2' => array (
 					'xpath' => "//*[@id='intraocularpressure_reading_2_measurement_timestamp']" 
@@ -55,7 +55,7 @@ class Phasing extends OpenEyesPage {
 			),
 			
 			'phasingReadingAddRight' => array (
-					'xpath' => "//*[@class='element-eye right-eye column side left']//*[contains(text(),'Add')]" 
+					'xpath' => "//*[@class='js-element-eye right-eye column side left']//*[contains(text(),'Add')]"
 			),
 			'phasingReadingTimeRight2' => array (
 					'xpath' => "//*[@id='intraocularpressure_reading_3_measurement_timestamp']" 

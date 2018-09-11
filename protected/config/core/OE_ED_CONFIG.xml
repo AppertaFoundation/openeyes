@@ -1802,6 +1802,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PastSurgery</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
         <INDEX>
+          <PRIMARY_TERM>CVI Status</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
           <PRIMARY_TERM>Family History</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Relative</TERM>

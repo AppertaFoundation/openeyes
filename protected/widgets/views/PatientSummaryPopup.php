@@ -180,9 +180,9 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     </div>
 
     <div class="group">
-        <?php if (trim(explode('(', $this->cviStatus)[0]) !== 'Unknown') { ?>
-          <span class="data">CVI Status: <?= explode('(', $this->cviStatus)[0]; ?></span>
-          <span class="oe-date"> <?= $co_cvi_api->getCviSummaryDisplayDate($patient) ?></span>
+        <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
+          <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
+          <span class="oe-date"> <?= \Helper::convertMySQL2NHS($this->cviStatus[1] )?></span>
         <?php } else { ?>
           <span class="data">CVI Status: NA</span>
         <?php } ?>

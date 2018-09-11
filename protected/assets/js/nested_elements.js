@@ -94,10 +94,10 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
                 $(sideField).val($(pel).find('.element-fields input.sideField').val());
 
                 if ($(sideField).val() == '1') {
-                    $(cel).find('.side.left').addClass('inactive');
+                    $(cel).find('.js-element-eye.left').addClass('inactive');
                 }
                 else if ($(sideField).val() == '2') {
-                    $(cel).find('.side.right').addClass('inactive');
+                    $(cel).find('.js-element-eye.right').addClass('inactive');
                 }
             }
         }

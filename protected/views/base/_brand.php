@@ -40,7 +40,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
     <h4>Tour &amp; Feedback</h4>
 
     <p>Learn about OpenEyes 3.0 - take the <a href="#">OE Feature Tour</a></p>
-    <p>Send us <a href="#">feedback or suggestions.</a></p>
+    <p>Send us <a href="<?php echo Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
   </div>
 
   <div class="group">

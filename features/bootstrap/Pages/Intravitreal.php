@@ -7,7 +7,7 @@ class Intravitreal extends OpenEyesPage {
 			// Anaesthetic Right
 			
 			'addRightSide' => array (
-					'xpath' => "//*[@class='element-eye right-eye left side column inactive']//*[contains(text(),'Add right side')]" 
+					'xpath' => "//*[@class='js-element-eye right-eye left side column inactive']//*[contains(text(),'Add right side')]"
 			),
 			'removeRightSide' => array (
 					'xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail']//*[@class='removeSide']" 
@@ -46,7 +46,7 @@ class Intravitreal extends OpenEyesPage {
 			
 			// Anaesthetic Left
 			'addLeftSide' => array (
-					'xpath' => "//*[@class='element-eye left-eye right side column inactive']//*[contains(text(),'Add left side')]" 
+					'xpath' => "//*[@class='js-element-eye left-eye right side column inactive']//*[contains(text(),'Add left side')]"
 			),
 			'leftAnaestheticTopical' => array (
 					'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_1']" 
@@ -215,10 +215,10 @@ class Intravitreal extends OpenEyesPage {
 					'xpath' => "//*[contains(text(),'Tetracycline')]" 
 			),
 			'removeRightEye' => array (
-					'xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]" 
+					'xpath' => "//*[@class='js-element-eye right-eye left side column']//*[contains(text(),'Remove side')]"
 			),
 			'removeLeftEye' => array (
-					'xpath' => "//*[@class='element-eye left-eye right side column']//*[contains(text(),'Remove side')]" 
+					'xpath' => "//*[@class='js-element-eye left-eye right side column']//*[contains(text(),'Remove side')]"
 			),
 			
 			// error messages

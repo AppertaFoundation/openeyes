@@ -35,13 +35,13 @@ $required_diagnoses_ids = array_map(function ($r) {
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
-      <colgroup>
-          <col class="cols-3">
-          <col class="cols-3">
-          <col class="cols-1">
-          <col class="cols-1">
-          <col class="cols-1">
-      </colgroup>
+    <colgroup>
+      <col class="cols-3">
+      <col class="cols-3">
+      <col class="cols-1">
+      <col class="cols-1">
+      <col class="cols-1">
+    </colgroup>
     <tbody>
     <?php
     $row_count = 0;
@@ -55,7 +55,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'row_count' => $row_count,
                 'field_prefix' => $model_name . "[entries][$row_count]",
                 'removable' => false,
-                'posted_not_checked' => $element->widget->postedNotChecked($row_count)
+                'posted_not_checked' => $element->widget->postedNotChecked($row_count),
             )
         );
         $row_count++;
@@ -103,7 +103,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'id' => '',
                 'disorder_id' => '{{disorder_id}}',
                 'disorder_display' => '{{disorder_display}}',
-                'side_id' => (string) EyeSelector::$NOT_CHECKED,
+                'side_id' => (string)EyeSelector::$NOT_CHECKED,
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
                 'date_display' => '{{date_display}}',
@@ -131,9 +131,23 @@ $required_diagnoses_ids = array_map(function ($r) {
         systemicDiagnosesController.addEntry(selectedItems);
         return true;
       },
+      onOpen: function (adderDialog) {
+        systemicDiagnosesController.$popupSelector.find('li').each(function () {
+          var disorderId = $(this).data('id');
+          var alreadyUsed = systemicDiagnosesController.$table
+            .find('input[type="hidden"][name*="disorder_id"][value="' + disorderId + '"]').length > 0;
+          $(this).toggle(!alreadyUsed);
+        });
+      },
       searchOptions: {
         searchSource: systemicDiagnosesController.options.searchSource,
         code: systemicDiagnosesController.options.code,
+        resultsFilter: function(results) {
+          return $(results).filter(function(key, disorder) {
+            return systemicDiagnosesController.$table
+              .find('input[type="hidden"][name*="disorder_id"][value="' + disorder.id + '"]').length === 0;
+          });
+        }
       }
     });
   });
