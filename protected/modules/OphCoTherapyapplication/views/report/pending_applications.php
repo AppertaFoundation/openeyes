@@ -9,8 +9,9 @@
           <button type="submit" name="report" value="generate" class="button green hint"
               <?php echo !Yii::app()->getAuthManager()->checkAccess('Report',
                   Yii::app()->user->id) ? 'disabled' : ''; ?>
-          >Generate
+          > Generate
           </button> &nbsp; &nbsp;
+          <i class="spinner loader" style="display: none;"></i>
         </div>
       </form>
     <?php endif; ?>
