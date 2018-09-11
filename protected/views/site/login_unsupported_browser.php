@@ -16,30 +16,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <?php $this->renderPartial('//base/head/_meta'); ?>
-    <?php $this->renderPartial('//base/head/_assets'); ?>
-    <?php $this->renderPartial('//base/head/_tracking'); ?>
-</head>
-<body class="open-eyes oe-grid">
+<h3>Sorry, your Browser does not support all OpenEyes features.</h3>
 
-<?php $this->renderPartial('//base/_debug'); ?>
+<h4>Why not?</h4>
 
-<div class="openeyes-brand">
-    <?php $this->renderPartial('//base/_brand'); ?>
-</div>
-<div id="oe-restrict-print">
-  <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to
-    generate a hard copy.</h1>
-</div>
-<?php $this->renderPartial('//base/_header'); ?>
+<p>OpenEyes uses the latest in web technology. To enjoy all the latest features you need an up to date browser rather than
+  Internet Explorer.</p>
 
-<main class="oe-home" id="oe-home">
-    <?php echo $content; ?>
-</main>
+<h4>What to do next?</h4>
 
-<?php $this->renderPartial('//base/_footer'); ?>
-</body>
-</html>
+<p>Please select either Google Chrome or Windows Edge: <br>
+  <a href="https://www.google.co.uk/chrome/">Download: Chrome</a><br>
+  <a href="https://www.microsoft.com/en-gb/windows/microsoft-edge">Download: Edge</a>
+</p>
+
+<h4>Support</h4>
+
+<p>Contact your IT support</p>
