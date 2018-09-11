@@ -18,11 +18,11 @@
 
 <?php $model_name = CHtml::modelName($element); ?>
 
-<?php if (!$element) : ?>
-    <div class="alert-box">
+<?php if (!$this->patient->hasAllergyStatus()) : ?>
+    <div class="alert-box info">
         <strong>Allergies</strong> - Patient allergy status is unknown.
     </div>
-<?php elseif (!count($element->entries) || $element->no_allergies_date) : ?>
+<?php elseif ($element->no_allergies_date) : ?>
     <div class="alert-box success">
         <strong>Allergies</strong> - Patient has no known allergies.
     </div>
