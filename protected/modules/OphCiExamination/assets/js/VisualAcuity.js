@@ -22,6 +22,12 @@ $(document).ready(function () {
 
   }
 
+  ($('.va_readings,.near-va-readings').each(function(){
+    if($(this).find('tbody tr').length){
+        $(this).siblings('.noReadings').hide();
+    }
+  }));
+
   $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
@@ -59,7 +65,7 @@ $(document).ready(function () {
         }
       }
 
-      
+
       if ($('tbody', activeForm).children('tr').length == 0) {
         $('.noReadings', activeForm).show();
         $('table', activeForm).hide();
