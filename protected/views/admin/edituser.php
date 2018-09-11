@@ -37,10 +37,17 @@
             </colgroup>
             <tbody>
 
-            <?php echo $this->renderPartial('//admin/_table_form', array(
-                'field_options' => ['username', 'title', 'first_name', 'last_name', 'email', 'qualifications', 'role'],
-                'page' => $user
-            )) ?>
+            <?php foreach (['username', 'title', 'first_name', 'last_name', 'email', 'qualifications', 'role'] as $field) : ?>
+                <tr>
+                    <td><?= $user->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($user, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
 
             <tr>
                 <td>Grade</td>
