@@ -14,12 +14,26 @@ class m180910_044802_uservoice_remove extends CDbMigration
         $this->delete('setting_metadata', '`key` = \'uservoice_override_account_id\'');
         $this->delete('setting_metadata', '`key` = \'uservoice_override_account_name\'');
         $this->delete('setting_metadata', '`key` = \'uservoice_enabled\'');
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 22,
+            'field_type_id' => 4,
+            'key' => 'feedback_link',
+            'name' => 'Feedback Link',
+            'data' => '',
+            'default_value' => ''
+        ));
+        $this->insert('setting_installation', array(
+            'key' => 'feedback_link',
+            'value' => 'https://forums.apperta.org/c/openeyes'
+        ));
 	}
 
 	public function down()
 	{
-		echo "m180910_044802_uservoice_remove does not support migration down.\n";
-		return false;
+        $this->delete('setting_installation', '`key` = \'feedback_link\'');
+        $this->delete('setting_metadata', '`key` = \'feedback_link\'');
 	}
 
 	/*
