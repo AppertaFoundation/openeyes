@@ -1920,15 +1920,6 @@ class AdminController extends BaseAdminController
     public function actionViewAnaestheticAgent()
     {
 
-//        if (Yii::app()->request->isPostRequest) {
-//            echo "<pre>" . print_r($_POST, true) . "</pre>";
-//            die;
-//
-//            //save data here
-//        }
-
-//        $this->render('anaestheticagent', ['anaesthetic_agent' => AnaestheticAgent::model()->findAll() ]);
-
         $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
 
         /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));

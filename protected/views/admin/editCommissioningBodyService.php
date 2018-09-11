@@ -44,7 +44,7 @@
                 <col class="cols-5">
             </colgroup>
             <tbody>
-            <tr class="col-gap">
+            <tr>
                 <td>Commissioning body:</td>
                 <td >
                     <?php echo CHtml::activeDropDownList($cbs, 'commissioning_body_id',

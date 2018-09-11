@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
+<main class="oe-full-main admin-main">
 	<h2>Commissioning body service types</h2>
 	<form id="admin_commissioning_body_service_types">
 		<table class="standard">
@@ -39,14 +39,16 @@
 			<tfoot>
 				<tr>
 					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add_commissioning_body_service_type', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service_type', array(), array('class' => 'small'))->toHtml()?>
+                        <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add_commissioning_body_service_type',
+                            'id' => 'et_add_commissioning_body_service_type']); ?>
+                        <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete_commissioning_body_service_type',
+                             'id' => 'et_delete_commissioning_body_service_type']); ?>
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
-</div>
+</main>
 <div id="confirm_delete_commissioning_body_service_types" title="Confirm delete commissioning_body_service_type" style="display: none;">
 	<div>
 		<div id="delete_commissioning_body_service_types">

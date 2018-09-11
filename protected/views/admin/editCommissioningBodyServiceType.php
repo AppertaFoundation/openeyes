@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
+<main class="oe-full-main admin-main">
 	<h2><?php echo $cbs->id ? 'Edit' : 'Add'?> commissioning body type</h2>
 	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
 	<?php
@@ -29,8 +29,37 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($cbs, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => '50'))?>
-		<?php echo $form->textField($cbs, 'shortname', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => '10'))?>
-	<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_service_types'));?>
+
+    <div class="cols-5">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($cbs, 'name', ['class' => 'cols-full',
+                        'autocomplete'=>Yii::app()->params['html_autocomplete'], 'size' => '50']); ?> </td>
+            </tr>
+            <tr>
+                <td><?php echo$cbs->getAttributeLabel('shortname') ?></td>
+                <td> <?php echo CHtml::activeTextField($cbs, 'shortname', ['class' => 'cols-full',
+                        'autocomplete'=>Yii::app()->params['html_autocomplete'], 'size' => '10']); ?> </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => '/admin/commissioning_body_service_types', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 	<?php $this->endWidget()?>
-</div>
+</main>
