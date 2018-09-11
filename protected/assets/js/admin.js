@@ -105,11 +105,13 @@ $(document).ready(function () {
         $('.box_admin_elements').toggle();
     });
 
+    // when changing the global rights radiobutton, remove the firms
     $globalFirmRights.on('change', function(){
+        $wrapper = $('#User_firms').closest('.multi-select');
         if($("input:radio[name='User[global_firm_rights]']:checked").val() === '1'){
-            $('#div_User_Firms').hide();
+            $wrapper.hide();
         } else {
-            $('#div_User_Firms').show();
+            $wrapper.show();
         }
     });
 

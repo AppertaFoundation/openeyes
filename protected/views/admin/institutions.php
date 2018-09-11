@@ -16,11 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="admin box">
-	<h2>Institution</h2>
-
-	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
-
+<main class="oe-full-main admin-main">
+    <div class="row divider">
+        <form>
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-6">
+                    <col class="cols-3" span="2">
+                </colgroup>
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <input class="cols-full" autocomplete="off" placeholder="Name, ID, Pas Code, First name, Last name, Subspeciality Name" type="text" value="" name="search[name][value]" id="search_name_value">
+                    </td>
+                    <td>
+                        <select name="search[active]" id="search_active">
+                            <option value="" selected="selected">All</option>
+                            <option value="1">Only Active</option>
+                            <option value="0">Exclude Active</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="blue hint" name="save" formmethod="get" type="submit">Search</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
 	<form id="admin_institutions">
 		<table class="standard">
 			<thead>
@@ -54,4 +77,4 @@
 			</tfoot>
 		</table>
 	</form>
-</div>
+</main>

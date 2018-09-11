@@ -426,80 +426,18 @@ class AdminController extends BaseAdminController
      */
     public function actionAddUser()
     {
-        $user = new User();
-        $request = Yii::app()->getRequest();
-
-        if ($request->getIsPostRequest()) {
-            $userAtt = $request->getPost('User');
-
-            $user->attributes = $userAtt;
-
-            if (!$user->validate()) {
-                $errors = $user->getErrors();
-            } else {
-                if (!$user->save()) {
-                    throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
-                }
-
-                if (!$contact = $user->contact) {
-                    $contact = new Contact();
-                }
-
-                $contact->title = $user->title;
-                $contact->first_name = $user->first_name;
-                $contact->last_name = $user->last_name;
-                $contact->qualifications = $user->qualifications;
-
-                if (!$contact->save()) {
-                    throw new Exception('Unable to save user contact: ' . print_r($contact->getErrors(), true));
-                }
-
-                if (!$user->contact) {
-                    $user->contact_id = $contact->id;
-
-                    if (!$user->save()) {
-                        throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
-                    }
-                }
-
-                Audit::add('admin-User', 'add', $user->id);
-
-                if (!isset($userAtt['roles']) || ( empty($userAtt['roles']))) {
-                    $userAtt['roles'] = array();
-                }
-
-                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
-                    $userAtt['firms'] = array();
-                }
-
-                $user->saveRoles($userAtt['roles']);
-
-                try {
-                    $user->saveFirms($userAtt['firms']);
-                    $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
-                } catch (FirmSaveException $e) {
-                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
-                    $errors = $user->getErrors();
-                }
-            }
-        }
-
-        $user->password = '';
-
-        $this->render('/admin/adduser', array(
-            'user' => $user,
-            'errors' => @$errors,
-            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
-        ));
+        return $this->actionEditUser();
     }
 
     /**
      * @param $id
      * @throws Exception
      */
-    public function actionEditUser($id)
+    public function actionEditUser($id=null)
     {
-        if (!$user = User::model()->findByPk($id)) {
+        if (!$id)
+            $user = new User();
+        if ($id && !$user = User::model()->findByPk($id)) {
             throw new Exception("User not found: $id");
         }
 
@@ -508,7 +446,7 @@ class AdminController extends BaseAdminController
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
 
-            if (empty($userAtt['password'])) {
+            if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
             }
             $user->attributes = $userAtt;
@@ -563,7 +501,8 @@ class AdminController extends BaseAdminController
                 }
             }
         } else {
-            Audit::add('admin-User', 'view', $id);
+            if ($id)
+                Audit::add('admin-User', 'view', $id);
         }
 
         $user->password = '';
@@ -1978,7 +1917,17 @@ class AdminController extends BaseAdminController
      */
     public function actionViewAnaestheticAgent()
     {
-        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
+
+        if (Yii::app()->request->isPostRequest) {
+            echo "<pre>" . print_r($_POST, true) . "</pre>";
+            die;
+
+            //save data here
+        }
+
+       // $this->render('anaestheticagent', ['anaesthetic_agent' => AnaestheticAgent::model()->findAll() ]);
+
+       // $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
 
         /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
 

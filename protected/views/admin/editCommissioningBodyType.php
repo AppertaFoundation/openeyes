@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $cbt->id ? 'Edit' : 'Add'?> commissioning body type</h2>
+<main class="oe-full-main admin-main">
+    <h2><?php echo $cbt->id ? 'Edit' : 'Add'?> commissioning body type</h2>
 	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -29,9 +29,37 @@
             'field' => 5,
         ),
     ))?>
-		<?php echo $form->textField($cbt, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($cbt, 'shortname', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_types'));?>
+
+    <div class="cols-5">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-4">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($cbt, 'name', ['class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']]); ?> </td>
+            </tr>
+            <tr>
+                <td>Short Name</td>
+                <td> <?php echo CHtml::activeTextField($cbt, 'shortname', ['class' => 'cols-full']); ?> </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => '/admin/commissioning_body_types', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 	<?php $this->endWidget()?>
-</div>
+</main>
 

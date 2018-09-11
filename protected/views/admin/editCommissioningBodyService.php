@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
+<main class="oe-full-main admin-main">
 	<h2><?php echo $cbs->id ? 'Edit' : 'Add'?> commissioning body service</h2>
 	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 	<?php
@@ -35,40 +35,101 @@
 	if ($commissioning_bt) {
 		$criteria->addColumnCondition(array('commissioning_body_type_id' => $commissioning_bt->id));
 	}
-	echo $form->dropDownList($cbs, 'commissioning_body_id', CHtml::listData(CommissioningBody::model()->findAll($criteria), 'id', 'name'), array('style' => 'margin-bottom:6px;'));
-
-	if ($commissioning_bst) { ?>
-		<div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="data-group">
-			<div class="cols-2 column">
-				<label for="div_CommissioningBodyService_commissioning_body_service_type_id">Service type:</label>
-			</div>
-			<div class="cols-5 column end">
-				<?php
-				echo $form->hiddenInput($cbs, 'commissioning_body_service_type_id', $commissioning_bst->id);
-				echo $commissioning_bst->name;
-				?>
-			</div>
-		</div>
-	<?php
-	} else {
-		echo $form->dropDownList($cbs,'commissioning_body_service_type_id','CommissioningBodyServiceType',array('style'=>'margin-bottom:6px;'));
-	}
 	?>
-		<?php echo $form->textField($cbs,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($cbs,'code',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2))?>
-		<?php 
-			if(!$cbs->contact)
-			{
-				$cbs->contact = new Contact();
-			}echo $form->textField($cbs->contact,'primary_phone',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2));
-		?>
-		<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($address,'address2',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($address,'city',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($address,'county',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($address,'postcode',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->dropDownList($address,'country_id','Country')?>
-		<?php echo $form->formActions(array('cancel-uri' => $return_url));?>
+
+	<div class="cols-5">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-3">
+                <col class="cols-5">
+            </colgroup>
+            <tbody>
+            <tr class="col-gap">
+                <td>Commissioning body:</td>
+                <td >
+                    <?php echo CHtml::activeDropDownList($cbs, 'commissioning_body_id',
+                        CHtml::listData(CommissioningBody::model()->findAll($criteria) , 'id', 'name'),
+                        ['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Service type:</td>
+                <td>
+                <?php if ($commissioning_bst) { ?>
+                    <div id="div_CommissioningBodyService_commissioning_body_service_type_id" class="data-group">
+                        <div class="cols-5 column end">
+                            <?php
+                            echo $form->hiddenInput($cbs, 'commissioning_body_service_type_id', $commissioning_bst->id);
+                            echo $commissioning_bst->name;
+                            ?>
+                        </div>
+                    </div>
+                <?php
+                } else {
+                    echo CHtml::activeDropDownList($cbs, 'commissioning_body_service_type_id',
+                        CHtml::listData(CommissioningBodyServiceType::model()->findAll($criteria) , 'id', 'name'),
+                        ['class' => 'cols-full']);
+                }
+                ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td> <?php echo CHtml::activeTextField($cbs, 'name', ['class' => 'cols-full',
+                        'autocomplete'=>Yii::app()->params['html_autocomplete']]); ?> </td>
+            </tr>
+            <tr>
+                <td>Code</td>
+                <td> <?php echo CHtml::activeTextField($cbs, 'code', ['class' => 'cols-full',
+                        'autocomplete'=>Yii::app()->params['html_autocomplete'], 'field' => 2]); ?> </td>
+            </tr>
+            <tr>
+                <td>Phone number</td>
+                <td>
+                    <?php
+                    if(!$cbs->contact)
+                    {
+                        $cbs->contact = new Contact();
+                    }
+                    echo CHtml::activeTextField($cbs->contact, 'primary_phone', ['class' => 'cols-full',
+                        'autocomplete'=>Yii::app()->params['html_autocomplete'], 'field' => 2]);
+                    ?>
+                </td>
+            </tr>
+
+            <?php foreach (['address1', 'address2', 'city', 'county', 'postcode',] as $field) : ?>
+                <tr>
+                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= CHtml::activeTextField($address, $field, [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+
+            <tr>
+                <td>Country</td>
+                <td>
+                <?php echo CHtml::activeDropDownList($address, 'country_id',
+                    CHtml::listData( Country::model()->findAll() , 'id', 'name'), ['class' => 'cols-full']); ?>
+                </td>
+            </tr>
+
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => $return_url, 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
 	<?php $this->endWidget()?>
-</div>
+</main>
 

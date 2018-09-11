@@ -31,9 +31,8 @@ if (!isset($base_data_url)) {
 
 ?>
 
-<div class="box admin">
-	<h2><?= $title ?></h2>
-	<form id="admin_commissioning_body_services">
+<main class="oe-full-main admin-main">
+	<form id="admin_CommissioningBodyServices">
 		<table class="standard">
 			<thead>
 				<tr>
@@ -71,14 +70,16 @@ if (!isset($base_data_url)) {
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small','data-uri'=>$url_query))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+                        <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add_commissioning_body_service',
+                            'id' => 'et_add_commissioning_body_service', 'data-uri' => 'commissioningBodyService']); ?>
+                        <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete_commissioning_body_service',
+                            'data-object' => 'CommissioningBodyServices', 'id' => 'et_delete']); ?>
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
-</div>
+</main>
 <div id="confirm_delete_commissioning_body_services" title="Confirm delete commissioning_body_service" style="display: none;">
 	<div>
 		<div id="delete_commissioning_body_services">

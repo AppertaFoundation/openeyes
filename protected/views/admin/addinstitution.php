@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
+<main class="oe-full-main admin-main">
 	<h2>Add institution</h2>
 	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
 	<?php
@@ -37,37 +37,20 @@
                 <col class="cols-5">
             </colgroup>
             <tbody>
+
+            <?php echo $this->renderPartial('//admin/_table_form', array(
+                'field_options' => ['name', 'remote_id'],
+                'page' => $institution
+            )) ?>
+
+            <?php echo $this->renderPartial('//admin/_table_form', array(
+                'field_options' => ['address1', 'address2', 'city', 'county', 'postcode'],
+                'page' => $address
+            )) ?>
+
             <tr>
-                <td>Name</td>
-                <td> <?php echo CHtml::activeTextField($institution, 'name', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>Remote ID</td>
-                <td> <?php echo CHtml::activeTextField($institution, 'remote_id', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>Address 1</td>
-                <td> <?php echo CHtml::activeTextField($address, 'address1', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>Address 2</td>
-                <td> <?php echo CHtml::activeTextField($address, 'address2', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>City</td>
-                <td> <?php echo CHtml::activeTextField($address, 'city', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>County</td>
-                <td> <?php echo CHtml::activeTextField($address, 'county', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr>
-                <td>Postcode</td>
-                <td> <?php echo CHtml::activeTextField($address, 'postcode', ['class' => 'cols-full']); ?> </td>
-            </tr>
-            <tr class="col-gap">
                 <td>Country</td>
-                <td >
+                <td>
                     <?php echo CHtml::activeDropDownList($address, 'country_id',
                         CHtml::listData( Country::model()->findAll() , 'id', 'name'), ['class' => 'cols-full']); ?>
                 </td>
@@ -87,4 +70,4 @@
     </div>
 
 	<?php $this->endWidget()?>
-</div>
+</main>

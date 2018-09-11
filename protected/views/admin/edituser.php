@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-  <h2>Edit user</h2>
+<main class="oe-full-main admin-main">
+    <h2><?php echo $user->id ? 'Edit' : 'Add'?> commissioning body</h2>
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -29,56 +29,116 @@
             'field' => 4,
         ),
     )) ?>
-    <?php echo $form->textField($user, 'username', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->textField($user, 'title', array('autocomplete' => Yii::app()->params['html_autocomplete']), null,
-        array('field' => 2)) ?>
-    <?php echo $form->textField($user, 'first_name',
-        array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <div class="cols-7">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-8">
+            </colgroup>
+            <tbody>
 
-    <?php echo $form->textField($user, 'qualifications',
-        array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-  <?php echo $form->textField($user, 'role', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-  <?php echo $form->dropDownList($user, 'doctor_grade_id',
-      CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'),
-      array('empty' => '- Select Grade -')); ?>
-  <?php echo $form->textField($user, 'registration_code',
-      array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-  <?php echo $form->radioBoolean($user, 'active') ?>
-    <?php echo $form->radioBoolean($user, 'global_firm_rights') ?>
-    <?php
-    echo $form->multiSelectList(
-        $user,
-        'User[firms]',
-        'firms',
-        'id',
-        CHtml::listData(Firm::model()->findAll(), 'id', 'name'),
-        array(),
-        array('label' => 'Firms', 'empty' => '-- Add --')
-    ); ?>
+            <?php echo $this->renderPartial('//admin/_table_form', array(
+                'field_options' => ['username', 'title', 'first_name', 'last_name', 'email', 'qualifications', 'role'],
+                'page' => $user
+            )) ?>
 
+            <tr>
+                <td>Grade</td>
+                <td >
+                    <?php echo CHtml::activeDropDownList($user, 'doctor_grade_id',
+                        CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'),
+                        ['class' => 'cols-full', 'empty' => '- Select Grade -']); ?></td>
+            </tr>
+            <tr>
+                <td>Registration Code</td>
+                <td><?php echo CHtml::activeTextField($user, 'registration_code', ['class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']]); ?><td>
+            </tr>
+            <tr>
+                <td>Active</td>
+                <td><?php echo CHtml::activeRadioButtonList($user,'active', [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?></td>
+            </tr>
+            <tr>
+                <td>Global firm rights</td>
+                <td>
+                    <?php echo CHtml::activeRadioButtonList($user,'global_firm_rights', [1 => 'Yes', 0 => 'No'],
+                        ['separator' => ' ', 'selected' => '1']); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Firms</td>
+                <td>
+                    <?php
+                    echo $form->multiSelectList(
+                        $user,
+                        'User[firms]',
+                        'firms',
+                        'id',
+                        CHtml::listData(Firm::model()->findAll(), 'id', 'name'),
+                        null,
+                        ['class' => 'cols-full', 'label' => 'Firms', 'empty' => '-- Add --', 'nowrapper' => true]
+                    );
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Clinically trained</td>
+                <td><?php echo CHtml::activeRadioButtonList($user,'is_clinical', [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?></td>
+            </tr>
+            <tr>
+                <td>Consultant</td>
+                <td><?php echo CHtml::activeRadioButtonList($user,'is_consultant', [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?></td>
+            </tr>
+            <tr>
+                <td>Surgeon</td>
+                <td><?php echo CHtml::activeRadioButtonList($user,'is_surgeon', [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td>
+                    <?php if(!$is_ldap || $user->is_local):?>
+                        <?php echo CHtml::activePasswordField($user, 'password', ['class' => 'cols-full',
+                            'autocomplete' => Yii::app()->params['html_autocomplete']]); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Confirm password</td>
+                <td>
+                    <?php if(!$is_ldap || $user->is_local):?>
+                        <?php echo CHtml::activePasswordField($user, 'password_repeat', ['class' => 'cols-full',
+                            'autocomplete' => Yii::app()->params['html_autocomplete']]); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Roles</td>
+                <td>
+                    <?php echo $form->multiSelectList(
+                        $user,
+                        'User[roles]',
+                        'roles',
+                        'name',
+                        CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'),
+                        null,
+                        ['class' => 'cols-full', 'label' => 'Roles', 'empty' => '-- Add --', 'nowrapper' => true]
+                    ); ?>
+                </td>
+            </tr>
 
-    <?php echo $form->radioBoolean($user, 'is_clinical') ?>
-    <?php echo $form->radioBoolean($user, 'is_consultant') ?>
-    <?php echo $form->radioBoolean($user, 'is_surgeon') ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
+                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
+                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
+                        'data-uri' => '/admin/users', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 
-    <?php if(!$is_ldap || $user->is_local):?>
-
-        <?php echo $form->passwordField($user, 'password', array('autocomplete' => Yii::app()->params['html_autocomplete']),
-            array('empty' => '', array('empty' => '- None -'))) ?>
-        <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>
-
-    <?php endif; ?>
-
-    <?php echo $form->multiSelectList($user,
-        'User[roles]',
-        'roles',
-        'name',
-        CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'),
-        array(),
-        array('label' => 'Roles', 'empty' => '-- Add --')
-    ); ?>
-    <?php echo $form->formActions(); ?>
     <?php $this->endWidget() ?>
-</div>
+</main>

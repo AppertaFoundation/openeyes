@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="admin box">
-	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
+<main class="oe-full-main admin-main">
+    <?php $this->widget('GenericSearch', array('search' => $search)); ?>
 
 	<form id="admin_firms">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
@@ -68,4 +68,4 @@
 			</tfoot>
 		</table>
 	</form>
-</div>
+</main>
