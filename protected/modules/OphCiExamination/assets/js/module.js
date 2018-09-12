@@ -475,7 +475,7 @@ $(document).ready(function() {
 
         // Clear inputs marked as clearWithEyedraw
         if (side) {
-            var element_or_side = $(this).closest('.side');
+            var element_or_side = $(this).closest('.js-element-eye');
         } else {
             var element_or_side = element;
         }
@@ -737,10 +737,10 @@ $(document).ready(function() {
         });
 
         if (showOther) {
-            $(this).parents('.side').find('.lasertype_other').show();
+            $(this).parents('.js-element-eye').find('.lasertype_other').show();
         }
         else {
-            $(this).parents('.side').find('.lasertype_other').hide();
+            $(this).parents('.js-element-eye').find('.lasertype_other').hide();
         }
     });
 
@@ -825,7 +825,7 @@ $(document).ready(function() {
      */
     $('body').delegate('.gonioBasic', 'change', function(e) {
         var position = $(this).attr('data-position');
-        var expert = $(this).closest('.side').find('.gonioExpert[data-position="'+position+'"]');
+        var expert = $(this).closest('.js-element-eye').find('.gonioExpert[data-position="'+position+'"]');
         if($(this).val() == 0) {
             $('option',expert).attr('selected', function () {
                 return ($(this).attr('data-value') == '1');
@@ -842,13 +842,13 @@ $(document).ready(function() {
      * colour vision behaviours
      */
     $(this).delegate('.colourvision_method', 'change', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
+        var side = $(this).closest('.js-element-eye').attr('data-side');
         OphCiExamination_ColourVision_addReading(this, side);
         e.preventDefault();
     });
 
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .removeCVReading', 'click', function(e) {
-        var wrapper = $(this).closest('.side');
+        var wrapper = $(this).closest('.js-element-eye');
         var side = wrapper.attr('data-side');
         var row = $(this).closest('tr');
         var id = $('.methodId', row).val();
@@ -869,8 +869,8 @@ $(document).ready(function() {
     });
 
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .clearCV', 'click', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
-        $(this).closest('.side').find('tr.colourvisionReading i.removeCVReading').click();
+        var side = $(this).closest('.js-element-eye').attr('data-side');
+        $(this).closest('.js-element-eye').find('tr.colourvisionReading i.removeCVReading').click();
         $(this).addClass('hidden');
         e.preventDefault();
     });
@@ -1377,7 +1377,7 @@ function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
  * Show other type field only if type is set to "Other"
  */
 function OphCiExamination_Refraction_updateType(field) {
-    var other = $(field).closest('.element-eye').find('.refraction-type-other');
+    var other = $(field).closest('.js-element-eye').find('.refraction-type-other');
     if ($(field).val() == '') {
         other.show();
         other.find('.refraction-type-other-field').focus();
@@ -1522,7 +1522,7 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
         if (dirty) {
             $('#drgrading_dirty').show();
         }
-    dr_grade.find('.side[data-side="'+side+'"]').removeClass('uninitialised');
+    dr_grade.find('.js-element-eye[data-side="'+side+'"]').removeClass('uninitialised');
 }
 
 /**
@@ -1531,7 +1531,7 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
  * @param side
  */
 function OphCiExamination_DRGrading_canUpdate(side) {
-    var dr_side = $(".js-active-elements ."+OE_MODEL_PREFIX+"Element_OphCiExamination_DRGrading").find('.side[data-side="'+side+'"]');
+    var dr_side = $(".js-active-elements ."+OE_MODEL_PREFIX+"Element_OphCiExamination_DRGrading").find('.js-element-eye[data-side="'+side+'"]');
 
     if (dr_side.length && !dr_side.hasClass('uninitialised') && !$('#drgrading_dirty').is(":visible")) {
         return true;
@@ -1550,7 +1550,7 @@ function OphCiExamination_DRGrading_update(side) {
         physical_side = 'right';
     }
     if (OphCiExamination_DRGrading_canUpdate(side)) {
-        var cv = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('.side.' + physical_side).find('canvas');
+        var cv = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('.js-element-eye.' + physical_side).find('canvas');
         var drawingName = cv.data('drawing-name');
         var drawing = ED.getInstance(drawingName);
         var grades = gradeCalculator(drawing);
@@ -1572,7 +1572,7 @@ function OphCiExamination_PosteriorPole_init() {
                 side = 'left';
             }
             var dr_grade = $('#' + _drawing.canvas.id).closest('.element').find('.' + OE_MODEL_PREFIX + dr_grade_et_class);
-            var dr_side = dr_grade.find('.side[data-side="'+side+'"]');
+            var dr_side = dr_grade.find('.js-element-eye[data-side="'+side+'"]');
 
             OphCiExamination_DRGrading_dirtyCheck(_drawing);
 

@@ -18,61 +18,63 @@
 ?>
 
 <?php
-    $t_svc = Yii::app()->service->getService('PatientTicketing_Ticket');
-    $q_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-    if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-'.$q_svc->getQueueSetForTicket($this->ticket->id)->getId())) {
-        ?>
-		<div class="alert-box with-icon success">
-			<?php echo $flash_message; ?>
-		</div>
-	<?php } ?>
+$t_svc = Yii::app()->service->getService('PatientTicketing_Ticket');
+$q_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
+$flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $q_svc->getQueueSetForTicket($this->ticket->id)->getId());
+if ($flash_message) {
+    ?>
+  <div class="alert-box with-icon success">
+      <?php echo $flash_message; ?>
+  </div>
+<?php } ?>
 
 
-<form id="PatientTicketing-moveForm-<?= $this->ticket->id ?>" class="PatientTicketing-moveTicket" data-patient-id="<?= $this->ticket->patient_id ?>">
-	<input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
-	<input type="hidden" name="from_queue_id" value="<?= $this->ticket->current_queue->id ?>" />
-	<input type="hidden" name="ticket_id" value="<?= $this->ticket->id ?>" />
-	<div>
-		<h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
-		<?php
-    if (count($this->outcome_options) > 1) { ?>
-				<fieldset class="data-group">
-					<div class="cols-2 column">
-						<label for="to_queue_id">To:</label>
-					</div>
-					<div class="cols-3 column">
-						<?php echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
-						    'id' => 'to_queue_id-'.$this->ticket->id,
-                'empty' => ' - Please Select -', )); ?>
-					</div>
-					<div class="cols-1 column end">
-						<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;">
-					</div>
-				</fieldset>
-		<?php } else { ?>
-				<input type="hidden" name="to_queue_id" value="<?=$this->outcome_queue_id?>" />
-		<?php } ?>
-	</div>
-	<div id="PatientTicketing-queue-assignment" data-queue="<?=$this->ticket->current_queue->id?>">
-		<?php $buttons = '<div class="buttons text-right">
-                          <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
-                          <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->queueset->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
+<form id="PatientTicketing-moveForm-<?= $this->ticket->id ?>" class="PatientTicketing-moveTicket"
+      data-patient-id="<?= $this->ticket->patient_id ?>">
+  <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+  <input type="hidden" name="from_queue_id" value="<?= $this->ticket->current_queue->id ?>"/>
+  <input type="hidden" name="ticket_id" value="<?= $this->ticket->id ?>"/>
+
+  <h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
+  <div class="row-divider">
+      <?php if (count($this->outcome_options) > 1) { ?>
+        <fieldset class="data-group">
+          <div class="cols-2 column">
+            <label for="to_queue_id">To:</label>
+          </div>
+          <div class="cols-3 column">
+              <?php echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
+                  'id' => 'to_queue_id-' . $this->ticket->id,
+                  'empty' => ' - Please Select -',
+              )); ?>
+          </div>
+
+          <i class="loader spinner" style="display: none;"></i>
+        </fieldset>
+      <?php } else { ?>
+        <input type="hidden" name="to_queue_id" value="<?= $this->outcome_queue_id ?>"/>
+      <?php } ?>
+  </div>
+  <span id="PatientTicketing-queue-assignment" data-queue="<?= $this->ticket->current_queue->id ?>">
+      <?php $buttons = '<div class="row flex-layout flex-right">
+                          <button class="green hint js-ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">OK</button>
+                          <button class="red hint js-cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Cancel</button>
                         </div>';
 
-            $buttons_drawn = false;
-
-            if ($this->outcome_queue_id) {
-                $this->widget('OEModule\PatientTicketing\widgets\QueueAssign', array(
-                        'queue_id' => $this->outcome_queue_id,
-                        'patient_id' => $this->ticket->patient_id,
-                        'current_queue_id' => $this->ticket->current_queue->id,
-                        'ticket' => $this->ticket,
-                        'extra_view_data' => array('buttons'=>$buttons)
-                    ));
-
-                $buttons_drawn = true;
-            } ?>
-	</div>
-	<div class="alert-box alert hidden"></div>
-    <?php if(!$buttons_drawn) echo $buttons; ?>
+      $buttons_drawn = false;
+      if ($this->outcome_queue_id) {
+          $this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
+              'queue_id' => $this->outcome_queue_id,
+              'patient_id' => $this->ticket->patient_id,
+              'current_queue_id' => $this->ticket->current_queue->id,
+              'ticket' => $this->ticket,
+              'extra_view_data' => array('buttons' => $buttons),
+          ));
+          $buttons_drawn = true;
+      } ?>
+  </span>
+  <div class="alert-box alert hidden"></div>
+    <?php if (!$buttons_drawn) {
+        echo $buttons;
+    } ?>
 </form>
