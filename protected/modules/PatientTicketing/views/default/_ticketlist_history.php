@@ -18,7 +18,11 @@
 ?>
 
 <?php
-    foreach ($assignments as $ass) {
-        $this->renderPartial('_ticketlist_history_row', array('ass' => $ass));
-    }
+/**
+ * @var \OEModule\PatientTicketing\models\TicketQueueAssignment $assignments
+ */
+
+foreach ($assignments as $ass) {
+    $this->renderPartial('_ticketlist_history_row', array('ass' => $ass));
+}
 ?>

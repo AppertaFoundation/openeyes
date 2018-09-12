@@ -16,6 +16,7 @@ abstract class EpisodeSummaryWidget extends CWidget
 {
     public $episode;
     public $event_type;
+    public $patient;
 
     /**
      * Can this summary block be collapsed?
@@ -56,7 +57,7 @@ abstract class EpisodeSummaryWidget extends CWidget
             }
         }
         $event_opnpte = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->episode->patient);
+        $events = Event::model()->getEventsOfTypeForPatient($event_opnpte ,$this->patient);
         $eye_side_list = [Eye::LEFT =>['left'], Eye::RIGHT=>['right'], Eye::BOTH=>['left', 'right']];
 
         foreach ($events as $event) {
@@ -86,7 +87,7 @@ abstract class EpisodeSummaryWidget extends CWidget
         $laser_marking = array('right'=>array(), 'left'=>array());
 
         $event_laser = EventType::model()->find('class_name=?', array('OphTrLaser'));
-        $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->episode->patient);
+        $events = Event::model()->getEventsOfTypeForPatient($event_laser ,$this->patient);
 
         foreach ($events as $event) {
             $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);

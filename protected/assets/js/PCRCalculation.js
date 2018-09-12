@@ -5,7 +5,7 @@
  * @returns {*|jQuery|HTMLElement}
  */
 function getPcrContainer(ev) {
-    var side = $(ev.target).closest('.js-side').attr('data-side');
+    var side = $(ev.target).closest('.js-element-eye').attr('data-side');
 
     //for future debugging
     if(!side){

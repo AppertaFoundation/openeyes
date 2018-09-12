@@ -50,6 +50,29 @@ class OphCoCvi_API extends \BaseAPI
     }
 
     /**
+     * Ensure namespace prepended appropriately if necessary
+     *
+     * @param $element
+     * @return string
+     */
+    private function namespaceElementName($element)
+    {
+        if (strpos($element, 'models') == 0) {
+            $element = 'OEModule\OphCoCvi\\' . $element;
+        }
+        return $element;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
+    {
+        return parent::getLatestElement(
+            $this->namespaceElementName($element), $patient, $use_context, $before, $after);
+    }
+
+    /**
      * Convenience wrapper to allow template rendering.
      *
      * @param string $view
@@ -227,7 +250,6 @@ class OphCoCvi_API extends \BaseAPI
     {
         $show_alert = false;
         $base_values = array();
-        \Yii::log(print_r(func_get_args(), true));
         if($element) {
 
             $show_alert = !$element->cvi_alert_dismissed && !$this->hasCVI($patient);

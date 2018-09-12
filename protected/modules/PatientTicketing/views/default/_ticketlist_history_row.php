@@ -15,17 +15,20 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\PatientTicketing\models\TicketQueueAssignment $ass
+ */
 ?>
 
-<tr class="history" data-ticket-id="<?= $ass->ticket->id?>">
-	<td><?= $ass->queue->name ?></td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><?= Helper::convertDate2NHS($ass->assignment_date)?></td>
-<td><?= $ass->assignment_firm->getNameAndSubspecialty() ?></td>
-<td><?= $ass->assignment_user->getFullName() ?></td>
-<td><?= $ass->report ?></td>
-<td><?= Yii::app()->format->Ntext($ass->notes) ?></td>
-<!--<td>&nbsp;</td>-->
-<td>&nbsp;</td>
+<tr class="history" data-ticket-id="<?= $ass->ticket->id ?>">
+  <td><?= $ass->queue->name ?></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td><?= Helper::convertDate2NHS($ass->assignment_date) ?></td>
+  <td><?= $ass->assignment_firm->getNameAndSubspecialty() ?></td>
+  <td><?= $ass->assignment_user->getFullName() ?></td>
+  <td><?= $ass->report ?></td>
+  <td><?= Yii::app()->format->Ntext($ass->notes) ?></td>
+  <td>&nbsp;</td>
 </tr>

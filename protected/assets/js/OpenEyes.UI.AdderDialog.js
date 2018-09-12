@@ -57,7 +57,7 @@
     var dialog = this;
 
     var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
-    if(this.options.width) {
+    if (this.options.width) {
       content.css('width', this.options.width);
     }
     var $closeButton = $('<div />', {class: 'close-icon-btn'})
@@ -97,13 +97,19 @@
       });
     } else {
       this.popup.on('click', 'li', function () {
+
         if (!$(this).hasClass('selected')) {
           if (!$(this).closest('ul').data('multiselect')) {
             $(this).parent('ul').find('li').removeClass('selected');
           }
           $(this).addClass('selected');
         } else {
-          $(this).removeClass('selected');
+
+          // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
+          if(!$(this).data('itemSet').options.mandatory
+          || $(this).closest('ul').find('li.selected').length > 1) {
+            $(this).removeClass('selected');
+          }
         }
       });
     }
@@ -214,6 +220,9 @@
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if(item.selected) {
+        $listItem.addClass('selected');
+      }
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
@@ -320,31 +329,30 @@
    * @param Object item
    * @returns Object
    */
-  AdderDialog.prototype.constructDataset =  function(item){
+  AdderDialog.prototype.constructDataset = function (item) {
     var dataset = {};
-    if(typeof item === 'string'){
+    if (typeof item === 'string') {
       dataset['data-label'] = item;
     } else {
-      for (var key in item){
-        dataset['data-'+key] = item[key];
+      for (var key in item) {
+        dataset['data-' + key] = item[key];
       }
     }
     return dataset;
   };
 
   AdderDialog.prototype.return = function () {
+    var shouldClose = true;
     if (this.options.onReturn) {
       var selectedItems = this.getSelectedItems();
-      var result = this.options.onReturn(this, selectedItems);
-      if (result) {
-        this.close();
-      }
-    } else {
-      this.close();
+      shouldClose = this.options.onReturn(this, selectedItems) !== false;
     }
 
-    if (this.options.deselectOnReturn) {
-      this.popup.find('li').removeClass('selected');
+    if (shouldClose) {
+      if (this.options.deselectOnReturn) {
+        this.popup.find('li').removeClass('selected');
+      }
+      this.close();
     }
   };
 
@@ -370,6 +378,10 @@
       dialog.searchResultList.empty();
       dialog.searchResultList.toggle(!no_data);
       dialog.noSearchResultsWrapper.toggle(no_data);
+
+      if(dialog.options.searchOptions.resultsFilter) {
+        results = dialog.options.searchOptions.resultsFilter(results);
+      }
 
       $(results).each(function (index, result) {
         var dataset = AdderDialog.prototype.constructDataset(result);

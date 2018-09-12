@@ -16,121 +16,133 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box reports">
-	<div class="report-fields">
-		<h2>Diagnoses report</h2>
-		<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'report-form',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array('label' => 2, 'field' => 10),
-            'action' => Yii::app()->createUrl('/report/downloadReport'),
-        ))?>
+<h2>Diagnoses report</h2>
 
-		<input type="hidden" name="report-name" value="Diagnoses" />
+<div class="row divider">
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'report-form',
+        'enableAjaxValidation' => false,
+        'layoutColumns' => array('label' => 2, 'field' => 10),
+        'action' => Yii::app()->createUrl('/report/downloadReport'),
+    )) ?>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="start_date">
-					Start date:
-				</label>
-			</div>
-			<div class="cols-2 column end">
-				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                    'name' => 'start_date',
-                    'options' => array(
-                        'showAnim' => 'fold',
-                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                    ),
-                    'value' => date('j M Y', strtotime('-1 year')),
-                ))?>
-			</div>
-		</div>
+  <input type="hidden" name="report-name" value="Diagnoses"/>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-				<label for="end_date">
-					End date:
-				</label>
-			</div>
-			<div class="cols-2 column end">
-				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                    'name' => 'end_date',
-                    'options' => array(
-                        'showAnim' => 'fold',
-                        'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                    ),
-                    'value' => date('j M Y'),
-                ))?>
-			</div>
-		</div>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-3">
+      <col class="cols-3">
+      <col class="cols-3">
+      <col class="cols-3">
+    </colgroup>
+    <tbody>
+    <tr class="col-gap">
+      <td>Start date:</td>
+      <td>
+        <input id="start_date"
+               class="start-date"
+               placeholder="dd-mm-yyyy"
+               name="start_date"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+      <td>End date:</td>
+      <td>
+        <input id="end_date"
+               class="end-date"
+               placeholder="dd-mm-yyyy"
+               name="end_date"
+               autocomplete="off"
+               value= <?= date('d-m-Y'); ?>
+        >
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-    <div class="cols-12 column end">
-				<div class="whiteBox forClinicians">
-          <table class="subtleWhite cols-full">
-              <colgroup>
-                <col class="cols-5">
-                <col class="cols-3">
-              </colgroup>
-							<thead>
-								<tr>
-									<th>Diagnosis</th>
-									<th>Principal</th>
-									<th>Edit</th>
-								</tr>
-							</thead>
-							<tbody id="Reports_diagnoses">
-							</tbody>
-						</table>
-				</div>
-			</div>
+  <table>
+    <tbody>
+    <tr>
+      <td>
+        <div id="selected_diagnoses">
+        </div>
+          <?php $this->widget('application.widgets.DiagnosisSelection', array(
+              'field' => 'disorder_id',
+              'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+              'layout' => 'minimal',
+              'callback' => 'Reports_AddDiagnosis',
+          )) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="standard cols-full">
+    <colgroup>
+      <col class="cols-4">
+      <col class="cols-4">
+      <col class="cols-4">
+    </colgroup>
+    <thead>
+    <tr>
+      <th>Diagnosis</th>
+      <th>Principal</th>
+      <th>Edit</th>
+    </tr>
+    </thead>
+    <tbody id="Reports_diagnoses">
+    </tbody>
+  </table>
 
-		<div id="selected_diagnoses">
-		</div>
+  <table class="standard cols-full">
+    <tbody>
+    <tr>
+      <td>
+        <input type="radio" name="condition_type" id="condition_or" value="or" checked="checked"/>
+      </td>
+      <td>
+        Match patients with <strong>any</strong> of these diagnoses
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="radio" name="condition_type" id="condition_and" value="and"/>
+      </td>
+      <td>
+        Match patients with <strong>all</strong> of these diagnoses
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-		<?php $this->widget('application.widgets.DiagnosisSelection', array(
-                'field' => 'disorder_id',
-                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-                'layout' => 'minimal',
-                'callback' => 'Reports_AddDiagnosis',
-        ))?>
+    <?php $this->endWidget() ?>
 
-		<div class="data-group">
-			<div class="cols-2 column">
-			</div>
-			<div class="cols-9 column end">
-				<input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
-				<label for="condition_or">
-					Match patients with <strong>any</strong> of these diagnoses
-				</label>
-			</div>
-		</div>
-		<div class="data-group">
-			<div class="cols-2 column">
-			</div>
-			<div class="cols-9 column end">
-				<input type="radio" name="condition_type" id="condition_and" value="and" />
-				<label for="condition_and">
-					Match patients with <strong>all</strong> of these diagnoses
-				</label>
-			</div>
-		</div>
+  <div class="errors alert-box alert with-icon" style="display: none">
+    <p>Please fix the following input errors:</p>
+    <ul>
+    </ul>
+  </div>
 
-		<?php $this->endWidget()?>
-	</div>
+  <table class="standard cols-full">
+    <tbody>
+    <tr>
+      <td>
+        <div class="row flex-layout flex-right">
+          <button type="submit" class="button green hint display-report" name="run">
+            <span class="button-span button-span-blue">Display report</span>
+          </button>
+          &nbsp;
+          <button type="submit" class="button green hint download-report" name="run">
+            <span class="button-span button-span-blue">Download report</span>
+          </button>
+          <i class="spinner loader" style="display: none;"></i>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-	<div class="errors alert-box alert with-icon" style="display: none">
-		<p>Please fix the following input errors:</p>
-		<ul>
-		</ul>
-	</div>
-
-	<div style="margin-top: 2em;">
-		<button type="submit" class="classy blue mini display-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
-		<button type="submit" class="classy blue mini download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
-		<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-	</div>
-
-	<div class="reportSummary report curvybox white blueborder" style="display: none;">
-	</div>
+  <div class="js-report-summary report-summary" style="display: none;">
+  </div>
 </div>
