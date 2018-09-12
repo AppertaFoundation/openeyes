@@ -343,30 +343,7 @@ class DefaultController extends BaseEventTypeController
                 }
                 break;
             case 'examination':
-                $examination_findings = $this->process_examination_findings($_GET['patient_id'], $_GET['string_id']);
-                if(strpos($examination_findings, "Refraction") == 0){
-                    $examination_findings = substr($examination_findings, strpos($examination_findings,"right:"));
-                    $examination_findings = str_replace(":", '=', $examination_findings);
-                    $refractionValuesExploded = explode("=", $examination_findings);
-
-                echo '
-                     <table>
-                        <thead>
-                        <tr>
-                           <th>Right Eye</th>
-                           <th>Left Eye</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                              <td>' . explode('left', $refractionValuesExploded[1])[0] . '</td>
-                              <td>' . $refractionValuesExploded[2] . '</td>
-                            </tr>
-                        </tbody>
-                    </table>';
-                } else {
-                    echo $examination_findings;
-                }
+                echo $this->process_examination_findings($_GET['patient_id'], $_GET['string_id']);
                 return;
             default:
                 throw new Exception('Unknown letter string type: '.@$_GET['string_type']);
