@@ -18,7 +18,8 @@
 ?>
 <?php
 $section_classes = array('element full edit');
-$section_classes[] = CHtml::modelName($element->elementType->class_name);
+$model_name = CHtml::modelName($element->elementType->class_name);
+$section_classes[] = $model_name;
 if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
@@ -36,7 +37,7 @@ $element_Type = $element->getElementType();
     <section
             class="<?php echo implode(' ', $section_classes); ?>"
             data-element-type-id="<?php echo $element->elementType->id ?>"
-            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+            data-element-type-class="<?php echo $model_name ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
             data-element-parent-id="<?php
@@ -46,22 +47,21 @@ $element_Type = $element->getElementType();
             data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
     >
         <?php
-        if (isset($_POST[CHtml::modelName($element->elementType->class_name)]['element_dirty'])) {
-            $element_dirty = $_POST[CHtml::modelName($element->elementType->class_name)]['element_dirty'];
+        if (isset($_POST[$model_name]['element_dirty'])) {
+            $element_dirty = $_POST[$model_name]['element_dirty'];
         } else if ($element->isNewRecord) {
             $element_dirty = 0;
         } else {
             $element_dirty = 1;
         } ?>
 
-        <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_dirty]"
+        <input type="hidden" name="<?php echo $model_name?>[element_dirty]"
                value=<?= $element_dirty ?>>
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
             <header class="element-header">
                 <!-- Add a element remove flag which is used when saving data -->
-                <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]" value="0">
-
+                <input type="hidden" name="<?php echo $model_name?>[element_removed]" value="0">
                 <!-- Element title -->
                 <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
             </header>
@@ -98,7 +98,7 @@ $element_Type = $element->getElementType();
     <section
             class="<?php echo implode(' ', $section_classes); ?>"
             data-element-type-id="<?php echo $element->elementType->id ?>"
-            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+            data-element-type-class="<?php echo $model_name ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?php echo $element->elementType->display_order ?>">
 

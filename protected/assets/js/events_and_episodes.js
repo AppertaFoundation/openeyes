@@ -44,7 +44,6 @@ $(document).ready(function(){
         markElementDirty($(this).closest('.element'));
     });
 
-
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
 			$(this).prev().click();
