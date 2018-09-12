@@ -214,7 +214,7 @@
    */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
-    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
+    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect, 'data-id':itemSet.options.id});
 
     itemSet.items.forEach(function (item) {
       var dataset = AdderDialog.prototype.constructDataset(item);

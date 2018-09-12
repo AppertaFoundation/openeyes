@@ -38,7 +38,12 @@ if (!isset($values)) {
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
-        <?= $values['allergy_display']; ?>
+        <span class="js-other-allergy">
+            <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off'));?>
+        </span>
+        <span class="js-not-other-allergy">
+            <?= $values['allergy_display'];?>
+        </span>
         <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
     </td>
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
