@@ -242,10 +242,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function(selectedItems)
     {
         var rows = this.createRow(selectedItems);
-        window.selected = selectedItems;
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
-            window.secondaryDiagnoses = selectedItems[i].secondary;
             this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'));
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
