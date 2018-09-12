@@ -30,7 +30,7 @@ $required_risk_ids = array_map(function ($r) {
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-  <div class="data-group cols-full">
+  <div class="data-group cols-10">
     <div
         class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
       <label for="<?= $model_name ?>_no_risks">Confirm patient has no risks:</label>
@@ -41,7 +41,7 @@ $required_risk_ids = array_map(function ($r) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table
-        class="<?= $model_name ?>_entry_table cols-10 <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
+        class="<?= $model_name ?>_entry_table cols-full <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
       <tbody>
       <?php
       $row_count = 0;

@@ -38,7 +38,7 @@
           <th>Side</th>
           <th>Condition</th>
           <th>Comments</th>
-          <th>Action</th>
+          <th></th>
       </tr>
       </thead>
       <tbody>
