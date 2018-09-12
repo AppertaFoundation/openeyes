@@ -27,7 +27,7 @@
         <div class="collapse-group-icon">
           <i class="oe-i minus"></i>
         </div>
-        <h3 class="collapse-group-header"<?php echo $module?></h3>
+        <h3 class="collapse-group-header"><?php echo $module?></h3>
         <ul class="reports-nav collapse-group-content">
             <?php foreach ($items as $item => $uri) {
                 $e = explode('/', $uri);
