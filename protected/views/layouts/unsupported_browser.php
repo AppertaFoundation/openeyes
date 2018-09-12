@@ -23,23 +23,8 @@
     <?php $this->renderPartial('//base/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes oe-grid">
 
-<?php $this->renderPartial('//base/_debug'); ?>
-
-<div class="openeyes-brand">
-    <?php $this->renderPartial('//base/_brand'); ?>
-</div>
-<div id="oe-restrict-print">
-  <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to
-    generate a hard copy.</h1>
-</div>
-<?php $this->renderPartial('//base/_header'); ?>
-
-<main class="oe-home" id="oe-home">
-    <?php echo $content; ?>
-</main>
-
-<?php $this->renderPartial('//base/_footer'); ?>
+<body class="browser-not-supported">
+<?php echo $content; ?>
 </body>
 </html>
