@@ -1627,12 +1627,7 @@ class Examination extends OpenEyesPage {
 	public function saveExaminationAndConfirm() {
 		$this->getElement ( 'saveExamination' )->click ();
 		$this->waitForElementDisplayBlock('examSavedOk');
-		//$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if ($this->hasExaminationSaved ()) {
-//			print "Examination has been saved OK";
-		}
-
-		else {
+		if (!$this->hasExaminationSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Examination has NOT been saved!!  WARNING!!" );
 		}
 	}
