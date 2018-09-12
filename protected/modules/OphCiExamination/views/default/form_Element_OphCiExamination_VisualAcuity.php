@@ -29,12 +29,11 @@ $key = 0;
             <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
-            ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-          <span class="js-has-tooltip fa oe-i info small"
-                data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <span class="js-has-tooltip fa oe-i info small"
+                  data-tooltip-content="<?php echo $element->unit->information ?>"></span>
+              <?php }
+      } ?>
       </div>
 </div>
 
@@ -46,15 +45,18 @@ if ($cvi_api) {
 }
 ?>
 <div class="element-fields element-eyes">
-  <input type="hidden" name="visualacuity_readings_valid" value="1"/>
+    <input type="hidden" name="visualacuity_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-        <div class="active-form data-group flex-layout">
+      <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
+          data-side="<?= $eye_side ?>"
+      >
+        <div class="active-form data-group flex-layout"
+             style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+        >
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table class="cols-full blank va_readings"
@@ -87,7 +89,8 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-reading">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
+               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
             <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
@@ -96,7 +99,7 @@ if ($cvi_api) {
           <!--flex bottom-->
         </div>
         <!-- active form-->
-        <div class="inactive-form" style="display: none">
+        <div class="inactive-form"  style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>

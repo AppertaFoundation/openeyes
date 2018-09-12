@@ -379,6 +379,10 @@
       dialog.searchResultList.toggle(!no_data);
       dialog.noSearchResultsWrapper.toggle(no_data);
 
+      if(dialog.options.searchOptions.resultsFilter) {
+        results = dialog.options.searchOptions.resultsFilter(results);
+      }
+
       $(results).each(function (index, result) {
         var dataset = AdderDialog.prototype.constructDataset(result);
         var item = $("<li />", dataset)

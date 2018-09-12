@@ -17,6 +17,9 @@
  */
 ?>
 <?php
+/***
+ * @var $element \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity
+ */
 list($values, $val_options) = $element->getUnitValuesForForm(null, true);
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
 $key = 0;
@@ -33,13 +36,12 @@ $key = 0;
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
               array('class' => 'inline'));
-          ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-        <div class="info">
-          <small><em><?php echo $element->unit->information ?></em></small>
-        </div>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <div class="info">
+              <small><em><?php echo $element->unit->information ?></em></small>
+            </div>
+              <?php
+          } } ?>
   </div>
 </div>
 
@@ -49,9 +51,12 @@ $key = 0;
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-      <div class="active-form data-group flex-layout">
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+          data-side="<?= $eye_side ?>"
+    >
+      <div class="active-form data-group flex-layout"
+           style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+      >
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
           <table class="cols-full blank near-va-readings"
@@ -82,13 +87,15 @@ $key = 0;
             </div>
           </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-near-va-reading">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
+             style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?> ">
           <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
         </div>
       </div>
-      <div class="inactive-form" style="display: none;">
+      <div class="inactive-form"
+           style="<?= $element->hasEye($eye_side)? 'display: none;': ''?>" >
         <div class="add-side">
           <a href="#">
             Add <?= $eye_side ?> side <span class="icon-add-side"></span>
@@ -163,7 +170,6 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath.'/components/chosen/');
 
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
-
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
