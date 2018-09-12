@@ -52,7 +52,7 @@ $cols = array(
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => '<i class="oe-i arrow-down-bold small pad active"></i> Messages',
+        'header' => '<a href="#" class="sortable">Messages <i class="oe-i arrow-down-bold small pad"></i></a>',
         'value' => function ($data) {
             return '<span class="oe-date">'. Helper::convertDate2HTML(Helper::convertMySQL2NHS($data->created_date)).'</span>';
         },
@@ -89,6 +89,15 @@ $cols = array(
         'header' => '',
         'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
         'type' => 'raw',
+    ),
+    array(
+        'name' => 'message-view',
+        'header' => '',
+        'value' =>
+            function ($data) {
+            return '<a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
+        },
+        'type' => 'raw'
     ),
 );
 
@@ -129,9 +138,11 @@ if (!$read_check) {
 
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';
-
+?>
+<div class="messages-all">
+<?php
 $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', array(
-    'itemsCssClass' => 'messages',
+    'itemsCssClass' => 'standard messages highlight-rows',
     'dataProvider' => $dp,
     'htmlOptions' => array('id' => 'inbox-table'),
     'rowCssClassExpression' => '$data->marked_as_read ? "read" : "unread"',
@@ -141,3 +152,4 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
     'enablePagination' => false,
 ));
 ?>
+</div>

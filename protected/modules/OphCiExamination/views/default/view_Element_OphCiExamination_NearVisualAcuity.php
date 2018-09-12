@@ -18,7 +18,7 @@
 ?>
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column">
+      <div class="js-element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)): ?>
             <div class="data-value">
               <?php if ($element->getCombined($eye_side)):

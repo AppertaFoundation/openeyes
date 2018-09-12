@@ -700,10 +700,10 @@ class Examination extends OpenEyesPage {
 		),
 
 		'existingRightAxisCheck' => array (
-			'xpath' => "//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"
+			'xpath' => "//*[@class='js-element-eye right-eye column']//*[contains(text(),'145')]"
 		),
 		'existingLeftAxisCheck' => array (
-			'xpath' => "//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"
+			'xpath' => "//*[@class='js-element-eye left-eye column']//*[contains(text(),'38')]"
 		),
 		'addAllElements' => array (
 			'xpath' => "//*[@class='add-all']"
@@ -736,7 +736,7 @@ class Examination extends OpenEyesPage {
 			//'xpath' => "//*[@class='alert-box error with-icon']//*[contains(text(),'Dilation: Right Treatments cannot be blank.')]"
 		),
 		'removeRefractionRightSide' => array (
-			'xpath' => "//*[@class='element-eye right-eye column side right']"
+			'xpath' => "//*[@class='js-element-eye right-eye column side right']"
 		),
 		'removeAllComorbidities' => array (
 			'xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]"
@@ -1637,11 +1637,11 @@ class Examination extends OpenEyesPage {
 
 	// VALIDATION TESTS
 	protected function doesRightAxisExist() {
-		$this->waitForElementDisplayBlock ( '.element-eye.right-eye.column' );
+		$this->waitForElementDisplayBlock ( '.js-element-eye.right-eye.column' );
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'existingRightAxisCheck' )->getXpath () );
 	}
 	protected function doesLeftAxisExist() {
-		$this->waitForElementDisplayBlock ( '.element-eye.left-eye.column' );
+		$this->waitForElementDisplayBlock ( '.js-element-eye.left-eye.column' );
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'existingLeftAxisCheck' )->getXpath () );
 	}
 	public function rightAxisCheck() {
