@@ -19,12 +19,12 @@
 <div class="element-fields element-eyes data-group">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+      <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
             <?php $this->renderPartial($element->form_view . '_fields',
                 array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
         </div>
-        <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <div class="add-side">
               Set <?= $eye_side ?> side treatment drug <span class="icon-add-side"></span>
           </div>

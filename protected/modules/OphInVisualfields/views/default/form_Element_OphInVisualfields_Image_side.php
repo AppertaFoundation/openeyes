@@ -39,7 +39,7 @@ Yii::app()->clientScript->registerScript(
 );
 
 ?>
-<div class="element-eye <?= $side ?>-eye column">
+<div class="js-element-eye <?= $side ?>-eye column">
     <?php if ($current_field): ?>
       <div class="data-group">
         <div class="cols-5 column">

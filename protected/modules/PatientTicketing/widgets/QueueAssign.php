@@ -44,9 +44,9 @@ class QueueAssign extends \CWidget
     {
         $cls_name = explode('\\', get_class($this));
         $this->shortName = array_pop($cls_name);
-        if (file_exists(dirname(__FILE__).'/js/'.$this->shortName.'.js')) {
-            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js/');
-            Yii::app()->getClientScript()->registerScriptFile($this->assetFolder.'/'.$this->shortName.'.js');
+        if (file_exists(dirname(__FILE__) . '/js/' . $this->shortName . '.js')) {
+            $this->assetFolder = Yii::app()->getAssetManager()->publish(dirname(__FILE__) . '/js/');
+            Yii::app()->getClientScript()->registerScriptFile($this->assetFolder . '/' . $this->shortName . '.js');
         }
 
         if ($this->queue_id) {
@@ -80,6 +80,13 @@ class QueueAssign extends \CWidget
             }
         }
 
-        $this->render('QueueAssign', array('queue' => $queue, 'form_fields' => $form_fields, 'form_data' => $form_data, 'auto_save' => $auto_save, 'print_letter_event' => $print_letter_event, 'extra_view_data' => $this->extra_view_data));
+        $this->render('QueueAssign', array(
+            'queue' => $queue,
+            'form_fields' => $form_fields,
+            'form_data' => $form_data,
+            'auto_save' => $auto_save,
+            'print_letter_event' => $print_letter_event,
+            'extra_view_data' => $this->extra_view_data,
+        ));
     }
 }

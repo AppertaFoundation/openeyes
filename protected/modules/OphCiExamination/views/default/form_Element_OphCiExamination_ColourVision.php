@@ -31,7 +31,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 		};
 	</script>
 	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side" data-side="right">
+	<div class="js-element-eye right-eye column left" data-side="right">
 		<div class="active-form" style="display: <?php if (!$element->hasRight()) {
         ?> none <?php }?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -71,7 +71,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 			</div>
 		</div>
 	</div>
-	<div class="element-eye left-eye column right side" data-side="left">
+	<div class="js-element-eye left-eye column right" data-side="left">
 		<div class="active-form"  style="display:  <?php if (!$element->hasLeft()) {
         ?> none <?php } ?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
