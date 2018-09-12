@@ -13,7 +13,7 @@ default:
             config_script:    protected/config/main.php
 
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             javascript_session: selenium2
             goutte:             ~
             selenium2:
@@ -44,14 +44,14 @@ ci:
             load_db_cmd: "mysql -uroot openeyes < %s; bin/migrate-all.sh"
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             default_session:    saucelabs
             javascript_session: saucelabs
 
 selenium-local:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             default_session:    selenium2
             javascript_session: selenium2
 
@@ -79,7 +79,7 @@ selenium-orbis:
 phantomjs:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             browser_name:       "phantomjs"
             goutte: ~
             default_session:    selenium2
@@ -94,14 +94,14 @@ phantomjs:
 phantomjs-ci:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost
             browser_name:       "phantomjs"
             goutte: ~
             default_session:    selenium2
             javascript_session: selenium2
             selenium2:
               browser: 'phantomjs'
-              wd_host: 10.0.2.2:4444/wd/hub
+              wd_host: localhost:4444/wd/hub
               capabilities: { "browser": "phantomjs"}
 
     formatter:
@@ -111,14 +111,14 @@ phantomjs-ci:
 phantomjs-ci-sub:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888/subfolder
+            base_url:           http://localhost:4444/subfolder
             browser_name:       "phantomjs"
             goutte: ~
             default_session:    selenium2
             javascript_session: selenium2
             selenium2:
               browser: 'phantomjs'
-              wd_host: 10.0.2.2:4444/wd/hub
+              wd_host: localhost:4444/wd/hub
               capabilities: { "browser": "phantomjs"}
 
     formatter:
@@ -128,12 +128,12 @@ phantomjs-ci-sub:
 selenium-ci:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url:           http://localhost:8888
+            base_url:           http://localhost:4444
             browser_name:       "chrome"
             goutte: ~
             default_session:    selenium2
             javascript_session: selenium2
             selenium2:
               browser: 'chrome'
-              wd_host: 10.0.2.2:4444/wd/hub
+              wd_host: localhost:4444/wd/hub
               capabilities: { "browser": "chrome"}
