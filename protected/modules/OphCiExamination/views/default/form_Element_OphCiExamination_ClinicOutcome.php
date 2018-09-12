@@ -39,7 +39,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
       <?php echo CHtml::textField('follow-up-dummy-input', '', array(
           'class' => 'cols-full',
           'rows' => 1,
-          'placeholder' => 'Follow-up',
+          'placeholder' => 'Please select an option from the right',
           'disabled' => true,
           'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
       )) ?>

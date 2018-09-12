@@ -89,7 +89,7 @@ if ($api) {
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-        <div class="element-eye <?= $eye_side ?>-eye column">
+        <div class="js-element-eye <?= $eye_side ?>-eye column">
             <?php
             $_method_name = 'methodname' . ucfirst($eye_side);
             $method_name = $$_method_name;
@@ -180,7 +180,7 @@ if ($api) {
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-            <div class="element-eye <?= $eye_side ?>-eye column">
+            <div class="js-element-eye <?= $eye_side ?>-eye column">
                 <?php
                 $_method_name = 'methodname' . ucfirst($eye_side);
                 $method_name = $$_method_name;
@@ -241,7 +241,7 @@ if ($refractfound) {
         </header>
         <div class="element-fields element-eyes data-group">
             <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-                <div class="element-eye <?php echo $eye_side ?>-eye column">
+                <div class="js-element-eye <?php echo $eye_side ?>-eye column">
                     <?php if ($refractelement->hasEye($eye_side)) {
                         ?>
                         <div class="refraction">
@@ -272,7 +272,7 @@ if ($refractfound) {
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-            <div class="element-eye <?= $eye_side; ?>-eye column">
+            <div class="js-element-eye <?= $eye_side; ?>-eye column">
                 <div class="data-value not-recorded">
                     Not recorded
                 </div>

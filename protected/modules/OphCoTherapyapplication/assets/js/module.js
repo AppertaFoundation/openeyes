@@ -283,7 +283,7 @@ function OphCoTherapyapplication_ComplianceCalculator_init(side) {
 function OphCoTherapyapplication_ComplianceCalculator_update(elem) {
 	var node = elem.parents('.dt-node');
 	var id = node.data('defn').id;
-	var side = node.closest('.side').data('side');
+	var side = node.closest('.js-element-eye').data('side');
 
 	$('#OphCoTherapyapplication_ComplianceCalculator_' + side).data('calc_obj').update(id);
 }
@@ -420,7 +420,7 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
 		hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
 		// check if the other side is visible
 		// if it isn't disable the form elements
-		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('div.side.' + side).hasClass('inactive')) {
+		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('div.js-element-eye.' + side).hasClass('inactive')) {
 			$('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).attr('disabled', 'disabled') });
 		}
 	}
@@ -730,7 +730,7 @@ $(document).ready(function() {
 
 
 	// extend the removal behaviour for diagnosis to affect the dependent elements
-	$(this).delegate('.element-fields .side .active-form a.remove-side', 'click', function(e) {
+	$(this).delegate('.element-fields .js-element-eye .active-form a.remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		var other_side = 'left';
 		if (side == 'left') {
@@ -745,7 +745,7 @@ $(document).ready(function() {
 	});
 
 	// extend the adding behaviour for diagnosis to affect dependent elements
-	$(this).delegate('.element-fields .side .inactive-form a', 'click', function(e) {
+	$(this).delegate('.element-fields .js-element-eye .inactive-form a', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		OphCoTherapyapplication_PatientSuitability_check(side);
 		OphCoTherapyapplication_ContraIndications_check();

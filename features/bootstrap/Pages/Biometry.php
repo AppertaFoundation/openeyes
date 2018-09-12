@@ -124,7 +124,7 @@ class Biometry extends OpenEyesPage
         }
         elseif($tabType=='View'){
             $this->elements['eyeSideData'] = array(
-                'xpath' => "//*[@class='element-eye $eyeSide-eye column']//*[contains(text(),'$value')]"
+                'xpath' => "//*[@class='js-element-eye $eyeSide-eye column']//*[contains(text(),'$value')]"
             );
         }
         else{
@@ -212,7 +212,7 @@ class Biometry extends OpenEyesPage
         $this->waitForElementDisplayNone('eventContent');
         if($tabType=='View') {
             $this->elements['measurementNotRecorded'] = array(
-                'xpath' => "//*[@class='element Element_OphInBiometry_Measurement']//*[@class='element-eye $eyeSide-eye column']//*[contains(text(),'Not recorded')]"
+                'xpath' => "//*[@class='element Element_OphInBiometry_Measurement']//*[@class='js-element-eye $eyeSide-eye column']//*[contains(text(),'Not recorded')]"
             );
         }
         elseif($tabType=='Edit'){

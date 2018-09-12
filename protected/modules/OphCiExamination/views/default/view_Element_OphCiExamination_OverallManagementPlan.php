@@ -81,7 +81,7 @@
   </div>
   <div class="element-eyes">
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-        <div class="element-eye <?= $eye_side ?>-eye">
+        <div class="js-element-eye <?= $eye_side ?>-eye">
           <div class="data-group">
               <?php if ($element->hasEye($eye_side)): ?>
                 <table class="cols-11 large-text last-left">
