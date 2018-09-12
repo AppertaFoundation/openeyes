@@ -115,22 +115,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 // select only the alternate
                 // and only that one - instead of the first/main selected
                 $tr = $(this).closest('tr');
-                item = $option.data('item');
+                item = $option.data('id');
 
                 if (item) {
-                    row = controller.createRow({disorder_id: item.id, disorder_display: item.label});
+                    row = controller.createRow([{id: $option.data('id'), label: $option.data('label')}]);
                     $tr.remove();
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
                     controller.setDatepicker();
                 }
-            } else if (type && type === 'disorder') {
+            } else if(type && type === 'disorder') {
                 // just add the disorder as an extra row
-                row = controller.createRow({disorder_id: $(this).val(), disorder_display: $option.text()});
+                row = controller.createRow([{id: $option.data('id'), label: $option.data('label')}]);
                 controller.$table.find('tbody').append(row);
             } else if (type && type === 'finding') {
                 //Add Further Findings
-                OphCiExamination_AddFinding($(this).val(), $option.text());
+                OphCiExamination_AddFinding($option.data('id'), $option.data('label'));
             }
 
             $(this).closest('.condition-secondary-to-wrapper').hide();
@@ -217,6 +217,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     DiagnosesController.prototype.createRow = function(selectedItems)
     {
+        console.log(selectedItems);
       var newRows = [];
       var template = this.templateText;
       var element = this.$element;
@@ -229,6 +230,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+        console.log(selectedItems[i].id);
+        console.log(selectedItems[i].label);
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
         data.eye_id = selectedItems.eye_id;
@@ -242,10 +245,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function(selectedItems)
     {
         var rows = this.createRow(selectedItems);
+        window.selected = selectedItems;
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
+            console.log(i);
+            console.log(selectedItems[i].secondary);
+            window.secondaryDiagnoses = selectedItems[i].secondary;
+            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'));
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
+        }
+    };
+
+    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr){
+        if(this.subspecialtyRefSpec === 'GL') {
+            $tr.find('.condition-secondary-to-wrapper').show();
+            let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
+
+            for (var i in secondary_diagnoses) {
+                console.log(secondary_diagnoses[i].id);
+                data = {};
+                data.label = secondary_diagnoses[i]['label'];
+                data.id = secondary_diagnoses[i]['id'];
+                data.type = secondary_diagnoses[i]['type'];
+                var select = Mustache.render(template, data);
+                $tr.find('.condition-secondary-to').append(select);
+            }
+        } else {
+            $tr.find('.condition-secondary-to-wrapper').hide();
         }
     };
 

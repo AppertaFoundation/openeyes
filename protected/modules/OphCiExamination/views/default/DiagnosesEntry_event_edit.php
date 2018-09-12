@@ -55,6 +55,15 @@ if (isset($values['date']) && strtotime($values['date'])) {
         >
     </td>
 
+    <td>
+        <div class='condition-secondary-to-wrapper' style='display:none;'>
+            <div>Associated diagnosis:</div>
+            <select class='condition-secondary-to'>
+                <option>Please select</option>
+            </select>
+        </div>
+    </td>
+
     <?php $this->widget('application.widgets.EyeSelector', [
         'inputNamePrefix' => $field_prefix,
         'selectedEyeId' => $values['eye_id'],
