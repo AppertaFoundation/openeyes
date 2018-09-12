@@ -217,7 +217,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     DiagnosesController.prototype.createRow = function(selectedItems)
     {
-        console.log(selectedItems);
       var newRows = [];
       var template = this.templateText;
       var element = this.$element;
@@ -230,8 +229,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
-        console.log(selectedItems[i].id);
-        console.log(selectedItems[i].label);
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
         data.eye_id = selectedItems.eye_id;
@@ -248,8 +245,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         window.selected = selectedItems;
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
-            console.log(i);
-            console.log(selectedItems[i].secondary);
             window.secondaryDiagnoses = selectedItems[i].secondary;
             this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'));
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
@@ -263,7 +258,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
 
             for (var i in secondary_diagnoses) {
-                console.log(secondary_diagnoses[i].id);
                 data = {};
                 data.label = secondary_diagnoses[i]['label'];
                 data.id = secondary_diagnoses[i]['id'];

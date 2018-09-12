@@ -1867,7 +1867,6 @@ function OphCiExamination_AddFinding(finding_id, label) {
                 console.log('Cannot find sidebar to manipulate elements for VA change');
             }
         }
-
     }
 
 }
