@@ -83,7 +83,7 @@ $required_risk_ids = array_map(function ($r) {
   </div>
   <div class="add-data-actions flex-item-bottom" id="add-history-risk-popup"
        style="visibility: <?php echo $element->no_risks_date ? 'hidden' : ''; ?>">
-    <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
+    <button id="show-add-risk-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
 
@@ -157,7 +157,7 @@ $required_risk_ids = array_map(function ($r) {
     popup,
     'multi',
     addRisks,
-    adder.find('#show-add-popup'),
+    adder.find('#show-add-risk-popup'),
     popup.find('.add-icon-btn'),
     adder.find('#close-btn, .add-icon-btn')
   );
