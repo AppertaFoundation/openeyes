@@ -27,9 +27,9 @@ $(document).ready(function(){
 
     function markElementDirty(element) {
         if (typeof element !== "undefined" && element) {
-            $(element).addClass('js-dirty');
+            $(element).find('input[name*="[element_dirty]"]').val(1);
         } else {
-            $(this).closest('.element').addClass('js-dirty');
+            $(this).closest('.element').find('input[name*="[element_dirty]"]').val(1);
         }
     }
 
@@ -44,11 +44,6 @@ $(document).ready(function(){
         markElementDirty($(this).closest('.element'));
     });
 
-    if (typeof is_workflow_step !== "undefined" && is_workflow_step) {
-        $.each($(this).find('.element'), function (index, element) {
-            markElementDirty(element);
-        })
-    }
 
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
@@ -160,7 +155,7 @@ $(document).ready(function(){
   $(this).on('click', '.js-remove-element', function (e) {
     e.preventDefault();
     var $parent = $(this).closest('.element');
-      if (element_close_warning_enabled === 'on' && $parent.hasClass('js-dirty')) {
+      if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() == 1) {
           var dialog = new OpenEyes.UI.Dialog.Confirm({
               content: "Are you sure that you wish to close the " +
               $parent.data('element-type-name') +
