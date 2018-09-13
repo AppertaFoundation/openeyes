@@ -20,7 +20,7 @@ class DicomLogViewerController extends BaseController
     /**
      * @var string the default layout for the views
      */
-    public $layout = '//layouts/main';
+    public $layout = 'admin';
 
     public $items_per_page = 200;
 
@@ -66,11 +66,20 @@ class DicomLogViewerController extends BaseController
 
     public function actionSearch()
     {
+        $result = ['data' => null];
+
         if (isset($_POST['page'])) {
             $data = $this->getData($_POST['page']);
         } else {
             $data = $this->getData();
         }
+
+        if (!empty($data['items'])) {
+            $result['data'] = $data['items'];
+        }
+
+        echo CJSON::encode($result);
+        Yii::app()->end();
 
         Yii::app()->assetManager->registerScriptFile('js/audit.js');
         $this->renderPartial('//dicomlogviewer/_list', array('data' => $data), false, true);
