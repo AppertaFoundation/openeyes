@@ -242,28 +242,34 @@ class AdminController extends BaseAdminController
 
     public function actionManageFindings()
     {
-        $this->genericAdmin(
-            'Findings',
-            'Finding',
-            array(
-                'extra_fields' => array(
-                    array(
-                        'field' => 'subspecialties',
-                        'type' => 'multilookup',
-                        'noSelectionsMessage' => 'All Subspecialties',
-                        'htmlOptions' => array(
-                            'empty' => '- Please Select -',
-                            'nowrapper' => true,
-                        ),
-                        'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
-                    ),
-                    array(
-                        'field' => 'requires_description',
-                        'type' => 'boolean',
-                    ),
-                ),
-            )
-        );
+        if (Yii::app()->request->isPostRequest) {
+            $findings = Yii::app()->request->getParam('Finding', []);
+            $subspecialities = Yii::app()->request->getParam('subspecialty-ids', []);
+
+            foreach($findings as $key => $finding){
+                if( isset($finding['id']) ){
+                    $finding_object = Finding::model()->findByPk($finding['id']);
+                } else {
+                    $finding_object = new Finding();
+                }
+
+                $finding_object->name = $finding['name'];
+                $finding_object->display_order = $finding['display_order'];
+                $finding_object->requires_description = $finding['requires_description'];
+                $finding_object->active = $finding['active'];
+
+                $finding_object->subspecialties = $subspecialities[$key+1];
+
+                if(!$finding_object->save()){
+                    throw new Exception('Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
+                }
+            }
+        }
+
+        $this->render('findings/index', [
+            'findings' => Finding::model()->findAll(),
+            'subspecialty' => Subspecialty::model()->findAll(),
+        ]);
     }
 
     public function actionDrugs()
