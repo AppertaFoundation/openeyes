@@ -34,21 +34,10 @@ function spaceElement(selector, height, cssProp) {
     $el.data('patient-ticketing-height', height);
 }
 
-function patientTicketingSpacer() {
-	if (!doPatientTicketingSpacing)
-		return;
-
-	var height = parseInt($('#patient-alert-patientticketing').height(), 10);
-    spaceElement('.event-header', height);
-    spaceElement('.event-content', height, 'padding-top');
-    spaceElement('.episode-content', height, 'padding-top');
-}
-
 $(document).ready(function () {
 	if ($('#patient-alert-patientticketing').parents('.messages.patient').hasClass('fixed')) {
 		doPatientTicketingSpacing = true;
 	}
-    patientTicketingSpacer();
 
     $(document).on('click', '#patient-alert-patientticketing .alert-box .toggle-trigger', function(e) {
 		if ($(this).hasClass('toggle-show')) {
