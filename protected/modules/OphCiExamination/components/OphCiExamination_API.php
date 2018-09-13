@@ -1158,7 +1158,8 @@ class OphCiExamination_API extends \BaseAPI
             $summary = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $created_date = date_format(date_create($summaries->event->event_date), 'd.m.Y');
+                $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
+//                    date_format(date_create($summaries->event->event_date), 'd.m.Y');
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
                     $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments ? : $summaries->getChildrenString();
