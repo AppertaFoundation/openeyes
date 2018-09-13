@@ -34,22 +34,21 @@ if (@$htmlOptions['id']){
     </div>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
 <?php } ?>
-      <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" autocomplete="off">
-<?php if (!@$htmlOptions['nowrapper']) { ?>
-    </div>
-</div>
-<?php } ?>
-<script>
-  $(function () {
-    var datepicker = $('#<?= $input_id ?>');
-
-    if (datepicker.length !== 0) {
-      pickmeup('#<?= $input_id ?>', {
+    <input class="<?= @$htmlOptions['class'] ?>"
+           id="<?= $input_id ?>"
+           placeholder="yyyy-mm-dd"
+           name="<?= $name ?>"
+           value="<?= $value ?>"
+           autocomplete="off">
+    <script>
+      pickmeup($(document.currentScript).prev('input').get(0), {
         format: '<?= @$htmlOptions['dateFormat'] ?: 'd b Y' ?>',
         hide_on_select: true,
         default_date: false,
         max: '<?= @$options['maxDate'] ?>'
-      });
-    }
-  });
-</script>
+      }).set_date(new Date('<?= $value ?>'));
+    </script>
+      <?php if (!@$htmlOptions['nowrapper']) { ?>
+  </div>
+</div>
+<?php } ?>
