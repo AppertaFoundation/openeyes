@@ -17,35 +17,45 @@
  */
 ?>
 <div class="admin box">
-	<form id="admin_contactlabels">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
+    <form id="admin_contactlabels">
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
                                 </tr>
-			</thead>
-			<tbody>
-				<?php
+            </thead>
+            <tbody>
+                <?php
                 foreach ($contactlabels as $i => $contactlabel) {?>
-					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
-						<td><?php echo $contactlabel->id?></td>
-						<td><?php echo $contactlabel->name?>&nbsp;</td>
-                                        </tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
+                    <tr class="clickable"
+                        data-id="<?php echo $contactlabel->id?>"
+                        data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
+                        <td><?php echo $contactlabel->id?></td>
+                        <td><?php echo $contactlabel->name?>&nbsp;</td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+                <tr>
                     <td colspan="5">
-                        <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
+                        <?php echo CHtml::button(
+                            'Add',
+                            [
+                                'class' => 'button large',
+                                'name' => 'add',
+                                'id' => 'et_add'
+                            ]
+                        ); ?>
                     </td>
-					<td colspan="4">
-						<?php echo $this->renderPartial('_pagination', array(
-                            'pagination' => $pagination,
-                        ))?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                    <td colspan="4">
+                        <?php echo $this->renderPartial(
+                            '_pagination',
+                            ['pagination' => $pagination]
+                        )?>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

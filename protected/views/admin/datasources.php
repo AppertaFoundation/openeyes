@@ -17,65 +17,79 @@
  */
 ?>
 <div class="admin box">
-	<form id="admin_data_sources">
+    <form id="admin_data_sources">
         <div class="cols-5">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" id="checkall" class="sources" /></th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="checkall" class="sources" /></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
                 foreach (ImportSource::model()->findAll(array('order' => 'name')) as $i => $source) {?>
-					<tr class="clickable" data-id="<?php echo $source->id?>" data-uri="admin/editdatasource/<?php echo $source->id?>">
-						<td><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></td>
-						<td><?php echo $source->name?>&nbsp;</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot>
-				<td colspan="2">
-                    <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
-                    <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete',
-                        'data-object' => 'admin_data_sources', 'id' => 'et_delete']); ?>
-				</td>
-			</tfoot>
-		</table>
+                    <tr class="clickable" data-id="<?php echo $source->id?>" data-uri="admin/editdatasource/<?php echo $source->id?>">
+                        <td><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></td>
+                        <td><?php echo $source->name?>&nbsp;</td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot>
+                <td colspan="2">
+                    <?php echo CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'admin_data_sources',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
+                </td>
+            </tfoot>
+        </table>
         </div>
-	</form>
+    </form>
 </div>
 <script type="text/javascript">
-	$('#et_delete').click(function(e) {
-		e.preventDefault();
+    $('#et_delete').click(function(e) {
+        e.preventDefault();
 
-		if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select the source(s) you wish to delete."
-			}).open();
-			return;
-		}
+        if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Please select the source(s) you wish to delete."
+            }).open();
+            return;
+        }
 
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/admin/deleteDataSources',
-			'data': $('#admin_data_sources').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					window.location.reload();
-				} else {
-					if ($('input[type="checkbox"][name="source[]"]:checked').length == 1) {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "The source you selected is in use and cannot be deleted."
-						}).open();
-					} else {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "The sources you selected are in use and cannot be deleted."
-						}).open();
-					}
-				}
-			}
-		});
-	});
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/admin/deleteDataSources',
+            'data': $('#admin_data_sources').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+            'success': function(resp) {
+                if (resp == "1") {
+                    window.location.reload();
+                } else {
+                    if ($('input[type="checkbox"][name="source[]"]:checked').length == 1) {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "The source you selected is in use and cannot be deleted."
+                        }).open();
+                    } else {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "The sources you selected are in use and cannot be deleted."
+                        }).open();
+                    }
+                }
+            }
+        });
+    });
 </script>

@@ -16,19 +16,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $firm->id ? 'Edit' : 'Add' ?> <?php echo Firm::contextLabel() . ' / ' . Firm::serviceLabel() ?></h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    )) ?>
+<main class="oe-full-main admin-main">
+    <h2>
+        <?php echo $firm->id ? 'Edit' : 'Add' ?>
+        <?php echo Firm::contextLabel() . ' / ' . Firm::serviceLabel() ?>
+    </h2>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 5,
+            ),
+        ]
+    ) ?>
 
     <div class="cols-5">
         <table class="standard cols-full">
@@ -39,35 +45,67 @@
             <tbody>
             <tr>
                 <td>Pass Code</td>
-                <td> <?php echo CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
+                <td> <?php echo CHtml::activeTextField(
+                    $firm,
+                    'pas_code',
+                    ['class' => 'cols-full']
+                ); ?> </td>
             </tr>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField($firm, 'name', ['class' => 'cols-full']); ?> </td>
+                <td> <?php echo CHtml::activeTextField(
+                    $firm,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?> </td>
             </tr>
             <tr class="col-gap">
                 <td>Subspecialty</td>
                 <td >
-                    <?php echo CHtml::activeDropDownList($firm, 'subspecialty_id',
-                        CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'),
-                        ['class' => 'cols-full', 'empty' => '- None -']); ?>
+                    <?php echo CHtml::activeDropDownList(
+                        $firm,
+                        'subspecialty_id',
+                        CHtml::listData(
+                            Subspecialty::model()->findAll(
+                                array('order' => 'name')
+                            ),
+                            'id',
+                            'name'
+                        ),
+                        ['class' => 'cols-full', 'empty' => '- None -']
+                    ); ?>
                 </td>
             </tr>
             <tr class="col-gap">
                 <td>Consultant</td>
                 <td >
-                    <?php echo CHtml::activeDropDownList($firm, 'consultant_id',
-                        CHtml::listData(User::model()->findAll(array('order' => 'first_name,last_name')), 'id', 'fullName'),
-                        ['class' => 'cols-full', 'empty' => '- None -']); ?>
+                    <?php echo CHtml::activeDropDownList(
+                        $firm,
+                        'consultant_id',
+                        CHtml::listData(
+                            User::model()->findAll(
+                                array('order' => 'first_name,last_name')
+                            ),
+                            'id',
+                            'fullName'
+                        ),
+                        ['class' => 'cols-full', 'empty' => '- None -']
+                    ); ?>
                 </td>
             </tr>
             <tr class="col-gap">
                 <td>Service Enabled</td>
-                <td><?php echo CHtml::activeCheckBox($firm, 'can_own_an_episode') ?></td>
+                <td><?php echo CHtml::activeCheckBox(
+                    $firm,
+                    'can_own_an_episode'
+                ) ?></td>
             </tr>
             <tr class="col-gap">
                 <td>Context Enabled:</td>
-                <td><?php echo CHtml::activeCheckBox($firm, 'runtime_selectable') ?></td>
+                <td><?php echo CHtml::activeCheckBox(
+                    $firm,
+                    'runtime_selectable'
+                ) ?></td>
             </tr>
             <tr class="col-gap">
                 <td>Active</td>
@@ -78,10 +116,25 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                        'data-uri' => '/admin/firms', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                    <?php echo CHtml::button(
+                        'Save',
+                        [
+                            'class' => 'button large primary event-action',
+                            'name' => 'save',
+                            'type' => 'submit',
+                            'id' => 'et_save'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Cancel',
+                        [
+                            'class' => 'warning button large primary event-action',
+                            'data-uri' => '/admin/firms',
+                            'type' => 'submit',
+                            'name' => 'cancel',
+                            'id' => 'et_cancel'
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tfoot>
@@ -89,14 +142,16 @@
     </div>
 
 
-	<?php $this->endWidget() ?>
+    <?php $this->endWidget() ?>
 
-	<?php if (isset($siteSecretaries) && $siteSecretaries): ?>
-		<?php echo $this->renderPartial('application.modules.OphCoCorrespondence.views.admin.secretary.edit', array(
+    <?php if (isset($siteSecretaries) && $siteSecretaries) : ?>
+        <?php echo $this->renderPartial(
+            'application.modules.OphCoCorrespondence.views.admin.secretary.edit',
+            [
                 'errors' => array(),
-                'siteSecretaries' => $siteSecretaries,
-            )
+                'siteSecretaries' => $siteSecretaries
+            ]
         )
         ?>
-	<?php endif; ?>
-</div>
+    <?php endif; ?>
+</main>

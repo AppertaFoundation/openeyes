@@ -17,18 +17,21 @@
  */
 ?>
 <main class="oe-full-main admin-main">
-	<h2><?php echo $cb->id ? 'Edit' : 'Add'?> commissioning body</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
+    <h2><?php echo $cb->id ? 'Edit' : 'Add'?> commissioning body</h2>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 5,
+            ),
+        ]
+    )?>
 
     <div class="cols-6">
         <table class="standard cols-full">
@@ -40,32 +43,51 @@
             <tr>
                 <td>Commissioning body type</td>
                 <td>
-                    <?php echo CHtml::activeDropDownList($cb, 'commissioning_body_type_id',
-                        CHtml::listData(CommissioningBodyType::model()->findAll(array('order' => 'name')), 'id', 'name'),
-                        ['class' => 'cols-full']); ?>
+                    <?php echo CHtml::activeDropDownList(
+                        $cb,
+                        'commissioning_body_type_id',
+                        CHtml::listData(
+                            CommissioningBodyType::model()->findAll(
+                                ['order' => 'name']
+                            ),
+                            'id',
+                            'name'
+                        ),
+                        ['class' => 'cols-full']
+                    ); ?>
                 </td>
             </tr>
 
             <?php foreach (['name', 'code'] as $field) : ?>
                 <tr>
-                    <td><?= $cb->getAttributeLabel($field); ?></td>
+                    <td><?php echo $cb->getAttributeLabel($field); ?></td>
                     <td>
-                        <?= CHtml::activeTextField($cb, $field, [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full'
-                        ]); ?>
+                        <?php echo CHtml::activeTextField(
+                            $cb,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
 
-            <?php foreach (['address1', 'address2', 'city', 'county', 'postcode'] as $field) : ?>
+            <?php
+            $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
+            foreach ($address_fields as $field) : ?>
                 <tr>
-                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td><?php echo $address->getAttributeLabel($field); ?></td>
                     <td>
-                        <?= CHtml::activeTextField($address, $field, [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full'
-                        ]); ?>
+                        <?php echo CHtml::activeTextField(
+                            $address,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -73,8 +95,12 @@
             <tr>
                 <td>Country</td>
                 <td>
-                    <?php echo CHtml::activeDropDownList($address, 'country_id',
-                        CHtml::listData( Country::model()->findAll() , 'id', 'name'), ['class' => 'cols-full']); ?>
+                    <?php echo CHtml::activeDropDownList(
+                        $address,
+                        'country_id',
+                        CHtml::listData(Country::model()->findAll(), 'id', 'name'),
+                        ['class' => 'cols-full']
+                    ); ?>
                 </td>
             </tr>
             </tbody>
@@ -82,10 +108,25 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                        'data-uri' => '/admin/commissioning_bodies', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                    <?php echo CHtml::button(
+                        'Save',
+                        [
+                            'class' => 'button large primary event-action',
+                            'name' => 'save',
+                            'type' => 'submit',
+                            'id' => 'et_save'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Cancel',
+                        [
+                            'class' => 'warning button large primary event-action',
+                            'data-uri' => '/admin/commissioning_bodies',
+                            'type' => 'submit',
+                            'name' => 'cancel',
+                            'id' => 'et_cancel'
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tfoot>

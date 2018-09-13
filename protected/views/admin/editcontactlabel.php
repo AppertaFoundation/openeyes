@@ -17,18 +17,21 @@
  */
 ?>
 <div class="box admin">
-	<h2>Edit contact label</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'editContactLabelForm',
-        'enableAjaxValidation' => false,
-        'focus' => '#ContactLabel_name',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
+    <h2>Edit contact label</h2>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'editContactLabelForm',
+            'enableAjaxValidation' => false,
+            'focus' => '#ContactLabel_name',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 5,
+            ),
+        ]
+    )?>
 
     <div class="cols-5">
         <table class="standard cols-full">
@@ -39,62 +42,90 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField($contactlabel, 'name', ['class' => 'cols-full']); ?> </td>
+                <td>
+                    <?php echo CHtml::activeTextField(
+                        $contactlabel,
+                        'name',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
             </tr>
             </tbody>
 
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                        'data-uri' => '/admin/contactlabels', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
-                    <?php echo CHtml::button('Delete', ['class' => 'button large', 'name' => 'delete', 'id' => 'et_delete']); ?>
+                    <?php echo CHtml::button(
+                        'Save',
+                        [
+                            'class' => 'button large primary event-action',
+                            'name' => 'save',
+                            'type' => 'submit',
+                            'id' => 'et_save'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Cancel',
+                        [
+                            'class' => 'warning button large primary event-action',
+                            'data-uri' => '/admin/contactlabels',
+                            'type' => 'submit',
+                            'name' => 'cancel',
+                            'id' => 'et_cancel'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tfoot>
         </table>
     </div>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
-	handleButton($('#et_delete'),function(e) {
-		e.preventDefault();
+    handleButton($('#et_delete'),function(e) {
+        e.preventDefault();
 
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/admin/deleteContactLabel',
-			'data': 'contact_label_id=<?php echo $contactlabel->id?>&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
-			'success': function(response) {
-				if (response == 0) {
-					window.location.href = baseUrl+'/admin/contactLabels';
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "You cannot delete this contact label because it's in use by "+response+" contacts."
-					}).open();
-					enableButtons();
-				}
-			}
-		});
-	});
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl+'/admin/deleteContactLabel',
+            'data': 'contact_label_id=<?php echo $contactlabel->id?>&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
+            'success': function(response) {
+                if (response == 0) {
+                    window.location.href = baseUrl+'/admin/contactLabels';
+                } else {
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "You cannot delete this contact label because it's in use by "+response+" contacts."
+                    }).open();
+                    enableButtons();
+                }
+            }
+        });
+    });
 
-	function sort_selectbox(element)
-	{
-		rootItem = element.children('option:first').text();
-		element.append(element.children('option').sort(selectSort));
-	}
+    function sort_selectbox(element)
+    {
+        rootItem = element.children('option:first').text();
+        element.append(element.children('option').sort(selectSort));
+    }
 
-	function selectSort(a, b)
-	{
-		if (a.innerHTML == rootItem) {
-			return -1;
-		} else if (b.innerHTML == rootItem) {
-			return 1;
-		}
-		return (a.innerHTML > b.innerHTML) ? 1 : -1;
-	};
+    function selectSort(a, b)
+    {
+        if (a.innerHTML == rootItem) {
+            return -1;
+        } else if (b.innerHTML == rootItem) {
+            return 1;
+        }
+        return (a.innerHTML > b.innerHTML) ? 1 : -1;
+    };
 
-	var rootItem = null;
+    var rootItem = null;
 </script>

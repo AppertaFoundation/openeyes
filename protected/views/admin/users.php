@@ -27,21 +27,27 @@
 
     <div class="row divider">
         <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', [
-            'id' => 'searchform',
-            'enableAjaxValidation' => false,
-            'focus' => '#search',
-            'action' => Yii::app()->createUrl('/admin/users'),
-            'method' => 'get',
-        ]) ?>
-        <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-                             name="search" id="search" placeholder="Search Users..."
-                             value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"/>
+        $form = $this->beginWidget(
+            'BaseEventTypeCActiveForm',
+            [
+                'id' => 'searchform',
+                'enableAjaxValidation' => false,
+                'focus' => '#search',
+                'action' => Yii::app()->createUrl('/admin/users'),
+                'method' => 'get'
+            ]
+        ) ?>
+        <input type="text"
+               autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+               name="search" id="search" placeholder="Search Users..."
+               value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"/>
         <?php $this->endWidget() ?>
     </div>
 
     <form id="admin_users">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <input type="hidden"
+               name="YII_CSRF_TOKEN"
+               value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="standard">
             <colgroup>
                 <col span="3">
@@ -66,7 +72,9 @@
             <?php foreach ($users as $i => $user) : ?>
                 <tr class="clickable js-clickable" data-id="<?php echo $user->id ?>"
                     data-uri="admin/editUser/<?php echo $user->id ?>">
-                    <td><input type="checkbox" name="users[]" value="<?php echo $user->id ?>"/></td>
+                    <td><input type="checkbox"
+                               name="users[]"
+                               value="<?php echo $user->id ?>"/></td>
                     <td><?php echo $user->id ?></td>
                     <td><?php echo strtolower($user->username) ?></td>
                     <td><?php echo $user->title ?></td>
@@ -86,9 +94,22 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button('Add User', ['class' => 'button large', 'id' => 'et_add']); ?>
-                    <?php echo CHtml::button('Deactivate Users', ['class' => 'button large', 'name' => 'delete',
-                        'data-object' => 'users', 'id' => 'et_delete']); ?>
+                    <?php echo CHtml::button(
+                        'Add User',
+                        [
+                            'class' => 'button large',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Deactivate Users',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'users',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
                 </td>
                 <td colspan="4">
                     <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
