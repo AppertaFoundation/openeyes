@@ -47,6 +47,13 @@ class RefMedicationAdminController extends BaseAdminController
     {
         $admin = new Admin(RefMedication::model(), $this);
 
+        if(!is_null($id)) {
+            $search_indexes = RefMedication::model()->findByPk($id)->refMedicationsSearchIndexes;
+        }
+        else {
+            $search_indexes = array();
+        }
+
         $admin->setEditFields(array(
             'preferred_term'=>'Preferred term',
             'short_term'=>'Short term',
@@ -65,7 +72,7 @@ class RefMedicationAdminController extends BaseAdminController
                     'model' => RefMedicationsSearchIndex::class,
                     'label_field' => 'alternative_term',
                     'label_field_type' => 'text',
-                    'items' => !is_null($id) ? RefMedication::model()->findByPk($id)->refMedicationsSearchIndexes : array(),
+                    'items' => $search_indexes,
                     'filters_ready' => true,
                     'cannot_save' => true,
                     'no_form' => true,

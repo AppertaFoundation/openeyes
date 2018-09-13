@@ -50,7 +50,8 @@ class RefMedicationSetAdminController extends BaseAdminController
 
     public function actionMedEditRedir($id)
     {
-        $this->redirect('/OphDrPrescription/RefMedicationAdmin/edit/'.$id);
+        $ref_med_id = RefMedicationSet::model()->findByPk($id)->ref_medication_id;
+        $this->redirect('/OphDrPrescription/RefMedicationAdmin/edit/'.$ref_med_id);
     }
 
     public function actionEdit($id = null)
