@@ -1161,7 +1161,7 @@ class OphCiExamination_API extends \BaseAPI
                 $created_date = date_format(date_create($summaries->event->event_date), 'd.m.Y');
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments;
+                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments ? : $summaries->getChildrenString();
                 }
             }
 
