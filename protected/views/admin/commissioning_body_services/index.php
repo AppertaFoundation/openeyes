@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -31,75 +28,55 @@ if (!isset($base_data_url)) {
 
 ?>
 
-<main class="oe-full-main admin-main">
-    <form id="admin_CommissioningBodyServices">
-        <table class="standard">
+<div class="box admin">
+    <h2><?= $title ?></h2>
+    <form id="admin_commissioning_body_services">
+        <table class="grid">
             <thead>
-                <tr>
-                    <th>
-                        <input type="checkbox"
-                               id="checkall"
-                               class="commissioning_body_services" />
-                    </th>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Commissioning body</th>
-                </tr>
+            <tr>
+                <th><input type="checkbox" id="checkall" class="commissioning_body_services" /></th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Commissioning body</th>
+            </tr>
             </thead>
             <tbody>
-                <?php
-                $criteria = new CDbCriteria();
-                $criteria->with = array('commissioning_body');
-                $criteria->order = 'LOWER(t.name) asc';
+            <?php
+            $criteria = new CDbCriteria();
+            $criteria->with = array('commissioning_body');
+            $criteria->order = 'LOWER(t.name) asc';
 
-                if (isset($commissioning_bt)) {
-                    $criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));
-                    $url_query = 'commissioning_body_type_id=' . $commissioning_bt->id;
-                }
-                if (isset($service_type)) {
-                    $url_query .= '&service_type_id='.$service_type->id.'&return_url='.$return_url;
-                }
+            if (isset($commissioning_bt)) {
+                $criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));
+                $url_query = 'commissioning_body_type_id=' . $commissioning_bt->id;
+            }
+            if (isset($service_type)) {
+                $url_query .= '&service_type_id='.$service_type->id.'&return_url='.$return_url;
+            }
 
-                foreach (CommissioningBodyService::model()->findAll($criteria) as $i => $cbs) {?>
-                    <tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="<?php echo $base_data_url?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
-                        <td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
-                        <td><?php echo $cbs->code?></td>
-                        <td><?php echo $cbs->name?></td>
-                        <td><?php echo $cbs->type->name?></td>
-                        <td><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None'?></td>
-                    </tr>
-                <?php }?>
+            foreach (CommissioningBodyService::model()->findAll($criteria) as $i => $cbs) {?>
+                <tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="<?php echo $base_data_url?>editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id; if(isset($data["returnUrl"])){echo "&return_url=".$data["returnUrl"];}?>">
+                    <td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
+                    <td><?php echo $cbs->code?></td>
+                    <td><?php echo $cbs->name?></td>
+                    <td><?php echo $cbs->type->name?></td>
+                    <td><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None'?></td>
+                </tr>
+            <?php }?>
             </tbody>
             <tfoot>
-                <tr>
-                    <td colspan="5">
-                        <?php echo CHtml::button(
-                            'Add',
-                            [
-                                'class' => 'button large',
-                                'name' => 'add_commissioning_body_service',
-                                'id' => 'et_add_commissioning_body_service',
-                                'data-uri' => 'commissioningBodyService'
-                            ]
-                        ); ?>
-                        <?php echo CHtml::button(
-                            'Delete',
-                            [
-                                'class' => 'button large',
-                                'name' => 'delete_commissioning_body_service',
-                                'data-object' => 'CommissioningBodyServices',
-                                'id' => 'et_delete'
-                            ]
-                        ); ?>
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="5">
+                    <?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small','data-uri'=>$url_query))->toHtml()?>
+                    <?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+                </td>
+            </tr>
             </tfoot>
         </table>
     </form>
-</main>
-<div id="confirm_delete_commissioning_body_services"
-     title="Confirm delete commissioning_body_service" style="display: none;">
+</div>
+<div id="confirm_delete_commissioning_body_services" title="Confirm delete commissioning_body_service" style="display: none;">
     <div>
         <div id="delete_commissioning_body_services">
             <div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">

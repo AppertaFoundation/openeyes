@@ -857,7 +857,7 @@ class AdminController extends BaseAdminController
         ));
         $search->addSearchItem('active', array('type' => 'boolean'));
 
-        $this->render('/admin/institutions', array(
+        $this->render('/admin/institutions/index', array(
             'pagination' => $search->initPagination(),
             'institutions' => $search->retrieveResults(),
             'search' => $search,
@@ -907,7 +907,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/addinstitution', array(
+        $this->render('/admin/institutions/add', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => @$errors,
@@ -950,13 +950,13 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-Institution', 'edit', $institution->id);
 
-                $this->redirect('/admin/institutions');
+                $this->redirect('/admin/institutions/index');
             }
         } else {
             Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
         }
 
-        $this->render('/admin/editinstitution', array(
+        $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => $errors,
@@ -984,7 +984,7 @@ class AdminController extends BaseAdminController
 
         $pagination = $this->initPagination(Site::model(), $criteria);
 
-        $this->render('/admin/sites', array(
+        $this->render('/admin/sites/index', array(
             'sites' => Site::model()->findAll($criteria),
             'pagination' => $pagination,
         ));
@@ -1041,7 +1041,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/addsite', array(
+        $this->render('/admin/sites/add', array(
             'site' => $site,
             'errors' => $errors,
             'address' => $address,
@@ -1082,13 +1082,13 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-Site', 'edit', $site->id);
 
-                $this->redirect('/admin/sites');
+                $this->redirect('/admin/sites/index');
             }
         } else {
             Audit::add('admin-Site', 'view', @$_GET['site_id']);
         }
 
-        $this->render('/admin/editsite', array(
+        $this->render('/admin/sites/edit', array(
             'site' => $site,
             'address' => $site->contact->address,
             'errors' => $errors,
@@ -1310,7 +1310,7 @@ class AdminController extends BaseAdminController
     public function actionCommissioning_bodies()
     {
         Audit::add('admin-CommissioningBody', 'list');
-        $this->render('commissioning_bodies');
+        $this->render('/admin/commissioning_bodies/index');
     }
 
     public function actionEditCommissioningBody()
@@ -1389,7 +1389,7 @@ class AdminController extends BaseAdminController
             Audit::add('admin-CommissioningBody', 'view', @$_GET['commissioning_body_id']);
         }
 
-        $this->render('/admin/editCommissioningBody', array(
+        $this->render('/admin/commissioning_bodies/edit', array(
             'cb' => $cb,
             'address' => $address,
             'errors' => $errors,
@@ -1440,7 +1440,7 @@ class AdminController extends BaseAdminController
     public function actionCommissioning_body_types()
     {
         Audit::add('admin-CommissioningBodyType', 'list');
-        $this->render('commissioning_body_types');
+        $this->render('/admin/commissioning_body_types/index');
     }
 
     public function actionEditCommissioningBodyType()
@@ -1479,7 +1479,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editCommissioningBodyType', array(
+        $this->render('/admin/commissioning_body_types/edit', array(
             'cbt' => $cbt,
             'errors' => $errors,
         ));
@@ -1528,7 +1528,7 @@ class AdminController extends BaseAdminController
     {
         Audit::add('admin-CommissioningBodyService', 'list');
         $commissioningBodyId = Yii::app()->request->getQuery('commissioning_body_id');
-        $this->render('commissioning_body_services', array("commissioningBody" => $commissioningBodyId));
+        $this->render('/admin/commissioning_body_services/index', array("commissioningBody" => $commissioningBodyId));
     }
 
     public function actionEditCommissioningBodyService()
@@ -1621,7 +1621,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('//admin/editCommissioningBodyService', array(
+        $this->render('/admin/commissioning_body_services/edit', array(
             'commissioning_bt' => $commissioning_bt,
             'commissioning_bst' => $commissioning_bst,
             'cbs' => $cbs,
@@ -1662,7 +1662,7 @@ class AdminController extends BaseAdminController
 
     public function actionCommissioning_Body_Service_Types()
     {
-        $this->render('commissioning_body_service_types');
+        $this->render('/admin/commissioning_body_service_types/index');
     }
 
     public function actionEditCommissioningBodyServiceType()
@@ -1704,7 +1704,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editCommissioningBodyServiceType', array(
+        $this->render('/admin/commissioning_body_service_types/edit', array(
             'cbs' => $cbs,
             'errors' => $errors,
         ));

@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,14 +9,13 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 ?>
 
-<!--    --><?php //echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-    <?php
+<?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
         [
@@ -59,9 +55,7 @@
             <?php foreach ($findings as $key => $finding) : ?>
                 <tr id="<?=$key?>">
                     <td class="reorder">&uarr;&darr;
-                        <!--<input type="hidden" name="finding_ids[<?/*=$key;*/?>]" value="<?php /*echo $finding->id */?>">-->
                         <?=CHtml::activeHiddenField($finding, "[$key]display_order", ['class' => "js-display-order"]);?>
-<!--                        --><?//=CHtml::activeHiddenField($finding, "[$key]id");?>
                     </td>
                     <td>
                         <?php echo CHtml::activeTextField(
@@ -85,25 +79,17 @@
                                     'selectedItemsInputName' => "subspecialty-ids[$key][]",
                                     'selectedItems' => \Yii::app()->request->getpost('subspecialties', null)
                                 ],],
-                            'template' => "<td class='js-multiselect-dropdown-wrapper'>{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div></td>"
+                            'template' =>
+                                "<td class='js-multiselect-dropdown-wrapper'>{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div></td>"
                         ]);
                     ?>
-                    <td>
-                        <?php echo CHtml::activeCheckBox(
-                            $finding,
-                            "[$key]requires_description"
-                        ) ?>
-                    </td>
-                    <td>
-                        <?php echo CHtml::activeCheckBox(
-                            $finding,
-                            "[$key]active"
-                        ) ?>
-                    </td>
+
+                    <td><?php echo CHtml::activeCheckBox($finding, "[$key]requires_description") ?></td>
+                    <td><?php echo CHtml::activeCheckBox($finding, "[$key]active") ?></td>
+
                 </tr>
             <?php endforeach;?>
             </tbody>
-
             <tfoot>
             <tr>
                 <td colspan="6">
@@ -131,9 +117,6 @@
         </table>
         </div>
 </form>
-
-
-
 <?php $this->endWidget() ?>
 
 <script type="text/javascript">
@@ -146,10 +129,6 @@
             }
         });
     });
-
-    $('#et_sort').on('click', function() {
-        $('#definition-list').attr('action', $(this).data('uri')).submit();
-    })
 
     $('#et_admin-add').on('click', function() {
         $('#definition-list').attr('action', $(this).data('uri')).submit();

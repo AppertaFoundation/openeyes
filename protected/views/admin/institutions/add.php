@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,12 +9,12 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<main class="oe-full-main admin-main">
-    <h2>Edit institution</h2>
+
+    <h2>Add institution</h2>
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
     <?php
     $form = $this->beginWidget(
@@ -32,6 +29,7 @@
             ),
         ]
     )?>
+
     <div class="cols-5">
         <table class="standard cols-full">
             <colgroup>
@@ -40,6 +38,7 @@
             </colgroup>
             <tbody>
 
+
             <?php foreach (['name', 'remote_id'] as $field) : ?>
                 <tr>
                     <td><?php echo $institution->getAttributeLabel($field); ?></td>
@@ -47,7 +46,10 @@
                         <?php echo CHtml::activeTextField(
                             $institution,
                             $field,
-                            ['class' => 'cols-full']
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
                         ); ?>
                     </td>
                 </tr>
@@ -62,15 +64,18 @@
                         <?php echo CHtml::activeTextField(
                             $address,
                             $field,
-                            ['class' => 'cols-full']
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
                         ); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
 
-            <tr class="col-gap">
+            <tr>
                 <td>Country</td>
-                <td >
+                <td>
                     <?php echo CHtml::activeDropDownList(
                         $address,
                         'country_id',
@@ -107,45 +112,6 @@
             </tfoot>
         </table>
     </div>
+
     <?php $this->endWidget()?>
-</main>
 
-<div class="box admin">
-    <h2>Sites</h2>
-    <form id="admin_institution_sites">
-        <table class="standard">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Remote ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($institution->sites as $site) { ?>
-                    <tr class="clickable"
-                        data-id="<?php echo $site->id?>"
-                        data-uri="admin/editsite?site_id=<?php echo $site->id?>">
-                        <td><?php echo $site->id?></td>
-                        <td><?php echo $site->remote_id?>&nbsp;</td>
-                        <td><?php echo $site->name?>&nbsp;</td>
-                        <td>
-                            <?php echo $site->getLetterAddress(
-                                array('delimiter' => ', ')
-                            )?>&nbsp
-                        </td>
-                    </tr>
-                <?php }?>
-            </tbody>
-        </table>
-    </form>
-</div>
-
-<script type="text/javascript">
-    handleButton($('#et_cancel'),function(e) {
-        e.preventDefault();
-        window.location.href = baseUrl+'/admin/institutions';
-    });
-</script>
