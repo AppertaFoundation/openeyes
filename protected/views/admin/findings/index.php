@@ -18,7 +18,6 @@
 
 ?>
 
-<!--    --><?php //echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
@@ -56,52 +55,13 @@
             </thead>
 
             <tbody class="sortable">
-            <?php foreach ($findings as $key => $finding) : ?>
-                <tr id="<?=$key?>">
-                    <td class="reorder">&uarr;&darr;
-                        <!--<input type="hidden" name="finding_ids[<?/*=$key;*/?>]" value="<?php /*echo $finding->id */?>">-->
-                        <?=CHtml::activeHiddenField($finding, "[$key]display_order", ['class' => "js-display-order"]);?>
-<!--                        --><?//=CHtml::activeHiddenField($finding, "[$key]id");?>
-                    </td>
-                    <td>
-                        <?php echo CHtml::activeTextField(
-                            $finding,
-                            "[$key]name",
-                            [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete']
-                            ]
-                        ); ?>
-                    </td>
-                    <?php
-                        $this->widget('application.widgets.MultiSelectDropDownList', [
-                            'options' => [
-                                'label' => 'Subspecialty:',
-                                'dropDown' => [
-                                    'name' => null,
-                                    'id' => 'subspecialties',
-                                    'data' => \CHtml::listData($subspecialty, 'id', 'name'),
-                                    'htmlOptions' => ['empty' => 'All Subspecialties'],
-                                    'selectedItemsInputName' => "subspecialty-ids[$key][]",
-                                    'selectedItems' => \Yii::app()->request->getpost('subspecialties', null)
-                                ],],
-                            'template' => "<td class='js-multiselect-dropdown-wrapper'>{DropDown}<div class='list-filters js-multiselect-dropdown-list-wrapper'>{List}</div></td>"
-                        ]);
-                    ?>
-                    <td>
-                        <?php echo CHtml::activeCheckBox(
-                            $finding,
-                            "[$key]requires_description"
-                        ) ?>
-                    </td>
-                    <td>
-                        <?php echo CHtml::activeCheckBox(
-                            $finding,
-                            "[$key]active"
-                        ) ?>
-                    </td>
-                </tr>
-            <?php endforeach;?>
+            <?php foreach ($findings as $key => $finding) :
+                $data = [
+                    'finding' => $finding,
+                    'key' => $key
+                ];
+                $this->renderPartial('findings/_row', ['data' => $data, 'subspecialty' => $subspecialty]);
+            endforeach;?>
             </tbody>
 
             <tfoot>
@@ -112,7 +72,7 @@
                         [
                             'class' => 'small secondary',
                             'name' => 'add',
-                            'type' => 'submit',
+                            'type' => 'button',
                             'id' => 'et_admin-add'
                         ]
                     );?>
@@ -132,9 +92,17 @@
         </div>
 </form>
 
-
-
 <?php $this->endWidget() ?>
+
+<script type="text/template" id="finding-row-template" style="display:none">
+    <?php
+        $data = [
+            'finding' => new Finding(),
+            'key' => '{{key}}'
+        ];
+        $this->renderPartial('findings/_row', ['data' => $data, 'subspecialty' => $subspecialty]);
+        ?>
+</script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -151,7 +119,14 @@
         $('#definition-list').attr('action', $(this).data('uri')).submit();
     })
 
+    // Add a new row to the table using the template
     $('#et_admin-add').on('click', function() {
         $('#definition-list').attr('action', $(this).data('uri')).submit();
+        let $table = $('#finding-table tbody');
+        let data = {
+            key: $table.find('tr').length
+        };
+        let tr = Mustache.render($('#finding-row-template').text(), data);
+        $table.append(tr);
     })
 </script>
