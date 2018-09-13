@@ -18,17 +18,20 @@
 ?>
 <main class="oe-full-main admin-main">
     <h2><?php echo $cbt->id ? 'Edit' : 'Add'?> commissioning body type</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 5,
+            ),
+        ]
+    )?>
 
     <div class="cols-5">
         <table class="standard cols-full">
@@ -39,27 +42,52 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField($cbt, 'name', ['class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete']]); ?> </td>
+                <td> <?php echo CHtml::activeTextField(
+                    $cbt,
+                    'name',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ); ?> </td>
             </tr>
             <tr>
                 <td>Short Name</td>
-                <td> <?php echo CHtml::activeTextField($cbt, 'shortname', ['class' => 'cols-full']); ?> </td>
+                <td> <?php echo CHtml::activeTextField(
+                    $cbt,
+                    'shortname',
+                    ['class' => 'cols-full']
+                ); ?> </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                        'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                    <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                        'data-uri' => '/admin/commissioning_body_types', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                    <?php echo CHtml::button(
+                        'Save',
+                        [
+                            'class' => 'button large primary event-action',
+                            'name' => 'save',
+                            'type' => 'submit',
+                            'id' => 'et_save'
+                        ]
+                    ); ?>
+                    <?php echo CHtml::button(
+                        'Cancel',
+                        [
+                            'class' => 'warning button large primary event-action',
+                            'data-uri' => '/admin/commissioning_body_types',
+                            'type' => 'submit',
+                            'name' => 'cancel',
+                            'id' => 'et_cancel'
+                        ]
+                    ); ?>
                 </td>
             </tr>
             </tfoot>
         </table>
     </div>
 
-	<?php $this->endWidget()?>
+    <?php $this->endWidget()?>
 </main>
 

@@ -33,18 +33,29 @@
                 <tbody>
                 <tr class="col-gap">
                     <td>
-                        <?=CHtml::textField('q',(isset($_GET['q']) ? $_GET['q'] : ''), ['class' => 'cols-full', 'placeholder' => "Name"]); ?>
+                        <?php echo CHtml::textField(
+                            'q',
+                            (isset($_GET['q']) ? $_GET['q'] : ''),
+                            ['class' => 'cols-full', 'placeholder' => "Name"]
+                        ); ?>
                     </td>
                     <td>
                         <?php echo CHtml::dropDownList(
-                                'label',
-                                isset($_GET['label']) ? $_GET['label'] :'',
-                                CHtml::listData(
-                                        ContactLabel::model()->active()->findAll(['order' => 'name']), 'id', 'name'),
-                                ['empty' => '- Any label -']) ?>
+                            'label',
+                            isset($_GET['label']) ? $_GET['label'] :'',
+                            CHtml::listData(
+                                ContactLabel::model()->active()->findAll(
+                                    ['order' => 'name']
+                                ),
+                                'id',
+                                'name'
+                            ),
+                            ['empty' => '- Any label -']
+                        ) ?>
                     </td>
                     <td>
-                        <button class="blue hint" name="search" type="submit" id="et_search">Search</button>
+                        <button class="blue hint" name="search"
+                            type="submit" id="et_search">Search</button>
                     </td>
                 </tr>
                 </tbody>
@@ -65,21 +76,33 @@
         <tbody>
         <?php
         foreach ($contacts['contacts'] as $i => $contact) {?>
-            <tr class="clickable" data-id="<?php echo $contact->id?>" data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
+            <tr class="clickable" data-id="<?php echo $contact->id?>"
+                data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
                 <td><?php echo $contact->id?></td>
                 <td><?php echo $contact->title?></td>
                 <td><?php echo $contact->first_name?></td>
                 <td><?php echo $contact->last_name?></td>
                 <td><?php echo $contact->qualifications?></td>
-                <td><?php echo $contact->label ? $contact->label->name : 'None'?></td>
+                <td><?php echo $contact->label ?
+                        $contact->label->name :
+                        'None'?></td>
             </tr>
         <?php }?>
         </tbody>
         <tfoot class="pagination-container">
         <tr>
             <td colspan="6">
-                <?=CHtml::htmlButton('Add', ['class' => 'button large', 'type' => 'submit', 'id' => 'et_add']);?>
-                <?php $this->widget('LinkPager', [ 'pages' => $contacts['pagination'] ]); ?>
+                <?php echo CHtml::htmlButton(
+                    'Add',
+                    [
+                        'class' => 'button large',
+                        'type' => 'submit', 'id' => 'et_add'
+                    ]
+                );?>
+                <?php $this->widget(
+                    'LinkPager',
+                    ['pages' => $contacts['pagination']]
+                ); ?>
             </td>
         </tr>
         </tfoot>

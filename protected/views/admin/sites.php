@@ -26,49 +26,68 @@
 
     <div class="row divider">
         <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'searchform',
-            'enableAjaxValidation' => false,
-            'focus' => '#search',
-            'action' => Yii::app()->createUrl('/admin/sites'),
-        ))?>
+        $form = $this->beginWidget(
+            'BaseEventTypeCActiveForm',
+            [
+                'id' => 'searchform',
+                'enableAjaxValidation' => false,
+                'focus' => '#search',
+                'action' => Yii::app()->createUrl('/admin/sites')
+            ]
+        )?>
 
-        <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
-               name="search" id="search" placeholder="Enter search query..."
-               value="<?php echo strip_tags(@$_POST['search'])?>" />
+        <input type="text"
+           autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+           name="search" id="search" placeholder="Enter search query..."
+           value="<?php echo strip_tags(@$_POST['search'])?>" />
         <?php $this->endWidget()?>
-	</div>
+    </div>
 
-	<form id="admin_institution_sites">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Remote ID</th>
-					<th>Name</th>
-					<th>Address</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($sites as $i => $site) {?>
-					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
-						<td><?php echo $site->id?></td>
-						<td><?php echo $site->remote_id?></td>
-						<td><?php echo $site->name?></td>
-						<td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?></td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
+    <form id="admin_institution_sites">
+        <table class="standard">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Remote ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($sites as $i => $site) {?>
+                    <tr class="clickable"
+                        data-id="<?php echo $site->id?>"
+                        data-uri="admin/editsite?site_id=<?php echo $site->id?>">
+                        <td><?php echo $site->id?></td>
+                        <td><?php echo $site->remote_id?></td>
+                        <td><?php echo $site->name?></td>
+                        <td>
+                            <?php echo $site->getLetterAddress(
+                                ['delimiter' => ', ']
+                            )?>
+                        </td>
+                    </tr>
+                <?php }?>
+            </tbody>
+            <tfoot class="pagination-container">
+                <tr>
                     <td colspan="5">
-                        <?php echo CHtml::button('Add Site', ['class' => 'button large', 'id' => 'et_add']); ?>
+                        <?php echo CHtml::button(
+                            'Add Site',
+                            [
+                                'class' => 'button large',
+                                'id' => 'et_add'
+                            ]
+                        ); ?>
                     </td>
                     <td colspan="4">
-                        <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
+                        <?php $this->widget(
+                            'LinkPager',
+                            ['pages' => $pagination]
+                        ); ?>
                     </td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
 </main>
