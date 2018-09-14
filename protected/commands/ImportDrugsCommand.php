@@ -18,7 +18,12 @@
 class ImportDrugsCommand extends CConsoleCommand
 {
     private $action = '';
-    private $importDir = '/var/www/temp/drugs_database/';
+
+    private function _getImportDir()
+    {
+        return Yii::getPathOfAlias('application') . '/data/dmd_data';
+    }
+
     private $row_limit = 0; // FOR DEBUG!! -- 0 = unlimited
     private $params = [];
     private $tablePrefix = 'f_';
@@ -59,7 +64,7 @@ USAGE
     N/A
 
 DESCRIPTION
-  This command build database tables or/and import drugs from DM+D database.
+  This command build database tables or/and import drugs from DM+D database. Make sure you've copied DM+D data to {$this->_getImportDir()}.
 
 EOD;
     }
@@ -203,7 +208,7 @@ EOD;
 
     public function createTableData(){
         $tablesData = [];
-        $XSDdir = $this->importDir;
+        $XSDdir = $this->_getImportDir();
         $XSDs = $this->getAllXsdFromDir($XSDdir);
 
         foreach($XSDs as $fileName => $path){
@@ -371,7 +376,7 @@ EOD;
 
     public function import(){
         $tablesData = $this->createTables();
-        $XMLdir = $this->importDir;
+        $XMLdir = $this->_getImportDir();
         $XMLs = $this->getAllXmlFromDir( $XMLdir, 'xml' );
         $this->printMsg('Importing data to database...');
         foreach($XMLs as $type => $path){
@@ -412,8 +417,12 @@ EOD;
 
     }
 
-    public function copyToOE(){
-
+    public function copyToOE()
+    {
+        echo "Please wait...".PHP_EOL;
+        $sql_commands = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/import_to_oe.sql');
+        Yii::app()->db->createCommand($sql_commands)->execute();
+        echo "Data imported to OE.".PHP_EOL;
     }
 }
 
