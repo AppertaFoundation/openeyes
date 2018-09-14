@@ -73,7 +73,7 @@ if ($flash_message) {
           $buttons_drawn = true;
       } ?>
   </span>
-  <div class="alert-box alert hidden"></div>
+  <div class="alert-box warning alert hidden"></div>
     <?php if (!$buttons_drawn) {
         echo $buttons;
     } ?>
