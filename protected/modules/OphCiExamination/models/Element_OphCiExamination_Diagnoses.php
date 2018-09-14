@@ -241,116 +241,36 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      */
     public function getLetter_string()
     {
-        $text = '';
-
-        $findings = array();
-        $finding_ids = array();
-
-        if ($et_findings = Element_OphCiExamination_FurtherFindings::model()->find('event_id=?', array($this->event_id))) {
-            foreach (OphCiExamination_FurtherFindings_Assignment::model()->findAll('element_id=?', array($et_findings->id)) as $finding) {
-                $finding_ids[] = $finding->finding_id;
-                $findings[] = $finding;
-            }
-        }
-
-        $disorders = array();
-        $disorder_ids = array(
-            'Left' => array(),
-            'Right' => array(),
-            'Both' => array(),
-        );
-        $is_principal = array();
-
-        foreach (OphCiExamination_Diagnosis::model()->findAll('element_diagnoses_id=?', array($this->id)) as $diagnosis) {
-            $disorder_ids[$diagnosis->eye->name][] = $diagnosis->disorder_id;
-            $disorders[] = $diagnosis;
-
-            $is_principal[$diagnosis->disorder_id] = $diagnosis->principal;
-        }
-
-        $secto_strings = array();
-
-        $used_disorder_ids = array();
-        $used_finding_ids = array();
-
-        if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
-            $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
-            $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
-
-            foreach ($disorders as $disorder) {
-                foreach (\SecondaryToCommonOphthalmicDisorder::model()->with('parent')->findAll('t.disorder_id=? and parent.subspecialty_id=?', array($disorder->disorder_id, $subspecialty->id)) as $secto_disorder) {
-                    if ($secto_disorder->letter_macro_text) {
-                        if ($secto_disorder->parent->disorder_id) {
-                            if (in_array($secto_disorder->parent->disorder_id, $disorder_ids[$disorder->eye->name]) ||
-                                    in_array($secto_disorder->parent->disorder_id, $disorder_ids['Both'])) {
-                                $secto_strings[] = (($is_principal[$disorder->disorder_id] || $is_principal[$secto_disorder->parent->disorder_id]) ? '' : 'Secondary diagnosis: ').$disorder->eye->name.' '.$secto_disorder->letter_macro_text;
-                                $used_disorder_ids[] = $disorder->disorder_id;
-                                $used_disorder_ids[] = $secto_disorder->parent->disorder_id;
-                            }
-                        } elseif ($secto_disorder->parent->finding_id) {
-                            if (in_array($secto_disorder->parent->finding_id, $finding_ids)) {
-                                $secto_strings[] = ($is_principal[$disorder->disorder_id] ? '' : 'Secondary diagnosis: ').$disorder->eye->name.' '.$secto_disorder->letter_macro_text;
-                                $used_disorder_ids[] = $disorder->disorder_id;
-                                $used_finding_ids[] = $secto_disorder->parent->finding_id;
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach ($findings as $finding) {
-                foreach (\SecondaryToCommonOphthalmicDisorder::model()->with('parent')->findAll('t.finding_id=? and parent.subspecialty_id=?', array($finding->finding_id, $subspecialty->id)) as $secto_disorder) {
-                    if ($secto_disorder->letter_macro_text) {
-                        if ($secto_disorder->parent->disorder_id) {
-                            if ($eye = $this->getEyeForDisorder($secto_disorder->parent->disorder_id, $disorder_ids)) {
-                                $secto_strings[] = ($is_principal[$secto_disorder->parent->disorder_id] ? '' : 'Secondary diagnosis: ').$eye.' '.$secto_disorder->letter_macro_text;
-                                $used_disorder_ids[] = $secto_disorder->parent->disorder_id;
-                                $used_finding_ids[] = $finding->finding_id;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $table_vals = array();
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('element_diagnoses_id=:ed');
         $criteria->params[':ed'] = $this->id;
-        $criteria->addCondition('principal=1');
-
-        if (!empty($used_disorder_ids)) {
-            $criteria->addNotInCondition('disorder_id', $used_disorder_ids);
-        }
-
-        if ($principal = OphCiExamination_Diagnosis::model()->find($criteria)) {
-            $text .= 'Principal diagnosis: '.$principal->eye->adjective.' '.$principal->disorder->term."\n";
-        }
-
-        if (!empty($secto_strings)) {
-            $text .= implode("\n", $secto_strings)."\n";
-        }
-
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('element_diagnoses_id=:ed');
-        $criteria->params[':ed'] = $this->id;
-        $criteria->addCondition('principal=0');
-
-        if (!empty($used_disorder_ids)) {
-            $criteria->addNotInCondition('disorder_id', $used_disorder_ids);
-        }
 
         foreach (OphCiExamination_Diagnosis::model()->findAll($criteria) as $diagnosis) {
             if ($diagnosis->disorder) {
-                $text .= 'Secondary diagnosis: '.$diagnosis->eye->adjective.' '.$diagnosis->disorder->term."\n";
+                $table_vals[] = array(
+                    'date' => $this->event->NHSDate('event_date'),
+                    'term' => mb_strtoupper($diagnosis->eye->adjective) . ' ' . $diagnosis->disorder->term
+                );
             }
         }
 
-        if ($ff = Element_OphCiExamination_FurtherFindings::model()->find('event_id=?', array($this->event_id))) {
-            if ($string = $ff->getFurtherFindingsAssignedString($used_finding_ids)) {
-                $text .= "Further Findings: $string\n";
-            }
-        }
-
+        ob_start();
+        ?>
+        <table class="standard">
+            <tbody>
+            <?php
+            foreach ($table_vals as $val):?>
+                <tr>
+                    <td><?= $val['date'] ?></td>
+                    <td><?= $val['term'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+        $text = ob_get_clean();
         return $text;
     }
 
