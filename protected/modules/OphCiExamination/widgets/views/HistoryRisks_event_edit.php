@@ -42,6 +42,12 @@ $required_risk_ids = array_map(function ($r) {
 
     <table
         class="<?= $model_name ?>_entry_table cols-full <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
+			<colgroup>
+				<col class="cols-3">
+				<col class="cols-4">
+				<col class="cols-4">
+				<col class="cols-1">
+			</colgroup>
       <tbody>
       <?php
       $row_count = 0;
