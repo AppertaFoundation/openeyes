@@ -126,23 +126,27 @@
     }
 
     $('.removeProcedure').die('click').live('click', function () {
-      var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
-      removeProcedure($(this), m[1]);
+      let $table = $(this).closest("[id^='procedureList_']");
+      let identifier;
+       if($table) {
+           identifier = $table.attr('id').match(/^procedureList_(.*?)$/);
+           removeProcedure($(this).closest('tr'), identifier[1]);
+        }
+
       return false;
     });
 
-    function removeProcedure(element, identifier) {
+    function removeProcedure($table_row, identifier) {
+        var length = $table_row.siblings('tr').length;
+        var procedure_id = $table_row.find('input[type="hidden"]:first').val();
 
-      var len = element.parent().parent().parent().children('tr').length;
-      var procedure_id = element.parent().parent().find('input[type="hidden"]:first').val();
-
-      element.parent().parent().remove();
+        $table_row.remove();
 
         <?php if ($durations) {?>
       updateTotalDuration(identifier);
         <?php }?>
 
-      if (len <= 1) {
+      if (length < 1) {
         $('#procedureList_' + identifier).css('visibility' , 'hidden');
           <?php if ($durations) {?>
         $('#procedureList_' + identifier).find('.durations').hide();
