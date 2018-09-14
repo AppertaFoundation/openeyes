@@ -123,9 +123,6 @@ class BaseModuleController extends BaseController
                 // Register module print css
                 $newblue_path = 'application.assets.newblue';
                 $assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
-                if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.css').'/print.css')) {
-                    $assetManager->registerCssFile('css/print.css', $asset_path_alias, null, AssetManager::OUTPUT_PRINT);
-                }
                 // Register module js
                 if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.js').'/module.js')) {
                     $assetManager->registerScriptFile('js/module.js', $asset_path_alias, 10, AssetManager::OUTPUT_SCREEN);
