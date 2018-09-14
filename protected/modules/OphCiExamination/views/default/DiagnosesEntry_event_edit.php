@@ -53,9 +53,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
                name="<?= $field_prefix ?>[disorder_id]"
                value="<?=$values['disorder_id']?>"
         >
-    </td>
 
-    <td>
         <div class='condition-secondary-to-wrapper' style='display:none;'>
             <div>Associated diagnosis:</div>
             <select class='condition-secondary-to'>
