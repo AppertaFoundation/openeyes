@@ -244,7 +244,7 @@ class AdminController extends BaseAdminController
     {
         if (Yii::app()->request->isPostRequest) {
             $findings = Yii::app()->request->getParam('Finding', []);
-            $subspecialities = Yii::app()->request->getParam('subspecialty-ids', []);
+            $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
 
             foreach($findings as $key => $finding){
                 if( isset($finding['id']) ){
@@ -258,7 +258,14 @@ class AdminController extends BaseAdminController
                 $finding_object->requires_description = $finding['requires_description'];
                 $finding_object->active = $finding['active'];
 
-                $finding_object->subspecialties = $subspecialities[$key+1];
+                $subspecialities = [];
+                if(isset($subspecialities_ids[$key])){
+                    $criteria = new \CDbCriteria();
+                    $criteria->addInCondition('id', array_values($subspecialities_ids[$key]));
+                    $subspecialities = Subspecialty::model()->findAll($criteria);
+                }
+
+                $finding_object->subspecialties = $subspecialities;
 
                 if(!$finding_object->save()){
                     throw new Exception('Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
@@ -559,7 +566,7 @@ class AdminController extends BaseAdminController
     public function actionFirms()
     {
         Audit::add('admin-Firm', 'list');
-        $search = new ModelSearch(Firm::model());
+/*        $search = new ModelSearch(Firm::model());
         $search->addSearchItem('name', array(
             'type' => 'compare',
             'compare_to' => array(
@@ -571,12 +578,32 @@ class AdminController extends BaseAdminController
             ),
         ));
         $search->addSearchItem('active', array('type' => 'boolean'));
+*/
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+        $criteria = new \CDbCriteria();
 
-        $this->render('/admin/firms', array(
-            'pagination' => $search->initPagination(),
-            'firms' => $search->retrieveResults(),
-            'search' => $search,
-            'displayOrder' => $this->displayOrder,
+        if(Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                if (is_numeric($search['query'])) {
+                    $criteria->addCondition('id = :id');
+                    $criteria->params[':id'] = $search['query'];
+                } else {
+                    $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('name', $search['query'], true, 'OR');
+                }
+            }
+
+            if($search['active'] == 1){
+                $criteria->addCondition('active = 1');
+            } elseif ($search['active'] !== '') {
+                $criteria->addCondition('active != 1');
+            }
+        }
+
+        $this->render('/admin/contexts/index', array(
+            'pagination' => $this->initPagination(Firm::model(), $criteria),
+            'firms' => Firm::model()->findAll($criteria),
+            'search' => $search
         ));
     }
 
@@ -601,7 +628,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editfirm', array(
+        $this->render('/admin/contexts/edit', array(
             'firm' => $firm,
             'errors' => @$errors,
         ));
@@ -637,7 +664,7 @@ class AdminController extends BaseAdminController
             $siteSecretaries[] = $firmSiteSecretaries;
         }
 
-        $this->render('/admin/editfirm', array(
+        $this->render('/admin/contexts/edit', array(
             'firm' => $firm,
             'errors' => @$errors,
             'siteSecretaries' => $siteSecretaries,

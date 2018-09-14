@@ -14,7 +14,10 @@
  */
 ?>
 
-    <h2><?php echo $user->id ? 'Edit' : 'Add'?> commissioning body</h2>
+    <div class="row divider">
+    <h2><?php echo $user->id ? 'Edit' : 'Add'?> user</h2>
+    </div>
+
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(

@@ -48,10 +48,11 @@
     </div>
 
 <?php endif; ?>
-<div class="box admin">
 
 
+    <div class="row divider">
     <h2>Logo</h2>
+    </div>
     <?php
     $form = $this->beginWidget(
             'BaseEventTypeCActiveForm', array(
@@ -107,7 +108,7 @@
     </table>
 <?php echo $form->formActions(array('cancel-uri' => '/admin/logo')); ?>
 <?php $this->endWidget() ?>
-</div>
+
 <script type="text/javascript">
 
     $(".flash-success").delay(3000).fadeOut("slow");
