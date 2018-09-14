@@ -94,7 +94,6 @@
           <?php } ?>
         </table>
 
-
     <div class="add-data-actions flex-item-bottom">
       <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
         <i class="oe-i plus pro-theme"></i>
