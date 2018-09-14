@@ -300,7 +300,7 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'table lists',
+            'plugins' => 'table lists importcss',
             'branding' => false,
             'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
             'valid_children' => '+body[style]'
