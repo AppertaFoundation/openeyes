@@ -23,15 +23,14 @@
         'id' => 'adminform',
         'focus' => '#contactname',
     )) ?>
-    <table width="100%" cellspacing="0" cellpadding="0">
-
+    <table class="standard cols-full" width="100%" cellspacing="0" cellpadding="0">
         <tr>
             <td>Event Id</td>
             <td>
-                <?php if ($event):?>
-                <?php echo $event->id; ?>
-                <?php echo CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
-                <?php else: ?>
+                <?php if ($event) :?>
+                    <?php echo $event->id; ?>
+                    <?php echo CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
+                <?php else : ?>
                 Event Deleted
                 <?php endif;?>
             </td>
