@@ -30,6 +30,7 @@ class UniqueCodesController extends BaseAdminController
      * @var int
      */
     public $itemsPerPage = 100;
+    public $items_per_page = 100;
 
     /**
      * Lists procedures.
@@ -38,20 +39,49 @@ class UniqueCodesController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(UniqueCodes::model(), $this);
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
 
-        $admin->setModelDisplayName('Unique Codes');
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                if (is_numeric($search['query'])) {
+                    $criteria->addCondition('id = :query');
+                } else {
+                    $criteria->addCondition('code = :query');
+                }
+                $criteria->params[':query'] = $search['query'];
+            }
 
-        $admin->setListFields(array(
-            'id',
-            'code',
-            'active',
-        ));
+            if ($search['active'] == 1) {
+                $criteria->addCondition('active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('active != 1');
+            }
+        }
+        // $criteria->order = 'id DESC';
 
-        $admin->searchAll();
-        $admin->getSearch()->addActiveFilter();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel(false);
+        if (true) {
+            $this->render('/oeadmin/unique_codes/index', [
+                'pagination' => $this->initPagination(UniqueCodes::model(), $criteria),
+                'unique_codes' => UniqueCodes::model()->findAll($criteria),
+                'search' => $search,
+            ]);
+        } else {
+            $admin = new Admin(UniqueCodes::model(), $this);
+
+            $admin->setModelDisplayName('Unique Codes');
+
+            $admin->setListFields(array(
+                'id',
+                'code',
+                'active',
+            ));
+
+            $admin->searchAll();
+            $admin->getSearch()->addActiveFilter();
+            $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+            $admin->listModel(false);
+        }
     }
 
     /**
@@ -73,5 +103,10 @@ class UniqueCodesController extends BaseAdminController
             'active' => 'checkbox',
         ));
         $admin->editModel();
+
+//        $this->render('/oeadmin/unique_codes/edit', array(
+//            'unique_code' => UniqueCodes::model()->findByPk($id),
+//            'id' => $id,
+//        ));
     }
 }
