@@ -587,7 +587,7 @@ class Patient extends BaseActiveRecordVersioned
                 $criteria->select = 't.id';
                 $criteria->condition = 'paa.patient_id = :patient_id';
                 $join = array();
-                $join[] = 'JOIN ref_medication_allergy_assignment daa ON daa.drug_id = t.id';
+                $join[] = 'JOIN ref_medication_allergy_assignment daa ON daa.ref_medication_id = t.id';
                 $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = daa.allergy_id';
                 $criteria->join = implode(' ', $join);
                 $criteria->params = array(':patient_id' => $this->id);
