@@ -26,93 +26,10 @@
         <?php echo $label ?>
     </label>
   </div>
-  <div class="cols-4">
-      <?php } else { ?>
-    <div class="cols-6" id="procedure-selector-container">
-        <?php } ?>
-          <?php if ($headertext) { ?>
-            <p><em><?php echo $headertext ?></em></p>
-          <?php } ?>
-          <?php
-          if (!empty($subsections) || !empty($procedures)) {
-              if (!empty($subsections)) {
-                  echo CHtml::dropDownList(
-                      'subsection_id_' . $identifier,
-                      '',
-                      $subsections,
-                      array('empty' => 'Select a subsection')
-                  ); ?>
-                <div class="hide">
-                    <?php echo CHtml::dropDownList(
-                        'select_procedure_id_' . $identifier,
-                        '',
-                        array(),
-                        array('empty' => 'Select a commonly used procedure')
-                    ); ?>
-                </div> <?php
-              } else {
-                  echo CHtml::dropDownList(
-                      'select_procedure_id_' . $identifier,
-                      '',
-                      $procedures,
-                      array(
-                          'empty' => 'Select a commonly used procedure',
-                      )
-                  );
-              }
-          }
-          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'name' => 'procedure_id_' . $identifier,
-              'id' => 'autocomplete_procedure_id_' . $identifier,
-              'source' => "js:function(request, response) {
-                  var existingProcedures = $('#procedureList_$identifier .procedure .value')
-                    .map(function() { return $(this).text(); })
-                    .get();
+      <?php }?>
+    <?php $totalDuration = 0; ?>
 
-                  $.ajax({
-                    'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
-                    'type':'GET',
-                    'data':{'term': request.term, 'restrict': '$restrict'},
-                    'success':function(data) {
-                      data = $.parseJSON(data);
-      
-                      var result = [];
-      
-                      for (var i = 0; i < data.length; i++) {
-                        var index = $.inArray(data[i], existingProcedures);
-                        if (index == -1) {
-                          result.push(data[i]);
-                        }
-                      }
-      
-                      response(result);
-                    }
-                  });
-                }",
-              'options' => array(
-                  'minLength' => '2',
-                  'select' => "js:function(event, ui) {
-                    if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-                      window.callbackVerifyAddProcedure(ui.item.value," . ($durations ? '1' : '0') . ",function(result) {
-                        if (result != true) {
-                          $('#autocomplete_procedure_id_$identifier').val('');
-                          return;
-                        }
-                        ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
-                      });
-                    } else {
-                      ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
-                    }
-                  }",
-              ),
-              'htmlOptions' => array('placeholder' => 'or enter procedure here'),
-          ));
-          ?>
-    </div><?php $totalDuration = 0; ?>
-    <div class="cols-6">
-      <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
-           style="<?= empty($selected_procedures) ? 'display: none;' : '' ?>">
-        <table class="plain">
+        <table class="cols-10" id="procedureList_<?php echo $identifier ?>" style="<?= empty($selected_procedures) ? 'visibility: hidden;' : '' ?>">
           <thead>
           <tr>
             <th>Procedure</th>
@@ -128,7 +45,7 @@
               foreach ($selected_procedures as $procedure) {
                   $totalDuration += $procedure['default_duration']; ?>
                 <tr class="item">
-                  <td class="procedure">
+                  <td class="procedure large-text">
                   <span class="field"><?= CHtml::hiddenField('Procedures_' . $identifier . '[]',
                           $procedure['id']); ?></span>
                     <span class="value"><?= $procedure['term']; ?></span>
@@ -140,7 +57,7 @@
                     <?php } ?>
                   <td>
                   <span class="removeProcedure">
-                    <i class="oe-i remove-circle small"></i>
+                      <i class="oe-i trash"></i>
                   </span>
                   </td>
                 </tr>
@@ -150,21 +67,18 @@
               }
           } ?>
           </tbody>
-        </table>
+
           <?php if ($durations) { ?>
-            <table class="standard durations">
               <tfoot>
               <tr>
+                <td></td>
                 <td>
-                  Calculated Total Duration:
+                    <span id="projected_duration_<?php echo $identifier ?>">
+                        <?php echo CHtml::encode($totalDuration) ?> mins
+                    </span>
+                    <span class="fade">(calculated)</span>
                 </td>
-                <td id="projected_duration_<?php echo $identifier ?>">
-                    <?php echo CHtml::encode($totalDuration) ?> mins
-                </td>
-                <td>
-                  Estimated Total Duration:
-                </td>
-                <td>
+                <td class="align-left">
                   <input
                       type="text"
                       value="<?php echo $total_duration ?>"
@@ -172,20 +86,21 @@
                       name="<?php echo $class ?>[total_duration_<?php echo $identifier ?>]"
                       style="width:60px"
                   />
+                    <span class="fade">mins (estimated)</span>
                 </td>
               </tr>
               </tfoot>
-            </table>
+
           <?php } ?>
-      </div>
-    </div>
-    <?php if ($popupButton) { ?>
+        </table>
+
+
     <div class="add-data-actions flex-item-bottom">
       <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
         <i class="oe-i plus pro-theme"></i>
       </button>
     </div>
-    <?php } ?>
+
 </div>
 
   <script type="text/javascript">
@@ -211,7 +126,7 @@
     }
 
     $('.removeProcedure').die('click').live('click', function () {
-      var m = $(this).parent().parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
+      var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
       removeProcedure($(this), m[1]);
       return false;
     });
@@ -228,7 +143,7 @@
         <?php }?>
 
       if (len <= 1) {
-        $('#procedureList_' + identifier).hide();
+        $('#procedureList_' + identifier).css('visibility' , 'hidden');
           <?php if ($durations) {?>
         $('#procedureList_' + identifier).find('.durations').hide();
           <?php }?>
@@ -302,7 +217,7 @@
               });
             });
 
-            $('select[name=select_procedure_id_' + identifier + ']').parent().show();
+            $('select[name=select_procedure_id_' + identifier + ']').parent().css('visibility' , 'visible');
           }
         });
       } else {
@@ -364,7 +279,7 @@
 
           // append selection onto procedure list
           $('#procedureList_' + identifier).find('.body').append(data);
-          $('#procedureList_' + identifier).show();
+          $('#procedureList_' + identifier).css('visibility' , 'visible');
 
           if (enableDurations) {
             updateTotalDuration(identifier);
@@ -412,14 +327,7 @@
       onReturn: function (adderDialog, selectedItems) {
         var $selector = $('#select_procedure_id_<?php echo $identifier; ?>');
         for (i in selectedItems) {
-          var id = selectedItems[i]['id'];
-          if ('itemSet' in selectedItems[i]&&selectedItems[i]['itemSet'].options['id']==='select'){
-            $selector.val(id);
-            $selector.trigger('change');
-          }
-          else {
             ProcedureSelectionSelectByName(selectedItems[i]['label'], true, '<?= $identifier ?>');
-          }
         }
         return true;
       },
