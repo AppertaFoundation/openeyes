@@ -54,6 +54,8 @@ $based_on = implode(', ', $based_on);
       }
       ?>
     <table class="standard search-results clickable-rows">
+        <colgroup>
+        </colgroup>
       <thead>
       <tr>
           <?php foreach (array(
@@ -66,20 +68,29 @@ $based_on = implode(', ', $based_on);
                              'Gender',
                              'NHS',
                          ) as $i => $field) { ?>
-            <th id="patient-grid_c<?php echo $i; ?>">
-                <?php
-                $new_sort_dir = 0;
-                if ($i == $sort_by) {
-                    $new_sort_dir = 1 - $sort_dir; ?>
-                  <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
-                <?php }
-                echo CHtml::link(
-                    $field,
-                    Yii::app()->createUrl('patient/search',
-                        array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
-                );
-                ?>
-            </th>
+              <th id="patient-grid_c<?php echo $i; ?>">
+                  <?php
+                  $new_sort_dir = 0;
+                  if ($i == $sort_by) {
+                      $new_sort_dir = 1 - $sort_dir;
+                      echo CHtml::link(
+                          $field,
+                          Yii::app()->createUrl('patient/search',
+                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
+                          , array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                      );
+                      ?>
+                      <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
+                  <?php } else {
+                      echo CHtml::link(
+                          $field,
+                          Yii::app()->createUrl('patient/search',
+                              array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
+                          , array('class' => in_array($i, array(0, 2, 4, 5)) ? 'sortable' : '')
+                      );
+                  }
+                  ?>
+              </th>
           <?php } ?>
       </tr>
       </thead>
@@ -105,7 +116,7 @@ $based_on = implode(', ', $based_on);
         </tr>
       <?php } ?>
       </tbody>
-      <tfoot class="pagination-container">
+      <tfoot>
       <tr>
         <td colspan="8">
             <?php $this->widget('LinkPager', [ 'pages' => $data_provider->getPagination() ]); ?>

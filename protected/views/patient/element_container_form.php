@@ -44,8 +44,6 @@ $element_Type = $element->getElementType();
                 echo $element->elementType->parent_element_type_id;
             } ?>"
             data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
-
-            style="min-height: 80px;"
     >
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>

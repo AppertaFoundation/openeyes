@@ -21,7 +21,7 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipalDiagnoses($this->episode);
 ?>
 <div class="element-data element-eyes">
-	<div class="element-eye right-eye column">
+	<div class="js-element-eye right-eye column">
 		<?php if ($principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (2,3)', array($element->id))) {
     ?>
 			<div class="data-group">
@@ -54,7 +54,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
 		<?php
 }?>
 	</div>
-	<div class="element-eye left-eye column">
+	<div class="js-element-eye left-eye column">
 		<?php if ($principal = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (1,3)', array($element->id))) {
     ?>
 			<div class="data-group">

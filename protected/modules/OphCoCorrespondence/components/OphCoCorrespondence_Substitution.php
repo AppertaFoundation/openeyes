@@ -25,6 +25,9 @@ class OphCoCorrespondence_Substitution
             $count = PatientShortcode::model()->count('code=?', array(strtolower($el)));
 
             if ($count == 1) {
+                /**
+                 * @var $code PatientShortcode
+                 */
                 if ($code = PatientShortcode::model()->find('code=?', array(strtolower($el)))) {
                     $text = $code->replaceText($text, $patient, (boolean) preg_match('/^[A-Z]/', $el));
                 }

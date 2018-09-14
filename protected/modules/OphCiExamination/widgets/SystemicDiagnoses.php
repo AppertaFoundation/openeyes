@@ -45,8 +45,7 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     protected function setElementFromDefaults()
     {
         $this->element->storePatientUpdateStatus();
-        // OE-7573 Hack
-        //parent::setElementFromDefaults();
+        parent::setElementFromDefaults();
     }
 
     /**

@@ -84,7 +84,7 @@
       </td>
       <td class="step-event-types" style="visibility: hidden;">
         <h3>Select New Event</h3>
-        <ul class="event-type-list">
+        <ul id="event-type-list" class="event-type-list">
             <?php foreach ($eventTypes as $eventType) {
                 $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
                 if (call_user_func_array(array($this, 'checkAccess'), $args)) {

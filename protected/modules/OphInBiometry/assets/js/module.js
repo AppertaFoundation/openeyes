@@ -104,7 +104,7 @@ $(document).ready(function() {
 	});
 
 	// extend the removal behaviour to affect the dependent elements
-	$(this).delegate('#event-content .side .active-form .remove-side', 'click', function(e) {
+	$(this).delegate('#event-content .js-element-eye .active-form .remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		var other_side = 'left';
 		if (side == 'left') {

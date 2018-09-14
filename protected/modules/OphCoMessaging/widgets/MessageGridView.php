@@ -22,15 +22,12 @@ class MessageGridView extends CGridView
     public function renderTableHeader()
     {
         ?>
-      <colgroup>
-        <col style="width:80px;">
-        <col style="width:70px;">
-        <col style="width:50px;">
-        <col>
-        <col style="width:20px;">
-        <col style="width:90px;">
-
-      </colgroup>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col class="cols-2">
+        </colgroup>
         <?php
         echo "<thead>\n";
 
