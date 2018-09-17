@@ -21,7 +21,7 @@
   <div class="data-value flex-layout flex-top">
       <div class="cols-11">
         <div class="data-group" id="js-listview-info-pro" style="">
-          <ul class="dslash-list large-text">
+          <ul class="dot-list large-text">
             <li><?php echo $element->site ? $element->site->name : 'None' ?></li>
             <li><?php echo $element->laser ? $element->laser->name : 'None' ?></li>
             <li><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None' ?></li>
