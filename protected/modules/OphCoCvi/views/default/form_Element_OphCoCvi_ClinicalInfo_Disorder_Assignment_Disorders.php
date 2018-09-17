@@ -64,19 +64,14 @@
                 headerChange(e);
             });
 
-
             function change() {
                 $icon.toggleClass('minus plus');
-                if (collapsed) {
-                    $content.show();
-                } else {
-                    $content.hide();
-                }
                 collapsed = !collapsed;
+                $content.toggle(!collapsed)
             }
 
             function headerChange(e){
-                if(!collapsed){
+                if(collapsed){
                     e.preventDefault();
                     $content.show();
                     $icon.toggleClass('minus plus');
