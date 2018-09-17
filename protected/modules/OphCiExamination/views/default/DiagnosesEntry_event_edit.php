@@ -51,10 +51,10 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <input type="text"
                class="diagnoses-search-autocomplete"
                id="diagnoses_search_autocomplete_<?=$row_count?>"
-               data-saved-diagnoses='<?php echo json_encode(array(
+               data-saved-diagnoses='<?php echo json_encode([
                     'id' => $values['id'],
                     'name' => $values['disorder_display'],
-                    'disorder_id' => $values['disorder_id'])); ?>'
+                    'disorder_id' => $values['disorder_id']], JSON_HEX_QUOT | JSON_HEX_APOS); ?>'
                >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][<?= $row_count?>]" value="">
     </td>

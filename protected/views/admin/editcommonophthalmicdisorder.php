@@ -51,9 +51,9 @@
                     'name' => 'disorder.term',
                     'type' => 'raw',
                     'htmlOptions'=>array('width'=>'200px'),
-                    'value' => function($data, $row){
+                    'value' => function ($data, $row) {
                         $term = null;
-                        if($data->disorder){
+                        if ($data->disorder) {
                             $term = $data->disorder->term;
                         }
                         return CHtml::textField((get_class($data) . "[$row][disorder_id]"), $term, array(
@@ -63,7 +63,7 @@
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            )) : ''
+                            ), JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ));
                     }
                 ),
