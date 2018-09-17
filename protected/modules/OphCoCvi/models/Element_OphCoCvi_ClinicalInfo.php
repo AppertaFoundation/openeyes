@@ -721,4 +721,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return $action!=='view';
     }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
+    }
 }
