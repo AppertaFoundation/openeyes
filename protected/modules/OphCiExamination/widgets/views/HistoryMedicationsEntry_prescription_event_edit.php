@@ -34,14 +34,14 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 }
 ?>
 
-
-<tr data-key="<?= $row_count ?>"
-		class="<?= $field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : '' ?>">
-	<td>
-		<input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $entry->id ?>"/>
-		<input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?= $entry->prescription_item_id ?>"/>
-		<input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= $entry->originallyStopped ?>"/>
-		<span class="medication-display">
+<tr data-key="<?=$row_count?>"
+    style="display: <?= $entry->originallyStopped ? 'none' : 'block'?>"
+    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
+    <td>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
+      <span class="medication-display">
         <span class="medication-name">
           <?= $entry->getMedicationDisplay() ?>
         </span>
