@@ -32,6 +32,12 @@ class EventLogController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public function beforeAction($action)
+    {
+        Yii::app()->assetManager->registerScriptFile('/js/handleButtons.js');
+        return parent::beforeAction($action);
+    }
+
     /**
      * Lists procedures.
      *
@@ -39,22 +45,27 @@ class EventLogController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(AutomaticExaminationEventLog::model(), $this);
-        $admin->setModelDisplayName('Examination Event Log(s)');
-        $admin->setListFields(array(
-            'event_id',
-            'unique_code',
-            'examination_date',
-            'import_status.status_value',
-        ));
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'event_type' => '']);
 
-        $admin->searchAll();
-        $admin->getSearch()->addSearchItem('import_success', array(
-            'type' => 'dropdown',
-            'options' => CHtml::listData(ImportStatus::model()->findAll(), 'id', 'status_value'),
-        ));
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel(false);
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                $criteria->addCondition('event_id = :query', 'OR');
+                $criteria->addCondition('unique_code = :query', 'OR');
+                $criteria->addCondition('examination_date = :query', 'OR');
+                $criteria->params[':query'] = $search['query'];
+            }
+
+            if ($search['event_type'] != '') {
+                $criteria->addCondition('import_success = ' . (1 + $search['event_type']));
+            }
+        }
+
+        $this->render('/oeadmin/event_log/index', [
+            'pagination' => $this->initPagination(AutomaticExaminationEventLog::model(), $criteria),
+            'event_logs' => AutomaticExaminationEventLog::model()->findAll($criteria),
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -82,19 +93,22 @@ class EventLogController extends BaseAdminController
 
         $event = $eventQuery->event;
         $eventUniqueCode = $eventQuery->unique_code;
-        $buttons = array();
+        $button_options = [
+            'cancel-uri' => '/oeadmin/eventLog/list',
+        ];
+
 
         switch ($eventQuery->import_status->status_value) {
             case 'Success Event':
             case 'Dismissed Event':
             case 'Import Success':
-                $buttons = array(
+                $button_options = array(
                     'cancel' => false,
                     'submit' => 'Ok',
                 );
                 break;
             case 'Duplicate Event':
-                $buttons = array(
+                $button_options = array(
                     'cancel' => 'Dismiss New',
                     'cancel-uri' => '/oeadmin/eventLog/dismiss/'.$id,
                     'submit' => 'Accept New',
@@ -109,7 +123,7 @@ class EventLogController extends BaseAdminController
             'status' => $eventQuery->import_status->status_value,
             'data' => json_decode($eventQuery->examination_data, true),
             'previous' => $this->previousEventLogData($eventQuery),
-            'buttons' => $buttons,
+            'button_options' => $button_options,
         ));
     }
 

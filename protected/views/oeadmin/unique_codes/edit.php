@@ -17,16 +17,13 @@
  */
 ?>
 
-<?php if (!$unique_code) : ?>
-    <div class="row divider">
-        <div class="alert-box issue"><b>No such code exists!</b></div>
-    </div>
-<?php die(); endif; ?>
-
 <h2>Edit Unique Codes</h2>
 
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+
 <div class="cols-5">
-    <form>
+    <form method = "POST">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <colgroup>
                 <col class="cols-4">
@@ -57,7 +54,7 @@
                     <?php echo CHtml::button(
                         'Save',
                         [
-                            'class' => 'button small button header-tab',
+                            'class' => 'button small button',
                             'name' => 'save',
                             'type' => 'submit',
                             'id' => 'et_save'
@@ -66,7 +63,7 @@
                     <?php echo CHtml::button(
                         'Cancel',
                         [
-                            'class' => 'warning button large primary event-action',
+                            'class' => 'warning button small',
                             'data-uri' => '/oeadmin/uniqueCodes/list',
                             'type' => 'submit',
                             'name' => 'cancel',

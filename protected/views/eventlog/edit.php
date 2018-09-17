@@ -120,7 +120,7 @@
         </tr>
         <?php endif;?>
     </table>
-    <?php echo $form->formActions($buttons); ?>
+    <?php echo $form->formActions($button_options); ?>
 
     <?php $this->endWidget() ?>
 </div>

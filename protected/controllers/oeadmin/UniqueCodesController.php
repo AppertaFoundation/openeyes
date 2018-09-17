@@ -60,28 +60,11 @@ class UniqueCodesController extends BaseAdminController
         }
         // $criteria->order = 'id DESC';
 
-        if (true) {
-            $this->render('/oeadmin/unique_codes/index', [
-                'pagination' => $this->initPagination(UniqueCodes::model(), $criteria),
-                'unique_codes' => UniqueCodes::model()->findAll($criteria),
-                'search' => $search,
-            ]);
-        } else {
-            $admin = new Admin(UniqueCodes::model(), $this);
-
-            $admin->setModelDisplayName('Unique Codes');
-
-            $admin->setListFields(array(
-                'id',
-                'code',
-                'active',
-            ));
-
-            $admin->searchAll();
-            $admin->getSearch()->addActiveFilter();
-            $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-            $admin->listModel(false);
-        }
+        $this->render('/oeadmin/unique_codes/index', [
+            'pagination' => $this->initPagination(UniqueCodes::model(), $criteria),
+            'unique_codes' => UniqueCodes::model()->findAll($criteria),
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -93,20 +76,33 @@ class UniqueCodesController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(UniqueCodes::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
-        }
-        $admin->setModelDisplayName('Unique Codes');
-        $admin->setEditFields(array(
-            'code' => 'label',
-            'active' => 'checkbox',
-        ));
-        $admin->editModel();
+        $errors = [];
 
-//        $this->render('/oeadmin/unique_codes/edit', array(
-//            'unique_code' => UniqueCodes::model()->findByPk($id),
-//            'id' => $id,
-//        ));
+        if (Yii::app()->request->isPostRequest) {
+            // get data from POST
+            $user_data = \Yii::app()->request->getPost('UniqueCodes');
+
+            // save data into a new object
+            $unique_code_object = UniqueCodes::model()->findByPk($id);
+            $unique_code_object->code = $user_data['code'];
+            $unique_code_object->active = $user_data['active'];
+
+            // try saving the data
+            if (!$unique_code_object->save()) {
+                $errors = $unique_code_object->getErrors();
+            } else {
+                $this->redirect('/oeadmin/uniqueCodes/list/');
+            }
+        }
+
+        if (!UniqueCodes::model()->findByPk($id)) {
+            $errors['id_not_found'][]='ID not found';
+        }
+
+        $this->render('/oeadmin/unique_codes/edit', array(
+            'unique_code' => UniqueCodes::model()->findByPk($id),
+            'id' => $id,
+            'errors' => $errors
+        ));
     }
 }

@@ -67,7 +67,7 @@
                     <?php echo CHtml::htmlButton(
                         'Add',
                         [
-                            'class' => 'small secondary',
+                            'class' => 'small secondary button',
                             'name' => 'add',
                             'type' => 'button',
                             'id' => 'et_admin-add'
@@ -76,7 +76,7 @@
                     <?php echo CHtml::button(
                         'Save',
                         [
-                            'class' => 'generic-admin-save small primary button header-tab',
+                            'class' => 'small primary button',
                             'name' => 'save',
                             'type' => 'submit',
                             'id' => 'et_admin-save'
