@@ -217,16 +217,19 @@
     var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect, 'data-id':itemSet.options.id});
 
     itemSet.items.forEach(function (item) {
+
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
       if(item.selected) {
         $listItem.addClass('selected');
       }
+			if (item['set_default']){
+				$listItem.addClass('default');
+			}
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
-
     return $list;
   };
 
