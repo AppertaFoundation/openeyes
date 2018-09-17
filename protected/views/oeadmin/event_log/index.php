@@ -48,15 +48,9 @@
                     </td>
                     <td>
                         <?= \CHtml::dropDownList(
-                            'search[event_type]',
-                            $search['event_type'],
-                            [
-                                0 => 'Success Event',
-                                1 => 'Import Failure',
-                                2 => 'Duplicate Event',
-                                3 => 'Unfound Event',
-                                4 => 'Dismissed Event',
-                            ],
+                            'search[status_value]',
+                            $search['status_value'],
+                            CHtml::listData($statuses, 'id', 'status_value'),
                             ['empty' => '-All-']
                         ); ?>
                     </td>

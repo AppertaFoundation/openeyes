@@ -46,7 +46,7 @@ class EventLogController extends BaseAdminController
     public function actionList()
     {
         $criteria = new CDbCriteria();
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'event_type' => '']);
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'status_value' => '']);
 
         if (Yii::app()->request->isPostRequest) {
             if ($search['query']) {
@@ -56,8 +56,9 @@ class EventLogController extends BaseAdminController
                 $criteria->params[':query'] = $search['query'];
             }
 
-            if ($search['event_type'] != '') {
-                $criteria->addCondition('import_success = ' . (1 + $search['event_type']));
+            if ($search['status_value'] != '') {
+                $criteria->addCondition('import_success = :import_success');
+                $criteria->params[':import_success'] = $search['status_value'];
             }
         }
 
@@ -65,6 +66,7 @@ class EventLogController extends BaseAdminController
             'pagination' => $this->initPagination(AutomaticExaminationEventLog::model(), $criteria),
             'event_logs' => AutomaticExaminationEventLog::model()->findAll($criteria),
             'search' => $search,
+            'statuses' => ImportStatus::model()->findAll()
         ]);
     }
 
