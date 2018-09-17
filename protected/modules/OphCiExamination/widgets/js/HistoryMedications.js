@@ -93,13 +93,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   */
   HistoryMedicationsController.prototype.initialiseFilters = function()
   {
-
     // if there aren't any stopped medications, then the filter is irrelevant
     if (!this.$table.find('tr.originally-stopped').length) {
-      this.$element.find('.show-stopped').hide();
-      this.$element.find('.hide-stopped').hide();
-    } else {
-      this.hideStopped();
+        this.$element.find('.show-stopped').hide();
+        this.$element.find('.hide-stopped').hide();
     }
   };
 
