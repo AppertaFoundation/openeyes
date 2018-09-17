@@ -105,7 +105,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
         <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
           <div class="js-element-eye <?= $eye_side ?>-eye column">
             <div class="data-group">
-              <ul class="dslash-list large-text">
+              <ul class="dot-list large-text">
                 <li><?php echo CHtml::encode($element->{'unaided_'.$eye_side.'_va'}.' Unaided'); ?></li>
                 <li><?php echo CHtml::encode($element->{'best_corrected_'.$eye_side.'_va'}.' Best') ?></li>
                 <li><?php echo CHtml::encode($element->best_corrected_binocular_va.' Binocula') ?></li>
