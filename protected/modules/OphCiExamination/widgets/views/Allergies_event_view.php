@@ -21,13 +21,13 @@
                 );
                 ?>
               <div id="js-listview-allergies-pro">
-                <ul class="dslash-list large">
+                <ul class="dot-list large">
                   <li>Present:</li>
                     <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
                       <li><?= $entry->getDisplayAllergy(); ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <ul class="dslash-list large">
+                <ul class="dot-list large">
                   <li>Not Present:</li>
                     <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
                       <li><?= $entry->getDisplayAllergy(); ?></li>

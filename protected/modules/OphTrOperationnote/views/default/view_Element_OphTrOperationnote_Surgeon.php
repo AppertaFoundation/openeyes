@@ -27,7 +27,7 @@
       <div class="data-value flex-layout flex-top">
         <div class="cols-11">
           <div class="cols-11" id="js-listview-info-pro" style="">
-            <ul class="dslash-list large-text">
+            <ul class="dot-list large-text">
               <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
               <li>
                 <span class="fade">
