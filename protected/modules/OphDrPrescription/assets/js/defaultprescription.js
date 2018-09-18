@@ -41,7 +41,8 @@ $('#prescription_items').delegate('i.removeItem', 'click', function () {
 });
 
 // Add taper to item
-$('#prescription_items').delegate('a.taperItem:not(.processing)', 'click', function () {
+$('#prescription_items').on('click', '.js-add-taper', function (event) {
+  event.preventDefault();
   var row = $(this).closest('tr');
   var key = row.attr('data-key');
   var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
@@ -348,3 +349,21 @@ function hide_dialog() {
 function goBack() {
   window.history.back();
 }
+
+// Add comments to item
+$('#prescription_items').on('click', '.js-add-comments', function () {
+    var $row = $(this).closest('tr');
+    var key = $row.attr('data-key');
+    $('#comments-' + key).show();
+    $('.js-input-comments').autosize();
+    $row.find('.js-add-comments').hide();
+    return false;
+});
+// Remove comments from item
+$('#prescription_items').on('click', '.js-remove-add-comments', function () {
+    var $row = $(this).closest('tr');
+    var key = $row.attr('data-key');
+    $('#comments-' + key).hide();
+    $row.find('.js-add-comments').show();
+    return false;
+});

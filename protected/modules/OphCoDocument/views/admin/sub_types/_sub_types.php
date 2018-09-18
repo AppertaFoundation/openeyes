@@ -19,8 +19,15 @@
 <?php
 if (!empty($sub_types)) {
     foreach ($sub_types as $i => $sub_type) {?>
-		<tr class="clickable" data-id="<?php echo $sub_type->id?>" data-uri="OphCoDocument/oeadmin/documentSubTypesSettings/edit/<?php echo $sub_type->id?>">
-			<td><?php echo $sub_type->name?></td>
+		<tr class="clickable"
+            data-id="<?php echo $sub_type->id?>"
+            data-uri="OphCoDocument/oeadmin/documentSubTypesSettings/edit/<?php echo $sub_type->id?>"
+        >
+            <td class="reorder">
+                <span>↑↓</span>
+                <?=\CHtml::activeHiddenField($sub_type, "[$i]display_order");?>
+                <?=\CHtml::activeHiddenField($sub_type, "[$i]id");?>
+            <td><?php echo $sub_type->name?></td>
             <td><?php echo $sub_type->display_order?></td>
             <td><?php echo $sub_type->is_active ? 'Yes' : 'No'?></td>
 		</tr>

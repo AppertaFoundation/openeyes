@@ -33,11 +33,7 @@ $(document).ready(function () {
 
   // exit oescape and go back to last viewed (non-oes) page
   $('#js-exit-oescape').click( function(){
-    if(localStorage.getItem("lastPage")){
-      window.location = localStorage.getItem("lastPage");
-    } else {
       window.location.href = $(this).data('link');
-    }
   });
 
 });
@@ -122,7 +118,7 @@ function pruneYTicks(ticks, plotHeight, label_height){
 function cleanVATicks(ticks, options, charts, axis_index){
   //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
   //programmatically, please do it
-  ticks = pruneYTicks(ticks, charts.yAxis[axis_index].height, 12);
+  ticks = pruneYTicks(ticks, charts.yAxis[axis_index].height, 17);
   options['yAxis'][axis_index]['tickPositions'] = ticks['tick_position'];
   options['yAxis'][axis_index]['labels'] = setYLabels(ticks['tick_position'], ticks['tick_labels']);
   charts.update(options);

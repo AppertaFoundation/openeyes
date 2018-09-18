@@ -42,7 +42,6 @@
             <td>
                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
             </td>
-            </td>
         </tr>
         <tr>
             <td>K1:</td>
@@ -151,12 +150,11 @@
         </tr>
         <tr>
             <td>Status</td>
-            <td>
+            <td colspan="3">
                 <span class="large-text highlighter orange">
                     <?php echo Eye_Status::model()->findByPk($element->{"eye_status_$side"})->name ?>
                 </span>
             </td>
-            <td colspan="2"></td>
             <td>
                 <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
             </td>

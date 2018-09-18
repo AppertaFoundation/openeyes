@@ -28,10 +28,13 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'name' => $element_name.'[patient_unavailables]['.$key.'][start_date]',
         'field' => 'start_date',
         'htmlOptions' => array(
-            'id' => 'patient_unavailables_'.$key.'_start_date',
+            'id' => $element_name.'_patient_unavailables_'.$key.'_start_date',
             'nowrapper' => true,
             'class' => 'unavailable-start-date',
-        ), ));
+        ),
+        'options' => array(
+            'minDate' => 'today',
+        ) ));
 		?>
 	</td>
 	<td>
@@ -40,10 +43,13 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         'name' => $element_name.'[patient_unavailables]['.$key.'][end_date]',
         'field' => 'end_date',
         'htmlOptions' => array(
-            'id' => 'patient_unavailables_'.$key.'_end_date',
+            'id' => $element_name.'_patient_unavailables_'.$key.'_end_date',
             'nowrapper' => true,
             'class' => 'unavailable-end-date',
-        ), ));
+        ),
+        'options' => array(
+            'minDate' => 'today',
+        )));
 		?>
 	</td>
 	<td>

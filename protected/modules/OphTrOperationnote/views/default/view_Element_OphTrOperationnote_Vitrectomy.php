@@ -17,51 +17,13 @@
  */
 ?>
 
-<section class="element">
+<section class="element view">
   <header class="element-header">
-    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+    <h3 class="element-title"><?= $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-    <div class="data-group">
-      <div class="cols-6 column">
-        <div class="data-group">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo $element->gauge->value ?>
-            </div>
-          </div>
-        </div>
-        <div class="data-group">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo $element->pvd_induced ? 'Yes' : 'No'; ?>
-            </div>
-          </div>
-        </div>
-        <div class="data-group">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo Yii::app()->format->Ntext($element->comments) ?>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cols-6 column">
+    <div class="eyedraw flex-layout flex-top flex-left">
+      <div class="eyedraw-canvas">
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'side' => $element->eye->getShortName(),
@@ -73,6 +35,54 @@
               'idSuffix' => 'Vitrectomy',
           ));
           ?>
+      </div>
+
+      <div class="eyedraw-data">
+        <table class="label-value no-lines last-left">
+          <colgroup>
+            <col class="cols-5">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?= CHtml::encode($element->getAttributeLabel('gauge_id')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?= $element->gauge->value ?>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?= CHtml::encode($element->getAttributeLabel('pvd_induced')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?= $element->pvd_induced ? 'Yes' : 'No'; ?>
+              </div>
+            </td>
+          </tr>
+          <?php if (strlen($element->comments) > 0) { ?>
+            <tr>
+              <td>
+                <div class="data-label">
+                    <?= CHtml::encode($element->getAttributeLabel('comments')) ?>
+                </div>
+              </td>
+              <td>
+                <div class="data-value">
+                    <?= Yii::app()->format->Ntext($element->comments) ?>
+                </div>
+              </td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>

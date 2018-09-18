@@ -121,6 +121,8 @@ class BaseModuleController extends BaseController
             foreach ($paths as $p) {
                 $asset_path_alias = 'application.modules.'.$p.'.assets';
                 // Register module print css
+                $newblue_path = 'application.assets.newblue';
+                $assetManager->registerCssFile('css/style_oe3.0_print.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
                 if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.css').'/print.css')) {
                     $assetManager->registerCssFile('css/print.css', $asset_path_alias, null, AssetManager::OUTPUT_PRINT);
                 }

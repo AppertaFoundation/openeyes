@@ -20,7 +20,6 @@ class AdminController extends BaseAdminController
 {
     public $layout = 'admin';
     public $items_per_page = 30;
-    public $fixedHotlist = true;
 
     /**
      * @var int

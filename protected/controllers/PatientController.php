@@ -21,7 +21,6 @@ class PatientController extends BaseController
 {
     public $layout = '//layouts/home';
     public $renderPatientPanel = true;
-    public $fixedHotlist = true;
     public $patient;
     public $firm;
     public $editable;
@@ -237,6 +236,7 @@ class PatientController extends BaseController
         } else {
             $this->renderPatientPanel = false;
 
+            $this->fixedHotlist = false;
             $this->render('results', array(
                 'data_provider' => $dataProvider,
                 'page_num' => \Yii::app()->request->getParam('Patient_page', 0),
@@ -372,7 +372,6 @@ class PatientController extends BaseController
             throw new SystemException('Episode not found: '.$id);
         }
 
-        $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
 
@@ -489,19 +488,17 @@ class PatientController extends BaseController
         ));
     }
 
-    public function actionOEscape($id){
-        if (!$this->episode = Episode::model()->findByPk($id)) {
-            throw new SystemException('Episode not found: '.$id);
-        }
+    public function actionOEscape($subspecialty_id, $patient_id){
 
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+        $patient = Patient::model()->findByPk($patient_id);
+
+        $this->patient = $patient;
         $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
-        $this->patient = $this->episode->patient;
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
-
-        $episodes = $this->patient->episodes;
 
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -512,14 +509,9 @@ class PatientController extends BaseController
             ),
         );
 
-        $this->current_episode = $this->episode;
-        $status = Yii::app()->session['episode_hide_status'];
-        $status[$id] = true;
-        Yii::app()->session['episode_hide_status'] = $status;
-
         $this->render('oescapes', array(
             'title' => '' ,
-            'episodes' => $episodes,
+            'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
         ));

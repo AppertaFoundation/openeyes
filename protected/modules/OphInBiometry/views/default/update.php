@@ -27,12 +27,13 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
         $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
 
         // Add the open in forum button if FORUM integration is enabled
-        $sop = OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
-        if (!empty($sop->sop_uid && Yii::app()->params['enable_forum_integration'] === 'on')){
+        $biometry_imported_events =OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
+        $sop=isset($biometry_events->sop_uid) ? $biometry_events->sop_uid : array();
+        if (!empty($sop && Yii::app()->params['enable_forum_integration'] === 'on')){
         array_unshift(
         $this->event_actions,
             EventAction::link('Open In Forum',
-                ('oelauncher:forumsop/'.$sop->sop_uid),
+                ('oelauncher:forumsop/'.$sop),
                 null, array('class' => 'button small')
             ));
         }
@@ -43,6 +44,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
             'form' => $form,
             'disableOptionalElementActions' => true,
         ));
-        $this->displayErrors($errors, true);
+    $this->renderPartial('_va_view' , ['action' => 'update']);
+    $this->displayErrors($errors, true);
     $this->endWidget();
 $this->endContent();

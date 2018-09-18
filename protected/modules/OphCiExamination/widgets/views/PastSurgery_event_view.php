@@ -17,45 +17,37 @@
 $widget = $this;
 ?>
 <div class="element-data">
-  <div class="data-value">
-    <div class="tile-data-overflow">
-        <?php if (!$operations || count($operations) === 0) { ?>
-          <div class="data-value not-recorded">No procedures recorded during this encounter</div>
-        <?php } else { ?>
-      <table>
-        <colgroup>
-          <col class="cols-7">
-        </colgroup>
-        <tbody> <?php foreach ($operations as $operation) { ?>
-          <tr>
-            <td>
-                <?= array_key_exists('object',
-                    $operation) ? $operation['object']->operation : $operation['operation']; ?>
-            </td>
-              <?php if (array_key_exists('side', $operation) ||
-                  (array_key_exists('object', $operation) && $operation['object']->side)): ?>
-                <td>
-                    <?php
-                      $side = array_key_exists('side', $operation) ?
-                        $operation['side'] : (array_key_exists('object',
-                            $operation) ? $operation['object']->side : '');
-
-                      $this->widget('EyeLateralityWidget', array('laterality' => $side));
-                    ?>
-                </td>
-              <?php endif; ?>
-            <td>
-              <div class="oe-date">
-                <?= array_key_exists('object',
-                    $operation) ? $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
-              </div>
-            </td>
-          </tr>
-        <?php }
-        } ?>
-        </tbody>
-      </table>
-        <?= CHtml::encode($element->comments) ?>
+    <div class="data-value">
+        <div class="tile-data-overflow">
+            <?php if (!$operations || count($operations) === 0) { ?>
+                <div class="data-value not-recorded">No procedures recorded during this encounter</div>
+            <?php } else { ?>
+            <table>
+                <colgroup>
+                    <col class="cols-7">
+                </colgroup>
+                <tbody> <?php foreach ($operations as $operation) { ?>
+                    <tr>
+                        <td>
+                            <?= array_key_exists('object',
+                                $operation) ? $operation['object']->operation : $operation['operation']; ?>
+                        </td>
+                        <td>
+                            <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                        </td>
+                        <td>
+                            <div class="oe-date">
+                                <?= array_key_exists('object',
+                                    $operation) ? $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+                            </div>
+                        </td>
+                    </tr>
+                <?php }
+                } ?>
+                </tbody>
+            </table>
+            <?= CHtml::encode($element->comments) ?>
+        </div>
     </div>
-  </div>
 </div>

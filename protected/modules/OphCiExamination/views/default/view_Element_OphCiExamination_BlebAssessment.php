@@ -18,30 +18,36 @@
 ?>
 <div class="element-data element-eyes">
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-  <div class="element-eye <?= $eye_side ?>-eye column">
+  <div class="js-element-eye <?= $eye_side ?>-eye column">
     <div class="data-group">
         <?php if ($element->hasEye($eye_side)): ?>
           <table>
+            <colgroup>
+              <col class="cols-3">
+              <col class="cols-3">
+              <col class="cols-3">
+              <col class="cols-3">
+            </colgroup>
             <thead>
               <tr>
-                <th class="center cols-3">Area (Central)</th>
-                <th class="center cols-3">Area (Maximal)</th>
-                <th class="center cols-3">Height</th>
-                <th class="center cols-3">Vascularity</th>
+                <th>Area (Central)</th>
+                <th>Area (Maximal)</th>
+                <th>Height</th>
+                <th>Vascularity</th>
               </tr>
               </thead>
               <tbody>
               <tr>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_central_area'}->area; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_max_area'}->area; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_height'}->height; ?>
                 </td>
-                <td class="center">
+                <td>
                     <?php echo $element->{$eye_side . '_vasc'}->vascularity; ?>
                 </td>
               </tr>

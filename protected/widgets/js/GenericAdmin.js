@@ -107,7 +107,7 @@ function GenericAdmin_ReindexDefault()
 	var i = 0;
 
 	$('.generic-admin tbody tr').map(function() {
-		var display_order = $(this).find('input[name^="display_order"]');
+		var display_order = $(this).find('input[name*="display_order"]');
 
 		if (display_order.length > 0) {
 			display_order.val(i+1);

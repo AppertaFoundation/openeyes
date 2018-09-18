@@ -47,6 +47,7 @@ abstract class OpenEyesPage extends Page {
 	 */
 	public function waitForTitle($title, $waitTime = null) {
 		$condition = 'window.$ && $(\'h1.badge\').html() == \'' . str_replace ( "'", "\'", $title ) . '\'';
+		echo 'waiting for :'.$condition;
 		$this->getSession ()->wait ( $this->getWaitTime ( $waitTime ), $condition );
 	}
 	
@@ -154,7 +155,7 @@ JS;
 		) );
 	}
 	private function getWaitTime($waitTime) {
-		return $waitTime = $waitTime != null ? ( int ) $waitTime : 15000;
+		return $waitTime = $waitTime != null ? ( int ) $waitTime : 2000;
 	}
 
     /**
