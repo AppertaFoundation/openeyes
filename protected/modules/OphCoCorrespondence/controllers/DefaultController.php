@@ -344,7 +344,6 @@ class DefaultController extends BaseEventTypeController
                 break;
             case 'examination':
                 echo $this->process_examination_findings($_GET['patient_id'], $_GET['string_id']);
-
                 return;
             default:
                 throw new Exception('Unknown letter string type: '.@$_GET['string_type']);
