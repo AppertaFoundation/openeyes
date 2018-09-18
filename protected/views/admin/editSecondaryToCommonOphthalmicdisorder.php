@@ -63,7 +63,7 @@
                             'name' => $data->disorder->term,
                             'disorder_id' => $data->disorder->id,
 
-                        )) : ''
+                        ), JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                     ));
                 }
             ),

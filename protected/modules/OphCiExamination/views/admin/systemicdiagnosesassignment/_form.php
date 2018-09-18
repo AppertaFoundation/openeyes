@@ -71,8 +71,10 @@
                 'header' => 'Diagnosis',
                 'name' => 'Diagnosis',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($disorder){
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",null,
+                'value' => function ($data, $row) use ($disorder) {
+                    return CHtml::textField(
+                        "OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",
+                        null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -80,8 +82,9 @@
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            ]) : ''
-                        ]);
+                            ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
+                        ]
+                    );
                 }
             ),
             array(
