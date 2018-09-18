@@ -34,7 +34,6 @@ class EventLogController extends BaseAdminController
 
     public function beforeAction($action)
     {
-        Yii::app()->assetManager->registerScriptFile('/js/handleButtons.js');
         return parent::beforeAction($action);
     }
 
@@ -118,7 +117,8 @@ class EventLogController extends BaseAdminController
                 break;
         }
 
-        $this->render('//eventlog/edit', array(
+
+        $this->render('/oeadmin/event_log/edit', array(
             'log_id' => $id,
             'event' => $event,
             'unique_code' => $eventUniqueCode,
@@ -127,22 +127,6 @@ class EventLogController extends BaseAdminController
             'previous' => $this->previousEventLogData($eventQuery),
             'button_options' => $button_options,
         ));
-    }
-
-    /**
-     * @param $id
-     */
-    public function actionDismiss($id)
-    {
-        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
-        if (!$eventQuery) {
-            throw new CHttpException(404, "Event not found: $id");
-        }
-
-        $eventQuery->import_success = ImportStatus::model()->find('status_value = "Dismissed Event"')->id;
-        $eventQuery->save();
-
-        $this->redirect('/oeadmin/eventLog/list/');
     }
 
     /**
@@ -170,6 +154,41 @@ class EventLogController extends BaseAdminController
         if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
             $this->createExamination($eventQuery, $opNoteEvent->episode_id, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
         }
+    }
+
+    /**
+     * @param $eventQuery
+     * @param $opNoteEvent
+     * @param $creator
+     * @param $portalUserId
+     * @param $examination
+     * @param $eventType
+     * @param $eyeIds
+     * @param $refractionType
+     *
+     * @throws CHttpException
+     */
+    protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
+    {
+        $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
+
+        try {
+            $examinationEvent = $creator->save($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
+            if ($eventQuery->event) {
+                //delete old event
+                $eventQuery->event->deleted = 1;
+                $eventQuery->event->save();
+            }
+            //update log for new event
+            $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
+            $eventQuery->event_id = $examinationEvent->id;
+            $eventQuery->save();
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(500, 'Saving Examination event failed');
+        }
+
+        $transaction->commit();
     }
 
     /**
@@ -207,7 +226,7 @@ class EventLogController extends BaseAdminController
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_id', $eventLog->event_id);
-        $criteria->addCondition('id <> '.$eventLog->id);
+        $criteria->addCondition('id <> ' . $eventLog->id);
         $criteria->order = 'created_date DESC, id ASC';
         $previous = AutomaticExaminationEventLog::model()->find($criteria);
 
@@ -219,37 +238,18 @@ class EventLogController extends BaseAdminController
     }
 
     /**
-     * @param $eventQuery
-     * @param $opNoteEvent
-     * @param $creator
-     * @param $portalUserId
-     * @param $examination
-     * @param $eventType
-     * @param $eyeIds
-     * @param $refractionType
-     *
-     * @throws CHttpException
+     * @param $id
      */
-    protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
+    public function actionDismiss($id)
     {
-        $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
-
-        try {
-            $examinationEvent = $creator->saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
-            if ($eventQuery->event) {
-                //delete old event
-                $eventQuery->event->deleted = 1;
-                $eventQuery->event->save();
-            }
-            //update log for new event
-            $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
-            $eventQuery->event_id = $examinationEvent->id;
-            $eventQuery->save();
-        } catch (Exception $e) {
-            $transaction->rollback();
-            throw new CHttpException(500, 'Saving Examination event failed');
+        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
+        if (!$eventQuery) {
+            throw new CHttpException(404, "Event not found: $id");
         }
 
-        $transaction->commit();
+        $eventQuery->import_success = ImportStatus::model()->find('status_value = "Dismissed Event"')->id;
+        $eventQuery->save();
+
+        $this->redirect('/oeadmin/eventLog/list/');
     }
 }

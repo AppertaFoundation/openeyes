@@ -13,32 +13,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $source->id ? 'Edit' : 'Add'?> data source</h2>
-	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#ImportSource_name',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
 
-    <div class="cols-5">
-        <table class="standard cols-full">
-            <colgroup>
-                <col class="cols-2">
-                <col class="cols-5">
-            </colgroup>
-            <tbody>
-            <tr>
-                <td>Name</td>
-                <td> <?php echo CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
-                        array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?> </td>
-            </tr>
+<div class="row divider">
+    <h2><?php echo $source->id ? 'Edit' : 'Add' ?> data source</h2>
+</div>
+
+<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'focus' => '#ImportSource_name',
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+
+<div class="cols-5">
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td> <?php echo CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?> </td>
+        </tr>
         <tfoot>
         <tr>
             <td colspan="5">
@@ -49,7 +52,7 @@
             </td>
         </tr>
         </tfoot>
-        </table>
-    </div>
-	<?php $this->endWidget()?>
+    </table>
 </div>
+<?php $this->endWidget() ?>
+

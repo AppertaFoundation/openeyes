@@ -14,50 +14,56 @@
  */
 ?>
 
+<div class="row divider">
+    <h2>Shortcodes</h2>
+</div>
 
+<table class="standard comfortable">
+    <colgroup>
+        <col class="cols-1">
+        <col class="cols-1">
+        <col class="cols-2">
+        <col class="cols-2">
+        <col class="cols-2">
+        <col class="cols-4">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Default Code</th>
+        <th>Description</th>
+        <th>Event Type</th>
+        <th>Method</th>
+        <th>Code Documentation</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($short_codes as $short_code) : ?>
+        <tr>
+            <td class="code"><?= $short_code->code; ?></td>
+            <td class="default-code"><?= $short_code->default_code; ?></td>
+            <td class="description"><?= $short_code->description; ?></td>
+            <td class="event-type"><?=(isset($short_code->eventType) ? $short_code->eventType->name : ''); ?></td>
+            <td class="method word-break-all">
+                <?php
+                if (strlen($short_code->method) > 24) {
+                    $x = 25;
+                    $continue = true;
+                    do {
+                        $x--;
+                        if (ctype_upper($short_code->method[$x]) || is_numeric($short_code->method[$x])) {
+                            $continue = false;
+                        }
+                    } while (($x >= 0) && $continue);
 
-    <div class="box admin">
-        <h2>Shortcodes</h2>
-
-        <table class="standard comfortable">
-            <thead>
-            <tr>
-                <th>Code</th>
-                <th>Default Code</th>
-                <th>Description</th>
-                <th>Event Type</th>
-                <th>Method</th>
-                <th>Code Documentation</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach($short_codes as $short_code):?>
-                <tr>
-                    <td class="code"><?=$short_code->code;?></td>
-                    <td class="default-code"><?=$short_code->default_code;?></td>
-                    <td class="description"><?=$short_code->description;?></td>
-                    <td class="event-type"><?php echo (isset($short_code->eventType) ? $short_code->eventType->name : '');?></td>
-                    <td class="method word-break-all">
-                        <?php
-                            if(strlen($short_code->method) > 24){
-                                $x = 25;
-                                $continue = true;
-                                do{
-                                    $x--;
-                                    if( ctype_upper($short_code->method[$x]) || is_numeric($short_code->method[$x]) ){
-                                        $continue = false;
-                                    }
-                                } while( ($x >= 0) && $continue);
-
-                                echo substr($short_code->method,0, $x) . "<br>" . substr($short_code->method, $x);
-                            } else{
-                                echo $short_code->method;
-                            }
-                        ?>
-                    </td>
-                    <td class="code-doc"><?=$short_code->getcodedoc();?></td>
-                </tr>
-            <?php endforeach;?>
-            </tbody>
-        </table>
-    </div>
+                    echo substr($short_code->method, 0, $x) . "<br>" . substr($short_code->method, $x);
+                } else {
+                    echo $short_code->method;
+                }
+                ?>
+            </td>
+            <td class="code-doc"><?= $short_code->getcodedoc(); ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
