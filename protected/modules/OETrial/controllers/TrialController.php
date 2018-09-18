@@ -47,12 +47,16 @@ class TrialController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('view'),
-                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_view',
+                'expression' => function ($user) {
+                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_view;
+                },
             ),
             array(
                 'allow',
                 'actions' => array('update', 'addPatient', 'removePatient'),
-                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_edit',
+                'expression' => function ($user) {
+                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_edit;
+                },
             ),
             array(
                 'allow',
@@ -65,7 +69,9 @@ class TrialController extends BaseModuleController
                     'changePi',
                     'changeCoordinator',
                 ),
-                'expression' => '$user->checkAccess("TaskViewTrial") && TrialController::getCurrentUserPermission()->can_manage',
+                'expression' => function ($user) {
+                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_manage;
+                },
             ),
             array(
                 'deny',  // deny all users
@@ -76,8 +82,9 @@ class TrialController extends BaseModuleController
 
     public static function getCurrentUserPermission()
     {
-        $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getQuery("id"));
-        return $trial->getUserPermission(Yii::app()->user->id);
+        $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getQuery('id'));
+
+        return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
     }
 
     /**
@@ -310,7 +317,8 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_GET['patient_id']);
-        $trial->addPatient($patient, TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE)));
+        $trial->addPatient($patient,
+            TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE)));
     }
 
     /**
