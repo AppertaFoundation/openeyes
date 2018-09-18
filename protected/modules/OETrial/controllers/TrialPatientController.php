@@ -72,7 +72,8 @@ class TrialPatientController extends BaseModuleController
     public function actionChangeStatus()
     {
         $trialPatient = $this->loadModel($_POST['id']);
-        $trialPatient->changeStatus($_POST['new_status']);
+        $new_status = TrialPatientStatus::model()->find('code = ?', array($_POST['new_status']));
+        $trialPatient->changeStatus($new_status);
     }
 
     /**

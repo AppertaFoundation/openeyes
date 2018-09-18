@@ -164,7 +164,7 @@ class TrialController extends BaseModuleController
         $this->model = new Trial;
         $this->model->setScenario('manual');
         $this->model->is_open = 1;
-        $this->model->trial_type_id = TrialType::model()->find('code = ?', array('NON_INTERVENTION'))->id;
+        $this->model->trial_type_id = TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id;
         $this->model->owner_user_id = Yii::app()->user->id;
         $this->model->principle_investigator_user_id = Yii::app()->user->id;
         $this->model->started_date = date('d M Y');
@@ -248,7 +248,7 @@ class TrialController extends BaseModuleController
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array('INTERVENTION'))->id,
+                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
                 ),
             ),
         ));
@@ -259,7 +259,7 @@ class TrialController extends BaseModuleController
                 'join' => 'JOIN user u ON u.id = t.owner_user_id',
                 'params' => array(
                     ':userId' => Yii::app()->user->id,
-                    ':trialType' => TrialType::model()->find('code = ?', array('NON_INTERVENTION'))->id,
+                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
                 ),
             ),
         ));

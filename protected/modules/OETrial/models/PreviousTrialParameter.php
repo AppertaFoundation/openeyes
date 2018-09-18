@@ -113,7 +113,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                     array('empty' => 'Any', 'style' => 'display: none;')); ?>
             </div>
             <span class="js-treatment-type-container flex-layout flex-left"
-                style="<?= $this->trialType && $this->trialType->code = 'NON_INTERVENTION' ? 'display:none;':''?>"
+                style="<?= $this->trialType && $this->trialType->code = TrialType::NON_INTERVENTION_CODE ? 'display:none;':''?>"
             >
                 <p class="parameter-option" style="margin-bottom: 0px;">with</p>
                 <div class="parameter-option">
@@ -124,7 +124,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             </span>
         </div>
         <div class="row field-row treatment-type-container"
-           <?php if ($this->trialType && $this->trialType->code === 'NON_INTERVENTION'): ?>style="display:none;" <?php endif; ?>>
+           <?php if ($this->trialType && $this->trialType->code === TrialType::NON_INTERVENTION_CODE): ?>style="display:none;" <?php endif; ?>>
             <div class="large-2 column">&nbsp;</div>
             <div class="large-2 column">
                 <p style="float: right; margin: 5px">with</p>
@@ -215,7 +215,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                       SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "REJECTED"))';
                 }
 
-                if ((!$this->trialType || $this->trialType->code !== 'NON_INTERVENTION')
+                if ((!$this->trialType || $this->trialType->code !== TrialType::NON_INTERVENTION_CODE)
                     && $this->treatmentType !== '' && $this->treatmentType !== null
                 ) {
                     $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
@@ -252,7 +252,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                           WHERE status_id IN (SELECT id FROM trial_patient_status WHERE code IN ("ACCEPTED", "REJECTED"))';
                 }
 
-                if ((!$this->trialType || $this->trialType->code !== 'INTERVENTION')
+                if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
                     && $this->treatmentType !== '' && $this->treatmentType !== null
                 ) {
                     $condition .= " AND t_p.treatment_type_id IS NULL OR t_p.treatment_type_id != :p_t_treatment_type__id_$this->id";
@@ -293,7 +293,7 @@ WHERE $condition";
             $binds[":p_t_status_$this->id"] = $this->status;
         }
 
-        if ((!$this->trialType || $this->trialType->code !== 'INTERVENTION')
+        if ((!$this->trialType || $this->trialType->code !== TrialType::INTERVENTION_CODE)
             && $this->treatmentType !== '' && $this->treatmentType !== null
         ) {
             $binds[":p_t_treatment_type_id_$this->id"] = $this->treatmentType;

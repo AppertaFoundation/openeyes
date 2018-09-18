@@ -17,7 +17,7 @@ if ($isInAnotherInterventionTrial) {
 }
 
 $previousTreatmentType = TrialPatient::getLastPatientTreatmentType($data, $this->trialContext !== null ? $this->trialContext->id : null);
-if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
+if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::INTERVENTION_CODE) {
     $warnings[] = 'Patient has undergone intervention treatment in a previous trial.';
 }
 
@@ -107,7 +107,7 @@ $inOtherTrials = TrialPatient::model()->exists(
     Add to trial shortlist
   </a>
   <a id="remove-from-trial-link-<?php echo $data->id; ?>"
-     href="javascript:void(0)" <?php echo !($inTrial && TrialPatient::getTrialPatient($data, $this->trialContext->id)->status->code === 'SHORTLISTED') ? 'style="display:none"' : ''; ?>
+     href="javascript:void(0)" <?php echo !($inTrial && TrialPatient::getTrialPatient($data, $this->trialContext->id)->status->code === TrialPatientStatus::SHORTLISTED_CODE) ? 'style="display:none"' : ''; ?>
      onclick="removePatientFromTrial(<?php echo $data->id; ?>, <?php echo $this->trialContext->id; ?>)">
     Remove from trial shortlist
   </a>

@@ -25,7 +25,7 @@
     <section class="element edit full">
       <div class="element-fields">
 
-          <?php if ($trial->trialType->code === 'INTERVENTION'): ?>
+          <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
             <div class="alert-box alert with-icon">
               This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
               Trials
@@ -131,7 +131,7 @@
       error: function (response) {
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: response"
+          content: response
         }).open();
       },
     });

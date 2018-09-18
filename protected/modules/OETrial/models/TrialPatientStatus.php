@@ -21,6 +21,21 @@
 class TrialPatientStatus extends BaseActiveRecordVersioned
 {
     /**
+     * The status when the patient has been just added to a Trial, but hasn't been accepted or rejected yet
+     */
+    const SHORTLISTED_CODE = 'SHORTLISTED';
+
+    /**
+     * The status when the patient has been accepted into the Trial
+     */
+    const ACCEPTED_CODE = 'ACCEPTED';
+
+    /**
+     * The status when the patient hsa been rejected from the Trial
+     */
+    const REJECTED_CODE = 'REJECTED';
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()

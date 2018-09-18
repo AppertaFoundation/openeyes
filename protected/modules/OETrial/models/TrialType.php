@@ -19,6 +19,17 @@
 class TrialType extends BaseActiveRecordVersioned
 {
     /**
+     * The trial type for non-Intervention trial (meaning there are no restrictions on assigning patients to this the trial)
+     */
+    const NON_INTERVENTION_CODE = 'NON_INTERVENTION';
+
+    /**
+     * The trial type for Intervention trials (meaning a patient can only be assigned to one ongoing Intervention trial at a time)
+     */
+    const INTERVENTION_CODE = 'INTERVENTION';
+
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()

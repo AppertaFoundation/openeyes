@@ -36,7 +36,7 @@
 
         $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
 
-        if ($trial->trialType->code === 'INTERVENTION' && !$trial->is_open && $renderTreatmentType) {
+        if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
             $columns[] = 'Treatment Type';
             $sortableColumns[] = 'Treatment Type';
         }

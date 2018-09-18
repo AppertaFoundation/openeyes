@@ -20,6 +20,20 @@
 class TreatmentType extends BaseActiveRecordVersioned
 {
     /**
+     * The treatment type when users don't know whether the patient had intervention treatment or not (also the default value)
+     */
+    const UNKNOWN_CODE = 'UNKNOWN';
+    /**
+     * The treatment type when it is known that the patient had intervention surgery or medication
+     */
+    const INTERVENTION_CODE = 'INTERVENTION';
+    /**
+     * The treatment type when the patient had a placebo instead of intervention surgery or medicine
+     */
+    const PLACEBO_CODE = 'PLACEBO';
+
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()

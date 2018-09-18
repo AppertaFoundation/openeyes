@@ -117,7 +117,7 @@ class CsvController extends BaseController
         $new_trial = new Trial();
         $new_trial->name = $trial['name'];
         if (empty($trial['trial_type'])) {
-            $trial['trial_type'] = 'INTERVENTION';
+            $trial['trial_type'] = TrialType::INTERVENTION_CODE;
         }
         $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial['trial_type']))->id;
         $new_trial->description = !empty($trial['description']) ? $trial['description'] : null;

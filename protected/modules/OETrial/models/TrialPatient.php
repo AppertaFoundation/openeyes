@@ -36,8 +36,8 @@ class TrialPatient extends BaseActiveRecordVersioned
     public static function isPatientInInterventionTrial(Patient $patient, $trial_id = null)
     {
         foreach ($patient->trials as $trialPatient) {
-            if ($trialPatient->status->code === 'ACCEPTED' &&
-                $trialPatient->trial->trialType->code === 'INTERVENTION'&&
+            if ($trialPatient->status->code === TrialPatientStatus::ACCEPTED_CODE &&
+                $trialPatient->trial->trialType->code === TrialType::INTERVENTION_CODE &&
                 $trialPatient->trial->is_open &&
                 ($trial_id === null || $trialPatient->trial_id !== $trial_id)
             ) {
@@ -63,18 +63,18 @@ class TrialPatient extends BaseActiveRecordVersioned
         $treatmentType = null;
 
         foreach ($patient->trials as $trialPatient) {
-            if ($trialPatient->status->code === 'ACCEPTED' &&
-                $trialPatient->trial->trialType->code === 'INTERVENTION' &&
+            if ($trialPatient->status->code === TrialPatientStatus::ACCEPTED_CODE &&
+                $trialPatient->trial->trialType->code === TrialType::INTERVENTION_CODE &&
                 !$trialPatient->trial->is_open &&
                 ($trial_id === null || $trialPatient->trial_id !== $trial_id)
             ) {
                 switch ($trialPatient->treatmentType->code) {
-                    case 'INTERVENTION':
+                    case TreatmentType::INTERVENTION_CODE:
                         return $trialPatient->treatmentType;
-                    case 'UNKNOWN':
+                    case TreatmentType::UNKNOWN_CODE:
                         $treatmentType = $trialPatient->treatmentType;
                         break;
-                    case 'PLACEBO':
+                    case TreatmentType::PLACEBO_CODE:
                         if ($treatmentType === null) {
                             $treatmentType = $trialPatient->treatmentType;
                         }
@@ -200,8 +200,8 @@ class TrialPatient extends BaseActiveRecordVersioned
      */
     public function changeStatus(TrialPatientStatus $new_status)
     {
-        if ($new_status->code === 'ACCEPTED' &&
-            $this->trial->trialType->code === 'INTERVENTION' &&
+        if ($new_status->code === TrialPatientStatus::ACCEPTED_CODE &&
+            $this->trial->trialType->code === TrialType::INTERVENTION_CODE &&
             self::isPatientInInterventionTrial($this->patient)
         ) {
             throw new CHttpException(400, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");

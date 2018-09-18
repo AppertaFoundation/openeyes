@@ -11,11 +11,11 @@ foreach ($data->patient->getWarnings(true) as $warn) {
 }
 
 if ($isInAnotherInterventionTrial) {
-    $warnings[] = $data->trial->trialType->code === 'INTERVENTION' ? 'Patient is already in an Intervention trial' : 'Patient is in an intervention trial';
+    $warnings[] = $data->trial->trialType->code === TrialType::INTERVENTION_CODE ? 'Patient is already in an Intervention trial' : 'Patient is in an intervention trial';
 }
 
 $previousTreatmentType = TrialPatient::getLastPatientTreatmentType($data->patient, $data->trial_id);
-if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
+if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::INTERVENTION_CODE) {
     $warnings[] = 'Patient has undergone intervention treatment in a previous trial.';
 }
 
@@ -76,7 +76,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
       } ?>
 
   </td>
-    <?php if ($renderTreatmentType && !$data->trial->is_open && $data->trial->trialType->code === 'INTERVENTION'): ?>
+    <?php if ($renderTreatmentType && !$data->trial->is_open && $data->trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
       <td> <!-- Treatment Type -->
           <?php if ($canEditPatient):
 
@@ -126,32 +126,32 @@ if ($previousTreatmentType && $previousTreatmentType->code === 'INTERVENTION') {
   <td> <!-- Accept/Reject/Shortlist actions -->
       <?php if ($canEditPatient && $data->trial->is_open): ?>
 
-          <?php if ($data->status->code === 'SHORTLISTED'): ?>
+          <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE): ?>
 
           <div>
             <a href="javascript:void(0)"
-               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::model()->find('code = "ACCEPTED"') ?>')"
+               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
                class="accept-patient-link"
-               <?php if ($data->trial->trialType->code === 'INTERVENTION' && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
+               <?php if ($data->trial->trialType->code === TrialType::INTERVENTION_CODE && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
               Accept
             </a>
           </div>
           <?php endif; ?>
 
-          <?php if ($data->status->code === 'SHORTLISTED' || $data->status->code === 'ACCEPTED'): ?>
+          <?php if (in_array($data->status->code, [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)): ?>
           <div>
             <a href="javascript:void(0)"
-               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::model()->find('code = "REJECTED"') ?>')"
+               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::REJECTED_CODE ?>')"
                class="accept-patient-link">Reject
             </a>
           </div>
           <?php endif; ?>
 
-          <?php if ($data->status->code  === 'REJECTED'): ?>
+          <?php if ($data->status->code  === TrialPatientStatus::REJECTED_CODE): ?>
           <div style="white-space: nowrap;">
           <span>
             <a href="javascript:void(0)"
-               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::model()->find('code = "SHORTLISTED"') ?>')"
+               onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
                class="accept-patient-link">Re-Shortlist
             </a>
           </span>
