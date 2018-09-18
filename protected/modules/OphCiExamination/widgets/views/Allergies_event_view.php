@@ -8,14 +8,33 @@
                     No diagnoses recorded during this encounter
                 </div>
             <?php else : ?>
-                <div id="js-listview-risks-pro">
-                    <ul class="dslash-list large">
-                        <?php foreach ($element->getSortedEntries() as $entry) : ?>
-                            <li><?= $entry ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-                <div class="" id="js-listview-risks-full" style="display: none;">
+                <?php
+                $entries = [];
+                foreach ([(string)AllergyEntry::$NOT_PRESENT, (string)AllergyEntry::$PRESENT] as $key) {
+                    $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
+                        return $e->has_allergy === $key;
+                    }));
+                }
+                $max_iter = max(
+                    count($entries[(string)AllergyEntry::$NOT_PRESENT]),
+                    count($entries[(string)AllergyEntry::$PRESENT])
+                );
+                ?>
+              <div id="js-listview-allergies-pro">
+                <ul class="dot-list large">
+                  <li>Present:</li>
+                    <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
+                      <li><?= $entry->getDisplayAllergy(); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <ul class="dot-list large">
+                  <li>Not Present:</li>
+                    <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
+                      <li><?= $entry->getDisplayAllergy(); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+              </div>
+                <div class="" id="js-listview-allergies-full" style="display: none;">
                     <table class="last-left large">
                         <colgroup>
                             <col class="cols-4" span="3">
@@ -27,22 +46,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php
-
-                        $entries = [];
-                        foreach ([(string)AllergyEntry::$NOT_PRESENT, (string)AllergyEntry::$PRESENT] as $key) {
-                            $entries[$key] = array_filter($element->getSortedEntries(), function ($e) use ($key) {
-                                return $e->has_allergy === $key;
-                            });
-                        }
-
-                        $max_iter = max(
-                            count($entries[(string)AllergyEntry::$NOT_PRESENT]),
-                            count($entries[(string)AllergyEntry::$PRESENT])
-                        );
-                        ?>
-
-                        <?php for ($i = 0; $i < $max_iter; $i++) : ?>
+                        <?php for ($i = 0; $i < $max_iter; $i++) :?>
                             <tr>
                                 <td>
                                     <?= isset($entries[(string)AllergyEntry::$PRESENT][$i]) ?
@@ -62,7 +66,7 @@
         </div>
         <?php if (count($element->entries)) : ?>
             <div>
-                <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
+                <i class="oe-i small js-listview-expand-btn expand" data-list="allergies"></i>
             </div>
         <?php endif; ?>
     </div>

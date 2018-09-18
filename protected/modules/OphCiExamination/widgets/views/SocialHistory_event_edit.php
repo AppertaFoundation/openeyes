@@ -14,6 +14,10 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\OphCiExamination\models\SocialHistory $element
+ */
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("SocialHistory.js") ?>"></script>
 <div class="element-fields flex-layout full-width">
@@ -167,43 +171,106 @@
     </button>
   </div>
 </div>
-<?php
-$options_list = array(
-    'occupation_id' => ['header' => 'Employment', 'options' => $element->occupation_options],
-    'driving_statuses' => [
-        'header' => 'Driving Status',
-        'options' => $element->driving_statuses_options,
-        'multi_select' => true,
-    ],
-    'smoking_status_id' => ['header' => 'Smoking Status', 'options' => $element->smoking_status_options],
-    'accommodation_id' => ['header' => 'Accommodation', 'options' => $element->accommodation_options],
-    'carer_id' => ['header' => 'Carer', 'options' => $element->carer_options],
-    'substance_misuse_id' => ['header' => 'Substance Misuse', 'options' => $element->substance_misuse_options],
-);
-$alcohol_options = range(1, 20);
-?>
+
 <script type="text/javascript">
+
+  var disabledSocialHistoryFields = [
+    $('#<?= $model_name ?>_occupation_id'),
+    $('#<?= $model_name ?>_smoking_status_id'),
+    $('#<?= $model_name ?>_alcohol_intake'),
+    $('#<?= $model_name ?>_substance_misuse_id'),
+    $('#<?= $model_name ?>_driving_statuses'),
+    $('#<?= $model_name ?>_accommodation_id'),
+    $('#<?= $model_name ?>_carer_id'),
+  ];
+
+  // Disable all form fields
+  disabledSocialHistoryFields.forEach(function (field) {
+    field.attr('disabled', 'disabled');
+  });
+
+  // Re-enable all fields on form submit (otherwise the data isn't sent)
+  // Note: document.currentScript relies on this being run outside of $(document).ready
+  $(document.currentScript).closest('form').submit(function () {
+    disabledSocialHistoryFields.forEach(function (field) {
+      field.removeAttr('disabled');
+    });
+  });
+
   $(document).ready(function () {
+
     var controller = new OpenEyes.OphCiExamination.SocialHistoryController();
+
+    // Disable removing items from the driving status multi-select list
+    $('#<?= $model_name ?>_driving_statuses').closest('.multi-select-list').css("pointer-events", "none");
 
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-social-history-btn'),
       width: 1000,
-      itemSets: [<?php foreach ($options_list as $key => $options) {?>
+      deselectOnReturn: false,
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
+                    return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
+                }, $element->occupation_options, [])
+            ) ?>, {'header': 'Employment', 'id': 'occupation_id', 'mandatory': true}),
+
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?php
+            $selected_driving_statuses = array_map(function ($status) {
+                return $status->id;
+            }, $element->driving_statuses);
+
+            echo CJSON::encode(array_map(function ($item, $label) use ($selected_driving_statuses) {
+                    return [
+                        'label' => $item->name,
+                        'id' => $item->id,
+                        'selected' => in_array($item->id, $selected_driving_statuses),
+                    ];
+                }, $element->driving_statuses_options, [])
+            ) ?>, {'header': 'Driving Status', 'multiSelect': true, 'id': 'driving_statuses'}),
+
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
+                    return [
+                        'label' => $item->name,
+                        'id' => $item->id,
+                        'selected' => $element->smoking_status_id === $item->id,
+                    ];
+                }, $element->smoking_status_options, [])
+            ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id', 'mandatory': true}),
+
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
+                    return [
+                        'label' => $item->name,
+                        'id' => $item->id,
+                        'selected' => $element->accommodation_id === $item->id,
+                    ];
+                }, $element->accommodation_options, [])
+            ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id', 'mandatory': true}),
+
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
+                    return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
+                }, $element->carer_options, [])
+            ) ?>, {'header': 'Carer', 'id': 'carer_id', 'mandatory': true}),
+
+        new OpenEyes.UI.AdderDialog.ItemSet(
+            <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
+                    return [
+                        'label' => $item->name,
+                        'id' => $item->id,
+                        'selected' => $element->substance_misuse_id === $item->id,
+                    ];
+                }, $element->substance_misuse_options, [])
+            ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id', 'mandatory': true}),
+
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($item, $label) {
-                return ['value' => $item->name, 'id' => $item->id, 'option-label' => $label];
-            }, $options['options'], array_fill(0, count($options), $key))
-        ) ?>, {
-          'header': '<?= $options['header'] ?>', 'id': '<?= $key ?>'
-            <?php if(@$options['multi_select']) {?>, 'multiSelect': true <?php } ?>
-        }),
-          <?php } ?>
-        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($item) {
-                return ['value' => $item, 'id' => $item];
-            }, $alcohol_options)
-        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake'})
+            array_map(function ($item) use ($element) {
+                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake == $item];
+            }, range(1, 20))
+        ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
         controller.addEntry(selectedItems);

@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<table class="cols-full">
+<table class="cols-full last-left">
   <tbody>
   <?php echo $form->hiddenField($element, 'booking_event_id')?>
   <tr>
@@ -47,7 +47,7 @@
             'Anaesthetic Type',
             false, false, false, false,
             array(
-                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : '',
+                'label-class' => $element->getError('anaesthetic_type') ? 'error' : '',
                 'nowrapper' => true
             )
         ); ?>

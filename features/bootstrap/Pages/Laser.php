@@ -42,10 +42,10 @@ class Laser extends OpenEyesPage {
 					'xpath' => "//a[contains(text(),'Remove')]" 
 			),
 			'removeRightEye' => array (
-					'xpath' => "//*[@class='element-eye right-eye column side left']//a[contains(text(),'Remove eye')]" 
+					'xpath' => "//*[@class='js-element-eye right-eye column side left']//a[contains(text(),'Remove eye')]"
 			),
 			'addRightEye' => array (
-					'xpath' => "//*[@class='element-eye right-eye column side left inactive']//a[contains(text(),'Add right side')]" 
+					'xpath' => "//*[@class='js-element-eye right-eye column side left inactive']//a[contains(text(),'Add right side')]"
 			),
 			'expandComments' => array (
 					'xpath' => "//*[@class='optional-elements-list']//a[contains(text(),'Comments')]" 

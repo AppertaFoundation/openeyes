@@ -19,9 +19,9 @@
 <div class="element-fields element-eyes">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
-        <div class="element-eye <?=$eye_side?>-eye column <?=$page_side?> side"
+        <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>"
              data-side="<?=$eye_side?>" >
-            <div class="active-form field-row flex-layout"
+            <div class="active-form flex-layout"
                  style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
               <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
               <div class="cols-11 flex-layout">
@@ -45,7 +45,7 @@
     $items = array();
     foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) {
         foreach ($attribute->getAttributeOptions() as $option) {
-            $items[] = ['value' => (string)$option->slug];
+            $items[] = ['label' => (string)$option->slug];
         }
     } ?>
       <script type="text/javascript">
@@ -58,7 +58,7 @@
             itemSets: new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($items) ?>, {'multiSelect': true}),
             onReturn: function (adderDialog, selectedItems) {
               $(selectedItems).each(function (key, item) {
-                inputText.val(inputText.val() ? inputText.val() + item['value'] : item['value']
+                inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
                 );
               });
               inputText.trigger('oninput');

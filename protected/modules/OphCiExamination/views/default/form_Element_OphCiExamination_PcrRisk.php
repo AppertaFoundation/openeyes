@@ -99,7 +99,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
     foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
         $pcrRisk = new PcrRisk();
         $display = ($element->{'has'.ucfirst($eye)}()) ? 'block' : 'none'; ?>
-      <div class="element-eye <?=$eye?>-eye column <?=$side?> side" data-side="<?=$eye?>" >
+      <div class="js-element-eye <?=$eye?>-eye column <?=$side?>" data-side="<?=$eye?>" >
           <?php
           if($this->event){
               $patientId = $this->event->episode->patient->id;
@@ -169,10 +169,10 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
             endforeach;?>
           <div class="data-group">
             <span class="pcr-risk-div">
-              <label class="pro-theme highlighter">
+              <span class="highlighter large-text">
                 PCR Risk <span class="pcr-span">&nbsp;</span> %
                   <?php $form->hiddenInput($element, $eye.'_pcr_risk', false, array('class' => 'pcr-input'));?>
-              </label>
+              </span>
             </span>
             <span>
               <label>

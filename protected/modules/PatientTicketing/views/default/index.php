@@ -15,53 +15,48 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetService $qs_svc
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSet $queueset
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetCategory $category
+ * @var string[] $patient_list
+ * @var int $cat_id
+ */
 ?>
+<?php
+$qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
+?>
+
 <div class="oe-full-header flex-layout">
-    <?php
-    $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
-    ?>
-    <div class="title wordcaps">
-        <b><?= $queueset ? $queueset->name : $category->name ?></b>
-    </div>
+  <div class="title wordcaps">
+    <b><?= $queueset ? $queueset->name : $category->name ?></b>
+  </div>
+  <div>
+    <button class="button blue hint" id="js-virtual-clinic-btn">Change Virtual Clinic</button>
+  </div>
+</div>
 
-    <?php
-    if ($queueset) {
-        if ($flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId())) {
-            ?>
-            <br/>
-            <div class="large-12 column">
-                <div class="panel">
-                    <div class="alert-box with-icon success">
-                        <?php echo $flash_message;
-                        ?>
-                    </div>
-                </div>
-            </div>
-            <?php
+<div class="oe-full-content oe-virtual-clinic">
 
-        }
-    }
-
-    $this->renderPartial('form_queueset_select', array(
-        'category' => $category,
+    <?php $this->renderPartial('form_queueset_select', [
+        'qs_svc' => $qs_svc,
         'queueset' => $queueset,
         'cat_id' => $cat_id,
-    ));
+        'category' => $category
+    ]); ?>
 
-    ?>
-</div>
-<div class="oe-full-content oe-virtual-clinic flex-layout flex-top">
-    <?php
-    if ($queueset) {
-        $this->renderPartial('ticketlist', array(
-            'qs_svc' => $qs_svc,
-            'category' => $category,
-            'queueset' => $queueset,
-            'tickets' => $tickets,
-            'patient_filter' => $patient_filter,
-            'pages' => $pages,
-            'cat_id' => $cat_id,
-        ));
-    }
-    ?>
+    <?php $this->renderPartial('_ticketlist_search', [
+        'qs_svc' => $qs_svc,
+        'queueset' => $queueset,
+        'patient_list' => $patient_list,
+        'cat_id' => $cat_id,
+    ]); ?>
+
+    <?php $this->renderPartial('ticketlist', [
+        'tickets' => $tickets,
+        'queueset' => $queueset,
+        'qs_svc' => $qs_svc,
+    ]); ?>
+
 </div>

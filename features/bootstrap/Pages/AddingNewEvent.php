@@ -145,9 +145,13 @@ class AddingNewEvent extends OpenEyesPage {
 
 	public function addNewEvent($event){
 		$this->elements['addEvent'] = array(
-			'xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), '$event')]"
+			'xpath' => "//*[@id='add-event']"
 		);
+		$this->elements['newEvent'] = array(
+		    'xpath' => "//*[@id='event-type-list']//*[@id='".$event."-link']"
+        );
 		$this->getElement ( 'addEvent' )->click ();
+		$this->getElement ('newEvent')->click();
 	}
 
 

@@ -47,7 +47,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var $dialogContent = $("." + controller.imgContainerClass);
 
         this.$element.on('click', '.' + this.imgLinkClass, function () {
-            let side = $(this).closest('.element-eye').data('side');
+            let side = $(this).closest('.js-element-eye').data('side');
             $dialogContent.data('side', side);
 
             let dialog = new OpenEyes.UI.Dialog({

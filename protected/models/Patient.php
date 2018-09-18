@@ -56,6 +56,9 @@
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  *
+ * The following are available through get methods
+ * @property SecondaryDiagnosis[] $systemicDiagnoses
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
@@ -1972,16 +1975,32 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return string
+     * @return Array
      */
     public function getCviSummary()
     {
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($examination_api){
+            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status', $this);
+        }
         if ($cvi_api) {
-            return $cvi_api->getSummaryText($this);
+            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
+        }
+        if (isset($examination_cvi)&&isset($CoCvi_cvi)){
+            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date ){
+                return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
+            }
+            else {
+                return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
+            }
+        } else if (isset($examination_cvi)){
+            return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
+        } else if (isset($CoCvi_cvi)){
+            return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
         }
         else {
-            return $this->getOPHInfo()->cvi_status->name;
+            return array($this->getOPHInfo()->cvi_status->name, new DateTime());
         }
     }
 
