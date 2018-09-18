@@ -18,7 +18,7 @@ class m170521_234542_create_trial_table extends OEMigration
         $this->createOETable('trial', array(
             'id' => 'pk',
             'trial_type_id' => 'int(11) NOT NULL',
-            'name' => 'varchar(64) collate utf8_bin NOT NULL',
+            'name' => 'varchar(200) collate utf8_bin NOT NULL',
             'description' => 'text',
             'owner_user_id' => 'int(10) unsigned NOT NULL',
             'principle_investigator_user_id' => 'int(10) unsigned NOT NULL',
@@ -26,7 +26,7 @@ class m170521_234542_create_trial_table extends OEMigration
             'is_open' => 'int(1) NOT NULL',
             'started_date' => 'datetime',
             'closed_date' => 'datetime',
-            'external_data_link' => 'varchar(255) collate utf8_bin',
+            'external_data_link' => 'mediumtext',
         ), self::VERSIONED
         );
 

@@ -35,7 +35,7 @@
             <?= $form->labelEx($trial, 'name') ?>
         </td>
         <td>
-            <?= $form->textField($trial, 'name', array('size' => 64, 'maxlength' => 64)) ?>
+            <?= $form->textField($trial, 'name', array('size' => 50, 'maxlength' => 200)) ?>
         </td>
       </tr>
       <tr class="col-gap">
@@ -44,7 +44,7 @@
         </td>
         <td>
             <?= $form->urlField($trial, 'external_data_link',
-                array('size' => 100, 'maxlength' => 255, 'onblur' => 'checkUrl(this)')); ?>
+                array('size' => 50, 'onblur' => 'checkUrl(this)')); ?>
         </td>
       </tr>
       <tr>
@@ -54,7 +54,7 @@
         </td>
         <td>
 
-            <?= $form->textArea($trial, 'description') ?>
+            <?= $form->textArea($trial, 'description', array('cols' => 50)) ?>
         </td>
       </tr>
 

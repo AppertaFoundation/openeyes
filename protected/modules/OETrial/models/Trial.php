@@ -76,10 +76,9 @@ class Trial extends BaseActiveRecordVersioned
     {
         return array(
             array('name, owner_user_id, principle_investigator_user_id, trial_type_id', 'required'),
-            array('name', 'length', 'max' => 64),
+            array('name', 'length', 'max' => 200),
             array('name', 'unique', 'caseSensitive' => false),
             array('external_data_link', 'url', 'defaultScheme' => 'http'),
-            array('external_data_link', 'length', 'max' => 255),
             array(
                 'trial_type_id, owner_user_id, principle_investigator_user_id, coordinator_user_id, last_modified_user_id, created_user_id',
                 'length',
