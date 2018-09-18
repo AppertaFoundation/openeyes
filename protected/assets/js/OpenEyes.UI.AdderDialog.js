@@ -225,10 +225,6 @@
         $listItem.addClass('selected');
       }
 
-			if (item['set-default']){
-				$list.addClass('set-default');
-			}
-
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
@@ -277,17 +273,12 @@
   AdderDialog.prototype.open = function () {
     this.popup.show();
     var lists = this.popup.find('ul');
-		for (var i=0; i<lists.length; i++){
-			if (lists[i].classList.contains('set-default')){
-				var item_height = lists[i].firstChild.scrollHeight;
-				for (var j=0; j<lists[i].childNodes.length; j++){
-					if (lists[i].childNodes[j].dataset['setDefault']){
-						lists[i].scrollTop = j*item_height;
-						break;
-					}
-				} 
-			}
-		}
+    $(this.options.itemSets).each(function (index, itemSet) {
+    	/* Get the default value order and set the scroll value depends on index and each item height*/
+			var order = itemSet.getScrollIndex();
+    	lists[index].scrollTop = lists[index].firstChild.scrollHeight * order;
+		});
+
 		this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
