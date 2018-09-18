@@ -961,9 +961,6 @@ class DefaultController extends BaseEventTypeController
             $this->initActionView();
             $this->removeEventImages();
 
-            $this->initActionView();
-            $this->removeEventImages();
-
             $this->actionPDFPrint($id, false);
             $pdf_path = $this->getPdfPath($this->event);
             $this->createPdfPreviewImages($pdf_path);
