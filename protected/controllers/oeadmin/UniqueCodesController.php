@@ -76,13 +76,16 @@ class UniqueCodesController extends BaseAdminController
     public function actionEdit($id = false)
     {
         $errors = [];
+        $unique_code_object = UniqueCodes::model()->findByPk($id);
+
+        if (!$unique_code_object) {
+            $this->redirect('/oeadmin/uniqueCodes/list/');
+        }
 
         if (Yii::app()->request->isPostRequest) {
             // get data from POST
             $user_data = \Yii::app()->request->getPost('UniqueCodes');
 
-            // save data into a new object
-            $unique_code_object = UniqueCodes::model()->findByPk($id);
             $unique_code_object->code = $user_data['code'];
             $unique_code_object->active = $user_data['active'];
 
@@ -94,13 +97,8 @@ class UniqueCodesController extends BaseAdminController
             }
         }
 
-        if (!UniqueCodes::model()->findByPk($id)) {
-            $errors['id_not_found'][]='ID not found';
-        }
-
         $this->render('/oeadmin/unique_codes/edit', array(
-            'unique_code' => UniqueCodes::model()->findByPk($id),
-            'id' => $id,
+            'unique_code' => $unique_code_object,
             'errors' => $errors
         ));
     }
