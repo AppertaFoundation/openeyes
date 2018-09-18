@@ -126,8 +126,7 @@
     $('#action-loader-' + trial_patient_id).show();
     $.ajax({
       url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
-      data: {id: trial_patient_id, new_status: new_status, YII_CSRF_TOKEN: $('#csrf_token').val()},
-      type: 'POST',
+      data: {id: trial_patient_id, new_status: new_status},
       success: function (response) {
         window.location.reload(false);
       },

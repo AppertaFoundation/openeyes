@@ -26,7 +26,10 @@ class TrialPatientController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('changeStatus', 'updateExternalId', 'updateTreatmentType'),
-                'expression' => 'TrialPatient::checkTrialEditAccess($user, Yii::app()->getRequest()->getPost("id"), UserTrialAssignment::PERMISSION_EDIT)',
+                'expression' => function ($user) {
+                    $trialPatient = TrialPatient::model()->findByPk(Yii::app()->getRequest()->getQuery('id'));
+                    return $user->checkAccess("TaskViewTrial") && $trialPatient->trial->getUserPermission($user->id)->can_edit;
+                },
             ),
             array(
                 'deny',  // deny all users
@@ -71,8 +74,8 @@ class TrialPatientController extends BaseModuleController
      */
     public function actionChangeStatus()
     {
-        $trialPatient = $this->loadModel($_POST['id']);
-        $new_status = TrialPatientStatus::model()->find('code = ?', array($_POST['new_status']));
+        $trialPatient = $this->loadModel($_GET['id']);
+        $new_status = TrialPatientStatus::model()->find('code = ?', array($_GET['new_status']));
         $trialPatient->changeStatus($new_status);
     }
 
