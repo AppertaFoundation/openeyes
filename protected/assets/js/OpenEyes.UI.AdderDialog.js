@@ -97,13 +97,19 @@
       });
     } else {
       this.popup.on('click', 'li', function () {
+
         if (!$(this).hasClass('selected')) {
           if (!$(this).closest('ul').data('multiselect')) {
             $(this).parent('ul').find('li').removeClass('selected');
           }
           $(this).addClass('selected');
         } else {
-          $(this).removeClass('selected');
+
+          // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
+          if(!$(this).data('itemSet').options.mandatory
+          || $(this).closest('ul').find('li.selected').length > 1) {
+            $(this).removeClass('selected');
+          }
         }
       });
     }
@@ -208,12 +214,15 @@
    */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
-    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
+    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect, 'data-id':itemSet.options.id});
 
     itemSet.items.forEach(function (item) {
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if(item.selected) {
+        $listItem.addClass('selected');
+      }
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
