@@ -1158,10 +1158,10 @@ class OphCiExamination_API extends \BaseAPI
             $summary = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $created_date = date_format(date_create($summaries->event->event_date), 'd.m.Y');
+                $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments;
+                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments ? : $summaries->getChildrenString();
                 }
             }
 
@@ -1442,7 +1442,7 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                if( !isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
                     $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
