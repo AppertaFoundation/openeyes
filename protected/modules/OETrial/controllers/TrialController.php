@@ -307,10 +307,10 @@ class TrialController extends BaseModuleController
      */
     public function actionAddPatient()
     {
-        $trial = $this->loadModel($_POST['id']);
+        $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
-        $patient = Patient::model()->findByPk($_POST['patient_id']);
-        $trial->addPatient($patient, TrialPatientStatus::model()->find('code = "SHORTLISTED"')->id);
+        $patient = Patient::model()->findByPk($_GET['patient_id']);
+        $trial->addPatient($patient, TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE)));
     }
 
     /**

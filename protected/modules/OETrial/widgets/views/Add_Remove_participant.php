@@ -28,9 +28,7 @@
                         data: {
                             id: <?= $this->trial->id?>,
                             patient_id: <?= $this->patient->id?>,
-                            YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val()
                         },
-                        type: 'POST',
                         success: function (response) {
                             addLink.hide();
                             removeLink.show();
