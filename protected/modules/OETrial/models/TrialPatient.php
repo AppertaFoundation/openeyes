@@ -88,13 +88,15 @@ class TrialPatient extends BaseActiveRecordVersioned
 
     /**
      * @param $patient Patient record.
-     * @param $status TrialPatientStatus Patient's status in a trial.
+     * @param $status_code string Patient's status in a trial.
      * @return string Number of trials the patient is in where they have the given status within a trial. This is returned as a string to preserve max. precision.
      */
-    public static function getTrialCount($patient, $status)
+    public static function getTrialCount($patient, $status_code)
     {
+        $status = TrialPatientStatus::model()->find('code = ?', array($status_code));
+
         $criteria = new CDbCriteria();
-        $criteria->compare('status_id', $status);
+        $criteria->compare('status_id', $status->id);
         $criteria->compare('patient_id', $patient->id);
         return TrialPatient::model()->count($criteria);
     }

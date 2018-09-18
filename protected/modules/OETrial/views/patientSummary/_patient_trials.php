@@ -52,9 +52,9 @@
               }
               ?>
           </td>
-          <td><?php echo $trialPatient->getTreatmentTypeForDisplay(); ?></td>
-          <td><?php echo $trialPatient->getStatusForDisplay(); ?></td>
-          <td><?php echo $trialPatient->trial->getTypeString(); ?></td>
+          <td><?php echo $trialPatient->treatmentType->name; ?></td>
+          <td><?php echo $trialPatient->status->name; ?></td>
+          <td><?php echo $trialPatient->trial->trialType->name; ?></td>
           <td><?php echo $trialPatient->trial->getStartedDateForDisplay(); ?></td>
           <td><?php echo $trialPatient->trial->getClosedDateForDisplay(); ?></td>
         </tr>

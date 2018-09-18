@@ -1,11 +1,15 @@
 <?php
-/* @var TrialController $this */
-/* @var Trial $trial */
-/* @var CActiveDataProvider $dataProvider */
-/* @var bool $renderTreatmentType */
-/* @var string $title */
-/* @var int $sort_by */
-/* @var int $sort_dir */
+/**
+ * @var TrialController $this
+ *
+ * @var Trial $trial
+ * @var TrialPermission $permission
+ * @var CActiveDataProvider $dataProvider
+ * @var bool $renderTreatmentType
+ * @var string $title
+ * @var int $sort_by
+ * @var int $sort_dir
+ */
 ?>
 <div class="report-summary row divider">
     <?php
@@ -76,8 +80,11 @@
 
     <?php /* @var Trial $trial */
     foreach ($dataProvided as $i => $trialPatient) {
-        $this->renderPartial('/trialPatient/_view',
-            array('data' => $trialPatient, 'renderTreatmentType' => $renderTreatmentType));
+        $this->renderPartial('/trialPatient/_view', array(
+            'data' => $trialPatient,
+            'renderTreatmentType' => $renderTreatmentType,
+            'permission' => $permission,
+        ));
     }
 
     ?>

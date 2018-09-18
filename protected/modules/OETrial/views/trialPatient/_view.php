@@ -1,7 +1,11 @@
 <?php
-/* @var $this TrialPatientController */
-/* @var $data TrialPatient */
-/* @var $renderTreatmentType bool */
+
+/**
+ * @var $this TrialPatientController
+ * @var TrialPermission $permission
+ * @var $data TrialPatient
+ * @var $renderTreatmentType bool
+ */
 
 $isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial($data->patient, $data->trial_id);
 
@@ -53,7 +57,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
   </td>
   <td> <!-- External Reference -->
       <?php
-      if ($canEditPatient) {
+      if ($permission->can_edit) {
           echo CHtml::textField(
               "ext-trial-id-form-$data->id",
               $data->external_trial_identifier,
@@ -78,7 +82,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
   </td>
     <?php if ($renderTreatmentType && !$data->trial->is_open && $data->trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
       <td> <!-- Treatment Type -->
-          <?php if ($canEditPatient):
+          <?php if ($permission->can_edit):
 
               echo CHtml::dropDownList(
                   'treatment-type',
@@ -100,31 +104,16 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
                    class="hidden"/>
             </div>
           <?php else: /* can't edit */
-              echo $data->getTreatmentTypeForDisplay();
+              echo $data->treatmentType->name;
           endif; ?>
       </td>
     <?php endif; ?>
 
   <td> <!-- Diagnoses and Medication show/hide actions -->
-      <?php if ($data->patient->diagnoses): ?>
-        <div>
-          <a href="javascript:void(0)"
-             data-show-label="Show Diagnoses" data-hide-label="Hide Diagnoses"
-             onclick="toggleSection(this, '#collapse-section_<?= $data->patient->id . '_diagnoses' ?>');">Show&nbsp;Diagnoses
-          </a>
-        </div>
-      <?php endif; ?>
-      <?php if (count($data->patient->medications) > 0): ?>
-        <div>
-          <a href="javascript:void(0)"
-             data-show-label="Show Medications" data-hide-label="Hide Medications"
-             onclick="toggleSection(this, '#collapse-section_<?= $data->patient->id . '_medication' ?>');">Show&nbsp;Medications
-          </a>
-        </div>
-      <?php endif; ?>
+
   </td>
   <td> <!-- Accept/Reject/Shortlist actions -->
-      <?php if ($canEditPatient && $data->trial->is_open): ?>
+      <?php if ($permission->can_edit && $data->trial->is_open): ?>
 
           <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE): ?>
 
@@ -169,57 +158,5 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
              src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
              alt="loading..." style="display: none;"/>
       <?php endif; ?>
-  </td>
-</tr>
-<!-- Collapsible diagnoses section -->
-<tr id="collapse-section_<?= $data->patient->id . '_diagnoses' ?>" style="display:none">
-  <td colspan="9">
-
-    <table>
-      <thead>
-      <tr>
-        <th>Diagnosis</th>
-        <th><?= Firm::contextLabel() ?></th>
-        <th>Date</th>
-      </tr>
-      </thead>
-      <tbody>
-      <?php foreach ($data->patient->diagnoses as $diagnosis): ?>
-        <tr>
-          <td><?= CHtml::encode($diagnosis) . ' (' . ($diagnosis->principal == 1 ? 'Principal' : 'Secondary') . ')' ?></td>
-          <td><?= $diagnosis->element_diagnoses->event ? CHtml::encode($diagnosis->element_diagnoses->event->episode->firm->getNameAndSubspecialty()) : 'Unknown' ?></td>
-          <td><?= $diagnosis->element_diagnoses->event ? CHtml::encode(Helper::convertDate2NHS($diagnosis->element_diagnoses->event->event_date)) : 'Unknown' ?></td>
-        </tr>
-      <?php endforeach; ?>
-      </tbody>
-    </table>
-
-  </td>
-</tr>
-<!-- Collapsible medication section -->
-<tr id="collapse-section_<?= $data->patient->id . '_medication' ?>" style="display:none">
-  <td colspan="9">
-
-    <table>
-      <thead>
-      <tr>
-        <th>Medication</th>
-        <th>Administration</th>
-        <th>Date From</th>
-        <th>Date To</th>
-      </tr>
-      </thead>
-      <tbody>
-      <?php foreach ($data->patient->medications as $medication): ?>
-        <tr>
-          <td><?= $medication->getMedicationDisplay() ?></td>
-          <td><?= $medication->getAdministrationDisplay() ?></td>
-          <td><?= Helper::formatFuzzyDate($medication->start_date) ?></td>
-          <td><?= isset($medication->end_date) ? Helper::formatFuzzyDate($medication->end_date) : '' ?></td>
-        </tr>
-      <?php endforeach; ?>
-      </tbody>
-    </table>
-
   </td>
 </tr>

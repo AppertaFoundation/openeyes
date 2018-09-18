@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: fivium-isaac
- * Date: 10/08/18
- * Time: 2:53 PM
+ * @var TrialPatient $trialPatient
  */
 $isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial($data,
     $this->trialContext !== null ? $this->trialContext->id : null);
@@ -81,7 +78,7 @@ $inTrial = $this->trialContext !== null ? TrialPatient::model()->exists(
               <h3>Participated in Intervention Trial</h3>
             <?php endif; ?>
             <?php if ($inTrial): ?>
-              <h3><?php echo $trialPatient->getStatusForDisplay(); ?></h3>
+              <h3><?php echo $trialPatient->status->name; ?></h3>
             <?php endif; ?>
         </div>
       </div>

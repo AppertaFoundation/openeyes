@@ -120,8 +120,8 @@ class OETrial_ReportTrialCohort extends BaseReport
             $cols[] = $patient['first_name'];
             $cols[] = $patient['last_name'];
             $cols[] = $patient['external_trial_identifier'];
-            $cols[] = $trial_patient->getTreatmentTypeForDisplay();
-            $cols[] = $trial_patient->getStatusForDisplay();
+            $cols[] = $trial_patient->treatmentType->name;
+            $cols[] = $trial_patient->status->name;
 
             $diagnoses = array();
             foreach ($trial_patient->patient->diagnoses as $diagnosis) {

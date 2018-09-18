@@ -87,6 +87,7 @@
 
       <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
+          'permission' => $permission,
           'renderTreatmentType' => true,
           'title' => 'Accepted Participants',
           'dataProvider' => $dataProviders['ACCEPTED'],
@@ -95,6 +96,7 @@
       )); ?>
       <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
+          'permission' => $permission,
           'renderTreatmentType' => false,
           'title' => 'Shortlisted Participants',
           'dataProvider' => $dataProviders['SHORTLISTED'],
@@ -103,6 +105,7 @@
       )); ?>
       <?php $this->renderPartial('_patientList', array(
           'trial' => $trial,
+          'permission' => $permission,
           'renderTreatmentType' => false,
           'title' => 'Rejected Participants',
           'dataProvider' => $dataProviders['REJECTED'],

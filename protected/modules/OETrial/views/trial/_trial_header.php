@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var Trial $trial
+ * @var TrialPermission $permission
+ */
+?>
+
 <nav class="oe-full-header flex-layout">
   <div class="title wordcaps"><?= $title ?></div>
   <div>
