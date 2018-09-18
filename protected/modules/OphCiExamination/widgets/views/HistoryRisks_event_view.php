@@ -43,14 +43,14 @@
                         $alphablockers = true;
                     }
                 ?>
-                <ul class="dslash-list large">
+                <ul class="dot-list large">
                     <?php if ($element->present) {?>
                       <li>Present:</li>
                         <?php foreach ($element->getEntriesDisplay('present') as $entry){ ?>
                         <li><?= $entry ?></li>
                      <?php }; } ?>
                 </ul>
-              <ul class="dslash-list large">
+              <ul class="dot-list large">
                   <?php if ($element->not_checked) { ?>
                     <li>Not Checked:</li>
                     <?php foreach ($element->getEntriesDisplay('not_checked') as $entry){ ?>
@@ -66,7 +66,7 @@
                       }
                   } ?>
                 </ul>
-              <ul class="dslash-list large">
+              <ul class="dot-list large">
                   <?php if ($element->not_present) { ?>
                     <li>Not Present:</li>
                       <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
