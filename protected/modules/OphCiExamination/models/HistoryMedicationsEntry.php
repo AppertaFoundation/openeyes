@@ -391,6 +391,19 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getDoseAndFrequency(){
+        $result = [];
+        if($this->dose){
+            $result[] = 'Dose : ' . $this->dose;
+        }
+
+        if($this->frequency){
+            $result[] = 'Frequency : ' . $this->frequency;
+        }
+
+        return implode(', ', $result    );
+    }
+
     /**
      * @return \DrugRouteOption[]
      */
@@ -425,4 +438,6 @@ class HistoryMedicationsEntry extends \BaseElement
                 || $this->prescription_not_synced
                 || $this->prescription_event_deleted));
     }
+
+
 }
