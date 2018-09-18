@@ -15,16 +15,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+?>
 
-namespace OEModule\OphCoCvi\controllers;
+<?php
 
-use Yii;
-use CDbCriteria;
-use OEModule\OphCoCvi\models;
-
-class AdminController extends \ModuleAdminController
+class DefaultController extends \ModuleAdminController
 {
     public $defaultAction = 'clinicalDisorderSection';
+
+    public $layout = 'application.views.layouts.admin';
 
     /**
      * Admin for the sections that the disorders are separated into on the clinical info element.

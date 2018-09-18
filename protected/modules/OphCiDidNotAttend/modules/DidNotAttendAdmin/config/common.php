@@ -31,8 +31,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                '<module:\w+>/admin/<controller:\w+>/<action:\w+>' => '<module>/DidNotAttendAdmin/<controller>/<action>',
-                '<module:\w+>/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/DidNotAttendAdmin/<controller>/<action>',
+                'OphCiDidNotAttend/admin/<controller:\w+>/<action:\w+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
+                '<module:\w+>/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
             ]
         ]
     ]

@@ -1,22 +1,28 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: veta
- * Date: 09/08/2016
- * Time: 14:38
+ * (C) OpenEyes Foundation, 2018
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+?>
 
-namespace OEModule\OphCoCvi\controllers;
+<?php
 
 /**
- * Class LocalAuthoritiesAdminController
+ * Class LocalAuthoritiesController
  *
- * @package OEModule\OphCoCvi\controllers
+ * @package OEModule\OphCoCvi\CviAdmin\controllers
  */
-class LocalAuthoritiesAdminController extends \AdminController
+class LocalAuthoritiesController extends \BaseAdminController
 {
-    public $layout = 'clerical_admin';
-
     /**
      * @return array
      */
@@ -61,6 +67,6 @@ class LocalAuthoritiesAdminController extends \AdminController
         $data['return_url'] = '/OphCoCvi/localAuthoritiesAdmin/list';
         $data['base_data_url'] = 'OphCoCvi/localAuthoritiesAdmin/';
 
-        $this->render('//admin/commissioning_body_services', $data);
+        $this->render('//admin/commissioning_body_services/index', $data);
     }
 }

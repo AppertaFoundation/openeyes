@@ -15,7 +15,7 @@
 ?>
 
 <?php
-class DefaultController extends BaseAdminController
+class DefaultController extends ModuleAdminController
 {
     public $layout = null;
 

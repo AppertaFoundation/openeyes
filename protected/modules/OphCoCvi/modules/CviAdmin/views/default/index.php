@@ -12,34 +12,21 @@
  * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
+ ?>
 
 <?php
+/* @var $this DefaultController */
+$this->breadcrumbs=array(
+    $this->module->id,
+);
+?>
+<h1><?php echo $this->uniqueId . '/' . $this->action->id; ?></h1>
 
-class DidNotAttendAdminModule extends CWebModule
-{
-    public function init()
-    {
-        // this method is called when the module is being created
-        // you may place code here to customize the module or the application
-        // import the module-level models and components
-        /*$this->setImport(array(
-            'OphCoCorrespondence.models.*',
-            'OphCoCorrespondence.views.*',
-            'OphCoCorrespondence.components.*',
-            'OphCoCorrespondence.controllers.*',
-        ));*/
-    }
-
-    public function beforeControllerAction($controller, $action)
-    {
-        return true;
-        if (parent::beforeControllerAction($controller, $action)) {
-            // this method is called before any module controller action is performed
-            // you may place customized code here
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
+<p>
+    This is the view content for action "<?php echo $this->action->id; ?>".
+    The action belongs to the controller "<?php echo get_class($this); ?>"
+    in the "<?php echo $this->module->id; ?>" module.
+</p>
+<p>
+    You may customize this page by editing <?php echo __FILE__; ?>
+</p>
