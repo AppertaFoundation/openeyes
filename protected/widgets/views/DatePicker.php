@@ -18,38 +18,44 @@
 ?>
 
 <?php
-if (@$htmlOptions['id']){
-  $input_id = @$htmlOptions['id'];
+if (@$htmlOptions['id']) {
+    $input_id = @$htmlOptions['id'];
 } else {
-  $input_id = CHtml::modelName($element) . '_' . $field . '_0';
+    $input_id = CHtml::modelName($element) . '_' . $field . '_0';
 }
 ?>
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
     <?php unset($htmlOptions['hidden']) ?>
-    <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-        <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
-            <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
-        </label>
-    </div>
-    <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-<?php } ?>
-      <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" autocomplete="off">
-<?php if (!@$htmlOptions['nowrapper']) { ?>
-    </div>
-</div>
-<?php } ?>
-<script>
-  $(function () {
-    var datepicker = $('#<?= $input_id ?>');
-
-    if (datepicker.length !== 0) {
-      pickmeup('#<?= $input_id ?>', {
+  <div class="cols-<?php echo $layoutColumns['label']; ?> column">
+    <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
+        <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
+    </label>
+  </div>
+  <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
+      <?php } ?>
+    <input class="<?= @$htmlOptions['class'] ?>"
+           id="<?= $input_id ?>"
+           placeholder="yyyy-mm-dd"
+           name="<?= $name ?>"
+           value="<?= $value ?>"
+           autocomplete="off"/>
+    <script>
+      var datefield = $(document.currentScript).prev('input');
+      var pmu = pickmeup(datefield.get(0), {
         format: '<?= @$htmlOptions['dateFormat'] ?: 'd b Y' ?>',
         hide_on_select: true,
         default_date: false,
-        max: '<?= @$options['maxDate'] ?>'
+        max: '<?= @$options['maxDate'] ?>',
+          <?php if (array_key_exists('minDate', $options)) { ?>
+        min: <?= $options['minDate'] === 'today' ? 'new Date()' : 'new Date(' . $options['minDate'] . ')' ?>
+          <?php } ?>
       });
-    }
-  });
-</script>
+      if (pmu && datefield.val()) {
+        pmu.set_date(new Date(datefield.val()));
+      }
+    </script>
+      <?php if (!@$htmlOptions['nowrapper']) { ?>
+  </div>
+</div>
+<?php } ?>

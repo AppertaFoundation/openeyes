@@ -39,7 +39,7 @@
   </div>
 
   <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery">
-    <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
+    <button id="show-add-cvi-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
   </div>
@@ -53,7 +53,7 @@
         }, $cvi_status)
     ) ?>;
     new OpenEyes.UI.AdderDialog({
-      openButton: $('#show-add-popup'),
+      openButton: $('#show-add-cvi-popup'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet($cvi_status_list)],
       onReturn: function (adderDialog, selectedItems) {
         if (selectedItems.length){
