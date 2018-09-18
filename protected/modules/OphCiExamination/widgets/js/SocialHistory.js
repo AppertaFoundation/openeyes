@@ -41,6 +41,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     SocialHistoryController.prototype.addEntry = function (selectedItems) {
 
+      // Remove all driving statuses in case they have been deselected
+      $('#' + this.options.modelName + '_driving_statuses')
+        .closest('.multi-select-list')
+        .find('.multi-select-remove')
+        .click();
+
       for (var i in selectedItems) {
         var item = selectedItems[i];
         var itemSetId = item['itemSet'].options['id'];

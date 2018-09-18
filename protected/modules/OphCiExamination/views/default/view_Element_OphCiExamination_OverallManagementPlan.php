@@ -23,7 +23,7 @@
         <div class="cols-11">
 
           <div class="cols-11">
-            <ul id="js-listview-risks-pro" class="dslash-list">
+            <ul id="js-listview-risks-pro" class="dot-list">
               <li><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?>
                 : <?php echo $element->clinic_interval ?: 'None' ?></li>
               <li><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?>

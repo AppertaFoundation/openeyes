@@ -429,6 +429,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
+       $va_unit = OphCiExamination_VisualAcuityUnit::model()->find("name='ETDRS Letters'");
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
             'name = ?',
             array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
@@ -442,8 +443,9 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         Yii::app()->controller->renderPartial(
             'application.modules.OphCiExamination.views.default.letter.va',
             array(
-                'left' => $this->getNamedReadings('left'),
-                'right' => $this->getNamedReadings('right')
+                'left' => $this->getNamedReadings('left', $va_unit->id),
+                'right' => $this->getNamedReadings('right', $va_unit->id),
+                'va_unit' => $va_unit->name
             )
         );
         $str_return = ob_get_contents();
