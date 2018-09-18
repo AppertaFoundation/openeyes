@@ -204,7 +204,7 @@ class TrialPatient extends BaseActiveRecordVersioned
     {
         if ($new_status->code === TrialPatientStatus::ACCEPTED_CODE &&
             $this->trial->trialType->code === TrialType::INTERVENTION_CODE &&
-            self::isPatientInInterventionTrial($this->patient)
+            self::isPatientInInterventionTrial($this->patient, $this->trial->id)
         ) {
             throw new CHttpException(400, "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial.");
         }
