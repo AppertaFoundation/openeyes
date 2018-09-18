@@ -114,7 +114,7 @@ if ($cvi_api) {
         openButton:$('#add-reading-btn-<?= $eye_side?>'),
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
-                return $key===110? ['label' => $value, 'id' => $key, 'set_default' => true]: ['label' => $value, 'id' => $key];
+                return $key===110? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];
             }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {

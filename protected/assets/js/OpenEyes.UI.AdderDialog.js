@@ -224,13 +224,15 @@
       if(item.selected) {
         $listItem.addClass('selected');
       }
-			if (item['set_default']){
-				$listItem.addClass('default');
+
+			if (item['set-default']){
+				$list.addClass('set-default');
 			}
+
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
-    return $list;
+		return $list;
   };
 
   /**
@@ -274,7 +276,19 @@
    */
   AdderDialog.prototype.open = function () {
     this.popup.show();
-    this.positionFixedPopup(this.options.openButton);
+    var lists = this.popup.find('ul');
+		for (var i=0; i<lists.length; i++){
+			if (lists[i].classList.contains('set-default')){
+				var item_height = lists[i].firstChild.scrollHeight;
+				for (var j=0; j<lists[i].childNodes.length; j++){
+					if (lists[i].childNodes[j].dataset['setDefault']){
+						lists[i].scrollTop = j*item_height;
+						break;
+					}
+				} 
+			}
+		}
+		this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
     }
