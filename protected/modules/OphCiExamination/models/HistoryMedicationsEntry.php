@@ -394,14 +394,14 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getDoseAndFrequency(){
         $result = [];
         if($this->dose){
-            $result[] = 'Dose : ' . $this->dose;
+            $result[] = $this->dose;
         }
 
         if($this->frequency){
             $result[] = 'Frequency : ' . $this->frequency;
         }
 
-        return implode(', ', $result    );
+        return implode(' , ', $result    );
     }
 
     /**

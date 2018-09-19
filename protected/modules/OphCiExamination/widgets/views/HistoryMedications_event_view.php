@@ -47,7 +47,7 @@
                                   <?php $this->widget('EyeLateralityWidget', array('laterality' => $laterality)); ?>
                                 </td>
                                 <td>
-                                    <i class="oe-i info small pro-theme js-has-tooltip"
+                                    <i class="oe-i info small js-has-tooltip"
                                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                     </i>
                                 </td>
@@ -72,7 +72,7 @@
                                     <td><?= $entry->getMedicationDisplay() ?></td>
                                     <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
                                     <td>
-                                        <i class="oe-i info small pro-theme js-has-tooltip"
+                                        <i class="oe-i info small  js-has-tooltip"
                                            data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                         </i>
                                     </td>
@@ -115,7 +115,7 @@
                                     <td><?= $entry->getMedicationDisplay() ?></td>
                                     <td><?php $laterality = $entry->getLateralityDisplay(); ?></td>
                                     <td>
-                                        <i class="oe-i info small pro-theme js-has-tooltip"
+                                        <i class="oe-i info small  js-has-tooltip"
                                            data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                                         </i>
                                     </td>
