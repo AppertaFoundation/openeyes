@@ -438,6 +438,4 @@ class HistoryMedicationsEntry extends \BaseElement
                 || $this->prescription_not_synced
                 || $this->prescription_event_deleted));
     }
-
-
 }
