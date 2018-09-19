@@ -45,19 +45,19 @@
                 'name' => 'disorder.term',
                 'type' => 'raw',
                 'htmlOptions'=>array('width'=>'200px'),
-                'value' => function($data, $row){
+                'value' => function ($data, $row) {
                     $term = null;
-                    if($data->disorder){
+                    if ($data->disorder) {
                         $term = $data->disorder->term;
                     }
                     return CHtml::textField((get_class($data) . "[$row][disorder_id]"), $term, array(
                         'class' => 'diagnoses-search-autocomplete',
-                        'data-saved-diagnoses' => $data->disorder ? json_encode(array(
+                        'data-saved-diagnoses' => $data->disorder ? json_encode([
                             'id' => $data->id,
                             'name' => $data->disorder->term,
                             'disorder_id' => $data->disorder->id,
 
-                        )) : ''
+                        ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                     ));
                 }
             ),
@@ -65,7 +65,7 @@
                 'header' => 'Finding',
                 'name' => 'finding.name',
                 'type' => 'raw',
-                'value' => function($data, $row){
+                'value' => function ($data, $row) {
 
                     $finding_data = array(
                         'id' => isset($data->id) ? $data->id : null,
