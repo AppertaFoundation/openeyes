@@ -45,8 +45,7 @@
             $sortableColumns[] = 'Treatment Type';
         }
 
-        $columns[] = 'Diagnoses/Medication';
-        $columns[] = 'Actions';
+        $columns[] = '';
 
         foreach ($columns as $i => $field): ?>
           <th id="patient-grid_c<?php echo $i; ?>">

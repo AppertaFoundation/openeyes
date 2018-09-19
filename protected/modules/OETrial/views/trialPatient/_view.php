@@ -39,21 +39,18 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
         </span>
       <?php endif; ?>
   </td>
-  <td> <!-- Name -->
-      <?php echo CHtml::link(
-          CHtml::encode($data->patient->last_name . ', ' . $data->patient->first_name . ($data->patient->is_deceased ? ' (Deceased)' : '')),
-          array('/patient/view', 'id' => $data->patient->id),
-          array('target' => '_blank')
-      ); ?>
-  </td>
-  <td> <!-- Gender -->
-      <?= $data->patient->getGenderString() ?>
-  </td>
-  <td> <!-- Age -->
-      <?= $data->patient->getAge() ?>
-  </td>
-  <td> <!-- Ethnicity -->
-      <?= CHtml::encode($data->patient->getEthnicGroupString()) ?>
+
+  <td colspan="4">
+      <?php
+      /** @var $patientPanel PatientPanel */
+      $patientPanel = $this->createWidget('application.widgets.PatientPanel',
+          array(
+              'patient' => $data->patient,
+              'layout' => 'list',
+          )
+      );
+      $patientPanel->render('PatientPanel_list');
+      ?>
   </td>
   <td> <!-- External Reference -->
       <?php
@@ -109,9 +106,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
       </td>
     <?php endif; ?>
 
-  <td> <!-- Diagnoses and Medication show/hide actions -->
-
-  </td>
   <td> <!-- Accept/Reject/Shortlist actions -->
       <?php if ($permission->can_edit && $data->trial->is_open): ?>
 
