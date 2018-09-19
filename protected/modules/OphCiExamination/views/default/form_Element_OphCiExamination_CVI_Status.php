@@ -1,7 +1,14 @@
 
+<?php
+  list($latest_cvi_status, $last_cvi_date) = $this->patient->getCviSummary();
+  $latest_cvi_status_id = PatientOphInfoCviStatus::model()->findByAttributes(array('name' =>$latest_cvi_status))->id;
+  if (!is_string($last_cvi_date)) {
+  	$last_cvi_date = null;
+	}
+?>
 <div class="element-fields flex-layout full-width">
   <div class="data-group cols-10">
-    <table class="last-left" id="js-examination-cvi-status" style="display: <?= isset($element->cviStatus)?'':'none'; ?>">
+    <table class="last-left" id="js-examination-cvi-status">
       <colgroup>
         <col class="cols-7">
         <col class="cols-3">
@@ -10,35 +17,27 @@
       <tbody>
       <tr>
         <td>
-          <input value="<?= isset($element->cviStatus)?$element->cvi_status_id:'' ?>"
+          <input value="<?= isset($element->cviStatus)?$element->cvi_status_id: $latest_cvi_status_id ?>"
                  id="OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_cvi_status_id"
                  name="OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status[cvi_status_id]"
                  type="hidden">
           <span id="OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_text">
-              <?= isset($element->cviStatus)?$element->cviStatus->name:'' ?>
+              <?= isset($element->cviStatus)?$element->cviStatus->name:$latest_cvi_status ?>
           </span>
         </td>
         <td>
-            <?php
-            echo $form->datePicker($element, 'element_date',
-                array('maxDate' => 'today'),
-                array(
-                    'style' => 'margin-left:8px',
-                    'nowrapper' => true,
-                ),
-                array(
-                    'label' => 2,
-                    'field' => 2,
-                )
-            );
-            ?>
+					<input id="OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_element_date_0"
+								 placeholder="yyyy--mm-dd"
+								 name="OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status[element_date]"
+								 value="<?= isset($element->element_date)? $element->element_date: $last_cvi_date ?>"
+								 autocomplete="off"/>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="add-data-actions flex-item-bottom" id="add-to-past-surgery">
+  <div class="add-data-actions flex-item-bottom" id="add-to-cvi-status">
     <button id="show-add-cvi-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
@@ -47,6 +46,13 @@
 <?php $cvi_status = PatientOphInfoCviStatus::model()->active()->findAll(array('order' => 'display_order')); ?>
 <script type="text/javascript">
   $(document).ready(function () {
+		pickmeup('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_element_date_0', {
+			format: 'Y-m-d',
+			hide_on_select: true,
+			default_date: false,
+			max: new Date(),
+		});
+
     var $cvi_status_list = <?= CJSON::encode(
         array_map(function ($item) {
             return ['label' =>$item->name, 'id' => $item->id];
@@ -59,7 +65,6 @@
         if (selectedItems.length){
           $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_cvi_status_id').val(selectedItems[0]['id']);
           $('#OEModule_OphCiExamination_models_Element_OphCiExamination_CVI_Status_text').text(selectedItems[0]['label']);
-          $('#js-examination-cvi-status').show();
         }
         return true;
       }
