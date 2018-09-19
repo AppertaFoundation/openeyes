@@ -91,15 +91,23 @@
         <?php
         foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $index_key) {
             if ($element->{$index_key} > 0) {
-                echo "<input type=\"hidden\" name=\"Element_OphCoDocument_Document[" . $index_key . "]\" id=\"Element_OphCoDocument_Document_" . $index_key . "\" value=\"" . $element->{$index_key} . "\">";
+                echo "<input type=\"hidden\" name=\"Element_OphCoDocument_Document[" .
+                    $index_key . "]\" id=\"Element_OphCoDocument_Document_" .
+                    $index_key . "\" value=\"" . $element->{$index_key} .
+                    "\">";
             }
         }
         ?>
-        <div id="document-comments" data-comment-button="#document_comment_button" class="cols-full js-comment-container"
-             style="<?php if($element->comment == null) echo 'display:none'?>">
+        <div id="document-comments" data-comment-button="#document_comment_button"
+             class="cols-full js-comment-container"
+             style="<?php if ($element->comment == null) echo 'display:none' ?>">
             <div class="comment-group flex-layout flex-left " style="padding-top:5px">
                 <?php
-                echo $form->textArea($element, 'comment', array('rows' => '1', 'class' => 'autosize cols-full column', 'nowrapper' => true), false, ['placeholder' => 'Comments']);
+                echo $form->textArea($element,
+                    'comment',
+                    array('rows' => '1', 'class' => 'autosize cols-full column', 'nowrapper' => true),
+                    false,
+                    ['placeholder' => 'Comments']);
                 ?>
                 <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
             </div>
@@ -114,9 +122,9 @@
                 class="button js-add-comments"
                 data-comment-container="#document-comments"
                 type="button"
-                style="visibility:<?php if($element->comment != null) echo 'hidden'?>">
+                style="visibility:<?php if ($element->comment != null) echo 'hidden' ?>">
 
             <i class="oe-i comments small-icon"></i>
         </button>
 
-</div>
+    </div>
