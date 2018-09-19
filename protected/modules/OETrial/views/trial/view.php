@@ -178,32 +178,35 @@
     });
   });
 
-  function onTreatmentTypeChange(trial_patient_id) {
-    $('#treatment-type-actions-' + trial_patient_id).show('fast');
-  }
+  $(document).on('change', '.js-treatment-type', function() {
+    $(this).closest('.js-trial-patient').find('.js-treatment-type-actions').show();
+  });
 
-  function cancelTreatmentType(trial_patient_id) {
-    var oldTreatmentType = $('#treatment-type-hidden-' + trial_patient_id).val();
-    $('#treatment-type-' + trial_patient_id).val(oldTreatmentType);
-    $('#treatment-type-actions-' + trial_patient_id).hide('fast');
-  }
+  $(document).on('click', '.js-cancel-treatment-type', function() {
+    var $container = $(this).closest('.js-trial-patient');
+    var oldTreatmentType = $container.find('.js-hidden-treatment-type').val();
+    $container.find('.js-treatment-type').val(oldTreatmentType);
+    $container.find('.js-treatment-type-actions').hide();
+  });
 
-  function updateTreatmentType(trial_patient_id) {
-
-    var treatment_type = $('#treatment-type-' + trial_patient_id).val();
-
-    $('#treatment-type-loader-' + trial_patient_id).show();
+  $(document).on('click', '.js-save-treatment-type', function() {
+    var $container = $(this).closest('.js-trial-patient');
+    var treatmentType = $container.find('.js-treatment-type').val();
+    var $actions = $(this).closest('.js-treatment-type-actions');
+    var $spinner = $actions.find('.js-spinner-as-icon');
+    $spinner.show();
+    var trialPatientId = $container.data('trial-patient-id');
 
     $.ajax({
       url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
-      data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+      data: {id: trialPatientId, treatment_type: treatmentType, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       complete: function (response) {
-        $('#treatment-type-loader-' + trial_patient_id).hide();
+        $spinner.hide();
       },
       success: function (response) {
-        $('#treatment-type-hidden-' + trial_patient_id).val(treatment_type);
-        $('#treatment-type-actions-' + trial_patient_id).hide('fast');
+        $container.find('.js-hidden-treatment-type').val(treatmentType);
+        $actions.hide();
       },
       error: function (response) {
         new OpenEyes.UI.Dialog.Alert({
@@ -211,14 +214,14 @@
         }).open();
       }
     });
-  }
+  });
 
-  $(document).ready(function () {
+  $(function () {
     $(".icon-alert-warning").hover(function () {
-        $(this).siblings(".warning").show('fast');
+        $(this).siblings(".warning").show();
       },
       function () {
-        $(this).siblings(".warning").hide('fast');
+        $(this).siblings(".warning").hide();
       }
     );
 

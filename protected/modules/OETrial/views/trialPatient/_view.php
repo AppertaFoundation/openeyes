@@ -70,7 +70,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
                   'class' => 'js-hidden-external-trial-identifier',
               )
           ) ?>
-        <div class="js-external-trial-identifier-actions" style="display:none;">
+        <div class="js-external-trial-identifier-actions" style="display: none;">
           <a class="js-save-external-trial-identifier">Save</a>
           <a class="js-cancel-external-trial-identifier">Cancel</a>
           <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
@@ -87,22 +87,23 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
               echo CHtml::dropDownList(
                   'treatment-type',
-                  $data->treatment_type,
+                  $data->treatment_type_id,
                   TreatmentType::getOptions(),
                   array(
                       'id' => "treatment-type-$data->id",
                       'data-trial-patient-id' => $data->id,
-                      'onchange' => "onTreatmentTypeChange($data->id)",
+                      'class' => 'js-treatment-type',
                   )
               );
-              echo CHtml::hiddenField("treatment-type-hidden-$data->id", $data->treatment_type);
+              echo CHtml::hiddenField("treatment-type-hidden-$data->id", $data->treatment_type_id,
+                  array(
+                      'class' => 'js-hidden-treatment-type',
+                  ));
               ?>
-            <div id="treatment-type-actions-<?= $data->id ?>" style="display: none">
-              <a href="javascript:void(0)" onclick="updateTreatmentType(<?= $data->id ?>)">Save</a>
-              <a href="javascript:void(0)" onclick="cancelTreatmentType(<?= $data->id ?>)">Cancel</a>
-              <img id="treatment-type-loader-<?= $data->id ?>"
-                   src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="Working..."
-                   class="hidden"/>
+            <div class="js-treatment-type-actions" style="display: none;">
+              <a class="js-save-treatment-type">Save</a>
+              <a class="js-cancel-treatment-type">Cancel</a>
+              <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
             </div>
           <?php else: /* can't edit */
               echo $data->treatmentType->name;
