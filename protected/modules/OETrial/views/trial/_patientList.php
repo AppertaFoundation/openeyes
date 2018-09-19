@@ -91,18 +91,20 @@
     <tfoot class="pagination-container">
     <tr>
       <td colspan="9">
-          <?php
-          $this->widget('LinkPager', array(
-              'pages' => $dataProvider->getPagination(),
-              'maxButtonCount' => 15,
-              'cssFile' => false,
-              'selectedPageCssClass' => 'current',
-              'hiddenPageCssClass' => 'unavailable',
-              'htmlOptions' => array(
-                  'class' => 'pagination',
-              ),
-          ));
-          ?>
+        <div class="pagination">
+            <?php
+            $this->widget('LinkPager', array(
+                'pages' => $dataProvider->getPagination(),
+                'maxButtonCount' => 15,
+                'cssFile' => false,
+                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                'htmlOptions' => array(
+                    'class' => 'pagination',
+                ),
+            ));
+            ?>
+        </div>
       </td>
     </tr>
     </tfoot>
