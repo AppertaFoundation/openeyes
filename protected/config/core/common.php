@@ -302,6 +302,7 @@ return array(
         'tinymce_default_options' => array(
             'plugins' => 'table lists importcss',
             'branding' => false,
+            'visual' => false,
             'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
             'valid_children' => '+body[style]'
         ),

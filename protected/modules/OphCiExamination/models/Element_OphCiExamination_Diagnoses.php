@@ -250,7 +250,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         foreach (OphCiExamination_Diagnosis::model()->findAll($criteria) as $diagnosis) {
             if ($diagnosis->disorder) {
                 $table_vals[] = array(
-                    'date' => $this->event->NHSDate('event_date'),
+                    'date' => \Helper::convertDate2NHS($diagnosis->date),
                     'term' => mb_strtoupper($diagnosis->eye->adjective) . ' ' . $diagnosis->disorder->term
                 );
             }
