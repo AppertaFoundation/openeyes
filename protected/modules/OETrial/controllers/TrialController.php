@@ -70,7 +70,7 @@ class TrialController extends BaseModuleController
                     'changeCoordinator',
                 ),
                 'expression' => function ($user) {
-                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_manage;
+                    return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_manage;
                 },
             ),
             array(
@@ -82,7 +82,7 @@ class TrialController extends BaseModuleController
 
     public static function getCurrentUserPermission()
     {
-        $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getQuery('id'));
+        $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
 
         return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
     }
@@ -327,8 +327,8 @@ class TrialController extends BaseModuleController
      */
     public function actionRemovePatient()
     {
-        $trial = $this->loadModel(Yii::app()->request->getQuery('id'));
-        $trial->removePatient(Yii::app()->request->getQuery('patient_id'));
+        $trial = $this->loadModel(Yii::app()->request->getParam('id'));
+        $trial->removePatient(Yii::app()->request->getParam('patient_id'));
     }
 
     /**
