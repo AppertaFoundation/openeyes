@@ -24,7 +24,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 }
 
 ?>
-<tr>
+<tr class="js-trial-patient" data-trial-patient-id="<?= $data->id ?>">
   <td> <!-- Warnings -->
       <?php if (count($warnings) > 0): ?>
         <span class="warning">
@@ -59,17 +59,21 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
               "ext-trial-id-form-$data->id",
               $data->external_trial_identifier,
               array(
-                  'onkeyup' => "onExternalTrialIdentifierChange($data->id)",
+                  'class' => 'js-external-trial-identifier',
               )
           ); ?>
 
-          <?= CHtml::hiddenField("external-trial-id-hidden-$data->id", $data->external_trial_identifier) ?>
-        <div id="ext-trial-id-actions-<?= $data->id ?>" style="display:none;">
-          <a href="javascript:void(0)" onclick="saveExternalTrialIdentifier(<?= $data->id ?>)">Save</a>
-          <a href="javascript:void(0)" onclick="cancelExternalTrialIdentifier(<?= $data->id ?>)">Cancel</a>
-          <img id="ext-trial-id-loader-<?= $data->id ?>" class="loader"
-               src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-               alt="loading..." style="display: none;"/>
+          <?= CHtml::hiddenField(
+              "external-trial-id-hidden-$data->id",
+              $data->external_trial_identifier,
+              array(
+                  'class' => 'js-hidden-external-trial-identifier',
+              )
+          ) ?>
+        <div class="js-external-trial-identifier-actions" style="display:none;">
+          <a class="js-save-external-trial-identifier">Save</a>
+          <a class="js-cancel-external-trial-identifier">Cancel</a>
+          <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
         </div>
           <?php
       } else {
@@ -121,7 +125,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
           </div>
           <?php endif; ?>
 
-          <?php if (in_array($data->status->code, [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)): ?>
+          <?php if (in_array($data->status->code,
+              [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)): ?>
           <div>
             <a href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::REJECTED_CODE ?>')"
@@ -130,7 +135,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
           </div>
           <?php endif; ?>
 
-          <?php if ($data->status->code  === TrialPatientStatus::REJECTED_CODE): ?>
+          <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE): ?>
           <div style="white-space: nowrap;">
           <span>
             <a href="javascript:void(0)"

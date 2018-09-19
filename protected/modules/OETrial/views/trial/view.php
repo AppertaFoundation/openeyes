@@ -125,7 +125,7 @@
 
     $('#action-loader-' + trial_patient_id).show();
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
       data: {id: trial_patient_id, new_status: new_status},
       success: function (response) {
         window.location.reload(false);
@@ -139,31 +139,36 @@
     });
   }
 
-  function onExternalTrialIdentifierChange(trial_patient_id) {
-    $('#ext-trial-id-actions-' + trial_patient_id).show('fast');
-  }
+  $(document).on('keyup', '.js-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    $container.find('.js-external-trial-identifier-actions').show();
+  });
 
-  function cancelExternalTrialIdentifier(trial_patient_id) {
-    var oldExternalId = $('#external-trial-id-hidden-' + trial_patient_id).val();
-    $('#ext-trial-id-form-' + trial_patient_id).val(oldExternalId);
-    $('#ext-trial-id-actions-' + trial_patient_id).hide('fast');
-  }
+  $(document).on('click', '.js-cancel-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    var oldExternalId = $container.find('.js-hidden-external-trial-identifier').val();
+    $container.find('.js-external-trial-identifier').val(oldExternalId);
+    $container.find('.js-external-trial-identifier-actions').hide();
+  });
 
-  function saveExternalTrialIdentifier(trial_patient_id) {
-    var external_id = $('#ext-trial-id-form-' + trial_patient_id).val();
-
-    $('#ext-trial-id-loader-' + trial_patient_id).show();
+  $(document).on('click', '.js-save-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    var $actions = $(this).closest('.js-external-trial-identifier-actions');
+    var trialPatientId = $(this).closest('.js-trial-patient').data('trial-patient-id');
+    var externalId = $container.find('.js-external-trial-identifier').val();
+    var $spinner = $actions.find('.js-spinner-as-icon');
+    $spinner.show();
 
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
-      data: {id: trial_patient_id, new_external_id: external_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
+      data: {id: trialPatientId, new_external_id: externalId, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       complete: function (response) {
-        $('#ext-trial-id-loader-' + trial_patient_id).hide();
+        $spinner.hide();
       },
       success: function (response) {
-        $('#ext-trial-id-hidden-' + trial_patient_id).val(external_id);
-        $("#ext-trial-id-actions-" + trial_patient_id).hide('fast');
+        $container.find('.js-hidden-external-trial-identifier').val(externalId);
+        $actions.hide();
       },
       error: function (response) {
         new OpenEyes.UI.Dialog.Alert({
@@ -171,7 +176,7 @@
         }).open();
       }
     });
-  }
+  });
 
   function onTreatmentTypeChange(trial_patient_id) {
     $('#treatment-type-actions-' + trial_patient_id).show('fast');
@@ -190,8 +195,8 @@
     $('#treatment-type-loader-' + trial_patient_id).show();
 
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
-      data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
+      data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       complete: function (response) {
         $('#treatment-type-loader-' + trial_patient_id).hide();
@@ -251,8 +256,8 @@
     $('#action-loader-' + trial_patient_id).show();
 
     $.ajax({
-      url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
-      data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
+      data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       result: function (response) {
         $('#action-loader-' + trial_patient_id).hide();

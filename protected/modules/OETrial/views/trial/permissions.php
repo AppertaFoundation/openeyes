@@ -21,9 +21,6 @@
         </div>
       </div>
 
-      <input type="hidden" name="YII_CSRF_TOKEN" id="csrf_token"
-             value="<?php echo Yii::app()->request->csrfToken ?>"/>
-
       <div class="row">
         <div class="large-9 column">
           <table id="currentPermissions">
@@ -194,7 +191,7 @@
           'data': {
             id: <?php echo $trial->id; ?>,
             user_id: user_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           complete: function (response) {
             loader.hide();
@@ -218,7 +215,7 @@
           'data': {
             id: $('#trial-id').val(),
             user_id: user_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val(),
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN,
           },
           complete: function (response) {
             loader.hide();
@@ -249,7 +246,7 @@
             user_id: user_id,
             permission: $('#permission').val(),
             role: $('#user_role').val(),
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           'success': function (html) {
             if (html === '<?php echo Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS; ?>') {
@@ -299,7 +296,7 @@
           'data': {
             id: $('#trial-id').val(),
             permission_id: permission_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           'success': function (result) {
             if (result === '<?php echo Trial::REMOVE_PERMISSION_RESULT_SUCCESS; ?>') {

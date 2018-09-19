@@ -27,8 +27,8 @@ class TrialPatientController extends BaseModuleController
                 'allow',
                 'actions' => array('changeStatus', 'updateExternalId', 'updateTreatmentType'),
                 'expression' => function ($user) {
-                    $trialPatient = TrialPatient::model()->findByPk(Yii::app()->getRequest()->getQuery('id'));
-                    return $user->checkAccess("TaskViewTrial") && $trialPatient->trial->getUserPermission($user->id)->can_edit;
+                    $trialPatient = TrialPatient::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
+                    return $user->checkAccess("TaskViewTrial") && $trialPatient && @$trialPatient->trial->getUserPermission($user->id)->can_edit;
                 },
             ),
             array(
