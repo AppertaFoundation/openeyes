@@ -48,14 +48,14 @@ class TrialController extends BaseModuleController
                 'allow',
                 'actions' => array('view'),
                 'expression' => function ($user) {
-                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_view;
+                    return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_view;
                 },
             ),
             array(
                 'allow',
                 'actions' => array('update', 'addPatient', 'removePatient'),
                 'expression' => function ($user) {
-                    return $user->checkAccess("TaskViewTrial") && @TrialController::getCurrentUserPermission()->can_edit;
+                    return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_edit;
                 },
             ),
             array(
@@ -327,8 +327,8 @@ class TrialController extends BaseModuleController
      */
     public function actionRemovePatient()
     {
-        $trial = $this->loadModel($_POST['id']);
-        $trial->removePatient($_POST['patient_id']);
+        $trial = $this->loadModel(Yii::app()->request->getQuery('id'));
+        $trial->removePatient(Yii::app()->request->getQuery('patient_id'));
     }
 
     /**
