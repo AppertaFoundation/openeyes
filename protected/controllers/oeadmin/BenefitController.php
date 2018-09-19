@@ -30,6 +30,7 @@ class BenefitController extends BaseAdminController
      * @var int
      */
     public $itemsPerPage = 100;
+    public $items_per_page = 100;
 
     /**
      * Lists procedures.
@@ -38,16 +39,30 @@ class BenefitController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(Benefit::model(), $this);
-        $admin->setListFields(array(
-                            'id',
-                            'name',
-                            'active',
-        ));
-        $admin->searchAll();
-        $admin->getSearch()->addActiveFilter();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                $criteria->addCondition('name = :query', 'OR');
+                $criteria->addCondition('id = :query', 'OR');
+                $criteria->params[':query'] = $search['query'];
+            }
+
+            if ($search['active'] == 1) {
+                $criteria->addCondition('t.active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('t.active != 1');
+            }
+        }
+
+        $benefit = Benefit::model();
+
+        $this->render('/oeadmin/benefit/index', [
+            'pagination' => $this->initPagination($benefit, $criteria),
+            'benefits' => $benefit->findAll($criteria),
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -59,15 +74,36 @@ class BenefitController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(Benefit::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
+        $errors = [];
+        $benefit_object = Benefit::model()->findByPk($id);
+
+
+        if (!$benefit_object) {
+            $benefit_object = new Benefit();
+            if ($id) {
+                $benefit_object->id = $id;
+            }
         }
-        $admin->setEditFields(array(
-            'name' => 'text',
-            'active' => 'checkbox',
+
+        if (Yii::app()->request->isPostRequest) {
+            // get data from POST
+            $user_data = \Yii::app()->request->getPost('Benefit');
+
+            $benefit_object->name = $user_data['name'];
+            $benefit_object->active = $user_data['active'];
+
+            // try saving the data
+            if (!$benefit_object->save()) {
+                $errors = $benefit_object->getErrors();
+            } else {
+                $this->redirect('/oeadmin/benefit/list/');
+            }
+        }
+
+        $this->render('/oeadmin/benefit/edit', array(
+            'benefit' => $benefit_object,
+            'errors' => $errors
         ));
-        $admin->editModel();
     }
 
     /**

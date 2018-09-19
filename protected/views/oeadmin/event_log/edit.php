@@ -20,11 +20,13 @@
 <div class="row divider">
     <h2>Examination Event Logs</h2>
 </div>
+
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',
     'focus' => '#contactname',
 )) ?>
+
 <table class="standard cols-full" width="100%" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>

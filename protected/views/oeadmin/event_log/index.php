@@ -16,88 +16,85 @@
  */
 ?>
 
-<main class="oe-full-main admin-main">
-
-    <?php if (!$event_logs) : ?>
-        <div class="row divider">
-            <div class="alert-box issue"><b>No results found</b></div>
-        </div>
-    <?php endif; ?>
-
-    <div class="row divider cols-9">
-        <form id="event_log_search" method="post">
-            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-            <table class="cols-full">
-                <colgroup>
-                    <col class="cols-8">
-                    <col class="cols-2" span="2">
-                    <col class="cols-1">
-                </colgroup>
-                <tbody>
-                <tr class="col-gap">
-                    <td>
-                        <?php echo CHtml::textField(
-                            'search[query]',
-                            $search['query'],
-                            [
-                                'class' => 'cols-full',
-                                'placeholder' => "Event Id, Unique Code, Examination Date"
-                            ]
-                        ); ?>
-                    </td>
-                    <td>
-                        <?= \CHtml::dropDownList(
-                            'search[status_value]',
-                            $search['status_value'],
-                            CHtml::listData($statuses, 'id', 'status_value'),
-                            ['empty' => '-All-']
-                        ); ?>
-                    </td>
-                    <td>
-                        <button class="blue hint"
-                                type="submit" id="et_search">Search
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </form>
+<?php if (!$event_logs) : ?>
+    <div class="row divider">
+        <div class="alert-box issue"><b>No results found</b></div>
     </div>
+<?php endif; ?>
 
-    <div class="cols-9">
-        <table class="standard">
-            <thead>
-            <tr>
-                <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Event Id</th>
-                <th>Unique Code</th>
-                <th>Examination Date</th>
-                <th>Status Value</th>
-            </tr>
-            </thead>
+<div class="row divider cols-9">
+    <form id="event_log_search" method="post">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+        <table class="cols-full">
+            <colgroup>
+                <col class="cols-8">
+                <col class="cols-2" span="2">
+                <col class="cols-1">
+            </colgroup>
             <tbody>
-            <?php
-            foreach ($event_logs as $key => $event) { ?>
-                <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
-                    data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
-                    <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
-                    <td><?php echo $event->event_id ?></td>
-                    <td><?php echo $event->unique_code ?></td>
-                    <td><?php echo $event->examination_date ?></td>
-                    <td><?php echo $event->import_status->status_value ?></td>
-                </tr>
-            <?php } ?>
-            </tbody>
-            <tfoot class="pagination-container">
-            <tr>
-                <td colspan="6">
-                    <?php $this->widget(
-                        'LinkPager',
-                        ['pages' => $pagination]
+            <tr class="col-gap">
+                <td>
+                    <?php echo CHtml::textField(
+                        'search[query]',
+                        $search['query'],
+                        [
+                            'class' => 'cols-full',
+                            'placeholder' => "Event Id, Unique Code, Examination Date"
+                        ]
                     ); ?>
                 </td>
+                <td>
+                    <?= \CHtml::dropDownList(
+                        'search[status_value]',
+                        $search['status_value'],
+                        CHtml::listData($statuses, 'id', 'status_value'),
+                        ['empty' => '-All-']
+                    ); ?>
+                </td>
+                <td>
+                    <button class="blue hint"
+                            type="submit" id="et_search">Search
+                    </button>
+                </td>
             </tr>
-            </tfoot>
+            </tbody>
         </table>
-    </div>
-</main>
+    </form>
+</div>
+
+<div class="cols-9">
+    <table class="standard">
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="selectall" id="selectall"/></th>
+            <th>Event Id</th>
+            <th>Unique Code</th>
+            <th>Examination Date</th>
+            <th>Status Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($event_logs as $key => $event) { ?>
+            <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
+                data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
+                <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
+                <td><?php echo $event->event_id ?></td>
+                <td><?php echo $event->unique_code ?></td>
+                <td><?php echo $event->examination_date ?></td>
+                <td><?php echo $event->import_status->status_value ?></td>
+            </tr>
+        <?php } ?>
+        </tbody>
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="6">
+                <?php $this->widget(
+                    'LinkPager',
+                    ['pages' => $pagination]
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
