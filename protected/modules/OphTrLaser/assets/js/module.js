@@ -12,6 +12,10 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('i.trash').on('click' , function(){
+		$(this).closest('tr').remove();
+	});
+
 	$('#et_cancel').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
@@ -93,4 +97,15 @@ function populateLaserList(siteId) {
 		}
 		$('#laser_select_hint').slideUp('fast');
 	}
+}
+
+function OphTrLaser_Treatment_addProcedure($table , selected_items , eye_side){
+	for(let index in selected_items) {
+		let selected_data = [];
+        selected_data.id = selected_items[index]['id'];
+        selected_data.term = selected_items[index]['label'];
+        selected_data.eye_side = eye_side;
+        var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
+        $table.find('tbody').append(form);
+    }
 }
