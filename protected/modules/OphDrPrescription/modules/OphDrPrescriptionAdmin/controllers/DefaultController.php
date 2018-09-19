@@ -1,10 +1,7 @@
 <?php
 
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2015
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,10 +10,10 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class AdminController extends BaseAdminController
+class DefaultController extends BaseAdminController
 {
     /**
      * @description Common drugs administration page - it lists the common drugs based on site and subspecialty
@@ -108,10 +105,7 @@ class AdminController extends BaseAdminController
 
     public function actionPrescriptionEditOptions()
     {
-        $this->genericAdmin('Edit prescription editing options', 'OphDrPrescriptionEditReasons',
-            array(
-               
-            ));
+        $this->genericAdmin('Edit prescription editing options', 'OphDrPrescriptionEditReasons',[]);
     }
 
     public function actionTags()

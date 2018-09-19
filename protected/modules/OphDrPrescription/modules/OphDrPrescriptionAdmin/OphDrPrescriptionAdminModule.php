@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,31 +9,18 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphDrPrescriptionModule extends BaseEventTypeModule
+?>
+
+<?php
+
+class OphDrPrescriptionAdminModule extends CWebModule
 {
-    public function init()
-    {
-        // this method is called when the module is being created
-        // you may place code here to customize the module or the application
-
-        // import the module-level models and components
-        $this->setImport(array(
-            'OphDrPrescription.models.*',
-            'OphDrPrescription.views.*',
-            'OphDrPrescription.components.*',
-            'OphDrPrescription.controllers.*',
-        ));
-
-        $this->setModules(array('OphDrPrescriptionAdmin'));
-
-        parent::init();
-    }
-
     public function beforeControllerAction($controller, $action)
     {
+        return true;
         if (parent::beforeControllerAction($controller, $action)) {
             // this method is called before any module controller action is performed
             // you may place customized code here

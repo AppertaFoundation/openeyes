@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2015
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,16 +9,24 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+ ?>
 
-return array(
-        'params' => array(
-            'reports' => array(
-                'Prescribed drugs' => '/OphDrPrescription/report/prescribedDrugs',
-            ),
-        ),
-
-    'modules' => array('OphDrPrescriptionAdmin'),
+<?php
+/* @var $this DefaultController */
+$this->breadcrumbs=array(
+    $this->module->id,
 );
+?>
+<h1><?php echo $this->uniqueId . '/' . $this->action->id; ?></h1>
+
+<p>
+    This is the view content for action "<?php echo $this->action->id; ?>".
+    The action belongs to the controller "<?php echo get_class($this); ?>"
+    in the "<?php echo $this->module->id; ?>" module.
+</p>
+<p>
+    You may customize this page by editing <?php echo __FILE__; ?>
+</p>

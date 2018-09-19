@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class CommonDrugAdminController extends BaseAdminController
+class CommonDrugController extends BaseAdminController
 {
     public function actionList()
     {
@@ -27,8 +27,8 @@ class CommonDrugAdminController extends BaseAdminController
             'drugs.dose_unit',
         ));
 
-        $admin->setCustomDeleteURL('/OphDrPrescription/admin/commondrugsdelete');
-        $admin->setCustomSaveURL('/OphDrPrescription/admin/commondrugsadd');
+        $admin->setCustomDeleteURL('/OphDrPrescription/admin/default/commondrugsdelete');
+        $admin->setCustomSaveURL('/OphDrPrescription/admin/default/commondrugsadd');
         $admin->setModelDisplayName('Common Drugs List');
         $admin->setFilterFields(
             array(
