@@ -40,7 +40,7 @@
                       'Re-open Trial',
                       $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('reopen',
                           array('id' => $trial->id)),
-                      array('class' => 'button header-tab red')
+                      array('class' => 'button header-tab green')
                   ) ?>
               <?php endif; ?>
           <?php endif; ?>
