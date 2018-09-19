@@ -1,6 +1,6 @@
 
 /* Module-specific javascript can be placed here */
-/* exported OphTrLaser_Treatment_addProcedure */
+
 
 $(document).ready(function() {
 	$('#et_save').unbind('click').click(function() {

@@ -14,6 +14,8 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/* exported OphTrLaser_Treatment_addProcedure */
 $lprocs = OphTrLaser_LaserProcedure::model()->with(array('procedure'))->findAll(array('order' => 'procedure.term asc'));
 $procs = array();
 foreach ($lprocs as $lproc) {
