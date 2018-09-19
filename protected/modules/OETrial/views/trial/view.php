@@ -1,26 +1,31 @@
 <?php
 /* @var TrialController $this */
 /* @var Trial $trial */
+/* @var TrialPermission $permission */
 /* @var CActiveDataProvider[] $dataProviders * */
 /* @var string $sort_by */
 /* @var string $sort_dir */
-
-$hasEditPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_EDIT);
-$hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_MANAGE);
 ?>
 
-<h1 class="badge">Trial</h1>
-<div class="box">
-  <div class="row">
-    <div class="large-9 column">
-      <div class="box admin">
-          <?php
-          $this->widget('zii.widgets.CBreadcrumbs', array(
-              'links' => $this->breadcrumbs,
-          ));
-          ?>
+<?php $this->renderPartial('_trial_header', array(
+    'trial' => $trial,
+    'title' => CHtml::encode($trial->name),
+    'permission' => $permission,
+)); ?>
 
-          <?php if ($trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION): ?>
+
+<div class="oe-full-content subgrid oe-worklists">
+
+    <?php $this->renderPartial('_trialActions', array(
+        'trial' => $trial,
+        'permission' => $permission,
+    )); ?>
+
+  <main class="oe-full-main">
+    <section class="element edit full">
+      <div class="element-fields">
+
+          <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
             <div class="alert-box alert with-icon">
               This is an Intervention Trial. Participants of this Trial cannot be accepted into other Intervention
               Trials
@@ -32,158 +37,138 @@ $hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, Us
               can make any changes.
             </div>
           <?php endif; ?>
-        <input type="hidden" name="YII_CSRF_TOKEN" id="csrf_token"
-               value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <div class="row">
-          <div class="large-9 column">
-            <h1 style="display: inline"><?php echo CHtml::encode($trial->name.'.'); ?></h1>
-            <h3 style="display: inline"><?php echo CHtml::encode('Principal Investigator: ' . $trial->principalUser->getFullName()); ?></h3>
-          </div>
-          <div class="large-3 column">
-              <?php echo $trial->getStartedDateForDisplay(); ?>
+      </div>
+    </section>
+
+    <div class="row divider">
+
+      <table class="standard cols-full">
+        <colgroup>
+          <col class="cols-2">
+          <col class="cols-4">
+          <col class="cols-2">
+          <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">
+          <td>Principal Investigator</td>
+          <td>
+              <?= CHtml::encode($trial->principalUser->getFullName()) ?>
+          </td>
+          <td>Date</td>
+          <td>
+              <?= $trial->getStartedDateForDisplay(); ?>
               <?php if ($trial->started_date !== null): ?>
-                &mdash; <?php echo $trial->getClosedDateForDisplay() ?>
+                &mdash; <?= $trial->getClosedDateForDisplay() ?>
               <?php endif; ?>
-          </div>
-        </div>
-
-          <?php if ($trial->description !== ''): ?>
-            <div class="row">
-              <div class="large-12 column">
-                <p><?php echo CHtml::encode($trial->description); ?></p>
-              </div>
-            </div>
-          <?php endif; ?>
-
-          <?php if ($trial->external_data_link !== ''): ?>
-            <div class="row">
-              <div class="large-12 column">
-                <p>
-                    <?php echo $trial->getAttributeLabel('external_data_link') ?>
-                    <?php echo CHtml::link(CHtml::encode($trial->external_data_link),
-                        CHtml::encode($trial->external_data_link), array('target' => '_blank')); ?>
-                </p>
-              </div>
-            </div>
-          <?php endif; ?>
-
-          <?php if ($hasManagePermissions): ?>
-            <br/>
-              <?php if ($trial->is_open): ?>
-                  <?php echo CHtml::beginForm(array('close'), 'post', array('id' => 'close-trial')); ?>
-                  <?php echo CHtml::hiddenField('id', $trial->id); ?>
-                  <?php echo CHtml::submitButton('Close Trial', array('id' => 'close-trial-submit')); ?>
-                  <?php echo CHtml::endForm(); ?>
-              <?php else: ?>
-                  <?php echo CHtml::beginForm(array('reopen'), 'post', array('id' => 'reopen-trial')); ?>
-                  <?php echo CHtml::hiddenField('id', $trial->id); ?>
-                  <?php echo CHtml::submitButton('Re-open Trial', array('id' => 'reopen-trial-submit')); ?>
-                  <?php echo CHtml::endForm(); ?>
-              <?php endif; ?>
-          <?php endif; ?>
-      </div>
+          </td>
+        </tr>
+        <?php if ($trial->external_data_link !== ''): ?>
+          <tr class="col-gap">
+            <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
+            <td>
+                <?= CHtml::link(CHtml::encode($trial->external_data_link),
+                    CHtml::encode($trial->external_data_link), array('target' => '_blank')) ?>
+            </td>
+          </tr>
+        <?php endif; ?>
+        <?php if (strlen($trial->description)): ?>
+          <tr class="col-gap">
+            <td>Description</td>
+            <td colspan="3">
+                <?= CHtml::encode($trial->description) ?>
+            </td>
+          </tr>
+        <?php endif; ?>
+        </tbody>
+      </table>
     </div>
-      <?php $this->renderPartial('_trialActions', array('trial' => $trial)); ?>
-  </div>
+
+
+      <?php $this->renderPartial('_patientList', array(
+          'trial' => $trial,
+          'permission' => $permission,
+          'renderTreatmentType' => true,
+          'title' => 'Accepted Participants',
+          'dataProvider' => $dataProviders['ACCEPTED'],
+          'sort_by' => $sort_by,
+          'sort_dir' => $sort_dir,
+      )); ?>
+      <?php $this->renderPartial('_patientList', array(
+          'trial' => $trial,
+          'permission' => $permission,
+          'renderTreatmentType' => false,
+          'title' => 'Shortlisted Participants',
+          'dataProvider' => $dataProviders['SHORTLISTED'],
+          'sort_by' => $sort_by,
+          'sort_dir' => $sort_dir,
+      )); ?>
+      <?php $this->renderPartial('_patientList', array(
+          'trial' => $trial,
+          'permission' => $permission,
+          'renderTreatmentType' => false,
+          'title' => 'Rejected Participants',
+          'dataProvider' => $dataProviders['REJECTED'],
+          'sort_by' => $sort_by,
+          'sort_dir' => $sort_dir,
+      )); ?>
+  </main>
+
+    <?php
+    $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
+    Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-section.js');
+    ?>
 </div>
-
-<div class="box">
-  <div class="row">
-    <div class="large-9 column">
-      <div class="box admin">
-
-          <?php $this->renderPartial('_patientList', array(
-              'trial' => $trial,
-              'renderTreatmentType' => true,
-              'title' => 'Accepted Participants',
-              'dataProvider' => $dataProviders[TrialPatient::STATUS_ACCEPTED],
-              'sort_by' => $sort_by,
-              'sort_dir' => $sort_dir,
-          )); ?>
-
-          <?php $this->renderPartial('_patientList', array(
-              'trial' => $trial,
-              'renderTreatmentType' => false,
-              'title' => 'Shortlisted Participants',
-              'dataProvider' => $dataProviders[TrialPatient::STATUS_SHORTLISTED],
-              'sort_by' => $sort_by,
-              'sort_dir' => $sort_dir,
-          )); ?>
-
-          <?php $this->renderPartial('_patientList', array(
-              'trial' => $trial,
-              'renderTreatmentType' => false,
-              'title' => 'Rejected Participants',
-              'dataProvider' => $dataProviders[TrialPatient::STATUS_REJECTED],
-              'sort_by' => $sort_by,
-              'sort_dir' => $sort_dir,
-          )); ?>
-
-      </div>
-
-    </div><!-- /.large-9.column -->
-  </div>
-</div>
-
-<?php
-$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets'), false, -1);
-Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-section.js');
-?>
-
 <script type="application/javascript">
 
   function changePatientStatus(object, trial_patient_id, new_status) {
 
     $('#action-loader-' + trial_patient_id).show();
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
-      data: {id: trial_patient_id, new_status: new_status, YII_CSRF_TOKEN: $('#csrf_token').val()},
-      type: 'POST',
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/changeStatus'); ?>/',
+      data: {id: trial_patient_id, new_status: new_status},
       success: function (response) {
-        if (response === '<?php echo TrialPatient::STATUS_CHANGE_CODE_OK; ?>') {
-          window.location.reload(false);
-        } else if (response === '<?php echo TrialPatient::STATUS_CHANGE_CODE_ALREADY_IN_INTERVENTION; ?>') {
-          new OpenEyes.UI.Dialog.Alert({
-            content: "You can't accept this participant into your Trial because that participant has already been accepted into another Intervention trial."
-          }).open();
-        } else {
-          alert("Unknown response code: " + response_code);
-        }
+        window.location.reload(false);
       },
       error: function (response) {
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
-          content: "Sorry, an internal error occurred and we were unable to change the participant status.\n\nPlease contact support for assistance."
+          content: response
         }).open();
       },
     });
   }
 
-  function onExternalTrialIdentifierChange(trial_patient_id) {
-    $('#ext-trial-id-actions-' + trial_patient_id).show('fast');
-  }
+  $(document).on('keyup', '.js-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    $container.find('.js-external-trial-identifier-actions').show();
+  });
 
-  function cancelExternalTrialIdentifier(trial_patient_id) {
-    var oldExternalId = $('#external-trial-id-hidden-' + trial_patient_id).val();
-    $('#ext-trial-id-form-' + trial_patient_id).val(oldExternalId);
-    $('#ext-trial-id-actions-' + trial_patient_id).hide('fast');
-  }
+  $(document).on('click', '.js-cancel-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    var oldExternalId = $container.find('.js-hidden-external-trial-identifier').val();
+    $container.find('.js-external-trial-identifier').val(oldExternalId);
+    $container.find('.js-external-trial-identifier-actions').hide();
+  });
 
-  function saveExternalTrialIdentifier(trial_patient_id) {
-    var external_id = $('#ext-trial-id-form-' + trial_patient_id).val();
-
-    $('#ext-trial-id-loader-' + trial_patient_id).show();
+  $(document).on('click', '.js-save-external-trial-identifier', function () {
+    var $container = $(this).closest('.js-trial-patient');
+    var $actions = $(this).closest('.js-external-trial-identifier-actions');
+    var trialPatientId = $(this).closest('.js-trial-patient').data('trial-patient-id');
+    var externalId = $container.find('.js-external-trial-identifier').val();
+    var $spinner = $actions.find('.js-spinner-as-icon');
+    $spinner.show();
 
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
-      data: {id: trial_patient_id, new_external_id: external_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateExternalId'); ?>',
+      data: {id: trialPatientId, new_external_id: externalId, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       complete: function (response) {
-        $('#ext-trial-id-loader-' + trial_patient_id).hide();
+        $spinner.hide();
       },
       success: function (response) {
-        $('#ext-trial-id-hidden-' + trial_patient_id).val(external_id);
-        $("#ext-trial-id-actions-" + trial_patient_id).hide('fast');
+        $container.find('.js-hidden-external-trial-identifier').val(externalId);
+        $actions.hide();
       },
       error: function (response) {
         new OpenEyes.UI.Dialog.Alert({
@@ -191,34 +176,37 @@ Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-secti
         }).open();
       }
     });
-  }
+  });
 
-  function onTreatmentTypeChange(trial_patient_id) {
-    $('#treatment-type-actions-' + trial_patient_id).show('fast');
-  }
+  $(document).on('change', '.js-treatment-type', function() {
+    $(this).closest('.js-trial-patient').find('.js-treatment-type-actions').show();
+  });
 
-  function cancelTreatmentType(trial_patient_id) {
-    var oldTreatmentType = $('#treatment-type-hidden-' + trial_patient_id).val();
-    $('#treatment-type-' + trial_patient_id).val(oldTreatmentType);
-    $('#treatment-type-actions-' + trial_patient_id).hide('fast');
-  }
+  $(document).on('click', '.js-cancel-treatment-type', function() {
+    var $container = $(this).closest('.js-trial-patient');
+    var oldTreatmentType = $container.find('.js-hidden-treatment-type').val();
+    $container.find('.js-treatment-type').val(oldTreatmentType);
+    $container.find('.js-treatment-type-actions').hide();
+  });
 
-  function updateTreatmentType(trial_patient_id) {
-
-    var treatment_type = $('#treatment-type-' + trial_patient_id).val();
-
-    $('#treatment-type-loader-' + trial_patient_id).show();
+  $(document).on('click', '.js-save-treatment-type', function() {
+    var $container = $(this).closest('.js-trial-patient');
+    var treatmentType = $container.find('.js-treatment-type').val();
+    var $actions = $(this).closest('.js-treatment-type-actions');
+    var $spinner = $actions.find('.js-spinner-as-icon');
+    $spinner.show();
+    var trialPatientId = $container.data('trial-patient-id');
 
     $.ajax({
-      url: '<?php echo Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
-      data: {id: trial_patient_id, treatment_type: treatment_type, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateTreatmentType'); ?>',
+      data: {id: trialPatientId, treatment_type: treatmentType, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       complete: function (response) {
-        $('#treatment-type-loader-' + trial_patient_id).hide();
+        $spinner.hide();
       },
       success: function (response) {
-        $('#treatment-type-hidden-' + trial_patient_id).val(treatment_type);
-        $('#treatment-type-actions-' + trial_patient_id).hide('fast');
+        $container.find('.js-hidden-treatment-type').val(treatmentType);
+        $actions.hide();
       },
       error: function (response) {
         new OpenEyes.UI.Dialog.Alert({
@@ -226,14 +214,14 @@ Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-secti
         }).open();
       }
     });
-  }
+  });
 
-  $(document).ready(function () {
+  $(function () {
     $(".icon-alert-warning").hover(function () {
-        $(this).siblings(".warning").show('fast');
+        $(this).siblings(".warning").show();
       },
       function () {
-        $(this).siblings(".warning").hide('fast');
+        $(this).siblings(".warning").hide();
       }
     );
 
@@ -271,8 +259,8 @@ Yii::app()->getClientScript()->registerScriptFile($assetPath . '/js/toggle-secti
     $('#action-loader-' + trial_patient_id).show();
 
     $.ajax({
-      url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
-      data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: $('#csrf_token').val()},
+      url: '<?= Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',
+      data: {id: trial_id, patient_id: patient_id, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
       type: 'POST',
       result: function (response) {
         $('#action-loader-' + trial_patient_id).hide();

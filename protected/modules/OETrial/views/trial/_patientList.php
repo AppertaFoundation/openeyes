@@ -1,22 +1,17 @@
 <?php
-/* @var TrialController $this */
-/* @var Trial $trial */
-/* @var CActiveDataProvider $dataProvider */
-/* @var bool $renderTreatmentType */
-/* @var string $title */
-/* @var int $sort_by */
-/* @var int $sort_dir */
+/**
+ * @var TrialController $this
+ *
+ * @var Trial $trial
+ * @var TrialPermission $permission
+ * @var CActiveDataProvider $dataProvider
+ * @var bool $renderTreatmentType
+ * @var string $title
+ * @var int $sort_by
+ * @var int $sort_dir
+ */
 ?>
-
-<?php
-if ((int)$dataProvider->getTotalItemCount() === 0): ?>
-  <h2>
-      <?php echo $title; ?>
-  </h2>
-  <p>
-    There are no <?php echo $title; ?> to display.
-  </p>
-<?php else: ?>
+<div class="report-summary row divider">
     <?php
     $dataProvided = $dataProvider->getData();
     $items_per_page = $dataProvider->getPagination()->getPageSize();
@@ -29,7 +24,7 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
     of <?php echo $dataProvider->totalItemCount ?>
   </h2>
 
-  <table id="patient-grid" class="grid">
+  <table id="patient-grid" class="standard">
     <thead>
     <tr>
         <?php
@@ -45,13 +40,12 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
 
         $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
 
-        if ($trial->trial_type === Trial::TRIAL_TYPE_INTERVENTION && !$trial->is_open && $renderTreatmentType) {
+        if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
             $columns[] = 'Treatment Type';
             $sortableColumns[] = 'Treatment Type';
         }
 
-        $columns[] = 'Diagnoses/Medication';
-        $columns[] = 'Actions';
+        $columns[] = '';
 
         foreach ($columns as $i => $field): ?>
           <th id="patient-grid_c<?php echo $i; ?>">
@@ -85,8 +79,11 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
 
     <?php /* @var Trial $trial */
     foreach ($dataProvided as $i => $trialPatient) {
-        $this->renderPartial('/trialPatient/_view',
-            array('data' => $trialPatient, 'renderTreatmentType' => $renderTreatmentType));
+        $this->renderPartial('/trialPatient/_view', array(
+            'data' => $trialPatient,
+            'renderTreatmentType' => $renderTreatmentType,
+            'permission' => $permission,
+        ));
     }
 
     ?>
@@ -94,20 +91,22 @@ if ((int)$dataProvider->getTotalItemCount() === 0): ?>
     <tfoot class="pagination-container">
     <tr>
       <td colspan="9">
-          <?php
-          $this->widget('LinkPager', array(
-              'pages' => $dataProvider->getPagination(),
-              'maxButtonCount' => 15,
-              'cssFile' => false,
-              'selectedPageCssClass' => 'current',
-              'hiddenPageCssClass' => 'unavailable',
-              'htmlOptions' => array(
-                  'class' => 'pagination',
-              ),
-          ));
-          ?>
+        <div class="pagination">
+            <?php
+            $this->widget('LinkPager', array(
+                'pages' => $dataProvider->getPagination(),
+                'maxButtonCount' => 15,
+                'cssFile' => false,
+                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                'htmlOptions' => array(
+                    'class' => 'pagination',
+                ),
+            ));
+            ?>
+        </div>
       </td>
     </tr>
     </tfoot>
   </table>
-<?php endif; ?>
+</div>

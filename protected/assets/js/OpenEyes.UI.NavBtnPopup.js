@@ -91,38 +91,43 @@
         }
 
         function show() {
-            $btn.addClass(popup.css.open);
-            $content.show();
-            if (popup.useMouseEvents && !popup.isFixed) addContentEvents();
-            //handle popups extending off screen
-            contentBox = $content[0].getBoundingClientRect();
-            mainBox = $('main')[0].getBoundingClientRect();
-            parentBox = $content[0].closest('#oe-patient-details').getBoundingClientRect();
+          $btn.addClass(popup.css.open);
+          $content.show();
+          if (popup.useMouseEvents && !popup.isFixed) {
+            addContentEvents()
+          }
 
-            boundTo = 'bottom';
+          //handle popups extending off screen
+
+          if ($content.closest('#oe-patient-details').length > 0) {
+            var $main_event = $('main');
+            var mainBox = $main_event[0].getBoundingClientRect();
+            var contentBox = $content[0].getBoundingClientRect();
+            var parentBox = $content[0].closest('#oe-patient-details').getBoundingClientRect();
+            var boundTo = 'bottom';
 
             //moved the popup to above rather than below it's parent if it will go beyond the bottom of the main div
             if (mainBox.bottom < parentBox.bottom + contentBox.height) {
-                $content[0].style.top = (parentBox.top - contentBox.height) + "px";
-                boundTo = 'top';
+              $content[0].style.top = (parentBox.top - contentBox.height) + "px";
+              boundTo = 'top';
             } else {
-                $content[0].style.top = parentBox.bottom + "px";
+              $content[0].style.top = parentBox.bottom + "px";
             }
-            main_event = $('main');
-            console.log(main_event.data("events"));
 
-            main_event.unbind("scroll");
+            $main_event.unbind("scroll");
+
             function movePopupWithScroll(e) {
-                if (boundTo === 'top') {
-                    $content[0].style.top = (
-                        $content[0].closest('#oe-patient-details').getBoundingClientRect().top -
-                        $content[0].getBoundingClientRect().height
-                    ) + "px";
-                } else {
-                    $content[0].style.top = $content[0].closest('#oe-patient-details').getBoundingClientRect().bottom + "px";
-                }
+              if (boundTo === 'top') {
+                $content[0].style.top = (
+                  $content[0].closest('#oe-patient-details').getBoundingClientRect().top -
+                  $content[0].getBoundingClientRect().height
+                ) + "px";
+              } else {
+                $content[0].style.top = $content[0].closest('#oe-patient-details').getBoundingClientRect().bottom + "px";
+              }
             }
-            main_event.bind("scroll", movePopupWithScroll);
+            $main_event.bind("scroll", movePopupWithScroll);
+          }
         }
 
         function hide() {

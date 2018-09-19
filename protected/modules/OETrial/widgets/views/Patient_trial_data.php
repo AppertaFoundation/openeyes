@@ -6,9 +6,9 @@ $isInAnotherInterventionTrial = TrialPatient::isPatientInInterventionTrial(
     $this->patient,
     $this->trial->id !== null ? $this->trial->id : null
 );
-$trialsShortlistedInto = TrialPatient::getTrialCount($this->patient, TrialPatient::STATUS_SHORTLISTED);
-$trialsAcceptedInto = TrialPatient::getTrialCount($this->patient, TrialPatient::STATUS_ACCEPTED);
-$trialsRejectedFrom = TrialPatient::getTrialCount($this->patient, TrialPatient::STATUS_REJECTED);
+$trialsShortlistedInto = TrialPatient::getTrialCount($this->patient, TrialPatientStatus::SHORTLISTED_CODE);
+$trialsAcceptedInto = TrialPatient::getTrialCount($this->patient, TrialPatientStatus::ACCEPTED_CODE);
+$trialsRejectedFrom = TrialPatient::getTrialCount($this->patient, TrialPatientStatus::REJECTED_CODE);
 ?>
 
 <?php if($trialsShortlistedInto > 0):?><div class="trial-count"><em>Shortlisted</em> <?= $trialsShortlistedInto?></div><?php endif;?>

@@ -34,7 +34,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             ->join('trial_patient t_p', 't.id = t_p.trial_id')
             ->join('patient p', 'p.id = t_p.patient_id')
             ->join('contact c', 'p.contact_id = c.id')
-            ->group('p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type, t_p.patient_status')
+            ->group('p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type_id, t_p.status_id')
             ->order('c.first_name, c.last_name');
     }
 
@@ -104,8 +104,8 @@ class OETrial_ReportTrialCohort extends BaseReport
         $cols[] = Patient::model()->getAttributeLabel('first_name');
         $cols[] = Patient::model()->getAttributeLabel('last_name');
         $cols[] = TrialPatient::model()->getAttributeLabel('external_trial_identifier');
-        $cols[] = TrialPatient::model()->getAttributeLabel('treatment_type');
-        $cols[] = TrialPatient::model()->getAttributeLabel('patient_status');
+        $cols[] = TrialPatient::model()->getAttributeLabel('treatment_type_id');
+        $cols[] = TrialPatient::model()->getAttributeLabel('status_id');
         $cols[] = 'Diagnoses';
         $cols[] = 'Medications';
         $rows[] = $cols;
@@ -120,8 +120,8 @@ class OETrial_ReportTrialCohort extends BaseReport
             $cols[] = $patient['first_name'];
             $cols[] = $patient['last_name'];
             $cols[] = $patient['external_trial_identifier'];
-            $cols[] = $trial_patient->getTreatmentTypeForDisplay();
-            $cols[] = $trial_patient->getStatusForDisplay();
+            $cols[] = $trial_patient->treatmentType->name;
+            $cols[] = $trial_patient->status->name;
 
             $diagnoses = array();
             foreach ($trial_patient->patient->diagnoses as $diagnosis) {

@@ -1,46 +1,37 @@
 <?php
 /* @var $this TrialController */
-/* @var $model Trial
- * @var UserTrialPermission $newPermission
+/* @var $trial Trial
+ * @var TrialPermission $permission
+ * @var UserTrialAssignment $newPermission
  * @var CDataProvider $permissionDataProvider
  */
-
-$canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTrialPermission::PERMISSION_MANAGE);
 ?>
 
-<?php echo CHtml::hiddenField('trial_id', $model->id, array('id' => 'trial-id')); ?>
+<?php echo CHtml::hiddenField('trial_id', $trial->id, array('id' => 'trial-id')); ?>
 
 <h1 class="badge">Trial Sharing</h1>
 <div class="row">
   <div class="large-9 column">
 
     <div class="box admin">
-        <?php
-        $this->widget('zii.widgets.CBreadcrumbs', array(
-            'links' => $this->breadcrumbs,
-        ));
-        ?>
 
       <div class="row">
         <div class="large-9 column">
-          <h1 style="display: inline">Users shared with <?php echo CHtml::encode($model->name); ?></h1>
+          <h1 style="display: inline">Users shared with <?php echo CHtml::encode($trial->name); ?></h1>
         </div>
       </div>
-
-      <input type="hidden" name="YII_CSRF_TOKEN" id="csrf_token"
-             value="<?php echo Yii::app()->request->csrfToken ?>"/>
 
       <div class="row">
         <div class="large-9 column">
           <table id="currentPermissions">
             <thead>
             <tr>
-              <th><?php echo Trial::model()->getAttributeLabel('pi_user_id') ?></th>
+              <th><?php echo Trial::model()->getAttributeLabel('principle_investigator_user_id') ?></th>
               <th><?php echo Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
               <th>User</th>
               <th>User Role</th>
               <th>Permission</th>
-                <?php if ($canManageTrial): ?>
+                <?php if ($permission->can_manage): ?>
                   <th>Actions</th>
                 <?php endif; ?>
             </tr>
@@ -56,7 +47,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
         </div>
       </div>
 
-        <?php if ($canManageTrial): ?>
+        <?php if ($permission->can_manage): ?>
           <h2>Share with another user:</h2>
           <div class="row field-row">
             <div class="large-6 column">
@@ -70,7 +61,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
                         'id' => 'autocomplete_user_id',
                         'source' => "js:function(request, response) {
                                         $.getJSON('" . $this->createUrl('userAutoComplete') . "', {
-                                            id : $model->id,
+                                            id : $trial->id,
                                             term : request.term
                                         }, response);
                                 }",
@@ -110,9 +101,9 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
                     <?php echo CHtml::activeLabel($newPermission, 'permission'); ?>
                 </div>
                 <div class="large-6 column end">
-                    <?php echo CHtml::dropDownList('permission', 'Select One...',
-                        UserTrialPermission::getPermissionOptions(),
-                        array('id' => 'permission')); ?>
+                    <?= CHtml::dropDownList('permission', 'Select One...',
+                        CHtml::listData(TrialPermission::model()->findAll(), 'id', 'name'),
+                        array('id' => 'permission')) ?>
                 </div>
               </div>
 
@@ -144,7 +135,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
     </div>
   </div>
 
-    <?php if ($canManageTrial): ?>
+    <?php if ($permission->can_manage): ?>
       <!-- Confirm permission deletion dialog (copied from allergy dialog)-->
       <div id="confirm_remove_permission_dialog" title="Confirm remove permission" style="display: none;">
         <div id="delete_permission">
@@ -162,10 +153,13 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
       </div>
     <?php endif; ?>
 
-    <?php $this->renderPartial('_trialActions', array('trial' => $model)); ?>
+    <?php $this->renderPartial('_trialActions', array(
+        'trial' => $trial,
+        'permission' => $permission,
+    )); ?>
 </div>
 
-<?php if ($canManageTrial): ?>
+<?php if ($permission->can_manage): ?>
   <script type="text/javascript">
     function addItem(wrapper_id, ui) {
       var $wrapper = $('#' + wrapper_id);
@@ -195,9 +189,9 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
           'type': 'POST',
           'url': '<?php echo $this->createUrl('trial/changePi'); ?>',
           'data': {
-            id: <?php echo $model->id; ?>,
+            id: <?php echo $trial->id; ?>,
             user_id: user_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           complete: function (response) {
             loader.hide();
@@ -221,7 +215,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
           'data': {
             id: $('#trial-id').val(),
             user_id: user_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val(),
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN,
           },
           complete: function (response) {
             loader.hide();
@@ -252,7 +246,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
             user_id: user_id,
             permission: $('#permission').val(),
             role: $('#user_role').val(),
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           'success': function (html) {
             if (html === '<?php echo Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS; ?>') {
@@ -302,7 +296,7 @@ $canManageTrial = Trial::checkTrialAccess(Yii::app()->user, $model->id, UserTria
           'data': {
             id: $('#trial-id').val(),
             permission_id: permission_id,
-            YII_CSRF_TOKEN: $('#csrf_token').val()
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           'success': function (result) {
             if (result === '<?php echo Trial::REMOVE_PERMISSION_RESULT_SUCCESS; ?>') {

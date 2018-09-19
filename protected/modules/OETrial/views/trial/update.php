@@ -1,8 +1,8 @@
 <?php
 /* @var $this TrialController */
-/* @var $model Trial */
+/* @var $trial Trial */
 
 ?>
 
-<?php $this->renderPartial('_form', array('model' => $model)); ?>
+<?php $this->renderPartial('_form', array('trial' => $trial)); ?>
 

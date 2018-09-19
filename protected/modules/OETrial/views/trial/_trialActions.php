@@ -1,91 +1,45 @@
 <?php
 /* @var TrialController $this */
 /* @var Trial $trial */
+/* @var TrialPermission $permission */
 ?>
-
-<?php
-$hasViewPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_VIEW);
-$hasEditPermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_EDIT);
-$hasManagePermissions = Trial::checkTrialAccess(Yii::app()->user, $trial->id, UserTrialPermission::PERMISSION_MANAGE);
-?>
-
-<div class="large-3 column">
-  <div class="box generic">
-
-      <?php if ($hasViewPermissions): ?>
-        <p>
-            <?php if ($this->action->id === 'view'): ?>
-              View Trial Details
-            <?php else: ?>
-              <span class="highlight">
-              <?php echo CHtml::link('View Trial Details',
-                  $this->createUrl('view', array('id' => $trial->id))); ?>
-            </span>
-            <?php endif; ?>
-        </p>
-      <?php endif; ?>
-
-      <?php if ($hasEditPermissions): ?>
-        <p>
-          <span class="highlight">
-            <?php echo CHtml::link('Edit Trial Details',
-                $this->createUrl('update', array('id' => $trial->id))); ?>
-          </span>
-        </p>
-      <?php endif; ?>
-
-      <?php if ($this->action->id === 'permissions'): ?>
-        <p>
-          Trial Permissions
-        </p>
-      <?php else: ?>
-        <p>
-          <span class="highlight">
-            <?php echo CHtml::link('Trial Permissions',
-                $this->createUrl('permissions', array('id' => $trial->id))); ?>
-          </span>
-        </p>
-      <?php endif; ?>
-
-      <?php if ($trial->is_open && $hasEditPermissions): ?>
-        <p>
-          <span class="highlight">
+<nav class="oe-full-side-panel">
+  <h3>Actions</h3>
+  <ul>
+      <?php if ($trial->is_open && $permission->can_edit): ?>
+        <li>
             <?php echo CHtml::link('Add Participants',
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
-          </span>
-        </p>
+        </li>
       <?php endif; ?>
+    <li>
+      <a href="/csv/upload?context=trialPatients">Upload trial patients</a></li>
+    <li>
+        <?php echo CHtml::link('Trial Permissions',
+            $this->createUrl('permissions', array('id' => $trial->id))); ?>
+    </li>
 
       <?php if (Yii::app()->user->checkAccess('OprnGenerateReport')): ?>
-          <?php echo CHtml::beginForm($this->createUrl('report/downloadReport')); ?>
-        <p>
-          <span class="highlight">
-              <?php echo CHtml::hiddenField('report-name', 'TrialCohort'); ?>
-              <?php echo CHtml::hiddenField('report-filename', $trial->name); ?>
-              <?php echo CHtml::hiddenField('trialID', $trial->id); ?>
-
-              <?php echo CHtml::linkButton('Download Report'); ?>
-
-          </span>
-        </p>
-          <?php echo CHtml::endForm(); ?>
+        <li>
+            <?php echo CHtml::beginForm($this->createUrl('report/downloadReport')); ?>
+            <?php echo CHtml::hiddenField('report-name', 'TrialCohort'); ?>
+            <?php echo CHtml::hiddenField('report-filename', $trial->name); ?>
+            <?php echo CHtml::hiddenField('trialID', $trial->id); ?>
+            <?php echo CHtml::linkButton('Download Report'); ?>
+            <?php echo CHtml::endForm(); ?>
+        </li>
       <?php endif; ?>
 
-      <?php if ($hasManagePermissions): ?>
-          <?php echo CHtml::beginForm(array('delete'), 'post', array('id' => 'delete-trial-form')); ?>
-        <p>
-          <span class="highlight">
-          <?php echo CHtml::hiddenField('id', $trial->id); ?>
-          <?php echo CHtml::linkButton('Delete Trial', array('id' => 'delete-trial-submit')); ?>
-          </span>
-        </p>
-          <?php echo CHtml::endForm(); ?>
+      <?php if ($permission->can_manage): ?>
+        <li>
+            <?php echo CHtml::beginForm(array('delete'), 'post', array('id' => 'delete-trial-form')); ?>
+            <?php echo CHtml::hiddenField('id', $trial->id); ?>
+            <?php echo CHtml::linkButton('Delete Trial', array('id' => 'delete-trial-submit')); ?>
+            <?php echo CHtml::endForm(); ?>
+        </li>
       <?php endif; ?>
-
-  </div>
-</div>
-
-
+  </ul>
+</nav>
 <script type="application/javascript">
 
   $(document).ready(function () {
