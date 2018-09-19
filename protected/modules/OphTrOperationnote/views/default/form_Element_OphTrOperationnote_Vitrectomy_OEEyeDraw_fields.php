@@ -17,8 +17,42 @@
  */
 ?>
 
-<?php echo $form->dropDownList($element, 'gauge_id',
-    CHtml::listData(OphTrOperationnote_VitrectomyGauge::model()->activeOrPk($element->gauge_id)->findAll(), 'id',
-        'value'), array('empty' => '- Please select -'), false, array('field' => 3)) ?>
-<?php echo $form->radioBoolean($element, 'pvd_induced', array()) ?>
-<?php echo $form->textArea($element, 'comments', array('rows' => 4)) ?>
+<div class="cols-full">
+    <table class="cols-full last-left">
+        <colgroup>
+            <col class="cols-6">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>
+                <?php echo $element->getAttributeLabel('gauge_id') ?>
+            </td>
+            <td>
+                <?php echo $form->dropDownList($element, 'gauge_id',
+                    CHtml::listData(OphTrOperationnote_VitrectomyGauge::model()->activeOrPk($element->gauge_id)->findAll(), 'id', 'value'),
+                    array('empty' => '- Please select -', 'textAttribute' => 'data-value', 'nolabel' => true),
+                    false, array('field' => 3)) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $element->getAttributeLabel('pvd_induced') ?>
+            </td>
+            <td>
+                <?php echo $form->radioBoolean($element, 'pvd_induced', array('nowrapper' => true)) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $element->getAttributeLabel('comments') ?>
+            </td>
+            <td>
+                <?php echo $form->textArea($element, 'comments', array('nowrapper' => true, 'rows' => 4)) ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
