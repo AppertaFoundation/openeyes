@@ -52,7 +52,7 @@
         </table>
         <hr class="divider">
         <div id="single_document_uploader">
-            <div class="cols-8 column" id="single_document_id_row">
+            <div class="cols-12 column" id="single_document_id_row">
                 <?php $this->generateFileField($element, 'single_document'); ?>
             </div>
         </div>
