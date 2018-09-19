@@ -1861,14 +1861,12 @@ function OphCiExamination_AddFinding(finding_id, label) {
         if (el.length) {
             addElement(el.first(), false, true, 0, {}, updateFindings);
         } else {
-            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
-            if (sidebar) {
-                sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
+            if (event_sidebar) {
+                event_sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
             } else {
                 console.log('Cannot find sidebar to manipulate elements for VA change');
             }
         }
-
     }
 
 }
