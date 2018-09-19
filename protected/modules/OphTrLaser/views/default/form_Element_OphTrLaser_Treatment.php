@@ -94,7 +94,7 @@ $layoutColumns = array(
         </script>
     <?php endforeach; ?>
 
-    <script id="laser_procedure_template" type="text/html">
+    <script type="text/template" id="laser_procedure_template" style="display:none">
     <?php
     $this->renderPartial('form_Element_OphTrLaser_Laser_Procedure', array(
             'id' => '{{id}}',

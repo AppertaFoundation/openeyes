@@ -1,5 +1,6 @@
 
 /* Module-specific javascript can be placed here */
+/* exported OphTrLaser_Treatment_addProcedure */
 
 $(document).ready(function() {
 	$('#et_save').unbind('click').click(function() {
@@ -12,7 +13,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('i.trash').on('click' , function(){
+	$('table.procedures').on('click' ,'i.trash' ,function(){
 		$(this).closest('tr').remove();
 	});
 
