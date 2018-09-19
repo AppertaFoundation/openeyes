@@ -16,116 +16,108 @@
  */
 ?>
 
-<main class="oe-full-main admin-main">
-
-    <?php if (!$procedures) : ?>
-        <div class="row divider">
-            <div class="alert-box issue"><b>No results found</b></div>
-        </div>
-    <?php endif; ?>
-
-    <div class="row divider cols-9">
-        <form id="procedures_search" method="post">
-            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-            <table class="cols-full">
-                <colgroup>
-                    <col class="cols-8">
-                    <col class="cols-2" span="2">
-                    <col class="cols-1">
-                </colgroup>
-                <tbody>
-                <tr class="col-gap">
-                    <td>
-                        <?php echo CHtml::textField(
-                            'search[query]',
-                            $search['query'],
-                            [
-                                'class' => 'cols-full',
-                                'placeholder' => "Term, Snomed Code, OPCS Code, Default Duration, Aliases"
-                            ]
-                        ); ?>
-                    </td>
-                    <td>
-                        <?= \CHtml::dropDownList(
-                            'search[active]',
-                            $search['active'],
-                            [
-                                1 => 'Only Active',
-                                0 => 'Exclude Active',
-                            ],
-                            ['empty' => 'All']
-                        ); ?>
-                    </td>
-                    <td>
-                        <button class="blue hint"
-                                type="submit" id="et_search">Search
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </form>
+<?php if (!$procedures) : ?>
+    <div class="row divider">
+        <div class="alert-box issue"><b>No results found</b></div>
     </div>
+<?php endif; ?>
 
-    <table class="standard">
-        <thead>
-        <tr>
-            <th><input type="checkbox" name="selectall" id="selectall"/></th>
-            <th>Term</th>
-            <th>Snomed Code</th>
-            <th>OPCS Code</th>
-            <th>Default Duration</th>
-            <th>Aliases</th>
-            <th>Has Benefits</th>
-            <th>Has Complications</th>
-            <th>Active</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-
-        foreach ($procedures as $key => $procedure) { ?>
-            <tr id="$key" class="clickable" data-id="<?php echo $procedure->id ?>"
-                data-uri="oeadmin/procedure/edit/<?php echo $procedure->id ?>?returnUri=">
-                <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
-                <td><?php echo $procedure->term ?></td>
-                <td><?php echo $procedure->snomed_code ?></td>
-                <td><?php echo implode(", ", array_map(function ($code) {
-                        return $code->name;
-                    }, $procedure->opcsCodes)); ?>
-                </td>
-                <td><?php echo $procedure->default_duration ?></td>
-                <td><?php echo $procedure->aliases ?></td>
-                <td><?php echo implode(", ", array_map(function ($code) {
-                        return $code->name;
-                    }, $procedure->benefits)); ?>
-                </td>
-                <td><?php echo implode(", ", array_map(function ($code) {
-                        return $code->name;
-                    }, $procedure->complications)); ?>
+<div class="row divider cols-9">
+    <form id="procedures_search" method="post">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+        <table class="cols-full">
+            <colgroup>
+                <col class="cols-8">
+                <col class="cols-2" span="2">
+                <col class="cols-1">
+            </colgroup>
+            <tbody>
+            <tr class="col-gap">
+                <td>
+                    <?php echo CHtml::textField(
+                        'search[query]',
+                        $search['query'],
+                        [
+                            'class' => 'cols-full',
+                            'placeholder' => "Term, Snomed Code, OPCS Code, Default Duration, Aliases"
+                        ]
+                    ); ?>
                 </td>
                 <td>
-                    <?php echo ($procedure->active) ?
-                        ('<i class="oe-i tick small"></i>') :
-                        ('<i class="oe-i remove small"></i>'); ?>
+                    <?= \CHtml::dropDownList(
+                        'search[active]',
+                        $search['active'],
+                        [
+                            1 => 'Only Active',
+                            0 => 'Exclude Active',
+                        ],
+                        ['empty' => 'All']
+                    ); ?>
                 </td>
                 <td>
-                    <?php
-                    echo count($procedures);
-                    ?>
+                    <button class="blue hint"
+                            type="submit" id="et_search">Search
+                    </button>
                 </td>
             </tr>
-        <?php } ?>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-            <td colspan="9">
-                <?php $this->widget(
-                    'LinkPager',
-                    ['pages' => $pagination]
-                ); ?>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<table class="standard">
+    <thead>
+    <tr>
+        <th><input type="checkbox" name="selectall" id="selectall"/></th>
+        <th>Term</th>
+        <th>Snomed Code</th>
+        <th>OPCS Code</th>
+        <th>Default Duration</th>
+        <th>Aliases</th>
+        <th>Has Benefits</th>
+        <th>Has Complications</th>
+        <th>Active</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+
+    foreach ($procedures as $key => $procedure) { ?>
+        <tr id="$key" class="clickable" data-id="<?php echo $procedure->id ?>"
+            data-uri="oeadmin/procedure/edit/<?php echo $procedure->id ?>?returnUri=">
+            <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
+            <td><?php echo $procedure->term ?></td>
+            <td><?php echo $procedure->snomed_code ?></td>
+            <td><?php echo implode(", ", array_map(function ($code) {
+                    return $code->name;
+                }, $procedure->opcsCodes)); ?>
+            </td>
+            <td><?php echo $procedure->default_duration ?></td>
+            <td><?php echo $procedure->aliases ?></td>
+            <td><?php echo implode(", ", array_map(function ($benefit) {
+                    return $benefit->name;
+                }, $procedure->benefits)); ?>
+            </td>
+            <td><?php echo implode(", ", array_map(function ($complication) {
+                    return $complication->name;
+                }, $procedure->complications)); ?>
+            </td>
+            <td>
+                <?php echo ($procedure->active) ?
+                    ('<i class="oe-i tick small"></i>') :
+                    ('<i class="oe-i remove small"></i>'); ?>
             </td>
         </tr>
-        </tfoot>
-    </table>
-</main>
+    <?php } ?>
+    </tbody>
+    <tfoot class="pagination-container">
+    <tr>
+        <td colspan="9">
+            <?php $this->widget(
+                'LinkPager',
+                ['pages' => $pagination]
+            ); ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>
