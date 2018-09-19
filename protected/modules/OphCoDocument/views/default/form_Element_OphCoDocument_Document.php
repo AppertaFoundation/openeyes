@@ -16,69 +16,107 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-    <?php echo $form->dropDownList($element, 'event_sub_type',
-        CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order' ), 'id', 'name'),
-        array(),
-        array(),
-        array(
-            'label' => 4,
-            'field' => 2,
-        )); ?>
-    <div class="data-group">
-        <div class="cols-8 column">
-            <label class="inline highlight">
-                <input type="radio" name="upload_mode" value="single" <?php if($element->single_document_id >0){echo "checked";}?>>Single file
-            </label>
-            <label class="inline highlight">
-                <input type="radio" name="upload_mode" value="double" <?php if($element->left_document_id > 0 || $element->right_document_id >0){echo "checked";}?>>Right/Left sides
-            </label>
-        </div>
-    </div>
-    <div id="single_document_uploader">
-        <div class="cols-8 column" id="single_document_id_row">
-            <?php $this->generateFileField($element, 'single_document'); ?>
-        </div>
-    </div>
-    <div id="double_document_uploader">
-        <div class="flex-layout flex-left">
-            <div class="cols-6 column">
-                <h2>RIGHT</h2>
+<div class="element-fields full-width flex-layout">
+    <div class="cols-11">
+        <table class="cols-6 last-left">
+            <tbody>
+            <tr>
+                <td>Event Sub Type</td>
+                <td>
+                    <?php echo $form->dropDownList($element, 'event_sub_type',
+                        CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
+                        array('nowrapper' => true),
+                        array(),
+                        array(
+                            'label' => 0,
+                            'field' => 2,
+                        )); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Upload</td>
+                <td>
+                    <label class="inline highlight ">
+                        <input type="radio" value="single"
+                               name="upload_mode" <?php if ($element->single_document_id > 0) {
+                            echo "checked";
+                        } ?>>Single file
+                    </label> <label class="inline highlight ">
+                        <input type="radio" name="upload_mode"
+                               value="double" <?php if ($element->left_document_id > 0 || $element->right_document_id > 0) {
+                            echo "checked";
+                        } ?>>Right/Left sides
+                    </label></td>
+            </tr>
+            </tbody>
+        </table>
+        <hr class="divider">
+        <div id="single_document_uploader">
+            <div class="cols-8 column" id="single_document_id_row">
+                <?php $this->generateFileField($element, 'single_document'); ?>
             </div>
-            <div class="cols-6 column">
-                <h2>LEFT</h2>
-            </div>
         </div>
-        <div class="flex-layout flex-left" id="double_document_uploader">
-            <div class="cols-6 column" id="right_document_id_row">
-                <?php $this->generateFileField($element, 'right_document'); ?>
-            </div>
-            <div class="cols-6 column" id="left_document_id_row">
-                <?php $this->generateFileField($element, 'left_document'); ?>
-            </div>
+        <div id="double_document_uploader" class="data-group">
+
+            <table class="last-left cols-full">
+                <thead>
+                <tr>
+                    <th>
+                        RIGHT
+                    </th>
+                    <th>
+                        LEFT
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="upload-box" id="right_document_id_row">
+                            <?php $this->generateFileField($element, 'right_document'); ?>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="upload-box" id="left_document_id_row">
+                            <?php $this->generateFileField($element, 'left_document'); ?>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div id="showUploadStatus" style="height:10px;color:#ffffff;font-size:8px;text-align:right;width:0px;background-color:#22b24c"></div>
-    <?php
+
+        <div id="showUploadStatus"
+             style="height:10px;color:#ffffff;font-size:8px;text-align:right;width:0px;background-color:#22b24c"></div>
+        <?php
         foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $index_key) {
-            if($element->{$index_key} > 0)
-            {
-                echo "<input type=\"hidden\" name=\"Element_OphCoDocument_Document[".$index_key."]\" id=\"Element_OphCoDocument_Document_".$index_key."\" value=\"".$element->{$index_key}."\">";
+            if ($element->{$index_key} > 0) {
+                echo "<input type=\"hidden\" name=\"Element_OphCoDocument_Document[" . $index_key . "]\" id=\"Element_OphCoDocument_Document_" . $index_key . "\" value=\"" . $element->{$index_key} . "\">";
             }
         }
-    ?>
-    <div class="upload-info" style="font-size:13px">
-        <span class="fa oe-i info small left" style="margin:3px 3px 0px 0px"></span> The following file types are accepted: <?php echo implode(', ', $this->getAllowedFileTypes()); ?>
-        (Maximum size: <?=$this->getMaxDocumentSize();?> MB)
-    </div>
-    
-    <div style="padding-top:10px;">
-        <div class="cols-8 column">
-            <label style="font-weight:bold">Comments:</label>
-            <?php
-                echo $form->textArea($element, 'comment', array('rows' => '5', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false);
-            ?>
+        ?>
+        <div id="document-comments" data-comment-button="#document_comment_button" class="cols-full js-comment-container"
+             style="<?php if($element->comment == null) echo 'display:none'?>">
+            <div class="comment-group flex-layout flex-left " style="padding-top:5px">
+                <?php
+                echo $form->textArea($element, 'comment', array('rows' => '1', 'class' => 'autosize cols-full column', 'nowrapper' => true), false, ['placeholder' => 'Comments']);
+                ?>
+                <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
+            </div>
+        </div>
+        <div class="data-group fade">
+            The following file types are accepted: <?php echo implode(', ', $this->getAllowedFileTypes()); ?> (Maximum
+            size: <?= $this->getMaxDocumentSize(); ?> MB)
         </div>
     </div>
-</div>
+    <div class="add-data-actions flex-item-bottom">
+        <button id="document_comment_button"
+                class="button js-add-comments"
+                data-comment-container="#document-comments"
+                type="button"
+                style="visibility:<?php if($element->comment != null) echo 'hidden'?>">
 
+            <i class="oe-i comments small-icon"></i>
+        </button>
+
+</div>
