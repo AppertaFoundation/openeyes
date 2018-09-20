@@ -84,10 +84,10 @@ $layoutColumns = array(
                     onReturn: function (adderDialog, selectedItems) {
                         var $table = $('.<?= $eye_side ?>-eye .procedures');
                         if (selectedItems.length) {
-                            for(let index in selected_items) {
+                            for(let index in selectedItems) {
                                 let selected_data = [];
-                                selected_data.id = selected_items[index]['id'];
-                                selected_data.term = selected_items[index]['label'];
+                                selected_data.id = selectedItems[index]['id'];
+                                selected_data.term = selectedItems[index]['label'];
                                 selected_data.eye_side = '<?=$eye_side?>';
                                 var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
                                 $table.find('tbody').append(form);
