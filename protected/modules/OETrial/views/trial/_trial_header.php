@@ -10,7 +10,7 @@ $editing = in_array($this->action->id, ['update', 'create'], true);
 <nav class="oe-full-header flex-layout">
   <div class="title wordcaps"><?= $title ?></div>
   <div>
-      <?php if ($editing): ?>
+      <?php if ($editing) { ?>
         <button class="button header-tab green" name="save" type="submit" form="trial-form">
             <?= $trial->getIsNewRecord() ? 'Create' : 'Save' ?>
         </button>
@@ -21,31 +21,32 @@ $editing = in_array($this->action->id, ['update', 'create'], true);
                   array('id' => $trial->id)),
               array('class' => 'button header-tab red')
           ) ?>
-      <?php else: ?>
-          <?php if (!$trial->getIsNewRecord()): ?>
+      <?php } else { ?>
+          <?php if ($permission && $permission->can_view && !$trial->getIsNewRecord()) { ?>
               <?= CHtml::link('View', $this->createUrl('view', array('id' => $trial->id)),
                   array('class' => 'button header-tab ' . ($this->action->id === 'view' ? 'selected' : ''))) ?>
-          <?php endif; ?>
-          <?= CHtml::link('Edit', $this->createUrl('update', array('id' => $trial->id)),
-              array('class' => 'button header-tab ' . ($editing ? 'selected' : ''))) ?>
-
-          <?php if ($permission && $permission->can_manage): ?>
-              <?php if ($trial->is_open): ?>
+          <?php } ?>
+          <?php if ($permission && $permission->can_edit) { ?>
+              <?= CHtml::link('Edit', $this->createUrl('update', array('id' => $trial->id)),
+                  array('class' => 'button header-tab ' . ($editing ? 'selected' : ''))) ?>
+          <?php } ?>
+          <?php if ($permission && $permission->can_manage) { ?>
+              <?php if ($trial->is_open) { ?>
                   <?= CHtml::link(
                       'Close Trial',
                       $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('close',
                           array('id' => $trial->id)),
                       array('class' => 'button header-tab red')
                   ) ?>
-              <?php else: ?>
+              <?php } else { ?>
                   <?= CHtml::link(
                       'Re-open Trial',
                       $trial->getIsNewRecord() ? $this->createUrl('index') : $this->createUrl('reopen',
                           array('id' => $trial->id)),
                       array('class' => 'button header-tab green')
                   ) ?>
-              <?php endif; ?>
-          <?php endif; ?>
-      <?php endif; ?>
+              <?php } ?>
+          <?php } ?>
+      <?php } ?>
   </div>
 </nav>

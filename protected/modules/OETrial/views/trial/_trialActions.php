@@ -11,9 +11,10 @@
             <?php echo CHtml::link('Add Participants',
                 $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))); ?>
         </li>
+        <li>
+          <a href="/csv/upload?context=trialPatients">Upload trial patients</a>
+        </li>
       <?php endif; ?>
-    <li>
-      <a href="/csv/upload?context=trialPatients">Upload trial patients</a></li>
     <li>
         <?php echo CHtml::link('Trial Permissions',
             $this->createUrl('permissions', array('id' => $trial->id))); ?>

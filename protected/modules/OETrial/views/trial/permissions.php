@@ -15,6 +15,12 @@
 
 <?= CHtml::hiddenField('trial_id', $trial->id, array('id' => 'trial-id')); ?>
 <div class="oe-full-content subgrid oe-worklists">
+
+    <?php $this->renderPartial('_trialActions', array(
+        'trial' => $trial,
+        'permission' => $permission,
+    )); ?>
+
   <main class="oe-full-main">
     <section class="element edit full cols-10">
       <div class="element-fields">
