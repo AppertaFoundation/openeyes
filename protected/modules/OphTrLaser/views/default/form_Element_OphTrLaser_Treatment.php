@@ -15,7 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/* exported OphTrLaser_Treatment_addProcedure */
 $lprocs = OphTrLaser_LaserProcedure::model()->with(array('procedure'))->findAll(array('order' => 'procedure.term asc'));
 $procs = array();
 foreach ($lprocs as $lproc) {
@@ -85,7 +84,14 @@ $layoutColumns = array(
                     onReturn: function (adderDialog, selectedItems) {
                         var $table = $('.<?= $eye_side ?>-eye .procedures');
                         if (selectedItems.length) {
-                            OphTrLaser_Treatment_addProcedure($table, selectedItems , '<?=$eye_side?>');
+                            for(let index in selected_items) {
+                                let selected_data = [];
+                                selected_data.id = selected_items[index]['id'];
+                                selected_data.term = selected_items[index]['label'];
+                                selected_data.eye_side = '<?=$eye_side?>';
+                                var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
+                                $table.find('tbody').append(form);
+                            }
                             return true;
                         } else {
                             return false;
