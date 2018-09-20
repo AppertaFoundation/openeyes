@@ -12,9 +12,7 @@
  * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
 
-<?php
 /* @var $this DefaultController */
 $this->breadcrumbs=array(
     $this->module->id,

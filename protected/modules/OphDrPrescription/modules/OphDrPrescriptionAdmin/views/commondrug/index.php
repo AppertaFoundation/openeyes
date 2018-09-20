@@ -12,27 +12,38 @@
  * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+?>
 
-$config = [
-    'params' => [
-/*        'admin_structure' => [
-            'Did Not Attend' => [
-                'Test' => [
-                    'module' => 'OphCiDidNotAttend',
-                    'uri' => '/OphCiDidNotAttend/admin/default/index',
-                ],
-            ],
-        ],*/
-    ],
+<div class="row divider">
+    <form>
+        <table class="cols-full"> <!-- adjust as necessary -->
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-4">
+                <col class="cols-1">
+                <col class="cols-4" span="2">
+            </colgroup>
+            <tbody>
+            <tr class="col-gap">
+                <td>Site:</td>
+                <td>
+                    <select name="search[active]" id="search_active">
+                        <option value="" selected="selected">All</option>
+                        <option value="1">Only Active</option>
+                        <option value="0">Exclude Active</option>
+                    </select>
 
-    'components' => [
-        'urlManager' => [
-            'rules' => [
-                'OphCiDidNotAttend/admin/<controller:\w+>/<action:\w+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
-                '<module:\w+>/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
-            ]
-        ]
-    ]
-];
+                </td>
+                <td>
+                    <button class="blue hint" name="save" formmethod="get" type="submit">Search</button>
+                </td>
+            </tr>
+            </tbody>
 
-return $config;
+        </table>
+
+    </form>
+
+</div>
+
+
