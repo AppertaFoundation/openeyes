@@ -14,6 +14,8 @@
  */
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-VA.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
+
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
     <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
     <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
@@ -34,29 +36,45 @@
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
-    OEScape.full_va_ticks = va_ticks;
-    var axis_index = 0;
-    optionsVA['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
-    optionsVA['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
-    <?php if ($widget_no == 1) {?>
-    optionsVA['chart']['height'] = 800;
-    <?php } ?>
-    var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
 
     var sides = ['left', 'right'];
-    var chart_VA = {};
-    var plotLines = {};
-    //Render the chart to get the size of the plot for tick pruning
-    for (var i in sides) {
-      optionsVA['xAxis']['plotLines'] = [];
-      plotLines[sides[i]] = [];
-      setMarkingEvents(optionsVA, opnote_marking, plotLines, sides[i]);
-      setMarkingEvents(optionsVA, laser_marking, plotLines, sides[i]);
-      chart_VA[sides[i]] = new Highcharts.chart('highcharts-VA-'+sides[i], optionsVA);
-      drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
-      cleanVATicks(va_ticks, optionsVA, chart_VA[sides[i]], axis_index);
+
+    //Plotly
+    var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+
+    var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
+
+
+    for (var side of sides){
+
+      layout_va_plotly['shapes'] = [];
+      layout_va_plotly['annotations'] = [];
+      setMarkingEvents_plotly(layout_va_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
+      setMarkingEvents_plotly(layout_va_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
+
+      var data =[{
+        name: 'VA('+side+')',
+        x: va_plotly[side]['x'].map(function (item) {
+          return new Date(item);
+        }),
+        y: va_plotly[side]['y'],
+        line: {
+          color: (side=='right')?'#9fec6d':'#fe6767',
+        },
+        text: va_plotly[side]['x'].map(function (item, index) {
+          return OEScape.toolTipFormatters_plotly.VA(new Date(item), va_plotly[side]['y'][index], 'VA('+side+')');
+        }),
+        hoverinfo: 'text',
+        type: 'line',
+      }];
+
+      layout_va_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
+      layout_va_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      Plotly.newPlot(
+        'highcharts-VA-'+side, data, layout_va_plotly, options_va_plotly
+      );
     }
   });
 </script>

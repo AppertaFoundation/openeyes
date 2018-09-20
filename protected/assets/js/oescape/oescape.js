@@ -67,6 +67,21 @@ var OEScape = {
         + series_name + ': ' + value;
     },
   },
+  toolTipFormatters_plotly: {
+    VA: function (x, y, series_name) {
+      var nearestTickIndex = 0;
+      var ticks = OEScape.full_va_ticks;
+      for (var ii = 0; ii < ticks.tick_position.length; ii++){
+        if(ticks.tick_position[ii] <= y){
+          nearestTickIndex = ii;
+        } else {
+          break;
+        }
+      }
+
+      return  x +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
+    }
+  },
   epochToDateStr: function(epoch){
     var date = new Date(epoch);
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
@@ -178,4 +193,23 @@ function setMarkingEvents(options, data, plotLines, side){
         }
       }
     }
+}
+
+function setMarkingEvents_plotly(layout, options, annotation, data, side){
+  for (var key in data[side]) {
+    for (var item of data[side][key]) {
+      var current_marker_line = Object.assign({}, options);
+      current_marker_line['x0'] = new Date(item);
+      current_marker_line['x1'] = new Date(item);
+      current_marker_line['line']['color'] = (side === 'right') ? '#9fec6d' : '#fe6767';
+      layout['shapes'].push(current_marker_line);
+
+
+      var current_annotation = Object.assign({}, annotation);
+      current_annotation['x']=new Date(item);
+      current_annotation['y']= 120;
+      current_annotation['text']=key;
+      layout['annotations'].push(current_annotation);
+    }
+  }
 }

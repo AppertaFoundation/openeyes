@@ -129,6 +129,32 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $va_data_list;
     }
 
+	public function getPlotlyVaData(){
+		$va_data_list = array('right'=>array(), 'left'=>array());
+		$va_plotly_list = array('right'=>array('x'=>array(), 'y'=>array()), 'left'=>array('x'=>array(), 'y'=>array()));
+		foreach ($this->event_type->api->getElements(
+			'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+			$this->patient,
+			false
+		) as $va) {
+			foreach (['left', 'right'] as $side){
+				if ($reading = $va->getBestReading($side)){
+					$va_value = $this->getAdjustedVA((float)$reading->value);
+					$va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
+				}
+			}
+		}
+		foreach (['left', 'right'] as $side){
+			usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+			foreach ($va_data_list[$side] as $item ){
+				$va_plotly_list[$side]['x'][] = $item['x'];
+				$va_plotly_list[$side]['y'][] = $item['y'];
+			}
+		}
+
+		return $va_plotly_list;
+	}
+
     public function getVaAxis() {
         return $this->va_axis;
     }
