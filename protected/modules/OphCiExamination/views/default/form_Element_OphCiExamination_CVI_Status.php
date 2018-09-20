@@ -24,7 +24,7 @@
                  id="<?= CHtml::modelName($element).'_cvi_status_id'?>"
                  name="<?= CHtml::modelName($element).'[cvi_status_id]' ?>"
                  type="hidden">
-          <span id="<?= CHtml::modelName($element).'_text'?> ">
+          <span id="<?= CHtml::modelName($element).'_text'?>">
               <?= isset($element->cviStatus)?$element->cviStatus->name:$latest_cvi_status ?>
           </span>
         </td>
