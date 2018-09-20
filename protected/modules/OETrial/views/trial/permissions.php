@@ -7,159 +7,156 @@
  */
 ?>
 
-<?php echo CHtml::hiddenField('trial_id', $trial->id, array('id' => 'trial-id')); ?>
+<?php $this->renderPartial('_trial_header', array(
+    'trial' => $trial,
+    'title' => CHtml::encode($trial->name),
+    'permission' => $permission,
+)); ?>
 
-<h1 class="badge">Trial Sharing</h1>
-<div class="row">
-  <div class="large-9 column">
+<?= CHtml::hiddenField('trial_id', $trial->id, array('id' => 'trial-id')); ?>
+<div class="oe-full-content subgrid oe-worklists">
+  <main class="oe-full-main">
+    <section class="element edit full cols-10">
+      <div class="element-fields">
 
-    <div class="box admin">
+        <table id="currentPermissions" class="standard">
+          <thead>
+          <tr>
+            <th>User</th>
+            <th>User Role</th>
+            <th>Permission</th>
+            <th><?= Trial::model()->getAttributeLabel('principle_investigator_user_id') ?></th>
+            <th><?= Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
+              <?php if ($permission && $permission->can_manage): ?>
+                <th></th>
+              <?php endif; ?>
+          </tr>
+          </thead>
+          <tbody>
+          <?php $this->widget('zii.widgets.CListView', array(
+              'id' => 'permissionList',
+              'dataProvider' => $permissionDataProvider,
+              'itemView' => '/userTrialPermission/_view',
+              'enablePagination' => false,
+              'summaryText' => false,
+          )); ?>
+          </tbody>
+          <tfoot class="pagination-container">
+          <tr>
+            <td colspan="6">
+              <div class="pagination">
+                  <?php
+                  $this->widget('LinkPager', array(
+                      'pages' => $permissionDataProvider->getPagination(),
+                      'maxButtonCount' => 15,
+                      'cssFile' => false,
+                      'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                      'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                      'htmlOptions' => array(
+                          'class' => 'pagination',
+                      ),
+                  ))
+                  ?>
+              </div>
+            </td>
+          </tr>
+          </tfoot>
+        </table>
 
-      <div class="row">
-        <div class="large-9 column">
-          <h1 style="display: inline">Users shared with <?php echo CHtml::encode($trial->name); ?></h1>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="large-9 column">
-          <table id="currentPermissions">
-            <thead>
-            <tr>
-              <th><?php echo Trial::model()->getAttributeLabel('principle_investigator_user_id') ?></th>
-              <th><?php echo Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
-              <th>User</th>
-              <th>User Role</th>
-              <th>Permission</th>
-                <?php if ($permission->can_manage): ?>
-                  <th>Actions</th>
-                <?php endif; ?>
-            </tr>
-            </thead>
-            <tbody>
-            <?php $this->widget('zii.widgets.CListView', array(
-                'id' => 'permissionList',
-                'dataProvider' => $permissionDataProvider,
-                'itemView' => '/userTrialPermission/_view',
-            )); ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-        <?php if ($permission->can_manage): ?>
-          <h2>Share with another user:</h2>
-          <div class="row field-row">
-            <div class="large-6 column">
-              <div class="row field-row">
-                <div class="large-3 column">
-                    <?php echo CHtml::activeLabel($newPermission, 'user'); ?>
-                </div>
-                <div class="large-6 column end">
-                    <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                        'name' => 'user_id',
-                        'id' => 'autocomplete_user_id',
-                        'source' => "js:function(request, response) {
+          <?php if ($permission && $permission->can_manage): ?>
+            <div class="cols-6">
+              <h3 class="element-title">Share with another user:</h3>
+              <table class="standard">
+                <colgroup>
+                  <col class="cols-2">
+                  <col class="cols-4">
+                </colgroup>
+                <tbody>
+                <tr>
+                  <td>
+                      <?= CHtml::activeLabel($newPermission, 'user'); ?>
+                  </td>
+                  <td>
+                      <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                          'name' => 'user_id',
+                          'id' => 'autocomplete_user_id',
+                          'source' => "js:function(request, response) {
                                         $.getJSON('" . $this->createUrl('userAutoComplete') . "', {
                                             id : $trial->id,
                                             term : request.term
                                         }, response);
                                 }",
-                        'options' => array(
-                            'select' => "js:function(event, ui) {
+                          'options' => array(
+                              'select' => "js:function(event, ui) {
                                         removeSelectedUser();
                                         addItem('selected_user_wrapper', ui);
                                         $('#autocomplete_user_id').val($('#user_name').text());
                                         return false;
                         }",
-                            'response' => 'js:function(event, ui){
+                              'response' => 'js:function(event, ui){
                             if(ui.content.length === 0){
-                                $("#no_user_result").show();
+                                $("#no-user-result").show();
                             } else {
-                                $("#no_user_result").hide();
+                                $("#no-user-result").hide();
                             }
                         }',
-                        ),
-                        'htmlOptions' => array(
-                            'placeholder' => 'search Users',
-                        ),
-                    )); ?>
-                </div>
+                          ),
+                          'htmlOptions' => array(
+                              'placeholder' => 'search Users',
+                          ),
+                      )); ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <?= CHtml::activeLabel($newPermission, 'role'); ?>
+                  </td>
+                  <td>
+                      <?= CHtml::activeTextField($newPermission, 'role',
+                          array('maxlength' => 255, 'name' => 'user_role')); ?>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <?= CHtml::activeLabel($newPermission, 'permission'); ?>
+                  </td>
+                  <td>
+                      <?= CHtml::dropDownList('permission', 'Select One...',
+                          CHtml::listData(TrialPermission::model()->findAll(), 'id', 'name'),
+                          array('id' => 'permission')) ?>
+
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <div id="selected_user_wrapper" style="<?= !$newPermission->user_id ? 'display: none;' : '' ?>">
+                <button class="secondary small js-save-permission">Share with
+                  <span id="user_name">
+                      <?= CHtml::encode($newPermission->user_id ? $newPermission->user->getFullName() : ''); ?>
+                      </span>
+                </button>
+                &nbsp;
+                <a href="javascript:void(0)" class="button event-action cancel small"
+                   onclick="removeSelectedUser()">Clear</a>
+                  <?= CHtml::hiddenField('user_id', $newPermission->user_id,
+                      array('class' => 'hidden_id')); ?>
               </div>
 
-              <div class="row field-row">
-                <div class="large-3 column">
-                    <?php echo CHtml::activeLabel($newPermission, 'role'); ?>
-                </div>
-                <div class="large-6 column end">
-                    <?php echo CHtml::activeTelField($newPermission, 'role',
-                        array('size' => 30, 'maxlength' => 255, 'name' => 'user_role')); ?>
-                </div>
+              <div class="alert-box info with-icon" id="no-user-result" style="display: none;">
+                Can't find the user you're looking for? They might not have the permission to view trials.
+                <br/>
+                Please contact an administrator and ask them to give that user the "View Trial" role.
               </div>
-              <div class="row field-row">
-                <div class="large-3 column">
-                    <?php echo CHtml::activeLabel($newPermission, 'permission'); ?>
-                </div>
-                <div class="large-6 column end">
-                    <?= CHtml::dropDownList('permission', 'Select One...',
-                        CHtml::listData(TrialPermission::model()->findAll(), 'id', 'name'),
-                        array('id' => 'permission')) ?>
-                </div>
-              </div>
-
-              <div class="row field-row">
-                <div id="selected_user_wrapper"
-                     class="large-8 column <?php echo !$newPermission->user_id ? 'hide' : '' ?>">
-                  <button class="secondary small btn_save_permission">Share with
-                    <span id="user_name">
-                      <?php echo CHtml::encode($newPermission->user_id ? $newPermission->user->getFullName() : ''); ?>
-                    </span>
-                  </button>
-                  &nbsp;
-                  <a href="javascript:void(0)" class="button event-action cancel small"
-                     onclick="removeSelectedUser()">Clear</a>
-                    <?php echo CHtml::hiddenField('user_id', $newPermission->user_id, array('class' => 'hidden_id')); ?>
-                </div>
-              </div>
-
             </div>
-          </div>
-
-          <div class="alert-box info with-icon">
-            Can't find the user you're looking for? They might not have the permission to view trials.
-            <br/>
-            Please contact an administrator and ask them to give that user the "View Trial" role.
-          </div>
-
-        <?php endif; ?>
-    </div>
-  </div>
-
-    <?php if ($permission->can_manage): ?>
-      <!-- Confirm permission deletion dialog (copied from allergy dialog)-->
-      <div id="confirm_remove_permission_dialog" title="Confirm remove permission" style="display: none;">
-        <div id="delete_permission">
-          <p>
-            <strong>Are you sure you want to proceed?</strong>
-          </p>
-          <div class="buttons">
-            <input type="hidden" id="remove_permission_id" value=""/>
-            <button type="submit" class="warning small btn_remove_permission">Remove permission</button>
-            <button type="submit" class="secondary small btn_cancel_remove_permission">Cancel</button>
-            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                 alt="loading..." style="display: none;"/>
-          </div>
-        </div>
+          <?php endif; ?>
       </div>
-    <?php endif; ?>
-
-    <?php $this->renderPartial('_trialActions', array(
-        'trial' => $trial,
-        'permission' => $permission,
-    )); ?>
+    </section>
+  </main>
 </div>
 
-<?php if ($permission->can_manage): ?>
+<?php if ($permission && $permission->can_manage): ?>
   <script type="text/javascript">
     function addItem(wrapper_id, ui) {
       var $wrapper = $('#' + wrapper_id);
@@ -187,9 +184,9 @@
         loader.show();
         $.ajax({
           'type': 'POST',
-          'url': '<?php echo $this->createUrl('trial/changePi'); ?>',
+          'url': '<?= $this->createUrl('trial/changePi'); ?>',
           'data': {
-            id: <?php echo $trial->id; ?>,
+            id: <?= $trial->id; ?>,
             user_id: user_id,
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
@@ -211,7 +208,7 @@
 
         $.ajax({
           'type': 'POST',
-          'url': '<?php echo $this->createUrl('trial/changeCoordinator'); ?>',
+          'url': '<?= $this->createUrl('trial/changeCoordinator'); ?>',
           'data': {
             id: $('#trial-id').val(),
             user_id: user_id,
@@ -228,7 +225,7 @@
         });
       });
 
-      $('button.btn_save_permission').click(function () {
+      $('.js-save-permission').click(function () {
 
         var user_id = $(this).siblings('#user_id').val();
         if (user_id == '') {
@@ -240,7 +237,7 @@
 
         $.ajax({
           'type': 'POST',
-          'url': '<?php echo $this->createUrl('addPermission'); ?>',
+          'url': '<?= $this->createUrl('addPermission'); ?>',
           'data': {
             id: $('#trial-id').val(),
             user_id: user_id,
@@ -249,11 +246,11 @@
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           'success': function (html) {
-            if (html === '<?php echo Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS; ?>') {
+            if (html === '<?= Trial::RETURN_CODE_USER_PERMISSION_ALREADY_EXISTS; ?>') {
               new OpenEyes.UI.Dialog.Alert({
                 content: "That user has already been shared to this trial. To change their permissions, please remove them first and try again."
               }).open();
-            } else if (html === '<?php echo Trial::RETURN_CODE_USER_PERMISSION_OK; ?>') {
+            } else if (html === '<?= Trial::RETURN_CODE_USER_PERMISSION_OK; ?>') {
               location.reload();
             } else {
               new OpenEyes.UI.Dialog.Alert({
@@ -273,42 +270,46 @@
       });
 
 
-      $('.removePermission').live('click', function () {
-        $('#remove_permission_id').val($(this).attr('rel'));
-
-        $('#confirm_remove_permission_dialog').dialog({
-          resizable: false,
-          modal: true,
-          width: 560
+      $('.js-remove-permission').on('click', function () {
+        var $container = $(this).closest('.js-user-trial-permission');
+        var permissionId = $container.data('permission-id');
+        var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
+          title: 'Remove User',
+          content: 'Are you sure you want to remove this user?'
         });
 
-        return false;
+        confirmDialog.content.on('click', '.ok', function () {
+          removePermission(permissionId);
+        });
+        confirmDialog.open();
       });
 
-      $('button.btn_remove_permission').click(function () {
-        $("#confirm_remove_permission_dialog").dialog("close");
-
-        var permission_id = $('#remove_permission_id').val();
+      function removePermission(permission_id) {
+        var $loader = $('#remove-permission-loader-' + permission_id);
+        $loader.css('visibility', 'visible');
 
         $.ajax({
           'type': 'POST',
-          'url': baseUrl + '<?php echo Yii::app()->controller->createUrl('/OETrial/trial/removePermission'); ?>',
+          'url': baseUrl + '<?= Yii::app()->controller->createUrl('/OETrial/trial/removePermission'); ?>',
           'data': {
             id: $('#trial-id').val(),
             permission_id: permission_id,
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
+          'complete': function (result) {
+            $loader.css('visibility', 'hidden');
+          },
           'success': function (result) {
-            if (result === '<?php echo Trial::REMOVE_PERMISSION_RESULT_SUCCESS; ?>') {
+            if (result === '<?= Trial::REMOVE_PERMISSION_RESULT_SUCCESS; ?>') {
               var row = $('#currentPermissions tr[data-permission-id="' + permission_id + '"]');
               row.hide('slow', function () {
                 row.remove();
               });
-            } else if (result === '<?php echo Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF; ?>') {
+            } else if (result === '<?= Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_SELF; ?>') {
               new OpenEyes.UI.Dialog.Alert({
                 content: "You can't remove yourself from this Trial.\n\nYou will have to get another user with Manage privileges to remove you."
               }).open();
-            } else if (result === '<?php echo Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST; ?>') {
+            } else if (result === '<?= Trial::REMOVE_PERMISSION_RESULT_CANT_REMOVE_LAST; ?>') {
               new OpenEyes.UI.Dialog.Alert({
                 content: "You can't remove the last user from the Trial.\n\nThere must always be at least one person assigned to a Trial."
               }).open();
@@ -324,13 +325,7 @@
             }).open();
           }
         });
-
-        $('button.btn_cancel_remove_permission').click(function () {
-          $("#confirm_remove_permission_dialog").dialog("close");
-          return false;
-        });
-      });
-
+      }
     });
   </script>
 <?php endif; ?>

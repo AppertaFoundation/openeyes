@@ -3,12 +3,14 @@
  * @var Trial $trial
  * @var TrialPermission $permission
  */
+
+$editing = in_array($this->action->id, ['update', 'create'], true);
 ?>
 
 <nav class="oe-full-header flex-layout">
   <div class="title wordcaps"><?= $title ?></div>
   <div>
-      <?php if (in_array($this->action->id, ['update', 'create'])): ?>
+      <?php if ($editing): ?>
         <button class="button header-tab green" name="save" type="submit" form="trial-form">
             <?= $trial->getIsNewRecord() ? 'Create' : 'Save' ?>
         </button>
@@ -25,9 +27,9 @@
                   array('class' => 'button header-tab ' . ($this->action->id === 'view' ? 'selected' : ''))) ?>
           <?php endif; ?>
           <?= CHtml::link('Edit', $this->createUrl('update', array('id' => $trial->id)),
-              array('class' => 'button header-tab ' . ($this->action->id !== 'view' ? 'selected' : ''))) ?>
+              array('class' => 'button header-tab ' . ($editing ? 'selected' : ''))) ?>
 
-          <?php if ($permission->can_manage): ?>
+          <?php if ($permission && $permission->can_manage): ?>
               <?php if ($trial->is_open): ?>
                   <?= CHtml::link(
                       'Close Trial',
