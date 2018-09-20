@@ -100,6 +100,7 @@ function populateLaserList(siteId) {
 	}
 }
 
+/* exported OphTrLaser_Treatment_addProcedure */
 function OphTrLaser_Treatment_addProcedure($table , selected_items , eye_side){
 	for(let index in selected_items) {
 		let selected_data = [];
