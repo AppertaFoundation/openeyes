@@ -110,7 +110,7 @@
 			</p>
 			<?php if (!empty($elements['Element_OphTrConsent_Procedure']->additional_procedures)) {?>
 				<p>Any extra procedures which may become necessary during the procedure(s)</p>
-				<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => $css_class, 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
+				<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
 			<?php }?>
 			<p>
 				I have also discussed what the procedure is likely to involve, the benefits and risks of any available alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this patient has the capacity to give valid consent.
