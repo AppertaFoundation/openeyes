@@ -61,12 +61,8 @@
             <table class="last-left cols-full">
                 <thead>
                 <tr>
-                    <th>
-                        RIGHT
-                    </th>
-                    <th>
-                        LEFT
-                    </th>
+                    <th>RIGHT</th>
+                    <th>LEFT</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,15 +82,16 @@
             </table>
         </div>
 
-        <div id="showUploadStatus"
-             style="height:10px;color:#ffffff;font-size:8px;text-align:right;width:0px;background-color:#22b24c"></div>
+        <!--<div id="showUploadStatus"
+             style="height:10px;color:#ffffff;font-size:8px;text-align:right;width:0px;background-color:#22b24c"></div>-->
+
         <?php
         foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $index_key) {
             if ($element->{$index_key} > 0) {
-                echo "<input type=\"hidden\" name=\"Element_OphCoDocument_Document[" .
-                    $index_key . "]\" id=\"Element_OphCoDocument_Document_" .
-                    $index_key . "\" value=\"" . $element->{$index_key} .
-                    "\">";
+                echo "<input type='hidden' name='Element_OphCoDocument_Document[" .
+                    $index_key . "]' id='Element_OphCoDocument_Document_" .
+                    $index_key . "' value='" . $element->{$index_key} .
+                    "'>";
             }
         }
         ?>

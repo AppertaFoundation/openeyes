@@ -1,9 +1,9 @@
 function checkUploadMode() {
-    if ($("input[name='upload_mode']:checked").val() == 'single') {
+    if ($("input[name='upload_mode']:checked").val() === 'single') {
         $('#single_document_uploader').show();
         $('#double_document_uploader').hide();
         clearUploadStatus();
-    } else if ($("input[name='upload_mode']:checked").val() == 'double') {
+    } else if ($("input[name='upload_mode']:checked").val() === 'double') {
         $('#single_document_uploader').hide();
         $('#double_document_uploader').show();
         clearUploadStatus();
@@ -13,6 +13,14 @@ function checkUploadMode() {
 function clearUploadStatus() {
     $('#showUploadStatus').width(0);
     $('#showUploadStatus').text('');
+}
+
+function setUploadStatusText(field, text) {
+    "use strict";
+
+    let $label = $(field).closest('.upload-box').find('.js-upload-box-text');
+    $label.text(text);
+    console.log("Set: " + text);
 }
 
 function allowDrop(ev) {
@@ -72,13 +80,13 @@ function validateFile(input) {
     return valid;
 }
 
-function documentUpload(field) {
+function documentUpload($field) {
     var formData;
     formData = new FormData($('#document-create')[0]);
 
-    if (!validateFile(field)) {
+/*    if (!validateFile($field)) {
         return false;
-    }
+    }*/
 
     $.ajax({
         url: '/OphCoDocument/Default/fileUpload',
@@ -86,7 +94,12 @@ function documentUpload(field) {
         xhr: function () {
             var myXhr = $.ajaxSettings.xhr();
             if (myXhr.upload) {
-                myXhr.upload.addEventListener('progress', showIMGProgress, false);
+                myXhr.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        let percentage = (evt.loaded / evt.total) * 100;
+                        setUploadStatusText($field, 'Uploading: ' + parseInt(percentage) + '%');
+                    }
+                }, false);
             }
             return myXhr;
         },
@@ -102,14 +115,13 @@ function documentUpload(field) {
         success: function (response) {
             if (response.s === 0) {
                 clearInputFile(response.index);
-                clearUploadStatus();
+                setUploadStatusText();
                 new OpenEyes.UI.Dialog.Alert({
                     content: response.msg
                 }).open();
             } else {
-                clearUploadStatus();
                 $.each(response, function (index, value) {
-                    filedata = field.val().split('.');
+                    filedata = $field.val().split('.');
                     extension = filedata[filedata.length - 1];
                     if ($('#Element_OphCoDocument_Document_' + index).length) {
                         $('#Element_OphCoDocument_Document_' + index).val(value);
@@ -130,18 +142,10 @@ function documentUpload(field) {
             alert(xhr.responseText);
         },
         complete: function () {
-
+            setUploadStatusText($field, 'Click to select file or DROP here');
         }
     });
 
-}
-
-function showIMGProgress(evt) {
-    if (evt.lengthComputable) {
-        var percentComplete = (evt.loaded / evt.total) * 100;
-        $('#showUploadStatus').text(parseInt(percentComplete) + "%");
-        $('#showUploadStatus').width(percentComplete * 9);
-    }
 }
 
 function generateViewToFile(res, index, value, filedata) {
