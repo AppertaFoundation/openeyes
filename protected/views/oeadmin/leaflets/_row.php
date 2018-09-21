@@ -19,7 +19,7 @@
         <?= CHtml::activeHiddenField(
             $data['leaflet'],
             "[" . $data['key'] . "]display_order",
-            ['class' => "js-display-order"]
+            ['class' => "js-display-order", 'value' => $data['key']]
         ); ?>
     </td>
     <td>

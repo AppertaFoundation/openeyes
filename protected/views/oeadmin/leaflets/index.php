@@ -34,9 +34,7 @@ $form = $this->beginWidget(
         <table class="standard cols-full" id="finding-table">
             <colgroup>
                 <col class="cols-1">
-                <col class="cols-4">
-                <col class="cols-4">
-                <col class="cols-1">
+                <col class="cols-5">
                 <col class="cols-1">
             </colgroup>
 
@@ -64,7 +62,7 @@ $form = $this->beginWidget(
                     <?php echo CHtml::htmlButton(
                         'Add',
                         [
-                            'class' => 'generic-admin-add small secondary button header-tab',
+                            'class' => 'small primary button',
                             'name' => 'admin-add',
                             'type' => 'button',
                             'data-model' => 'OphTrConsent_Leaflet',
@@ -118,10 +116,10 @@ $('#et_sort').on('click', function () {
 $('#et_admin-add').on('click', function () {
     $('#definition-list').attr('action', $(this).data('uri')).submit();
     let $table = $('#finding-table tbody');
-    let data = {
-        key: $table.find('tr').length
+    let $data = {
+        key: $table.find('tr').length,
     };
-    let tr = Mustache.render($('#finding-row-template').text(), data);
+    let tr = Mustache.render($('#finding-row-template').text(), $data);
     $table.append(tr);
 })
 </script>
