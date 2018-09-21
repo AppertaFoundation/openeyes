@@ -38,43 +38,38 @@
                 <td>
                     <label class="inline highlight ">
                         <input type="radio" value="single"
-                               name="upload_mode" <?php if ($element->single_document_id > 0) {
-                            echo "checked";
-                        } ?>>Single file
+                               name="upload_mode"
+                                <?=$element->single_document_id || (!$element->right_document_id && !$element->left_document_id) ? "checked" : "";?>
+                                <?=($element->left_document_id || $element->right_document_id ? ' disabled' : '')?>
+                        } ?> Single file
                     </label> <label class="inline highlight ">
                         <input type="radio" name="upload_mode"
-                               value="double" <?php if ($element->left_document_id > 0 || $element->right_document_id > 0) {
-                            echo "checked";
-                        } ?>>Right/Left sides
+                               value="double"
+                                <?=($element->left_document_id || $element->right_document_id ? "checked" : ""); ?>
+                                <?=($element->single_document_id ? " disabled" : "");?>
+                        } ?> Right/Left sides
                     </label></td>
             </tr>
             </tbody>
         </table>
         <hr class="divider">
-        <div id="single_document_uploader">
-            <div class="cols-12 column" id="single_document_id_row">
-                <?php $this->generateFileField($element, 'single_document'); ?>
-            </div>
-        </div>
-        <div id="double_document_uploader" class="data-group">
 
+        <div id="single_document_uploader" class="data-group js-document-upload-wrapper">
             <table class="last-left cols-full">
-                <thead>
-                <tr>
-                    <th>RIGHT</th>
-                    <th>LEFT</th>
-                </tr>
-                </thead>
+                <colgroup>
+                    <col class="cols-full">
+                </colgroup>
+                <thead></thead>
                 <tbody>
-                <tr>
+                <tr class="valign-top">
                     <td>
-                        <div class="upload-box" id="right_document_id_row">
-                            <?php $this->generateFileField($element, 'right_document'); ?>
+                        <div class="upload-box" id="single_document_id_row" <?=(!$element->single_document_id &&
+                        ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : '');?>>
+                            <?php $this->generateFileField($element, 'single_document'); ?>
                         </div>
-                    </td>
-                    <td>
-                        <div class="upload-box" id="left_document_id_row">
-                            <?php $this->generateFileField($element, 'left_document'); ?>
+
+                        <div class="flex-layout flex-right js-remove-document-wrapper" <?=(!$element->single_document_id ? 'style="display:none"' : '');?>>
+                            <button class="hint red">remove uploaded file</button>
                         </div>
                     </td>
                 </tr>
@@ -82,8 +77,44 @@
             </table>
         </div>
 
-        <!--<div id="showUploadStatus"
-             style="height:10px;color:#ffffff;font-size:8px;text-align:right;width:0px;background-color:#22b24c"></div>-->
+
+        <div id="double_document_uploader" class="data-group js-document-upload-wrapper"
+            <?=($element->left_document_id || $element->right_document_id ? '' : 'style="display:none"');?> >
+
+            <table class="last-left cols-full">
+                <colgroup>
+                    <col class="cols-half" span="2">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>RIGHT</th>
+                    <th>LEFT</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="valign-top">
+                    <td>
+                        <div class="upload-box" id="right_document_id_row">
+                            <?php $this->generateFileField($element, 'right_document'); ?>
+                        </div>
+                        <div class="flex-layout flex-right js-remove-document-wrapper"
+                            <?=($element->right_document_id ? '' : 'style="display:none"');?> >
+                            <button class="hint red">remove uploaded file</button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="upload-box" id="left_document_id_row">
+                            <?php $this->generateFileField($element, 'left_document'); ?>
+                        </div>
+                        <div class="flex-layout flex-right js-remove-document-wrapper"
+                            <?=($element->left_document_id ? '' : 'style="display:none"');?> >
+                            <button class="hint red">remove uploaded file</button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         <?php
         foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $index_key) {
