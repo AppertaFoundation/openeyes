@@ -124,19 +124,30 @@ class OETrial_ReportTrialCohort extends BaseReport
             $cols[] = $trial_patient->status->name;
 
             $diagnoses = array();
-            foreach ($trial_patient->patient->diagnoses as $diagnosis) {
-                $diagnoses[] = (string)$diagnosis;
+            foreach ($trial_patient->patient->getOphthalmicDiagnosesSummary() as $diagnosis) {
+                list($side, $name, $date) = explode('~', $diagnosis, 3);
+                $diagnoses[] = $name;
             }
-            foreach ($trial_patient->patient->systemic_diagnoses as $diagnosis) {
-                $diagnoses[] = $diagnosis->getDisplayDisorder();
+            foreach ($trial_patient->patient->systemicDiagnoses as $diagnosis) {
+                $diagnoses[] = $diagnosis->disorder->term;
             }
-            $cols[] = implode($diagnoses, ', ');
+            $cols[] = implode($diagnoses, '; ');
 
+            /* @var \OEModule\OphCiExamination\widgets\HistoryMedications $medicationsWidget */
+            $medicationsWidget = Yii::app()->getWidgetFactory()->createWidget($this,
+                \OEModule\OphCiExamination\widgets\HistoryMedications::class,
+                array(
+                    'patient' => $trial_patient->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+                ));
+
+            $medicationsWidget->init();
+            $medicationData = $medicationsWidget->getViewData();
             $medications = array();
-            foreach ($trial_patient->patient->medications as $medication) {
+            foreach($medicationData['current'] as $medication) {
                 $medications[] = $medication->getMedicationDisplay();
             }
-            $cols[] = implode($medications, ', ');
+            $cols[] = implode($medications, '; ');
 
             $rows[] = $cols;
         }
