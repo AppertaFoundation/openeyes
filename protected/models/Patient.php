@@ -55,6 +55,7 @@
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
+ * @property TrialPatient[] $trials
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses

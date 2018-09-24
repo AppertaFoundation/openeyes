@@ -24,12 +24,13 @@
  * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
  */
 
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -104,7 +105,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
 <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
+<div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
   <div class="situational-awareness flex-layout flex-left flex-top">
       <?php
       $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
@@ -182,7 +183,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="group">
         <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
           <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-          <span class="oe-date"> <?= \Helper::convertMySQL2NHS($this->cviStatus[1] )?></span>
+          <span class="oe-date"> <?= \Helper::convertMySQL2NHS($this->cviStatus[1]) ?></span>
         <?php } else { ?>
           <span class="data">CVI Status: NA</span>
         <?php } ?>
@@ -256,7 +257,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       <div class="group">
         <div class="label">Surgical History</div>
         <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class , array(
+            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
                 'patient' => $this->patient,
                 'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
@@ -293,7 +294,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- .flex-layout -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
+<div class="oe-patient-popup patient-popup-management" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -318,7 +319,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- flex -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
@@ -353,3 +354,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     </div><!-- .col-right -->
   </div><!-- .flex -->
 </div>
+
+<?php if(Yii::app()->getModule('OETrial')) { ?>
+<div class="oe-patient-popup patient-popup-trials" style="display: none;">
+  <div class="flex-layout flex-top">
+      <?php
+      $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(
+          'patient' => $this->patient,
+      ));
+      ?>
+  </div>
+</div>
+<?php } ?>

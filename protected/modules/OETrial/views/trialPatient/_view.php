@@ -47,9 +47,10 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
           array(
               'patient' => $data->patient,
               'layout' => 'list',
+              'list_mode' => true,
           )
       );
-      $patientPanel->render('PatientPanel_list');
+      $patientPanel->render('PatientPanel');
       ?>
   </td>
   <td> <!-- External Reference -->
