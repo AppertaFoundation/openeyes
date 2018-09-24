@@ -96,14 +96,26 @@ $this->pageTitle = 'Case Search';
                             )
                         );
                     $searchResults->pagerCssClass = 'oe-pager';
-                    $searchResults->renderPager();
+                    $pager = $this->createWidget('LinkPager',
+                        array(
+                            'pages' => $patients->getPagination(),
+                            'maxButtonCount' => 15,
+                            'cssFile' => false,
+                            'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                            'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                            'htmlOptions' => array(
+                                'class' => 'pagination',
+                            ),
+                        )
+                    );
+                    $pager->run();
                     ?>
                     <table id="case-search-results" class="cols-10">
                         <tbody class=" cols-full">
                         <?= $searchResults->renderItems(); ?>
                         </tbody>
                     </table>
-                    <?php $searchResults->renderPager();
+                    <?php $pager->run();
                 endif;
                 ?>
 
