@@ -96,6 +96,7 @@
                              }",
                             'options' => array(
                                 'minLength' => 2,
+                                'class' => 'cols-full',
                                 'select' => "js:function(event, ui) {
                                     var selectedLeafletId = ui.item.id;
                                     var type_id = -1;
@@ -237,6 +238,7 @@
                     'url': baseUrl + '/PatientTicketing/default/getFirmsForSubspecialty?subspecialty_id=' + subspecialty_id,
                     'success': function (html) {
                         $('#firm-id').replaceWith(html);
+                        $('#firm-id').addClass('cols-full');
                     }
                 });
             }
