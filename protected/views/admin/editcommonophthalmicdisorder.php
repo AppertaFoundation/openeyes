@@ -39,7 +39,7 @@
                 array(
                     'header' => 'Order',
                     'type' => 'raw',
-                    'value' => function($data, $row){
+                    'value' => function ($data, $row) {
                         return '<span>&uarr;&darr;</span>' .
                             CHtml::hiddenField("CommonOphthalmicDisorder[$row][id]", $data->id) .
                             CHtml::hiddenField("display_order[$row]", $data->display_order);
@@ -51,19 +51,19 @@
                     'name' => 'disorder.term',
                     'type' => 'raw',
                     'htmlOptions'=>array('width'=>'200px'),
-                    'value' => function($data, $row){
+                    'value' => function ($data, $row) {
                         $term = null;
-                        if($data->disorder){
+                        if ($data->disorder) {
                             $term = $data->disorder->term;
                         }
                         return CHtml::textField((get_class($data) . "[$row][disorder_id]"), $term, array(
                             'class' => 'diagnoses-search-autocomplete',
-                            'data-saved-diagnoses' => $data->disorder ? json_encode(array(
+                            'data-saved-diagnoses' => $data->disorder ? json_encode([
                                 'id' => $data->id,
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            )) : ''
+                            ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ));
                     }
                 ),
@@ -71,7 +71,7 @@
                     'header' => 'Group',
                     'name' => 'group.name',
                     'type' => 'raw',
-                    'value' => function($data,$row){
+                    'value' => function ($data, $row) {
                         $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAll(), 'id', 'name');
                         return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
                     }
@@ -80,7 +80,7 @@
                     'header' => 'Finding',
                     'name' => 'finding.name',
                     'type' => 'raw',
-                    'value' => function($data, $row){
+                    'value' => function ($data, $row) {
 
                         $finding_data = array(
                             'id' => isset($data->id) ? $data->id : null,
@@ -92,11 +92,11 @@
                             Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                         );
 
-                        $name_span = CHtml::tag('span',array('class' => 'finding-name name'), $finding_data['name']);
-                        $rename_span = CHtml::tag('span',array(
+                        $name_span = CHtml::tag('span', array('class' => 'finding-name name'), $finding_data['name']);
+                        $rename_span = CHtml::tag('span', array(
                             'class'=>"finding-display display",
                             'style'=>'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
-                        ),$remove_a . ' ' . $name_span);
+                        ), $remove_a . ' ' . $name_span);
 
                         $input = CHtml::textField("CommonOphthalmicDisorder[$row][finding_id]", $finding_data['name'], array(
                             'class' => 'finding-search-autocomplete finding-search-inputfield ui-autocomplete-input',
@@ -109,7 +109,6 @@
                         ));
 
                         return $rename_span . $input . $hidden_finding_input;
-
                     }
                 ),
                 array(
