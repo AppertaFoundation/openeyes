@@ -14,6 +14,9 @@
  */
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-MR.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js')?>"></script>
+
 
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
   <div id="highcharts-MR-right" class="highcharts-MR highcharts-right highchart-section"></div>
@@ -53,6 +56,7 @@
     options_MR['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
+
     var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
     var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
@@ -69,6 +73,42 @@
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
       cleanVATicks(va_ticks, options_MR, chart_MR[sides[i]], axis_index);
+    }
+
+
+    //plotly
+    var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+    var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
+
+
+    for (var side of sides){
+
+      layout_plotly['shapes'] = [];
+      layout_plotly['annotations'] = [];
+      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
+      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
+
+      var data =[{
+        name: 'VA('+side+')',
+        x: va_plotly[side]['x'].map(function (item) {
+          return new Date(item);
+        }),
+        y: va_plotly[side]['y'],
+        line: {
+          color: (side=='right')?'#9fec6d':'#fe6767',
+        },
+        text: va_plotly[side]['x'].map(function (item, index) {
+          return OEScape.toolTipFormatters_plotly.VA(new Date(item), va_plotly[side]['y'][index], 'VA('+side+')');
+        }),
+        hoverinfo: 'text',
+        type: 'line',
+      }];
+
+      layout_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
+      layout_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      Plotly.newPlot(
+        'highcharts-MR-'+side, data, layout_plotly, options_plotly
+      );
     }
   });
 </script>

@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-VA.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
 
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
@@ -36,6 +36,7 @@
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
+    OEScape.full_va_ticks = va_ticks;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
 
@@ -49,10 +50,10 @@
 
     for (var side of sides){
 
-      layout_va_plotly['shapes'] = [];
-      layout_va_plotly['annotations'] = [];
-      setMarkingEvents_plotly(layout_va_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
-      setMarkingEvents_plotly(layout_va_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
+      layout_plotly['shapes'] = [];
+      layout_plotly['annotations'] = [];
+      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 120);
+      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 120);
 
       var data =[{
         name: 'VA('+side+')',
@@ -69,11 +70,17 @@
         hoverinfo: 'text',
         type: 'line',
       }];
+      var yaxis_options = {
+        range: [-15, 150],
+        tickvals: va_plotly_ticks['tick_position'],
+        ticktext: va_plotly_ticks['tick_labels'],
+      };
+      layout_plotly['yaxis'] = setYAxis_VA(yaxis_options);
+      layout_plotly['height'] = 800;
+      layout_plotly['xaxis']['rangeslider'] = {};
 
-      layout_va_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
-      layout_va_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
       Plotly.newPlot(
-        'highcharts-VA-'+side, data, layout_va_plotly, options_va_plotly
+        'highcharts-VA-'+side, data, layout_plotly, options_plotly
       );
     }
   });
