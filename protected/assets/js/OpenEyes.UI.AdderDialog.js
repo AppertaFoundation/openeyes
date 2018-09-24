@@ -217,17 +217,18 @@
     var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect, 'data-id':itemSet.options.id});
 
     itemSet.items.forEach(function (item) {
+
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
       if(item.selected) {
         $listItem.addClass('selected');
       }
+
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
-
-    return $list;
+		return $list;
   };
 
   /**
@@ -271,7 +272,14 @@
    */
   AdderDialog.prototype.open = function () {
     this.popup.show();
-    this.positionFixedPopup(this.options.openButton);
+    var lists = this.popup.find('ul');
+    $(this.options.itemSets).each(function (index, itemSet) {
+    	/* Get the default value order and set the scroll value depends on index and each item height*/
+			var order = itemSet.getScrollIndex();
+    	lists[index].scrollTop = lists[index].firstChild.scrollHeight * order;
+		});
+
+		this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
     }
