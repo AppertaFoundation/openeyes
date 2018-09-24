@@ -96,8 +96,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     public $anaesthetist_required_ids = array();
 
-    const PRE_ASSESMENT_BOOKING_YES_VALUE = 'yes';
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -290,9 +288,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         $this->special_equipment = false;
-
-        $pre_assessment_booking_value = Yii::app()->params['pre_assessment_booking_default_value'];
-        $this->preassessment_booking_required = $pre_assessment_booking_value == self::PRE_ASSESMENT_BOOKING_YES_VALUE ? 1 : 0;
+        $this->preassessment_booking_required = Yii::app()->params['pre_assessment_booking_default_value'];
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
