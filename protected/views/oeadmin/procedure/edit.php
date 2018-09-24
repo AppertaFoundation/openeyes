@@ -14,7 +14,7 @@
  */
 ?>
 
-<h2>Edit Unique Codes</h2>
+<h2>Edit Procedure</h2>
 
 <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 <div class="cols-8">

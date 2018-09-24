@@ -65,59 +65,111 @@
     </form>
 </div>
 
-<table class="standard">
-    <thead>
-    <tr>
-        <th><input type="checkbox" name="selectall" id="selectall"/></th>
-        <th>Term</th>
-        <th>Snomed Code</th>
-        <th>OPCS Code</th>
-        <th>Default Duration</th>
-        <th>Aliases</th>
-        <th>Has Benefits</th>
-        <th>Has Complications</th>
-        <th>Active</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
 
-    foreach ($procedures as $key => $procedure) { ?>
-        <tr id="$key" class="clickable" data-id="<?php echo $procedure->id ?>"
-            data-uri="oeadmin/procedure/edit/<?php echo $procedure->id ?>?returnUri=">
-            <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
-            <td><?php echo $procedure->term ?></td>
-            <td><?php echo $procedure->snomed_code ?></td>
-            <td><?php echo implode(", ", array_map(function ($code) {
-                    return $code->name;
-                }, $procedure->opcsCodes)); ?>
+<form id="admin_procedures" method="post">
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+
+    <table class="standard">
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="selectall" id="selectall"/></th>
+            <th>Term</th>
+            <th>Snomed Code</th>
+            <th>OPCS Code</th>
+            <th>Default Duration</th>
+            <th>Aliases</th>
+            <th>Has Benefits</th>
+            <th>Has Complications</th>
+            <th>Active</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        foreach ($procedures as $key => $procedure) { ?>
+            <tr id="$key" class="clickable" data-id="<?php echo $procedure->id ?>"
+                data-uri="oeadmin/procedure/edit/<?php echo $procedure->id ?>?returnUri=">
+                <td>
+                    <!--<input type="checkbox" name="[$key]select" id="[$key]select"/>-->
+                    <input type="checkbox" name="select[]" value="<?php echo $procedure->id ?>" id="select[<?=$procedure->id ?>]"/>
+                </td>
+                <td><?php echo $procedure->term ?></td>
+                <td><?php echo $procedure->snomed_code ?></td>
+                <td><?php echo implode(", ", array_map(function ($code) {
+                        return $code->name;
+                    }, $procedure->opcsCodes)); ?>
+                </td>
+                <td><?php echo $procedure->default_duration ?></td>
+                <td><?php echo $procedure->aliases ?></td>
+                <td><?php echo implode(", ", array_map(function ($benefit) {
+                        return $benefit->name;
+                    }, $procedure->benefits)); ?>
+                </td>
+                <td><?php echo implode(", ", array_map(function ($complication) {
+                        return $complication->name;
+                    }, $procedure->complications)); ?>
+                </td>
+                <td>
+                    <?php echo ($procedure->active) ?
+                        ('<i class="oe-i tick small"></i>') :
+                        ('<i class="oe-i remove small"></i>'); ?>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="4">
+                <?php echo CHtml::button(
+                    'Delete procedure',
+                    [
+                        'class' => 'button large disabled',
+                        'data-uri' => '/oeadmin/procedure/delete',
+                        'type' => 'submit',
+                        'name' => 'delete',
+                        'data-object' => 'procedures',
+                        'id' => 'et_delete',
+                        'disabled' => true,
+                    ]
+                ); ?>
             </td>
-            <td><?php echo $procedure->default_duration ?></td>
-            <td><?php echo $procedure->aliases ?></td>
-            <td><?php echo implode(", ", array_map(function ($benefit) {
-                    return $benefit->name;
-                }, $procedure->benefits)); ?>
-            </td>
-            <td><?php echo implode(", ", array_map(function ($complication) {
-                    return $complication->name;
-                }, $procedure->complications)); ?>
-            </td>
-            <td>
-                <?php echo ($procedure->active) ?
-                    ('<i class="oe-i tick small"></i>') :
-                    ('<i class="oe-i remove small"></i>'); ?>
+            <td colspan="9">
+                <?php $this->widget(
+                    'LinkPager',
+                    ['pages' => $pagination]
+                ); ?>
             </td>
         </tr>
-    <?php } ?>
-    </tbody>
-    <tfoot class="pagination-container">
-    <tr>
-        <td colspan="9">
-            <?php $this->widget(
-                'LinkPager',
-                ['pages' => $pagination]
-            ); ?>
-        </td>
-    </tr>
-    </tfoot>
-</table>
+        </tfoot>
+    </table>
+</form>
+
+<script>
+    $(document).ready(function () {
+
+        /**
+         * Deactivate button when no checkbox is selected.
+         * Change button text to "Procedures" when more than one procedure is selected
+         */
+        $(this).on('change', $('input[type="checkbox"]'), function (e) {
+            var checked_boxes = $('#admin_procedures').find('table.standard tbody input[type="checkbox"]:checked');
+
+            if (checked_boxes.length <= 0) {
+                $('#et_delete').attr({
+                    disabled: true,
+                    value: 'Delete Procedure'
+                }).addClass('disabled');
+            } else if (checked_boxes.length == 1) {
+                $('#et_delete').attr({
+                    disabled: false,
+                    value: 'Delete Procedure'
+                }).removeClass('disabled');
+            } else if (checked_boxes.length > 1) {
+                $('#et_delete').attr({
+                    value: 'Delete Procedures'
+                });
+            }
+        });
+    });
+</script>

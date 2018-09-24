@@ -175,11 +175,32 @@ class ProcedureController extends BaseAdminController
     }
 
     /**
-     * Deletes rows for the model.
+     * Deletes rows from the model.
      */
     public function actionDelete()
     {
-        $admin = new Admin(Procedure::model(), $this);
-        $admin->deleteModel();
+        $procedures = \Yii::app()->request->getPost('select', []);
+
+        foreach ($procedures as $procedure_id) {
+            $procedure = Procedure::model()->findByPk($procedure_id);
+
+            if ($procedure) {
+                $procedure->specialties = [];
+                $procedure->subspecialtySubsections = [];
+                $procedure->opcsCodes = [];
+                $procedure->additional = [];
+                $procedure->benefits = [];
+                $procedure->complications = [];
+
+                try {
+                    $procedure->save();
+                    $procedure->delete();
+                } catch (Exception $e) {
+                    echo "error";
+                    return;
+                }
+            }
+        }
+        echo 1;
     }
 }
