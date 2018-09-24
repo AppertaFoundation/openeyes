@@ -35,18 +35,16 @@ if (!isset($values)) {
 ?>
 
 <tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
-    <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
-        <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
-        <span class="js-other-allergy">
+    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
+			<input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+			<input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
+			<span class="js-other-allergy">
             <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off'));?>
         </span>
-        <span class="js-not-other-allergy">
+			<span class="js-not-other-allergy">
             <?= $values['allergy_display'];?>
         </span>
-        <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
-    </td>
-    <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
+			<input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
         <?php if ($removable) {
             if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
@@ -84,30 +82,29 @@ if (!isset($values)) {
         </label>
       <?php } ?>
   </td>
-  <td>
-    <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
-            class="button js-add-comments"
-            data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-            type="button"
-            style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-    >
-      <i class="oe-i comments small-icon"></i>
-    </button>
+	<td>
     <span class="comment-group js-comment-container"
-          id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
-          style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-          data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+					id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+					style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+					data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
                   <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
-                      'class' => 'js-comment-field',
-                      'autocomplete' => 'off',
-                  )) ?>
-            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+										'class' => 'js-comment-field',
+										'autocomplete' => 'off',
+									)) ?>
+			<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
         </span>
-    </td>
+		<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+						class="button js-add-comments"
+						data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+						type="button"
+						style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+		>
+			<i class="oe-i comments small-icon"></i>
+		</button>
+	</td>
 
 
     <?php if ($removable) : ?>
-      <td></td>
       <td><i class="oe-i trash"></i></td>
     <?php else : ?>
         <td>
@@ -115,7 +112,6 @@ if (!isset($values)) {
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="<?= $values['allergy_display'] . " is mandatory to collect."; ?>"></i>
         </td>
-        <td></td>
     <?php endif; ?>
 
 </tr>

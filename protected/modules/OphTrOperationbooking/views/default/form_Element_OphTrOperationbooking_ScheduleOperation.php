@@ -51,7 +51,6 @@
                             'unavailable' => $unavailable,
                             'form' => $form,
                             'element_name' => get_class($element),
-                            'dateFieldWidget' => 'TextField',
                         ));
                         ++$key;
                     }
@@ -63,17 +62,6 @@
         <button class="button hint green addUnavailable"><i class="oe-i plus pro-theme "></i></button>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.unavailables').find('[id$="date"]').each(function () {
-            pickmeup('#' + this.getAttribute('id'), {
-                format: 'd b Y',
-                hide_on_select: true,
-                default_date: false
-            });
-        });
-    });
-</script>
 <script id="intraocularpressure_reading_template" type="text/html">
     <?php
     $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
