@@ -154,7 +154,11 @@ foreach ($this->patient->episodes as $ep) {
         openButton: $('#add-ophthalmic-diagnoses'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
-                return ['label' => $disorder_item['label'], 'id' => $disorder_item['id']];
+                return [
+                        'label' => $disorder_item['label'],
+                    'id' => $disorder_item['id'] ,
+                    'secondary' => json_encode($disorder_item['secondary'])
+                ];
             }, $disorder_list)
         ) ?>, {'multiSelect': true})],
         searchOptions: {
