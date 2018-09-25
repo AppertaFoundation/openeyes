@@ -128,15 +128,6 @@ $form = $this->beginWidget(
             </td>
         </tr>
         <tr>
-            <td>Clinically trained</td>
-            <td><?php echo CHtml::activeRadioButtonList(
-                    $user,
-                    'is_clinical',
-                    [1 => 'Yes', 0 => 'No'],
-                    ['separator' => ' ']
-                ); ?></td>
-        </tr>
-        <tr>
             <td>Consultant</td>
             <td><?php echo CHtml::activeRadioButtonList(
                     $user,
