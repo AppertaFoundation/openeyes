@@ -15,7 +15,7 @@ class m180918_042840_optic_disc_additional_options extends OEMigration
             'display_order' => '50'
         ));
         $this->insert('ophciexamination_opticdisc_lens', array(
-            'name' => 'Digital WideFfield',
+            'name' => 'Digital WideField',
             'display_order' => '60'
         ));
         $this->insert('ophciexamination_opticdisc_lens', array(
@@ -28,7 +28,7 @@ class m180918_042840_optic_disc_additional_options extends OEMigration
     {
         $this->delete('ophciexamination_opticdisc_lens', 'name = \'Superfield\'');
         $this->delete('ophciexamination_opticdisc_lens', 'name = \'Super 66D\'');
-        $this->delete('ophciexamination_opticdisc_lens', 'name = \'Digital WideFfield\'');
+        $this->delete('ophciexamination_opticdisc_lens', 'name = \'Digital WideField\'');
         $this->delete('ophciexamination_opticdisc_lens', 'name = \'Digital High Mag\'');
     }
 
