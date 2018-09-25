@@ -82,7 +82,11 @@
             foreach ($benefits as $key => $benefit) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $benefit->id ?>"
                     data-uri="oeadmin/benefit/edit/<?php echo $benefit->id ?>?returnUri=">
-                    <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
+                    <td>
+                        <?php if ($this->isBenefitDeletable($benefit)) : ?>
+                            <input type="checkbox" name="select[]" value="<?php echo $benefit->id ?>" id="select[<?=$benefit->id ?>]"/>
+                        <?php endif; ?>
+                    </td>
                     <td><?php echo $benefit->id ?></td>
                     <td><?php echo $benefit->name ?></td>
                     <td>
@@ -113,7 +117,7 @@
                             'name' => 'delete',
                             'type' => 'submit',
                             'data-object' => 'benefit',
-                            'data-uri' => '/oeadmin/benefit/list',
+                            'data-uri' => '/oeadmin/benefit/delete',
                             'id' => 'et_delete'
                         ]
                     ); ?>

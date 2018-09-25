@@ -107,11 +107,38 @@ class BenefitController extends BaseAdminController
     }
 
     /**
+     * @param Benefit $benefit - benefit to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given benefit
+     */
+    protected function isBenefitDeletable(Benefit $benefit)
+    {
+        $check_dependencies = 1;
+
+        $options = [':id' => $benefit->id];
+        $check_dependencies &= !ProcedureBenefit::model()->count('benefit_id = :id', $options);
+
+        return $check_dependencies;
+    }
+
+
+    /**
      * Deletes rows for the model.
      */
     public function actionDelete()
     {
-        $admin = new Admin(Benefit::model(), $this);
-        $admin->deleteModel();
+        $benefits = \Yii::app()->request->getPost('select', []);
+
+        foreach ($benefits as $benefit_id) {
+            $benefit = Benefit::model()->findByPk($benefit_id);
+
+            if ($this->isBenefitDeletable($benefit)) {
+                if (!$benefit->delete()) {
+                    echo 'Could not delete benefit with id: ' . $benefit_id . '.\n';
+                }
+            } else {
+                echo 'Benefit with id ' . $benefit_id .' cannot be deleted. Other tables depend on it.\n';
+            }
+        }
+        echo 1;
     }
 }
