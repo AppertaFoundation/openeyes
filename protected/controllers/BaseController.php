@@ -120,7 +120,16 @@ class BaseController extends Controller
         // Set AssetManager properties.
         $assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
-
+        if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])){
+            $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3.0_print.css';
+            $newparams =
+                array_merge_recursive(
+                    Yii::app()->getParams()->toArray(),
+                    array('tinymce_default_options' => array('content_css' => $print_css_path))
+                );
+            Yii::app()->setParams($newparams);
+        }
         //FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
         // to render the HTML template for the TCPDF engine)
