@@ -260,25 +260,29 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     'disorder_id' => $diagnosis->disorder->id,
                     'principal' => $diagnosis->principal,
                     'date' => \Helper::convertDate2NHS($diagnosis->date),
-                    'laterality' => mb_strtoupper($diagnosis->eye->adjective).' ',
+                    'laterality' => mb_strtoupper($diagnosis->eye->adjective) . ' ',
                     'term' => $diagnosis->disorder->term
                 );
             }
         }
 
         //check disorders for alternate texts
-        if($subspecialty){
+        if ($subspecialty) {
             $disorder_alt_texts = $this->getSecondaryDiagnosisLetterTexts(
                 $subspecialty,
                 array_column($table_vals, 'disorder_ids')
             );
             //replace text
-            foreach ($table_vals as $id => $disorder){
+            foreach ($table_vals as $id => $disorder) {
                 //principal diagnoses don't get their text changed
-                if($disorder['principal'] == 1){continue;}
-                if(!isset($disorder['disorder_id'])){continue;}
+                if ($disorder['principal'] == 1) {
+                    continue;
+                }
+                if (!isset($disorder['disorder_id'])) {
+                    continue;
+                }
 
-                if (array_key_exists($disorder['disorder_id'], $disorder_alt_texts)){
+                if (array_key_exists($disorder['disorder_id'], $disorder_alt_texts)) {
                     $table_vals[$id]['term'] = $disorder_alt_texts[$disorder['disorder_id']]['text'];
                 }
             }
@@ -304,16 +308,18 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //check further findings for alternate texts
-        if($subspecialty){
+        if ($subspecialty) {
             $finding_alt_texts = $this->getSecondaryDiagnosisFindingLetterTexts(
                 $subspecialty,
                 array_column($table_vals, 'finding_ids')
             );
             //replace text
-            foreach ($table_vals as $id => $finding){
-                if(!isset($finding['finding_id'])){continue;}
+            foreach ($table_vals as $id => $finding) {
+                if (!isset($finding['finding_id'])) {
+                    continue;
+                }
 
-                if (array_key_exists($finding['finding_id'], $finding_alt_texts)){
+                if (array_key_exists($finding['finding_id'], $finding_alt_texts)) {
                     $table_vals[$id]['term'] = $finding_alt_texts[$finding['finding_id']]['text'];
                 }
             }
@@ -327,7 +333,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             foreach ($table_vals as $val):?>
                 <tr>
                     <td><?= $val['date'] ?></td>
-                    <td><?= @$val['principal']?'Principal: ':''?><?= $val['laterality'].$val['term'] ?></td>
+                    <td><?= @$val['principal'] ? 'Principal: ' : '' ?><?= $val['laterality'] . $val['term'] ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -367,7 +373,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                              array($disorder_id, $subspecialty->id)
                          ) as $secto_disorder
             ) {
-                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == ""){continue;}
+                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
+                    continue;
+                }
                 $result[$disorder_id] = $secto_disorder->letter_macro_text;
             }
         }
@@ -375,7 +383,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return $result;
     }
 
-     /**
+    /**
      * Finds alternate letter macro text for findings depending on subspecialty
      * @param $subspecialty \Subspecialty
      * @param $finding_ids array(int)
@@ -394,7 +402,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                              array($finding_id, $subspecialty->id)
                          ) as $secto_disorder
             ) {
-                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == ""){continue;}
+                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
+                    continue;
+                }
                 $result[$finding_id] = $secto_disorder->letter_macro_text;
             }
         }
