@@ -2233,10 +2233,11 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    /*
+    /**
      * Examination diagnoses and findings
      * @param $patient
      * @param $use_context
+     * @var $diag models\Element_OphCiExamination_Diagnoses
      */
     public function getLetterDiagnosesAndFindings($patient, $use_context = false)
     {
@@ -2248,7 +2249,7 @@ class OphCiExamination_API extends \BaseAPI
             return $diag->letter_string;
         }
 
-        return;
+        return '[No diagnoses in latest event]';
     }
 
     /**
