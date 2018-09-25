@@ -70,36 +70,32 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             controller.removeDocument($(this).data('side'));
         });
 
-
-
         window.addEventListener("paste", function (event) {
 
             var files = event.clipboardData.files;
             if (files[0] && files[0].type.includes("image")) {
 
                     if ($("input[name='upload_mode']:checked").val() === 'double') {
-                        var dialog = $('<h2 class="text-center">Do you want to upload left or right document ?</h2>').data('files', files).dialog({
-                            buttons: [
-                                {
-                                    'text': 'Right(R)',
-                                    click: function () {
-                                        controller.paste("right", files);
-                                        $(this).dialog("close");
-                                    }
-                                },
-                                {
-                                    'text': 'Left(L)',
-                                    click: function () {
-                                        controller.paste("left", files);
-                                        $(this).dialog("close");
-                                    }
-                                },
-                            ],
-                            close: function () {
-                                $(window).unbind(event);
-                            }
 
-                        }, event);
+                        let dialog = new OpenEyes.UI.Dialog({
+                            content: $($('#side-selector-popup').html()),
+                            title: "Do you want to upload right or left document ?",
+
+                            onOpen: function(e) {
+                                let dialog = this;
+                                dialog.content.on("click", ".js-side-picker", function() {
+                                    let side = $(this).data("side");
+
+                                    controller.paste(side, files);
+                                    dialog.close();
+                                });
+                            },
+                            onClose: function() {
+                                this.destroy();
+                            }
+                        });
+                        dialog.open();
+
                         $(window).on('keypress', function (event) {
 
                             if (event.key === 'l' || event.key === 'L') {
@@ -138,7 +134,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         $td.find('.js-remove-document-wrapper').hide();
         $(controller.options.uploadModeSelector).attr('disabled', false);
 
-        /* OK, so we cannot clear the file inputs vale ? */
         $td.find(controller.options.fileInputSelector).val("");
         //$td.find(controller.options.fileInputSelector).prop('files', null);
         //$file_input.replaceWith($file_input.val("").clone(true));
@@ -147,7 +142,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
     };
 
     DocumentUploadController.prototype.paste = function (side, files) {
-
         let controller = this;
         let $input = $("#Document_" + side + "_document_row_id");
 

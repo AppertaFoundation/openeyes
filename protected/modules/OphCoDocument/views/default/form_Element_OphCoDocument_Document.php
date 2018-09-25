@@ -192,3 +192,19 @@
         </button>
 
     </div>
+
+    <script type="text/template" id="side-selector-popup">
+        <table>
+            <colgroup>
+                <col class="cols-6">
+                <col class="cols-6">
+            </colgroup>
+            <tbody>
+                <tr class="col-gap">
+                    <td><button id="right-select-button" data-side="right" class="js-side-picker large cols-full">Right (R)</button></td>
+                    <td><button id="left-select-button" data-side="left" class="js-side-picker large cols-full">Left (L)</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </script>
+
