@@ -129,7 +129,6 @@ class BaseController extends Controller
                     array('tinymce_default_options' => array('content_css' => $print_css_path))
                 );
             Yii::app()->setParams($newparams);
-            \Yii::log(var_export(Yii::app()->getParams()->toArray()['tinymce_default_options'],true));
         }
         //FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
