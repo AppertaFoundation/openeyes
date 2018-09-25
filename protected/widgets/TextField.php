@@ -18,6 +18,7 @@
 class TextField extends BaseFieldWidget
 {
     public $links = array();
+    public $options; // Unused so far, but necessary for interoperability with DatePicker
 
     public function init()
     {
