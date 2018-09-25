@@ -18,10 +18,10 @@
 ?>
 <div class="print-form-div <?php echo $css_class?>">
 	<?php $this->renderPartial('_consent_header')?>
-	<div class="form-title1">
-		<h2>Consent form 3</h2>
-		<h2><?php echo $this->patient->fullName?>, Hospital no: <?php echo $this->patient->hos_num?></h2>
-	</div>
+	<h1 class="print-title">
+		Consent form 3<br/>
+		<?php echo $this->patient->fullName?>, Hospital no: <?php echo $this->patient->hos_num?>
+	</h1>
 	<h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
 	<p>
 		<strong>Procedure(s):</strong>
@@ -46,16 +46,19 @@
 	</p>
 	<?php if (!empty($elements['Element_OphTrConsent_Procedure']->additional_procedures)) {?>
 		<p>Any extra procedures which may become necessary during the procedure(s):</p>
-		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => $css_class, 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
+		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->additional_procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
 	<?php }?>
 	<p>
 		I have also discussed what the procedure is likely to involve, the benefits and risks of any available alternative treatments (including no treatment) and any particular concerns of those involved.
 	</p>
-	<p>
-		[<?php if ($elements['Element_OphTrConsent_Other']->information) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] The following informational leaflets have been provided: .............................................<br/>
-	</p>
+    <div class="group flex-layout">
+                <span class="nowrap">
+                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->information ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <span class="dotted-write"></span>
+                </span>
+    </div>
 	<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant))?>
-	<div class="pageBreak">
+    <div class="break"></div>
 		<?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) {?>
 			<h3>Statement of interpreter</h3>
 			<p>
@@ -73,5 +76,4 @@
 		</p>
 		<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant, 'mask_consultant' => true))?>
 		<h3>Top copy accepted by patient: yes/no <span class="noth3">(please ring)</span></h3>
-	</div>
 </div>

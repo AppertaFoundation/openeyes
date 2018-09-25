@@ -19,33 +19,53 @@
 <?php if (@$vi) {?>
 	<table>
 		<tr>
-			<td>Signed:............................</td>
-			<td>Date:...............................</td>
+			<td>Signed:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<?php if (@$address) {?>
 			<tr>
-				<td colspan="2">Address (if not the same as patient):.................................................................................................</td>
+				<td colspan="2">Address (if not the same as patient):
+                    <div class="dotted-write"></div>
+                </td>
 			</tr>
 		<?php }?>
 		<tr>
-			<td>Name (PRINT):.............................................</td>
-			<td>Relationship to patient:..........................</td>
+			<td>Name (PRINT):
+                <div class="dotted-write"></div>
+            </td>
+			<td>Relationship to patient:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 	</table>
 <?php } else {?>
 	<table>
 		<tr>
-			<td>Signed:.............................................</td>
-			<td>Date:......................................................</td>
+			<td>Signed:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<?php if (@$address) {?>
 			<tr>
-				<td colspan="2">Address (if not the same as patient):......................................................................</td>
+				<td colspan="2">Address (if not the same as patient):
+                    <div class="dotted-write"></div>
+                </td>
 			</tr>
 		<?php }?>
 		<tr>
-			<td>Name (PRINT):.................................</td>
-			<td>Relationship to patient:..........................</td>
+			<td>Name (PRINT):
+                <div class="dotted-write"></div>
+            </td>
+			<td>Relationship to patient:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 	</table>
 <?php }?>
