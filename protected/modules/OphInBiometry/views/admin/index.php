@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
@@ -8,22 +8,24 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<?php if (!$event_logs) : ?>
+
+
+<?php if (!$lensType_lens) : ?>
     <div class="row divider">
         <div class="alert-box issue"><b>No results found</b></div>
     </div>
 <?php endif; ?>
 
 <div class="row divider cols-9">
-    <form id="event_log_search" method="post">
+    <form id="procedures_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="cols-full">
             <colgroup>
@@ -39,16 +41,19 @@
                         $search['query'],
                         [
                             'class' => 'cols-full',
-                            'placeholder' => "Event Id, Unique Code, Examination Date"
+                            'placeholder' => "ID, Name, Display name, Description, A constant"
                         ]
                     ); ?>
                 </td>
                 <td>
                     <?= \CHtml::dropDownList(
-                        'search[status_value]',
-                        $search['status_value'],
-                        CHtml::listData($statuses, 'id', 'status_value'),
-                        ['empty' => '-All-']
+                        'search[active]',
+                        $search['active'],
+                        [
+                            1 => 'Only Active',
+                            0 => 'Exclude Active',
+                        ],
+                        ['empty' => 'All']
                     ); ?>
                 </td>
                 <td>
@@ -62,47 +67,67 @@
     </form>
 </div>
 
-<form id="admin_eventLogs" method="post">
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
-    <div class="cols-9">
+<div class="cols-9">
+    <form id="admin_lensTypes" method="post">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+
         <table class="standard">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Event Id</th>
-                <th>Unique Code</th>
-                <th>Examination Date</th>
-                <th>Status Value</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Display name</th>
+                <th>Description</th>
+                <th>A constant</th>
+                <th>Active</th>
             </tr>
             </thead>
             <tbody>
             <?php
-            foreach ($event_logs as $key => $event) { ?>
-                <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
-                    data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
-                    <td><input type="checkbox" name="select[]" value="<?php echo $event->id ?>" id="select[<?=$event->id ?>]"/><td>
-                    <td><?php echo $event->event_id ?></td>
-                    <td><?php echo $event->unique_code ?></td>
-                    <td><?php echo $event->examination_date ?></td>
-                    <td><?php echo $event->import_status->status_value ?></td>
+            foreach ($lensType_lens as $key => $lens) { ?>
+                <tr id="$key" class="clickable" data-id="<?=$lens->id ?>"
+                    data-uri="OphInBiometry/lensTypeAdmin/edit/<?php echo $lens->id ?>?returnUri=">
+                    <td>
+                        <input type="checkbox" name="select[]" value="<?php echo $lens->id ?>" id="select[<?=$lens->id ?>]"/>
+                    </td>
+                    <td><?php echo $lens->id ?></td>
+                    <td><?php echo $lens->name ?></td>
+                    <td><?php echo $lens->display_name ?></td>
+                    <td><?php echo $lens->description ?></td>
+                    <td><?php echo $lens->acon ?></td>
+                    <td>
+                        <?php echo ($lens->active) ?
+                            ('<i class="oe-i tick small"></i>') :
+                            ('<i class="oe-i remove small"></i>'); ?>
+                    </td>
                 </tr>
             <?php } ?>
             </tbody>
-
             <tfoot class="pagination-container">
             <tr>
-                <td colspan="2">
+                <td colspan="4">
                     <?php echo CHtml::button(
-                        'Delete',
+                        'Add',
                         [
-                            'class' => 'button large disabled',
-                            'data-uri' => '/oeadmin/eventLog/delete',
+                            'class' => 'button large',
+                            'data-uri' => '/OphInBiometry/lensTypeAdmin/edit',
+                            'type' => 'submit',
+                            'name' => 'add',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <!-- Does not delete the lens type: sets it as INACTIVE -->
+                    <?php echo CHtml::button(
+                        'Deactivate Lens Type',
+                        [
+                            'class' => 'button large',
+                            'data-uri' => '/OphInBiometry/lensTypeAdmin/delete',
                             'type' => 'submit',
                             'name' => 'delete',
-                            'data-object' => 'eventLogs',
-                            'id' => 'et_delete',
-                            'disabled' => true,
+                            'data-object' => 'lensTypes',
+                            'id' => 'et_delete'
                         ]
                     ); ?>
                 </td>
@@ -115,24 +140,14 @@
             </tr>
             </tfoot>
         </table>
+</div>
+
+<?php
+if (Yii::app()->params['opnote_lens_migration_link'] == 'on') {
+    ?>
+    <div class="admin box">
+        <a href="/OphInBiometry/MergeLensData">Merge operation note cataract element lens data</a>
     </div>
-</form>
-
-<script>
-    $(document).ready(function () {
-
-        /**
-         * Deactivate button when no checkbox is selected.
-         * Change button text to "Procedures" when more than one procedure is selected
-         */
-        $(this).on('change', $('input[type="checkbox"]'), function (e) {
-            var checked_boxes = $('#admin_eventLogs').find('table.standard tbody input[type="checkbox"]:checked');
-
-            if (checked_boxes.length <= 0) {
-                $('#et_delete').attr('disabled', true).addClass('disabled');
-            } else {
-                $('#et_delete').attr('disabled', false).removeClass('disabled');
-            }
-        });
-    });
-</script>
+    <?php
+}
+?>

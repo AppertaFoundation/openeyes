@@ -82,7 +82,11 @@
             foreach ($complications as $key => $complication) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $complication->id ?>"
                     data-uri="oeadmin/complication/edit/<?php echo $complication->id ?>?returnUri=">
-                    <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
+                    <td>
+                        <?php if ($this->isComplicationDeletable($complication)) : ?>
+                            <input type="checkbox" name="select[]" value="<?php echo $complication->id ?>" id="select[<?=$complication->id ?>]"/>
+                        <?php endif; ?>
+                    </td>
                     <td><?php echo $complication->id ?></td>
                     <td><?php echo $complication->name ?></td>
                     <td>
@@ -113,7 +117,7 @@
                             'name' => 'delete',
                             'type' => 'submit',
                             'data-object' => 'benefit',
-                            'data-uri' => '/oeadmin/complication/list',
+                            'data-uri' => '/oeadmin/complication/delete',
                             'id' => 'et_delete'
                         ]
                     ); ?>

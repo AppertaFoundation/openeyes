@@ -23,34 +23,32 @@ class LeafletsController extends BaseAdminController
      */
     public function actionList()
     {
-        if (0) {
-            $this->genericAdmin('Leaflets', 'OphTrConsent_Leaflet');
-        } else {
-            if (Yii::app()->request->isPostRequest) {
-                $leaflets = Yii::app()->request->getParam('OphTrConsent_Leaflet');
+        $leaflet_model = OphTrConsent_Leaflet::model();
 
-                foreach ($leaflets as $key => $leaflet) {
-                    if (isset($leaflet['id'])) {
-                        $leaflet_object = OphTrConsent_Leaflet::model()->findByPk($leaflet['id']);
-                    } else {
-                        $leaflet_object = new OphTrConsent_Leaflet();
-                    }
+        if (Yii::app()->request->isPostRequest) {
+            $leaflets = Yii::app()->request->getParam('OphTrConsent_Leaflet');
+            foreach ($leaflets as $key => $leaflet) {
+                if (!$leaflet['name']) {
+                    continue;
+                }
 
-                    //TODO: Fix ERROR: "Creating default object from empty value"
-                    $leaflet_object->name = $leaflet['name'];
+                $leaflet_object = $leaflet_model->findByPk($leaflet['id']);
+                if (!$leaflet_object) {
+                    $leaflet_object = new OphTrConsent_Leaflet();
+                }
 
-                    $leaflet_object->display_order = $leaflet['display_order'];
-                    $leaflet_object->active = $leaflet['active'];
+                $leaflet_object->name = $leaflet['name'];
+                $leaflet_object->display_order = $leaflet['display_order'];
+                $leaflet_object->active = $leaflet['active'];
 
-                    if (!$leaflet_object->save()) {
-                        throw new Exception('Unable to save Leaflets: ' . print_r($leaflet_object->getErrors(), true));
-                    }
+                if (!$leaflet_object->save()) {
+                    throw new Exception('Unable to save Leaflets: ' . print_r($leaflet_object->getErrors(), true));
                 }
             }
-
-            $this->render('/oeadmin/leaflets/index', [
-                'leaflets' => OphTrConsent_Leaflet::model()->findAll(),
-            ]);
         }
+
+        $this->render('/oeadmin/leaflets/index', [
+            'leaflets' => $leaflet_model->findAll(),
+        ]);
     }
 }

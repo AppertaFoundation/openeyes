@@ -95,7 +95,10 @@ $(document).ready(function(){
 
     if ( $form.find('table.standard tbody input[type="checkbox"]:checked').length === 0 ) {
       new OpenEyes.UI.Dialog.Alert({
-        content: "Please select one or more items to delete."
+        content: "Please select one or more items to delete.",
+        closeCallback: function () {
+          window.location.reload();
+        }
       }).open();
       return;
     }
@@ -115,7 +118,10 @@ $(document).ready(function(){
           window.location.reload();
         } else {
           new OpenEyes.UI.Dialog.Alert({
-            content: "One or more " + object + " could not be deleted as they are in use."
+            content: "One or more " + object + " could not be deleted as they are in use.",
+            closeCallback: function () {
+                window.location.reload();
+            }
           }).open();
         }
       }

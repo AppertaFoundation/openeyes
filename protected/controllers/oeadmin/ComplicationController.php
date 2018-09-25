@@ -105,12 +105,39 @@ class ComplicationController extends BaseAdminController
         ));
     }
 
+
+    /**
+     * @param Complication $complication - complication to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given complication
+     */
+    protected function isComplicationDeletable(Complication $complication)
+    {
+        $check_dependencies = 1;
+
+        $options = [':id' => $complication->id];
+        $check_dependencies &= !ProcedureComplication::model()->count('complication_id = :id', $options);
+
+        return $check_dependencies;
+    }
+
     /**
      * Deletes rows for the model.
      */
     public function actionDelete()
     {
-        $admin = new Admin(Complication::model(), $this);
-        $admin->deleteModel();
+        $complications = \Yii::app()->request->getPost('select', []);
+
+        foreach ($complications as $complication_id) {
+            $complication = Complication::model()->findByPk($complication_id);
+
+            if ($this->isComplicationDeletable($complication)) {
+                if (!$complication->delete()) {
+                    echo 'Could not delete complication with id: ' . $complication_id . '.\n';
+                }
+            } else {
+                echo 'Complication with id ' . $complication_id .' cannot be deleted. Other tables depend on it.\n';
+            }
+        }
+        echo 1;
     }
 }

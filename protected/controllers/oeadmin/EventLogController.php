@@ -106,7 +106,7 @@ class EventLogController extends BaseAdminController
             case 'Duplicate Event':
                 $button_options = array(
                     'cancel' => 'Dismiss New',
-                    'cancel-uri' => '/oeadmin/eventLog/dismiss/'.$id,
+                    'cancel-uri' => '/oeadmin/eventLog/dismiss/' . $id,
                     'submit' => 'Accept New',
                 );
                 break;
@@ -234,6 +234,7 @@ class EventLogController extends BaseAdminController
 
     /**
      * @param $id
+     * @throws CHttpException
      */
     public function actionDismiss($id)
     {
@@ -246,5 +247,22 @@ class EventLogController extends BaseAdminController
         $eventQuery->save();
 
         $this->redirect('/oeadmin/eventLog/list/');
+    }
+
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $eventLogs = \Yii::app()->request->getPost('select', []);
+
+        foreach ($eventLogs as $eventLog_id) {
+            $eventLog = AutomaticExaminationEventLog::model()->findByPk($eventLog_id);
+
+            if (!$eventLog->delete()) {
+                echo 'Could not delete eventLog with id: ' . $eventLog_id . '.\n';
+            }
+        }
+        echo 1;
     }
 }
