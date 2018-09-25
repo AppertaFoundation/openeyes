@@ -62,39 +62,77 @@
     </form>
 </div>
 
-<div class="cols-9">
-    <table class="standard">
-        <thead>
-        <tr>
-            <th><input type="checkbox" name="selectall" id="selectall"/></th>
-            <th>Event Id</th>
-            <th>Unique Code</th>
-            <th>Examination Date</th>
-            <th>Status Value</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        foreach ($event_logs as $key => $event) { ?>
-            <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
-                data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
-                <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
-                <td><?php echo $event->event_id ?></td>
-                <td><?php echo $event->unique_code ?></td>
-                <td><?php echo $event->examination_date ?></td>
-                <td><?php echo $event->import_status->status_value ?></td>
+<form id="admin_eventLogs" method="post">
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+
+    <div class="cols-9">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Event Id</th>
+                <th>Unique Code</th>
+                <th>Examination Date</th>
+                <th>Status Value</th>
             </tr>
-        <?php } ?>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-            <td colspan="6">
-                <?php $this->widget(
-                    'LinkPager',
-                    ['pages' => $pagination]
-                ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($event_logs as $key => $event) { ?>
+                <tr id="$key" class="clickable" data-id="<?php echo $event->id ?>"
+                    data-uri="oeadmin/eventLog/edit/<?php echo $event->id ?>?returnUri=">
+                    <td><input type="checkbox" name="select[]" value="<?php echo $event->id ?>" id="select[<?=$event->id ?>]"/><td>
+                    <td><?php echo $event->event_id ?></td>
+                    <td><?php echo $event->unique_code ?></td>
+                    <td><?php echo $event->examination_date ?></td>
+                    <td><?php echo $event->import_status->status_value ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="2">
+                    <?php echo CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large disabled',
+                            'data-uri' => '/oeadmin/eventLog/delete',
+                            'type' => 'submit',
+                            'name' => 'delete',
+                            'data-object' => 'eventLogs',
+                            'id' => 'et_delete',
+                            'disabled' => true,
+                        ]
+                    ); ?>
+                </td>
+                <td colspan="3">
+                    <?php $this->widget(
+                        'LinkPager',
+                        ['pages' => $pagination]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+
+        /**
+         * Deactivate button when no checkbox is selected.
+         * Change button text to "Procedures" when more than one procedure is selected
+         */
+        $(this).on('change', $('input[type="checkbox"]'), function (e) {
+            var checked_boxes = $('#admin_eventLogs').find('table.standard tbody input[type="checkbox"]:checked');
+
+            if (checked_boxes.length <= 0) {
+                $('#et_delete').attr('disabled', true).addClass('disabled');
+            } else {
+                $('#et_delete').attr('disabled', false).removeClass('disabled');
+            }
+        });
+    });
+</script>
