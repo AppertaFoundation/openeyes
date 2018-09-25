@@ -123,7 +123,7 @@
         <tr>
             <td colspan="4">
                 <?php echo CHtml::button(
-                    'Delete procedure',
+                    'Delete',
                     [
                         'class' => 'button large disabled',
                         'data-uri' => '/oeadmin/procedure/delete',
@@ -157,20 +157,9 @@
             var checked_boxes = $('#admin_procedures').find('table.standard tbody input[type="checkbox"]:checked');
 
             if (checked_boxes.length <= 0) {
-                $('#et_delete').attr({
-                    disabled: true,
-                    value: 'Delete Procedure'
-                }).addClass('disabled');
-            } else if (checked_boxes.length == 1) {
-                $('#et_delete').attr({
-                    disabled: false,
-                    value: 'Delete Procedure'
-                }).removeClass('disabled');
-            } else if (checked_boxes.length > 1) {
-                $('#et_delete').attr({
-                    disabled: false,
-                    value: 'Delete Procedures'
-                }).removeClass('disabled');
+                $('#et_delete').attr('disabled', true).addClass('disabled');
+            } else {
+                $('#et_delete').attr('disabled', false).removeClass('disabled');
             }
         });
     });

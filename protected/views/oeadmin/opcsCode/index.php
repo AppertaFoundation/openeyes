@@ -73,6 +73,7 @@
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Description</th>
                 <th>Active</th>
             </tr>
             </thead>
@@ -82,7 +83,12 @@
             foreach ($opcsCodes as $key => $opcsCode) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $opcsCode->id ?>"
                     data-uri="oeadmin/opcsCode/edit/<?php echo $opcsCode->id ?>?returnUri=">
-                    <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
+                    <td>
+                        <?php if ($this->isOpcsCodeDeletable($opcsCode)) : ?>
+                            <input type="checkbox" name="select[]" value="<?php echo $opcsCode->id ?>"
+                                   id="select[<?= $opcsCode->id ?>]"/>
+                        <?php endif; ?>
+                    </td>
                     <td><?php echo $opcsCode->id ?></td>
                     <td><?php echo $opcsCode->name ?></td>
                     <td><?php echo $opcsCode->description ?></td>
@@ -96,12 +102,12 @@
             </tbody>
             <tfoot class="pagination-container">
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <?php echo CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
-                            'data-uri' => '/oeadmin/complication/edit',
+                            'data-uri' => '/oeadmin/opcsCode/edit',
                             'type' => 'submit',
                             'name' => 'add',
                             'id' => 'et_add'
@@ -110,16 +116,18 @@
                     <?php echo CHtml::button(
                         'Delete',
                         [
-                            'class' => 'button large',
+                            'class' => 'button large disabled',
                             'name' => 'delete',
                             'type' => 'submit',
                             'data-object' => 'benefit',
-                            'data-uri' => '/oeadmin/complication/list',
-                            'id' => 'et_delete'
+                            'data-uri' => '/oeadmin/opcsCode/delete',
+                            'id' => 'et_delete',
+                            'disabled' => true,
+
                         ]
                     ); ?>
                 </td>
-                <td>
+                <td colspan="2">
                     <?php $this->widget(
                         'LinkPager',
                         ['pages' => $pagination]
@@ -130,5 +138,24 @@
         </table>
     </form>
 </div>
+
+<script>
+    $(document).ready(function () {
+
+        /**
+         * Deactivate button when no checkbox is selected.
+         * Change button text to "Procedures" when more than one procedure is selected
+         */
+        $(this).on('change', $('input[type="checkbox"]'), function (e) {
+            var checked_boxes = $('#admin_benefits').find('table.standard tbody input[type="checkbox"]:checked');
+
+            if (checked_boxes.length <= 0) {
+                $('#et_delete').attr('disabled', true).addClass('disabled');
+            } else {
+                $('#et_delete').attr('disabled', false).removeClass('disabled');
+            }
+        });
+    });
+</script>
 
 

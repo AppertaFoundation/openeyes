@@ -108,11 +108,36 @@ class OpcsCodeController extends BaseAdminController
     }
 
     /**
+     * @param OPCSCode $OPCSCode - OPCSCode to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given OPCSCode
+     */
+    protected function isOpcsCodeDeletable(OPCSCode $OPCSCode)
+    {
+        $check_dependencies = 1;
+
+        $check_dependencies &= !count($OPCSCode->procedures);
+
+        return $check_dependencies;
+    }
+
+    /**
      * Deletes rows for the model.
      */
     public function actionDelete()
     {
-        $admin = new Admin(OPCSCode::model(), $this);
-        $admin->deleteModel();
+        $opcsCodes = \Yii::app()->request->getPost('select', []);
+
+        foreach ($opcsCodes as $opcsCode_id) {
+            $opcsCode = OPCSCode::model()->findByPk($opcsCode_id);
+
+            if ($this->isOpcsCodeDeletable($opcsCode)) {
+                if (!$opcsCode->delete()) {
+                    echo 'Could not delete OpcsCode with id: ' . $opcsCode_id . '.\n';
+                }
+            } else {
+                echo 'OpcsCode with id ' . $opcsCode_id .' cannot be deleted. Other tables depend on it.\n';
+            }
+        }
+        echo 1;
     }
 }
