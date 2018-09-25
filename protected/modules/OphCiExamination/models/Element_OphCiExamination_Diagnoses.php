@@ -237,22 +237,85 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * @return string
+     * @return string html table of daignoses and further findings
+     *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
     public function getLetter_string()
     {
         $table_vals = array();
+        $subspecialty = null;
+        if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
+            $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+            $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+        }
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('element_diagnoses_id=:ed');
         $criteria->params[':ed'] = $this->id;
 
+        //Get all the diagnoses and their default terminology
         foreach (OphCiExamination_Diagnosis::model()->findAll($criteria) as $diagnosis) {
             if ($diagnosis->disorder) {
                 $table_vals[] = array(
+                    'disorder_id' => $diagnosis->disorder->id,
+                    'principal' => $diagnosis->principal,
                     'date' => \Helper::convertDate2NHS($diagnosis->date),
-                    'term' => mb_strtoupper($diagnosis->eye->adjective) . ' ' . $diagnosis->disorder->term
+                    'laterality' => mb_strtoupper($diagnosis->eye->adjective).' ',
+                    'term' => $diagnosis->disorder->term
                 );
+            }
+        }
+
+        //check disorders for alternate texts
+        if($subspecialty){
+            $disorder_alt_texts = $this->getSecondaryDiagnosisLetterTexts(
+                $subspecialty,
+                array_column($table_vals, 'disorder_ids')
+            );
+            //replace text
+            foreach ($table_vals as $id => $disorder){
+                //principal diagnoses don't get their text changed
+                if($disorder['principal'] == 1){continue;}
+                if(!isset($disorder['disorder_id'])){continue;}
+
+                if (array_key_exists($disorder['disorder_id'], $disorder_alt_texts)){
+                    $table_vals[$id]['term'] = $disorder_alt_texts[$disorder['disorder_id']]['text'];
+                }
+            }
+        }
+
+        //Get further findings from examination
+        if ($et_findings = Element_OphCiExamination_FurtherFindings::model()
+            ->find('event_id=?', array($this->event_id))
+        ) {
+            foreach (OphCiExamination_FurtherFindings_Assignment::model()
+                         ->findAll('element_id=?', array($et_findings->id)
+                         ) as $finding
+            ) {
+                $table_vals[] = array(
+                    'finding_id' => $finding->id,
+                    'date' => \Helper::convertDate2NHS($this->event->event_date),
+                    'laterality' => '',
+                    'term' => $finding->description
+                );
+                $finding_ids[] = $finding->finding_id;
+                $findings[] = $finding;
+            }
+        }
+
+        //check further findings for alternate texts
+        if($subspecialty){
+            $finding_alt_texts = $this->getSecondaryDiagnosisFindingLetterTexts(
+                $subspecialty,
+                array_column($table_vals, 'finding_ids')
+            );
+            //replace text
+            foreach ($table_vals as $id => $finding){
+                if(!isset($finding['finding_id'])){continue;}
+
+                if (array_key_exists($finding['finding_id'], $finding_alt_texts)){
+                    $table_vals[$id]['term'] = $finding_alt_texts[$finding['finding_id']]['text'];
+                }
             }
         }
 
@@ -264,7 +327,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             foreach ($table_vals as $val):?>
                 <tr>
                     <td><?= $val['date'] ?></td>
-                    <td><?= $val['term'] ?></td>
+                    <td><?= @$val['principal']?'Principal: ':''?><?= $val['laterality'].$val['term'] ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -283,6 +346,60 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         return;
+    }
+
+    /**
+     * Finds alternate letter macro text for secondary disorders depending on subspecialty
+     * @param $subspecialty \Subspecialty
+     * @param $disorder_ids
+     * @return array found alternate texts, indexed by disorder_id
+     *
+     * @var $secto_disorder \SecondaryToCommonOphthalmicDisorder
+     */
+    public function getSecondaryDiagnosisLetterTexts($subspecialty, $disorder_ids)
+    {
+        $result = array();
+        foreach ($disorder_ids as $disorder_id) {
+            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+                         ->with('parent')
+                         ->findAll(
+                             't.disorder_id=? and parent.subspecialty_id=?',
+                             array($disorder_id, $subspecialty->id)
+                         ) as $secto_disorder
+            ) {
+                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == ""){continue;}
+                $result[$disorder_id] = $secto_disorder->letter_macro_text;
+            }
+        }
+
+        return $result;
+    }
+
+     /**
+     * Finds alternate letter macro text for findings depending on subspecialty
+     * @param $subspecialty \Subspecialty
+     * @param $finding_ids array(int)
+     * @return array found alternate text, indexed by finding_id
+     *
+     * @var $secto_disorder \SecondaryToCommonOphthalmicDisorder
+     */
+    public function getSecondaryDiagnosisFindingLetterTexts($subspecialty, $finding_ids)
+    {
+        $result = array();
+        foreach ($finding_ids as $finding_id) {
+            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+                         ->with('parent')
+                         ->findAll(
+                             't.finding_id=? and parent.subspecialty_id=?',
+                             array($finding_id, $subspecialty->id)
+                         ) as $secto_disorder
+            ) {
+                if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == ""){continue;}
+                $result[$finding_id] = $secto_disorder->letter_macro_text;
+            }
+        }
+
+        return $result;
     }
 
     /**
