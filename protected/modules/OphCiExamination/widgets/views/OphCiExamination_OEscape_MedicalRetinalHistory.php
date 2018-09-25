@@ -58,9 +58,11 @@
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
 
     var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
+
     var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
+
     var sides = ['left', 'right'];
     var chart_MR = {};
     var plotLines = {};
@@ -78,6 +80,8 @@
 
     //plotly
     var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+    var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
+
     var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
 
 
@@ -85,8 +89,16 @@
 
       layout_plotly['shapes'] = [];
       layout_plotly['annotations'] = [];
+      layout_plotly['yaxis'] = setYAxis_MR(va_yaxis);
+      layout_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
+      layout_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+
+      layout_plotly['yaxis2'] = setYAxis_MR(crt_yaxis);
+      layout_plotly['xaxis']['rangeslider'] = {};
+
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
+
 
       var data =[{
         name: 'VA('+side+')',
@@ -102,10 +114,73 @@
         }),
         hoverinfo: 'text',
         type: 'line',
+      }, {
+        name: 'CRT('+side+')',
+        x: crt_plotly[side]['x'].map(function (item) {
+          return new Date(item);
+        }),
+        y: crt_plotly[side]['y'],
+        line: {
+          color: (side=='right')?'#9fec6d':'#fe6767',
+        },
+        text: crt_plotly[side]['x'].map(function (item, index) {
+          return new Date(item)+'<br>CRT(' + side + '):' + crt_plotly[side]['y'][index];
+        }),
+        hoverinfo: 'text',
+        yaxis: 'y2',
+        type: 'line',
+        line: {
+          dash: 'dot',
+        }
       }];
 
-      layout_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
-      layout_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      var j = 2;
+      var text = {
+        x:[],
+        y:[],
+        text:[],
+        mode:'text'
+      };
+
+
+      //set the flags for letters >5
+      for (var i in VA_lines_data[side]) {
+        text['x'].push(new Date(VA_lines_data[side][i]['x']));
+        text['y'].push(-20);
+        text['text'].push('>5');
+
+        var line_shape = {
+          x0: new Date(VA_lines_data[side][i]['x']),
+          y0: -20,
+          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * 10),
+          y1: -30,
+          color: (side == 'right') ? '#9fec6d' : '#fe6767',
+        };
+        layout_plotly['shapes'].push(setMRFlags_options(line_shape));
+
+      }
+
+      //Set the flags for injections
+      for (var key in injections_data[side]){
+        for (var i in injections_data[side][key]) {
+          text['x'].push(new Date(injections_data[side][key][i]['x']));
+          text['y'].push(-20 * j);
+          text['text'].push(side.charAt(0));
+
+          var inj_shape = {
+            x0: new Date(injections_data[side][key][i]['x']),
+            y0: -20 * j,
+            x1: new Date(injections_data[side][key][i]['x'] + 86400000 * 10),
+            y1: -20 * (j + 0.5),
+            color: (side == 'right') ? '#9fec6d' : '#fe6767',
+          };
+          layout_plotly['shapes'].push(setMRFlags_options(inj_shape));
+        }
+        j++;
+      }
+      data.push(text);
+
+
       Plotly.newPlot(
         'highcharts-MR-'+side, data, layout_plotly, options_plotly
       );

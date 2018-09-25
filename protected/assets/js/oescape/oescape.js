@@ -195,24 +195,4 @@ function setMarkingEvents(options, data, plotLines, side){
     }
 }
 
-function setMarkingEvents_plotly(layout, options, annotation, data, side, y_start, y_end){
-  for (var key in data[side]) {
-    for (var item of data[side][key]) {
-      var current_marker_line = Object.assign({}, options);
-      current_marker_line['x0'] = new Date(item);
-      current_marker_line['x1'] = new Date(item);
-      current_marker_line['y0'] = y_start;
-      current_marker_line['y1'] = y_end;
-      current_marker_line['line']['color'] = (side === 'right') ? '#9fec6d' : '#fe6767';
-      layout['shapes'].push(current_marker_line);
-
-
-      var current_annotation = Object.assign({}, annotation);
-      current_annotation['x']=new Date(item);
-      current_annotation['y']= 70;
-      current_annotation['text']=key;
-      layout['annotations'].push(current_annotation);
-    }
-  }
-}
 
