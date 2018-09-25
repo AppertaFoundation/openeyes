@@ -81,7 +81,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                             content: $($('#side-selector-popup').html()),
                             title: "Do you want to upload right or left document ?",
 
-                            onOpen: function(e) {
+                            onOpen: function() {
                                 let dialog = this;
                                 dialog.content.on("click", ".js-side-picker", function() {
                                     let side = $(this).data("side");
@@ -127,7 +127,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
     DocumentUploadController.prototype.removeDocument = function (side) {
         let controller = this;
         let $td = $("#Document_" + side + "_document_row_id").closest('td');
-        let $file_input = $td.find(controller.options.fileInputSelector);
 
         $td.find('.ophco-image-container').remove();
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
@@ -192,7 +191,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     } else {
                         $.each(response, function (index, value) {
                             let filedata = $field.val().split('.');
-                            let extension = filedata[filedata.length - 1];
                             let $hidden_field = $('#Element_OphCoDocument_Document_' + index);
                             let $td = $field.closest('td');
                             if ($hidden_field.length) {
@@ -224,7 +222,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
     DocumentUploadController.prototype.generateView = function(res, index, value, filedata) {
 
-        let controller = this;
         let extension = filedata[filedata.length - 1].toLowerCase();
         let result;
 
@@ -238,12 +235,14 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         }
 
         let $div = $('<div>', {"id": 'ophco-image-container-' + side_id, "class": "ophco-image-container"});
+        let $img;
+
         switch (extension) {
             case 'jpg':
             case 'jpeg':
             case 'png':
             case 'gif':
-                    let $img = $('<img>', {
+                    $img = $('<img>', {
                         "id": "single-image-" + side_id,
                         "class": "image-upload-del", "src": "/file/view/" + value + "/image." + extension,
                         "width": "100%"
@@ -317,6 +316,7 @@ $(document).ready(function () {
     "use strict";
 
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
+    $('.js-document-upload-wrapper').data('controller', uploader);
 });
 
 
