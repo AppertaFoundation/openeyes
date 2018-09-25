@@ -18,12 +18,16 @@
 ?>
 <div class="print-form-div <?php echo $css_class?>">
 	<?php $this->renderPartial('_consent_header')?>
-	<div class="form-title1">
-		<h2>Consent form 4</h2>
-		<h2>Form for adults who are unable to consent to investigation or treatment</h2>
-	</div>
-	<p><strong>Patient details (or pre-printed label)</strong></p>
-	<table>
+	<h1 class="print-title">
+		Consent form 4<br/>
+		Form for adults who are unable to consent to investigation or treatment
+	</h1>
+	<strong>Patient details (or pre-printed label)</strong>
+	<table class="large">
+        <colgroup>
+            <col class="cols-5">
+            <col class="cols-7">
+        </colgroup>
 		<tr>
 			<th>Patient's surname/family name</th>
 			<td><?php echo $this->patient->last_name?></td>
@@ -50,7 +54,7 @@
 		</tr>
 		<tr>
 			<th>&nbsp;<br />Special requirements</th>
-			<td>&nbsp;<br />........................................</td>
+			<td>&nbsp;<div class="dotted-write"></div></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -87,17 +91,15 @@
 		</tr>
 		<tr>
 			<th>&nbsp;<br />Consent date</th>
-			<td>&nbsp;<br />.............................................</td>
+			<td><div class="dotted-write"></div></td>
 		</tr>
 	</table>
-	<div class="form-subtitle1">
-		<h2>To be retained in patient's notes</h2>
-	</div>
-	<div class="pageBreak">
+		<h4>To be retained in patient's notes</h4>
+    <div class="break"></div>
 		<h3>All sections to be completed by health professional proposing the procedure</h3>
 		<div class="spacer"></div>
 		<h3>A. Details of procedure or course of treatment proposed</h3>
-		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => $css_class, 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
+		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
 		<p>
 			(NB see guidance to health professionals overleaf for details of situations where court approval must first be sought)
 		</p>
@@ -129,9 +131,9 @@
 		</p>
 		<p>
 			<?php if ($css_class == 'impaired') {?>
-				..................................................................................
+                <div class="dotted-write"></div>
 			<?php } else {?>
-				...............................................................................................................................
+                <div class="dotted-write"></div>
 			<?php }?>
 		</p>
 		<p>
@@ -158,14 +160,14 @@
 			Any other comments (including any concerns about decision)
 		</span>
 		<br/>
-			.................................................................................................................................<br/><br/>
+            <div class="dotted-write"></div>
 		<?php echo $this->renderPartial('signature_table2', array('vi' => ($css_class == 'impaired'), 'address' => true))?>
 		<p>
 			If a person close to the patient was not available in person, has this matter been discussed in any other way (eg over the telephone?)	Yes&nbsp;&nbsp;&nbsp;No<br/><br/>
 			<?php if ($css_class == 'impaired') {?>
-				Details:......................................................................
+				Details:<div class="dotted-write"></div>
 			<?php } else {?>
-				Details:.....................................................................................................................
+				Details:<div class="dotted-write"></div>
 			<?php }?>
 		</p>
 		<p>
@@ -181,8 +183,7 @@
 			Where second opinion sought, s/he should sign below to confirm agreement:
 		</p>
 		<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant))?>
-	</div>
-	<div class="pageBreak">
+    <div class="break"></div>
 		<p>
 			<strong>Guidance to health professionals</strong> (to be read in conjunction with consent policy)
 		</p>
@@ -192,7 +193,7 @@
 		<p>
 			<strong>When treatment can be given to a patient who is unable to consent For treatment to be given to a patient who is unable to consent, the following must apply:</strong>
 		</p>
-		<ul>
+		<ul class="large">
 			<li><strong>the patient must lack the capacity (‘competence’) to give or withhold consent to this procedure AND</strong></li>
 			<li><strong>the procedure must be in the patient’s best interests.</strong></li>
 		</ul>
@@ -200,7 +201,7 @@
 			<strong><br/>
 			A patient will lack capacity to consent to a particular intervention if he or she is:
 		</p>
-		<ul>
+		<ul class="large">
 			<li><strong>has an impairment of, or disturbance in the functioning of, the mind or brain; and</strong></li>
 			<li><strong>he or she  is unable to understand and retain information relevant to the decision; and/or</strong></li>
 			<li><strong>he or she is unable to use or  weigh this information in the decision-making process; or</strong></li>
@@ -226,7 +227,7 @@
 		<p>
 			<strong>the other factors that the patient would be likely to consider if he/she were able to do so</strong>
 		</p>
-		<ul>
+		<ul class="large">
 			<li><strong>the wishes and beliefs of the patient when competent</strong></li>
 			<li><strong>their current wishes</strong></li>
 			<li><strong>their general well-being</strong></li>
@@ -242,5 +243,4 @@
 			<strong>Second opinions and court involvement<br/>
 			Where treatment is complex and/or people close to the patient express doubts about the proposed treatment, a second opinion should be sought, unless the urgency of the patient’s condition prevents this. Donation of regenerative tissue such as bone marrow, sterilisation for contraceptive purposes and withdrawal of artificial nutrition or hydration from a patient in PVS must never be undertaken without prior High Court approval. High Court approval can also be sought where there are doubts about the patient’s capacity or best interests.</strong>
 		</p>
-	</div>
 </div>

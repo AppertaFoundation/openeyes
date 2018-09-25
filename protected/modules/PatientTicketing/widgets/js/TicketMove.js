@@ -181,18 +181,32 @@
   };
 
   TicketMoveController.prototype.toggleScratchpad = function (showScratchpad) {
+    var self = this;
     $(this.options.scratchpadPopupSelector).toggle(showScratchpad);
     var txt = showScratchpad ? 'Hide Scratchpad' : 'Scratchpad';
     $(this.options.scratchpadButtonSelector).text(txt);
 
     if (showScratchpad) {
       $(this.options.scratchpadInputSelector).autosize();
-      $(this.options.scratchpadPopupSelector).draggable();
+      $(this.options.scratchpadPopupSelector).draggable({
+        containment: "body",
+        stop: function (event, ui) {
+          self.saveScratchpadPosition(ui.position);
+        }
+      });
+
+      var position = this.getSavedScratchpadPosition();
+      if (position) {
+        $(this.options.scratchpadPopupSelector).css({
+          top: position.top,
+          left: position.left
+        });
+      }
     }
   };
 
   TicketMoveController.prototype.loadScratchpadData = function () {
-    var storageKey = this.getScratchpadStorageKey();
+    var storageKey = this.getScratchpadStorageKey() + '-value';
     var oldScratchValue = window.localStorage.getItem(storageKey);
     var $scratchInput = $(this.options.scratchpadInputSelector);
     if (oldScratchValue) {
@@ -202,8 +216,22 @@
   };
 
   TicketMoveController.prototype.saveScratchpadData = function (data) {
-    var storageKey = this.getScratchpadStorageKey();
+    var storageKey = this.getScratchpadStorageKey() + '-value';
     window.localStorage.setItem(storageKey, data);
+  };
+
+  TicketMoveController.prototype.saveScratchpadPosition = function (position) {
+    var storageKey = this.getScratchpadStorageKey() + '-position';
+    window.localStorage.setItem(storageKey + '-top', position.top);
+    window.localStorage.setItem(storageKey + '-left', position.left);
+  };
+
+  TicketMoveController.prototype.getSavedScratchpadPosition = function () {
+    var storageKey = this.getScratchpadStorageKey() + '-position';
+    return {
+      top: parseInt(window.localStorage.getItem(storageKey + '-top')),
+      left: parseInt(window.localStorage.getItem(storageKey + '-left'))
+    };
   };
 
   TicketMoveController.prototype.getScratchpadStorageKey = function () {
