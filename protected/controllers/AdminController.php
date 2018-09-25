@@ -445,12 +445,12 @@ class AdminController extends BaseAdminController
      * @param $id
      * @throws Exception
      */
-    public function actionEditUser($id=null)
+    public function actionEditUser($id = null)
     {
-        if (!$id) {
-            $user = new User();
-        }
-        if ($id && !$user = User::model()->findByPk($id)) {
+
+        $user = User::model()->findByPk($id);
+
+        if ($id && !$user) {
             throw new Exception("User not found: $id");
         }
 

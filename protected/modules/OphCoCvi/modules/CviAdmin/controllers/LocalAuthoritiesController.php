@@ -52,7 +52,8 @@ class LocalAuthoritiesController extends \BaseAdminController
     {
         \Audit::add('admin-CommissioningBodyService', 'list');
 
-        if (!$commissioning_bt = \CommissioningBodyType::model()->findByAttributes(array('shortname' => 'LA'))) {
+        $commissioning_bt = \CommissioningBodyType::model()->findByAttributes(array('shortname' => 'LA'));
+        if (!$commissioning_bt) {
             throw new \CHttpException(500, 'Local Authority Commissioning Body Type is not configured.');
         }
 

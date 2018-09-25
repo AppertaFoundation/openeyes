@@ -168,7 +168,6 @@ class DrugSetController extends BaseAdminController
             }
             $this->redirect('/OphDrPrescription/DrugSetAdmin/list');
         } else {
-            // TODO: maybe more error handling need to be added here!!
             if ($drugSetId > 0) {
                 $admin = $this->initAdmin($drugSetId);
             } else {

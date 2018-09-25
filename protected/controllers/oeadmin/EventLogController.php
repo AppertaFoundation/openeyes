@@ -32,11 +32,6 @@ class EventLogController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
-    }
-
     /**
      * Lists procedures.
      *
