@@ -54,7 +54,10 @@
         </table>
         <hr class="divider">
 
-        <div id="single_document_uploader" class="data-group js-document-upload-wrapper">
+        <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
+            <?=(!$element->single_document_id &&
+            ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : '');?>
+        >
             <table class="last-left cols-full">
                 <colgroup>
                     <col class="cols-full">
@@ -63,14 +66,29 @@
                 <tbody>
                 <tr class="valign-top">
                     <td>
-                        <div class="upload-box" id="single_document_id_row" <?=(!$element->single_document_id &&
-                        ($element->right_document_id || $element->left_document_id) ? 'style="display:none"' : '');?>>
-                            <?php $this->generateFileField($element, 'single_document'); ?>
+                        <div class="upload-box" id="single_document_id_row" <?=$element->single_document_id ? 'style="display:none"' : '';?>>
+                            <label for="Document_single_document_row_id" id="upload_box_single_document" class="upload-label">
+                                <i class="oe-i download no-click large"></i>
+                                <br>
+                                <span class="js-upload-box-text">Click to select file or DROP here</span>
+                            </label>
+                            <input autocomplete="off"
+                                   type="file"
+                                   name="Document[single_document_id]"
+                                   id="Document_single_document_row_id"
+                                   style="display:none;"
+                                   class="js-document-file-input"
+                            >
                         </div>
 
+                        <?php $this->generateFileField($element, 'single_document'); ?>
+
                         <div class="flex-layout flex-right js-remove-document-wrapper" <?=(!$element->single_document_id ? 'style="display:none"' : '');?>>
-                            <button class="hint red">remove uploaded file</button>
+                            <button class="hint red" data-side="single">remove uploaded file</button>
                         </div>
+
+                        <?=CHtml::activeHiddenField($element, 'single_document_id', ['class' => 'js-document-id']);?>
+
                     </td>
                 </tr>
                 </tbody>
@@ -94,38 +112,56 @@
                 <tbody>
                 <tr class="valign-top">
                     <td>
-                        <div class="upload-box" id="right_document_id_row">
-                            <?php $this->generateFileField($element, 'right_document'); ?>
+                        <div class="upload-box" id="right_document_id_row" <?=$element->right_document_id ? 'style="display:none"' : '';?>>
+                            <label for="Document_right_document_row_id" id="upload_box_right_document" class="upload-label">
+                                <i class="oe-i download no-click large"></i>
+                                <br>
+                                <span class="js-upload-box-text">Click to select file or DROP here</span>
+                            </label>
+                            <input autocomplete="off"
+                                   type="file"
+                                   name="Document[right_document_id]"
+                                   id="Document_right_document_row_id"
+                                   style="display:none;"
+                                   class="js-document-file-input"
+                            >
                         </div>
+                        <?php $this->generateFileField($element, 'right_document'); ?>
+
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?=($element->right_document_id ? '' : 'style="display:none"');?> >
-                            <button class="hint red">remove uploaded file</button>
+                            <button class="hint red" data-side="right">remove uploaded file</button>
                         </div>
+                        <?=CHtml::activeHiddenField($element, 'right_document_id', ['class' => 'js-document-id']);?>
                     </td>
                     <td>
-                        <div class="upload-box" id="left_document_id_row">
-                            <?php $this->generateFileField($element, 'left_document'); ?>
+                        <div class="upload-box" id="left_document_id_row" <?=$element->left_document_id ? 'style="display:none"' : '';?>>
+                            <label for="Document_left_document_row_id" id="upload_box_left_document" class="upload-label">
+                                <i class="oe-i download no-click large"></i>
+                                <br>
+                                <span class="js-upload-box-text">Click to select file or DROP here</span>
+                            </label>
+                        <input autocomplete="off"
+                               type="file"
+                               name="Document[left_document_id]"
+                               id="Document_left_document_row_id"
+                               style="display:none;"
+                               class="js-document-file-input"
+                        >
                         </div>
+                        <?php $this->generateFileField($element, 'left_document'); ?>
+
                         <div class="flex-layout flex-right js-remove-document-wrapper"
                             <?=($element->left_document_id ? '' : 'style="display:none"');?> >
-                            <button class="hint red">remove uploaded file</button>
+                            <button class="hint red" data-side="left">remove uploaded file</button>
                         </div>
+                        <?=CHtml::activeHiddenField($element, 'left_document_id', ['class' => 'js-document-id']);?>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <?php
-        foreach (array('single_document_id', 'left_document_id', 'right_document_id') as $index_key) {
-            if ($element->{$index_key} > 0) {
-                echo "<input type='hidden' name='Element_OphCoDocument_Document[" .
-                    $index_key . "]' id='Element_OphCoDocument_Document_" .
-                    $index_key . "' value='" . $element->{$index_key} .
-                    "'>";
-            }
-        }
-        ?>
         <div id="document-comments" data-comment-button="#document_comment_button"
              class="cols-full js-comment-container"
              style="<?php if ($element->comment == null) echo 'display:none' ?>">

@@ -42,15 +42,16 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let controller = this;
 
         $(controller.options.dropAreaSelector).on({
-            "dragover, dragenter, ondragover": function(ev){
+            "dragenter, dragover": function(ev){
                 ev.preventDefault();
                 ev.stopPropagation();
             },
-            "ondrop": function(ev){
+            "drop": function(ev){
                 ev.preventDefault();
-                let data = ev.dataTransfer.files;
+
+                let data = ev.originalEvent.dataTransfer.files;
                 $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", data);
-            }
+            },
         });
 
         $(controller.options.uploadModeSelector).on('change', function () {
@@ -66,16 +67,92 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         $(controller.options.wrapperSelector).on('click', controller.options.removeButtonSelector, function (e) {
             e.preventDefault();
-            let $td = $(this).closest('td');
-            $td.find('.ophco-image-container').remove();
-            $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
-            $(this).parent().hide();
-            $(controller.options.uploadModeSelector).attr('disabled', false);
-            $td.find(controller.options.fileInputSelector).val("");
-
-            //ajax to remove the file from the server
+            controller.removeDocument($(this).data('side'));
         });
 
+
+
+        window.addEventListener("paste", function (event) {
+
+            var files = event.clipboardData.files;
+            if (files[0] && files[0].type.includes("image")) {
+
+                    if ($("input[name='upload_mode']:checked").val() === 'double') {
+                        var dialog = $('<h2 class="text-center">Do you want to upload left or right document ?</h2>').data('files', files).dialog({
+                            buttons: [
+                                {
+                                    'text': 'Right(R)',
+                                    click: function () {
+                                        controller.paste("right", files);
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                {
+                                    'text': 'Left(L)',
+                                    click: function () {
+                                        controller.paste("left", files);
+                                        $(this).dialog("close");
+                                    }
+                                },
+                            ],
+                            close: function () {
+                                $(window).unbind(event);
+                            }
+
+                        }, event);
+                        $(window).on('keypress', function (event) {
+
+                            if (event.key === 'l' || event.key === 'L') {
+                                controller.paste("left", dialog.data("files"), function(){
+                                    dialog.dialog("close");
+                                });
+                                $(this).unbind(event);
+                            }
+                            if (event.key === 'r' || event.key === 'R') {
+                                controller.paste("right", dialog.data("files"), function(){
+                                    dialog.dialog("close");
+                                });
+                                $(this).unbind(event);
+                            }
+
+                        });
+                    } else if ($("input[name='upload_mode']:checked").val() === 'single') {
+                        controller.paste("single", files);
+                    }
+
+            } else {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "No image data was found in your clipboard , copy an image (or take a screesnhot)."
+                }).open();
+            }
+        }, false);
+    };
+
+    DocumentUploadController.prototype.removeDocument = function (side) {
+        let controller = this;
+        let $td = $("#Document_" + side + "_document_row_id").closest('td');
+        let $file_input = $td.find(controller.options.fileInputSelector);
+
+        $td.find('.ophco-image-container').remove();
+        $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
+        $td.find('.js-remove-document-wrapper').hide();
+        $(controller.options.uploadModeSelector).attr('disabled', false);
+
+        /* OK, so we cannot clear the file inputs vale ? */
+        $td.find(controller.options.fileInputSelector).val("");
+        //$td.find(controller.options.fileInputSelector).prop('files', null);
+        //$file_input.replaceWith($file_input.val("").clone(true));
+
+        $td.find('.js-document-id').val("");
+    };
+
+    DocumentUploadController.prototype.paste = function (side, files) {
+
+        let controller = this;
+        let $input = $("#Document_" + side + "_document_row_id");
+
+        controller.removeDocument(side);
+        $input.prop("files", files);
     };
 
     DocumentUploadController.prototype.setUploadStatusText = function(field, text) {
@@ -115,8 +192,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 },
                 success: function (response) {
                     if (response.s === 0) {
-                        clearInputFile(response.index);
-                        setUploadStatusText();
                         new OpenEyes.UI.Dialog.Alert({
                             content: response.msg
                         }).open();
@@ -145,10 +220,9 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    //alert(xhr.responseText);
+                    alert(xhr.responseText);
                 },
                 complete: function () {
-                  //  setUploadStatusText($field, 'Click to select file or DROP here');
                 }
             });
         }
@@ -244,22 +318,6 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
     exports.DocumentUploadController = DocumentUploadController;
 
 })(OpenEyes.OphCoDocument);
-
-
-(function (exports) {
-    "use strict";
-
-    function FileUploadController(options) {
-        this.options = $.extend(true, {}, FileUploadController._defaultOptions, options);
-
-        this.initialiseTriggers();
-    }
-
-
-    exports.FileUploadController = FileUploadController;
-
-})(OpenEyes.OphCoDocument);
-
 
 $(document).ready(function () {
     "use strict";
