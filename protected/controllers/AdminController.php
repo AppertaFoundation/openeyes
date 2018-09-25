@@ -1598,6 +1598,20 @@ class AdminController extends BaseAdminController
             $return_url = '/admin/commissioning_body_services';
         }
 
+        $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
+
+        $this->render('/admin/commissioning_body_services/edit', array(
+            'commissioning_bt' => $commissioning_bt,
+            'commissioning_bst' => $commissioning_bst,
+            'cbs' => $cbs,
+            'address' => $address,
+            'errors' => $errors,
+            'return_url' => $return_url
+        ));
+    }
+
+    private function saveEditCommissioningBodyService($cbs, $contact, $address, $return_url)
+    {
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
 
@@ -1646,15 +1660,6 @@ class AdminController extends BaseAdminController
                 $this->redirect($return_url);
             }
         }
-
-        $this->render('/admin/commissioning_body_services/edit', array(
-            'commissioning_bt' => $commissioning_bt,
-            'commissioning_bst' => $commissioning_bst,
-            'cbs' => $cbs,
-            'address' => $address,
-            'errors' => $errors,
-            'return_url' => $return_url
-        ));
     }
 
     public function actionAddCommissioningBodyService()

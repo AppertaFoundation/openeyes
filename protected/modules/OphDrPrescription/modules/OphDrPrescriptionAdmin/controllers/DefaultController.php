@@ -65,7 +65,7 @@ class DefaultController extends BaseAdminController
         if (!Yii::app()->request->isAjaxRequest) {
             $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
         } else {
-            $site_subspec_drug = SiteSubspecialtyDrug::model()->findByPk($itemId)
+            $site_subspec_drug = SiteSubspecialtyDrug::model()->findByPk($itemId);
             if ($site_subspec_drug) {
                 $site_subspec_drug->delete();
                 echo 'success';
