@@ -244,7 +244,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
                             <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true,
-                                array( 'field' => 'StopMedicationsDetails','label-class' => $element->getError('stop_medication_details') ? 'error' : ''),
+                                array(),
                                 array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
                     </tr>
