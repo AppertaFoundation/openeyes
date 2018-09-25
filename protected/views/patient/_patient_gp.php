@@ -30,7 +30,7 @@
 		<?php if (Yii::app()->user->checkAccess('admin')) { ?>
 		<div class="data-group highlight">
 			<div class="cols-4 column">
-				<div class="data-label">GP Address:</div>
+				<div class="data-label"><?php echo Yii::app()->params['gp_label']?> Address:</div>
 			</div>
 			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
@@ -38,7 +38,7 @@
 		</div>
 		<div class="data-group highlight">
 			<div class="cols-4 column">
-				<div class="data-label">GP Telephone:</div>
+				<div class="data-label"><?php echo Yii::app()->params['gp_label']?> Telephone:</div>
 			</div>
 			<div class="cols-8 column">
 				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
