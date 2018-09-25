@@ -97,7 +97,8 @@ $(document).ready(function(){
       new OpenEyes.UI.Dialog.Alert({
         content: "Please select one or more items to delete.",
         closeCallback: function () {
-          window.location.reload();
+          //window.location.reload();
+            enableButtons();
         }
       }).open();
       return;
@@ -120,7 +121,8 @@ $(document).ready(function(){
           new OpenEyes.UI.Dialog.Alert({
             content: "One or more " + object + " could not be deleted as they are in use.",
             closeCallback: function () {
-                window.location.reload();
+                //window.location.reload();
+                enableButtons();
             }
           }).open();
         }
