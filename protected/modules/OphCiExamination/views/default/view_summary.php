@@ -21,6 +21,7 @@ $familyHistoryElement = $this->event->getElementByClass(models\FamilyHistory::cl
 $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::class) ?: new models\SocialHistory();
 ?>
 
+
 <?php if ($historyElement): ?>
     <?php $this->renderElement($historyElement, $action, $form, $data) ?>
 <?php endif; ?>
@@ -58,9 +59,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
               Stopped Medications:
               <table>
                 <colgroup>
-                  <col>
-                  <col width="55px">
-                  <col width="85px">
+                    <col class="cols-7">
                 </colgroup>
                 <tbody>
                 <?php foreach ($stoppedEyeMedications as $entry) { ?>
@@ -71,6 +70,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                         ?>
                     </td>
+                      <td>
+                          <i class="oe-i info small js-has-tooltip"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                          </i>
+                      </td>
                     <td><?= $entry->getStartDateDisplay() ?></td>
                   </tr>
                 <?php } ?>
@@ -83,9 +87,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
         <div class="tile-data-overflow">
           <table>
             <colgroup>
-              <col>
-              <col width="55px">
-              <col width="85px">
+                <col class="cols-7">
             </colgroup>
             <tbody>
             <?php foreach ($currentEyeMedications as $entry) { ?>
@@ -97,6 +99,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                     $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                   ?>
                     </td>
+                  <td>
+                      <i class="oe-i info small js-has-tooltip"
+                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                      </i>
+                  </td>
                     <td><?= $entry->getStartDateDisplay() ?></td>
                   </tr>
                 <?php } ?>
@@ -179,9 +186,14 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
                   <col class="cols-7">
                 </colgroup>
                 <tbody>
-                <?php foreach ($stoppedSystemicMedications as $entry) { ?>
+                <?php foreach ($stoppedSystemicMedications as $entry) {?>
                   <tr>
                     <td><?= $entry->getMedicationDisplay() ?></td>
+                      <td>
+                          <i class="oe-i info small js-has-tooltip"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                          </i>
+                      </td>
                     <td><?= $entry->getStartDateDisplay() ?></td>
                   </tr>
                 <?php } ?>
@@ -199,6 +211,11 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
               <?php foreach ($currentSystemicMedications as $entry) { ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
+                    <td>
+                        <i class="oe-i info small js-has-tooltip"
+                           data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                        </i>
+                    </td>
                   <td><?= $entry->getStartDateDisplay() ?></td>
                 </tr>
               <?php } ?>
