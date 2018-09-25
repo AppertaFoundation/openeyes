@@ -102,4 +102,22 @@ class UniqueCodesController extends BaseAdminController
             'errors' => $errors
         ));
     }
+
+
+    /**
+     * Deletes rows from the model.
+     */
+    public function actionDelete()
+    {
+        $unique_codes = \Yii::app()->request->getPost('select', []);
+
+        foreach ($unique_codes as $unique_code_id) {
+            $unique_code = UniqueCodes::model()->findByPk($unique_code_id);
+
+            if (!$unique_code->delete()) {
+                echo 'Could not delete unique code with id: ' . $unique_code_id;
+            }
+        }
+        echo 1;
+    }
 }

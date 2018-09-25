@@ -63,41 +63,79 @@
     </form>
 </div>
 
-<div class="row divider cols-8">
-    <table class="standard">
-        <thead>
-        <tr>
-            <th><input type="checkbox" name="selectall" id="selectall"/></th>
-            <th>Id</th>
-            <th>Code</th>
-            <th>Active</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        foreach ($unique_codes as $key => $unique_code) { ?>
-            <tr id="$key" class="clickable" data-id="<?php echo $unique_code->id ?>"
-                data-uri="oeadmin/uniqueCodes/edit/<?php echo $unique_code->id ?>?returnUri=">
-                <td><input type="checkbox" name="[$key]select" id="[$key]select"/></td>
-                <td><?php echo $unique_code->id ?></td>
-                <td><?php echo $unique_code->code ?></td>
-                <td>
-                    <?php echo ($unique_code->active) ?
-                        ('<i class="oe-i tick small"></i>') :
-                        ('<i class="oe-i remove small"></i>'); ?>
+<form id="admin_uniqueProcedures" method="post">
+    <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+
+    <div class="cols-8">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Active</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($unique_codes as $key => $unique_code) { ?>
+                <tr id="$key" class="clickable" data-id="<?php echo $unique_code->id ?>"
+                    data-uri="oeadmin/uniqueCodes/edit/<?php echo $unique_code->id ?>?returnUri=">
+                    <td>
+                        <input type="checkbox" name="select[]" value="<?php echo $unique_code->id ?>" id="select[<?=$unique_code->id ?>]"/>
+                    </td>
+                    <td><?php echo $unique_code->id ?></td>
+                    <td><?php echo $unique_code->code ?></td>
+                    <td>
+                        <?php echo ($unique_code->active) ?
+                            ('<i class="oe-i tick small"></i>') :
+                            ('<i class="oe-i remove small"></i>'); ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="2">
+                    <?php echo CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large disabled',
+                            'data-uri' => '/oeadmin/uniqueCodes/delete',
+                            'type' => 'submit',
+                            'name' => 'delete',
+                            'data-object' => 'uniqueProcedures',
+                            'id' => 'et_delete',
+                            'disabled' => true,
+                        ]
+                    ); ?>
+                </td>
+                <td colspan="2">
+                    <?php $this->widget(
+                        'LinkPager',
+                        ['pages' => $pagination]
+                    ); ?>
                 </td>
             </tr>
-        <?php } ?>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-            <td colspan="6">
-                <?php $this->widget(
-                    'LinkPager',
-                    ['pages' => $pagination]
-                ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-</div>
+            </tfoot>
+        </table>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+
+        /**
+         * Deactivate button when no checkbox is selected.
+         */
+        $(this).on('change', $('input[type="checkbox"]'), function (e) {
+            var checked_boxes = $('#admin_uniqueProcedures').find('table.standard tbody input[type="checkbox"]:checked');
+
+            if (checked_boxes.length <= 0) {
+                $('#et_delete').attr('disabled', true).addClass('disabled');
+            } else {
+                $('#et_delete').attr('disabled', false).removeClass('disabled');
+            }
+        });
+    });
+</script>

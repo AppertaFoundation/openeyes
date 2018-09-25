@@ -151,7 +151,6 @@
 
         /**
          * Deactivate button when no checkbox is selected.
-         * Change button text to "Procedures" when more than one procedure is selected
          */
         $(this).on('change', $('input[type="checkbox"]'), function (e) {
             var checked_boxes = $('#admin_procedures').find('table.standard tbody input[type="checkbox"]:checked');
