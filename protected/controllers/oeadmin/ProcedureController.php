@@ -175,6 +175,25 @@ class ProcedureController extends BaseAdminController
     }
 
     /**
+     * @param Procedure $procedure - procedure to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given procedure
+     */
+    protected function isProcedureDeletable(Procedure $procedure)
+    {
+        $check_dependencies = 1;
+
+        $options = [':id' => $procedure->id];
+        $check_dependencies &= !Element_OphTrOperationnote_GenericProcedure::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !EtOphtrconsentProcedureProceduresProcedures::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !EtOphtrconsentProcedureAddProcsAddProcs::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphTrOperationbooking_Operation_Procedures::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphTrLaser_LaserProcedure::model()->count('procedure_id = :id', $options);
+        $check_dependencies &= !OphTrLaser_LaserProcedureAssignment::model()->count('procedure_id = :id', $options);
+
+        return $check_dependencies;
+    }
+
+    /**
      * Deletes rows from the model.
      */
     public function actionDelete()
@@ -184,7 +203,7 @@ class ProcedureController extends BaseAdminController
         foreach ($procedures as $procedure_id) {
             $procedure = Procedure::model()->findByPk($procedure_id);
 
-            if ($procedure) {
+            if ($procedure && $this->isProcedureDeletable($procedure)) {
                 $procedure->specialties = [];
                 $procedure->subspecialtySubsections = [];
                 $procedure->opcsCodes = [];
@@ -192,13 +211,16 @@ class ProcedureController extends BaseAdminController
                 $procedure->benefits = [];
                 $procedure->complications = [];
 
-                try {
-                    $procedure->save();
-                    $procedure->delete();
-                } catch (Exception $e) {
-                    echo "error";
+                if (!$procedure->save()) {
+                    echo 'Could not save procedure.';
                     return;
                 }
+                if (!$procedure->delete()) {
+                    echo 'Could not delete procedure.';
+                    return;
+                }
+            } else {
+                echo 'Procedure cannot be deleted. Other tables depend on it.';
             }
         }
         echo 1;

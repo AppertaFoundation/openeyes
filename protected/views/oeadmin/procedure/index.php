@@ -90,8 +90,9 @@
             <tr id="$key" class="clickable" data-id="<?php echo $procedure->id ?>"
                 data-uri="oeadmin/procedure/edit/<?php echo $procedure->id ?>?returnUri=">
                 <td>
-                    <!--<input type="checkbox" name="[$key]select" id="[$key]select"/>-->
-                    <input type="checkbox" name="select[]" value="<?php echo $procedure->id ?>" id="select[<?=$procedure->id ?>]"/>
+                    <?php if ($this->isProcedureDeletable($procedure)) : ?>
+                        <input type="checkbox" name="select[]" value="<?php echo $procedure->id ?>" id="select[<?=$procedure->id ?>]"/>
+                    <?php endif; ?>
                 </td>
                 <td><?php echo $procedure->term ?></td>
                 <td><?php echo $procedure->snomed_code ?></td>
@@ -167,8 +168,9 @@
                 }).removeClass('disabled');
             } else if (checked_boxes.length > 1) {
                 $('#et_delete').attr({
+                    disabled: false,
                     value: 'Delete Procedures'
-                });
+                }).removeClass('disabled');
             }
         });
     });
