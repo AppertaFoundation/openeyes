@@ -1,7 +1,22 @@
-<div class="element-data full-width">
+<div class="element-data">
   <div class="cols-12 column">
     <div class="data-value "><b><?php if ($element->sub_type) echo $element->sub_type->name; ?></b></div>
   </div>
+
+    <?php if($element->comment): ?>
+    <div class="element-fields flex-layout flex-top col-gap">
+
+        <div class="cols-2 column">
+           Comments:
+        </div>
+
+        <div class="cols-10 column">
+            <?=nl2br($element->comment);?>
+        </div>
+
+    </div>
+    <?php endif; ?>
+    <hr>
     <?php
       if ($element->single_document) { ?>
         <div class="cols-12 column">
@@ -14,27 +29,29 @@
 
 <?php if (($element->right_document_id) || ($element->left_document_id)) { ?>
   <div id="ophco-document-viewer">
-    <ul class="tabs event-actions">
+      Jump to:
         <?php if ($element->right_document_id) { ?>
-          <li><a href="#right-eye">Right eye</a></li>
+            <a href="#right-eye">Right eye</a> |
         <?php } ?>
 
         <?php if ($element->left_document_id) { ?>
-          <li><a href="#left-eye">Left eye</a></li>
+            <a href="#left-eye">Left eye</a>
         <?php } ?>
-    </ul>
+      <hr>
 
       <?php if ($element->right_document_id) {
           ?>
         <div id="right-eye">
+            <h2>Right eye</h2>
             <?php
             $this->renderPartial('view_' . $this->getTemplateForMimeType($element->right_document->mimetype), array('element' => $element, 'index' => 'right_document'));
             ?>
         </div>
       <?php } ?>
-    
+      <hr>
       <?php if ($element->left_document_id) { ?>
         <div id="left-eye">
+            <h2>Left eye</h2>
             <?php
             $this->renderPartial('view_' . $this->getTemplateForMimeType($element->left_document->mimetype), array('element' => $element, 'index' => 'left_document'));
             ?>
@@ -42,4 +59,3 @@
       <?php } ?>
   </div>
 <?php } ?>
-<div class="cols-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
