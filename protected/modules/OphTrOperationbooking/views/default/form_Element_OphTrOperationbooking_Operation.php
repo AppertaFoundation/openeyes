@@ -243,7 +243,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         </td>
                         <td>
                             <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
-                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true, array(),
+                            <?php $form->textArea($element, 'stop_medication_details', array('rows' => 1), true,
+                                array( 'field' => 'StopMedicationsDetails','label-class' => $element->getError('stop_medication_details') ? 'error' : ''),
                                 array_merge($form->layoutColumns, array('label'=>6,'field' => 12))) ?>
                         </td>
                     </tr>
@@ -257,7 +258,11 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 'stop_medication_details',
                                 array('rows' => 1, 'label' => false,
                                     'nowrapper' => true),
-                                true, array('class' => 'autosize')); ?>
+                                true,
+                                array('class' => 'autosize',
+                                    'class' => $element->getError('stop_medication_details') ? 'error' : ''
+                                )
+                            ); ?>
                         </td>
                     </tr>
                     <tr>
