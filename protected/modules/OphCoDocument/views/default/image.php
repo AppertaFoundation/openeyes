@@ -15,24 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<section class=" element
-<?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
-    echo 'full priority eye-divider';
-} elseif ($element->getTileSize($this->action->id) === 1) {
-    echo 'tile';
-} else {
-    echo 'full priority';
-} ?>
-	      <?= CHtml::modelName($element->elementType->class_name) ?>"
-         data-element-type-id="<?php echo $element->elementType->id ?>"
-         data-element-type-class="<?php echo $element->elementType->class_name ?>"
-         data-element-type-name="<?php echo $element->elementType->name ?>"
-         data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
-    <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-      <header class=" element-header">
-        <h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
-      </header>
-    <?php } ?>
-    <?php echo $content; ?>
-</section>
+$this->beginContent('//patient/event_content_image');
+
+$this->moduleNameCssClass .= ' highlight-fields';
+
+$this->renderOpenElements($this->action->id);
+
+$this->endContent();
