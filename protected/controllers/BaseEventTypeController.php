@@ -514,6 +514,21 @@ class BaseEventTypeController extends BaseModuleController
         return parent::beforeAction($action);
     }
 
+    public function afterAction($action)
+    {
+        if ($this->action->id === 'view'
+            && !EventImage::model()->exists('event_id = :event_id AND status_id = :status_id',
+                array(
+                    ':event_id' => $this->event->id,
+                    ':status_id' => EventImageStatus::model()->find('name = "GENERATING"')->id,
+                ))) {
+            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
+            exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
+        }
+
+        return parent::afterAction($action);
+    }
+
     /**
      * Redirect to the patient episodes when the controller determines the action cannot be carried out.
      */
@@ -747,7 +762,6 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionView()
     {
         $this->moduleStateCssClass = 'view';
-
         $this->initWithEventId(@$_GET['id']);
     }
 
