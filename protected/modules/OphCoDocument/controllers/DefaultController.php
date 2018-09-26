@@ -232,8 +232,6 @@ class DefaultController extends BaseEventTypeController
     {
         if($element->{$index."_id"} > 0){
             $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index));
-        }else {
-            $this->renderPartial('form_empty_upload', array('index'=>$index));
         }
     }
 

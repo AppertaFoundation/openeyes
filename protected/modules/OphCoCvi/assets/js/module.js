@@ -7,8 +7,6 @@ $(document).ready(function() {
         doPrint();
     }
 
-""
-
   $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
 
   $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').change(function(){
