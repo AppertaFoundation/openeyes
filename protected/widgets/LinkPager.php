@@ -21,6 +21,14 @@
  */
 class LinkPager extends CLinkPager
 {
+
+    public $firstPageLabel = '';
+    public $prevPageLabel = '';
+    public $nextPageLabel = '';
+    public $previousPageCssClass = 'oe-i arrow-left-bold medium pad';
+    public $nextPageCssClass = 'oe-i arrow-right-bold medium pad';
+    public $hiddenPageCssClass = 'disabled';
+
     /**
      * Inits Pager.
      */
@@ -31,7 +39,7 @@ class LinkPager extends CLinkPager
     }
 
     /**
-     * Sets the header to be our `showing...` string.
+     * Setting the header information e.g: 1-5 of 15
      */
     protected function setHeaderToShowing()
     {
@@ -46,66 +54,90 @@ class LinkPager extends CLinkPager
             $from = (($page - 1) * $this->pages->getPageSize()) + 1;
         }
 
-        $this->header = $from.' - '.$to.' of '.$this->getItemCount();
+        $this->header = $from . ' - ' . $to . ' of ' . $this->getItemCount();
     }
 
     /**
-     * LinkPager overrides CLinkPager's run function to render the next/previous buttons as sequential i tags rather than list tags.
+     * LinkPager overrides CLinkPager's run function to render the buttons as sequential a tags rather than list tags.
      */
     public function run()
     {
         $this->registerClientScript();
-        $buttons=$this->createPageButtons();
-        if(empty($buttons)) {
-            echo $this->header;
-            return;
-        }
+
+        echo \CHtml::openTag('div', ['class' => 'pagination']);
 
         echo $this->header;
-        echo implode("\n",$buttons); // There will only ever be a maximum of two buttons when using this pager (next/previous).
-        echo $this->footer;
+        echo $this->createPrevPageButton();
+        echo \CHtml::tag('span', ['class' => 'pagination-pages'], $this->createPageButtons(), true);
+        echo $this->createNextPageButton();
+        echo \CHtml::closeTag('div');
     }
 
     /**
-     * Create the next/previous buttons
-     * @return array Previous/next buttons
+     * Creating the previous (left) arrow button
+     * @return string
+     */
+    private function createPrevPageButton()
+    {
+        $currentPage = $this->getCurrentPage(false);
+        $page = ($currentPage - 1) > 0 ?: 0;
+
+        return $this->createPageButton($this->prevPageLabel, $page, $this->previousPageCssClass, $currentPage <= 0, false);
+    }
+
+    /**
+     * Creates a page button.
+     * You may override this method to customize the page buttons.
+     * @param string $label the text label for the button
+     * @param integer $page the page number
+     * @param string $class the CSS class for the page button.
+     * @param boolean $hidden whether this page button is visible
+     * @param boolean $selected whether this page button is selected
+     * @return string the generated button
+     */
+    protected function createPageButton($label, $page, $class, $hidden, $selected)
+    {
+        if ($hidden || $selected) {
+            $class .= ' ' . ($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
+        }
+
+        return CHtml::link($label, $selected ? '' : $this->createPageUrl($page), ['class' => $class]);
+    }
+
+    /**
+     * Create the internal buttons (page numbers between the arrows)
+     * @return string Previous/next buttons
      */
     protected function createPageButtons()
-    {   $pageCount=$this->getPageCount();
+    {
+        if (($pageCount = $this->getPageCount()) <= 1) {
+            return '';
+        }
+        list($beginPage, $endPage) = $this->getPageRange();
+        $currentPage = $this->getCurrentPage(false);
 
-        $currentPage=$this->getCurrentPage(false); // currentPage is calculated in getPageRange()
-        $buttons=array();
+        // internal pages
+        for ($i = $beginPage; $i <= $endPage; ++$i) {
+            $buttons[] = $this->createPageButton($i + 1, $i, $this->internalPageCssClass, false, $i == $currentPage);
+        }
 
-        // prev page
-        if(($page=$currentPage-1)<0)
-            $page=0;
-        $buttons[]=$this->createPageButton($this->prevPageLabel,$page,$currentPage <= 0 ? $this->previousPageCssClass.' disabled': $this->previousPageCssClass,false,false);
-
-        // next page
-        if(($page=$currentPage+1)>=$pageCount-1)
-            $page=$pageCount-1;
-        $buttons[]=$this->createPageButton($this->nextPageLabel,$page, $currentPage>=$pageCount-1 ? $this->nextPageCssClass.' disabled' : $this->nextPageCssClass,false,false);
-
-        return $buttons;
+        return implode('', $buttons);
     }
 
     /**
-     * @param string $label Button label (unused)
-     * @param int $page Page number (unused)
-     * @param string $class Button class
-     * @param bool $hidden Indicates if the button is hidden from sight
-     * @param bool $selected Indicates if the button has been selected.
-     * @return string HTML for the given button.
+     * Creating the next (right) arrow button
+     * @return string
      */
-    protected function createPageButton($label,$page,$class,$hidden,$selected)
+    private function createNextPageButton()
     {
-        if ($hidden || $selected)
-            $class .= ' ' . ($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
-        return CHtml::link('<i class="' . $class . '"></i>', $this->createPageUrl($page),
-            strpos($class, 'disabled') ?
-                array('style' => '
-            cursor: default;
-            pointer-events: none;') :
-                array());
+        $currentPage = $this->getCurrentPage(false);
+        $pageCount = $this->getPageCount();
+        $page = $currentPage + 1;
+
+        if ($page >= $pageCount - 1) {
+            $page = $pageCount - 1;
+        }
+
+        return $this->createPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
     }
 }
