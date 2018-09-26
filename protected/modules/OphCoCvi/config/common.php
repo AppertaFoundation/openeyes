@@ -17,31 +17,7 @@
 
 return array(
     'params' => array(
-        'admin_menu' => array(
-            'Clinical Disorder Section' => '/OphCoCvi/admin/clinicalDisorderSection',
-            'Clinical Disorder' => '/OphCoCvi/admin/clinicalDisorders',
-            'Patient Factor' => '/OphCoCvi/admin/patientFactor',
-            'Employment Status' => '/OphCoCvi/admin/employmentStatus',
-            'Contact Urgency' => '/OphCoCvi/admin/contactUrgency',
-            'Field of Vision' => '/OphCoCvi/admin/fieldOfVision',
-            'Low Vision Status' => '/OphCoCvi/admin/lowVisionStatus',
-            'Preferred Info Format' => '/OphCoCvi/admin/preferredInfoFormat',
-            'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
-        ),
-        'menu_bar_items' => array(
-            'cvi' => array(
-                'title' => 'CVI',
-                'position' => 7,
-                'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                'uri' => '/OphCoCvi/Default/list',
-            ),
-            'la' => array(
-                'title' => 'LA Admin',
-                'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
-                'position' => 8,
-                'restricted' => array(array('OprnCreateCvi', 'user_id')),
-            ),
-        ),
+
         'patient_summary_render' => array(
             'cvi_status' => array(
                 'module' => 'OphCoCvi',
@@ -60,5 +36,7 @@ return array(
                 'alert_base_value' => 81
             )
         ),
-    )
+    ),
+
+    'modules' => array('CviAdmin'),
 );

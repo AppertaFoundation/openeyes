@@ -19,23 +19,39 @@
 <?php if (@$vi) {?>
 	<table>
 		<tr>
-			<td>Signature:.......................</td>
-			<td>Date:...............................</td>
+			<td>Signature:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<tr>
-			<td>Name (PRINT):.......................</td>
-			<td>Relationship to child:........................</td>
+			<td>Name (PRINT):
+                <div class="dotted-write"></div>
+            </td>
+			<td>Relationship to child:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 	</table>
 <?php } else {?>
 	<table>
 		<tr>
-			<td>Signature:.......................................</td>
-			<td>Date:...................................................</td>
+			<td>Signature:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<tr>
-			<td>Name (PRINT):...............................</td>
-			<td>Relationship to child:...........................</td>
+			<td>Name (PRINT):
+                <div class="dotted-write"></div>
+            </td>
+			<td>Relationship to child:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 	</table>
 <?php }?>

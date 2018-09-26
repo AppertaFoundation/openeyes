@@ -18,9 +18,16 @@
  ?>
 <?php if (@$vi) {?>
 	<table>
+        <colgroup>
+            <col class="cols-half" span="2">
+        </colgroup>
 		<tr>
-			<td>Patient's signature:.....................</td>
-			<td>Date:...............................</td>
+			<td>Patient's signature:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<tr>
 			<td colspan="2">Name: <?php echo $name?></td>
@@ -29,8 +36,12 @@
 <?php } else {?>
 	<table class="signature">
 		<tr>
-			<td>Patient's signature:............................................</td>
-			<td>Date:......................................</td>
+			<td>Patient's signature:
+                <div class="dotted-write"></div>
+            </td>
+			<td>Date:
+                <div class="dotted-write"></div>
+            </td>
 		</tr>
 		<tr>
 			<td colspan="2">Name: <?php echo $name?></td>
