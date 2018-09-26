@@ -68,7 +68,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
       <div class="data-group">
         <div class="cols-4 column nhs-number-wrapper">
           <div class="nhs-number warning">
-            <span class="hide-text print-only">NHS Number:</span>
+            <span class="hide-text print-only"><?php echo Yii::app()->params['nhs_num_label']?> Number:</span>
           </div>
           <div>Number</div>
         </div>
