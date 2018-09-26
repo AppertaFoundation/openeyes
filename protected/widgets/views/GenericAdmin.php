@@ -38,7 +38,7 @@
     if ($filters_ready) { ?>
 		<?= CHtml::beginForm() ?>
 
-		<table class="generic-admin <?= ($display_order) ? 'sortable' : ''?>">
+		<table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?>">
 			<thead>
 				<tr>
 					<?php if($display_order) { ?>
@@ -79,22 +79,31 @@ if (!$get_row && $filters_ready) {
                             'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
                 } ?>
 			</tbody>
-			<?php if ($model::model()->hasAttribute('default')) {?>
-				<tfoot>
+
+                <tfoot class="pagination-container">
+                <?php if ($model::model()->hasAttribute('default')) {?>
 					<tr>
-						<td colspan="4" class="generic-admin-no-default">
+						<td colspan="10" class="generic-admin-no-default">
 							No default
 						</td>
 						<td>
 							<?php echo CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
 						</td>
 					</tr>
+                <?php } ?>
+                <tr>
+                    <td colspan="10">
+                        <?php if (!$this->cannot_add) {
+                            echo CHtml::htmlButton('Add', ['name' => 'admin-add', 'type' => 'submit','id' => 'et_admin-add', 'class' => 'button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
+                        }?>&nbsp;
+                        <?php echo CHtml::htmlButton('Save', ['name' => 'admin-save', 'type' => 'submit','id' => 'et_admin-save', 'class' => 'button large']); ?>&nbsp;
+                    </td>
+                </tr>
 				</tfoot>
-			<?php }?>
+
 		</table>
 		<div>
-            <?php if (!$this->cannot_add) { echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url))->toHtml(); }?>&nbsp;
-			<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
+
 		</div>
 	<?= CHtml::endForm() ?>
 <?php }
