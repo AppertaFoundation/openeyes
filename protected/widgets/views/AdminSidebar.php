@@ -14,7 +14,6 @@
  */
 ?>
 <nav class="oe-full-side-panel admin-panels">
-
     <!-- expand collapse all groups -->
     <div class="js-groups">
         <span class="js-expand-all"><i class="oe-i plus"></i></span>

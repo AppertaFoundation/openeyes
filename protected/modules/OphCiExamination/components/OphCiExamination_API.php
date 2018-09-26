@@ -592,7 +592,20 @@ class OphCiExamination_API extends \BaseAPI
         if ($refract_element = models\Element_OphCiExamination_Refraction::model()->findByAttributes(array('event_id' => $event->id))) {
             $right_spherical = number_format($refract_element->{'right_sphere'} + 0.5 * $refract_element->{'right_cylinder'}, 2);
             $left_spherical = number_format($refract_element->{'left_sphere'} + 0.5 * $refract_element->{'left_cylinder'}, 2);
-            return $right_spherical . " Right Eye" . ", " . $left_spherical . " Left Eye";
+            return '<table>
+                        <thead>
+                        <tr>
+                           <th>Right Eye</th>
+                           <th>Left Eye</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td>' . $right_spherical . '</td>
+                              <td>' . $left_spherical . '</td>
+                            </tr>
+                        </tbody>
+                    </table>';
         }
 
 
@@ -2220,10 +2233,11 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    /*
+    /**
      * Examination diagnoses and findings
      * @param $patient
      * @param $use_context
+     * @var $diag models\Element_OphCiExamination_Diagnoses
      */
     public function getLetterDiagnosesAndFindings($patient, $use_context = false)
     {
@@ -2235,7 +2249,7 @@ class OphCiExamination_API extends \BaseAPI
             return $diag->letter_string;
         }
 
-        return;
+        return '[No diagnoses in latest event]';
     }
 
     /**
