@@ -1672,6 +1672,7 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
 
         $patient = new Patient('manual');
         $patient->noPas();
@@ -1770,6 +1771,7 @@ class PatientController extends BaseController
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
