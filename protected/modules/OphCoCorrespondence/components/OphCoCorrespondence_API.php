@@ -387,7 +387,7 @@ class OphCoCorrespondence_API extends BaseAPI
             } else {
                 $data['cc'][$k]['contact_name'] = $patient->getCorrespondenceName();
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
-                $data['cc'][$k]['address'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['cc'][$k]['address'] = "Letters to the ".\Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
             $k++;
         }
@@ -517,7 +517,7 @@ class OphCoCorrespondence_API extends BaseAPI
                     'include_prefix' => true,
                 ));
             } else {
-                $data['alert'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['alert'] = "Letters to the ".\Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 

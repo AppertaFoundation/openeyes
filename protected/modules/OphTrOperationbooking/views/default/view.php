@@ -41,7 +41,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 	<?php if (!$operation->has_gp) {?>
 		<div class="alert-box alert with-icon">
-			Patient has no GP practice address, please correct in PAS before printing GP letter.
+			Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before printing <?php echo \Yii::app()->params['gp_label'] ?> letter.
 		</div>
 	<?php } ?>
 	<?php if (!$operation->has_address) { ?>
