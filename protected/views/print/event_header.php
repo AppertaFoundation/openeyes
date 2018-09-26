@@ -22,37 +22,53 @@ $event_type = $event->eventType->name;
 $logoHelper = new LogoHelper();
 
 ?>
+
 <header class="header">
 	<div class="title">
 	<?php echo $logoHelper->render('//base/_logo_seal'); ?>
 	<h1><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
 	</div>
-	<div class="data-group">
-		<!-- Patient details -->
-		<div class="cols-4 column patient">
-			<strong><?php echo $this->patient->contact->fullName?></strong>
-			<br />
-			<p>
-			<?php echo $this->patient->getLetterAddress(array(
-			    'delimiter' => '<br/>',
-      ))?>
-			</p>
-		</div>
-		<div class="cols-4 column firm">
-			<?php if ($consultant = $this->event->episode->firm->consultant) {?>
-			<p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
-			<?php }?>
-			<p>Service: <strong><?php echo $this->event->episode->firm->getSubspecialtyText() ?></strong></p>
-			<p>Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
-			<br />
-			NHS No: <strong><?php echo $this->patient->nhsnum ?></strong>
-			<br />
-			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
-			</p>
-		</div>
-		<div class="dates" style="width: 33.33333%;float: left;">
-			<p><?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong></p>
-			<p><?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong></p>
-		</div>
-	</div>
+    <table class="borders prescription_header">
+        <tbody><tr>
+            <th>Patient Name</th>
+            <td><?php echo $this->patient->contact->fullName?></td>
+            <th>Hospital Number</th>
+            <td><?php echo $this->patient->hos_num ?></td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</td>
+            <th>NHS Number</th>
+            <td><?php echo $this->patient->nhsnum ?></td>
+        </tr>
+        <tr>
+            <th>Consultant</th>
+            <td>
+                <?php if ($consultant = $this->event->episode->firm->consultant) {?>
+                    <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
+                <?php }?>
+            </td>
+            <th>Service</th>
+            <td><?php echo $this->event->episode->firm->getSubspecialtyText() ?></td>
+        </tr>
+        <tr>
+            <th>
+                Created
+            </th>
+            <td>
+                <?php echo Helper::convertDate2NHS($this->event->created_date) ?>
+            </td>
+            <th>
+                Printed
+            </th>
+            <td><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></td>
+        </tr>
+        <tr>
+            <th>Patient's address</th>
+            <td colspan="3"><?php echo $this->patient->getLetterAddress(array(
+                    'delimiter' => '<br/>',
+                ))?></td>
+        </tr>
+        </tbody>
+    </table>
 </header>

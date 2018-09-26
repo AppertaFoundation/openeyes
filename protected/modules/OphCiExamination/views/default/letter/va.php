@@ -22,10 +22,12 @@
  *            ['value']
  * @val array['method'] $right
  *            ['value']
+ * @val string $va_unit
  */
 $LR_readings = array();
 $left = $left ?: array();
 $right = $right ?: array();
+$va_unit = $va_unit?:'';
 foreach ($left as $method => $value) {
     $LR_readings[$method] = array('left' => $value);
 }
@@ -46,7 +48,7 @@ if (empty($LR_readings)) {
   <thead>
   <tr>
     <th class="VA-tbl-head">
-      Visual Acuity
+      Visual Acuity (<?= $va_unit?>)
     </th>
     <th class="VA-tbl-head">
       Left Eye

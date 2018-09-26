@@ -1,6 +1,7 @@
 
 /* Module-specific javascript can be placed here */
 
+
 $(document).ready(function() {
 	$('#et_save').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
@@ -10,6 +11,10 @@ $(document).ready(function() {
 			return true;
 		}
 		return false;
+	});
+
+	$('table.procedures').on('click' ,'i.trash' ,function(){
+		$(this).closest('tr').remove();
 	});
 
 	$('#et_cancel').unbind('click').click(function() {

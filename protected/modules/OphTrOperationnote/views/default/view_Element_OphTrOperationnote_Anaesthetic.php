@@ -33,7 +33,7 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
         <div class="cols-full">
             <?php if (count($element->anaesthetic_type) > 1 || (count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA"))) { ?>
           <div class="cols-11" id="js-listview-anaesthetic-pro">
-            <ul class="dslash-list large">
+            <ul class="dot-list large">
               <li><?= $element->getAnaestheticTypeDisplay() ?></li>
               <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
               <li><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?>:
