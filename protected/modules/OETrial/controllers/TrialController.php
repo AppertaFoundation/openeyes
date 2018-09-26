@@ -339,7 +339,8 @@ class TrialController extends BaseModuleController
     public function actionAddPermission()
     {
         $trial = $this->loadModel($_POST['id']);
-        $result = $trial->addUserPermission($_POST['user_id'], $_POST['permission'], $_POST['role']);
+        $permission = TrialPermission::model()->findByPk($_POST['permission']);
+        $result = $trial->addUserPermission($_POST['user_id'], $permission, $_POST['role']);
         echo $result;
     }
 
