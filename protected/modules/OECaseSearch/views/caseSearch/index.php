@@ -62,13 +62,13 @@ $this->pageTitle = 'Case Search';
                                 'Add Parameter: ',
                                 null,
                                 $paramList,
-                                array('empty' => '- Add a parameter -', 'id' => 'param'));
+                                array('empty' => '- Add a parameter -', 'id' => 'js-add-param'));
                             ?>
                         </div>
                     </div>
                     <div class="search-actions flex-layout flex-left">
                         <div class="column">
-                            <?php echo CHtml::submitButton('Search'); ?>
+                            <?php echo CHtml::submitButton('Search', array('class' => 'js-search-btn')); ?>
                         </div>
                         <div class="column end" style="padding-left: 5px">
                             <?php echo CHtml::button('Clear',
@@ -180,7 +180,7 @@ $this->pageTitle = 'Case Search';
     $(document).ready(function () {
         //null coallese the id of the last parameter
         var parameter_id_counter = $('.parameter').last().attr('id') || -1;
-        $('#param').on('change', function () {
+        $('#js-add-param').on('change', function () {
             var dropDown = this;
             if (!dropDown.value) {
                 return;
