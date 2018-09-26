@@ -1728,7 +1728,7 @@ class PatientController extends BaseController
                         $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
                     } else {
                         Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                        $this->redirect(array('view', 'id' => $patient->id));
+                        $this->redirect(array('episodes', 'id' => $patient->id));
                     }
 
                 } else {
