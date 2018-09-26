@@ -74,7 +74,7 @@
 
 
       // find and set up all collapse-groups
-      $('.collapse-group').each(function() {
+        this.$element.find('.collapse-group').each(function() {
         var group = new CollapseGroup($(this).find('.collapse-group-icon .oe-i'),
           $(this).find('.collapse-group-header'),
           $(this).find('.collapse-group-content'),

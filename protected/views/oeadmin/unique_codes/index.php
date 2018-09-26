@@ -17,7 +17,7 @@
 ?>
 
 <?php if (!$unique_codes) : ?>
-    <div class="row divider">
+    <div class="row divider cols-8">
         <div class="alert-box issue"><b>No results found</b></div>
     </div>
 <?php endif; ?>

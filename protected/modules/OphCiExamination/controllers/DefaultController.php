@@ -347,7 +347,7 @@ class DefaultController extends \BaseEventTypeController
             echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
         }
 
-        if ($action !== 'view') {
+        if ($action !== 'view' && $action !== 'createImage') {
             parent::renderOpenElements($action, $form, $date);
 
             return;
