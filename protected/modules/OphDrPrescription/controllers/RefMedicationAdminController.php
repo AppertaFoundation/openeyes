@@ -16,6 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class RefMedicationAdminController extends BaseAdminController
 {
     public function actionList()
@@ -150,6 +153,113 @@ class RefMedicationAdminController extends BaseAdminController
 
         $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
 
+    }
+
+    public function actionExportForm()
+    {
+        $data = array();
+
+        if(Yii::app()->request->isPostRequest) {
+            $ref_set_ids = Yii::app()->request->getPost('RefSet');
+            if(!empty($ref_set_ids)) {
+                return $this->actionExport($ref_set_ids);
+            }
+            else {
+                $data['form_error'] = 'Please select at least one Ref Set.';
+            }
+        }
+        return $this->render('/admin/ref_medication_export', $data);
+    }
+
+    public function actionExport($ref_set_ids = array())
+    {
+        ini_set('max_execution_time', 0);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $style_bold = [
+            'font' => [
+                'bold' => true,
+            ]
+        ];
+
+        $sheet->setCellValue('A4', 'DM+D ID (preffered code)');
+        $sheet->setCellValue('B4', 'Term (preferred term');
+        $sheet->setCellValue('C4', 'Source subtype');
+        $sheet->setCellValue('D4', 'Notes');
+        $sheet->getStyle('A4:D4')->applyFromArray($style_bold);
+
+        $sheet->setCellValue('D1', 'SET TITLE >>');
+        $sheet->setCellValue('D2', 'SET ID >>');
+        $sheet->setCellValue('D3', 'SET INFO >>');
+
+        $cond = new CDbCriteria();
+        $cond->addInCondition('id', $ref_set_ids);
+
+        $sets = RefSet::model()->findAll($cond);
+
+        $sets_array = [];
+
+        $sets_array[0] = array_map(function ($e){ return $e->name; }, $sets);
+        $sets_array[1] = array_map(function ($e){ return $e->id; }, $sets);
+        $sets_array[2] = array_map(function ($e){
+            $ruleString = [];
+            foreach ($e->refSetRules as $rule) {
+                $ruleString[] = $rule->usage_code." (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
+            }
+
+            return implode(PHP_EOL, $ruleString);
+        }, $sets);
+
+        $sheet->fromArray($sets_array, null, 'E1');
+
+        $medications = RefMedication::model()->findAll();
+
+        $cells_array = [];
+
+        foreach ($medications as $med) {
+            $row = [
+                $med->preferred_code, $med->preferred_term, $med->source_subtype, '??'
+            ];
+
+            foreach ($sets as $set) {
+                if($ref_medication_set = RefMedicationSet::model()->find("ref_medication_id = {$med->id} AND ref_set_id = {$set->id}")) {
+                    $repr = new stdClass();
+                    $repr->dose = $ref_medication_set->default_dose;
+                    $repr->dose_unit = $ref_medication_set->default_dose_unit_term;
+                    $repr->route = is_null($ref_medication_set->default_route) ? null : $ref_medication_set->defaultRoute->term;
+                    $repr->frequency = is_null($ref_medication_set->default_frequency) ? null: $ref_medication_set->defaultFrequency->term;
+                    $repr->duration = is_null($ref_medication_set->default_duration) ? null : $ref_medication_set->defaultDuration->name;
+
+                    if(!empty($ref_medication_set->tapers)) {
+                        $repr->tapers = array();
+                        foreach ($ref_medication_set->tapers as $taper) {
+                            $t = new stdClass();
+                            $t->dose = $taper->dose;
+                            $t->frequency = is_null($taper->frequency_id) ? null : $taper->frequency->term;
+                            $t->duration = is_null($taper->duration_id) ? null : $taper->duration->name;
+                            $repr->tapers[] = $t;
+                        }
+                    }
+
+                    $row[] = json_encode($repr);
+                }
+                else {
+                    $row[] = null;
+                }
+
+            }
+
+            $cells_array[]=$row;
+        }
+
+        $sheet->fromArray($cells_array, null, 'A5');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('/tmp/refMedExport.xlsx');
+
+        Yii::app()->request->sendFile("refMedExport.xlsx", @file_get_contents('/tmp/refMedExport.xlsx'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', false);
     }
 
 
