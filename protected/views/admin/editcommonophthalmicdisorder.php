@@ -14,6 +14,12 @@
  */
 ?>
 
+<?php
+foreach (Yii::app()->user->getFlashes() as $key => $message) {
+    echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
+}
+?>
+
 <form method="get">
     <table class="cols-4">
         <colgroup>
