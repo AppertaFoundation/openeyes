@@ -16,6 +16,12 @@
 
 <h2>Secondary Common Ophthalmic Disorder</h2>
 
+<?php
+foreach (Yii::app()->user->getFlashes() as $key => $message) {
+    echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
+}
+?>
+
 <form method="get">
     <table class="cols-5">
         <tbody>
@@ -114,7 +120,7 @@
             'header'=>'Actions',
             'type' => 'raw',
             'value' => function ($data) {
-                return '<a href="javascript:void(0)" class="delete">delete</a>';
+                return '<a href="javascript:void(0)" class="delete button large">delete</a>';
             }
         ),
     );
@@ -253,7 +259,7 @@
                 <span class="diagnosis-name"></span>
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
-                   data-saved-diagnoses="" type="text" name="SecondaryToCommonOphthalmicDisorder[0][disorder_id]" id="SecondaryToCommonOphthalmicDisorder_0_disorder_id" autocomplete="off">
+                   data-saved-diagnoses="" type="text" autocomplete="off">
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis" value="">
         </td>
@@ -274,7 +280,7 @@
             <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
         </td>
         <td>
-            <a href="javascript:void(0)" class="delete">delete</a>
+            <a href="javascript:void(0)" class="delete button large">delete</a>
         </td>
     </tr>
 </script>
