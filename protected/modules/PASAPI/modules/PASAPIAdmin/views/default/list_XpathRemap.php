@@ -18,21 +18,16 @@
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
-<div class="box admin">
-    <header class="box-header">
-        <h2 class="box-title"><?php echo $title ? $title : 'PASAPI Admin' ?></h2>
-        <div class="box-actions">
-            <a class="button small warning" href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewXpathRemaps'); ?>">Back to Index</a>
-            <a class="button small" href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/create'.$model_class, array('id' => $remap->id)); ?>">Add New Value</a>
-        </div>
-    </header>
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
+</div>
 
     <table class="standard">
         <thead>
         <tr>
-            <th>Input</th>
-            <th>Output</th>
-            <th>&nbsp;</th>
+            <th>Name</th>
+            <th>Values</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -41,18 +36,24 @@
             ?>
             <tr data-attr-id="<?php echo $model->id?>">
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->input ?></a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/update'.Helper::getNSShortname($model)) . '/' .$model->id ?>"><?php echo $model->name?></a>
                 </td>
                 <td>
-                    <?= $model->output ?>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/viewRemapValues') . '/' .$model->id ?>"><?= count($model->values) ?></a>
                 </td>
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/deleteRemapValue', array('id' => $model->id)) ?>">Delete</a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/deleteXpathRemap') . '/' .$model->id; ?>">Delete</a>
                 </td>
             </tr>
             <?php
 
         }?>
         </tbody>
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="3">
+                <a class="button small" href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/create'.$model_class); ?>">Add New</a>
+            </td>
+        </tr>
+        </tfoot>
     </table>
-</div>

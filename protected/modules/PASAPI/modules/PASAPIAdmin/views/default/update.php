@@ -17,35 +17,57 @@
  */
 ?>
 
-<div class="box admin">
-    <?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'PASAPI_adminform',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ));
+<div class="row divider">
+    Update
+</div>
 
-    $this->renderPartial('form_'.Helper::getNSShortname($model), array(
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'PASAPI_adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+));
+?>
+
+<table class="standard">
+    <colgroup>
+        <col class="cols-1">
+        <col class="cols-11">
+    </colgroup>
+    <tbody>
+    <?php
+    $this->renderPartial('form_' . Helper::getNSShortname($model), array(
         'model' => $model,
         'form' => $form,
     ));
-    echo $form->formActions(array(
-        'submit' => $model->isNewRecord ? 'Create' : 'Save',
-        'cancel' => 'Cancel',
-        'delete' => false,
-        'cancel-uri' => @$cancel_uri,
-    ));
-
-    $this->endWidget();
     ?>
-</div>
+    </tbody>
+    <tfoot class="pagination-container">
+    <tr>
+        <td colspan="2">
+            <?= CHtml::htmlButton($model->isNewRecord ? 'Create' : 'Save', ['type' => 'submit', 'class' => 'large button']) ?>
+            <?= CHtml::htmlButton('Cancel', [
+                'type' => 'submit',
+                'data-uri' => "/PASAPI/admin/default/viewXpathRemaps",
+                'name' => 'cancel',
+                'id' => "et_cancel",
+                'class' => 'large button'
+            ]);
+            ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+<?php $this->endWidget(); ?>
+
 <?php if (@$related_view) {
     $this->renderPartial($related_view, array(
         'model' => $model,
-    ))?>
+    )) ?>
     <?php
 
-}?>
+} ?>

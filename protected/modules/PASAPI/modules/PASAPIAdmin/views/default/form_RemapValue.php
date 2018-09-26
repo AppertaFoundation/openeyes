@@ -16,6 +16,18 @@
  */
 ?>
 
-<?php echo $form->hiddenField($model, 'id')?>
-<?php echo $form->textField($model, 'xpath', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+<tr>
+    <td><?=$model->getAttributeLabel('input');?></td>
+    <td>
+        <?= $form->hiddenField($model, 'id')?>
+        <?= $form->hiddenField($model, 'xpath_id')?>
+        <?=CHtml::activeTextField($model, 'input', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+    </td>
+
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('output');?></td>
+    <td>
+        <?=CHtml::activeTextField($model, 'output', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+    </td>
+</tr>

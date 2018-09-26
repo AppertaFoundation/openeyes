@@ -1,8 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,22 +9,25 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\PASAPI;
+$config = [
+    'params' => [
+        'admin_menu' => array(
+            'Value Remaps' => '/PASAPI/admin/default/viewXpathRemaps',
+        ),
+    ],
 
-class PASAPIModule extends \BaseModule
-{
-    public $controllerNamespace = '\OEModule\PASAPI\controllers';
+    'components' => [
+        'urlManager' => [
+            'rules' => [
+                'PASAPI/admin/<controller:\w+>/<action:\w+>' => '/PASAPI/PASAPIAdmin/<controller>/<action>',
+                'PASAPI/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/PASAPI/PASAPIAdmin/<controller>/<action>',
+            ]
+        ]
+    ]
+];
 
-    public function init()
-    {
-        // import the module-level components
-        $this->setImport(['PASAPI.components.*',]);
-        $this->setModules(['PASAPIAdmin']);
-
-        parent::init();
-    }
-}
+return $config;

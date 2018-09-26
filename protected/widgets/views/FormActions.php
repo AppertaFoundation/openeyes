@@ -20,7 +20,7 @@
 	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
 		<?php echo EventAction::button($buttonOptions['submit'], 'save', array(), array('class' => 'button small'))->toHtml()?>
 		<?php if ($buttonOptions['cancel']) {
-    $cancelHtmlOptions = array('class' => 'warning button small');
+    $cancelHtmlOptions = array('class' => 'button large');
     if (@$buttonOptions['cancel-uri']) {
         $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
     }

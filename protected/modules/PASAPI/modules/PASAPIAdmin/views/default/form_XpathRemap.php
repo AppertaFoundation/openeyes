@@ -14,19 +14,19 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+?>
+<tr>
+    <td><?=$model->getAttributeLabel('xpath');?></td>
+    <td>
+        <?= $form->hiddenField($model, 'id')?>
+        <?=CHtml::activeTextField($model, 'xpath', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+    </td>
 
-namespace OEModule\PASAPI;
+</tr>
+<tr>
+    <td><?=$model->getAttributeLabel('name');?></td>
+    <td>
+        <?=CHtml::activeTextField($model, 'name', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+    </td>
+</tr>
 
-class PASAPIModule extends \BaseModule
-{
-    public $controllerNamespace = '\OEModule\PASAPI\controllers';
-
-    public function init()
-    {
-        // import the module-level components
-        $this->setImport(['PASAPI.components.*',]);
-        $this->setModules(['PASAPIAdmin']);
-
-        parent::init();
-    }
-}

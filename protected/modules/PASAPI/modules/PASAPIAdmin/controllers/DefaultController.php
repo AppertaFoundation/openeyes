@@ -15,12 +15,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\PASAPI\controllers;
+namespace OEModule\PASAPI\PASAPIAdmin\controllers;
 
 use OEModule\PASAPI\models\XpathRemap;
 use OEModule\PASAPI\models\RemapValue;
 
-class AdminController extends \BaseAdminController
+class DefaultController extends \BaseAdminController
 {
     public function actionViewXpathRemaps()
     {
@@ -51,7 +51,7 @@ class AdminController extends \BaseAdminController
         $this->render('update', array(
             'model' => $model,
             'title' => 'Add Xpath Remap',
-            'cancel_uri' => '/PASAPI/admin/viewXpathRemaps',
+            'cancel_uri' => '/PASAPI/admin/default/viewXpathRemaps',
         ));
     }
 
@@ -75,7 +75,7 @@ class AdminController extends \BaseAdminController
         $this->render('update', array(
             'model' => $model,
             'title' => 'Update Xpath Remap',
-            'cancel_uri' => '/PASAPI/admin/viewXpathRemaps',
+            'cancel_uri' => '/PASAPI/admin/default/viewXpathRemaps',
         ));
     }
 

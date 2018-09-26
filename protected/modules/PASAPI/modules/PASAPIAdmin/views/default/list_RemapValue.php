@@ -18,19 +18,15 @@
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
-<div class="box admin">
-    <header class="box-header">
-        <h2 class="box-title"><?php echo $title ? $title : 'PASAPI Admin' ?></h2>
-        <div class="box-actions">
-            <a class="button small" href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/create'.$model_class); ?>">Add New</a>
-        </div>
-    </header>
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
+</div>
 
     <table class="standard">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Values</th>
+            <th>Input</th>
+            <th>Output</th>
             <th>&nbsp;</th>
         </tr>
         </thead>
@@ -40,18 +36,26 @@
             ?>
             <tr data-attr-id="<?php echo $model->id?>">
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/update'.Helper::getNSShortname($model), array('id' => $model->id)) ?>"><?php echo $model->name?></a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/update'.Helper::getNSShortname($model)) . '/' . $model->id ?>"><?php echo $model->input ?></a>
                 </td>
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewRemapValues', array('id' => $model->id)) ?>"><?= count($model->values) ?></a>
+                    <?= $model->output ?>
                 </td>
                 <td>
-                    <a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/deleteXpathRemap', array('id' => $model->id)) ?>">Delete</a>
+                    <a href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/deleteRemapValue') . '/' . $model->id ?>">Delete</a>
                 </td>
             </tr>
             <?php
 
         }?>
         </tbody>
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="3">
+                <a class="button small warning" href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/viewXpathRemaps'); ?>">Back to Index</a>
+                <a class="button small" href="<?php echo Yii::app()->createUrl('PASAPI/admin/default/create'.$model_class) . '/' . $remap->id; ?>">Add New Value</a>
+            </td>
+        </tr>
+        </tfoot>
     </table>
-</div>
+
