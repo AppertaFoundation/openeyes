@@ -74,7 +74,7 @@
 
 
       // find and set up all collapse-groups
-      $('.collapse-group').each(function() {
+        this.$element.find('.collapse-group').each(function() {
         var group = new CollapseGroup($(this).find('.collapse-group-icon .oe-i'),
           $(this).find('.collapse-group-header'),
           $(this).find('.collapse-group-content'),
@@ -343,7 +343,12 @@
         item.attr('data-collapse', 'collapsed');
       }
 
-      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
+      item.append(
+          '<div class="collapse-group-icon">' +
+            '<i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '">' +'</i>' +
+          '</div> ' +
+          '<h3 class="collapse-group-header">' + itemData.name + '</h3>'
+      );
 
         var subList = self.buildTreeChildList(itemData.children);
 

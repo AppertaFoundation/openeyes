@@ -24,7 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
-    public $fixedHotlist = true;
+    public $fixedHotlist = false;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
@@ -120,7 +120,16 @@ class BaseController extends Controller
         // Set AssetManager properties.
         $assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
-
+        if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])){
+            $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path).'/css/style_oe3.0_print.css';
+            $newparams =
+                array_merge_recursive(
+                    Yii::app()->getParams()->toArray(),
+                    array('tinymce_default_options' => array('content_css' => $print_css_path))
+                );
+            Yii::app()->setParams($newparams);
+        }
         //FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
         // to render the HTML template for the TCPDF engine)
@@ -229,10 +238,6 @@ class BaseController extends Controller
     public function processJsVars()
     {
         // TODO: Check logged in before setting
-        $this->jsVars['uservoice_enabled'] = Yii::app()->params['uservoice_enabled'];
-        $this->jsVars['uservoice_use_logged_in_user'] = Yii::app()->params['uservoice_use_logged_in_user'];
-        $this->jsVars['uservoice_override_account_id'] = Yii::app()->params['uservoice_override_account_id'];
-        $this->jsVars['uservoice_override_account_name'] = Yii::app()->params['uservoice_override_account_name'];
         $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
         if (isset(Yii::app()->session['user'])) {
           $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));

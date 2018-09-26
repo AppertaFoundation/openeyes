@@ -141,7 +141,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.showEditableIfOther = function () {
-        console.log('showEditableOther ran');
         var controller = this;
         $(this.allergySelector).each(function () {
             var isOther = (this.value == controller.options.allergyOtherValue);

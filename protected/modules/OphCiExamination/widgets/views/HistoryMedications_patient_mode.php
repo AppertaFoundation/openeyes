@@ -48,12 +48,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td>
-                    <?php
-                    $laterality = $entry->getLateralityDisplay();
-                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality))
-                    ?>
-                </td>
+                  <td>
+                      <i class="oe-i info small pro-theme js-has-tooltip"
+                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                      </i>
+                  </td>
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
               </tr>
             <?php endforeach; ?>
@@ -117,6 +116,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                       ?>
                   </td>
+                    <td>
+                    <i class="oe-i info small pro-theme js-has-tooltip"
+                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                    </i>
+                    </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 </tr>
               <?php endforeach; ?>
@@ -126,9 +130,6 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
             <?php if ($stopped_eye_meds): ?>
             <table>
-              <colgroup>
-                <col class="cols-7">
-              </colgroup>
               <thead>
               <tr>
                 <th>Stopped</th>
@@ -142,6 +143,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <?php foreach ($stopped_eye_meds as $entry): ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
+                    <td>
+                        <?php $laterality = $entry->getLateralityDisplay();
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
+                    </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                   <td>
                       <?php if ($entry->prescription_item): ?>

@@ -44,8 +44,6 @@ $element_Type = $element->getElementType();
                 echo $element->elementType->parent_element_type_id;
             } ?>"
             data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
-
-            style="min-height: 80px;"
     >
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
@@ -76,7 +74,9 @@ $element_Type = $element->getElementType();
                 <!-- remove MUST be last element -->
                 <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
                       title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
-            <i class="oe-i trash-blue"></i>
+                    <?php if(!isset($no_bin) || $no_bin == false) { ?>
+                        <i class="oe-i trash-blue"></i>
+                     <?php } ?>
           </span>
             </div>
         <?php } ?>

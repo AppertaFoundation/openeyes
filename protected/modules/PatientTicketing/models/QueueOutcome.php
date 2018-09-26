@@ -18,6 +18,16 @@
 
 namespace OEModule\PatientTicketing\models;
 
+/**
+ * Class QueueOutcome
+ * @package OEModule\PatientTicketing\models
+ *
+ * @property \User $user
+ * @property \User $usermodified
+ * @property Queue $queue
+ * @property Queue $outcome_queue
+ *
+ */
 class QueueOutcome extends \BaseActiveRecordVersioned
 {
     /**
@@ -66,14 +76,13 @@ class QueueOutcome extends \BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array(
-        );
+        return array();
     }
 
     public function behaviors()
     {
         return array(
-                'LookupTable' => 'LookupTable',
+            'LookupTable' => 'LookupTable',
         );
     }
 
@@ -92,7 +101,7 @@ class QueueOutcome extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 

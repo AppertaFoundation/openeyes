@@ -29,6 +29,9 @@ class OphDrPrescriptionModule extends BaseEventTypeModule
             'OphDrPrescription.components.*',
             'OphDrPrescription.controllers.*',
         ));
+
+        $this->setModules(array('OphDrPrescriptionAdmin'));
+
         parent::init();
     }
 

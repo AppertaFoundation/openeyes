@@ -17,14 +17,14 @@
  */
 ?>
 
-<section class="element view full">
+<section class="element view">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <section class="element-fields full-width">
+  <div class="element-fields full-width">
 
-    <div class="eyedraw flex-layout flex-top posterior pole">
-      <div class="eyedraw-canvase">
+    <div class="eyedraw flex-layout">
+      <div class="eyedraw-canvas">
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'idSuffix' => 'Trabeculectomy',
@@ -39,13 +39,12 @@
           ));
           ?>
       </div>
-      <div class="eyedraw-data cols-5">
+      <div class="eyedraw-data">
         <table class="label-value no-lines last-left">
           <colgroup>
-            <col class="cols-5">
+            <col class="cols-4">
           </colgroup>
           <tbody>
-
           <tr>
             <td>
               <div class="data-label">
@@ -140,7 +139,7 @@
             <td>
               <div class="data-value">
                   <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
-                      <?php echo $line ?><br/>
+                      <?php echo $line ?>
                   <?php } ?>
               </div>
             </td>
@@ -156,10 +155,10 @@
                     None
                   <?php } else { ?>
                       <?php foreach ($element->difficulties as $difficulty) { ?>
-                          <?php if ($difficulty->name == 'Other') { ?>
-                              <?php echo str_replace("\n", '<br/>', $element->difficulty_other) ?>
+                          <?php if ($difficulty->name == 'Other') {?>
+                              <?php echo preg_replace("/[\n]/", ', ', $element->difficulty_other) ?>
                           <?php } else { ?>
-                              <?php echo $difficulty->name ?><br/>
+                              <?php echo $difficulty->name?>,
                           <?php } ?>
                       <?php } ?>
                   <?php } ?>
@@ -178,9 +177,9 @@
                   <?php } else { ?>
                       <?php foreach ($element->complications as $complication) { ?>
                           <?php if ($complication->name == 'Other') { ?>
-                              <?php echo str_replace("\n", '<br/>', $element->complication_other) ?>
+                              <?php echo preg_replace("/[\n]/", ', ', $element->complication_other) ?>
                           <?php } else { ?>
-                              <?php echo $complication->name ?><br/>
+                              <?php echo $complication->name ?>,
                           <?php } ?>
                       <?php } ?>
                   <?php } ?>
@@ -192,5 +191,5 @@
         </table>
       </div>
     </div>
-  </section>
+  </div>
 </section>

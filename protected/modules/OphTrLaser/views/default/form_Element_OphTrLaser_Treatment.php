@@ -14,48 +14,101 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $lprocs = OphTrLaser_LaserProcedure::model()->with(array('procedure'))->findAll(array('order' => 'procedure.term asc'));
 $procs = array();
 foreach ($lprocs as $lproc) {
     $procs[] = $lproc->procedure;
 }
+
 $layoutColumns = array(
     'label' => 4,
     'field' => 6,
 );
 ?>
 
-<div class="element-fields element-eyes data-group">
-    <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>
-          <?php if (!$element->hasEye($eye_side)) { ?>inactive<?php } ?>" data-side="<?= $eye_side ?>">
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <?php
-            $form->multiSelectList(
-                $element,
-                'treatment_' . $eye_side . '_procedures',
-                $eye_side . '_procedures',
-                'id',
-                CHtml::listData($procs, 'id', 'term'),
-                array(),
-                array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')),
-                false,
-                false,
-                null,
-                false,
-                false,
-                $layoutColumns
-            ); ?>
+<div class="element-fields element-eyes">
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
+         data-side="<?= $eye_side ?>"
+    >
+        <div class="active-form data-group flex-layout"
+             style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+        >
+            <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+            <div class="cols-9">
+                <table class="cols-full blank procedures">
+                    <colgroup>
+                        <col>
+                        <col class="cols-2">
+                    </colgroup>
+                    <tbody>
+                    <?php foreach ($element->{$eye_side . '_procedures'} as $procedure) {
+                        // Adjust currently element readings to match unit steps
+                        $this->renderPartial('form_Element_OphTrLaser_Laser_Procedure', array(
+                            'id' => $procedure->id,
+                            'term' => $procedure->term,
+                            'eye_side' => $eye_side,
+                        ));
+                    } ?>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-procedure">
+                <button class="button hint green" id="add-procedure-btn-<?= $eye_side?>" type="button">
+                    <i class="oe-i plus pro-theme"></i>
+                </button>
+                <!-- oe-add-select-search -->
+            </div>
+            <!--flex bottom-->
         </div>
-        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-          <div class="add-side">
-            <a href="#">
-              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
-            </a>
-          </div>
+        <!-- active form-->
+        <div class="inactive-form"  style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
+            <div class="add-side">
+                <a href="#">
+                    Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+                </a>
+            </div>
         </div>
-      </div>
+    </div>
+        <script type="text/javascript">
+            $(function () {
+                new OpenEyes.UI.AdderDialog({
+                    openButton: $('#add-procedure-btn-<?= $eye_side?>'),
+                    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                        array_map(function ($procedure) {
+                            return ['label' => $procedure->term, 'id' => $procedure->id];
+                        }, $procs  ) ) ?> ,{'multiSelect': true}),
+                    ],
+                    onReturn: function (adderDialog, selectedItems) {
+                        var $table = $('.<?= $eye_side ?>-eye .procedures');
+                        if (selectedItems.length) {
+                            for(let index in selectedItems) {
+                                let selected_data = [];
+                                selected_data.id = selectedItems[index]['id'];
+                                selected_data.term = selectedItems[index]['label'];
+                                selected_data.eye_side = '<?=$eye_side?>';
+                                var form = Mustache.render($('#laser_procedure_template').html(), selected_data);
+                                $table.find('tbody').append(form);
+                            }
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    },
+                });
+            });
+        </script>
     <?php endforeach; ?>
-</div>
+
+    <script type="text/template" id="laser_procedure_template" style="display:none">
+    <?php
+    $this->renderPartial('form_Element_OphTrLaser_Laser_Procedure', array(
+            'id' => '{{id}}',
+            'term' => '{{term}}',
+            'eye_side' => '{{eye_side}}',
+        )
+    );
+    ?>
+    </script>

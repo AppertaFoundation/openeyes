@@ -56,6 +56,9 @@
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  *
+ * The following are available through get methods
+ * @property SecondaryDiagnosis[] $systemicDiagnoses
+ *
  */
 class Patient extends BaseActiveRecordVersioned
 {
@@ -574,6 +577,28 @@ class Patient extends BaseActiveRecordVersioned
         
         $allDiagnosesString = implode($separator,$allDiagnoses).($lastSeparatorNeeded ? $separator:'');
         return $allDiagnosesString;
+    }
+
+    /**
+     * @var $diagnosis SecondaryDiagnosis
+     *
+     * @return string
+     */
+    public function getUniqueOphthalmicDiagnosesTable(){
+        ob_start();
+        ?>
+        <table class="standard">
+            <tbody>
+            <?php foreach ($this->getOphthalmicDiagnoses() as $diagnosis): ?>
+                <tr>
+                    <td><?= Helper::convertDate2NHS($diagnosis->date) ?></td>
+                    <td><?= mb_strtoupper($diagnosis->eye->adjective).' '.$diagnosis->disorder->term?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -1334,8 +1359,8 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('specialty.code', 130);
 
         $criteria->order = 'date asc';
-
-        return SecondaryDiagnosis::model()->findAll($criteria);
+        $result =SecondaryDiagnosis::model()->findAll($criteria);
+        return $result;
     }
 
     /*
@@ -1970,16 +1995,32 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return string
+     * @return Array
      */
     public function getCviSummary()
     {
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($examination_api){
+            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status', $this);
+        }
         if ($cvi_api) {
-            return $cvi_api->getSummaryText($this);
+            $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
+        }
+        if (isset($examination_cvi)&&isset($CoCvi_cvi)){
+            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date ){
+                return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
+            }
+            else {
+                return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
+            }
+        } else if (isset($examination_cvi)){
+            return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
+        } else if (isset($CoCvi_cvi)){
+            return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
         }
         else {
-            return $this->getOPHInfo()->cvi_status->name;
+            return array($this->getOPHInfo()->cvi_status->name, new DateTime());
         }
     }
 

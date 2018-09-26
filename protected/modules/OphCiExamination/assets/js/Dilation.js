@@ -40,7 +40,7 @@ OpenEyes.OphCiExamination.DilationController = (function () {
       };
       var form = Mustache.render(template, data);
       this.$table.show();
-      $(element).closest('.side').find('.timeDiv').show();
+      $(element).closest('.js-element-eye').find('.timeDiv').show();
       $('tbody', this.$table).append(form);
     }
   };
@@ -49,7 +49,7 @@ OpenEyes.OphCiExamination.DilationController = (function () {
     var addList = this.$addList;
 
     this.$table.delegate('.removeTreatment', 'click', function (e) {
-      var wrapper = $(this).closest('.side');
+      var wrapper = $(this).closest('.js-element-eye');
       var row = $(this).closest('tr');
       var id = row.find('.drugId').val();
       addList.find('li[data-str=\'' + id + '\']').show();
@@ -64,13 +64,13 @@ OpenEyes.OphCiExamination.DilationController = (function () {
 
   $('.dilation_drug').keypress(function (e) {
     if (e.keyCode == 13) {
-      var side = $(this).closest('.side').attr('data-side');
+      var side = $(this).closest('.js-element-eye').attr('data-side');
       OphCiExamination_Dilation_addTreatment(this, side);
     }
   });
 
   $(this).delegate('.main-event .edit-Dilation .clearDilation', 'click', function (e) {
-    $(this).closest('.side').find('tr.dilationTreatment a.removeTreatment').click();
+    $(this).closest('.js-element-eye').find('tr.dilationTreatment a.removeTreatment').click();
     e.preventDefault();
   });
 
