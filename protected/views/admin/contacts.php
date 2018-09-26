@@ -87,7 +87,7 @@
         </tbody>
         <tfoot class="pagination-container">
         <tr>
-            <td colspan="6">
+            <td colspan="2">
                 <?php echo CHtml::htmlButton(
                     'Add',
                     [
@@ -95,6 +95,8 @@
                         'type' => 'submit', 'id' => 'et_add'
                     ]
                 );?>
+            </td>
+            <td colspan="4">
                 <?php $this->widget(
                     'LinkPager',
                     ['pages' => $contacts['pagination']]

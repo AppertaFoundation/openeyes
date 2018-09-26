@@ -106,7 +106,7 @@
                         ]
                     ); ?>
                 </td>
-                <td colspan="3">
+                <td colspan="4">
                     <?php $this->widget(
                         'LinkPager',
                         ['pages' => $pagination]

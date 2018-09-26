@@ -16,7 +16,7 @@
 <div id="episode-summary" class="box admin">
     <div id="draggablelist">
         <?php echo CHtml::beginForm(array('/admin/updateEpisodeSummary'), 'post'); ?>
-        <div class="cols-6 column">
+        <div class="cols-5 column">
             <table class="standard">
                 <colgroup>
                     <col class="cols-6">
@@ -44,7 +44,7 @@
         </div>
         <?php echo CHtml::hiddenField('item_ids'); ?>
              <div id="draggablelist-items" class="data-group">
-                 <div class="cols-6 column">
+                 <div class="cols-5 column">
                      <h2>Enabled items</h2>
                         <?php $this->renderPartial(
                             '_episodeSummaries_table',
@@ -54,7 +54,7 @@
                             ]
                         ); ?>
                  </div>
-                <div class="cols-6 column">
+                <div class="cols-5 column">
                     <h2>Available items</h2>
                     <?php $this->renderPartial(
                         '_episodeSummaries_table',
