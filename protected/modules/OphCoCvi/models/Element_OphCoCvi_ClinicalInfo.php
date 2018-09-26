@@ -716,4 +716,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         return $this->consultant_signature_file_id ? true : false;
     }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
+    }
 }
