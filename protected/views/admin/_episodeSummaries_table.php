@@ -15,12 +15,14 @@
 ?>
 <table class="standard">
     <colgroup>
-        <col class="cols-6">
-        <col class="cols-6">
+        <col class="cols-1">
+        <col class="cols-3">
+        <col class="cols-4">
     </colgroup>
 
     <thead>
     <tr>
+        <th>Order</th>
         <th>Event type</th>
         <th>Item name</th>
     </tr>
@@ -28,6 +30,7 @@
     <tbody id="<?= $id ?>">
         <?php foreach ($items as $item) { ?>
         <tr class="draggablelist-item" data-item-id="<?= $item->id ?>">
+            <td>&uarr;&darr;</td>
             <td><?= $item->event_type->name ?></td>
             <td><?= $item->name ?></td>
         </tr>

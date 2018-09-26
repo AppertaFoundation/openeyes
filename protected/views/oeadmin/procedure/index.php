@@ -22,13 +22,13 @@
     </div>
 <?php endif; ?>
 
-<div class="row divider cols-9">
+<div class="row divider cols-full">
     <form id="procedures_search" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="cols-full">
             <colgroup>
-                <col class="cols-8">
-                <col class="cols-2" span="2">
+                <col class="cols-10">
+                <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
             <tbody>
