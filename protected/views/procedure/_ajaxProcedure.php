@@ -28,7 +28,7 @@
     <?php } ?>
   <td>
     <span class="removeProcedure">
-      <i class="oe-i remove-circle small"></i>
+      <i class="oe-i trash"></i>
     </span>
   </td>
 </tr>

@@ -258,4 +258,9 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
 
         return $result;
     }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
+    }
 }

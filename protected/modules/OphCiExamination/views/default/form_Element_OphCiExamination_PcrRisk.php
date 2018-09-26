@@ -169,10 +169,10 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
             endforeach;?>
           <div class="data-group">
             <span class="pcr-risk-div">
-              <label class="pro-theme highlighter">
+              <span class="highlighter large-text">
                 PCR Risk <span class="pcr-span">&nbsp;</span> %
                   <?php $form->hiddenInput($element, $eye.'_pcr_risk', false, array('class' => 'pcr-input'));?>
-              </label>
+              </span>
             </span>
             <span>
               <label>

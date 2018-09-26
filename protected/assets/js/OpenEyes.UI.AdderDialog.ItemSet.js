@@ -19,6 +19,19 @@
 
   };
 
+	/**
+	 * 	If itemset has default value to display, return its index in the list.
+	 */
+  ItemSet.prototype.getScrollIndex = function() {
+  	var result = 0;
+		$(this.items).each(function (index, item) {
+			if (item['set-default']){
+				result = index;
+			}
+		});
+		return result;
+	};
+
   exports.ItemSet = ItemSet;
 
 }(OpenEyes.UI.AdderDialog));
