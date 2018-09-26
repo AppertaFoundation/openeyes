@@ -13,7 +13,7 @@ class m180924_020617_add_county_label_setting extends OEMigration
             )
         );
 
-        $this->insert('setting_installation', array('key' => 'county_label', 'value' => ''));
+        $this->insert('setting_installation', array('key' => 'county_label', 'value' => 'County'));
 	}
 
 	public function safeDown()
