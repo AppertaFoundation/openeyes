@@ -81,7 +81,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         <table class="patient-demographics" style="position: relative; right: 0;">
           <tbody>
           <tr>
-            <td>General Practitioner</td>
+            <td><?php echo Yii::app()->params['gp_label'] == 'GP' ? 'General Practitioner' : 'Practitioner' ?></td>
             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
           </tr>
           <tr>
