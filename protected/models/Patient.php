@@ -2001,26 +2001,25 @@ class Patient extends BaseActiveRecordVersioned
     {
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
-        if ($examination_api){
-            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status', $this);
+        if ($examination_api) {
+            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status',
+                $this);
         }
         if ($cvi_api) {
             $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
         }
-        if (isset($examination_cvi)&&isset($CoCvi_cvi)){
-            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date ){
+        if (isset($examination_cvi, $CoCvi_cvi)) {
+            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date) {
                 return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
-            }
-            else {
+            } else {
                 return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
             }
-        } else if (isset($examination_cvi)){
+        } elseif (isset($examination_cvi)) {
             return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
-        } else if (isset($CoCvi_cvi)){
+        } elseif (isset($CoCvi_cvi)) {
             return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
-        }
-        else {
-            return array($this->getOPHInfo()->cvi_status->name, new DateTime());
+        } else {
+            return array($this->getOphInfo()->cvi_status->name, date('d M y'));
         }
     }
 
