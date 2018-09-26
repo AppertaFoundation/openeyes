@@ -68,7 +68,7 @@ class ProfileController extends BaseController
                     Yii::app()->user->setFlash('success', 'Your profile has been updated.');
                 }
 
-                $display_theme_setting = $this->changeDisplayTheme($user->id, $_POST['display_theme']);
+                $display_theme_setting = self::changeDisplayTheme($user->id, $_POST['display_theme']);
             }
         }
 
@@ -341,7 +341,7 @@ class ProfileController extends BaseController
      */
     public function actionChangeDisplayTheme($display_theme)
     {
-        $this->changeDisplayTheme(Yii::app()->user->id, $display_theme);
+        self::changeDisplayTheme(Yii::app()->user->id, $display_theme);
     }
 
     /**
@@ -351,7 +351,7 @@ class ProfileController extends BaseController
      * @param string $display_theme What to set the user's theme to
      * @return SettingUser The setting if the theme was set (otherwise null)
      */
-    public function changeDisplayTheme($user_id, $display_theme)
+    public static function changeDisplayTheme($user_id, $display_theme)
     {
         $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
             array('user_id' => $user_id));
