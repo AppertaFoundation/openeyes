@@ -28,7 +28,7 @@
 </div>
 
 
-<form id="admin_institution_sites">
+<form id="admin_patient_ticketing">
     <table class="standard">
         <tbody>
         <?php foreach ($queuesets as $i => $set) : ?>
@@ -42,17 +42,4 @@
         </tbody>
     </table>
 	<div class="alert-box info" style="display: none;" id="message-box">
-	</div>
-	<div class="data-group">
-		<div class="column cols-4">
-			<ul class="queueset-list" id="queue-nav">
-			<?php foreach ($queuesets as $qs) {
-			 // $this->renderPartial('queue_nav_item', array('queueset' => $qs));
-			} ?>
-			</ul>
-			<div class="right">
-        <button id="add-queueset" type="button" class="button large">Add Queue Set</button>
-      </div>
-		</div>
-		<div id="chart" class="column large-8 end orgChart" style="overflow-y: auto;"></div>
 	</div>
