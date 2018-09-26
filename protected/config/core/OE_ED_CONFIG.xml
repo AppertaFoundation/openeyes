@@ -1709,8 +1709,8 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
     <DOODLE_USAGE>
       <EYEDRAW_CLASS_MNEMONIC>PosteriorSynechia</EYEDRAW_CLASS_MNEMONIC>
       <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
-      <ON_TOOLBAR_LOCATION></ON_TOOLBAR_LOCATION>
-      <ON_TOOLBAR_ORDER></ON_TOOLBAR_ORDER>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
       <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
       <INIT_ALWAYS_FLAG>false</INIT_ALWAYS_FLAG>
       <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
@@ -2631,7 +2631,9 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Examination Macula</PRIMARY_TERM>
-          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+          <SECONDARY_TERM_LIST>SECONDARY_TERM_LIST
+            <TERM>Posterior Pole</TERM>
+          </SECONDARY_TERM_LIST><OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
             <INDEX>
               <PRIMARY_TERM>Comments</PRIMARY_TERM>
@@ -2846,12 +2848,23 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
               <GOTO_PROPERTY>Text</GOTO_PROPERTY>
             </INDEX>
-			<INDEX>
+            <INDEX>
 				<PRIMARY_TERM>Watzke</PRIMARY_TERM>
 				<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 				<GOTO_DOODLE_CLASS_NAME>MaculaPostPole</GOTO_DOODLE_CLASS_NAME>
 				<GOTO_PROPERTY>Watzke</GOTO_PROPERTY>
 			</INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Polypoidal choroidal vasculopathy</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>SECONDARY_TERM_LIST
+                <TERM>PCV</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PCV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PCV</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_ID></GOTO_ID>
+              <GOTO_PROPERTY/>
+            </INDEX>
           </INDEX_LIST>
         </INDEX>
         <INDEX>

@@ -70,21 +70,40 @@ class AdminSidebar extends BaseCWidget
 
     /**
      * Checkes the cookies and returns the state of a group
-     * @param $name
+     * @param $box_title
      * @return string
      */
-    public function getGroupState($name)
+    public function getGroupState($box_title)
     {
         $state = 'collapsed';
 
         if (Yii::app()->request->cookies['adminSidebarGroupStates']) {
             $value = json_decode(\Yii::app()->request->cookies['adminSidebarGroupStates']->value, true);
 
-            if (array_key_exists($name, $value)) {
-                $state = $value[$name];
+            if (array_key_exists($box_title, $value)) {
+                $state = $value[$box_title];
+            }
+        }
+
+        foreach ($this->menu_items as $_box_title => $box_items) {
+            foreach ($box_items as $_name => $data) {
+                if ($box_title === $_box_title && Yii::app()->getController()->request->requestUri == $data) {
+                    $state = 'expanded';
+                }
             }
         }
 
         return $state;
+    }
+
+    public function getCurrentTitle()
+    {
+        foreach ($this->menu_items as $box_title => $box_items) {
+            foreach ($box_items as $_name => $data) {
+                if (Yii::app()->getController()->request->requestUri == $data) {
+                    return $_name;
+                }
+            }
+        }
     }
 }

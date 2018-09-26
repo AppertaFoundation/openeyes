@@ -22,10 +22,10 @@ class ModuleAdminController extends BaseAdminController
 
     protected function beforeAction($action)
     {
-        $this->assetPathAlias = 'application.modules.'.$this->getModule()->name.'.assets';
+        $this->assetPathAlias = Yii::getPathOfAlias($this->getModule()->name) . '.assets';
         $this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias($this->assetPathAlias);
 
-        if (file_exists('protected/modules/'.$this->getModule()->name.'/assets/js/admin.js')) {
+        if (file_exists($this->assetPathAlias . '/assets/js/admin.js')) {
             Yii::app()->assetManager->registerScriptFile('js/admin.js', $this->assetPathAlias, 10);
         }
 

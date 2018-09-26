@@ -14,6 +14,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($this->open_elements);
 ?>
 
 <div class="element-fields flex-layout full-width">
@@ -29,8 +30,12 @@
             <td>
                 <span class="oe-eye-lat-icons">
                     <?php echo $form->radioButtons($element, 'eye_id',
-                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), null,
-                        false, false, false, false, array('nowrapper' => true)) ?>
+                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+                        null, false, false, false, '',
+                        array(
+                            'nowrapper' => true,
+                            'label-class' => $event_errors ? 'error' : ''
+                        )) ?>
                 </span>
             </td>
         </tr>

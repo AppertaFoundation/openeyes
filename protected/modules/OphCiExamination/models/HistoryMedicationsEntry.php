@@ -391,6 +391,19 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function getDoseAndFrequency(){
+        $result = [];
+        if($this->dose){
+            $result[] = $this->dose;
+        }
+
+        if($this->frequency){
+            $result[] = $this->frequency;
+        }
+
+        return implode(' , ', $result    );
+    }
+
     /**
      * @return \DrugRouteOption[]
      */
