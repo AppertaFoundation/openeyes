@@ -25,6 +25,25 @@ $(document).ready(function(){
 		}
 	});
 
+    function markElementDirty(element) {
+        if (typeof element !== "undefined" && element) {
+            $(element).find('input[name*="[element_dirty]"]').val(1);
+        } else {
+            $(this).closest('.element').find('input[name*="[element_dirty]"]').val(1);
+        }
+    }
+
+    $(document).on('click', '.add-icon-btn', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+    $('#event-content').on('change', 'select, input, textarea', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+
+    $('.js-active-elements').on('mouseup', '.ed-widget', function () {
+        markElementDirty($(this).closest('.element'));
+    });
+
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
 			$(this).prev().click();
@@ -134,8 +153,20 @@ $(document).ready(function(){
 
   $(this).on('click', '.js-remove-element', function (e) {
     e.preventDefault();
-    var parent = $(this).closest('.element');
-    removeElement(parent);
+    var $parent = $(this).closest('.element');
+      if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() == 1) {
+          var dialog = new OpenEyes.UI.Dialog.Confirm({
+              content: "Are you sure that you wish to close the " +
+              $parent.data('element-type-name') +
+              " element? All data in this element will be lost"
+          });
+          dialog.on('ok', function () {
+              removeElement($parent);
+          }.bind(this));
+          dialog.open();
+      } else {
+          removeElement($parent);
+      }
   });
 
   $(this).on('click', '.js-tiles-collapse-btn', function () {
