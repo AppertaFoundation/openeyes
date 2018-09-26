@@ -140,10 +140,10 @@ class AnaestheticAuditContext extends PageObjectContext {
 	public function iSaveTheEventAndConfirm() {
 		/**
 		 *
-		 * @var AnaestheticAudit $asa
+		 * @var Examination $exam
 		 */
-		$asa = $this->getPage ( 'AnaestheticAudit' );
-		$asa->saveASAAndConfirm ();
+		$exam = $this->getPage ( 'Examination' );
+		$exam->saveExaminationAndConfirm();
 	}
 	
 	/**

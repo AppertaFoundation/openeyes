@@ -665,7 +665,7 @@ class DefaultController extends BaseEventTypeController
      * Group the different kind of drug items for the printout
      *
      * @param $items
-     * @return mixed
+     * @return Item[]
      */
     public function groupItems($items)
     {

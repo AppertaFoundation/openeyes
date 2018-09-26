@@ -20,7 +20,7 @@
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
 <div class="element-data element-eyes">
-    <div class="element-eye right-eye column">
+    <div class="js-element-eye right-eye column">
         <?php if ($element->hasRight()) {
             ?>
             <?php if ($element->getCombined('right')) {
@@ -70,7 +70,7 @@
             <?php
         } ?>
     </div>
-    <div class="element-eye left-eye column">
+    <div class="js-element-eye left-eye column">
         <?php if ($element->hasLeft()) {
             ?>
             <?php if ($element->getCombined('left')) {

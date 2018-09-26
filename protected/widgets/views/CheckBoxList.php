@@ -16,14 +16,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : '';
+$label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] : '';
+?>
 
-<?php if (@$htmlOptions['nowrapper']) {?>
+<?php if (@$htmlOptions['nowrapper']) { ?>
 
-    <?php if (!$no_element) {?>
-        <input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
-    <?php }?>
+    <?php if (!$no_element) { ?>
+    <input type="hidden" value="" name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]">
+    <?php } ?>
 
-    <?php foreach ($data as $id => $data_value) {?>
+    <?php foreach ($data as $id => $data_value) { ?>
         <?php
         $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $id);
 
@@ -31,58 +34,58 @@
             foreach ($htmlOptions['options'][$id] as $k => $v) {
                 $options[$k] = $v;
             }
-        }?>
-        <label class="inline highlight">
-            <?php echo CHtml::checkBox("{$name}[]", (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
-            <?php echo CHtml::encode($data_value)?>
+        } ?>
+    <label class="inline highlight <?= $label_class ?>">
+        <?php echo CHtml::checkBox("{$name}[]",
+            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
+        <?php echo CHtml::encode($data_value) ?>
+    </label>
+    <?php } ?>
+
+<?php } else { ?>
+
+  <fieldset id="<?php echo CHtml::modelName($element) . '_' . $name ?>"
+            class="cols-full flex-layout flex-left <?= $fieldset_class ?>"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
+      <?php
+      // Added hidden input below to enforce posting of current form element name.
+      // When using radio or checkboxes if no value is selected then nothing is posted
+      // not triggereing server side validation.
+      ?>
+      <?php if ($label): ?>
+        <label class="cols-<?php echo $layoutColumns['label']; ?> column">
+            <?php if ($field_value) { ?><?php echo CHtml::encode($label); ?>
+            <?php } elseif (!$label_above) { ?><?php echo CHtml::encode($label); ?>:<?php } ?>
         </label>
-    <?php }?>
-
-<?php } else {?>
-
-    <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : ''; ?>
-
-    <fieldset id="<?php echo CHtml::modelName($element).'_'.$name?>" class="cols-full flex-layout flex-left <?=$fieldset_class?>"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-        <?php
-        // Added hidden input below to enforce posting of current form element name.
-        // When using radio or checkboxes if no value is selected then nothing is posted
-        // not triggereing server side validation.
-        ?>
-        <?php if($label): ?>
-          <label class="cols-<?php echo $layoutColumns['label'];?> column">
-              <?php if ($field_value) {?><?php echo CHtml::encode($label); ?>
-              <?php }elseif (!$label_above) {?><?php echo CHtml::encode($label); ?>:<?php }?>
+      <?php endif; ?>
+      <?php if (!$no_element && $field) { ?>
+        <input type="hidden" value="" name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]">
+      <?php } ?>
+    <div class="cols-<?php echo $layoutColumns['field']; ?>">
+        <?php $i = 0; ?>
+        <?php if ($label_above) { ?>
+          <label for="">
+              <?php echo CHtml::encode($label) ?>
           </label>
-        <?php endif; ?>
-        <?php if (!$no_element && $field) {?>
-            <input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
-        <?php }?>
-        <div class="cols-<?php echo $layoutColumns['field'];?>">
-            <?php $i = 0; ?>
-            <?php if ($label_above) {?>
-                <label for="">
-                    <?php echo CHtml::encode($label)?>
-                </label>
-            <?php }?>
-            <?php foreach ($data as $id => $data_value) {?>
-                <label class="inline highlight" id="">
-                    <?php
-                    $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$id);
+        <?php } ?>
+        <?php foreach ($data as $id => $data_value) { ?>
+          <label class="inline highlight <?= $label_class ?>" id="">
+              <?php
+              $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $id);
 
-                    if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-                        foreach ($htmlOptions['options'][$id] as $k => $v) {
-                            $options[$k] = $v;
-                        }
-                    }
-                    $class = isset($options['class']) ? ($options['class'] . " ") : '';
-                    $options['class'] = $class . str_replace(' ', '', $data_value);
-                    $options['id'] = CHtml::modelName($element) . '_' . @$htmlOptions['field'] . '_' . $data_value;
-                    $is_checked = in_array($id, $selected_items);
-                    echo CHtml::checkBox("{$name}[]", $is_checked, $options);
-                    ?>
-                    <?php echo CHtml::encode($data_value)?>
-                </label>
-            <?php }?>
-        </div>
-    </fieldset>
-<?php }?>
+              if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+                  foreach ($htmlOptions['options'][$id] as $k => $v) {
+                      $options[$k] = $v;
+                  }
+              }
+              $class = isset($options['class']) ? ($options['class'] . " ") : '';
+              $options['class'] = $class . str_replace(' ', '', $data_value);
+              $options['id'] = CHtml::modelName($element) . '_' . @$htmlOptions['field'] . '_' . $data_value;
+              $is_checked = in_array($id, $selected_items);
+              echo CHtml::checkBox("{$name}[]", $is_checked, $options);
+              ?>
+              <?php echo CHtml::encode($data_value) ?>
+          </label>
+        <?php } ?>
+    </div>
+  </fieldset>
+<?php } ?>

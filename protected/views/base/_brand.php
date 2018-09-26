@@ -37,10 +37,8 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
   </div>
 
   <div class="group">
-    <h4>Tour &amp; Feedback</h4>
-
-    <p>Learn about OpenEyes 3.0 - take the <a href="#">OE Feature Tour</a></p>
-    <p>Send us <a href="#">feedback or suggestions.</a></p>
+    <h4>Feedback</h4>
+		<p>Send us <a href="<?php echo Yii::app()->params['feedback_link']?>">feedback or suggestions.</a></p>
   </div>
 
   <div class="group">
@@ -57,7 +55,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
         <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']): ?>
           <span class="large-text"> Need Help?
               <?php if (Yii::app()->params['helpdesk_phone']): ?>
-                Ext: <?php echo Yii::app()->params['helpdesk_phone'] ?>
+								<?php echo Yii::app()->params['helpdesk_phone'] ?>
               <?php endif; ?>
               <?php if (Yii::app()->params['helpdesk_email']): ?>
                   <?php echo Yii::app()->params['helpdesk_email'] ?>

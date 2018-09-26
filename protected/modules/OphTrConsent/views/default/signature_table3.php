@@ -18,20 +18,31 @@
  ?>
 <?php if (@$vi) {?>
 	<table>
-		<tr>
-			<td>Signed:............................</td>
-			<td>Date:...............................</td>
-		</tr>
+        <colgroup>
+            <col class="cols-half" span="2">
+        </colgroup>
+        <tr>
+            <td>Signed:
+                <div class="dotted-write"></div>
+            </td>
+            <td>Date:
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
 		<tr>
 			<td colspan="2">Name: <?php echo $name?></td>
 		</tr>
 	</table>
 <?php } else {?>
 	<table>
-		<tr>
-			<td>Signed:..................................................</td>
-			<td>Date:.............................................</td>
-		</tr>
+        <tr>
+            <td>Signed:
+                <div class="dotted-write"></div>
+            </td>
+            <td>Date:
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
 		<tr>
 			<td colspan="2">Name: <?php echo $name?></td>
 		</tr>

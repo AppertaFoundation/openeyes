@@ -47,7 +47,7 @@
             'Anaesthetic Type',
             false, false, false, false,
             array(
-                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
+                'label-class' => $element->getError('anaesthetic_type') ? 'error' : '',
                 'nowrapper' => true
             )
         ); ?>
