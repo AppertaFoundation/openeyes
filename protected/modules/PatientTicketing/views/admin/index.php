@@ -43,3 +43,6 @@
     </table>
 	<div class="alert-box info" style="display: none;" id="message-box">
 	</div>
+
+    <div id="chart" class="column large-8 end orgChart" style="color:white;overflow-y: auto;"></div>
+</form>
