@@ -25,6 +25,8 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes oe-grid">
+<!-- Minimum screed width warning -->
+<div id="oe-minimum-width-warning">Please increase your browser window</div>
 <?php $this->renderPartial('//base/_debug'); ?>
 
 <!-- Branding (logo) -->
