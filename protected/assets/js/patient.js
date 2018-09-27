@@ -1,21 +1,21 @@
 function addItem(wrapper_id, ui) {
   var $wrapper = $('#' + wrapper_id);
 
-  $wrapper.find('span.name').text(ui.item.label);
+  $wrapper.find('.js-name').text(ui.item.label);
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
 
 function removeSelectedGP() {
   $('#no_gp_result').hide();
-  $('.selected_gp span.name').text('');
+  $('.js-selected_gp .js-name').text('');
   $('#selected_gp_wrapper').hide();
   $('#Patient_gp_id').val('');
 }
 
 function removeSelectedPractice() {
   $('#no_practice_result').hide();
-  $('.selected_practice span.name').text('');
+  $('.js-selected_practice .js-name').text('');
   $('#selected_practice_wrapper').hide();
   $('#Patient_practice_id').val('');
 
@@ -23,21 +23,29 @@ function removeSelectedPractice() {
 
 $(function () {
 
+  pickmeup("#Patient_dob", {
+    format: "d/m/Y",
+    hide_on_select: true,
+    default_date: false,
+    max: new Date(),
+  });
+  pickmeup("#Patient_date_of_death", {
+    format: "d/m/Y",
+    hide_on_select: true,
+    default_date: false,
+    max: new Date(),
+  });
+
   $('#patient-form').on('keyup', '#Patient_nhs_num', function () {
     var selector = $(this).data('child_row');
-    $(selector).hide();
-    if ($(this).val().length > 0) {
-      $(selector).show();
-    }
+    $(selector).toggle($(this).val().length > 0);
   });
 
   $('#Patient_is_deceased').on('change', function () {
     var selector = $(this).data('child_row');
-    $(selector).hide();
+
     $(selector).find('input').val('');
-    if ($(this).is(':checked')) {
-      $(selector).show();
-    }
+    $(selector).toggle($(this).is(':checked'));
   });
 
   $('#selected_gp_wrapper').on('click', '.js-remove-gp', function () {
@@ -47,6 +55,5 @@ $(function () {
   $('#selected_practice_wrapper').on('click', '.js-remove-practice', function () {
     removeSelectedPractice();
   });
-
 
 });

@@ -317,9 +317,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
 
             <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select selected_gp">
+              <ul class="oe-multi-select js-selected_gp">
                 <li>
-                  <span class="name">
+                  <span class="js-name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
@@ -369,9 +369,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               )); ?>
 
             <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select selected_practice">
+              <ul class="oe-multi-select js-selected_practice">
                 <li>
-                  <span class="name">
+                  <span class="js-name">
                       <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
