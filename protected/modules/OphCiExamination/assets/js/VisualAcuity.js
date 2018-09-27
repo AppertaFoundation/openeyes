@@ -263,13 +263,9 @@ function OphCiExamination_VisualAcuity_addReading(side, selected_data, template,
   }
 
   table.show();
-  var nextMethodId = OphCiExamination_VisualAcuity_getNextMethodId(side, suffix);
-
   $('tbody', table).append(form);
-  $('.method_id', table).last().val(nextMethodId);
 
   OphCiExamination_VisualAcuity_ReadingTooltip(table.find('tr').last());
-
 }
 
 /**
