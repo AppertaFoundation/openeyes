@@ -18,9 +18,9 @@
 ?>
 
 <?php
-    $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath.'/MultiSelectList.js');
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>
 
 <div class="row divider">
@@ -40,9 +40,16 @@
 
         <?php endforeach; ?>
         </tbody>
+        <tfooter class="pagination-container">
+            <tr>
+                <td>
+                    <button id="add-queueset" type="button" class="secondary small">Add Queue Set</button>
+                </td>
+            </tr>
+        </tfooter>
     </table>
-	<div class="alert-box info" style="display: none;" id="message-box">
-	</div>
+    <div class="alert-box info" style="display: none;" id="message-box">
+    </div>
 
     <div id="chart" class="column large-8 end orgChart" style="color:white;overflow-y: auto;"></div>
 </form>

@@ -94,9 +94,9 @@ if (!$get_row && $filters_ready) {
                 <tr>
                     <td colspan="10">
                         <?php if (!$this->cannot_add) {
-                            echo CHtml::htmlButton('Add', ['name' => 'admin-add', 'type' => 'submit','id' => 'et_admin-add', 'class' => 'button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
+                            echo CHtml::htmlButton('Add', ['name' => 'admin-add', 'type' => 'submit','id' => 'et_admin-add', 'class' => 'generic-admin-add button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
                         }?>&nbsp;
-                        <?php echo CHtml::htmlButton('Save', ['name' => 'admin-save', 'type' => 'submit','id' => 'et_admin-save', 'class' => 'button large']); ?>&nbsp;
+                        <?php echo CHtml::htmlButton('Save', ['name' => 'admin-save', 'type' => 'submit','id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
                     </td>
                 </tr>
 				</tfoot>

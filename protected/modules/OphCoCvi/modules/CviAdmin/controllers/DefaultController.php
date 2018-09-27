@@ -55,7 +55,7 @@ class DefaultController extends \ModuleAdminController
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
             array(
-                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/default/newClinicalDisorderRow'),
                 'extra_fields' => array(
                     array(
                         'field' => 'code',

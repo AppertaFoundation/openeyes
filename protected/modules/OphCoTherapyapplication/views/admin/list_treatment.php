@@ -17,19 +17,11 @@
  */
 ?>
 <?php $this->renderPartial('//base/_messages')?>
-<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
-            'enableAjaxValidation' => false,
-            'action' => Yii::app()->createURL($this->module->getName().'/admin/addTreatment'),
-    ));
 
-    $this->endWidget();
-    ?>
-</div>
-<div class="box admin">
-	<h2><?php echo $title ?></h2>
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
+
 	<form id="admin_treatments">
 		<table class="standard">
 			<thead>
@@ -51,11 +43,25 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/addTreatment'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/deleteTreatments', 'data-object' => 'treatments'))->toHtml()?>
+                        <?=CHtml::htmlButton('Add', [
+                            'name' => 'add',
+                            'class' => 'button large',
+                            'type' => 'submit',
+                            'id' => 'et_add',
+                            'data-uri' => '/OphCoTherapyapplication/admin/addTreatment'
+                        ]);?>
+                        <?=CHtml::htmlButton('Delete', [
+                            'name' => 'delete',
+                            'class' => 'button large',
+                            'type' => 'submit',
+                            'id' => 'et_delete',
+                            'data-uri' => '/OphCoTherapyapplication/admin/deleteTreatments',
+                            'data-object' => 'treatments',
+                        ]);?>
+
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
-</div>
+

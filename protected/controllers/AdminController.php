@@ -452,6 +452,8 @@ class AdminController extends BaseAdminController
 
         if ($id && !$user) {
             throw new Exception("User not found: $id");
+        } else if(!$id){
+            $user = new User();
         }
 
         $request = Yii::app()->getRequest();

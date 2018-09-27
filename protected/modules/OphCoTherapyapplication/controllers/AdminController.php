@@ -56,7 +56,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', $parent_id, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_TherapyDisorder'));
 
-        $this->render('list_OphCoTherapyapplication_TherapyDisorder', array(
+        $this->render('list_therapy_disorder', array(
                 'model_class' => 'OphCoTherapyapplication_TherapyDisorder',
                 'model_list' => $diagnoses,
                 'title' => $parent_id ? 'Level 2 Disorders for '.$parent->disorder->term : 'Level 1 Disorders',
@@ -182,7 +182,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_Treatment'));
 
-        $this->render('list_OphCoTherapyapplication_Treatment', array(
+        $this->render('list_treatment', array(
                 'model_class' => 'OphCoTherapyapplication_Treatment',
                 'model_list' => OphCoTherapyapplication_Treatment::model()->findAll(),
                 'title' => 'Treatments',
@@ -205,7 +205,7 @@ class AdminController extends ModuleAdminController
                 Audit::add('admin', 'update', $id, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_Treatment'));
                 Yii::app()->user->setFlash('success', 'Treatment updated');
 
-                $this->redirect(array('viewtreatments'));
+                $this->redirect(array('viewtreaTments'));
             }
         }
 
@@ -231,7 +231,7 @@ class AdminController extends ModuleAdminController
                 Audit::add('admin', 'create', $model->id, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_Treatment'));
                 Yii::app()->user->setFlash('success', 'Treatment created');
 
-                $this->redirect(array('viewtreatments'));
+                $this->redirect(array('viewtreaTments'));
             }
         }
 

@@ -16,8 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $title ?></h2>
+
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
+</div>
+
 	<?php $this->renderPartial('//base/_messages')?>
 	<form id="admin_diagnoses">
 		<table class="standard">
@@ -33,7 +36,7 @@
 						<td><input type="checkbox" name="diagnoses[]" value="<?php echo $model->id?>" /></td>
 						<td>
 							<?php if (!$parent_id) {?>
-								<a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewDiagnoses', array('parent_id' => $model->id))?>">
+								<a href="<?php echo Yii::app()->createUrl($this->module->getName().'/admin/viewDiagnoses') . '?parent_id=' . $model->id?>">
 							<?php }?>
 							<?php echo $model->disorder->term?>
 							<?php if (!$parent_id) {?>
@@ -46,15 +49,24 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add2', null, array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/deleteDiagnoses', 'data-object' => 'diagnoses'))->toHtml()?>
+                        <?=CHtml::htmlButton('Add', ['name' => 'add2', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_add2']);?>
+                        <?=CHtml::htmlButton('Delete', [
+                                'name' => 'delete',
+                                'class' => 'button large',
+                                'type' => 'submit',
+                                'id' => 'et_delete',
+                                'data-uri' => '/OphCoTherapyapplication/admin/deleteDiagnoses',
+                            'data-object' => 'diagnoses',
+                            ]);?>
+
+
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
-</div>
-<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
+
+<div id="add-new-form" style="display:none">
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'clinical-create',
