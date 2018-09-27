@@ -315,19 +315,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       </div><!-- .popup-overflow -->
     </div><!-- left -->
 
-    <div class="cols-right">
-      <div class="popup-overflow">
-        <div class="problems-plans">
-          <div class="subtitle">Problems &amp; Plans</div>
-          <ul class="problems-plans-sortable" id="problems-plans-sortable">
-          </ul>
-          <div class="create-new-problem-plan">
-            <input id="create-problem-plan" type="text" placeholder="Add Problem or Plan">
-            <div class="add-problem-plan-btn tiny" id="js-add-pp-btn"><i class="oe-i plus pro-theme"></i></div>
-          </div>
-        </div> <!-- .problems-plans -->
-      </div><!-- .popup-overflow -->
-    </div><!-- .cols-right -->
   </div><!-- flex -->
 </div>
 

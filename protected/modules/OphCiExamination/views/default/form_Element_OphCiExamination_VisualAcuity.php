@@ -18,8 +18,14 @@
 ?>
 <?php
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
+//Reverse the unit values to ensure bigger value display first.
+$values = array_reverse($values, true);
+//Get the base value that should be displayed whe popup open.
+$unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'Snellen Metre'))->id;
+$default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
+
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-    'id', 'name');
+	'id', 'name');
 $key = 0;
 ?>
 <div class="element-both-eyes">
@@ -110,8 +116,8 @@ if ($cvi_api) {
       new OpenEyes.UI.AdderDialog({
         openButton:$('#add-reading-btn-<?= $eye_side?>'),
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($key, $value) {
-                return ['label' => $value, 'id' => $key];
+            array_map(function ($key, $value) use ($default_display_value) {
+                return $key==$default_display_value? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];
             }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {

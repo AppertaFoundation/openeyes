@@ -344,7 +344,6 @@ class DefaultController extends BaseEventTypeController
                 break;
             case 'examination':
                 echo $this->process_examination_findings($_GET['patient_id'], $_GET['string_id']);
-
                 return;
             default:
                 throw new Exception('Unknown letter string type: '.@$_GET['string_type']);
@@ -563,9 +562,10 @@ class DefaultController extends BaseEventTypeController
      * TODO: need to check audit trail!
      *
      * @param $id
+     * @param boolean $returnContent
      * @throws Exception
      */
-    public function actionPDFPrint($id)
+    public function actionPDFPrint($id, $returnContent = true)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
@@ -637,18 +637,25 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_output->IncludeJS($script);
         }
 
-        $pdf_path = $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
 
+        $pdf_path = $this->getPdfPath($event);
+
+        Yii::log($pdf_path);
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
+        if ($returnContent) {
+            header('Content-Type: application/pdf');
+            header('Content-Length: ' . filesize($pdf_path));
+            readfile($pdf_path);
+        }
 
-        header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf_path));
-
-        readfile($pdf_path);
         //@unlink($pdf_path);
+    }
 
+    public function getPdfPath($event)
+    {
+        return $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
     }
 
     /**
@@ -937,6 +944,33 @@ class DefaultController extends BaseEventTypeController
             return isset($document_model->sub_type) ? $document_model->sub_type->name : '';
         } else {
             return $event->eventType->name;
+        }
+    }
+
+    /**
+     * Creates a preview event image for the given event id
+     *
+     * @param integer $id The event UD
+     *
+     * @throws Exception
+     */
+    public function actionCreateImage($id)
+    {
+        try {
+            $this->initActionView();
+            $this->removeEventImages();
+
+            $this->actionPDFPrint($id, false);
+            $pdf_path = $this->getPdfPath($this->event);
+            $this->createPdfPreviewImages($pdf_path);
+
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
+                @unlink($pdf_path);
+            }
+
+        } catch (Exception $ex) {
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
+            throw $ex;
         }
     }
 }

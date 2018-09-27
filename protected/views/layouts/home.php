@@ -23,50 +23,23 @@
     <?php $this->renderPartial('//base/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
+<body class="open-eyes oe-grid">
 
-<?php if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false
-       || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false) { ?>
-  <body class="browser-not-supported">
+<?php $this->renderPartial('//base/_debug'); ?>
 
-  <h3>Sorry, your Browser does not support all OE3 features.</h3>
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+<div id="oe-restrict-print">
+  <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to
+    generate a hard copy.</h1>
+</div>
+<?php $this->renderPartial('//base/_header'); ?>
 
-  <h4>Why not?</h4>
+<main class="oe-home" id="oe-home">
+    <?php echo $content; ?>
+</main>
 
-  <p>OE3 uses the latest in web technology. To enjoy all the latest features you need an up to date browser rather than
-    Internet Explorer.</p>
-
-  <h4>What to do next?</h4>
-
-  <p>Please select either Google Chrome or Windows Edge: <br>
-    <a href="https://www.google.co.uk/chrome/">Download: Chrome</a><br>
-    <a href="https://www.microsoft.com/en-gb/windows/microsoft-edge">Download: Edge</a>
-  </p>
-
-  <h4>Support</h4>
-
-  <p>Contact your IT support</p>
-  </body>
-<?php } else { ?>
-
-  <body class="open-eyes oe-grid">
-
-  <?php $this->renderPartial('//base/_debug'); ?>
-
-  <div class="openeyes-brand">
-      <?php $this->renderPartial('//base/_brand'); ?>
-  </div>
-  <div id="oe-restrict-print">
-    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to
-      generate a hard copy.</h1>
-  </div>
-  <?php $this->renderPartial('//base/_header'); ?>
-
-  <main class="oe-home" id="oe-home">
-      <?php echo $content; ?>
-  </main>
-
-  <?php $this->renderPartial('//base/_footer'); ?>
-  </body>
-<?php } ?>
-
+<?php $this->renderPartial('//base/_footer'); ?>
+</body>
 </html>
