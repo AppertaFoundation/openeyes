@@ -82,23 +82,25 @@ if ($this->trial) {
     </div>
     <div class="flex-layout flex-left">
         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-          <div class="patient-allergies-risks risk-warning"
-               id="js-allergies-risks-btn"
-               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px' : '' ?>">
+          <div class="patient-allergies-risks risk-warning js-allergies-risks-btn"
+               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
               <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
               <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
               <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
           </div>
         <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-          <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+          <div class="patient-allergies-risks unknown js-allergies-risks-btn"
+               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
             Allergies, Alerts
           </div>
         <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-          <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
+          <div class="patient-allergies-risks no-risk js-allergies-risks-btn"
+               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
             Allergies, Alerts
           </div>
         <?php } else { /*either risk or allergy status in unknown*/ ?>
-          <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+          <div class="patient-allergies-risks unknown js-allergies-risks-btn"
+               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
             Allergies, Alerts
           </div>
         <?php } ?>
