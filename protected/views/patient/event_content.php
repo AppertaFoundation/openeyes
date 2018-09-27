@@ -44,7 +44,7 @@
                 $(document).ready(function () {
                     let $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function () {
-                        $date_picker.show();
+                        $date_input.show();
                         $('.js-event-date').hide();
                         $('.js-change-event-date').hide();
                     });
