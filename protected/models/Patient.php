@@ -186,17 +186,17 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @param $attribute
      * @param $params
+     *
+     * @var $pat_with_hos_num CActiveRecord[]
      */
     public function hosNumValidator($attribute, $params)
     {
         if ($this->scenario === 'manual') {
-
-            $patient_search = new PatientSearch();
-            if ($patient_search->getHospitalNumber($this->hos_num)) {
-                $dataProvider = $patient_search->search($this->hos_num);
-                $item_count = $dataProvider->totalItemCount;
+            $hos_num = (new PatientSearch())->getHospitalNumber($this->hos_num);
+            if ($hos_num) {
                 // Add an error if another patient with the same hos_num exists (if not a new record, then ignore this patient)
-                if ($item_count && $item_count > ($this->getIsNewRecord() ? 0 : 1)) {
+                $item_count = count(Patient::model()->findAll('hos_num=? and id !=?',array($hos_num, $this->id)));
+                if ($item_count) {
                     $this->addError($attribute, 'A patient already exists with this hospital number');
                 }
             } elseif (!empty($this->hos_num)) {
