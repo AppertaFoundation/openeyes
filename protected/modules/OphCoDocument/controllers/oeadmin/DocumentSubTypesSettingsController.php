@@ -23,6 +23,7 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
      */
     public function actionIndex()
     {
+        $OphCoDocument_Sub_Types = OphCoDocument_Sub_Types::model();
         $path = Yii::getPathOfAlias('application.widgets.js');
         $generic_admin = Yii::app()->assetManager->publish($path . '/GenericAdmin.js');
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
@@ -30,16 +31,22 @@ class DocumentSubTypesSettingsController extends \ModuleAdminController
         if (Yii::app()->request->isPostRequest) {
             $sub_types = \Yii::app()->request->getPost('OphCoDocument_Sub_Types', []);
             foreach ($sub_types as $sub_type) {
-                $model = OphCoDocument_Sub_Types::model()->findByPk($sub_type['id']);
+                $model = $OphCoDocument_Sub_Types->findByPk($sub_type['id']);
                 $model->display_order = $sub_type['display_order'];
                 $model->save();
             }
         }
         $criteria = new \CDbCriteria();
         $criteria->order = 'display_order';
-        $sub_types = OphCoDocument_Sub_Types::model()->findAll($criteria);
+        $sub_types = $OphCoDocument_Sub_Types->findAll($criteria);
 
-        $this->render('/admin/sub_types/index', [ 'sub_types' => $sub_types ]);
+        $this->render(
+            '/admin/sub_types/index',
+            [
+                'sub_types' => $sub_types,
+                'pagination' => $this->initPagination($OphCoDocument_Sub_Types),
+            ]
+        );
     }
 
     /**
