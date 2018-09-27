@@ -21,7 +21,6 @@ if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
     ?>
   <div class="element-fields full-width">
-
       <table class="cols-full">
         <colgroup>
           <col class="cols-5">
@@ -68,7 +67,6 @@ if ($this->checkClericalEditAccess()) {
                   </div>
               <?php } ?>
                 </td>
-
             <td>
               <label class="inline highlight">
                   <?php echo CHtml::radioButton($factor_field_name, ($value === 1),
