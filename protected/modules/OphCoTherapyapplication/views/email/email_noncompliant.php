@@ -48,6 +48,13 @@ if ($exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
 }
 ?>
 
+
+
+
+
+
+
+asjdfaskjkjsgfjdsgfjkasdfgjkasdfjksdfjkads
 NICE Status: <?php echo($suitability->{$side.'_nice_compliance'} ? 'COMPLIANT' : 'NON-COMPLIANT')."\n" ?>
 Urgent: <?php echo((isset($exceptional) && $exceptional->{$side.'_start_period'}->urgent) ? 'Yes' : 'No')."\n" ?>
 <?php if ((isset($exceptional) && $exceptional->{$side.'_start_period'}->urgent)) {?>

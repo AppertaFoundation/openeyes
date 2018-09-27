@@ -17,7 +17,7 @@
  */
 ?>
 <section class="element patient-info js-toggle-container">
-	<h3 class="element-header"><?php echo Yii::app()->params['gp_label'] == 'GP' ? 'General Practitioner' : 'Practitioner' ?></h3>
+	<h3 class="element-header"><?php echo Yii::app()->params['general_practitioner_label']?></h3>
 	<div class="js-toggle-body">
 		<div class="data-group">
 			<div class="cols-4 column">
