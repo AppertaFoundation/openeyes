@@ -92,8 +92,6 @@
       layout_plotly['yaxis'] = setYAxis_MR(va_yaxis);
       layout_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
       layout_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
-
-      layout_plotly['yaxis2'] = setYAxis_MR(crt_yaxis);
       layout_plotly['xaxis']['rangeslider'] = {};
 
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
@@ -134,52 +132,71 @@
         }
       }];
 
-      var j = 2;
+      if(!crt_plotly[side]['y'].length) {
+        crt_yaxis['range'] = [250, 600];
+        crt_yaxis['tick0'] = 250;
+      } else {
+        crt_yaxis['range'] = [Math.min.apply(Math, crt_plotly[side]['y']), Math.max.apply(Math, crt_plotly[side]['y'])+20];
+        crt_yaxis['tick0'] = Math.min.apply(Math, crt_plotly[side]['y']);
+      }
+      crt_yaxis['dtick'] = 10;
+      layout_plotly['yaxis2'] = setYAxis_MR(crt_yaxis);
+
+
+      var j = Object.keys(injections_data[side]).length+1;
+      flags_yaxis['range'] = [0, 20*j];
+      flags_yaxis['domain'] = [0, 0.05*j];
+      layout_plotly['yaxis3'] = setYAxis_MR(flags_yaxis);
+
       var text = {
         x:[],
         y:[],
         text:[],
-        mode:'text'
+        yaxis: 'y3',
+        mode:'text',
       };
-
-
-      //set the flags for letters >5
-      for (var i in VA_lines_data[side]) {
-        text['x'].push(new Date(VA_lines_data[side][i]['x']));
-        text['y'].push(-20);
-        text['text'].push('>5');
-
-        var line_shape = {
-          x0: new Date(VA_lines_data[side][i]['x']),
-          y0: -20,
-          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * 10),
-          y1: -30,
-          color: (side == 'right') ? '#9fec6d' : '#fe6767',
-        };
-        layout_plotly['shapes'].push(setMRFlags_options(line_shape));
-
-      }
 
       //Set the flags for injections
       for (var key in injections_data[side]){
         for (var i in injections_data[side][key]) {
           text['x'].push(new Date(injections_data[side][key][i]['x']));
-          text['y'].push(-20 * j);
-          text['text'].push(side.charAt(0));
+          text['y'].push(crt_yaxis['tick0'] -20 * j);
+          text['text'].push(key);
 
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
-            y0: -20 * j,
+            y0: 20 * j,
             x1: new Date(injections_data[side][key][i]['x'] + 86400000 * 10),
-            y1: -20 * (j + 0.5),
+            y1: 20 * (j - 0.5),
             color: (side == 'right') ? '#9fec6d' : '#fe6767',
+            yaxis: 'y3',
           };
           layout_plotly['shapes'].push(setMRFlags_options(inj_shape));
         }
-        j++;
+        j--;
       }
-      data.push(text);
 
+      //set the flags for letters >5
+
+      for (var i in VA_lines_data[side]) {
+        text['x'].push(new Date(VA_lines_data[side][i]['x']));
+        text['y'].push(crt_yaxis['tick0'] - 20*j);
+        text['text'].push('>5');
+
+        var line_shape = {
+          x0: new Date(VA_lines_data[side][i]['x']),
+          y0: 20*j,
+          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * 10),
+          y1: 20*(j - 0.5),
+          color: (side == 'right') ? '#9fec6d' : '#fe6767',
+          yaxis: 'y3',
+        };
+        layout_plotly['shapes'].push(setMRFlags_options(line_shape));
+      }
+      j--;
+
+
+      data.push(text);
 
       Plotly.newPlot(
         'highcharts-MR-'+side, data, layout_plotly, options_plotly

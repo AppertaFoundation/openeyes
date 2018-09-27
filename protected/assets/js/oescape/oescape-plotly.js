@@ -21,8 +21,9 @@ var marking_annotations = {
 var layout_plotly = {
   title: '',
   autosize: false,
+  height: 800,
   margin:{
-    l:40,
+    l:50,
     t:0,
     pad:4,
   },

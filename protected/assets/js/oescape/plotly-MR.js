@@ -1,13 +1,26 @@
 var crt_yaxis = {
   side: 'left',
   title: 'CRT(um)',
-  range: [],
+  domain: [0.35, 1],
+  showticklabels: true,
+  showgrid: true,
 };
 
 var va_yaxis = {
   side: 'right',
   title: 'VA',
-  range: [-100, 150],
+  range: [-15, 150],
+  domain: [0.35,1],
+  showticklabels: true,
+  showgrid: true,
+};
+
+var flags_yaxis = {
+  side: 'left',
+  title: 'injections',
+  domain: [0, 0.3],
+  showticklabels: false,
+  showgrid: false,
 };
 
 function setYAxis_MR(options){
@@ -16,12 +29,13 @@ function setYAxis_MR(options){
     title: options['title'],
     range: options['range'],
     /* Grid line settings of yaxis */
-    showgrid: true,
+    showgrid: options['showgrid'],
     gridcolor: '#8c8c8c',
 
     /*Ticks setting of yaxis*/
     ticks: 'outside',
-    showticklabels: true,
+    showticklabels: options['showticklabels'],
+    domain: options['domain'],
   };
 }
 
@@ -29,7 +43,7 @@ function setMRFlags_options(options){
   return {
     type: 'rect',
     xref: 'x',
-    yref: 'y',
+    yref: 'y3',
     x0: options['x0'],
     y0: options['y0'],
     x1: options['x1'],
