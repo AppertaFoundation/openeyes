@@ -30,6 +30,12 @@ $eye_filter = function ($entry) {
     return $entry['route_id'] == 1;
 };
 
+$current_meds_filter = function($entry){
+    return $entry['end_date'] == null;
+};
+
+$current = array_filter($current , $current_meds_filter);
+
 $current_systemic_meds = array_filter($current, $systemic_filter);
 $stopped_systemic_meds = array_filter($stopped, $systemic_filter);
 $current_eye_meds = array_filter($current, $eye_filter);

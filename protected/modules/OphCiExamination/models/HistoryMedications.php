@@ -85,7 +85,7 @@ class HistoryMedications extends \BaseEventTypeElement
             'currentOrderedEntries' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
-                'on' => '(end_date > NOW() OR end_date is NULL)',
+                'on' => '(end_date is NULL)',
                 'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
             'stoppedOrderedEntries' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
