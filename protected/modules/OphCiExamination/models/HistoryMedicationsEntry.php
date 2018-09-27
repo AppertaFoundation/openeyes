@@ -398,7 +398,7 @@ class HistoryMedicationsEntry extends \BaseElement
         }
 
         if($this->frequency){
-            $result[] = 'Frequency : ' . $this->frequency;
+            $result[] = $this->frequency;
         }
 
         return implode(' , ', $result    );

@@ -18,7 +18,7 @@
  $logoHelper = new LogoHelper();
 
 ?>
-<div class="banner clearfix">
+<header class="print-header">
 		<?= $logoHelper->render('letter_head') ?>
 	
-</div>
+</header>

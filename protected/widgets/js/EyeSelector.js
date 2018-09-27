@@ -56,6 +56,13 @@ OpenEyes.UI = OpenEyes.UI || {};
                 $row.find('.' + controller.leftEyeClass).prop('checked', false);
                 $row.find('.' + controller.rightEyeClass).prop('checked', false);
             }
+
+            if(!$input.is(':checked')){
+               if($row.find('.oe-eyelat-icons input:checkbox:checked').length === 0){
+                    $input.prop('checked' , true);
+               }
+            }
+
         });
     };
 

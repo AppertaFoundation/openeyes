@@ -52,7 +52,8 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
     });
 
     function expandShortcodes(){
-      if (m = controller.editor.getContent().match(/\[([a-z]{3})\]/i)) {
+      var m = controller.editor.getContent().match(/\[([a-z]{3})\]/i);
+      if (m) {
         var text = controller.editor.getContent();
         $.ajax({
           'type': 'POST',
@@ -78,7 +79,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
   };
 
   LetterMacroController.prototype.connectChildDropdowns = function(parent){
-    parent.find(selector).each(function(){connectDropdown(this)});
+    parent.find(selector).each(function(){connectDropdown(this);});
   };
 
   LetterMacroController.prototype.addAtCursor = function(content){
@@ -108,9 +109,9 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
     }
 
     //Uppercase the first letter
-    return str.substr(0, charPos)
-      + str.charAt(charPos).toUpperCase()
-      + str.substr(charPos + 1);
+    return str.substr(0, charPos) +
+        str.charAt(charPos).toUpperCase() +
+        str.substr(charPos + 1);
   }
 
   LetterMacroController.prototype.getContent = function(){

@@ -17,16 +17,17 @@
  */
 class ModuleAdminController extends BaseAdminController
 {
-    public $assetPathAlias;
+    public $modulePath;
     public $assetPath;
 
     protected function beforeAction($action)
     {
-        $this->assetPathAlias = 'application.modules.'.$this->getModule()->name.'.assets';
-        $this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias($this->assetPathAlias);
+        $this->modulePath = Yii::getPathOfAlias($this->getModule()->name) . '/assets';
+        $this->assetPath = Yii::app()->assetManager->publish($this->modulePath, false, -1);
 
-        if (file_exists('protected/modules/'.$this->getModule()->name.'/assets/js/admin.js')) {
-            Yii::app()->assetManager->registerScriptFile('js/admin.js', $this->assetPathAlias, 10);
+        if (file_exists($this->modulePath . '/js/admin.js')) {
+            $url = \Yii::app()->createUrl($this->assetPath . '/js/admin.js');
+            Yii::app()->assetManager->clientScript->registerScriptFile($url);
         }
 
         return parent::beforeAction($action);

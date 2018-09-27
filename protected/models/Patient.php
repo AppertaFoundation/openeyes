@@ -582,6 +582,28 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * @var $diagnosis SecondaryDiagnosis
+     *
+     * @return string
+     */
+    public function getUniqueOphthalmicDiagnosesTable(){
+        ob_start();
+        ?>
+        <table class="standard">
+            <tbody>
+            <?php foreach ($this->getOphthalmicDiagnoses() as $diagnosis): ?>
+                <tr>
+                    <td><?= Helper::convertDate2NHS($diagnosis->date) ?></td>
+                    <td><?= mb_strtoupper($diagnosis->eye->adjective).' '.$diagnosis->disorder->term?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
      * @param int $drug_id
      *
      * @return bool Is patient allergic?
@@ -1339,8 +1361,8 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('specialty.code', 130);
 
         $criteria->order = 'date asc';
-
-        return SecondaryDiagnosis::model()->findAll($criteria);
+        $result =SecondaryDiagnosis::model()->findAll($criteria);
+        return $result;
     }
 
     /*

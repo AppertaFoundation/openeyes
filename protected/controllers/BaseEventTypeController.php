@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -79,6 +78,7 @@ class BaseEventTypeController extends BaseModuleController
         'eventImage' => self::ACTION_TYPE_VIEW,
         'printCopy' => self::ACTION_TYPE_PRINT,
         'savePDFprint' => self::ACTION_TYPE_PRINT,
+        'createImage' => self::ACTION_TYPE_VIEW,
     );
 
     /**
@@ -392,7 +392,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        if ($action === 'view') {
+        if($action === 'view') {
             usort($open_child_elements, function ($a, $b) {
                 $a_order = $a->getDisplayOrder('view');
                 $b_order = $b->getDisplayOrder('view');
@@ -1593,6 +1593,10 @@ class BaseEventTypeController extends BaseModuleController
             $action = 'print';
         }
 
+        if($action === 'createImage') {
+            $action = 'view';
+        }
+
         // Get the view names from the model.
         $view = isset($element->{$action . '_view'})
             ? $element->{$action . '_view'}
@@ -1916,16 +1920,16 @@ class BaseEventTypeController extends BaseModuleController
         $wk->setBarcode($this->event->barcodeHTML);
 
         foreach (array('left', 'middle', 'right') as $section) {
-            if (isset(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name])) {
-                $setMethod = 'set' . ucfirst($section);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_' . $section . '_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name])) {
+                $setMethod = 'set'.ucfirst($section);
+                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name]);
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-            if (isset(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name])) {
-                $setMethod = 'setMargin' . ucfirst($margin);
-                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_' . $margin . '_margin_' . $this->event_type->class_name]);
+            if (isset(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name])) {
+                $setMethod = 'setMargin'.ucfirst($margin);
+                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name]);
             }
         }
 
@@ -2428,5 +2432,244 @@ class BaseEventTypeController extends BaseModuleController
         if (!$hotlistItem->save()) {
             throw new Exception('UserHotListItem failed validation ' . print_r($hotlistItem->errors, true));
         };
+    }
+
+
+    /**
+     * Creates the preview image for the event with the given ID
+     *
+     * @param integer $id The ID of the event to image
+     * @throws Exception
+     */
+    public function actionCreateImage($id)
+    {
+        $this->initActionView();
+        // Stub an EventImage record so other threads don't try to create the same image
+        $eventImage = $this->saveEventImage('GENERATING');
+
+        try {
+            $content = $this->getEventAsHtml();
+
+            $image = new WKHtmlToImage();
+            $image->setCanvasImagePath($this->event->getImageDirectory());
+            $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
+                array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
+
+            $input_path = $this->event->getImagePath('preview');
+            $output_path = $this->event->getImagePath('preview', '.jpg');
+            $imagick = new Imagick($input_path);
+            $this->scaleImageForThumbnail($imagick);
+            $imagick->writeImage($output_path);
+
+            $this->saveEventImage('CREATED', ['image_path' => $output_path]);
+
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
+                $image->deleteFile($input_path);
+                $image->deleteFile($output_path);
+            }
+
+        } catch (Exception $ex) {
+            // Store an error entry,so that no attempts are made to generate the image again until the errors are fixed
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
+            throw $ex;
+        }
+    }
+
+    /**
+     * Scales down the input image if it is larger than the maximum width
+     *
+     * @param Imagick $imagick
+     */
+    protected function scaleImageForThumbnail($imagick)
+    {
+        $imagick->setImageCompressionQuality(Yii::app()->params['lightning_viewer']['compression_quality']);
+
+        $width = Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
+        if ($width < $imagick->getImageWidth()) {
+            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Renders the event and returns the resullting HTML
+     *
+     * @return string The output HTML
+     */
+    protected function getEventAsHtml()
+    {
+        ProfileController::changeDisplayTheme(Yii::app()->user->id, 'dark');
+        ob_start();
+
+        $this->setOpenElementsFromCurrentEvent('view');
+
+        $viewData = array_merge(array(
+            'elements' => $this->open_elements,
+            'eventId' => $this->event->id,
+        ), $this->extraViewProperties);
+
+        $this->layout = '//layouts/event_image';
+        $this->render('image', $viewData);
+
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
+    }
+
+    /**
+     * Gets the image path that will be used to store a temporary preview image
+     *
+     * @param array $options Additional options, including the page number, and eye
+     * @param string $extension The file extension of the path (defaults to '.png')
+     * @return string The path of the image
+     */
+    public function getPreviewImagePath(array $options = array(), $extension = '.png')
+    {
+        $filename = 'preview';
+
+        if (isset($options['eye'])) {
+            $filename .= '-' . $options['eye'];
+        }
+
+        if (isset($options['page'])) {
+            $filename .= '-' . $options['page'];
+        }
+
+        $path = $this->event->getImagePath($filename, $extension);
+
+        if (!file_exists(dirname($path))) {
+            mkdir(dirname($path));
+        }
+
+        return $path;
+    }
+
+    /**
+     * Removes all preview images for this event
+     */
+    protected function removeEventImages()
+    {
+        EventImage::model()->deleteAll('event_id = ?', $this->event->id);
+    }
+
+    /**
+     * Saves a new EventImage record with the given status, and other options
+     * Without additional options, only a stub will be created
+     *
+     * @param 0string $status The name of the status to use. Can be one of 'GENERATING', 'NOT_CREATED', 'FAILED' or 'COMPLETE'
+     * @param array $options Additional options, including the page, eye_id, image_path, and error message
+     * @return EventImage The created EventImage record
+     * @throws Exception
+     */
+    protected function saveEventImage($status, array $options = [])
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('event_id', $this->event->id);
+        if (isset($options['page'])) {
+            $criteria->addCondition('(page IS NULL OR page = :page)');
+            $criteria->params[':page'] = $options['page'];
+        }
+
+        if (isset($options['eye_id'])) {
+            $criteria->addCondition('(eye_id IS NULL OR eye_id = :eye_id)');
+            $criteria->params[':eye_id'] = $options['eye_id'];
+        }
+
+        $eventImage = EventImage::model()->find($criteria) ?: new EventImage();
+        $eventImage->event_id = $this->event->id;
+        if(isset($options['image_path'])) {
+            $eventImage->image_data = file_get_contents($options['image_path']);
+
+            if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
+                @unlink($options['image_path']);
+            }
+        }
+
+        $eventImage->eye_id = @$options['eye_id'];
+        $eventImage->page = @$options['page'];
+        $eventImage->status_id = EventImageStatus::model()->find('name = ?', array($status))->id;
+
+        if(isset($options['message'])) {
+            $eventImage->message = $options['message'];
+        }
+
+        if (!$eventImage->save()) {
+            throw new Exception('Could not save event image: ' . print_r($eventImage->getErrors(), true));
+        }
+
+        return $eventImage;
+    }
+
+    /**
+     * Creates preview images for all pages of the given PDF file
+     *
+     * @param string $pdf_path The path for the PDF file
+     * @param int|null $eye The eye ID the PDF is for
+     * @throws Exception
+     */
+    protected function createPdfPreviewImages($pdf_path, $eye = null)
+    {
+        $pdf_imagick = new Imagick();
+        $pdf_imagick->readImage($pdf_path);
+        $pdf_imagick->setImageFormat('png');
+
+        $output_path = $this->getPreviewImagePath(['eye' => $eye]);
+        if (!$pdf_imagick->writeImages($output_path, false)) {
+            throw new Exception('An error occurred when attempting to convert eh PDF file to images');
+        }
+
+        // Try to save the PDF as though it only has one page
+        $result = $this->savePdfPreviewAsEventImage(null, $eye);
+        if (!$result) {
+            // If nothing was saved, then it has multiple pages
+            for ($page = 0; ; ++$page) {
+                $result = $this->savePdfPreviewAsEventImage($page, $eye);
+                if(!$result) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Attempts to create the EventImage record for the given page
+     *
+     * @param int|null $page The page number of the PDF
+     * @param int|null $eye The eye side if it exists
+     * @return bool True if the page exists, otherwise false
+     * @throws ImagickException Thrown if the layers can't be merged
+     * @throws Exception
+     */
+    protected function savePdfPreviewAsEventImage($page, $eye)
+    {
+        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye]);
+        Yii::log($pagePreviewPath);
+        if (!file_exists($pagePreviewPath)) {
+            return false;
+        }
+
+        $imagickPage = new Imagick();
+        $imagickPage->readImage($pagePreviewPath);
+        $this->scaleImageForThumbnail($imagickPage);
+
+        // Sometimes the PDf has a transparent background, which should be replaced with white
+        if ($imagickPage->getImageAlphaChannel()) {
+            $imagickPage->setImageAlphaChannel(11);
+            $imagickPage->setImageBackgroundColor('white');
+            $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+        }
+
+        $imagickPage->writeImage($pagePreviewPath);
+        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
+
+        if(!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
+            @unlink($pagePreviewPath);
+        }
+
+        return true;
     }
 }
