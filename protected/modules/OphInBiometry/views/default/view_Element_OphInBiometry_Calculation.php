@@ -17,11 +17,12 @@
  */
 ?>
 
+<div class="spacer"></div>
 <section>
     <div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
-               <?php if ($element->hasEye($eye_side))  {
+                <?php if ($element->hasEye($eye_side)) {
                     $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
                         array('side' => $eye_side, 'element' => $element));
                 } else { ?>
@@ -31,6 +32,7 @@
         <?php endforeach; ?>
     </div>
 </section>
+<div class="spacer"></div>
 <div class="column" id="comments" style="background-color: inherit;">
 			<span class="field-info">&nbsp;
                 <?php

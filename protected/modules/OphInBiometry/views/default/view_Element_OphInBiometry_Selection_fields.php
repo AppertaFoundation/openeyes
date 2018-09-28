@@ -15,7 +15,7 @@
                 ));
         } ?>
         <div class="data-group">
-            <table class="cols-11 large-text">
+            <table class="cols-11 large-text borders">
                 <colgroup>
                     <col class="cols-3">
                     <col class="cols-2">
