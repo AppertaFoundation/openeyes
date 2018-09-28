@@ -16,16 +16,17 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 <?php
+$form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
-?>
 
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
+
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => $form_id,
             'enableAjaxValidation' => false,
             'focus' => '#procedure_id',
             'layoutColumns' => array(
@@ -40,7 +41,7 @@ $warnings = $this->patient->getWarnings($clinical);
                 'level' => 'save',
             ),
             array(
-                'form' => 'clinical-create',
+                'form' => $form_id,
             )
         );
         ?>

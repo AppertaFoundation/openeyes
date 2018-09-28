@@ -23,14 +23,14 @@
             $error_class = isset($errors['event_date']) ? 'error' : '';
             ?>
             <?php
-
             $this->widget('application.widgets.DatePicker', array(
                 'element' => $this->event,
-                'name' => CHtml::modelName($this->event) . "['event_date']",
+                'name' => CHtml::modelName($this->event) . "[event_date]",
                 'field' => 'event_date',
                 'options' => array('maxDate' => 'today'),
                 'htmlOptions' => array(
                     'style' => 'display:none;',
+                    'form' => $form_id,
                     'nowrapper' => true,
                     'class' => 'js-event-date-input ' . $error_class
                 ),
@@ -68,19 +68,6 @@
     <?php } ?>
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
-
-    <?php if ($this->action->id === 'view' && $this->event->isEventDateDifferentFromCreated()) { ?>
-      <section class="element view full view-date">
-        <header class="element-header">
-          <h3 class="element-title"><?php echo $this->event->getAttributeLabel('event_date') ?></h3>
-        </header>
-        <div class="element-fields full-width">
-          <div>
-              <?php echo $this->event->NHSDate('event_date') ?>
-          </div>
-        </div>
-      </section>
-    <?php } ?>
 
     <?php echo $content; ?>
 
