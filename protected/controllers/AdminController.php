@@ -1602,7 +1602,7 @@ class AdminController extends BaseAdminController
 
         $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
-        $this->render('/admin/commissioning_body_services/edit', array(
+        $this->render('//admin/commissioning_body_services/edit', array(
             'commissioning_bt' => $commissioning_bt,
             'commissioning_bst' => $commissioning_bst,
             'cbs' => $cbs,

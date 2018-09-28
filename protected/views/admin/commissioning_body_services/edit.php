@@ -14,7 +14,10 @@
  */
 ?>
 
+<div class="row divider">
     <h2><?php echo $cbs->id ? 'Edit' : 'Add'?> commissioning body service</h2>
+</div>
+
 
     <?php echo $this->renderPartial(
         '//admin/_form_errors',

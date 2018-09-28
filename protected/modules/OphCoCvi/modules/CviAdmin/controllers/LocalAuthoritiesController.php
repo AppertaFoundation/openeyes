@@ -18,8 +18,11 @@
  *
  * @package OEModule\OphCoCvi\CviAdmin\controllers
  */
-class LocalAuthoritiesController extends \BaseAdminController
+class LocalAuthoritiesController extends \AdminController
 {
+    public $layout = '//layouts/admin';
+    public $items_per_page = 30;
+
     /**
      * @return array
      */
@@ -62,8 +65,8 @@ class LocalAuthoritiesController extends \BaseAdminController
         $data['title'] = 'CVI Social Services Depts.';
         $data['commissioning_bt'] = $commissioning_bt;
         $data['service_type'] = $service_type;
-        $data['return_url'] = '/OphCoCvi/localAuthoritiesAdmin/list';
-        $data['base_data_url'] = 'OphCoCvi/localAuthoritiesAdmin/';
+        $data['return_url'] = '/OphCoCvi/admin/localAuthorities/list';
+        $data['base_data_url'] = 'OphCoCvi/admin/localAuthorities/';
 
         $this->render('//admin/commissioning_body_services/index', $data);
     }

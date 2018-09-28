@@ -51,6 +51,8 @@ class DefaultController extends \ModuleAdminController
      */
     public function actionClinicalDisorders()
     {
+
+
         $this->genericAdmin(
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
@@ -82,6 +84,8 @@ class DefaultController extends \ModuleAdminController
      */
     public function actionNewClinicalDisorderRow($key)
     {
+        Yii::app()->clientScript->reset();
+
         $this->genericAdmin(
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',

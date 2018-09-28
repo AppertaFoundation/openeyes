@@ -17,7 +17,7 @@
  */
 ?>
 
-<div>
-	<strong><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</strong>
-	<?php echo CHtml::link(CHtml::encode($data->name), array('viewdecisiontree', 'id' => $data->id)); ?>
-</div>
+<tr>
+    <td><?=CHtml::encode($data->getAttributeLabel('name'));?></td>
+    <td><?=CHtml::link(CHtml::encode($data->name), array('viewdecisiontree', 'id' => $data->id));?></td>
+</tr>
