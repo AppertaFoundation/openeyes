@@ -1644,10 +1644,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
-        if ($form && (($action == strtolower(self::ACTION_TYPE_CREATE)) || $this->checkAdminAccess())) {
-            $this->renderPartial('//patient/event_date', array('form' => $form));
-        }
-
         $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 

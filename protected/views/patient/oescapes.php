@@ -32,11 +32,6 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
       $this->renderPartial('/clinical/oescapeSummary',
           array('subspecialty' => $subspecialty)
       );
-    if (count($legacyepisodes)) {?>
-		<h2>No OEscapes</h2>
-		<div class="alert-box alert with-icon">
-			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
-		</div>
-	<?php }
+
     $this->endContent();
 ?>

@@ -19,7 +19,7 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('PastSurgery.js') ?>"></script>
-<script type="text/javascript" src="<?= $this->getPublishedPath('../widgets/js','EyeSelector.js' , true) ?>"></script>
+
 <?php
 $model_name = CHtml::modelName($element);
 ?>
