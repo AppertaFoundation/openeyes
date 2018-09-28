@@ -41,7 +41,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 					Clear
 				</button>
 			</div>
-      <table class="cols-full grid colourvision_table"<?php if (!$element->right_readings) { ?> style="display: none;" <?php }?>>
+      <table class="cols-full standard colourvision_table"<?php if (!$element->right_readings) { ?> style="display: none;" <?php }?>>
         <thead>
         <tr>
           <th>Method</th>

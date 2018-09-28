@@ -27,7 +27,7 @@
 	<?php if (empty($episodes)) {?>
 		<div class="summary">No events</div>
 	<?php } else {?>
-	<table class="patient-episodes grid">
+	<table class="patient-episodes standard">
 		<thead>
 			<tr>
 				<th>Start Date</th>

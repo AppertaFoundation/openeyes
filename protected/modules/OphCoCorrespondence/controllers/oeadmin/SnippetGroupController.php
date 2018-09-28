@@ -44,6 +44,7 @@ class SnippetGroupController extends ModuleAdminController
             'id',
             'name',
         ));
+        $this->admin->div_wrapper_class = 'cols-7';
         $this->admin->listModel();
     }
 

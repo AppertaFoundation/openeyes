@@ -100,7 +100,7 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
         $dataProvider->setData($model->entries);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
-            'itemsCssClass' => 'generic-admin grid',
+            'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,

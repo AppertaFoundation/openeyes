@@ -58,7 +58,7 @@
     ?><form id="generic-admin-form"><?php
     $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin grid',
+        'itemsCssClass' => 'generic-admin standard',
         "emptyTagName" => 'span',
         'summaryText' => false,
         'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
