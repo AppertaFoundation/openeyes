@@ -24,38 +24,31 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 }
 
 ?>
-<div class="element-fields flex-layout full-width element-eyes">
+<div class="element-fields eye-divider">
+    <div class="element-eyes">
 	<script type="text/javascript">
 		var colourVisionMethodValues = {
 			<?php  echo implode(',', $method_values); ?>
 		};
 	</script>
 	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
-	<div class="js-element-eye right-eye column left" data-side="right">
-		<div class="active-form" style="display: <?php if (!$element->hasRight()) {
-        ?> none <?php }?>">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> " data-side="<?= $eye_side ?>">
+		<div class="active-form flex-layout" style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>">
+
+        <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
 			<div class="data-group">
-				<?php echo $form->dropDownListNoPost('colourvision_method_right', CHtml::listData($element->getUnusedReadingMethods('right'), 'id', 'name'), '', array('class' => 'inline colourvision_method', 'empty' => '--- Please select ---', 'nowrapper' => true))?>
-				<button class="small secondary clearCV<?php if (!$element->right_readings) { echo ' hidden'; }?>" type="button">
-					Clear
-				</button>
+
 			</div>
-      <table class="cols-full grid colourvision_table"<?php if (!$element->right_readings) { ?> style="display: none;" <?php }?>>
-        <thead>
-        <tr>
-          <th>Method</th>
-          <th>Value</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody class="plain" id="colourvision_right">
-        <?php foreach ($element->right_readings as $reading) {
+    <div class="cols-9">
+      <table class="cols-full grid colourvision_table_<?=$eye_side?>">
+        <tbody class="plain" id="colourvision_<?=$eye_side?>">
+        <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
             $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
-                'name_stub' => CHtml::modelName($element).'[right_readings]',
+                'name_stub' => CHtml::modelName($element).'[' .$eye_side .'_readings]',
                 'reading' => $reading,
                 'key' => $key,
-                'side' => 'right',
+                'side' => $eye_side,
                 'method_name' => $reading->method->name,
                 'method_id' =>  $reading->method->id,
             ));
@@ -64,54 +57,56 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
         </tbody>
       </table>
     </div>
-    <div class="inactive-form" style="display: <?php if ($element->hasRight()) {
+    <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-colour_vision_reading">
+        <button class="button hint green" id="add-procedure-btn-<?= $eye_side?>" type="button">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+        <!-- oe-add-select-search -->
+    </div>
+    </div>
+
+
+    <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
         ?> none <?php }?>">
 			<div class="add-side">
-				<a href="#">Add right side <span class="icon-add-side"></span></a>
+				<a href="#">Add <?=$eye_side ?> side <span class="icon-add-side"></span></a>
 			</div>
 		</div>
-	</div>
-	<div class="js-element-eye left-eye column right" data-side="left">
-		<div class="active-form"  style="display:  <?php if (!$element->hasLeft()) {
-        ?> none <?php } ?>">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div class="data-group">
-				<?php echo $form->dropDownListNoPost('colourvision_method_left', CHtml::listData($element->getUnusedReadingMethods('left'), 'id', 'name'), '', array('class' => 'inline colourvision_method', 'empty' => '--- Please select ---', 'nowrapper' => true))?>
-				<button class="small secondary clearCV<?php if (!$element->left_readings) { echo ' hidden'; }?>" type="button">
-					Clear
-				</button>
-			</div>
-      <table class="cols-full grid colourvision_table"<?php if (!$element->left_readings) { ?> style="display: none;"<?php } ?>>
-        <thead>
-        <tr>
-          <th>Method</th>
-          <th>Value</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody class="plain" id="colourvision_left">
-        <?php foreach ($element->left_readings as $reading) {
-            $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
-                'name_stub' => CHtml::modelName($element).'[left_readings]',
-                'reading' => $reading,
-                'key' => $key,
-                'side' => 'left',
-                'method_name' => $reading->method->name,
-                'method_id' =>  $reading->method->id,
-            ));
-            ++$key;
-        }?>
-        </tbody>
-      </table>
     </div>
-    <div class="inactive-form" style="display: <?php if ($element->hasLeft()) {
-        ?> none <?php } ?>">
-			<div class="add-side">
-				<a href="#">Add left side <span class="icon-add-side"></span></a>
-			</div>
-		</div>
-	</div>
+        <script type="text/javascript">
+            $(function () {
+                new OpenEyes.UI.AdderDialog({
+                    openButton: $('#add-procedure-btn-<?= $eye_side?>'),
+                    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                        array_map(function ($reading) {
+                            return ['label' => $reading->name, 'id' => $reading->id];
+                        }, $element->getUnusedReadingMethods($eye_side))) ?> , {'multiSelect': true}),
+                    ],
+                    onReturn: function (adderDialog, selectedItems) {
+                        if (selectedItems.length) {
+                            let eye_side = '<?=$eye_side?>';
+                            var $table = $('.colourvision_table_' + eye_side);
+                            OphCiExamination_ColourVision_addReading(selectedItems, eye_side, $table);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    },
+                    onOpen: function () {
+                        $('#<?= $eye_side ?>-add-colour_vision_reading').find('li').each(function () {
+                            var method_id = $(this).data('id');
+                            var already_used = $('.colourvision_table_' + '<?= $eye_side ?>')
+                                .find('input[type="hidden"][name*="method_id"][value="' + method_id + '"]').length > 0;
+                            $(this).toggle(!already_used);
+                        });
+                    },
+                });
+            });
+        </script>
+	<?php endforeach; ?>
+    </div>
 </div>
+
 <script id="colourvision_reading_template" type="text/html">
 	<?php
     $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
