@@ -64,8 +64,8 @@ class AdminController extends BaseAdminController
 
             $ids = array();
             foreach($disorders as $key => $disorder){
-
-                if(!$common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id'])){
+                $common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
+                if(!$common_ophtalmic_disorder){
                     $common_ophtalmic_disorder = new CommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -160,8 +160,8 @@ class AdminController extends BaseAdminController
 
             $ids = array();
             foreach($disorders as $key => $disorder){
-
-                if(!$common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id'])){
+                $common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id']);
+                if(!$common_ophtalmic_disorder){
                     $common_ophtalmic_disorder = new SecondaryToCommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -331,7 +331,8 @@ class AdminController extends BaseAdminController
     public function actionEditDrug($id)
     {
         return; //disabled OE-4474
-        if (!$drug = Drug::model()->findByPk($id)) {
+        $drug = Drug::model()->findByPk($id);
+        if (!$drug) {
             throw new Exception("Drug not found: $id");
         }
         $drug->scenario = 'update';
@@ -474,7 +475,8 @@ class AdminController extends BaseAdminController
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
-                if (!$contact = $user->contact) {
+                $contact = $user->contact;
+                if (!$contact) {
                     $contact = new Contact();
                 }
 
@@ -637,7 +639,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditFirm($id)
     {
-        if (!$firm = Firm::model()->findByPk($id)) {
+        $firm = Firm::model()->findByPk($id);
+        if (!$firm) {
             throw new Exception("Firm not found: $id");
         }
 
@@ -676,7 +679,8 @@ class AdminController extends BaseAdminController
     {
         Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
 
-        if ($user = User::model()->find('username=?', array($_GET['username']))) {
+        $user = User::model()->find('username=?', array($_GET['username']));
+        if ($user) {
             echo $user->id;
         } else {
             echo 'NOTFOUND';
@@ -756,7 +760,8 @@ class AdminController extends BaseAdminController
             $id = @$_GET['contact_id'];
         }
 
-        if (!$contact = Contact::model()->findByPk($id)) {
+        $contact = Contact::model()->findByPk($id);
+        if (!$contact) {
             throw new Exception('Contact not found: ' . $id);
         }
 
@@ -784,7 +789,8 @@ class AdminController extends BaseAdminController
 
     public function actionContactLocation()
     {
-        if (!$cl = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
+        $cl = ContactLocation::model()->findByPk(@$_GET['location_id']);
+        if (!$cl) {
             throw new Exception('ContactLocation not found: ' . @$_GET['location_id']);
         }
 
@@ -797,7 +803,8 @@ class AdminController extends BaseAdminController
 
     public function actionRemoveLocation()
     {
-        if (!$cl = ContactLocation::model()->findByPk(@$_POST['location_id'])) {
+        $cl = ContactLocation::model()->findByPk(@$_POST['location_id']);
+        if (!$cl) {
             throw new Exception('ContactLocation not found: ' . @$_POST['location_id']);
         }
 
@@ -820,7 +827,8 @@ class AdminController extends BaseAdminController
 
     public function actionAddContactLocation()
     {
-        if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+        $contact = Contact::model()->findByPk(@$_GET['contact_id']);
+        if (!$contact) {
             throw new Exception('Contact not found: ' . @$_GET['contact_id']);
         }
 
@@ -828,7 +836,8 @@ class AdminController extends BaseAdminController
         $sites = array();
 
         if (!empty($_POST)) {
-            if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+            $institution = Institution::model()->findByPk(@$_POST['institution_id']);
+            if (!$institution) {
                 $errors['institution_id'] = array('Please select an institution');
             } else {
                 $sites = $institution->sites;
@@ -838,7 +847,8 @@ class AdminController extends BaseAdminController
                 $cl = new ContactLocation();
                 $cl->contact_id = $contact->id;
 
-                if ($site = Site::model()->findByPk(@$_POST['site_id'])) {
+                $site = Site::model()->findByPk(@$_POST['site_id']);
+                if ($site) {
                     $cl->site_id = $site->id;
                 } else {
                     $cl->institution_id = $institution->id;
@@ -862,7 +872,8 @@ class AdminController extends BaseAdminController
 
     public function actionGetInstitutionSites()
     {
-        if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+        if (!$institution) {
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 
@@ -944,7 +955,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditInstitution()
     {
-        if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+        if (!$institution) {
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 

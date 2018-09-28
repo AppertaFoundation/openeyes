@@ -52,11 +52,6 @@ class NodExportController extends BaseController
         );
     }
 
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
-    }
-
     public function init()
     {
         $this->institutionCode = Yii::app()->params['institution_code'];
@@ -110,7 +105,6 @@ class NodExportController extends BaseController
     
     public function actionIndex()
     {
-        // TODO: need to create views!!!
         $this->render('//nodexport/index');
     }
     
@@ -127,9 +121,7 @@ class NodExportController extends BaseController
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
         }
-        
     }
     
     /**
