@@ -2019,7 +2019,8 @@ class Patient extends BaseActiveRecordVersioned
         } elseif (isset($CoCvi_cvi)) {
             return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
         } else {
-            return array($this->getOphInfo()->cvi_status->name, date('d M y'));
+            $ophInfo = $this->getOphInfo();
+            return array($ophInfo->cvi_status->name, $ophInfo->cvi_status_date);
         }
     }
 
