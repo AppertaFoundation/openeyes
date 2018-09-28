@@ -18,14 +18,23 @@
 ?>
 <div class="data-group">
 	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-        <?=CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large']);?>
+        <?=CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']);?>
 		<?php if ($buttonOptions['cancel']) {
     $cancelHtmlOptions = array('class' => 'button large');
     if (@$buttonOptions['cancel-uri']) {
         $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
     }
-    echo CHtml::htmlButton($buttonOptions['cancel'], ['name' => 'cancel', 'class' => 'button large']);
-}?>
+            echo CHtml::button(
+                $buttonOptions['cancel'],
+                [
+                    'data-uri' => $buttonOptions['cancel-uri'],
+                    'class' => 'button large',
+                    'type' => 'submit',
+                    'name' => 'cancel',
+                    'id' => 'et_cancel',
+                ]
+            );
+        }?>
 		<?php if ($buttonOptions['delete']) {
         echo CHtml::htmlButton($buttonOptions['delete'], ['name' => 'delete', 'class' => 'button large']);
 
