@@ -16,60 +16,88 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'address_type_id'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->dropDownList($address,'address_type_id', $address_type_ids, array('empty'=>'-- select --')); ?>
-        <?php echo $form->error($address,'address_type_id'); ?>
-    </div>
-</div>
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'address1'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->textField($address,'address1',array('size'=>15)); ?>
-        <?php echo $form->error($address,'address1'); ?>
-    </div>
-</div>
+<?php
+/**
+ * @var Address $address
+ */
+?>
+<tr>
+  <td>
+      <?= $form->label($address, 'address_type_id') ?>
+    <br/>
+      <?= $form->error($address, 'address_type_id') ?>
+  </td>
+  <td>
+      <?php echo $form->dropDownList($address, 'address_type_id', $address_type_ids,
+          array('empty' => '-- select --')); ?>
+  </td>
+<tr>
+<tr>
+  <td>
+      <?= $form->label($address, 'address1') ?>
+    <br/>
+      <?= $form->error($address, 'address1') ?>
+  </td>
+  <td>
+      <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1')) ?>
+  </td>
+</tr>
 
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'address2'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->textField($address,'address2',array('size'=>15)); ?>
-        <?php echo $form->error($address,'address2'); ?>
-    </div>
-</div>
+<tr>
+  <td>
+      <?= $form->label($address, 'address2') ?>
+    <br/>
+      <?= $form->error($address, 'address2') ?>
+  </td>
+  <td>
+      <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2')) ?>
 
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'city'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->textField($address,'city',array('size'=>15)); ?>
-        <?php echo $form->error($address,'city'); ?>
-    </div>
-</div>
+  </td>
+</tr>
+<tr>
+  <td>
+      <?= $form->label($address, 'city') ?>
+    <br/>
+      <?= $form->error($address, 'city') ?>
+  </td>
+  <td>
+      <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City')) ?>
+  </td>
+</tr>
 
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'postcode'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->textField($address,'postcode',array('size'=>15)); ?>
-        <?php echo $form->error($address,'postcode'); ?>
-    </div>
-</div>
+<tr>
+  <td>
+      <?= $form->label($address, 'postcode') ?>
+    <br/>
+      <?= $form->error($address, 'postcode') ?>
+  </td>
+  <td>
+      <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode')) ?>
+  </td>
+</tr>
 
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'county'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->textField($address,'county',array('size'=>15)); ?>
-        <?php echo $form->error($address,'county'); ?>
-    </div>
-</div>
+<tr>
+  <td>
+      <?= $form->label($address, 'county') ?>
+    <br/>
+      <?= $form->error($address, 'county') ?>
+  </td>
+  <td>
+      <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
 
-<div class="data-group">
-    <div class="cols-3 column"><?php echo $form->labelEx($address,'country_id'); ?></div>
-    <div class="cols-4 column end">
-        <?php echo $form->dropDownList($address,'country_id', $countries, array('empty'=>'-- select --')); ?>
-        <?php echo $form->error($address,'country_id'); ?>
-    </div>
-</div>
+  </td>
+</tr>
+
+<tr>
+  <td class="required">
+      <?= $form->label($address, 'country_id') ?>
+    <br/>
+      <?= $form->error($address, 'country_id') ?>
+  </td>
+  <td>
+      <?= $form->dropDownList($address, 'country_id', $countries, array('empty' => '-- select --', 'placeholder' => 'Country')) ?>
+  </td>
+</tr>
 
 
 
