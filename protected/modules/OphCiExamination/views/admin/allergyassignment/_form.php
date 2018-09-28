@@ -38,47 +38,14 @@
                 ); ?>
             </td>
         </tr>
-        <tr>
-            <td class="fade">Subspecialty:</td>
-            <td>
-                <?php echo CHtml::dropDownList(
-                    'subspecialty-id',
-                    $model->subspecialty_id,
-                    Subspecialty::model()->getList(),
-                    ['empty' => '- Please select -', 'class' => 'cols-full']
-                ) ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="fade">Context</td>
-            <td>
-                <?php if (!$model->subspecialty_id) { ?>
-                    <?php echo CHtml::dropDownList(
-                        'firm-id',
-                        '',
-                        array(),
-                        [
-                            'class' => 'cols-full',
-                            'empty' => 'All ' . Firm::contextLabel() . 's',
-                            'disabled' => 'disabled',
-                        ]
-                    ) ?>
-                <?php } else { ?>
-                    <?php echo CHtml::dropDownList(
-                        'firm-id',
-                        $model->firm_id,
-                        Firm::model()->getList($model->subspecialty_id),
-                        array(
-                            'class' => 'cols-full',
-                            'empty' => 'All ' . Firm::contextLabel() . 's',
-                            'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
-                        )
-                    ) ?>
-                <?php } ?>
-            </td>
-        </tr>
+        <?php
+        $this->widget('application.widgets.SubspecialtyFirmPicker', [
+            'model' => $model
+        ]);
+        ?>
         </tbody>
     </table>
+
 
     <?php
     $examination_allergy_listdata = CHtml::listData(
@@ -206,6 +173,7 @@
         ]
     ); ?>
 </div>
+
 
 <script type="text/template" id="new_allergy_entry" class="hidden">
     <tr data-row="{{row}}">

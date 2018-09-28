@@ -55,18 +55,13 @@ class RisksAssignmentController extends \ModuleAdminController
     {
         $risk_set = new models\OphCiExaminationRiskSet;
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
-        {
-            $risk_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
-
+        if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'])) {
+            $risk_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
             $transaction = \Yii::app()->db->beginTransaction();
-
             try {
-
-                if($risk_set->save()){
-
+                if ($risk_set->save()) {
                     $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
-                    foreach($risks as $risk){
+                    foreach ($risks as $risk) {
                         $risk_model = new models\OphCiExaminationRiskSetEntry;
 
                         $risk_model->gender = $risk['gender'];
@@ -74,7 +69,7 @@ class RisksAssignmentController extends \ModuleAdminController
                         $risk_model->age_max = $risk['age_max'];
                         $risk_model->ophciexamination_risk_id = $risk['ophciexamination_risk_id'];
 
-                        if($risk_model->save()){
+                        if ($risk_model->save()) {
                             $this->saveAssignment($risk_set, $risk_model);
                         }
                     }
@@ -90,8 +85,9 @@ class RisksAssignmentController extends \ModuleAdminController
 
         }
 
-        $this->render('/admin/riskassignment/create',array(
-            'model' => $risk_set
+        $this->render('/admin/riskassignment/edit', array(
+            'model' => $risk_set,
+            'title' => 'Create required risk set',
         ));
     }
 
@@ -107,6 +103,7 @@ class RisksAssignmentController extends \ModuleAdminController
 
         if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
         {
+
             $risk_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
             $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
 
@@ -169,8 +166,9 @@ class RisksAssignmentController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/riskassignment/update',array(
+        $this->render('/admin/riskassignment/edit',array(
             'model' => $risk_set,
+            'title' => 'Edit required risk set',
         ));
     }
 

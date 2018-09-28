@@ -19,17 +19,18 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Required Risk Set</h2>
+<h2>Required Risk Set</h2>
 
-<?php
+<div class="cols-7">
 
+
+    <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
-            'value' => function($data, $row){
-                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]",false, ['value' => $data->id]);
+            'value' => function ($data, $row) {
+                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]", false, ['value' => $data->id]);
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -38,7 +39,7 @@
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
         ),
@@ -46,7 +47,7 @@
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->firm ? $data->firm->name : null;
             }
         ),
@@ -54,38 +55,41 @@
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
+    ?>
 
-    ?><form id="generic-admin-form"><?php
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin standard',
-        //'template' => '{items}',
-        "emptyTagName" => 'span',
-        'summaryText' => false,
-        'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
-        'enableSorting' => false,
-        'enablePagination' => false,
-        'columns' => $columns,
-        'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-        'rowCssClass' => array('clickable'),
+    <form id="generic-admin-form"><?php
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard',
+            //'template' => '{items}',
+            "emptyTagName" => 'span',
+            'summaryText' => false,
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'enableSorting' => false,
+            'enablePagination' => false,
+            'columns' => $columns,
+            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
+            'rowCssClass' => array('clickable'),
 
-    ));
-?>
+        ));
+        ?>
     </form>
 
     <button class="small primary event-action" name="add" type="submit" id="et_add">Add</button>
-    <button data-object="OphCiExaminationRisk" data-uri="/OphCiExamination/oeadmin/RisksAssignment/delete" class="small primary event-action" name="delete" type="submit" id="et_delete">Delete</button>
+    <button data-object="OphCiExaminationRisk" data-uri="/OphCiExamination/oeadmin/RisksAssignment/delete"
+            class="small primary event-action" name="delete" type="submit" id="et_delete">Delete
+    </button>
 
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function(){
+    $(document).ready(function () {
+        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/update/' + id;
         });
 
-        $('#et_add').click(function(){
+        $('#et_add').click(function () {
             window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/create/';
         });
 

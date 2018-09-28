@@ -19,16 +19,33 @@
  */
 ?>
 
-<?php
-    echo $form->textField($model, "name");
-    echo "<br>";
-?>
+<div class="cols-7">
+    <table class="standard cols-full">
+        <h2><?php echo $title ?></h2>
+        <hr class="divider">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?php echo CHtml::activeTelField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <?php
+        $this->widget('application.widgets.SubspecialtyFirmPicker', [
+            'model' => $model
+        ]);
+        ?>
+        </tbody>
+    </table>
 
-<?php
-$this->widget('application.widgets.SubspecialtyFirmPicker', [
-    'model' => $model
-]);
-?>
     <?php
     echo "<br>";
 
@@ -37,16 +54,16 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
     }, 'name');
-?>
+    ?>
 
-<div id="risks" class="data-group">
+    <div id="risks" class="data-group">
         <?php
         $columns = array(
             array(
                 'header' => 'Risk Name',
                 'name' => 'Risk Name',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($examination_risk_listdata){
+                'value' => function ($data, $row) use ($examination_risk_listdata) {
                     return
                         CHtml::hiddenField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][id]", $data->id) .
                         CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][ophciexamination_risk_id]", $data->ophciexamination_risk_id, $examination_risk_listdata, array('empty' => '- select --'));
@@ -56,7 +73,7 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($gender_options){
+                'value' => function ($data, $row) use ($gender_options) {
                     echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
                 }
             ),
@@ -64,22 +81,22 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => '',
                 'type' => 'raw',
-                'value' => function($data, $row){
+                'value' => function ($data, $row) {
                     return CHtml::link('remove', '#', array('class' => 'remove_risk_entry'));
                 }
             ),
@@ -93,14 +110,43 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
             'rowHtmlOptionsExpression' => 'array("data-row" => $row)',
         ));
         ?>
-        <button id="add_new_risk" type="button" class="small primary right">Add</button>
+    </div>
+
+    <?php echo CHtml::button(
+        'Add Allergy',
+        [
+            'class' => 'button large',
+            'type' => 'button',
+            'id' => 'add_new_risk'
+        ]
+    ); ?>
+
+    <?php echo CHtml::button(
+        'Save',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'save',
+            'id' => 'et_save'
+        ]
+    ); ?>
+
+    <?php echo CHtml::button(
+        'Cancel',
+        [
+            'class' => 'button large',
+            'type' => 'button',
+            'name' => 'cancel',
+            'id' => 'et_cancel'
+        ]
+    ); ?>
 </div>
 
 
@@ -108,20 +154,24 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
     <tr data-row="{{row}}">
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
-                                        null, $examination_risk_listdata, array("empty" => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
+                null, $examination_risk_listdata, array("empty" => '-- select --'));
             ?>
         </td>
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
             ?>
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_min">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_min]"
+                   id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_min">
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_max">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_max]"
+                   id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_max">
         </td>
         <td>
             <a href="javascript:void(0)" class="remove_risk_entry">remove</a>
@@ -131,15 +181,15 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
 
 <script>
 
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         var $table = $('table.generic-admin');
 
-        $('#add_new_risk').on('click',function(e){
+        $('#add_new_risk').on('click', function (e) {
             var data = {}, $row
             $table = $('table.generic-admin');
 
-            data['row'] = OpenEyes.Util.getNextDataKey( $table.find('tbody tr'), 'row');
+            data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
             $row = Mustache.render(
                 $('#new_risk_entry').text(),
                 data
@@ -148,12 +198,21 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
             $table.find('td.empty').closest('tr').hide();
         });
 
-        $($table).on('click','.remove_risk_entry', function(e){
+        $($table).on('click', '.remove_risk_entry', function (e) {
             $(this).closest('tr').remove();
-            if($table.find('tbody tr').length <= 1){
+            if ($table.find('tbody tr').length <= 1) {
                 $table.find('td.empty').closest('tr').show();
             }
         });
     });
 
 </script>
+
+<script>
+    $(document).ready(function () {
+        $('#et_cancel').click(function () {
+            window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/';
+        });
+    });
+</script>
+

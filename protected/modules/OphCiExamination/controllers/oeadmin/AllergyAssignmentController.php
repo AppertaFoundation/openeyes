@@ -55,12 +55,7 @@ class AllergyAssignmentController extends \ModuleAdminController
         $allergy_set = new models\OphCiExaminationAllergySet;
 
         if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'])) {
-            $post_var = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
-            $post_var['subspecialty_id'] = $_POST['subspecialty-id'];
-            $post_var['firm_id'] = isset($_POST['firm-id']) ? $_POST['firm-id'] : '';
-            $allergy_set->attributes = $post_var;
-
-//            $allergy_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
+            $allergy_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
 
             $transaction = \Yii::app()->db->beginTransaction();
 
@@ -111,10 +106,7 @@ class AllergyAssignmentController extends \ModuleAdminController
         $allergy_set = $this->loadModel($id);
 
         if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'])) {
-            $post_var = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
-            $post_var['subspecialty_id'] = $_POST['subspecialty-id'];
-            $post_var['firm_id'] = isset($_POST['firm-id']) ? $_POST['firm-id'] : '';
-            $allergy_set->attributes = $post_var;
+            $allergy_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
 
             $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
 
