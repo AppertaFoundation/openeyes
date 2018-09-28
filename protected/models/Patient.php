@@ -55,6 +55,7 @@
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
+ * @property TrialPatient[] $trials
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses
@@ -579,6 +580,28 @@ class Patient extends BaseActiveRecordVersioned
         
         $allDiagnosesString = implode($separator,$allDiagnoses).($lastSeparatorNeeded ? $separator:'');
         return $allDiagnosesString;
+    }
+
+    /**
+     * @var $diagnosis SecondaryDiagnosis
+     *
+     * @return string
+     */
+    public function getUniqueOphthalmicDiagnosesTable(){
+        ob_start();
+        ?>
+        <table class="standard">
+            <tbody>
+            <?php foreach ($this->getOphthalmicDiagnoses() as $diagnosis): ?>
+                <tr>
+                    <td><?= Helper::convertDate2NHS($diagnosis->date) ?></td>
+                    <td><?= mb_strtoupper($diagnosis->eye->adjective).' '.$diagnosis->disorder->term?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php
+        return ob_get_clean();
     }
 
     /**
@@ -1339,8 +1362,8 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->compare('specialty.code', 130);
 
         $criteria->order = 'date asc';
-
-        return SecondaryDiagnosis::model()->findAll($criteria);
+        $result =SecondaryDiagnosis::model()->findAll($criteria);
+        return $result;
     }
 
     /*

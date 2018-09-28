@@ -11,20 +11,17 @@
  * @var int $sort_dir
  */
 ?>
-<div class="report-summary row divider">
-    <?php
-    $dataProvided = $dataProvider->getData();
-    $items_per_page = $dataProvider->getPagination()->getPageSize();
-    $page_num = $dataProvider->getPagination()->getCurrentPage();
-    $from = ($page_num * $items_per_page) + 1;
-    $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
-    ?>
-  <h2>
-      <?php echo $title; ?>: viewing <?php echo $from; ?> - <?php echo $to; ?>
-    of <?php echo $dataProvider->totalItemCount ?>
-  </h2>
+<?php
+$dataProvided = $dataProvider->getData();
+$items_per_page = $dataProvider->getPagination()->getPageSize();
+$page_num = $dataProvider->getPagination()->getCurrentPage();
+$from = ($page_num * $items_per_page) + 1;
+$to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
+?>
 
-  <table id="patient-grid" class="standard">
+<div class="report-summary row divider">
+  <h2><?= $title; ?></h2>
+  <table class="standard">
     <thead>
     <tr>
         <?php
@@ -48,7 +45,7 @@
         $columns[] = '';
 
         foreach ($columns as $i => $field): ?>
-          <th id="patient-grid_c<?php echo $i; ?>">
+          <th id="patient-grid_c<?= $i; ?>">
               <?php
               if (in_array($field, $sortableColumns, true)) {
                   $new_sort_dir = ($i === $sort_by) ? 1 - $sort_dir : 0;

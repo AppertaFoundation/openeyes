@@ -19,10 +19,11 @@ $data->hasAllergyStatus();
             array(
                 'patient' => $data,
                 'layout' => 'list',
-                'trial' => $this->trialContext
+                'trial' => $this->trialContext,
+                'list_mode' => true,
             )
         );
-        $patientPanel->render('PatientPanel_list');
+        $patientPanel->render('PatientPanel');
         ?>
     </td>
 </tr>

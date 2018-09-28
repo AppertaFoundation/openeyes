@@ -57,7 +57,7 @@ class AddressTest extends CDbTestCase
             'address2' => 'Address2',
             'city' => 'City',
             'postcode' => 'Postcode',
-            'county' => 'County',
+            'county' => Yii::app()->params['county_label'],
             'country_id' => 'Country',
             'email' => 'Email',
         );

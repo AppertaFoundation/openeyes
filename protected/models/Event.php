@@ -568,9 +568,9 @@ class Event extends BaseActiveRecordVersioned
         return file_exists($this->getImagePath($name));
     }
 
-    public function getImagePath($name)
+    public function getImagePath($name, $extension = '.png')
     {
-        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . "$name.png";
+        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . $name . $extension;
     }
 
     public function getPDF($pdf_print_suffix = null)
