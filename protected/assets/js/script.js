@@ -323,7 +323,7 @@ $(document).ready(function () {
         if( $('.js-element-subgroup-viewstate-btn').length == 0 ) return;
 
         $('.js-element-subgroup-viewstate-btn').each( function(){
-            var subgroup = new Viewstate( $(this) );
+            new Viewstate( $(this) );
         });
 
         function Viewstate( $icon ){
