@@ -17,7 +17,7 @@ function DeleteCommonDrug(ssdId) {
     } else {
 
         $.ajax({
-                url: "/OphDrPrescription/admin/commondrugsdelete?ssdId=" + ssdId,
+                url: "/OphDrPrescription/admin/default/commondrugsdelete?ssdId=" + ssdId,
                 error: function () {
                     console.log("ERROR, something went wrong!");
                 },
@@ -32,7 +32,7 @@ function DeleteCommonDrug(ssdId) {
 
 function addItem(drugId) {
     $.ajax({
-            url: "/OphDrPrescription/admin/commondrugsadd?drugId=" + drugId + "&siteId=" + $('#site_id').val() + "&subspecId=" + $('#subspecialty_id').val(),
+            url: "/OphDrPrescription/admin/default/commondrugsadd?drugId=" + drugId + "&siteId=" + $('#site_id').val() + "&subspecId=" + $('#subspecialty_id').val(),
             error: function () {
                 console.log("ERROR, something went wrong!");
             },

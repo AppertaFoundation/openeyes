@@ -36,16 +36,10 @@
 	 * @returns {this}
 	 */
 	Emitter.prototype.on = function(type, handler) {
+		this.events[type] = this.events[type] || [];
+        this.events[type].push(handler);
 
-		var events = this.events;
-
-		if (!events[type]) {
-			events[type] = [];
-		}
-
-		events[type].push(handler);
-
-		return this;
+        return this;
 	};
 
 	/**
