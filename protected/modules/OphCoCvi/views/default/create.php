@@ -18,10 +18,10 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
-
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'create-form',
+$form_id = 'create-form';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
         'label' => 2,
@@ -29,7 +29,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
     )
 ));
 
-$this->renderPartial('event_actions', array('form_id' => 'create-form'));
+$this->renderPartial('event_actions', array('form_id' => $form_id));
 ?>
 
 <?php $this->displayErrors($errors) ?>
