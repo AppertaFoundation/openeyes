@@ -28,8 +28,9 @@
             ),
         ));
         $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-                'model' => $model,
-                'form' => $form,
+            'model' => $model,
+            'form' => $form,
+            'title' => $title,
         ));
         echo $form->formActions(array(
             'submit' => $model->isNewRecord ? 'Create' : 'Save',
@@ -41,7 +42,7 @@
     ?>
     <?php if (@$related_view) {
         $this->renderPartial($related_view, array(
-                'model' => $model,
+            'model' => $model,
         ))?>
     <?php
     }?>

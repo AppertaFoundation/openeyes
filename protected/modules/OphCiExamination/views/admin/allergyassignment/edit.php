@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,26 +9,27 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
-<div class="cols-4">
-    <table class="standard cols-full">
-        <h2><?php echo $title ?></h2>
-        <hr class="divider">
-        <tbody>
-        <tr>
-            <td >
-                <?php echo $form->hiddenField($model, 'id')?>
-                <?php echo $form->textField(
-                    $model,
-                    'name',
-                    ['autocomplete' => Yii::app()->params['html_autocomplete']]
-                ) ?>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'OphCiExamination_adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+));
+
+$this->renderPartial(
+    '/admin/allergyassignment/_form',
+    ['form' => $form, 'model' => $model, 'title' => $title]
+); ?>
+
+<?php
+$this->endWidget();
+?>
+

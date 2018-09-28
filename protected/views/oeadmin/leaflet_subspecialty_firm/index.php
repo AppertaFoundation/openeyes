@@ -225,7 +225,7 @@
             var subspecialty_id = $(this).val();
 
             if (subspecialty_id === '') {
-                $('#firm-id').find('options').remove();
+                $('#firm-id option').remove();
                 $('#firm-id').append($('<option>').text("All Contexts"));
                 $('#firm-id').attr('disabled', 'disabled');
             } else {

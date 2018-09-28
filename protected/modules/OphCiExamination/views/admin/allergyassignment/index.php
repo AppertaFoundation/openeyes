@@ -19,17 +19,21 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Required Allergy Set</h2>
+<h2>Required Allergy Set</h2>
+
+<div class="cols-7">
 
 <?php
-
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
-            'value' => function($data, $row){
-                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationAllergySet[][id]",false, ['value' => $data->id]);
+            'value' => function ($data, $row) {
+                return CHtml::checkBox(
+                    "OEModule_OphCiExamination_models_OphCiExaminationAllergySet[][id]",
+                    false,
+                    ['value' => $data->id]
+                );
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -38,7 +42,7 @@
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
         ),
@@ -46,7 +50,7 @@
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->firm_id ? $data->getFirm()->name: null;
             }
         ),
@@ -55,7 +59,8 @@
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
 
-    ?><form id="generic-admin-form"><?php
+    ?>
+    <form id="generic-admin-form"><?php
     $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider' => $dataProvider,
         'itemsCssClass' => 'generic-admin standard',
@@ -73,8 +78,27 @@
 ?>
     </form>
 
-    <button class="small primary event-action" name="add" type="submit" id="et_add">Add</button>
-    <button data-object="OphCiExaminationAllergy" data-uri="/OphCiExamination/oeadmin/AllergyAssignment/delete" class="small primary event-action" name="delete" type="submit" id="et_delete">Delete</button>
+    <?php echo CHtml::button(
+        'Add',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'add',
+            'id' => 'et_add'
+        ]
+    ); ?>
+
+    <?php echo CHtml::button(
+        'Delete',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'delete',
+            'data-object' => 'OphCiExaminationAllergy',
+            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/delete',
+            'id' => 'et_delete'
+        ]
+    ); ?>
 
 </div>
 

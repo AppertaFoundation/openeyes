@@ -16,9 +16,73 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h2>Edit workflow rule</h2>
-<?php echo $form->errorSummary($model)?>
-<?php echo $form->dropDownList($model, 'firm_id', CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'), array('empty' => '- All -'))?>
-<?php echo $form->dropDownList($model, 'episode_status_id', 'EpisodeStatus', array('empty' => '- All -'))?>
-<?php echo $form->dropDownList($model, 'subspecialty_id', 'Subspecialty', array('empty' => '- All -'))?>
-<?php echo $form->dropDownList($model, 'workflow_id', 'OEModule\OphCiExamination\models\OphCiExamination_Workflow')?>
+
+<div class="cols-7">
+    <table class="standard cols-full">
+        <h2><?php echo $title ?></h2>
+        <hr class="divider">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <?php if ($form->errorSummary($model)) : ?>
+            <tr>
+                <td>Errors</td>
+                <td class="cols-full">
+                    <?php echo $form->errorSummary($model) ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+
+        <tr>
+            <td>Context</td>
+            <td class="cols-full">
+                <?php echo CHtml::activeDropDownList(
+                    $model,
+                    'firm_id',
+                    CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'),
+                    ['class' => 'cols-full', 'empty' => '- All -']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Episode status</td>
+            <td class="cols-full">
+                <?php echo CHtml::activeDropDownList(
+                    $model,
+                    'episode_status_id',
+                    CHtml::listData(EpisodeStatus::model()->findAll(), 'id', 'name'),
+                    ['class' => 'cols-full', 'empty' => '- All -']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Subspecialty</td>
+            <td class="cols-full">
+                <?php echo CHtml::activeDropDownList(
+                    $model,
+                    'subspecialty_id',
+                    CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+                    ['class' => 'cols-full', 'empty' => '- All -']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Workflow</td>
+            <td class="cols-full">
+                <?php echo CHtml::activeDropDownList(
+                    $model,
+                    'workflow_id',
+                    CHtml::listData(
+                        OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAll(),
+                        'id',
+                        'name'
+                    ),
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
