@@ -43,8 +43,7 @@
   $(document).ready(function () {
     //right side image
     var doc_list = <?= CJavaScript::encode($this->getDocument()); ?>;
-    setImgStack($('#oct-stack'), 'oct_img_',  doc_list['right'].length?doc_list['right'][0]['doc_id']:null );
-    setImgStack($('#oct-stack'), 'oct_img_',  doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
+
     //left side plots
     $('#mr_history_va_unit_id').change(function () { this.form.submit(); });
     var axis_index = 1;
@@ -55,34 +54,22 @@
     options_MR['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
     options_MR['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
-    var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
-
-    var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
 
     var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
 
     var sides = ['left', 'right'];
-    var chart_MR = {};
-    var plotLines = {};
-    for (var i in sides) {
-      changeSetting(injections_data, sides[i]);
-      options_MR['xAxis']['plotLines'] = [];
-      plotLines[sides[i]] = [];
-      setMarkingEvents(options_MR, opnote_marking, plotLines, sides[i]);
-      setMarkingEvents(options_MR, laser_marking, plotLines, sides[i]);
-      chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
-      drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
-      cleanVATicks(va_ticks, options_MR, chart_MR[sides[i]], axis_index);
-    }
 
 
     //plotly
     var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
+
     var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
 
     var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
+
+    var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
 
     for (var side of sides){
@@ -98,39 +85,39 @@
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
 
 
-      var data =[{
+      var trace1 = {
         name: 'VA('+side+')',
-        x: va_plotly[side]['x'].map(function (item) {
-          return new Date(item);
-        }),
+        x: va_plotly[side]['x'],
         y: va_plotly[side]['y'],
         line: {
           color: (side=='right')?'#9fec6d':'#fe6767',
         },
-        text: va_plotly[side]['x'].map(function (item, index) {
-          return OEScape.toolTipFormatters_plotly.VA(new Date(item), va_plotly[side]['y'][index], 'VA('+side+')');
+        hovertext: va_plotly[side]['x'].map(function (item, index) {
+          var d = new Date(item);
+          return OEScape.toolTipFormatters_plotly.VA(d, va_plotly[side]['y'][index], 'VA('+side+')');
         }),
+        text: side,
         hoverinfo: 'text',
-        type: 'line',
-      }, {
+        yaxis: 'y',
+        type: 'scatter',
+      };
+
+      var trace2 = {
         name: 'CRT('+side+')',
-        x: crt_plotly[side]['x'].map(function (item) {
-          return new Date(item);
-        }),
+        x: crt_plotly[side]['x'],
         y: crt_plotly[side]['y'],
         line: {
           color: (side=='right')?'#9fec6d':'#fe6767',
+          dash: 'dot',
         },
-        text: crt_plotly[side]['x'].map(function (item, index) {
-          return new Date(item)+'<br>CRT(' + side + '):' + crt_plotly[side]['y'][index];
+        hovertext: crt_plotly[side]['x'].map(function (item, index) {
+          var d = new Date(item);
+          return d.getDate()+'/'+ d.getMonth()+'/'+ d.getFullYear()+'<br>CRT(' + side + '):' + crt_plotly[side]['y'][index];
         }),
         hoverinfo: 'text',
         yaxis: 'y2',
-        type: 'line',
-        line: {
-          dash: 'dot',
-        }
-      }];
+      };
+
 
       if(!crt_plotly[side]['y'].length) {
         crt_yaxis['range'] = [250, 600];
@@ -140,6 +127,7 @@
         crt_yaxis['tick0'] = Math.min.apply(Math, crt_plotly[side]['y']);
       }
       crt_yaxis['dtick'] = 10;
+      crt_yaxis['overlaying'] = 'y';
       layout_plotly['yaxis2'] = setYAxis_MR(crt_yaxis);
 
 
@@ -149,12 +137,16 @@
       layout_plotly['yaxis3'] = setYAxis_MR(flags_yaxis);
 
       var text = {
+        showlegend: false,
         x:[],
         y:[],
         text:[],
+        hoverinfo: 'text',
         yaxis: 'y3',
         mode:'text',
       };
+
+
 
       //Set the flags for injections
       for (var key in injections_data[side]){
@@ -196,11 +188,35 @@
       j--;
 
 
-      data.push(text);
+      var data =[trace1, trace2, text];
 
       Plotly.newPlot(
         'highcharts-MR-'+side, data, layout_plotly, options_plotly
       );
+
+      //Set the right image stack and mouse hover events
+      octImgStack = [];
+      octImgStack['right'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['right'].length?doc_list['right'][0]['doc_id']:null );
+      octImgStack['left'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
+
+      var currentPlot = document.getElementById('highcharts-MR-'+side);
+
+      currentPlot.on('plotly_hover', function (data) {
+        var pn='', tn='';
+        for(var i=0; i < data.points.length; i++){
+          pn = data.points[i].pointNumber;
+          tn = data.points[i].curveNumber;
+          if (tn === 0){
+            var side = data.points[i].data.text;
+            var current_date = data.points[i].x;
+            for (var item in oct_fly_list[side]){
+              if (current_date === oct_fly_list[side][item]['x']){
+                octImgStack[side].setImg( oct_fly_list[side][item]['id'], side ); // link chart points to OCTs
+              }
+            }
+          }
+        };
+      })
     }
   });
 </script>

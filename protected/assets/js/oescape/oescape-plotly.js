@@ -24,7 +24,7 @@ var layout_plotly = {
   height: 800,
   margin:{
     l:50,
-    t:0,
+    t:20,
     pad:4,
   },
   paper_bgcolor: 'rgba(0,0,0,0)',
@@ -32,8 +32,8 @@ var layout_plotly = {
   /* legend settings */
   showlegend: true,
   legend: {
-    x: 0,
-    y: 1,
+    x: 0 ,
+    y: 1.1,
     traceorder: 'normal',
     font: {
       family: 'sans-serif',

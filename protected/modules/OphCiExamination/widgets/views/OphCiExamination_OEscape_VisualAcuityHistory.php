@@ -65,7 +65,8 @@
           color: (side=='right')?'#9fec6d':'#fe6767',
         },
         text: va_plotly[side]['x'].map(function (item, index) {
-          return OEScape.toolTipFormatters_plotly.VA(new Date(item), va_plotly[side]['y'][index], 'VA('+side+')');
+          var d = new Date(item);
+          return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
         }),
         hoverinfo: 'text',
         type: 'line',

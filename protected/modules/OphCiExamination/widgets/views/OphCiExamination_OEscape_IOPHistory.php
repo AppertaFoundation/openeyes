@@ -37,7 +37,8 @@
           color: (side=='right')?'#9fec6d':'#fe6767',
         },
         text: iop_plotly_data[side]['x'].map(function (item, index) {
-          return  new Date(item) +'<br>IOP('+ side + '): ' +  iop_plotly_data[side]['y'][index];
+          var d = new Date(item);
+          return  d.getDate()+'/'+ d.getMonth()+'/'+ d.getFullYear() +'<br>IOP('+ side + '): ' +  iop_plotly_data[side]['y'][index];
         }),
         hoverinfo: 'text',
         type: 'line',

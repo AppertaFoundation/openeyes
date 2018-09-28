@@ -63,8 +63,7 @@ var OEScape = {
       return this.EpochSeriesValue(dataPoint.x, dataPoint.series.name, dataPoint.y);
     },
     EpochSeriesValue: function(epoch_date, series_name, value){
-      return  '<div>' + OEScape.epochToDateStr(epoch_date) +'<br/>'
-        + series_name + ': ' + value;
+      return  '<div>' + OEScape.epochToDateStr(epoch_date) +'<br/>' + series_name + ': ' + value;
     },
   },
   toolTipFormatters_plotly: {
@@ -79,7 +78,7 @@ var OEScape = {
         }
       }
 
-      return  x +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
+      return  x.getDate()+'/'+ x.getMonth()+'/'+ x.getFullYear() +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
     }
   },
   epochToDateStr: function(epoch){

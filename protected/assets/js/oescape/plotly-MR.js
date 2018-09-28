@@ -24,19 +24,15 @@ var flags_yaxis = {
 };
 
 function setYAxis_MR(options){
-  return  {
-    side: options['side'],
-    title: options['title'],
-    range: options['range'],
-    /* Grid line settings of yaxis */
-    showgrid: options['showgrid'],
-    gridcolor: '#8c8c8c',
+	var yaxis_setting = {
+		gridcolor: '#8c8c8c',
+		ticks: 'outside',
+	};
+	for (var key in options){
+		yaxis_setting[key] = options[key];
+	}
 
-    /*Ticks setting of yaxis*/
-    ticks: 'outside',
-    showticklabels: options['showticklabels'],
-    domain: options['domain'],
-  };
+	return  yaxis_setting;
 }
 
 function setMRFlags_options(options){
