@@ -16,24 +16,22 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 <?php
+$form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
-?>
-
-	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
+            'id' => $form_id,
             'enableAjaxValidation' => false,
     ));
 
     // Event actions
 
-    $this->event_actions[] = EventAction::button('Save', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form' => 'clinical-create', 'style' => $this->checkScheduleAccess() ? 'display: none;' : ''));
-    $this->event_actions[] = EventAction::button('Save and Schedule later', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save_and_schedule_later', 'class' => 'button small', 'form' => 'clinical-create', 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
-    $this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level' => 'secondary'),  array('name' => 'scheduleNow', 'id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => 'clinical-create', 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
+    $this->event_actions[] = EventAction::button('Save', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? 'display: none;' : ''));
+    $this->event_actions[] = EventAction::button('Save and Schedule later', '#', null, array('name' => 'scheduleLater', 'id' => 'et_save_and_schedule_later', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
+    $this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level' => 'secondary'),  array('name' => 'scheduleNow', 'id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => $form_id, 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
     ?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 <?php if ($warnings) { ?>

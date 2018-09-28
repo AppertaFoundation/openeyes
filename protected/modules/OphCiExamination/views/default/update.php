@@ -17,13 +17,15 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container',array('no_face'=>false)); ?>
+<?php
+$form_id = 'examination-update';
+$this->beginContent('//patient/event_container',array('no_face'=>false , 'form_id' => $form_id)); ?>
 	<?php
         $this->breadcrumbs = array($this->module->id);
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'examination-update'));
+        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
     ?>
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'examination-update',
+        'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
             'label' => 4,
