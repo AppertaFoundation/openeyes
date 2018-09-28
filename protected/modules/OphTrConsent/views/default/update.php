@@ -17,15 +17,16 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true));?>
-
-	<?php	        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
+<?php
+		$this->beginContent('//patient/event_container', array('no_face'=>true ,'form_id' => $form_id));
+		$form_id = 'clinical-create';
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => $form_id,
             'enableAjaxValidation' => false,
             'focus' => '#procedure_id',
         ));
 
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
+        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
         ?>
 		<?php  $this->displayErrors($errors)?>
 		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
