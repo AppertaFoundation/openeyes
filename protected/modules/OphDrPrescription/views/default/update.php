@@ -19,18 +19,19 @@ global $reason_id;
 global $reason_other_text;
 ?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
+<?php
+$form_id = 'prescription-update';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
 
-        <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'prescription-update',
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => $form_id,
             'enableAjaxValidation' => false,
         ));
 
         // Event actions
-        $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => 'prescription-update'));
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => 'prescription-update'));
-        $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => 'prescription-update'));
+        $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'primary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => $form_id));
+        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('id' => 'et_save', 'class' => 'button small', 'form' => $form_id));
+        $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => $form_id));
         ?>
 
 		<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id" name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
