@@ -17,6 +17,7 @@ abstract class EpisodeSummaryWidget extends CWidget
     public $episode;
     public $event_type;
     public $patient;
+    public $subspecialty;
 
     /**
      * Can this summary block be collapsed?

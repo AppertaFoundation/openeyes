@@ -12,21 +12,19 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$subspecialty_id = $_GET['subspecialty_id'];
-$patient_id = $_GET['patient_id'];
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-VA.js')?>"></script>
   <form action="#OphCiExamination_Episode_VisualAcuityHistory">
-    <input name="subspecialty_id" value=<?= $subspecialty_id ?> type="hidden">
-    <input name="patient_id" value=<?= $patient_id ?> type="hidden">
+    <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
+    <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
       <?= CHtml::dropDownList(
-      	'va_history_unit_id',
-				$va_unit->id,
-				CHtml::listData(
-					OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
-					'id',
-					'name')
-			)?>
+        'va_history_unit_id',
+        $va_unit->id,
+        CHtml::listData(
+          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+          'id',
+          'name')
+      )?>
   </form>
 <div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
   <div id="highcharts-VA-right" class="highcharts-VA highcharts-right highchart-section"></div>

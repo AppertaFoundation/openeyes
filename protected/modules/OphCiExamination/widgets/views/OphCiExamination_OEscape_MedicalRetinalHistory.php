@@ -12,8 +12,6 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$subspecialty_id = $_GET['subspecialty_id'];
-$patient_id = $_GET['patient_id'];
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-MR.js')?>"></script>
 
@@ -22,16 +20,16 @@ $patient_id = $_GET['patient_id'];
   <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
   <div style="z-index:10; position: relative; width: 150px; top: -800px;">
     <form action="#OphCiExamination_Episode_MedicalRetinalHistory" >
-			<input name="subspecialty_id" value=<?= $subspecialty_id ?> type="hidden">
-			<input name="patient_id" value=<?= $patient_id ?> type="hidden">
-			<?= CHtml::dropDownList(
+      <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
+      <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
+      <?= CHtml::dropDownList(
             'mr_history_va_unit_id',
             $va_unit->id,
             CHtml::listData(
-            	OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+              OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
                 'id',
                 'name')
-			) ?>
+      ) ?>
     </form>
   </div>
 </div>
