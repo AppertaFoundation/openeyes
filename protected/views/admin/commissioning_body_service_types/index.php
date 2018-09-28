@@ -14,7 +14,6 @@
  */
 ?>
 
-    <h2>Commissioning body service types</h2>
     <form id="admin_commissioning_body_service_types">
         <table class="standard">
             <thead>

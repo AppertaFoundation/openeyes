@@ -14,121 +14,132 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Secondary Common Ophthalmic Disorder</h2>
+<h2>Secondary Common Ophthalmic Disorder</h2>
 
-    <form method="get">
-      <div class="data-group">
-        <div class="cols-2 column"><label for="subspecialty_id">Parent</label></div>
-        <div class="cols-5 column end">
-            <?php echo CHtml::dropDownList('parent_id', (isset($_GET['parent_id']) ? $_GET['parent_id'] : null), SelectionHelper::listData('CommonOphthalmicDisorder')); ?>
-        </div>
-      </div>
-    </form>
+<?php
+foreach (Yii::app()->user->getFlashes() as $key => $message) {
+    echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
+}
+?>
 
-    <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">
-        <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-        <?php
-        $columns = array(
-            array(
-                'header' => 'Order',
-                'type' => 'raw',
-                'value' => function($data, $row){
-                    return '<span>&uarr;&darr;</span>' .
-                        CHtml::hiddenField("SecondaryToCommonOphthalmicDisorder[$row][id]", $data->id) .
-                        CHtml::hiddenField("display_order[$row]", $data->display_order);
-                },
-                'cssClassExpression' => "'reorder'",
-            ),
-            array(
-                'header' => 'Disorder',
-                'name' => 'disorder.term',
-                'type' => 'raw',
-                'htmlOptions'=>array('width'=>'200px'),
-                'value' => function ($data, $row) {
-                    $term = null;
-                    if ($data->disorder) {
-                        $term = $data->disorder->term;
-                    }
-                    return CHtml::textField((get_class($data) . "[$row][disorder_id]"), $term, array(
-                        'class' => 'diagnoses-search-autocomplete',
-                        'data-saved-diagnoses' => $data->disorder ? json_encode([
-                            'id' => $data->id,
-                            'name' => $data->disorder->term,
-                            'disorder_id' => $data->disorder->id,
+<form method="get">
+    <table class="cols-5">
+        <tbody>
+        <tr class="col-gap">
+            <td>Parent</td>
+            <td>
+                <?php echo CHtml::dropDownList(
+                    'parent_id',
+                    (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
+                    SelectionHelper::listData('CommonOphthalmicDisorder')
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
 
-                        ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
-                    ));
+<form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">
+    <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+    <?php
+    $columns = array(
+        array(
+            'header' => 'Order',
+            'type' => 'raw',
+            'value' => function ($data, $row) {
+                return '<span>&uarr;&darr;</span>' .
+                    CHtml::hiddenField("SecondaryToCommonOphthalmicDisorder[$row][id]", $data->id) .
+                    CHtml::hiddenField("display_order[$row]", $data->display_order);
+            },
+            'cssClassExpression' => "'reorder'",
+        ),
+        array(
+            'header' => 'Disorder',
+            'name' => 'disorder.term',
+            'type' => 'raw',
+            'htmlOptions'=>array('width'=>'200px'),
+            'value' => function ($data, $row) {
+                $term = null;
+                if ($data->disorder) {
+                    $term = $data->disorder->term;
                 }
-            ),
-            array(
-                'header' => 'Finding',
-                'name' => 'finding.name',
-                'type' => 'raw',
-                'value' => function ($data, $row) {
+                return CHtml::textField((get_class($data) . "[$row][disorder_id]"), $term, array(
+                    'class' => 'diagnoses-search-autocomplete',
+                    'data-saved-diagnoses' => $data->disorder ? json_encode([
+                        'id' => $data->id,
+                        'name' => $data->disorder->term,
+                        'disorder_id' => $data->disorder->id,
 
-                    $finding_data = array(
-                        'id' => isset($data->id) ? $data->id : null,
-                        'name' => isset($data->finding) ? $data->finding->name : null,
-                        'finding_id' => isset($data->finding) ? $data->finding->id : null,
-                    );
+                    ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
+                ));
+            }
+        ),
+        array(
+            'header' => 'Finding',
+            'name' => 'finding.name',
+            'type' => 'raw',
+            'value' => function ($data, $row) {
 
-                    $remove_a = CHtml::tag('a',array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                        Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
-                    );
+                $finding_data = array(
+                    'id' => isset($data->id) ? $data->id : null,
+                    'name' => isset($data->finding) ? $data->finding->name : null,
+                    'finding_id' => isset($data->finding) ? $data->finding->id : null,
+                );
 
-                    $name_span = CHtml::tag('span',array('class' => 'finding-name name'), $finding_data['name']);
-                    $rename_span = CHtml::tag('span',array(
-                        'class'=>"finding-display display",
-                        'style'=>'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
-                    ),$remove_a . ' ' . $name_span);
+                $remove_a = CHtml::tag('a',array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
+                    Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
+                );
 
-                    $input = CHtml::textField("SecondaryToCommonOphthalmicDisorder[$row][finding_id]", $finding_data['name'], array(
-                        'class' => 'finding-search-autocomplete finding-search-inputfield ui-autocomplete-input',
-                        'style' => 'display: '. ($finding_data['finding_id'] ? 'none' : 'inline') .';',
-                        'autocomplete' => 'off',
-                    ));
+                $name_span = CHtml::tag('span',array('class' => 'finding-name name'), $finding_data['name']);
+                $rename_span = CHtml::tag('span',array(
+                    'class'=>"finding-display display",
+                    'style'=>'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
+                ),$remove_a . ' ' . $name_span);
 
-                    $hidden_finding_input = CHtml::hiddenField("SecondaryToCommonOphthalmicDisorder[$row][finding_id]", $finding_data['finding_id'],array(
-                        'class' => 'finding-id'
-                    ));
+                $input = CHtml::textField("SecondaryToCommonOphthalmicDisorder[$row][finding_id]", $finding_data['name'], array(
+                    'class' => 'finding-search-autocomplete finding-search-inputfield ui-autocomplete-input',
+                    'style' => 'display: '. ($finding_data['finding_id'] ? 'none' : 'inline') .';',
+                    'autocomplete' => 'off',
+                ));
 
-                    return $rename_span . $input . $hidden_finding_input;
+                $hidden_finding_input = CHtml::hiddenField("SecondaryToCommonOphthalmicDisorder[$row][finding_id]", $finding_data['finding_id'],array(
+                    'class' => 'finding-id'
+                ));
 
-                }
-            ),
-            array(
-                'name' => 'letter_macro_text',
-                'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::activeTextField($data, "[$row]letter_macro_text");
-                }
-            ),
-            array(
-                'header'=>'Actions',
-                'type' => 'raw',
-                'value' => function($data){
-                    return '<a href="javascript:void(0)" class="delete">delete</a>';
-                }
-            ),
-        );
+                return $rename_span . $input . $hidden_finding_input;
+            }
+        ),
+        array(
+            'name' => 'letter_macro_text',
+            'type' => 'raw',
+            'value' => function ($data, $row) {
+                return CHtml::activeTextField($data, "[$row]letter_macro_text");
+            }
+        ),
+        array(
+            'header'=>'Actions',
+            'type' => 'raw',
+            'value' => function ($data) {
+                return '<a href="javascript:void(0)" class="delete button large">delete</a>';
+            }
+        ),
+    );
 
-        $this->widget('zii.widgets.grid.CGridView', array(
-            'dataProvider' => $dataProvider,
-            'itemsCssClass' => 'generic-admin sortable',
-            'template' => '{items}',
-            "emptyTagName" => 'span',
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
-            'enableSorting' => false,
-            'columns' => $columns
-        ));
-        ?>
-        <div>
-            <button class="small secondary primary event-action" type="button" id="add_new">Add</button>&nbsp
-            <button class="generic-admin-save small primary primary event-action" name="admin-save" type="submit" id="et_admin-save">Save</button>&nbsp;
-        </div>
-    </form>
-</div>
+    $this->widget('zii.widgets.grid.CGridView', array(
+        'dataProvider' => $dataProvider,
+        'itemsCssClass' => 'generic-admin standard sortable',
+        'template' => '{items}',
+        "emptyTagName" => 'span',
+        'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+        'enableSorting' => false,
+        'columns' => $columns
+    ));
+    ?>
+    <div>
+        <button class="small secondary primary event-action" type="button" id="add_new">Add</button>&nbsp
+        <button class="generic-admin-save small primary primary event-action" name="admin-save" type="submit" id="et_admin-save">Save</button>&nbsp;
+    </div>
+</form>
 
 <script>
     var $table = $('.generic-admin');
@@ -248,7 +259,7 @@
                 <span class="diagnosis-name"></span>
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
-                   data-saved-diagnoses="" type="text" name="SecondaryToCommonOphthalmicDisorder[0][disorder_id]" id="SecondaryToCommonOphthalmicDisorder_0_disorder_id" autocomplete="off">
+                   data-saved-diagnoses="" type="text" autocomplete="off">
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis" value="">
         </td>
@@ -269,7 +280,7 @@
             <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
         </td>
         <td>
-            <a href="javascript:void(0)" class="delete">delete</a>
+            <a href="javascript:void(0)" class="delete button large">delete</a>
         </td>
     </tr>
 </script>
