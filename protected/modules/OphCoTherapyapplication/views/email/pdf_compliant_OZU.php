@@ -51,7 +51,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 
 <table cellpadding="5">
 <tr>
-<td>Patient NHS Number:</td>
+<td>Patient <?php echo Yii::app()->params['nhs_num_label']?> Number:</td>
 <td><?php echo $patient->nhs_num ? $patient->nhs_num : 'Unknown' ?></td>
 <td>Trust</td>
 <td>Moorfields NHS Foundation Trust</td>
