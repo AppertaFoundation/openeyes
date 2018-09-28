@@ -16,45 +16,59 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-  <div class="cols-8 column">
-    <h2>Document Sub Types Settings</h2>
-  </div>
 
+<div class="cols-6">
     <form id="admin_<?= get_class(OphCoDocument_Sub_Types::model()); ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="standard generic-admin sortable">
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Order</th>
                 <th>Display Order</th>
                 <th>Active</th>
             </tr>
             </thead>
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-5">
+                <col class="cols-1">
+                <col class="cols-1">
+            </colgroup>
             <tbody>
-            <?php $this->renderPartial('/admin/sub_types/_sub_types', array('sub_types' => $sub_types)) ?>
+                <?php $this->renderPartial('/admin/sub_types/_sub_types', array('sub_types' => $sub_types)) ?>
             </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="2">
+                    <?php echo CHtml::button(
+                        'Add',
+                        [
+                            'data-uri' => '/OphCoDocument/oeadmin/documentSubTypesSettings/create',
+                            'class' => 'button large',
+                            'id' => 'et_add',
+                            'formmethod' => 'get',
+                        ]
+                    ); ?>
+
+                    <?php echo CHtml::button(
+                        'Save',
+                        [
+                            'class' => 'button large primary event-action',
+                            'name' => 'save',
+                            'type' => 'submit',
+                            'id' => 'et_admin-save',
+                            'formmethod' => 'post',
+                        ]
+                    ); ?>
+                </td>
+                <td colspan="2">
+                    <?php $this->widget(
+                        'LinkPager',
+                        ['pages' => $pagination]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
         </table>
-        <?php echo EventAction::button(
-            'Add',
-            'add',
-            [],
-            [
-                'class' => 'small',
-                'data-uri' => '/OphCoDocument/oeadmin/documentSubTypesSettings/create',
-                'formmethod' => 'get',
-            ]
-        )->toHtml() ?>
-        <?php echo EventAction::button(
-            'Save',
-            'save',
-            [],
-            [
-                'id' => 'et_admin-save',
-                'class' => 'generic-admin-save small primary primary event-action',
-                'formmethod' => 'post',
-            ])->toHtml();
-        ?>
-    </form>
-
-
+</div>

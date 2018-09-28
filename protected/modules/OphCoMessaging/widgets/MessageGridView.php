@@ -47,19 +47,9 @@ class MessageGridView extends CGridView
         }
 
         // Then use the leftover columns to render the link pager
-        echo '<th colspan="' . ($column_count - $i) . '">';?>
-        <div class="pagination">
-        <?php
-        $this->widget('LinkPager', array(
-                'pages' => $this->dataProvider->getPagination(),
-                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                'htmlOptions' => array(
-                    'class' => 'pagination',
-                ),
-            )
-        );
-        echo '</div></th>';
+        echo '<th colspan="' . ($column_count - $i) . '">';
+        $this->widget('LinkPager', ['pages' => $this->dataProvider->getPagination()]);
+        echo '</th>';
 
         echo "</tr>\n";
 

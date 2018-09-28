@@ -80,7 +80,6 @@ $(document).ready(function(){
       }
     } else {
       hrefArray = window.location.href.split('?')[0].split('/');
-
       for (var i = 0; i < hrefArray.length; i++) {
         if (hrefArray[i] === 'admin') {
           object = hrefArray[parseInt(i) + 1].replace(/s$/, '');
@@ -91,13 +90,16 @@ $(document).ready(function(){
     $form = $('#admin_' + object);
     if($('#generic-admin-list, #generic-admin-form').length){
       $form = $('#generic-admin-list, #generic-admin-form');
-
     }
     serializedForm = $form.serialize();
 
-    if ( $form.find('table.grid tbody input[type="checkbox"]:checked').length === 0 ) {
+    if ( $form.find('table.standard tbody input[type="checkbox"]:checked').length === 0 ) {
       new OpenEyes.UI.Dialog.Alert({
-        content: "Please select one or more items to delete."
+        content: "Please select one or more items to delete.",
+        closeCallback: function () {
+          //window.location.reload();
+            enableButtons();
+        }
       }).open();
       return;
     }
@@ -117,7 +119,11 @@ $(document).ready(function(){
           window.location.reload();
         } else {
           new OpenEyes.UI.Dialog.Alert({
-            content: "One or more " + object + " could not be deleted as they are in use."
+            content: "One or more " + object + " could not be deleted as they are in use.",
+            closeCallback: function () {
+                //window.location.reload();
+                enableButtons();
+            }
           }).open();
         }
       }
