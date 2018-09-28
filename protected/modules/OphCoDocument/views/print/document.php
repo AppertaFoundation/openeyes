@@ -30,7 +30,7 @@
         <?php $this->renderPartial('/default/print_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document')); ?>
     <?php endif; ?>
     <?php if(($element->right_document_id) || ($element->left_document_id)): ?>
-        <table border="0">
+        <table class="borders">
           <colgroup>
             <col class="cols-6">
             <col class="cols-6">
