@@ -321,8 +321,9 @@ $(document).ready(function () {
 
     (function elementSubgroup() {
         let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
-        if( $viewstate_btns.length === 0 ) return;
-
+        if( $viewstate_btns.length === 0 ) {
+            return;
+        }
         $viewstate_btns.each( function(){
             new Viewstate( $(this) );
         });
