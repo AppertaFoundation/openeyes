@@ -108,16 +108,14 @@ $this->pageTitle = 'Case Search';
                             ),
                         )
                     );
-                    $pager->run();
                     ?>
                     <table id="case-search-results" class="cols-10">
                         <tbody class=" cols-full">
                         <?= $searchResults->renderItems(); ?>
                         </tbody>
+                        <tfoot><tr><th class="flex-right flex-layout"><?php $pager->run()?></th></tr></tfoot>
                     </table>
-                    <?php $pager->run();
-                endif;
-                ?>
+                <?php endif; ?>
 
                 </div>
         </div>
