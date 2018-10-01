@@ -88,8 +88,9 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/systemicdiagnosesassignment/create',array(
-            'model' => $diagnoses_set
+        $this->render('/admin/systemicdiagnosesassignment/edit',array(
+            'model' => $diagnoses_set,
+            'title' => 'Create required Systemic Diagnoses set',
         ));
     }
 
@@ -166,8 +167,9 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/systemicdiagnosesassignment/update',array(
+        $this->render('/admin/systemicdiagnosesassignment/edit',array(
             'model' => $diagnoses_set,
+            'title' => 'Edit required Systemic Diagnoses set',
         ));
     }
 

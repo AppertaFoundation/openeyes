@@ -152,7 +152,6 @@
         ]
     ); ?>
 
-
     <?php echo CHtml::button(
         'Save',
         [

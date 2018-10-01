@@ -19,17 +19,17 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Required Systemic Diagnoses Set</h2>
+<h2>Required Systemic Diagnoses Set</h2>
 
-<?php
+<div class="cols-7">
 
+    <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
-            'value' => function($data, $row){
-                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet[][id]",false, ['value' => $data->id]);
+            'value' => function ($data, $row) {
+                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet[][id]", false, ['value' => $data->id]);
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -38,7 +38,7 @@
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
         ),
@@ -46,7 +46,7 @@
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->firm ? $data->firm->name : null;
             }
         ),
@@ -54,37 +54,52 @@
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
+    ?>
 
-    ?><form id="generic-admin-form"><?php
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin standard',
-        "emptyTagName" => 'span',
-        'summaryText' => false,
-        'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
-        'enableSorting' => false,
-        'enablePagination' => false,
-        'columns' => $columns,
-        'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-        'rowCssClass' => array('clickable'),
-    ));
-?>
+    <form id="generic-admin-form"><?php
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard',
+            "emptyTagName" => 'span',
+            'summaryText' => false,
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'enableSorting' => false,
+            'enablePagination' => false,
+            'columns' => $columns,
+            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
+            'rowCssClass' => array('clickable'),
+        ));
+        ?>
     </form>
 
-    <button class="small primary event-action" name="add" type="submit" id="et_add">Add</button>
-    <button data-object="Disorder" data-uri="/OphCiExamination/oeadmin/SystemicDiagAssignment/delete" class="small primary event-action" name="delete" type="submit" id="et_delete">Delete</button>
+    <?php echo CHtml::button(
+        'Add',
+        [
+            'class' => 'button large',
+            'type' => 'button',
+            'name' => 'add',
+            'data-uri' => '/OphCiExamination/oeadmin/SystemicDiagAssignment/create/',
+            'id' => 'et_add'
+        ]
+    ); ?>
 
+    <?php echo CHtml::button(
+        'Delete',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'delete',
+            'data-uri' => '/OphCiExamination/oeadmin/SystemicDiagAssignment/delete',
+            'id' => 'et_delete'
+        ]
+    ); ?>
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function(){
+    $(document).ready(function () {
+        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/SystemicDiagAssignment/update/' + id;
-        });
-
-        $('#et_add').click(function(){
-            window.location.href = '/OphCiExamination/oeadmin/SystemicDiagAssignment/create/';
         });
     });
 </script>
