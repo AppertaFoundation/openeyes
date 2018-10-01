@@ -13,6 +13,7 @@ class ResultTypeController  extends ModuleAdminController
     {
         $this->admin = new Admin(OphInLabResults_Type::model(), $this);
         $this->admin->setModelDisplayName('Lab Result Type');
+        $this->admin->div_wrapper_class = 'cols-5';
 
         return parent::beforeAction($action);
     }
