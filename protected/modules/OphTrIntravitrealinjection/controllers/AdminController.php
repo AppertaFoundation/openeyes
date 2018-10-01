@@ -21,7 +21,7 @@ class AdminController extends ModuleAdminController
 
     public function actionViewTreatmentDrugs()
     {
-        $model_list = OphTrIntravitrealinjection_Treatment_Drug::model()->active()->findAll(array('order' => 'display_order asc'));
+        $model_list = OphTrIntravitrealinjection_Treatment_Drug::model()->findAll(array('order' => 'display_order asc'));
         $this->jsVars['OphTrIntravitrealinjection_sort_url'] = $this->createUrl('sortTreatmentDrugs');
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrIntravitrealinjection', 'model' => 'OphTrIntravitrealinjection_Treatment_Drug'));
@@ -118,7 +118,7 @@ class AdminController extends ModuleAdminController
 
     public function actionManageIOPLoweringDrugs()
     {
-        $this->genericAdmin('Edit IOP Lowering Drugs', 'OphTrIntravitrealinjection_IOPLoweringDrug');
+        $this->genericAdmin('Edit IOP Lowering Drugs', 'OphTrIntravitrealinjection_IOPLoweringDrug', ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionInjectionUsers()
@@ -160,14 +160,14 @@ class AdminController extends ModuleAdminController
 
     public function actionDeleteInjectionUsers()
     {
-        $criteria = new CDbCriteria();
+        $injection_users_ids = Yii::app()->request->getPost('injection_users', []);
 
-        $criteria->addInCondition('id', @$_POST['user_id']);
-
-        if (OphTrIntravitrealinjection_InjectionUser::model()->deleteAll($criteria)) {
-            echo '1';
-        } else {
-            echo '0';
+        foreach ($injection_users_ids as $injection_user_id) {
+            if (!OphTrIntravitrealinjection_InjectionUser::model()->deleteByPk($injection_user_id)) {
+                throw new Exception('Unable to delete injection user: ', true);
+            }
         }
+
+        echo 1;
     }
 }

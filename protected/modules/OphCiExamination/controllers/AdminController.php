@@ -38,6 +38,7 @@ class AdminController extends \ModuleAdminController
                     array('field' => 'short_name', 'type' => 'text',
                         'model' => 'OEModule\OphCiExamination\models\OphCiExamination_Instrument', ),
                 ),
+                'div_wrapper_class' => 'cols-6',
             )
         );
     }
@@ -663,37 +664,65 @@ class AdminController extends \ModuleAdminController
 
     public function actionManageOverallPeriods()
     {
-        $this->genericAdmin('Edit Overall Periods', 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod');
+        $this->genericAdmin(
+            'Edit Overall Periods',
+            'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod',
+            ['div_wrapper_class' => 'cols-4']
+        );
     }
 
     public function actionManageVisitIntervals()
     {
-        $this->genericAdmin('Edit Visit Intervals', 'OEModule\OphCiExamination\models\OphCiExamination_VisitInterval');
+        $this->genericAdmin(
+            'Edit Visit Intervals',
+            'OEModule\OphCiExamination\models\OphCiExamination_VisitInterval',
+            ['div_wrapper_class' => 'cols-4']
+        );
     }
 
     public function actionManageGlaucomaStatuses()
     {
-        $this->genericAdmin('Edit Glaucoma Statuses', 'OEModule\OphCiExamination\models\OphCiExamination_GlaucomaStatus');
+        $this->genericAdmin(
+            'Edit Glaucoma Statuses',
+            'OEModule\OphCiExamination\models\OphCiExamination_GlaucomaStatus',
+            ['div_wrapper_class' => 'cols-4']
+        );
     }
 
     public function actionManageDropRelProbs()
     {
-        $this->genericAdmin('Edit Drop Related Problems', 'OEModule\OphCiExamination\models\OphCiExamination_DropRelProb');
+        $this->genericAdmin(
+            'Edit Drop Related Problems',
+            'OEModule\OphCiExamination\models\OphCiExamination_DropRelProb',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionManageDrops()
     {
-        $this->genericAdmin('Edit Drops Options', 'OEModule\OphCiExamination\models\OphCiExamination_Drops');
+        $this->genericAdmin(
+            'Edit Drops Options',
+            'OEModule\OphCiExamination\models\OphCiExamination_Drops',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionManageManagementSurgery()
     {
-        $this->genericAdmin('Edit Surgery Management Options', 'OEModule\OphCiExamination\models\OphCiExamination_ManagementSurgery');
+        $this->genericAdmin(
+            'Edit Surgery Management Options',
+            'OEModule\OphCiExamination\models\OphCiExamination_ManagementSurgery',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionManageTargetIOPs()
     {
-        $this->genericAdmin('Edit Target Iop Values', 'OEModule\OphCiExamination\models\OphCiExamination_TargetIop');
+        $this->genericAdmin(
+            'Edit Target Iop Values',
+            'OEModule\OphCiExamination\models\OphCiExamination_TargetIop',
+            ['div_wrapper_class' => 'cols-4']
+        );
     }
 
     /**
@@ -701,7 +730,11 @@ class AdminController extends \ModuleAdminController
      */
     public function actionPrimaryReasonForSurgery()
     {
-        $this->genericAdmin('Edit Reasons for Surgery', 'OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery');
+        $this->genericAdmin(
+            'Edit Reasons for Surgery',
+            'OEModule\OphCiExamination\models\OphCiExamination_Primary_Reason_For_Surgery',
+            ['div_wrapper_class' => 'cols-3']
+        );
     }
 
     public function actionManageComorbidities()
@@ -722,6 +755,7 @@ class AdminController extends \ModuleAdminController
                                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
                             ),
                         ),
+                'div_wrapper_class' => 'cols-6',
                 )
         );
     }
@@ -762,6 +796,7 @@ class AdminController extends \ModuleAdminController
             'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status',
             array(
                 'extra_fields' => $extra_fields,
+                'div_wrapper_class' => 'cols-8',
             )
         );
     }
@@ -800,7 +835,6 @@ class AdminController extends \ModuleAdminController
             'model_list' => $model::model()->findAll(array('order' => 'id asc')),
             'title' => 'Invoice Statuses',
         ));
-
     }
 
     /*
@@ -857,9 +891,20 @@ class AdminController extends \ModuleAdminController
     /*
      * Delete invoice
      */
-    public function deleteInvoiceStatus( $id )
+    public function actionDeleteInvoiceStatus()
     {
+        if (is_array(@$_POST['select'])) {
+            foreach ($_POST['select'] as $rule_id) {
+                if ($rule = models\InvoiceStatus::model()->findByPk($rule_id)) {
+                    if (!$rule->delete()) {
+                        echo 'Unable to delete Invoice Status';
+                        throw new \Exception('Unable to delete Invoice Status: '.print_r($rule->getErrors(), true));
+                    }
+                }
+            }
+        }
 
+        echo 1;
     }
 
     /**
@@ -869,7 +914,7 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAllergies()
     {
-        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy');
+        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionRisks()
@@ -891,7 +936,8 @@ class AdminController extends \ModuleAdminController
             'Edit Risks',
             'OEModule\OphCiExamination\models\OphCiExaminationRisk',
             array(
-                'extra_fields' => $extra_fields
+                'extra_fields' => $extra_fields,
+                'div_wrapper_class' => 'cols-6',
             ));
     }
 
@@ -932,7 +978,7 @@ class AdminController extends \ModuleAdminController
     public function actionFamilyHistoryRelative()
     {
         $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
-            'OEModule\OphCiExamination\models\FamilyHistoryRelative');
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative', ['div_wrapper_class' => 'cols-6']);
     }
 
     public function actionFamilyHistoryCondition()
@@ -944,7 +990,7 @@ class AdminController extends \ModuleAdminController
     public function actionHistoryMedicationsStopReason()
     {
         $this->genericAdmin('Medication Stop Reason',
-            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason');
+            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
     }
 
 }

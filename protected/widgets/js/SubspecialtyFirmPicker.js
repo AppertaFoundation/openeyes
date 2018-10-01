@@ -1,6 +1,5 @@
 $(document).ready(function(){
     $(this).on('change', '.js-subspecialty-dropdown', function (e) {
-        console.log('aaaaa');
         let subspecialty_id = $(this).val();
         let $firm = $('.js-firm-dropdown');
 

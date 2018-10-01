@@ -32,7 +32,7 @@ class AdminController extends BaseAdminController
 
     public function actionEditPreviousOperation()
     {
-        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
+        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation', ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()

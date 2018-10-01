@@ -17,33 +17,34 @@
  */
 ?>
 
-<div class="box admin">
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'OphCiExamination_adminform',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ));
-        $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-            'model' => $model,
-            'form' => $form,
-            'title' => $title,
-        ));
-        echo $form->formActions(array(
-            'submit' => $model->isNewRecord ? 'Create' : 'Save',
-            'cancel' => 'Cancel',
-            'delete' => false,
-            'cancel-uri' => @$cancel_uri,
-        ));
-        $this->endWidget();
-    ?>
-    <?php if (@$related_view) {
-        $this->renderPartial($related_view, array(
-            'model' => $model,
-        ))?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'OphCiExamination_adminform',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+));
+
+$this->renderPartial('form_' . Helper::getNSShortname($model), array(
+    'model' => $model,
+    'form' => $form,
+    'title' => $title,
+));
+
+echo $form->formActions(array(
+    'submit' => $model->isNewRecord ? 'Create' : 'Save',
+    'cancel' => 'Cancel',
+    'delete' => false,
+    'cancel-uri' => @$cancel_uri,
+));
+$this->endWidget();
+?>
+
+<?php if (@$related_view) {
+    $this->renderPartial($related_view, array(
+        'model' => $model,
+    )) ?>
     <?php
-    }?>
-</div>
+} ?>

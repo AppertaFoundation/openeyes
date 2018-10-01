@@ -16,9 +16,40 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->hiddenField($model, 'id')?>
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-<?php
-    $isActive = ($model->active == 1 ? 'checked' : '');
-    echo $form->checkBox($model, 'active',  array('checked'=> $isActive));
-?>
+
+
+<?php echo $form->hiddenField($model, 'id') ?>
+
+<div class="cols-4">
+    <table class="cols-full last-left standard">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-1">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td>
+                <?= CHtml::activeTextField(
+                    $model,
+                    'name',
+                    ['autocomplete' => Yii::app()->params['html_autocomplete']]
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>
+                <?php
+                $isActive = ($model->active == 1 ? 'checked' : '');
+                echo CHtml::activeCheckBox(
+                    $model,
+                    'active',
+                    ['checked' => $isActive]
+                );
+                ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
