@@ -82,7 +82,8 @@ class BaseAdminController extends BaseController
             'filter_fields' => array(),
             'filters_ready' => true,
             'label_extra_field' => false,
-            'description' => ''
+            'description' => '',
+            'div_wrapper_class' => 'cols-full',
         ), $options);
 
         $columns = $model::model()->metadata->columns;

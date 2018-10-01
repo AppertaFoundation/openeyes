@@ -54,9 +54,10 @@
                 $errors = $this->populateAndSaveModel($model);
             }
 
-            $this->render('/admin/surgicalhistoryassignment/create',array(
+            $this->render('/admin/surgicalhistoryassignment/edit',array(
                 'model' => $model,
-                'errors' => $errors
+                'errors' => $errors,
+                'title' => 'Edit Required Surgical History Set',
             ));
         }
 
@@ -69,9 +70,10 @@
                 $errors = $this->populateAndSaveModel($model);
             }
 
-            $this->render('/admin/surgicalhistoryassignment/update',array(
+            $this->render('/admin/surgicalhistoryassignment/edit',array(
                 'model' => $model,
-                'errors' => $errors
+                'errors' => $errors,
+                'title' => 'Create Required Surgical History Set',
             ));
         }
 

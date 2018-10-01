@@ -23,14 +23,17 @@
 
 <div class="cols-7">
 
-
     <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]", false, ['value' => $data->id]);
+                return CHtml::checkBox(
+                    "OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]",
+                    false,
+                    ['value' => $data->id]
+                );
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -70,16 +73,31 @@
             'columns' => $columns,
             'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
             'rowCssClass' => array('clickable'),
-
         ));
         ?>
     </form>
 
-    <button class="small primary event-action" name="add" type="submit" id="et_add">Add</button>
-    <button data-object="OphCiExaminationRisk" data-uri="/OphCiExamination/oeadmin/RisksAssignment/delete"
-            class="small primary event-action" name="delete" type="submit" id="et_delete">Delete
-    </button>
+    <?php echo CHtml::button(
+        'Add',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'add',
+            'data-uri' => '/OphCiExamination/oeadmin/RisksAssignment/create/',
+            'id' => 'et_add'
+        ]
+    ); ?>
 
+    <?php echo CHtml::button(
+        'Delete',
+        [
+            'class' => 'button large',
+            'type' => 'submit',
+            'name' => 'delete',
+            'data-uri' => '/OphCiExamination/oeadmin/RisksAssignment/delete',
+            'id' => 'et_delete'
+        ]
+    ); ?>
 </div>
 
 <script>
@@ -88,50 +106,5 @@
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/update/' + id;
         });
-
-        $('#et_add').click(function () {
-            window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/create/';
-        });
-
-       /* $('#et_delete').click(function(e){
-            e.preventDefault();
-
-            var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
-                title: "Remove Patient Signature",
-                'content': 'Are you sure you want to delete the selected sets ?',
-                'okButton': 'Remove'
-            });
-            confirmDialog.open();
-
-            confirmDialog.content.off('click', '.ok');
-            // manage form submission and response
-            confirmDialog.content.on('click', '.ok', function() {
-                $.ajax({
-                    'type': 'POST',
-                    'url': '/OphCiExamination/oeadmin/RisksAssignment/delete',
-                    'data': $('#profile_sites').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-                    'success': function(html) {
-                        if (html === "success") {
-                            window.location.reload();
-                        } else {
-                            new OpenEyes.UI.Dialog.Alert({
-                                content: "There was an unexpected error deleting the sites, please try again or contact support for assistance."
-                            }).open();
-                        }
-                    },
-                    'error': function() {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
-                        }).open();
-                    }
-                });
-            });
-
-
-
-
-
-        });*/
-
     });
 </script>

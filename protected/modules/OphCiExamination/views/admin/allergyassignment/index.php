@@ -23,7 +23,7 @@
 
 <div class="cols-7">
 
-<?php
+    <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
@@ -51,31 +51,30 @@
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                return $data->firm_id ? $data->getFirm()->name: null;
+                return $data->firm_id ? $data->getFirm()->name : null;
             }
         ),
     );
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
-
     ?>
-    <form id="generic-admin-form"><?php
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin standard',
-        //'template' => '{items}',
-        "emptyTagName" => 'span',
-        'summaryText' => false,
-        'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
-        'enableSorting' => false,
-        'enablePagination' => false,
-        'columns' => $columns,
-        'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-        'rowCssClass' => array('clickable'),
 
-    ));
-?>
+    <form id="generic-admin-form"><?php
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard',
+            //'template' => '{items}',
+            "emptyTagName" => 'span',
+            'summaryText' => false,
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'enableSorting' => false,
+            'enablePagination' => false,
+            'columns' => $columns,
+            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
+            'rowCssClass' => array('clickable'),
+        ));
+        ?>
     </form>
 
     <?php echo CHtml::button(
@@ -84,6 +83,7 @@
             'class' => 'button large',
             'type' => 'submit',
             'name' => 'add',
+            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/create/',
             'id' => 'et_add'
         ]
     ); ?>
@@ -94,7 +94,6 @@
             'class' => 'button large',
             'type' => 'submit',
             'name' => 'delete',
-            'data-object' => 'OphCiExaminationAllergy',
             'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/delete',
             'id' => 'et_delete'
         ]
@@ -103,14 +102,10 @@
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function(){
+    $(document).ready(function () {
+        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/AllergyAssignment/update/' + id;
-        });
-
-        $('#et_add').click(function(){
-            window.location.href = '/OphCiExamination/oeadmin/AllergyAssignment/create/';
         });
     });
 </script>
