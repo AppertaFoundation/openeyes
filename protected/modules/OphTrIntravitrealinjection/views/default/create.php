@@ -18,9 +18,9 @@
 ?>
 
 <?php
+$form_id = 'clinical-create';
 $this->beginContent('//patient/event_container', array('no_face' => false, 'form_id' => $form_id));
 $this->breadcrumbs = array($this->module->id);
-$form_id = 'clinical-create';
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
