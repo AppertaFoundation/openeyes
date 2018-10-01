@@ -33,6 +33,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         ));
         $admin->searchAll();
         $admin->setModelDisplayName('Element Attributes');
+        $admin->div_wrapper_class = 'cols-8';
         //$admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
