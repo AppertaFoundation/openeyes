@@ -294,7 +294,8 @@ class AdminController extends BaseAdminController
     public function actionAddDrug()
     {
         return; //disabled OE-4474
-        $drug = new Drug('create');
+
+        /*$drug = new Drug('create');
 
         if (!empty($_POST)) {
             $drug->attributes = $_POST['Drug'];
@@ -325,13 +326,14 @@ class AdminController extends BaseAdminController
         $this->render('/admin/adddrug', array(
             'drug' => $drug,
             'errors' => @$errors,
-        ));
+        ));*/
     }
 
     public function actionEditDrug($id)
     {
         return; //disabled OE-4474
-        $drug = Drug::model()->findByPk($id);
+
+        /*$drug = Drug::model()->findByPk($id);
         if (!$drug) {
             throw new Exception("Drug not found: $id");
         }
@@ -387,7 +389,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/editdrug', array(
             'drug' => $drug,
             'errors' => @$errors,
-        ));
+        ));*/
     }
 
     public function actionUserFind()
@@ -1091,7 +1093,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditsite()
     {
-        if (!$site = Site::model()->findByPk(@$_GET['site_id'])) {
+        $site = Site::model()->findByPk(@$_GET['site_id']);
+        if (!$site) {
             throw new Exception('Site not found: ' . @$_GET['site_id']);
         }
 
@@ -1186,7 +1189,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditContactLabel($id)
     {
-        if (!$contactlabel = ContactLabel::model()->findByPk($id)) {
+        $contactlabel = ContactLabel::model()->findByPk($id);
+        if (!$contactlabel) {
             throw new Exception("ContactLabel not found: $id");
         }
 
@@ -1215,7 +1219,8 @@ class AdminController extends BaseAdminController
 
     public function actionDeleteContactLabel()
     {
-        if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
+        $contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id']);
+        if (!$contactlabel) {
             throw new Exception('ContactLabel not found: ' . @$_POST['contact_label_id']);
         }
 
@@ -1240,7 +1245,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditDataSource($id)
     {
-        if (!$source = ImportSource::model()->findByPk($id)) {
+        $source = ImportSource::model()->findByPk($id);
+        if (!$source) {
             throw new Exception("Source not found: $id");
         }
 
@@ -1312,7 +1318,8 @@ class AdminController extends BaseAdminController
             }
 
             foreach ($_POST['source'] as $source_id) {
-                if ($source = ImportSource::model()->findByPk($source_id)) {
+                $source = ImportSource::model()->findByPk($source_id);
+                if ($source) {
                     if (!$source->delete()) {
                         throw new Exception('Unable to delete import source: ' . print_r($source->getErrors(), true));
                     }
@@ -1356,10 +1363,12 @@ class AdminController extends BaseAdminController
     public function actionEditCommissioningBody()
     {
         if (isset($_GET['commissioning_body_id'])) {
-            if (!$cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id'])) {
+            $cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id']);
+            if (!$cb) {
                 throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_id']);
             }
-            if (!$address = $cb->contact->address) {
+            $address = $cb->contact->address;
+            if (!$address) {
                 $address = new Address();
                 $address->country_id = 1;
             }
@@ -1385,7 +1394,8 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
 
-                    if (!$contact = $cb->contact) {
+                    $contact = $cb->contact;
+                    if (!$contact) {
                         $contact = new Contact();
                         if (!$contact->save()) {
                             $errors = array_merge($errors, $contact->getErrors());
@@ -1486,7 +1496,9 @@ class AdminController extends BaseAdminController
     public function actionEditCommissioningBodyType()
     {
         if (isset($_GET['commissioning_body_type_id'])) {
-            if (!$cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id'])) {
+
+            $cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id']);
+            if (!$cbt) {
                 throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_type_id']);
             }
         } else {
@@ -1580,8 +1592,10 @@ class AdminController extends BaseAdminController
         $commissioning_bt = null;
         $commissioning_bst = null;
 
-        if ($cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id')) {
-            if (!$cbs = CommissioningBodyService::model()->findByPk($cbs_id)) {
+        $cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id');
+        if ($cbs_id) {
+            $cbs = CommissioningBodyService::model()->findByPk($cbs_id);
+            if (!$cbs) {
                 throw new Exception('CommissioningBody not found: ' . $cbs_id);
             }
 
@@ -1593,13 +1607,17 @@ class AdminController extends BaseAdminController
             }
         } else {
             $cbs = new CommissioningBodyService;
-            if ($commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id')) {
-                if (!$commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id)) {
+            $commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id');
+            if ($commissioning_bt_id) {
+                $commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id);
+                if (!$commissioning_bt) {
                     throw new CHttpException(404, 'Unrecognised Commissioning Body Type ID');
                 }
             }
-            if ($service_type_id = Yii::app()->request->getQuery('service_type_id')) {
-                if (!$commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id)) {
+            $service_type_id = Yii::app()->request->getQuery('service_type_id');
+            if ($service_type_id) {
+                $commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id);
+                if (!$commissioning_bst) {
                     throw new CHttpException(404, 'Unrecognised Service Type ID');
                 };
                 $cbs->setAttribute('commissioning_body_service_type_id', $service_type_id);
@@ -1608,9 +1626,7 @@ class AdminController extends BaseAdminController
 
         $errors = array();
 
-        if (!$return_url = Yii::app()->request->getQuery('return_url')) {
-            $return_url = '/admin/commissioning_body_services';
-        }
+        $return_url = Yii::app()->request->getQuery('return_url', '/admin/commissioning_body_services');
 
         $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
@@ -1713,7 +1729,8 @@ class AdminController extends BaseAdminController
     public function actionEditCommissioningBodyServiceType()
     {
         if (isset($_GET['commissioning_body_service_type_id'])) {
-            if (!$cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id'])) {
+            $cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id']);
+            if (!$cbs) {
                 throw new Exception('CommissioningBodyServiceType not found: ' . @$_GET['commissioning_body_service_type_id']);
             }
         } else {
@@ -1777,7 +1794,8 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->addInCondition('id', @$_POST['commissioning_body_service_type']);
 
-        if (!$er = CommissioningBodyServiceType::model()->deleteAll($criteria)) {
+        $er = CommissioningBodyServiceType::model()->deleteAll($criteria);
+        if (!$er) {
             throw new Exception('Unable to delete CommissioningBodyServiceTypes: ' . print_r($er->getErrors(), true));
         }
 
@@ -1798,7 +1816,8 @@ class AdminController extends BaseAdminController
 
     public function actionApproveEventDeletionRequest($id)
     {
-        if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
+        $event = Event::model()->find('id=? and delete_pending=?', array($id, 1));
+        if (!$event) {
             throw new Exception("Event not found: $id");
         }
 
@@ -1817,7 +1836,8 @@ class AdminController extends BaseAdminController
 
     public function actionRejectEventDeletionRequest($id)
     {
-        if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
+        $event = Event::model()->find('id=? and delete_pending=?', array($id, 1));
+        if (!$event) {
             throw new Exception("Event not found: $id");
         }
 
@@ -1938,7 +1958,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditSetting()
     {
-        if (!$metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']))) {
+        $metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']));
+        if (!$metadata) {
             $this->redirect(array('/admin/settings'));
         }
 
@@ -1947,7 +1968,8 @@ class AdminController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
                 if (@$_POST['hidden_' . $metadata->key] || isset($_POST[$metadata->key])) {
-                    if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+                    $setting = $metadata->getSetting($metadata->key, null, true);
+                    if (!$setting) {
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
