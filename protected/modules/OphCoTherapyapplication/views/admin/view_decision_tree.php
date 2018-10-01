@@ -28,7 +28,7 @@ $this->renderPartial('_menu_main');
 
 	<?php if ($node) {?>
 		<?php
-        $this->renderPartial('view_OphCoTherapyapplication_DecisionTreeNode', array(
+        $this->renderPartial('view_decision_tree_node', array(
                 'model' => $node,
         ));
     } else {?>

@@ -1516,7 +1516,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('wards');
+        $this->render('/admin/ward/index');
     }
 
     public function actionEditWard($id)
@@ -1558,7 +1558,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('/admin/editward', array(
+        $this->render('/admin/ward/edit', array(
             'ward' => $ward,
             'errors' => $errors,
         ));
@@ -1582,7 +1582,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editward', array(
+        $this->render('/admin/ward/edit', array(
             'ward' => $ward,
             'errors' => $errors,
         ));

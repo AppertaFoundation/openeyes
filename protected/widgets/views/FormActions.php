@@ -27,7 +27,7 @@
             echo CHtml::button(
                 $buttonOptions['cancel'],
                 [
-                    'data-uri' => $buttonOptions['cancel-uri'],
+                    'data-uri' => isset($buttonOptions['cancel-uri']) ? $buttonOptions['cancel-uri'] : '',
                     'class' => 'button large',
                     'type' => 'submit',
                     'name' => 'cancel',

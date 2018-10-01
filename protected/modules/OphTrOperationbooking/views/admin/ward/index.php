@@ -16,8 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Wards</h2>
+
+<div class="row divider">
+    <h2>Wards</h2>
+</div>
+
 	<form id="admin_wards">
 		<table class="standard">
 			<thead>
@@ -46,8 +49,14 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::link('Add', '#', null, array('class' => 'small button', 'id' => 'et_add_ward'))->toHtml()?>
-						<?php echo EventAction::link('Delete', '#', null, array('class' => 'small button', 'id' => 'et_delete_ward'))->toHtml()?>
+                        <?=CHtml::htmlButton('Add', [
+                            'class' => 'small button',
+                            'id' => 'et_add_ward'
+                        ]);?>
+                        <?=CHtml::htmlButton('Delete', [
+                            'class' => 'small button',
+                            'id' => 'et_delete_ward'
+                        ]);?>
 					</td>
 				</tr>
 			</tfoot>
@@ -70,7 +79,7 @@
 			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
-</div>
+
 
 <script type="text/javascript">
 	$(document).ready(function() {
