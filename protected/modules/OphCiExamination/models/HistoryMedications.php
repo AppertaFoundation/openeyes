@@ -90,7 +90,7 @@ class HistoryMedications extends \BaseEventTypeElement
             'stoppedOrderedEntries' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
-                'on' => '(end_date < NOW() AND end_date is NOT NULL)',
+                'on' => '(end_date is NOT NULL)',
                 'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
         );
     }
