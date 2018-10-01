@@ -17,6 +17,7 @@
  */
 ?>
 
+<div class='<?=$div_wrapper_class?>'>
 <?php if (!$get_row) {
 
     if ($filter_fields) { ?>
@@ -106,4 +107,5 @@ if (!$get_row && $filters_ready) {
 
 		</div>
 	<?= CHtml::endForm() ?>
-<?php }
+<?php } ?>
+</div>
