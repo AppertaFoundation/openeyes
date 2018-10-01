@@ -325,8 +325,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           select: function(event, ui){
               $row.find(".medication-name .textual-display").text(ui.item.preferred_term);
               switch_alternative($(event.target));
-              $row.find(".dose-unit-term").text(ui.item.dose_unit_term === null ? "" : ui.item.dose_unit_term);
-              $row.find(".dose").val(ui.item.dose);
+
+              var default_dose_unit_term = null;
+              var default_dose = null;
+
+              if(ui.item.dose_unit_term === null) {
+                    if(ui.item.route_id == '1') {
+                        default_dose_unit_term = 'drop(s)';
+                    }
+              }
+              else {
+                  default_dose_unit_term = ui.item.dose_unit_term;
+              }
+
+              if(ui.item.dose === null && ui.item.route_id == '1') {
+                  default_dose = 1;
+              }
+              else {
+                  default_dose = ui.item.dose;
+              }
+
+              $row.find(".dose-unit-term").text(default_dose_unit_term);
+              $row.find(".dose").val(default_dose);
               $row.find(".frequency").val(ui.item.frequency_id);
               $row.find(".route").val(ui.item.route_id);
               $row.find(".ref_medication_id").val(ui.item.id);

@@ -71,7 +71,7 @@ FROM drugs2.f_vtm_vtm vtm
 	LEFT JOIN drugs2.f_vmp_vmps vmp ON vmp.vtmid = vtm.vtmid
 	LEFT JOIN drugs2.f_amp_amps amp ON amp.vpid = vmp.vpid
 ;
-//------------------------------------------ FORMS ------------------------------------------------------
+/*------------------------------------------ FORMS ------------------------------------------------------*/
 INSERT INTO openeyes.ref_medication_form (`term`,`code`,`unit_term`,`default_dose_unit_term`,`source_type`)
 SELECT DISTINCT
 	`desc`,
