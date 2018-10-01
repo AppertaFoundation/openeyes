@@ -2,13 +2,16 @@
              ->findAll('`active` = ?', array(1)) as $disorder_section) {
     $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
         ->getDisorderSectionComments($disorder_section->id, $element->id); ?>
-        <div class="element full priority eye-divider">
-          <header class="element-header">
+        <div class="element-subgroup eye-divider">
+          <header class="subgroup-header">
             <h3><?php echo $disorder_section->name; ?></h3>
+              <div class="viewstate-icon">
+                  <i class="oe-i small js-element-subgroup-viewstate-btn expand" data-subgroup="subgroup-disorders-<?=$disorder_section->name?>"></i>
+              </div>
           </header>
-              <div class="element-data element-eyes">
+              <div class="element-data element-eyes" id="subgroup-disorders-<?=$disorder_section->name?>">
                     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-                      <div class="element-eye <?= $eye_side; ?>-eye column">
+                      <div class="js-element-eye <?= $eye_side; ?>-eye column">
                           <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                               'side' => $eye_side,
                               'element' => $element,

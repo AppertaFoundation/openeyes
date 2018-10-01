@@ -7,6 +7,8 @@
  * @var Episode[] $specialty_episodes
  **/
 
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
 $active_episodes = array();
@@ -58,19 +60,41 @@ if (is_array($ordered_episodes)):
                   $episodes_list[$id] = $episode;
               }
           }
-          $subspecialties = array_map(function ($v) {
-              return array($v->id, $v->name, $v->ref_spec);
-          }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina','General Ophthalmology'))));
+          $subspecialties = Subspecialty::model()->findAllByAttributes(
+              array(
+                  'name'=> array(
+                      'Cataract',
+                      'Glaucoma',
+                      'Medical Retina',
+                      'General Ophthalmology'
+                  )
+              )
+          );
+
           foreach ($subspecialties as $subspecialty) { ?>
               <li class="icon-btn"
-                  data-subspecialty-id="<?= $subspecialty[0] ?>">
-                <a class="<?= in_array($subspecialty[0], array_keys($episodes_list))?'active':'inactive' ?>"
-                   href=" <?= in_array($subspecialty[0], array_keys($episodes_list))?Yii::app()->createUrl('/patient/oescape/' . $episodes_list[$subspecialty[0]]->id):'' ?>">
-                    <?= $subspecialty[2] ?>
+                  data-subspecialty-id="<?= $subspecialty->id ?>">
+                <a class="<?= in_array($subspecialty->id, array_keys($episodes_list))?'active':'inactive' ?>"
+                   href="<?= Yii::app()->createUrl(
+                       '/patient/oescape/',
+                       array(
+                           'subspecialty_id' => $subspecialty->id,
+                           'patient_id' => $this->patient->id)
+                   ) ?>"
+                >
+                    <?= $subspecialty->ref_spec ?>
                 </a>
               </li>
           <?php
           } ?>
+        <li class="icon-btn">
+          <a href="<?= Yii::app()->createUrl('/patient/lightningViewer', array('id' => $this->patient->id)) ?>"
+             class="lightning-viewer-icon active <?= $this->action->id === 'lightningViewer' ? 'selected' : '' ?>">
+            <svg viewBox="0 0 30 30" width="15" height="15">
+              <use xlink:href="<?= $navIconUrl ?>#lightning-viewer-icon"></use>
+            </svg>
+          </a>
+        </li>
       </ul>
     <?php endforeach;
 endif; ?>

@@ -97,13 +97,19 @@
       });
     } else {
       this.popup.on('click', 'li', function () {
+
         if (!$(this).hasClass('selected')) {
           if (!$(this).closest('ul').data('multiselect')) {
             $(this).parent('ul').find('li').removeClass('selected');
           }
           $(this).addClass('selected');
         } else {
-          $(this).removeClass('selected');
+
+          // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
+          if(!$(this).data('itemSet').options.mandatory
+          || $(this).closest('ul').find('li.selected').length > 1) {
+            $(this).removeClass('selected');
+          }
         }
       });
     }
@@ -208,17 +214,21 @@
    */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
-    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
+    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect, 'data-id':itemSet.options.id});
 
     itemSet.items.forEach(function (item) {
+
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if(item.selected) {
+        $listItem.addClass('selected');
+      }
+
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
-
-    return $list;
+		return $list;
   };
 
   /**
@@ -262,7 +272,14 @@
    */
   AdderDialog.prototype.open = function () {
     this.popup.show();
-    this.positionFixedPopup(this.options.openButton);
+    var lists = this.popup.find('ul');
+    $(this.options.itemSets).each(function (index, itemSet) {
+    	/* Get the default value order and set the scroll value depends on index and each item height*/
+			var order = itemSet.getScrollIndex();
+    	lists[index].scrollTop = lists[index].firstChild.scrollHeight * order;
+		});
+
+		this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
     }
@@ -369,6 +386,10 @@
       dialog.searchResultList.empty();
       dialog.searchResultList.toggle(!no_data);
       dialog.noSearchResultsWrapper.toggle(no_data);
+
+      if(dialog.options.searchOptions.resultsFilter) {
+        results = dialog.options.searchOptions.resultsFilter(results);
+      }
 
       $(results).each(function (index, result) {
         var dataset = AdderDialog.prototype.constructDataset(result);

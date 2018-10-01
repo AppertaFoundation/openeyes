@@ -22,15 +22,12 @@ class MessageGridView extends CGridView
     public function renderTableHeader()
     {
         ?>
-      <colgroup>
-        <col style="width:80px;">
-        <col style="width:70px;">
-        <col style="width:50px;">
-        <col>
-        <col style="width:20px;">
-        <col style="width:90px;">
-
-      </colgroup>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col class="cols-2">
+        </colgroup>
         <?php
         echo "<thead>\n";
 
@@ -51,15 +48,7 @@ class MessageGridView extends CGridView
 
         // Then use the leftover columns to render the link pager
         echo '<th colspan="' . ($column_count - $i) . '">';
-        $this->widget('LinkPager', array(
-                'pages' => $this->dataProvider->getPagination(),
-                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                'htmlOptions' => array(
-                    'class' => 'pagination',
-                ),
-            )
-        );
+        $this->widget('LinkPager', ['pages' => $this->dataProvider->getPagination()]);
         echo '</th>';
 
         echo "</tr>\n";

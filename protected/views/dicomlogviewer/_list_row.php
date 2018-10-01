@@ -42,7 +42,7 @@
         });
     }
 </script>
-<tr data-id="<?php echo $i + 1 ?>" filename="<?php echo basename($log['filename']); ?>"
+<tr data-id="<?php echo $i + 1 ?>" data-filename="<?php echo basename($log['filename']); ?>"
     processor_id="<?php echo $log['processor_id']; ?>" status="<?php echo $log['status']; ?>">
     <td> <?php echo wordwrap(basename($log['filename']), 12, "\n", true); ?></td>
     <td> <?php echo $log['import_datetime']; ?></td>

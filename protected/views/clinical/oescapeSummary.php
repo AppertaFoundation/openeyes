@@ -15,32 +15,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (!empty($episode)) {
-if ($episode->diagnosis) {
-    $eye = $episode->eye ? $episode->eye->name : 'None';
-    $diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
-} else {
-    $eye = 'No diagnosis';
-    $diagnosis = 'No diagnosis';
-}
-
-$episode->audit('episode summary', 'view');
-?>
+if (!empty($subspecialty)) { ?>
 <script src="https://code.highcharts.com/stock/js/highstock.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oes-highchart-tools.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">
-  <div id="charts-container" class="highchart-area <?= $episode->subspecialty->name; ?>">
-
+  <div id="charts-container" class="highchart-area <?= $subspecialty->short_name; ?>">
     <?php $summaryItems = array();
-
-    if ($episode->subspecialty) {
-        $summaryItems = OescapeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-    }
+        $summaryItems = OescapeSummaryItem::model()->enabled($subspecialty->id)->findAll();
     if (!$summaryItems) {
         $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
@@ -49,7 +34,7 @@ $episode->audit('episode summary', 'view');
         <?php foreach ($summaryItems as $summaryItem) {
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
-            'episode' => $episode,
+            'patient' => $this->patient,
             'event_type' => $summaryItem->event_type,
         )); ?>
         <?php $widget->run_oescape(count($summaryItems));  }

@@ -327,6 +327,7 @@
    */
   Dialog.prototype.open = function () {
     $('body').prepend(this.content);
+    this.emit("open");
   };
 
   /**
@@ -336,6 +337,7 @@
    * @public
    */
   Dialog.prototype.close = function () {
+    this.emit("close");
     $('.oe-popup-wrap').remove();
   };
 
@@ -368,7 +370,9 @@
     };
 
     Dialog.prototype.setClose = function (closeButton) {
+        let dialog = this;
         closeButton.click(function () {
+            dialog.emit("close");
             $('.oe-popup-wrap').remove();
         });
     };

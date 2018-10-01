@@ -17,22 +17,57 @@
         </div>
       <?php endif; ?>
   </h2>
+    <?php if ($this->title != 'Please select booking') { ?>
+        <div class="event-title-extra-info flex-layout">
+            <?php $errors = $this->event->getErrors();
+            $error_class = isset($errors['event_date']) ? 'error' : '';
+            ?>
+            <?php
+            $this->widget('application.widgets.DatePicker', array(
+                'element' => $this->event,
+                'name' => CHtml::modelName($this->event) . "[event_date]",
+                'field' => 'event_date',
+                'options' => array('maxDate' => 'today'),
+                'htmlOptions' => array(
+                    'style' => 'display:none;',
+                    'form' => $form_id,
+                    'nowrapper' => true,
+                    'class' => 'js-event-date-input ' . $error_class
+                ),
+                'layoutColumns' => array(
+                    'label' => 2,
+                    'field' => 2,
+                ),
+            ));
+            ?>
+            <script>
+                $(document).ready(function () {
+                    let $date_input = $('.js-event-date-input');
+                    $('.js-change-event-date').on('click', function () {
+                        $date_input.show();
+                        $('.js-event-date').hide();
+                        $('.js-change-event-date').hide();
+                    });
 
+                    $('.pickmeup.pmu-view-days').on('click', function () {
+                        if ($(this).hasClass('pmu-hidden')) {
+                            $date_input.hide();
+                            $('.js-event-date').html($date_input.val());
+                            $('.js-change-event-date').show();
+                            $('.js-event-date').show();
+                        }
+                    });
+                });
+            </script>
+
+            <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+            <i class="oe-i history large pad-left js-has-tooltip js-change-event-date"
+               data-tooltip-content="Change Event date"
+               style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
+        </div>
+    <?php } ?>
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
-
-    <?php if ($this->action->id === 'view' && $this->event->isEventDateDifferentFromCreated()) { ?>
-      <section class="element view full view-date">
-        <header class="element-header">
-          <h3 class="element-title"><?php echo $this->event->getAttributeLabel('event_date') ?></h3>
-        </header>
-        <div class="element-fields full-width">
-          <div>
-              <?php echo $this->event->NHSDate('event_date') ?>
-          </div>
-        </div>
-      </section>
-    <?php } ?>
 
     <?php echo $content; ?>
 

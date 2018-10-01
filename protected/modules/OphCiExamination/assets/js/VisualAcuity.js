@@ -22,6 +22,12 @@ $(document).ready(function () {
 
   }
 
+  ($('.va_readings,.near-va-readings').each(function(){
+    if($(this).find('tbody tr').length){
+        $(this).siblings('.noReadings').hide();
+    }
+  }));
+
   $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
@@ -59,7 +65,6 @@ $(document).ready(function () {
         }
       }
 
-      
       if ($('tbody', activeForm).children('tr').length == 0) {
         $('.noReadings', activeForm).show();
         $('table', activeForm).hide();
@@ -104,7 +109,7 @@ $(document).ready(function () {
   });
 
   /**
-   * If one of the noReading checkboxes is checked, the add button will be hided.
+   * If one of the noReading checkboxes is checked, the add button will be hidden.
    */
   for (let element of ['NearVisualAcuity', 'VisualAcuity']){
     for (let side of ['right', 'left']){
@@ -248,23 +253,19 @@ function OphCiExamination_VisualAcuity_addReading(side, selected_data, template,
   Object.assign(data, selected_data);
   var form = Mustache.render(template, data);
 
-  $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye.'+side+'-eye .noReadings').hide().find('input:checkbox').each(function() {
+  $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .js-element-eye.'+side+'-eye .noReadings').hide().find('input:checkbox').each(function() {
     $(this).attr('checked', false);
   });
   if (suffix === 'VisualAcuity'){
-    var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye[data-side="'+side+'"] table.va_readings');
+    var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .js-element-eye[data-side="'+side+'"] table.va_readings');
   } else {
-    var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye[data-side="'+side+'"] table.near-va-readings');
+    var table = $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .js-element-eye[data-side="'+side+'"] table.near-va-readings');
   }
 
   table.show();
-  var nextMethodId = OphCiExamination_VisualAcuity_getNextMethodId(side, suffix);
-
   $('tbody', table).append(form);
-  $('.method_id', table).last().val(nextMethodId);
 
   OphCiExamination_VisualAcuity_ReadingTooltip(table.find('tr').last());
-
 }
 
 /**

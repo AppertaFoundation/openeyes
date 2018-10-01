@@ -475,7 +475,7 @@ $(document).ready(function() {
 
         // Clear inputs marked as clearWithEyedraw
         if (side) {
-            var element_or_side = $(this).closest('.side');
+            var element_or_side = $(this).closest('.js-element-eye');
         } else {
             var element_or_side = element;
         }
@@ -737,10 +737,10 @@ $(document).ready(function() {
         });
 
         if (showOther) {
-            $(this).parents('.side').find('.lasertype_other').show();
+            $(this).parents('.js-element-eye').find('.lasertype_other').show();
         }
         else {
-            $(this).parents('.side').find('.lasertype_other').hide();
+            $(this).parents('.js-element-eye').find('.lasertype_other').hide();
         }
     });
 
@@ -825,7 +825,7 @@ $(document).ready(function() {
      */
     $('body').delegate('.gonioBasic', 'change', function(e) {
         var position = $(this).attr('data-position');
-        var expert = $(this).closest('.side').find('.gonioExpert[data-position="'+position+'"]');
+        var expert = $(this).closest('.js-element-eye').find('.gonioExpert[data-position="'+position+'"]');
         if($(this).val() == 0) {
             $('option',expert).attr('selected', function () {
                 return ($(this).attr('data-value') == '1');
@@ -842,13 +842,13 @@ $(document).ready(function() {
      * colour vision behaviours
      */
     $(this).delegate('.colourvision_method', 'change', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
+        var side = $(this).closest('.js-element-eye').attr('data-side');
         OphCiExamination_ColourVision_addReading(this, side);
         e.preventDefault();
     });
 
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .removeCVReading', 'click', function(e) {
-        var wrapper = $(this).closest('.side');
+        var wrapper = $(this).closest('.js-element-eye');
         var side = wrapper.attr('data-side');
         var row = $(this).closest('tr');
         var id = $('.methodId', row).val();
@@ -869,8 +869,8 @@ $(document).ready(function() {
     });
 
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .clearCV', 'click', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
-        $(this).closest('.side').find('tr.colourvisionReading i.removeCVReading').click();
+        var side = $(this).closest('.js-element-eye').attr('data-side');
+        $(this).closest('.js-element-eye').find('tr.colourvisionReading i.removeCVReading').click();
         $(this).addClass('hidden');
         e.preventDefault();
     });
@@ -1298,38 +1298,39 @@ function OphCiExamination_ColourVision_getNextKey(side) {
     }
 }
 
-function OphCiExamination_ColourVision_addReading(element, side) {
-    var method_id = $('option:selected', element).val();
-    if (method_id) {
-        var method_name = $('option:selected', element).text();
-        $('option:selected', element).remove();
-        var template = $('#colourvision_reading_template').html();
-        var method_values = '';
-        if (colourVisionMethodValues[method_id]) {
-            for (var id in colourVisionMethodValues[method_id]) {
-                if (colourVisionMethodValues[method_id].hasOwnProperty(id)) {
-                    method_values += '<option value="'+id+'">'+colourVisionMethodValues[method_id][id]+'</option>';
-                }
-            }
+function OphCiExamination_ColourVision_addReading(selected_items, eye_side, $table) {
+    let template = $('#colourvision_reading_template').html();
+    if (selected_items.length) {
+        for (let index in selected_items) {
+            let selected_data = [];
+            selected_data.method_id = selected_items[index]['id'];
+            selected_data.method_name = selected_items[index]['label'];
+            selected_data.side = eye_side;
+            selected_data.key = OphCiExamination_ColourVision_getNextKey(eye_side);
+            selected_data.method_values = OphCiExamination_ColourVision_getMethodValues(selected_items[index]['id']);
+
+            var form = Mustache.render(template, selected_data);
+            $table.find('tbody').append(form);
         }
-        var data = {
-            "key" : OphCiExamination_ColourVision_getNextKey(side),
-            "side": side,
-            "method_name": method_name,
-            "method_id": method_id,
-            "method_values": method_values
-        };
-        var form = Mustache.render(template, data);
-
-        // Show clear button
-        $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .clearCV').removeClass("hidden");
-
-        // Show table
-        var table = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
-        table.show();
-        $('tbody', table).append(form);
     }
 }
+
+/**
+ * @return {string}
+ */
+function OphCiExamination_ColourVision_getMethodValues(method_id) {
+    let method_values = '';
+    // ColourVisionMethod values are being set in form_Element_OphCiExamination_ColourVision
+    if (colourVisionMethodValues[method_id]) {
+        for (let id in colourVisionMethodValues[method_id]) {
+            if (colourVisionMethodValues[method_id].hasOwnProperty(id)) {
+                method_values += '<option value="' + id + '">' + colourVisionMethodValues[method_id][id] + '</option>';
+            }
+        }
+    }
+    return method_values;
+}
+
 
 // Global function to route eyedraw event to the correct element handler
 function eDparameterListener(drawing) {
@@ -1377,7 +1378,7 @@ function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
  * Show other type field only if type is set to "Other"
  */
 function OphCiExamination_Refraction_updateType(field) {
-    var other = $(field).closest('.element-eye').find('.refraction-type-other');
+    var other = $(field).closest('.js-element-eye').find('.refraction-type-other');
     if ($(field).val() == '') {
         other.show();
         other.find('.refraction-type-other-field').focus();
@@ -1522,7 +1523,7 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
         if (dirty) {
             $('#drgrading_dirty').show();
         }
-    dr_grade.find('.side[data-side="'+side+'"]').removeClass('uninitialised');
+    dr_grade.find('.js-element-eye[data-side="'+side+'"]').removeClass('uninitialised');
 }
 
 /**
@@ -1531,7 +1532,7 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
  * @param side
  */
 function OphCiExamination_DRGrading_canUpdate(side) {
-    var dr_side = $(".js-active-elements ."+OE_MODEL_PREFIX+"Element_OphCiExamination_DRGrading").find('.side[data-side="'+side+'"]');
+    var dr_side = $(".js-active-elements ."+OE_MODEL_PREFIX+"Element_OphCiExamination_DRGrading").find('.js-element-eye[data-side="'+side+'"]');
 
     if (dr_side.length && !dr_side.hasClass('uninitialised') && !$('#drgrading_dirty').is(":visible")) {
         return true;
@@ -1550,7 +1551,7 @@ function OphCiExamination_DRGrading_update(side) {
         physical_side = 'right';
     }
     if (OphCiExamination_DRGrading_canUpdate(side)) {
-        var cv = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('.side.' + physical_side).find('canvas');
+        var cv = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_PosteriorPole').find('.js-element-eye.' + physical_side).find('canvas');
         var drawingName = cv.data('drawing-name');
         var drawing = ED.getInstance(drawingName);
         var grades = gradeCalculator(drawing);
@@ -1572,7 +1573,7 @@ function OphCiExamination_PosteriorPole_init() {
                 side = 'left';
             }
             var dr_grade = $('#' + _drawing.canvas.id).closest('.element').find('.' + OE_MODEL_PREFIX + dr_grade_et_class);
-            var dr_side = dr_grade.find('.side[data-side="'+side+'"]');
+            var dr_side = dr_grade.find('.js-element-eye[data-side="'+side+'"]');
 
             OphCiExamination_DRGrading_dirtyCheck(_drawing);
 
@@ -1861,14 +1862,12 @@ function OphCiExamination_AddFinding(finding_id, label) {
         if (el.length) {
             addElement(el.first(), false, true, 0, {}, updateFindings);
         } else {
-            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
-            if (sidebar) {
-                sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
+            if (event_sidebar) {
+                event_sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
             } else {
                 console.log('Cannot find sidebar to manipulate elements for VA change');
             }
         }
-
     }
 
 }

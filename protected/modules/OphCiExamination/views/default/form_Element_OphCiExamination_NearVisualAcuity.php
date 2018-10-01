@@ -51,7 +51,7 @@ $key = 0;
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
           data-side="<?= $eye_side ?>"
     >
       <div class="active-form data-group flex-layout"
@@ -59,8 +59,7 @@ $key = 0;
       >
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
-          <table class="cols-full blank near-va-readings"
-                 style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ? 'display: none; ': '' ?> ">
+          <table class="cols-full blank near-va-readings">
             <tbody>
             <?php foreach ($element->{$eye_side.'_readings'} as $reading) {
                 // Adjust currently element readings to match unit steps
@@ -79,8 +78,7 @@ $key = 0;
             }?>
             </tbody>
           </table>
-          <div class="data-group noReadings"
-               style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ?  '': 'display: none; ' ?>" >
+          <div class="data-group noReadings">
             <div class="cols-8 column">
                 <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
                 <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>

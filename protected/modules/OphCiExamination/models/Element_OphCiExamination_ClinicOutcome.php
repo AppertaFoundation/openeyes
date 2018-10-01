@@ -36,7 +36,7 @@ use Yii;
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
     const FOLLOWUP_Q_MIN = 1;
-    const FOLLOWUP_Q_MAX = 12;
+    const FOLLOWUP_Q_MAX = 18;
 
     /**
      * Returns the static model of the specified AR class.

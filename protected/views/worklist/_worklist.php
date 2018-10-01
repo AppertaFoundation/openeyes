@@ -27,22 +27,11 @@ $worklist_patients->pagination->pageVar = 'page' . $worklist->id;
 // Get data so that pagination  works
 $worklist_patients->getData();
 ?>
-
+<div class="worklist-group" id="js-worklist-<?= strtolower(str_replace(' ','-',$worklist->name))?>">
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
   <div class="summary">
-
-      <?php
-      $this->widget('LinkPager', array(
-              'pages' => $worklist_patients->getPagination(),
-              'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-              'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-              'htmlOptions' => array(
-                  'class' => 'pagination',
-              ),
-          )
-      );
-      ?>
+    <?php $this->widget('LinkPager', ['pages' => $worklist_patients->getPagination()]); ?>
   </div>
 </div>
 
@@ -114,7 +103,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
     }
 
     $this->widget('application.widgets.ColGroupGridView', array(
-        'itemsCssClass' => 'standard',
+        'itemsCssClass' => 'standard clickable-rows',
         'dataProvider' => $worklist_patients,
         'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
         'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
@@ -122,5 +111,15 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
         'columns' => $cols,
         'enableHistory' => true,
         'enablePagination' => false,
+        'rowCssClass' => array('worklist-row'),
     ));
 } ?>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".worklist-row").click(function (event) {
+            window.document.location = $(this).find('a').attr('href');
+        })
+    })
+</script>

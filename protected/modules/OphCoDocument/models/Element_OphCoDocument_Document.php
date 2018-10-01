@@ -3,8 +3,6 @@
 
 class Element_OphCoDocument_Document extends BaseEventTypeElement
 {
-
-
     /**
      * @return string
      */
