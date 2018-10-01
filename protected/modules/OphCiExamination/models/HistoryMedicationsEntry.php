@@ -389,8 +389,13 @@ class HistoryMedicationsEntry extends \BaseElement
 
     public function getDoseAndFrequency(){
         $result = [];
+
         if($this->dose){
-            $result[] = $this->dose;
+            if($this->units) {
+                $result[] = $this->dose . ' ' . $this->units;
+            } else {
+                $result[] = $this->dose;
+            }
         }
 
         if($this->frequency){
