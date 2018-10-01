@@ -5,7 +5,7 @@ DELETE rmu FROM openeyes.event_medication_uses rmu LEFT JOIN openeyes.ref_medica
 DELETE FROM openeyes.ref_medication_form WHERE source_type = 'DM+D';
 DELETE FROM openeyes.ref_medication_route WHERE source_type = 'DM+D';
 DELETE FROM openeyes.ref_medication WHERE source_type = 'DM+D';
-//------------------------------------------ AMP --------------------------------------------------------
+/* ------------------------------------------ AMP -------------------------------------------------------- */
 INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code)
 SELECT
 	'DM+D' AS source_type,
@@ -27,7 +27,7 @@ FROM
 	LEFT JOIN drugs2.f_vmp_vmps vmp ON vmp.vpid = amp.vpid
 	LEFT JOIN drugs2.f_vtm_vtm vtm ON vtm.vtmid = vmp.vtmid
 ;
-//------------------------------------------ VMP --------------------------------------------------------
+/*------------------------------------------ VMP --------------------------------------------------------*/
 INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code)
 SELECT
 	'DM+D' AS source_type,
@@ -50,7 +50,7 @@ FROM
 	LEFT JOIN drugs2.f_vtm_vtm vtm ON vtm.vtmid = vmp.vtmid
 ;
 
-//------------------------------------------ VTM --------------------------------------------------------
+/*------------------------------------------ VTM -------------------------------------------------------- */
 INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code,amp_term,amp_code)
 SELECT
 	'DM+D' AS source_type,
@@ -81,7 +81,7 @@ SELECT DISTINCT
 	'DM+D' AS source_type
 FROM drugs2.f_lookup_form
 ;
-//------------------------------------------ ROUTES -----------------------------------------------------
+/*------------------------------------------ ROUTES -----------------------------------------------------*/
 INSERT INTO openeyes.ref_medication_route (term,`code`, source_type)
 SELECT
 	lr.desc,
@@ -90,9 +90,9 @@ SELECT
 FROM
 	drugs2.f_lookup_route lr
 ;
-//------------------------------------------ SET --------------------------------------------------------
+/*------------------------------------------ SET --------------------------------------------------------*/
 INSERT INTO openeyes.ref_set (`name`) VALUES ('DM+D');
-//------------------------------------------ REF_MEDICATION_SET -----------------------------------------
+/*------------------------------------------ REF_MEDICATION_SET -----------------------------------------*/
 INSERT INTO openeyes.ref_medication_set (ref_medication_id,ref_set_id,default_form,default_dose,default_route,default_frequency,default_dose_unit_term,deleted_date)
 SELECT
 	rm.id,
@@ -135,7 +135,7 @@ WHERE ( rm.source_type='DM+D' AND rm.source_subtype <> 'VTM')
 
 -- WHERE ( rm.source_type='DM+D' AND rm.source_subtype = 'VTM')
 
-//------------------- EGYEB --------------------
+/*
 ALTER TABLE `openeyes`.`ref_medication_form` ADD KEY (`term`);
 ALTER TABLE `openeyes`.`ref_medication` ADD KEY (`vmp_code`);
 ALTER TABLE `openeyes`.`ref_medication` ADD KEY (`vtm_code`);
@@ -150,8 +150,10 @@ UPDATE openeyes.ref_medication_set SET ref_set_id = 33 WHERE ref_set_id IN (31,3
 UPDATE ref_medication_set ms LEFT JOIN ref_medication_form mf ON mf.id = ms.default_form
 SET ms.default_dose_unit_term = mf.default_dose_unit_term
 WHERE ms.ref_set_id IN (33);
+*/
 
-//------------------------------------ UNIT ?? -------------------------------------------------------------------------
+
+/*------------------------------------ UNIT ?? -------------------------------------------------------------------------*/
 SELECT
 amp.nm,
 vpi.strnt_nmrtr_val,
@@ -161,7 +163,7 @@ LEFT JOIN f_vmp_vmps vmp ON vmp.vpid = amp.vpid
 LEFT JOIN f_vmp_virtual_product_ingredient vpi ON vpi.vpid = amp.vpid
 LEFT JOIN f_lookup_unit_of_measure uom ON uom.cd  = strnt_dnmtr_uomcd
 
------------------------------------ IDEIGLENES, DEMO!!! -----------------------------------------------------------------
+/*----------------------------------- TEMP DEMO!!! --------------------------------------------------------------*/
 
 INSERT INTO openeyes.ref_medication_set (ref_medication_id,ref_set_id,default_form,default_dose,default_route,default_frequency,default_dose_unit_term,deleted_date)
 SELECT
