@@ -91,7 +91,9 @@ FROM
 	drugs2.f_lookup_route lr
 ;
 /*------------------------------------------ SET --------------------------------------------------------*/
-INSERT INTO openeyes.ref_set (`name`) VALUES ('DM+D');
+INSERT INTO openeyes.ref_set (`name`) VALUES ('DM+D AMP');
+INSERT INTO openeyes.ref_set (`name`) VALUES ('DM+D VMP');
+INSERT INTO openeyes.ref_set (`name`) VALUES ('DM+D VTM');
 /*------------------------------------------ REF_MEDICATION_SET -----------------------------------------*/
 INSERT INTO openeyes.ref_medication_set (ref_medication_id,ref_set_id,default_form,default_dose,default_route,default_frequency,default_dose_unit_term,deleted_date)
 SELECT
@@ -164,7 +166,7 @@ LEFT JOIN f_vmp_virtual_product_ingredient vpi ON vpi.vpid = amp.vpid
 LEFT JOIN f_lookup_unit_of_measure uom ON uom.cd  = strnt_dnmtr_uomcd
 
 /*----------------------------------- TEMP DEMO!!! --------------------------------------------------------------*/
-
+/*
 INSERT INTO openeyes.ref_medication_set (ref_medication_id,ref_set_id,default_form,default_dose,default_route,default_frequency,default_dose_unit_term,deleted_date)
 SELECT
 	rm.id,
@@ -203,4 +205,4 @@ FROM openeyes.ref_medication rm
 		WHERE m2.id = rm.id
 	)
 WHERE ( rm.source_type='DM+D' AND rm.source_subtype <> 'VTM')
-;
+;*/
