@@ -18,19 +18,17 @@
 ?>
 
 <?php
-    $this->beginContent('//patient/event_container', array('no_face'=>false));
-?>
-
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'c',
+$form_id = 'c';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
             'label' => 4,
             'field' => 8, ),
         ));
         // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'c'));
+        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
     ?>
 		<?php $this->displayErrors($errors)?>
 		<?php $this->renderOpenElements($this->action->id, $form)?>

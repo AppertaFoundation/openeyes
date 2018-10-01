@@ -1672,6 +1672,7 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
 
         $patient = new Patient('manual');
         $patient->noPas();
@@ -1727,7 +1728,7 @@ class PatientController extends BaseController
                         $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
                     } else {
                         Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                        $this->redirect(array('view', 'id' => $patient->id));
+                        $this->redirect(array('episodes', 'id' => $patient->id));
                     }
 
                 } else {
@@ -1770,6 +1771,7 @@ class PatientController extends BaseController
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';

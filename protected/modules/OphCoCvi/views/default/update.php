@@ -18,11 +18,11 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
+$form_id = 'update-form';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
 
-<?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'update-form',
+    'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
         'label' => 2,
@@ -31,7 +31,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 
 // Event actions
-$this->renderPartial('event_actions', array('form_id' => 'update-form'));
+$this->renderPartial('event_actions', array('form_id' => $form_id));
 
 
 ?>

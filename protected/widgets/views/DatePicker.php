@@ -35,7 +35,9 @@ if (@$htmlOptions['id']) {
   <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
     <input class="<?= @$htmlOptions['class'] ?>"
+           style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
+           <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
            placeholder="yyyy-mm-dd"
            name="<?= $name ?>"
            value="<?= $value ?>"
