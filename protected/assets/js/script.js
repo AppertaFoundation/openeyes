@@ -319,6 +319,33 @@ $(document).ready(function () {
 
   });
 
+    (function elementSubgroup() {
+        let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
+        if( $viewstate_btns.length === 0 ) {
+            return;
+        }
+        $viewstate_btns.each( function(){
+            new Viewstate( $(this) );
+        });
+
+        function Viewstate( $icon ){
+            let view_state = this;
+            let $content = $('#' + $icon.data('subgroup') );
+
+            $icon.click( function( e ){
+                e.preventDefault();
+                view_state.changeState();
+            });
+
+            this.changeState = function(){
+                $content.toggle();
+                $icon.toggleClass('collapse expand');
+            }
+
+        }
+    })();
+
+
 });
 
 function changeState(wb,sp) {
