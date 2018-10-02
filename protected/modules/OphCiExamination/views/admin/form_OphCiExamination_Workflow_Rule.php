@@ -38,7 +38,7 @@
         <tr>
             <td>Context</td>
             <td class="cols-full">
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $model,
                     'firm_id',
                     CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAll(), 'id', 'nameAndSubspecialty'),
@@ -49,7 +49,7 @@
         <tr>
             <td>Episode status</td>
             <td class="cols-full">
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $model,
                     'episode_status_id',
                     CHtml::listData(EpisodeStatus::model()->findAll(), 'id', 'name'),
@@ -60,7 +60,7 @@
         <tr>
             <td>Subspecialty</td>
             <td class="cols-full">
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $model,
                     'subspecialty_id',
                     CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
@@ -71,7 +71,7 @@
         <tr>
             <td>Workflow</td>
             <td class="cols-full">
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $model,
                     'workflow_id',
                     CHtml::listData(

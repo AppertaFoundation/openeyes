@@ -41,7 +41,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
                             'data-uri' => '/OphCoDocument/oeadmin/documentSubTypesSettings/create',
@@ -51,12 +51,11 @@
                         ]
                     ); ?>
 
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large primary event-action',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_admin-save',
                             'formmethod' => 'post',
                         ]

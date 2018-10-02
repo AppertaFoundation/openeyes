@@ -48,7 +48,7 @@
 					<td><?php echo $episode->NHSDate('start_date'); ?></td>
 					<td><?php echo $episode->NHSDate('end_date'); ?></td>
 					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
-					<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
+					<td><?=\CHtml::encode($episode->getSubspecialtyText())?></td>
 					<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
 					<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
 				</tr>

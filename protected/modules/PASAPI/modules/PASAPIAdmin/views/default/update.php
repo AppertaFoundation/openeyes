@@ -48,9 +48,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     <tfoot class="pagination-container">
     <tr>
         <td colspan="2">
-            <?= CHtml::htmlButton($model->isNewRecord ? 'Create' : 'Save', ['type' => 'submit', 'class' => 'large button']) ?>
-            <?= CHtml::htmlButton('Cancel', [
-                'type' => 'submit',
+            <?= CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save', ['class' => 'large button']) ?>
+            <?= CHtml::submitButton('Cancel', [
                 'data-uri' => "/PASAPI/admin/default/viewXpathRemaps",
                 'name' => 'cancel',
                 'id' => "et_cancel",

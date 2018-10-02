@@ -44,20 +44,18 @@
                     </td>
                     <td><?php echo $event->delete_reason?></td>
                     <td>
-                        <?php echo CHtml::htmlButton(
+                        <?=\CHtml::submitButton(
                             'Approve',
                             [
                                 'class' => 'button small',
-                                'type' => 'submit',
                                 'id' => 'et_approve',
                                 'name' => 'approve'
                             ]
                         );?>
-                        <?php echo CHtml::htmlButton(
+                        <?=\CHtml::submitButton(
                             'Reject',
                             [
                                 'class' => 'button small',
-                                'type' => 'submit',
                                 'id' => 'et_reject',
                                 'name' => 'reject'
                             ]

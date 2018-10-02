@@ -46,7 +46,7 @@ $form = $this->beginWidget(
             <tr>
                 <td><?php echo $user->getAttributeLabel($field); ?></td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $user,
                         $field,
                         [
@@ -61,7 +61,7 @@ $form = $this->beginWidget(
         <tr>
             <td>Grade</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $user,
                     'doctor_grade_id',
                     CHtml::listData(
@@ -76,7 +76,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Registration Code</td>
-            <td><?php echo CHtml::activeTextField(
+            <td><?=\CHtml::activeTextField(
                 $user,
                 'registration_code',
                 [
@@ -88,7 +88,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Active</td>
-            <td><?php echo CHtml::activeRadioButtonList(
+            <td><?=\CHtml::activeRadioButtonList(
                     $user,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
@@ -98,7 +98,7 @@ $form = $this->beginWidget(
         <tr>
             <td>Global firm rights</td>
             <td>
-                <?php echo CHtml::activeRadioButtonList(
+                <?=\CHtml::activeRadioButtonList(
                     $user,
                     'global_firm_rights',
                     [1 => 'Yes', 0 => 'No'],
@@ -129,7 +129,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Consultant</td>
-            <td><?php echo CHtml::activeRadioButtonList(
+            <td><?=\CHtml::activeRadioButtonList(
                     $user,
                     'is_consultant',
                     [1 => 'Yes', 0 => 'No'],
@@ -138,7 +138,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Surgeon</td>
-            <td><?php echo CHtml::activeRadioButtonList(
+            <td><?=\CHtml::activeRadioButtonList(
                     $user,
                     'is_surgeon',
                     [1 => 'Yes', 0 => 'No'],
@@ -149,7 +149,7 @@ $form = $this->beginWidget(
             <td>Password</td>
             <td>
                 <?php if (!$is_ldap || $user->is_local) : ?>
-                    <?php echo CHtml::activePasswordField(
+                    <?=\CHtml::activePasswordField(
                         $user,
                         'password',
                         [
@@ -164,7 +164,7 @@ $form = $this->beginWidget(
             <td>Confirm password</td>
             <td>
                 <?php if (!$is_ldap || $user->is_local) : ?>
-                    <?php echo CHtml::activePasswordField(
+                    <?=\CHtml::activePasswordField(
                         $user,
                         'password_repeat',
                         [
@@ -199,21 +199,19 @@ $form = $this->beginWidget(
         <tfoot>
         <tr>
             <td colspan="5">
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Save',
                     [
                         'class' => 'button large primary event-action',
                         'name' => 'save',
-                        'type' => 'submit',
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Cancel',
                     [
                         'data-uri' => '/admin/users',
                         'class' => 'warning button large primary event-action',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]

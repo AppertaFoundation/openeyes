@@ -42,7 +42,7 @@
                     <td><?php echo $model->site->name ?></td>
                     <td><?php echo $model->active ? 'Yes' : 'No' ?></td>
                     <td>
-                        <?php echo CHtml::link(
+                        <?=\CHtml::link(
                             'Edit',
                             '/OphTrLaser/admin/editLaser/' . $model->id,
                             ['class' => 'small event-action']
@@ -54,7 +54,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="6">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',

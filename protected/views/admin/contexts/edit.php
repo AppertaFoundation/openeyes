@@ -44,7 +44,7 @@ $form = $this->beginWidget(
         <tbody>
         <tr>
             <td>Pass Code</td>
-            <td> <?php echo CHtml::activeTextField(
+            <td> <?=\CHtml::activeTextField(
                     $firm,
                     'pas_code',
                     ['class' => 'cols-full']
@@ -52,7 +52,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Name</td>
-            <td> <?php echo CHtml::activeTextField(
+            <td> <?=\CHtml::activeTextField(
                     $firm,
                     'name',
                     ['class' => 'cols-full']
@@ -61,7 +61,7 @@ $form = $this->beginWidget(
         <tr class="col-gap">
             <td>Subspecialty</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $firm,
                     'subspecialty_id',
                     CHtml::listData(
@@ -78,7 +78,7 @@ $form = $this->beginWidget(
         <tr class="col-gap">
             <td>Consultant</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $firm,
                     'consultant_id',
                     CHtml::listData(
@@ -94,42 +94,40 @@ $form = $this->beginWidget(
         </tr>
         <tr class="col-gap">
             <td>Service Enabled</td>
-            <td><?php echo CHtml::activeCheckBox(
+            <td><?=\CHtml::activeCheckBox(
                     $firm,
                     'can_own_an_episode'
                 ) ?></td>
         </tr>
         <tr class="col-gap">
             <td>Context Enabled:</td>
-            <td><?php echo CHtml::activeCheckBox(
+            <td><?=\CHtml::activeCheckBox(
                     $firm,
                     'runtime_selectable'
                 ) ?></td>
         </tr>
         <tr class="col-gap">
             <td>Active</td>
-            <td><?php echo CHtml::activeCheckBox($firm, 'active') ?></td>
+            <td><?=\CHtml::activeCheckBox($firm, 'active') ?></td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="5">
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Save',
                     [
                         'class' => 'button large primary event-action',
                         'name' => 'save',
-                        'type' => 'submit',
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Cancel',
                     [
                         'class' => 'warning button large primary event-action',
                         'data-uri' => '/admin/firms',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]

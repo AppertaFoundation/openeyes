@@ -60,21 +60,19 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="3">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'add',
                             'data-uri' => '/OphTrIntravitrealinjection/admin/addTreatmentDrug',
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'treatment_drugs',
                             'data-uri' => '/OphTrIntravitrealinjection/admin/deleteTreatmentDrugs',

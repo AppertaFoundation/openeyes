@@ -41,24 +41,24 @@
         <tbody>
         <tr>
             <td><?=$ward->getAttributeLabel('site_id');?></td>
-            <td><?=CHtml::activeDropDownList($ward, 'site_id', Site::model()->getListForCurrentInstitution(), ['empty' => '- Site -', 'class' => 'cols-full'])?></td>
+            <td><?=\CHtml::activeDropDownList($ward, 'site_id', Site::model()->getListForCurrentInstitution(), ['empty' => '- Site -', 'class' => 'cols-full'])?></td>
         </tr>
         <?php foreach (['name', 'long_name', 'code'] as $attr) :?>
             <tr>
                 <td><?=$ward->getAttributeLabel($attr);?></td>
-                <td><?=CHtml::activeTextField($ward, $attr, ['class' => 'cols-full']);?></td>
+                <td><?=\CHtml::activeTextField($ward, $attr, ['class' => 'cols-full']);?></td>
             </tr>
         <?php endforeach; ?>
         <tr>
             <td><?=$ward->getAttributeLabel('directions');?></td>
-            <td><?=CHtml::activeTextArea($ward, 'directions', ['class' => 'cols-full']);?></td>
+            <td><?=\CHtml::activeTextArea($ward, 'directions', ['class' => 'cols-full']);?></td>
         </tr>
 
         <?php foreach (['restriction_male', 'restriction_female', 'restriction_child', 'restriction_adult'] as $attr) :?>
             <tr>
                 <td><?=$ward->getAttributeLabel($attr);?></td>
                 <td>
-                    <?=CHtml::activeRadioButtonList($ward, $attr, [ 1 => 'Yes', 0 => 'No'], ['separator' => ' ']);?>
+                    <?=\CHtml::activeRadioButtonList($ward, $attr, [ 1 => 'Yes', 0 => 'No'], ['separator' => ' ']);?>
                 </td>
             </tr>
         <?php endforeach; ?>

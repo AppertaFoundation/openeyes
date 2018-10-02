@@ -24,10 +24,10 @@
         </colgroup>
         <tr>
             <td>
-                <?php echo CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullNameAndUserName'), array('empty' => '- Select user -')) ?>
+                <?=\CHtml::dropDownList('user_id', '', CHtml::listData($user_list, 'id', 'fullNameAndUserName'), array('empty' => '- Select user -')) ?>
             </td>
             <td>
-                <?php echo CHtml::htmlButton('Add user', array('class' => 'button small addUser')) ?>
+                <?=\CHtml::htmlButton('Add user', array('class' => 'button small addUser')) ?>
             </td>
         </tr>
     </table>
@@ -49,11 +49,10 @@
         </table>
     </form>
     <div class="cols-4 column end">
-        <?php echo CHtml::htmlButton(
+        <?=\CHtml::submitButton(
             'Delete user(s)',
             [
                 'class' => 'button large',
-                'type' => 'submit',
                 'name' => 'delete',
                 'data-object' => 'injection_users',
                 'data-uri' => '/OphTrIntravitrealinjection/admin/deleteInjectionUsers',

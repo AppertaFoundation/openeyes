@@ -51,7 +51,7 @@
 					<?php endif;?>
 					<?php foreach ($extra_fields as $field) {?>
 						<th>
-							<?php echo CHtml::hiddenField('_extra_fields[]', $field['field'])?>
+							<?=\CHtml::hiddenField('_extra_fields[]', $field['field'])?>
 							<?php echo $model::model()->getAttributeLabel($field['field'])?>
 						</th>
 					<?php }?>
@@ -88,16 +88,16 @@ if (!$get_row && $filters_ready) {
 							No default
 						</td>
 						<td>
-							<?php echo CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
+							<?=\CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
 						</td>
 					</tr>
                 <?php } ?>
                 <tr>
                     <td colspan="10">
                         <?php if (!$this->cannot_add) {
-                            echo CHtml::htmlButton('Add', ['name' => 'admin-add', 'type' => 'submit','id' => 'et_admin-add', 'class' => 'generic-admin-add button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
+                            echo CHtml::submitButton('Add', ['name' => 'admin-add', 'id' => 'et_admin-add', 'class' => 'generic-admin-add button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
                         }?>&nbsp;
-                        <?php echo CHtml::htmlButton('Save', ['name' => 'admin-save', 'type' => 'submit','id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
+                        <?=\CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
                     </td>
                 </tr>
 				</tfoot>

@@ -28,7 +28,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         <tr class="col-gap">
             <td>Parent</td>
             <td>
-                <?php echo CHtml::dropDownList(
+                <?=\CHtml::dropDownList(
                     'parent_id',
                     (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
                     SelectionHelper::listData('CommonOphthalmicDisorder')

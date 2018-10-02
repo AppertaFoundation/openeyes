@@ -65,7 +65,7 @@
 			<tfoot class="pagination-container">
 				<tr>
                     <td colspan="5">
-                    <?php echo CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
+                    <?=\CHtml::button('Add', ['class' => 'button large', 'name' => 'add', 'id' => 'et_add']); ?>
                     </td>
                     <td colspan="4">
                         <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>

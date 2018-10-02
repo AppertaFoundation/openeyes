@@ -34,7 +34,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <td>
             <?php if ($event) : ?>
                 <?php echo $event->id; ?>
-                <?php echo CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
+                <?=\CHtml::hiddenField('eventId', $event->id, array('id' => 'hiddenInput')); ?>
             <?php else : ?>
                 Event Deleted
             <?php endif; ?>
@@ -128,35 +128,30 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <td colspan="2">
             <?php
             if (in_array($status, ['Success Event', 'Dismissed Event', 'Import Success'])) {
-                echo CHtml::htmlButton('Ok', [
+                echo CHtml::submitButton('Ok', [
                     'class' => 'button large',
                     'data-uri' => '/oeadmin/eventLog/list',
-                    'type' => 'submit'
                 ]);
             } elseif ($status == 'Duplicate Event') {
-                echo CHtml::htmlButton('Accept New', [
+                echo CHtml::submitButton('Accept New', [
                         'class' => 'button large',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_save',
                     ]) . ' ' .
-                    CHtml::htmlButton('Dismiss New', [
+                    CHtml::submitButton('Dismiss New', [
                         'class' => 'button large',
                         'data-uri' => '/oeadmin/eventLog/dismiss/' . $log_id,
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel',
                     ]);
             } else {
-                echo CHtml::htmlButton('Save', [
+                echo CHtml::submitButton('Save', [
                         'class' => 'button large',
-                        'type' => 'submit',
                         'id' => 'et_save',
                     ]) . ' ' .
-                    CHtml::htmlButton('Cancel', [
+                    CHtml::submitButton('Cancel', [
                         'class' => 'button large',
                         'data-uri' => '/oeadmin/eventLog/list',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel',
                     ]);

@@ -77,22 +77,20 @@
         ?>
     </form>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::submitButton(
         'Add',
         [
             'class' => 'button large',
-            'type' => 'submit',
             'name' => 'add',
             'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/create',
             'id' => 'et_add'
         ]
     ); ?>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::submitButton(
         'Delete',
         [
             'class' => 'button large',
-            'type' => 'submit',
             'name' => 'delete',
             'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/delete',
             'id' => 'et_delete'

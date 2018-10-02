@@ -54,15 +54,15 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
             <tr class="secretaryFormRow">
                 <td>
-                    <?php echo CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>
-                    <?php echo CHtml::activeHiddenField($siteSecretary, "[$id]id"); ?>
-                    <?php echo CHtml::activeDropDownList($siteSecretary, "[$id]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
+                    <?=\CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>
+                    <?=\CHtml::activeHiddenField($siteSecretary, "[$id]id"); ?>
+                    <?=\CHtml::activeDropDownList($siteSecretary, "[$id]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                 </td>
                 <td>
                     <button type="submit" form="deleteSecretaryForm" name="id" class="small"

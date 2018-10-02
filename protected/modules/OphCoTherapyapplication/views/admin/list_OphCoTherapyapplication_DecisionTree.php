@@ -17,5 +17,5 @@
 ?>
 
 <tr>
-    <td><?=CHtml::link(CHtml::encode($data->name), array('viewdecisiontree', 'id' => $data->id));?></td>
+    <td><?=\CHtml::link(CHtml::encode($data->name), array('viewdecisiontree', 'id' => $data->id));?></td>
 </tr>

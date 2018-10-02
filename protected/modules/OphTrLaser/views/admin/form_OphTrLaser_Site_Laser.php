@@ -29,7 +29,7 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?php echo CHtml::activeTelField(
+                <?=\CHtml::activeTelField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
@@ -68,7 +68,7 @@
         <tr>
             <td>Wavelength</td>
             <td>
-                <?php echo CHtml::activeTelField(
+                <?=\CHtml::activeTelField(
                     $model,
                     'wavelength',
                     ['class' => 'cols-full']
@@ -78,7 +78,7 @@
         <tr>
             <td>Active</td>
             <td>
-                <?php echo CHtml::activeRadioButtonList(
+                <?=\CHtml::activeRadioButtonList(
                     $model,
                     'active',
                     [1 => 'Yes', 0 => 'No'],

@@ -29,14 +29,14 @@
                 <tbody>
                 <tr class="col-gap">
                     <td>
-                        <?php echo CHtml::textField(
+                        <?=\CHtml::textField(
                             'q',
                             (isset($_GET['q']) ? $_GET['q'] : ''),
                             ['class' => 'cols-full', 'placeholder' => "Name"]
                         ); ?>
                     </td>
                     <td>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'label',
                             isset($_GET['label']) ? $_GET['label'] :'',
                             CHtml::listData(
@@ -88,11 +88,11 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="2">
-                <?php echo CHtml::htmlButton(
+                <?=\CHtml::submitButton(
                     'Add',
                     [
                         'class' => 'button large',
-                        'type' => 'submit', 'id' => 'et_add'
+                        'id' => 'et_add'
                     ]
                 );?>
             </td>

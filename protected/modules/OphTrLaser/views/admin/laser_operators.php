@@ -46,20 +46,18 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'add_operator',
                             'id' => 'et_add_operator'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'delete_operator',
                             'data-object' => 'users',
                             'id' => 'et_delete_operator'

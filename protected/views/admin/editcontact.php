@@ -60,9 +60,8 @@
                 <tfoot>
                 <tr class="pagination-container">
                     <td colspan="3">
-                        <?= CHtml::htmlButton('Save', [
+                        <?= CHtml::submitButton('Save', [
                                 'class' => 'button large',
-                                'type' => 'submit'
                         ]) . ' ' .
                          CHtml::link('Cancel', '/admin/contacts', [
                                 'class' => 'button large',

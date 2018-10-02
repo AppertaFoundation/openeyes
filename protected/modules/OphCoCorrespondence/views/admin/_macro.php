@@ -92,21 +92,21 @@ $recipients_data = $recipients_data + $none_option;
         <tr>
             <td id="LetterMacro_type_dropdown"></td>
             <td colspan="3">
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $macro,
                     'site_id',
                     Site::model()->getListForCurrentInstitution(),
                     array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'hidden' => true),
                     $macro->type != 'site'
                 ) ?>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $macro,
                     'subspecialty_id',
                     CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                     array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'hidden' => true),
                     $macro->type != 'subspecialty'
                 ) ?>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $macro,
                     'firm_id',
                     Firm::model()->getListWithSpecialties(true),
@@ -173,7 +173,7 @@ $recipients_data = $recipients_data + $none_option;
         <tr>
             <td>Add shortcode</td>
             <td colspan="3">
-                <?php echo CHtml::dropDownList(
+                <?=\CHtml::dropDownList(
                     'shortcode',
                     '',
                     CHtml::listData(

@@ -24,14 +24,14 @@
     <tbody>
         <tr>
             <td><?=$model->getAttributeLabel('name')?></td>
-            <td><?=CHtml::activeTextField($model, 'name', [
+            <td><?=\CHtml::activeTextField($model, 'name', [
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
                     'class' => 'cols-full'
                     ])?></td>
         </tr>
         <tr>
             <td><?=$model->getAttributeLabel('summary')?></td>
-            <td><?=CHtml::activeTextArea($model, 'summary', [
+            <td><?=\CHtml::activeTextArea($model, 'summary', [
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
                     'maxlength' => 40,
                     'class' => 'cols-full',

@@ -16,8 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Theatres</h2>
+
+<div class="row divider">
+    <h2>Theatres</h2>
+</div>
+
 	<form id="theatres">
 		<table class="standard">
 			<thead>
@@ -46,8 +49,8 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add_theatre', null, array('class' => 'button small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_theatre', null, array('class' => 'button small'))->toHtml()?>
+                        <?=\CHtml::submitButton('Add', ['id' => 'et_add_theatre', 'class' => 'button large']);?>
+                        <?=\CHtml::submitButton('Delete', ['id' => 'et_delete_theatre', 'class' => 'button large']);?>
 					</td>
 				</tr>
 			</tfoot>
@@ -70,7 +73,7 @@
 			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
-</div>
+
 <script type="text/javascript">
 	handleButton($('#et_delete_theatre'),function(e) {
 		e.preventDefault();

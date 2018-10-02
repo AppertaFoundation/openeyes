@@ -61,7 +61,7 @@ $numHash = crc32($element->getElementTypeName());
           </label>
         </td>
         <td>
-            <?php echo CHtml::textArea(get_class($element) . '[' . $element->proc_id . '][comments]',
+            <?=\CHtml::textArea(get_class($element) . '[' . $element->proc_id . '][comments]',
                 $element->comments,
                 array('rows' => 4, 'class' => 'cols-full', 'id' => get_class($element) . '_comments_' . $numHash)) ?>
         </td>
@@ -71,7 +71,7 @@ $numHash = crc32($element->getElementTypeName());
 
   </div>
   <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][proc_id]"
-         value="<?php echo CHtml::encode($element->proc_id) ?>"/>
+         value="<?=\CHtml::encode($element->proc_id) ?>"/>
   <input type="hidden" name="<?php echo get_class($element) ?>[<?php echo $element->proc_id ?>][id]"
-         value="<?php echo CHtml::encode($element->id) ?>"/>
+         value="<?=\CHtml::encode($element->id) ?>"/>
 </section>

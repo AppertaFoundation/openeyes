@@ -68,7 +68,7 @@
             <tfoot class="pagination-container">
                 <tr>
                     <td colspan="5">
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Add Site',
                             [
                                 'class' => 'button large',

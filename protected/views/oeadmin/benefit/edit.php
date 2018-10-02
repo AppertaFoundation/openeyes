@@ -29,7 +29,7 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                         $benefit,
                         'name',
                         [
@@ -41,28 +41,26 @@
             <tr>
                 <td>Active</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($benefit, 'active'); ?>
+                    <?=\CHtml::activeCheckBox($benefit, 'active'); ?>
                 </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button small button',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button small',
                             'data-uri' => '/oeadmin/benefit/list',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

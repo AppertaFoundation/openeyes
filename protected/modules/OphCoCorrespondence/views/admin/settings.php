@@ -101,18 +101,18 @@
                     <tr class="site-row">
                         <td>
                             <?php echo $site->short_name; ?>
-                            <?php echo CHtml::activeHiddenField($to_location, "[$index]id"); ?>
-                            <?php echo CHtml::activeHiddenField($to_location, "[$index]site_id"); ?>
+                            <?=\CHtml::activeHiddenField($to_location, "[$index]id"); ?>
+                            <?=\CHtml::activeHiddenField($to_location, "[$index]site_id"); ?>
                         </td>
                         <td>
-                            <?php echo CHtml::activeTextField(
+                            <?=\CHtml::activeTextField(
                                 $site,
                                 "[$index]location_code",
                                 ["disabled" => "disabled", "class" => "cols-full"]
                             ); ?>
                         </td>
                         <td class="text-center">
-                            <?php echo CHtml::activeCheckBox($to_location, "[$index]is_active"); ?>
+                            <?=\CHtml::activeCheckBox($to_location, "[$index]is_active"); ?>
                         </td>
                     </tr>
                 <?php } ?>
@@ -125,12 +125,11 @@
                 <tfoot>
                 <tr>
                     <td colspan="5">
-                        <?php echo CHtml::button(
+                        <?=\CHtml::submitButton(
                             'Save',
                             [
                                 'class' => 'classy blue button large primary event-action',
                                 'name' => 'save',
-                                'type' => 'submit',
                                 'id' => 'save_to_location_table'
                             ]
                         ); ?>

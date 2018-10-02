@@ -39,7 +39,7 @@
             <tfoot>
                 <tr>
                     <td colspan="3">
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Add',
                             [
                                 'class' => 'button large',
@@ -47,7 +47,7 @@
                                 'id' => 'et_add_commissioning_body_service_type'
                             ]
                         ); ?>
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Delete',
                             [
                                 'class' => 'button large',

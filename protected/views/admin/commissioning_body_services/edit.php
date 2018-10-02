@@ -57,7 +57,7 @@
             <tr>
                 <td>Commissioning body:</td>
                 <td >
-                    <?php echo CHtml::activeDropDownList(
+                    <?=\CHtml::activeDropDownList(
                         $cbs,
                         'commissioning_body_id',
                         CHtml::listData(
@@ -101,7 +101,7 @@
             </tr>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbs,
                     'name',
                     ['class' => 'cols-full',
@@ -110,7 +110,7 @@
             </tr>
             <tr>
                 <td>Code</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbs,
                     'code',
                     [
@@ -146,7 +146,7 @@
                 <tr>
                     <td><?php echo $address->getAttributeLabel($field); ?></td>
                     <td>
-                        <?php echo CHtml::activeTextField(
+                        <?=\CHtml::activeTextField(
                             $address,
                             $field,
                             [
@@ -161,7 +161,7 @@
             <tr>
                 <td>Country</td>
                 <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $address,
                     'country_id',
                     CHtml::listData(
@@ -177,21 +177,19 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large primary event-action',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button large primary event-action',
                             'data-uri' => $return_url,
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

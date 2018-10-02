@@ -27,14 +27,14 @@
         </colgroup>
         <tbody>
         <tr>
-            <td><?php echo CHtml::textField('station_id', /*@$_POST['station_id']*/'IOLM1120642', [
+            <td><?=\CHtml::textField('station_id', /*@$_POST['station_id']*/'IOLM1120642', [
                     'class' => 'small fixed-width', 'placeholder' => 'Station Id']); ?>
             </td>
-            <td><?php echo CHtml::textField('location', @$_POST['location'],
+            <td><?=\CHtml::textField('location', @$_POST['location'],
                     ['class' => 'small fixed-width', 'placeholder' => 'Location']); ?></td>
-            <td><?php echo CHtml::textField('hos_num', @$_POST['hos_num'],
+            <td><?=\CHtml::textField('hos_num', @$_POST['hos_num'],
                     ['class' => 'small fixed-width', 'placeholder' => 'Hospital Number']); ?></td>
-            <td><?php echo CHtml::dropDownList('status', 'status',
+            <td><?=\CHtml::dropDownList('status', 'status',
                     ['' => 'All Status', 'success' => 'Success', 'failed' => 'Failed']); ?></td>
         </tr>
         <tr class="col-gap">

@@ -39,7 +39,7 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbt,
                     'name',
                     [
@@ -50,7 +50,7 @@
             </tr>
             <tr>
                 <td>Short Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbt,
                     'shortname',
                     ['class' => 'cols-full']
@@ -60,21 +60,19 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large primary event-action',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button large primary event-action',
                             'data-uri' => '/admin/commissioning_body_types',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

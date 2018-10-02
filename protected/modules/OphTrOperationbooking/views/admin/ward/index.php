@@ -49,11 +49,11 @@
 			<tfoot>
 				<tr>
 					<td colspan="5">
-                        <?=CHtml::htmlButton('Add', [
+                        <?=\CHtml::htmlButton('Add', [
                             'class' => 'small button',
                             'id' => 'et_add_ward'
                         ]);?>
-                        <?=CHtml::htmlButton('Delete', [
+                        <?=\CHtml::htmlButton('Delete', [
                             'class' => 'small button',
                             'id' => 'et_delete_ward'
                         ]);?>

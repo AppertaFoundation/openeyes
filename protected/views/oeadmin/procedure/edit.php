@@ -32,7 +32,7 @@
                 <tr>
                     <td><?php echo $procedure->getAttributeLabel($field); ?></td>
                     <td>
-                        <?php echo CHtml::activeTextField(
+                        <?=\CHtml::activeTextField(
                             $procedure,
                             $field,
                             [
@@ -46,13 +46,13 @@
             <tr>
                 <td>Unbooked</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($procedure, 'unbooked'); ?>
+                    <?=\CHtml::activeCheckBox($procedure, 'unbooked'); ?>
                 </td>
             </tr>
             <tr>
                 <td>Active</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($procedure, 'active'); ?>
+                    <?=\CHtml::activeCheckBox($procedure, 'active'); ?>
                 </td>
             </tr>
             <tr>
@@ -142,21 +142,19 @@
             <tfoot>
             <tr>
                 <td colspan="8">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button small button',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button small',
                             'data-uri' => '/oeadmin/procedure/list',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

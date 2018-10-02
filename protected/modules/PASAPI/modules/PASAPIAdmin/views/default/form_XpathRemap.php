@@ -19,14 +19,14 @@
     <td><?=$model->getAttributeLabel('xpath');?></td>
     <td>
         <?= $form->hiddenField($model, 'id')?>
-        <?=CHtml::activeTextField($model, 'xpath', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'xpath', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
     </td>
 
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('name');?></td>
     <td>
-        <?=CHtml::activeTextField($model, 'name', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'name', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
     </td>
 </tr>
 

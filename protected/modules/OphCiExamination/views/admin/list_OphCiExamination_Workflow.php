@@ -57,7 +57,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -65,7 +65,7 @@
                             'data-uri' => '/OphCiExamination/admin/addWorkflow',
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Delete',
                         [
                             'class' => 'button large',

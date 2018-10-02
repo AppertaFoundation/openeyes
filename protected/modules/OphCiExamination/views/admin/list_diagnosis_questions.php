@@ -29,12 +29,11 @@
         <tr>
             <td>Disorder Questions</td>
             <td>
-                <?= CHtml::htmlButton(
+                <?= CHtml::submitButton(
                     'Add New',
                     [
                         'class' => 'button large',
                         'name' => 'cancel',
-                        'type' => 'submit',
                         'data-uri' => (Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class) . '?disorder_id=' . $disorder_id),
                         'id' => 'et_cancel',
                     ]

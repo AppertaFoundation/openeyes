@@ -28,7 +28,7 @@
             <tr>
                 <td class="fade">Subspecialty:</td>
                 <td>
-                    <?php echo CHtml::dropDownList(
+                    <?=\CHtml::dropDownList(
                         'subspecialty-id',
                         @$_POST['subspecialty-id'],
                         Subspecialty::model()->getList(),
@@ -44,7 +44,7 @@
                 <td class="fade">Context</td>
                 <td>
                     <?php if (!@$_POST['subspecialty-id']) { ?>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'firm-id',
                             '',
                             array(),
@@ -55,7 +55,7 @@
                             ]
                         ) ?>
                     <?php } else { ?>
-                        <?php echo CHtml::dropDownList(
+                        <?=\CHtml::dropDownList(
                             'firm-id',
                             @$_POST['firm-id'],
                             Firm::model()->getList(@$_POST['subspecialty-id']),

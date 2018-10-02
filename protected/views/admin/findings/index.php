@@ -64,7 +64,7 @@
             <tfoot>
             <tr>
                 <td colspan="6">
-                    <?php echo CHtml::htmlButton(
+                    <?=\CHtml::htmlButton(
                         'Add',
                         [
                             'class' => 'small secondary button',
@@ -73,12 +73,11 @@
                             'id' => 'et_admin-add'
                         ]
                     );?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'small primary button',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_admin-save'
                         ]
                     ); ?>

@@ -132,7 +132,7 @@ if (!isset($uniqueid)) {
                 <tr>
                     <td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
                         <?php if (isset($buttons) && ($buttons == true)) { ?>
-                            <?php echo CHtml::button(
+                            <?=\CHtml::button(
                                 'Add',
                                 [
                                     'class' => 'button large',
@@ -142,7 +142,7 @@ if (!isset($uniqueid)) {
                                     'id' => 'et_add'
                                 ]
                             ); ?>
-                            <?php echo CHtml::button(
+                            <?=\CHtml::button(
                                 'Delete',
                                 [
                                     'class' => 'button large',

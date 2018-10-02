@@ -34,7 +34,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?php echo CHtml::textField(
+                    <?=\CHtml::textField(
                         'search[query]',
                         $search['query'],
                         ['class' => 'cols-full', 'placeholder' => "Id, Code, Active"]
@@ -97,12 +97,11 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large disabled',
                             'data-uri' => '/oeadmin/uniqueCodes/delete',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'uniqueProcedures',
                             'id' => 'et_delete',

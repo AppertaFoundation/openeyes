@@ -71,7 +71,7 @@ if (!isset($base_data_url)) {
         <tfoot>
         <tr>
             <td colspan="5">
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Add',
                     [
                         'class' => 'button large',
@@ -80,7 +80,7 @@ if (!isset($base_data_url)) {
                         'data-uri' => $url_query,
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Delete',
                     [
                         'class' => 'button large',

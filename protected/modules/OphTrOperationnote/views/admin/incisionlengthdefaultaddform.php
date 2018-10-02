@@ -41,7 +41,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <tr>
             <td>Context</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $default,
                     'firm_id',
                     Firm::model()->getListWithSpecialties(),
@@ -52,7 +52,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <tr>
             <td>Value</td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $default,
                     'value',
                     ['class' => 'cols-full']

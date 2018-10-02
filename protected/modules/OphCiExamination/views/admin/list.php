@@ -29,12 +29,11 @@
         <tr>
             <td><h2>No Treatment Reasons</h2></td>
             <td>
-                <?= CHtml::htmlButton(
+                <?= CHtml::submitButton(
                     'Add New',
                     [
                         'class' => 'button large',
                         'name' => 'cancel',
-                        'type' => 'submit',
                         'data-uri' => Yii::app()->createUrl('OphCiExamination/admin/create'.$model_class),
                         'id' => 'et_cancel',
                     ]

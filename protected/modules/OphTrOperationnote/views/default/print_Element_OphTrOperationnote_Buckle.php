@@ -24,7 +24,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')); ?>:
+						<?=\CHtml::encode($element->getAttributeLabel('drainage_type_id')); ?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -36,7 +36,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('drain_haem')); ?>:
+						<?=\CHtml::encode($element->getAttributeLabel('drain_haem')); ?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -48,7 +48,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('deep_suture')); ?>:
+						<?=\CHtml::encode($element->getAttributeLabel('deep_suture')); ?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -60,14 +60,14 @@
 
 
 			<div class="data-group">
-				<h4><?php echo CHtml::encode($element->getAttributeLabel('report')); ?></h4>
+				<h4><?=\CHtml::encode($element->getAttributeLabel('report')); ?></h4>
 				<div class="details">
-					<div class="data-value"><?php echo CHtml::encode($element->report)?></div>
+					<div class="data-value"><?=\CHtml::encode($element->report)?></div>
 				</div>
 			</div>
 
 			<div class="data-group">
-				<h4><?php echo CHtml::encode($element->getAttributeLabel('comments')); ?></h4>
+				<h4><?=\CHtml::encode($element->getAttributeLabel('comments')); ?></h4>
 				<div class="details">
 					<div class="data-value"><?= Yii::app()->format->Ntext($element->comments) ?></div>
 				</div>

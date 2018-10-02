@@ -72,7 +72,7 @@
         ?>
     </form>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::button(
         'Add',
         [
             'class' => 'button large',
@@ -83,11 +83,10 @@
         ]
     ); ?>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::submitButton(
         'Delete',
         [
             'class' => 'button large',
-            'type' => 'submit',
             'name' => 'delete',
             'data-uri' => '/OphCiExamination/oeadmin/SystemicDiagAssignment/delete',
             'id' => 'et_delete'

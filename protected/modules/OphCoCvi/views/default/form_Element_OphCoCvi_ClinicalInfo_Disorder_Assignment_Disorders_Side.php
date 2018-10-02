@@ -13,7 +13,7 @@
         </td>
         <td>
           <label class="inline highlight">
-              <?php echo CHtml::radioButton(
+              <?=\CHtml::radioButton(
                   $field_base_name . "[affected]",
                   $element->hasCviDisorderForSide($disorder, $side),
                   array(
@@ -25,7 +25,7 @@
             Yes
           </label>
           <label class="inline highlight">
-              <?php echo CHtml::radioButton(
+              <?=\CHtml::radioButton(
                   $field_base_name . "[affected]",
                   !$element->hasCviDisorderForSide($disorder, $side),
                   array(
@@ -37,7 +37,7 @@
             No
           </label>
           <label class="inline">
-              <?php echo CHtml::checkBox(
+              <?=\CHtml::checkBox(
                   $field_base_name . "[main_cause]",
                   $element->isCviDisorderMainCauseForSide($disorder, $side),
                   array('class' => 'disorder-main-cause')); ?>

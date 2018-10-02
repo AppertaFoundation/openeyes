@@ -41,7 +41,7 @@
         <tfoot>
         <tr>
             <td colspan="4">
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Add',
                     [
                         'class' => 'button large',

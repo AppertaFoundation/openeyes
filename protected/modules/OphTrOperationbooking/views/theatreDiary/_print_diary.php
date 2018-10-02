@@ -53,7 +53,7 @@ foreach ($diary as $i => $theatre) {?>
 						<td><?php echo Helper::convertDate2NHS($session->date)?></td>
 					</tr>
 					<tr>
-						<td>COMMENTS: <?php echo CHtml::encode($session->comments)?></td>
+						<td>COMMENTS: <?=\CHtml::encode($session->comments)?></td>
 					</tr>
 				</tbody>
 			</table>
@@ -80,7 +80,7 @@ foreach ($diary as $i => $theatre) {?>
 								<td><?php echo $booking->operation->priority->name?></td>
 								<td style="max-width: 500px; word-wrap:break-word; overflow: hidden;">
 								<?php echo $booking->operation->procedures ? '['.$booking->operation->eye->adjective.'] '.$booking->operation->getProceduresCommaSeparated() : 'No procedures'?><br/>
-								<?php echo CHtml::encode($booking->operation->comments)?>
+								<?=\CHtml::encode($booking->operation->comments)?>
 								<td><?php echo substr($booking->admission_time, 0, 5)?></td>
 							</tr>
 						<?php }

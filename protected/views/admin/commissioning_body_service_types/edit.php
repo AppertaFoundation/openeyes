@@ -39,7 +39,7 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbs,
                     'name',
                     [
@@ -51,7 +51,7 @@
             </tr>
             <tr>
                 <td><?php echo$cbs->getAttributeLabel('shortname') ?></td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $cbs,
                     'shortname',
                     [
@@ -64,21 +64,19 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large primary event-action',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button large primary event-action',
                             'data-uri' => '/admin/commissioning_body_service_types',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

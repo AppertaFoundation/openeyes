@@ -25,6 +25,6 @@
           'columns' => array('log'),
       )); ?>
 
-      <?php echo CHTML::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
+      <?=\CHtml::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
     <br>
   </div>

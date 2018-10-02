@@ -19,7 +19,7 @@
  */
 ?>
 
-<?php echo CHtml::errorSummary(
+<?=\CHtml::errorSummary(
     array_merge(array($model), $model->entries),
     null,
     null,
@@ -38,7 +38,7 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?php echo CHtml::activeTelField(
+                <?=\CHtml::activeTelField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
@@ -131,7 +131,7 @@
         ));
         ?>
 
-        <?php echo CHtml::button(
+        <?=\CHtml::button(
             'Add Risk',
             [
                 'class' => 'button large',
@@ -140,17 +140,16 @@
             ]
         ); ?>
 
-        <?php echo CHtml::button(
+        <?=\CHtml::submitButton(
             'Save',
             [
                 'class' => 'button large',
-                'type' => 'submit',
                 'name' => 'save',
                 'id' => 'et_save'
             ]
         ); ?>
 
-        <?php echo CHtml::button(
+        <?=\CHtml::button(
             'Cancel',
             [
                 'class' => 'button large',

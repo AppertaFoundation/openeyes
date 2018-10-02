@@ -59,7 +59,7 @@ $form = $this->beginWidget(
             <tfoot>
             <tr>
                 <td colspan="6">
-                    <?php echo CHtml::htmlButton(
+                    <?=\CHtml::htmlButton(
                         'Add',
                         [
                             'class' => 'small primary button',
@@ -69,12 +69,11 @@ $form = $this->beginWidget(
                             'id' => 'et_admin-add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'small primary button',
                             'name' => 'admin-save',
-                            'type' => 'submit',
                             'id' => 'et_admin-save'
                         ]
                     ); ?>

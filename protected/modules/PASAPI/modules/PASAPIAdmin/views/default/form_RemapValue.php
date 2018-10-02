@@ -21,13 +21,13 @@
     <td>
         <?= $form->hiddenField($model, 'id')?>
         <?= $form->hiddenField($model, 'xpath_id')?>
-        <?=CHtml::activeTextField($model, 'input', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'input', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
     </td>
 
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('output');?></td>
     <td>
-        <?=CHtml::activeTextField($model, 'output', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'output', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
     </td>
 </tr>

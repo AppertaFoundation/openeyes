@@ -59,7 +59,7 @@ $is_hidden = function () use ($element) {
             Given by:
           </td>
           <td>
-            <fieldset id="<?php echo CHtml::modelName($element) . '_anaesthetist_id' ?>">
+            <fieldset id="<?=\CHtml::modelName($element) . '_anaesthetist_id' ?>">
                 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
                     false, false, false, false, array('nowrapper' => true)); ?>
 

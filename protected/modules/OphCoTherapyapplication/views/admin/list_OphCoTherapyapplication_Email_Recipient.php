@@ -66,19 +66,17 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="5">
-                <?= CHtml::htmlButton('Add',
+                <?= CHtml::submitButton('Add',
                     [
                         'class' => 'button large',
                         'data-uri' => '/OphCoTherapyapplication/admin/addEmailRecipient',
-                        'type' => 'submit',
                         'id' => 'et_add']);
                 ?>
-                <?= CHtml::htmlButton('Delete',
+                <?= CHtml::submitButton('Delete',
                     [
                         'class' => 'button large',
                         'data-uri' => '/OphCoTherapyapplication/admin/deleteEmailRecipients',
                         'data-object' => 'email_recipients',
-                        'type' => 'submit',
                         'id' => "et_delete",
                     ]);
                 ?>

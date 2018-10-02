@@ -18,18 +18,17 @@
 ?>
 <div class="data-group">
 	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-        <?=CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']);?>
+        <?=\CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']);?>
 		<?php if ($buttonOptions['cancel']) {
     $cancelHtmlOptions = array('class' => 'button large');
     if (@$buttonOptions['cancel-uri']) {
         $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
     }
-            echo CHtml::button(
+            echo CHtml::submitButton(
                 $buttonOptions['cancel'],
                 [
                     'data-uri' => isset($buttonOptions['cancel-uri']) ? $buttonOptions['cancel-uri'] : '',
                     'class' => 'button large',
-                    'type' => 'submit',
                     'name' => 'cancel',
                     'id' => 'et_cancel',
                 ]

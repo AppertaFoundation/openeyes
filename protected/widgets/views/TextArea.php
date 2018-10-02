@@ -43,7 +43,7 @@ if ($cols) {
 ?>
 <textarea class="cols-full column <?= @$htmlOptions['class'] ?>"
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
-><?=CHtml::encode($value)?>
+><?=\CHtml::encode($value)?>
 </textarea>
 <?php if (!$nowrapper) :
 		  if ($button):?>

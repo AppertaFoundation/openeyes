@@ -50,7 +50,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -61,11 +61,10 @@
                         ]
                     ); ?>
 
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'InvoiceStatus',
                             'data-uri' => '/OphCiExamination/admin/deleteInvoiceStatus',

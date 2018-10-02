@@ -34,7 +34,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?php echo CHtml::textField(
+                    <?=\CHtml::textField(
                         'search[query]',
                         $search['query'],
                         [
@@ -93,12 +93,11 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large disabled',
                             'data-uri' => '/oeadmin/eventLog/delete',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'eventLogs',
                             'id' => 'et_delete',

@@ -32,7 +32,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?php echo CHtml::textField(
+                    <?=\CHtml::textField(
                         'search[query]',
                         $search['query'],
                         [
@@ -100,22 +100,20 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
                             'data-uri' => '/oeadmin/complication/edit',
-                            'type' => 'submit',
                             'name' => 'add',
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
                             'name' => 'delete',
-                            'type' => 'submit',
                             'data-object' => 'benefit',
                             'data-uri' => '/oeadmin/complication/delete',
                             'id' => 'et_delete'

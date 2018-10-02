@@ -29,7 +29,7 @@
             <tbody>
             <tr>
                 <td>Name</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $opcsCode,
                     'name',
                     [
@@ -40,7 +40,7 @@
             </tr>
             <tr>
                 <td>Description</td>
-                <td> <?php echo CHtml::activeTextField(
+                <td> <?=\CHtml::activeTextField(
                     $opcsCode,
                     'description',
                     [
@@ -52,28 +52,26 @@
             <tr>
                 <td>Active</td>
                 <td>
-                    <?php echo CHTML::activeCheckBox($opcsCode, 'active'); ?>
+                    <?=\CHtml::activeCheckBox($opcsCode, 'active'); ?>
                 </td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button small button',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button small',
                             'data-uri' => '/oeadmin/opcsCode/list',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

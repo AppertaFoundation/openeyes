@@ -30,7 +30,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         <tr class="col-gap">
             <td>Subspecialty</td>
             <td>
-                <?php echo CHtml::dropDownList(
+                <?=\CHtml::dropDownList(
                     'subspecialty_id',
                     $subspecialty_id,
                     CHtml::listData($subspecialty, 'id', 'name')

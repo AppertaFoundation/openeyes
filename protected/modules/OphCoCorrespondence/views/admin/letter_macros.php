@@ -18,7 +18,7 @@
 ?>
 
 <div class="cols-4 column end">
-    <?php echo CHtml::htmlButton('Add macro', array('class' => 'button small addLetterMacro')) ?>
+    <?=\CHtml::htmlButton('Add macro', array('class' => 'button small addLetterMacro')) ?>
 </div>
 
 <form id="admin_sessions_filters" class="panel">
@@ -26,38 +26,38 @@
         <table class="standard cols-full" id="add_macro_table">
             <tbody>
             <tr>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'type',
                     '',
                     ['site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()],
                     ['empty' => '- Type -']
                 ) ?></td>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'site_id',
                     @$_GET['site_id'],
                     Site::model()->getListForCurrentInstitution(),
                     ['empty' => '- Site -']
                 ) ?></td>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'subspecialty_id',
                     @$_GET['subspecialty_id'],
                     CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                     ['empty' => '- Subspecialty -']
                 ) ?></td>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'firm_id',
                     @$_GET['firm_id'],
                     Firm::model()->getListWithSpecialties(),
                     ['empty' => '- ' . Firm::contextLabel() . ' -']
                 ) ?>
                 </td>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'name',
                     @$_GET['name'],
                     $unique_names,
                     ['empty' => '- Name -']
                 ) ?></td>
-                <td><?php echo CHtml::dropDownList(
+                <td><?=\CHtml::dropDownList(
                     'episode_status_id',
                     @$_GET['episode_status_id'],
                     $episode_statuses,
@@ -97,5 +97,5 @@
 </form>
 
 <div class="cols-4 column end">
-    <?php echo CHtml::htmlButton('Delete macros', array('class' => 'button large deleteMacros')) ?>
+    <?=\CHtml::htmlButton('Delete macros', array('class' => 'button large deleteMacros')) ?>
 </div>

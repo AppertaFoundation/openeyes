@@ -41,21 +41,19 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="3">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'add',
                             'data-uri' => '/OphTrOperationnote/admin/incisionLengthDefaultAddForm',
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'incisionLengths',
                             'data-uri' => '/OphTrOperationnote/admin/deleteIncisionLengthDefaults',

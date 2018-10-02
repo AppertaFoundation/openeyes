@@ -30,16 +30,16 @@
 				Test:
 			</legend>
 			<div class="cols-2 column">
-				<?php echo CHtml::dropDownList('lcr_site_id', '', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Site -'))?>
+				<?=\CHtml::dropDownList('lcr_site_id', '', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Site -'))?>
 			</div>
 			<div class="cols-2 column">
-				<?php echo CHtml::dropDownList('lcr_service_id', '', CHtml::listData(Service::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Service -'))?>
+				<?=\CHtml::dropDownList('lcr_service_id', '', CHtml::listData(Service::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Service -'))?>
 			</div>
 			<div class="cols-2 column">
-				<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
+				<?=\CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 			</div>
 			<div class="cols-2 column end">
-				<?php echo CHtml::dropDownList('lcr_is_child', '', array('' => '- Child/adult -', '1' => 'Child', '0' => 'Adult'))?>
+				<?=\CHtml::dropDownList('lcr_is_child', '', array('' => '- Child/adult -', '1' => 'Child', '0' => 'Adult'))?>
 			</div>
 		</fieldset>
 	</form>

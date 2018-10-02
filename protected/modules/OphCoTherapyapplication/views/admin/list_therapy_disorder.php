@@ -49,11 +49,10 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
-                        <?=CHtml::htmlButton('Add', ['name' => 'add2', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_add2']);?>
-                        <?=CHtml::htmlButton('Delete', [
+                        <?=\CHtml::htmlButton('Add', ['name' => 'add2', 'class' => 'button large', 'id' => 'et_add2']);?>
+                        <?=\CHtml::htmlButton('Delete', [
                                 'name' => 'delete',
                                 'class' => 'button large',
-                                'type' => 'submit',
                                 'id' => 'et_delete',
                                 'data-uri' => '/OphCoTherapyapplication/admin/deleteDiagnoses',
                             'data-object' => 'diagnoses',

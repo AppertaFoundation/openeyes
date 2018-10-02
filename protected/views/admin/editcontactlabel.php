@@ -40,7 +40,7 @@
             <tr>
                 <td>Name</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $contactlabel,
                         'name',
                         ['class' => 'cols-full']
@@ -52,26 +52,24 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large primary event-action',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'class' => 'warning button large primary event-action',
                             'data-uri' => '/admin/contactlabels',
-                            'type' => 'submit',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Delete',
                         [
                             'class' => 'button large',

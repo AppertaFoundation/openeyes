@@ -1398,7 +1398,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Theatre'));
 
-        $this->render('theatres');
+        $this->render('/admin/theatre/index');
     }
 
     public function actionAddTheatre()
@@ -1417,7 +1417,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/edittheatre', array(
+        $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
         ));
@@ -1444,7 +1444,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Theatre'));
 
-        $this->render('/admin/edittheatre', array(
+        $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
         ));

@@ -31,7 +31,7 @@
         <tr>
             <td>Name</td>
             <td class="cols-full">
-                <?php echo CHtml::activeTelField(
+                <?=\CHtml::activeTelField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
@@ -119,7 +119,7 @@
         ?>
     </div>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::button(
         'Add Allergy',
         [
             'class' => 'button large',
@@ -128,17 +128,16 @@
         ]
     ); ?>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::submitButton(
         'Save',
         [
             'class' => 'button large',
-            'type' => 'submit',
             'name' => 'save',
             'id' => 'et_save'
         ]
     ); ?>
 
-    <?php echo CHtml::button(
+    <?=\CHtml::button(
         'Cancel',
         [
             'class' => 'button large',

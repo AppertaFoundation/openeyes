@@ -62,15 +62,14 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <tfoot>
         <tr>
             <td colspan="2">
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Save',
                     [
                         'class' => 'button large',
                         'id' => 'et_save',
-                        'type' => 'submit',
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Cancel',
                     [
                         'data-uri' => $cancel_uri,

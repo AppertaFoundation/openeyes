@@ -64,19 +64,17 @@
         <tr>
             <td colspan="2">
                 <?php if ($metadata->key != 'city_road_satellite_view') : ?>
-                    <?= CHtml::htmlButton('Save', [
+                    <?= CHtml::submitButton('Save', [
                             'class' => 'button small',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     );
                     ?>
 
-                    <?= CHtml::htmlButton('Cancel', [
+                    <?= CHtml::submitButton('Cancel', [
                             'class' => 'button small',
                             'name' => 'cancel',
-                            'type' => 'submit',
                             'id' => 'et_cancel'
                         ]
                     );

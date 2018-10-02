@@ -39,16 +39,16 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <tbody>
         <tr>
             <td>Name</td>
-            <td> <?php echo CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
+            <td> <?=\CHtml::activeTextField($source, 'name', ['class' => 'cols-full'],
                     array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?> </td>
         </tr>
         <tfoot>
         <tr>
             <td colspan="5">
-                <?php echo CHtml::button('Save', ['class' => 'button large primary event-action',
-                    'name' => 'save', 'type' => 'submit', 'id' => 'et_save']); ?>
-                <?php echo CHtml::button('Cancel', ['class' => 'warning button large primary event-action',
-                    'data-uri' => '/admin/datasources', 'type' => 'submit', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
+                <?=\CHtml::submitButton('Save', ['class' => 'button large primary event-action',
+                    'name' => 'save', 'id' => 'et_save']); ?>
+                <?=\CHtml::submitButton('Cancel', ['class' => 'warning button large primary event-action',
+                    'data-uri' => '/admin/datasources', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
             </td>
         </tr>
         </tfoot>
