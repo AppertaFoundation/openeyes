@@ -56,11 +56,12 @@ class PostOpDrugMappingsController extends BaseAdminController
 
         // we set default search options
         if ($this->request->getParam('search') == '') {
-            $admin->getSearch()->initSearch(array(
-                    'filterid' => array(
-                            'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
-                            'site_id' => Yii::app()->session['selected_site_id'],
-                        ),
+            $admin->getSearch()->initSearch(
+                array(
+                'filterid' => array(
+                        'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
+                        'site_id' => Yii::app()->session['selected_site_id'],
+                    ),
                 )
             );
         }
@@ -73,6 +74,7 @@ class PostOpDrugMappingsController extends BaseAdminController
             )
         );
         //$admin->searchAll();
+        $admin->div_wrapper_class = 'cols-7';
         $admin->listModel();
     }
 

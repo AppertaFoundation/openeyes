@@ -62,7 +62,7 @@ $form = $this->beginWidget(
                     <?=\CHtml::htmlButton(
                         'Add',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-add',
                             'type' => 'button',
                             'data-model' => 'OphTrConsent_Leaflet',
@@ -72,7 +72,7 @@ $form = $this->beginWidget(
                     <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-save',
                             'id' => 'et_admin-save'
                         ]

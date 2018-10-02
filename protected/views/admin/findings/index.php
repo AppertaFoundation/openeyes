@@ -15,79 +15,83 @@
 
 ?>
 
-<?php
-    $form = $this->beginWidget(
-        'BaseEventTypeCActiveForm',
-        [
-            'id' => 'adminform',
-            'enableAjaxValidation' => false,
-            'focus' => '#username',
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 4,
-            ),
-        ]
-    ) ?>
+<div class="cols-7">
 
-<form id="findings" method="POST">
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <div class="cols-7">
-        <table class="standard cols-full" id="finding-table">
-            <colgroup>
-                <col class="cols-1">
-                <col class="cols-4">
-                <col class="cols-4">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup>
+    <?php
+        $form = $this->beginWidget(
+            'BaseEventTypeCActiveForm',
+            [
+                'id' => 'adminform',
+                'enableAjaxValidation' => false,
+                'focus' => '#username',
+                'layoutColumns' => array(
+                    'label' => 2,
+                    'field' => 4,
+                ),
+            ]
+        ) ?>
 
-            <thead>
-            <tr>
-                <th>Order</th>
-                <th>Name</th>
-                <th>Subspecialties</th>
-                <th>Requires Description</th>
-                <th>Active</th>
-            </tr>
-            </thead>
+    <form id="findings" method="POST">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+            <table class="standard cols-full" id="finding-table">
+                <colgroup>
+                    <col class="cols-1">
+                    <col class="cols-4">
+                    <col class="cols-4">
+                    <col class="cols-1">
+                    <col class="cols-1">
+                </colgroup>
 
-            <tbody class="sortable">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th>Subspecialties</th>
+                    <th>Requires Description</th>
+                    <th>Active</th>
+                </tr>
+                </thead>
 
-            <?php foreach ($findings as $key => $finding) :
-                $data = [
-                    'finding' => $finding,
-                    'key' => $key
-                ];
-                $this->renderPartial('findings/_row', ['data' => $data, 'subspecialty' => $subspecialty]);
-            endforeach;?>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="6">
-                    <?=\CHtml::htmlButton(
-                        'Add',
-                        [
-                            'class' => 'small secondary button',
-                            'name' => 'add',
-                            'type' => 'button',
-                            'id' => 'et_admin-add'
-                        ]
-                    );?>
-                    <?=\CHtml::submitButton(
-                        'Save',
-                        [
-                            'class' => 'small primary button',
-                            'name' => 'save',
-                            'id' => 'et_admin-save'
-                        ]
-                    ); ?>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-        </div>
-</form>
-<?php $this->endWidget() ?>
+                <tbody class="sortable">
+
+                <?php foreach ($findings as $key => $finding) :
+                    $data = [
+                        'finding' => $finding,
+                        'key' => $key
+                    ];
+                    $this->renderPartial('findings/_row', ['data' => $data, 'subspecialty' => $subspecialty]);
+                endforeach;?>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <?=\CHtml::htmlButton(
+                            'Add',
+                            [
+                                'class' => 'button large',
+                                'name' => 'add',
+                                'type' => 'button',
+                                'id' => 'et_admin-add'
+                            ]
+                        );?>
+                        <?=\CHtml::submitButton(
+                            'Save',
+                            [
+                                'class' => 'button large',
+                                'name' => 'save',
+                                'id' => 'et_admin-save'
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+    </form>
+
+    <?php $this->endWidget() ?>
+
+</div>
+
 
 <script type="text/template" id="finding-row-template" style="display:none">
     <?php

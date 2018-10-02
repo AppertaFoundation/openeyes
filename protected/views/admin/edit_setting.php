@@ -65,7 +65,7 @@
             <td colspan="2">
                 <?php if ($metadata->key != 'city_road_satellite_view') : ?>
                     <?= CHtml::submitButton('Save', [
-                            'class' => 'button small',
+                            'class' => 'button large',
                             'name' => 'save',
                             'id' => 'et_save'
                         ]
@@ -73,7 +73,7 @@
                     ?>
 
                     <?= CHtml::submitButton('Cancel', [
-                            'class' => 'button small',
+                            'class' => 'button large',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

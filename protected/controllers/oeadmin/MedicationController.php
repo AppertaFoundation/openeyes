@@ -85,6 +85,7 @@ class MedicationController extends BaseAdminController
         $admin->getSearch()->setCriteria($criteria);
 
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->div_wrapper_class = 'cols-7';
         $admin->listModel();
     }
 

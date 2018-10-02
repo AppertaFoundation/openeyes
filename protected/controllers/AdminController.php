@@ -37,7 +37,11 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorderGroups()
     {
-        $this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
+        $this->genericAdmin(
+            'Common Ophthalmic Disorder Groups',
+            'CommonOphthalmicDisorderGroup',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionEditCommonOphthalmicDisorder()
@@ -1302,17 +1306,14 @@ class AdminController extends BaseAdminController
             foreach ($_POST['source'] as $source_id) {
                 if (Institution::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
                 if (Site::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
                 if (Person::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
             }
@@ -1993,7 +1994,7 @@ class AdminController extends BaseAdminController
     public function actionViewAnaestheticAgent()
     {
 
-        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
+        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent', ['div_wrapper_class' => 'cols-3']);
 
         /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
 

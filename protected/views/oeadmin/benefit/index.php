@@ -14,56 +14,59 @@
  */
 ?>
 
-<?php if (!$benefits) : ?>
-    <div class="row divider">
-        <div class="alert-box issue"><b>No results found</b></div>
-    </div>
-<?php endif; ?>
-
-<div class="row divider cols-9">
-    <form id="procedures_search" method="post">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-        <table class="cols-full">
-            <colgroup>
-                <col class="cols-10">
-                <col class="cols-1">
-                <col class="cols-1">
-            </colgroup>
-            <tbody>
-            <tr class="col-gap">
-                <td>
-                    <?=\CHtml::textField(
-                        'search[query]',
-                        $search['query'],
-                        [
-                            'class' => 'cols-full',
-                            'placeholder' => "Id, Name"
-                        ]
-                    ); ?>
-                </td>
-                <td>
-                    <?= \CHtml::dropDownList(
-                        'search[active]',
-                        $search['active'],
-                        [
-                            1 => 'Only Active',
-                            0 => 'Exclude Active',
-                        ],
-                        ['empty' => 'All']
-                    ); ?>
-                </td>
-                <td>
-                    <button class="blue hint"
-                            type="submit" id="et_search">Search
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
-
 <div class="cols-9">
+
+    <?php if (!$benefits) : ?>
+        <div class="row divider">
+            <div class="alert-box issue"><b>No results found</b></div>
+        </div>
+    <?php endif; ?>
+
+    <div class="row divider">
+        <form id="procedures_search" method="post">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-10">
+                    <col class="cols-1">
+                    <col class="cols-1">
+                </colgroup>
+
+                <tbody>
+                <tr class="col-gap">
+                    <td>
+                        <?=\CHtml::textField(
+                            'search[query]',
+                            $search['query'],
+                            [
+                                'class' => 'cols-full',
+                                'placeholder' => "Id, Name"
+                            ]
+                        ); ?>
+                    </td>
+                    <td>
+                        <?= \CHtml::dropDownList(
+                            'search[active]',
+                            $search['active'],
+                            [
+                                1 => 'Only Active',
+                                0 => 'Exclude Active',
+                            ],
+                            ['empty' => 'All']
+                        ); ?>
+                    </td>
+                    <td>
+                        <button class="blue hint"
+                                type="submit"
+                                id="et_search">Search</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+
     <form id="admin_benefits" method="post">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
 
@@ -76,9 +79,9 @@
                 <th>Active</th>
             </tr>
             </thead>
+
             <tbody>
             <?php
-
             foreach ($benefits as $key => $benefit) { ?>
                 <tr id="$key" class="clickable" data-id="<?php echo $benefit->id ?>"
                     data-uri="oeadmin/benefit/edit/<?php echo $benefit->id ?>?returnUri=">
@@ -97,10 +100,11 @@
                 </tr>
             <?php } ?>
             </tbody>
+
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
@@ -109,7 +113,7 @@
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?=\CHtml::submitButton(
+                    <?= \CHtml::submitButton(
                         'Delete',
                         [
                             'class' => 'button large',
@@ -129,4 +133,5 @@
             </tr>
             </tfoot>
         </table>
+    </form>
 </div>

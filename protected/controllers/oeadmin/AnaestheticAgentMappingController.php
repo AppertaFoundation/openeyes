@@ -71,6 +71,7 @@ class AnaestheticAgentMappingController extends BaseAdminController
             )
         );
         //$admin->searchAll();
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 

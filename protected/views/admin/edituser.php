@@ -14,25 +14,28 @@
  */
 ?>
 
-<div class="row divider">
-    <h2><?php echo $user->id ? 'Edit' : 'Add' ?> user</h2>
-</div>
-
-<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-<?php
-$form = $this->beginWidget(
-    'BaseEventTypeCActiveForm',
-    [
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 4,
-        ),
-    ]
-) ?>
 <div class="cols-7">
+
+    <div class="row divider">
+        <h2><?php echo $user->id ? 'Edit' : 'Add' ?> user</h2>
+    </div>
+
+    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?php
+    $form = $this->beginWidget(
+        'BaseEventTypeCActiveForm',
+        [
+            'id' => 'adminform',
+            'enableAjaxValidation' => false,
+            'focus' => '#username',
+            'layoutColumns' => array(
+                'label' => 2,
+                'field' => 4,
+            ),
+        ]
+    ) ?>
+
+
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-5">
@@ -46,7 +49,7 @@ $form = $this->beginWidget(
             <tr>
                 <td><?php echo $user->getAttributeLabel($field); ?></td>
                 <td>
-                    <?=\CHtml::activeTextField(
+                    <?= \CHtml::activeTextField(
                         $user,
                         $field,
                         [
@@ -61,7 +64,7 @@ $form = $this->beginWidget(
         <tr>
             <td>Grade</td>
             <td>
-                <?=\CHtml::activeDropDownList(
+                <?= \CHtml::activeDropDownList(
                     $user,
                     'doctor_grade_id',
                     CHtml::listData(
@@ -76,19 +79,19 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Registration Code</td>
-            <td><?=\CHtml::activeTextField(
-                $user,
-                'registration_code',
-                [
-                    'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
-                ]
-            ); ?>
+            <td><?= \CHtml::activeTextField(
+                    $user,
+                    'registration_code',
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
+                ); ?>
             <td>
         </tr>
         <tr>
             <td>Active</td>
-            <td><?=\CHtml::activeRadioButtonList(
+            <td><?= \CHtml::activeRadioButtonList(
                     $user,
                     'active',
                     [1 => 'Yes', 0 => 'No'],
@@ -98,7 +101,7 @@ $form = $this->beginWidget(
         <tr>
             <td>Global firm rights</td>
             <td>
-                <?=\CHtml::activeRadioButtonList(
+                <?= \CHtml::activeRadioButtonList(
                     $user,
                     'global_firm_rights',
                     [1 => 'Yes', 0 => 'No'],
@@ -129,7 +132,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Consultant</td>
-            <td><?=\CHtml::activeRadioButtonList(
+            <td><?= \CHtml::activeRadioButtonList(
                     $user,
                     'is_consultant',
                     [1 => 'Yes', 0 => 'No'],
@@ -138,7 +141,7 @@ $form = $this->beginWidget(
         </tr>
         <tr>
             <td>Surgeon</td>
-            <td><?=\CHtml::activeRadioButtonList(
+            <td><?= \CHtml::activeRadioButtonList(
                     $user,
                     'is_surgeon',
                     [1 => 'Yes', 0 => 'No'],
@@ -149,7 +152,7 @@ $form = $this->beginWidget(
             <td>Password</td>
             <td>
                 <?php if (!$is_ldap || $user->is_local) : ?>
-                    <?=\CHtml::activePasswordField(
+                    <?= \CHtml::activePasswordField(
                         $user,
                         'password',
                         [
@@ -164,7 +167,7 @@ $form = $this->beginWidget(
             <td>Confirm password</td>
             <td>
                 <?php if (!$is_ldap || $user->is_local) : ?>
-                    <?=\CHtml::activePasswordField(
+                    <?= \CHtml::activePasswordField(
                         $user,
                         'password_repeat',
                         [
@@ -199,19 +202,19 @@ $form = $this->beginWidget(
         <tfoot>
         <tr>
             <td colspan="5">
-                <?=\CHtml::submitButton(
+                <?= \CHtml::submitButton(
                     'Save',
                     [
-                        'class' => 'button large primary event-action',
+                        'class' => 'button large',
                         'name' => 'save',
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?=\CHtml::submitButton(
+                <?= \CHtml::submitButton(
                     'Cancel',
                     [
                         'data-uri' => '/admin/users',
-                        'class' => 'warning button large primary event-action',
+                        'class' => 'button large',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]

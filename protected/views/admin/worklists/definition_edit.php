@@ -112,7 +112,7 @@
                     <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button large primary event-action',
+                            'class' => 'button large',
                             'name' => 'save',
                             'id' => 'et_save'
                         ]
@@ -121,7 +121,7 @@
                         'Cancel',
                         [
                             'data-uri' => '/worklistAdmin/definitions',
-                            'class' => 'warning button large primary event-action',
+                            'class' => 'button large',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

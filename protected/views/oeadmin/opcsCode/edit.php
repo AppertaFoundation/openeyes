@@ -14,11 +14,14 @@
  */
 ?>
 
-<h2>Edit OPCS Code</h2>
-
-<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-
 <div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $opcsCode->id ? 'Edit' : 'Add' ?> OPCS Code</h2>
+    </div>
+
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
     <form method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
@@ -26,6 +29,7 @@
                 <col class="cols-4">
                 <col class="cols-5">
             </colgroup>
+
             <tbody>
             <tr>
                 <td>Name</td>
@@ -56,13 +60,14 @@
                 </td>
             </tr>
             </tbody>
+
             <tfoot>
             <tr>
                 <td colspan="5">
                     <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button small button',
+                            'class' => 'button large',
                             'name' => 'save',
                             'id' => 'et_save'
                         ]
@@ -70,7 +75,7 @@
                     <?=\CHtml::submitButton(
                         'Cancel',
                         [
-                            'class' => 'warning button small',
+                            'class' => 'button large',
                             'data-uri' => '/oeadmin/opcsCode/list',
                             'name' => 'cancel',
                             'id' => 'et_cancel'

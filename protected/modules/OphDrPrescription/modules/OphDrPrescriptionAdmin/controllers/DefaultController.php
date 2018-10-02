@@ -106,7 +106,11 @@ class DefaultController extends BaseAdminController
 
     public function actionPrescriptionEditOptions()
     {
-        $this->genericAdmin('Edit prescription editing options', 'OphDrPrescriptionEditReasons',[]);
+        $this->genericAdmin(
+            'Edit prescription editing options',
+            'OphDrPrescriptionEditReasons',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionTags()
@@ -127,7 +131,8 @@ class DefaultController extends BaseAdminController
                     array('field' => 'tag_id',
                     'type' => 'lookup',
                     'model' => 'Tag')
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             ));
     }
 

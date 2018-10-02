@@ -53,6 +53,7 @@ class LocalAuthoritiesController extends \AdminController
      */
     public function actionList()
     {
+
         \Audit::add('admin-CommissioningBodyService', 'list');
 
         $commissioning_bt = \CommissioningBodyType::model()->findByAttributes(array('shortname' => 'LA'));

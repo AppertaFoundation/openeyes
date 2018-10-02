@@ -14,6 +14,7 @@
  */
 ?>
 
+<div class="cols-7">
     <form id="admin_event_deletion_requests">
         <input type="hidden" name="YII_CSRF_TOKEN"
                value="<?php echo Yii::app()->request->csrfToken?>" />
@@ -27,6 +28,7 @@
                     <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
             <?php
             foreach ($events as $i => $event) {?>
@@ -47,7 +49,7 @@
                         <?=\CHtml::submitButton(
                             'Approve',
                             [
-                                'class' => 'button small',
+                                'class' => 'button large',
                                 'id' => 'et_approve',
                                 'name' => 'approve'
                             ]
@@ -55,7 +57,7 @@
                         <?=\CHtml::submitButton(
                             'Reject',
                             [
-                                'class' => 'button small',
+                                'class' => 'button large',
                                 'id' => 'et_reject',
                                 'name' => 'reject'
                             ]
@@ -66,4 +68,4 @@
             </tbody>
         </table>
     </form>
-
+</div>

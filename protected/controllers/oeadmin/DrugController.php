@@ -86,7 +86,7 @@ class DrugController extends BaseAdminController
         $criteria->with = array('tags');
 
         $admin->getSearch()->setCriteria($criteria);
-
+        $admin->div_wrapper_class = 'cols-9';
         $admin->listModel();
     }
 

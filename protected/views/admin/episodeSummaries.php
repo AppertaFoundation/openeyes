@@ -66,9 +66,9 @@
                  </div>
              </div>
         <div class="right">
-            <button class="small" type="submit">Save</button>
+            <button class="button large" type="submit">Save</button>
             <button id="draggablelist-cancel"
-                    class="small warning"
+                    class="button large"
                     type="button">Cancel</button>
         </div>
         <?=\CHtml::endForm(); ?>

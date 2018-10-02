@@ -13,6 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
+<div class="cols-9">
+
     <?php if (!$contacts) : ?>
         <div class="row divider">
             <div class="alert-box issue"><b>No results found</b></div>
@@ -105,3 +108,4 @@
         </tr>
         </tfoot>
     </table>
+</div>

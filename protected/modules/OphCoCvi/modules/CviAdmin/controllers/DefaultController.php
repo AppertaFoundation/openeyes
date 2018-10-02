@@ -41,7 +41,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'comments_label',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-7',
             )
         );
     }
@@ -73,7 +74,8 @@ class DefaultController extends \ModuleAdminController
                         'type' => 'search_lookup',
                         'model' => '\Disorder',
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-9',
             )
         );
     }
@@ -135,7 +137,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'comments_label',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-9',
             )
         );
     }
@@ -160,7 +163,8 @@ class DefaultController extends \ModuleAdminController
                         'type' => 'lookup',
                         'model' => 'OEModule\OphCiExamination\models\SocialHistoryOccupation',
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -181,7 +185,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -202,7 +207,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -223,7 +229,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -248,7 +255,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'require_email',
                         'type' => 'boolean'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }

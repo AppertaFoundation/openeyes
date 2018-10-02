@@ -39,15 +39,19 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 <?php } ?>
 
 <div class="cols-4">
-    <table class="standard" id="to_location_sites_grid">
+
+    <div class="row divider">
         <h2>Edit setting</h2>
-        <hr class="divider">
+    </div>
+
+    <table class="standard" id="to_location_sites_grid">
         <thead>
         <colgroup>
-            <col class="cols-2">
+            <col class="cols-3">
             <col class="cols-1">
         </colgroup>
         </thead>
+
         <tbody>
         <tr>
             <td><?= $metadata->name ?></td>

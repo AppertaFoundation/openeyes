@@ -188,8 +188,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     ));
     ?>
     <div>
-        <button class="small secondary primary event-action" type="button" id="add_new">Add</button>&nbsp
-        <button class="generic-admin-save small primary primary event-action" name="admin-save" type="submit"id="et_admin-save">Save</button>&nbsp;
+        <button class="button large" type="button" id="add_new">Add</button>&nbsp
+        <button class="generic-admin-save button large" name="admin-save" type="submit"id="et_admin-save">Save</button>&nbsp;
     </div>
 </form>
 

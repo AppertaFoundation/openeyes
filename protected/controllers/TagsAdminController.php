@@ -23,7 +23,6 @@ class TagsAdminController extends BaseAdminController
     /**
      * Show the list of tags
      */
-
     public function actionList()
     {
         $admin = new Admin(Tag::model(), $this);
@@ -34,6 +33,7 @@ class TagsAdminController extends BaseAdminController
         $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->div_wrapper_class = 'cols-3';
         $admin->listModel();
     }
 
@@ -73,13 +73,10 @@ class TagsAdminController extends BaseAdminController
     {
         $id = $_POST['Tag']['id'];
 
-        if($id === '')
-        {
+        if ($id === '') {
             $tag = new Tag();
             $is_new = true;
-        }
-        else
-        {
+        } else {
             $tag = Tag::model()->findByPk($id);
             $is_new = false;
         }
@@ -87,23 +84,18 @@ class TagsAdminController extends BaseAdminController
         $tag->name = filter_var($_POST['Tag']['name'], FILTER_SANITIZE_STRING);
         $tag->active = $_POST['Tag']['active'] == '1';
 
-        if ($tag->save())
-        {
-            Yii::app()->user->setFlash('success', 'Tag '.($is_new ? 'created' : 'updated'));
+        if ($tag->save()) {
+            Yii::app()->user->setFlash('success', 'Tag ' . ($is_new ? 'created' : 'updated'));
             $this->redirect(array('/TagsAdmin/list'));
-        }
-        else
-        {
+        } else {
             $errors = $tag->getErrors();
             $err_str = '';
-            foreach ($errors as $field=>$error_msg)
-            {
-                $err_str.= implode('<br/>', $error_msg).'<br/>';
+            foreach ($errors as $field => $error_msg) {
+                $err_str .= implode('<br/>', $error_msg) . '<br/>';
             }
             Yii::app()->user->setFlash('warning.alert', $err_str);
-            $this->redirect(array('/TagsAdmin/edit/'.$id));
+            $this->redirect(array('/TagsAdmin/edit/' . $id));
         }
-
     }
 
     public function actionDelete()
@@ -111,5 +103,4 @@ class TagsAdminController extends BaseAdminController
         $admin = new Admin(Tag::model(), $this);
         $admin->deleteModel();
     }
-
 }
