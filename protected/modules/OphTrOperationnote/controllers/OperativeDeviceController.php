@@ -43,6 +43,7 @@ class OperativeDeviceController extends BaseAdminController
         $admin->searchAll();
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 
