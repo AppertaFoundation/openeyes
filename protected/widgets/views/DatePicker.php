@@ -37,7 +37,7 @@ if (@$htmlOptions['id']) {
     <input class="<?= @$htmlOptions['class'] ?>"
            style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
-           form="<?=$htmlOptions['form']?>",
+           <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
            placeholder="yyyy-mm-dd"
            name="<?= $name ?>"
            value="<?= $value ?>"

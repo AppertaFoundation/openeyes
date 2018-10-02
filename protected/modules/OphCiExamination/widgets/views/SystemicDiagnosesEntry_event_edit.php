@@ -130,3 +130,9 @@ if (!isset($values)) {
             <td>read only</td>
         <?php endif; ?>
     </tr>
+
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+?>
