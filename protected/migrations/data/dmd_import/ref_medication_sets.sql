@@ -9,7 +9,7 @@ SELECT
     WHEN 'VMP' THEN @vmp_id
     WHEN 'VTM' THEN @vtm_id
   END AS setId,
-  rm.id AS formId,
+  mf.id AS formId,
   mr.id AS RouteId
 INTO OUTFILE '/tmp/ref_medication_set.csv'
 FROM openeyes.ref_medication rm
