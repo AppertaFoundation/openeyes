@@ -421,7 +421,8 @@ EOD;
     public function copyToOE()
     {
         echo "Please wait...".PHP_EOL;
-        $sql_commands = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/import_to_oe.sql');
+
+        unlink('/tmp/ref_medication_set.csv');
 
         $scripts = [
             'delete', 'copy_amp', 'copy_vmp', 'copy_vtm', 'forms_routes', 'sets', 'ref_medication_sets', 'ref_medication_sets_load'
