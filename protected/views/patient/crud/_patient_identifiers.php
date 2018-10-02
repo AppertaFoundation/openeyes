@@ -1,0 +1,44 @@
+<?php
+/**
+ * @var PatientIdentifier[] $patient_identifiers
+ */
+?>
+<?php if (isset(Yii::app()->params['patient_identifiers'])) { ?>
+    <?php $index = 0;
+    foreach (Yii::app()->params['patient_identifiers'] as $identifier_config) {
+
+        $existing_identifier = null;
+        foreach ($patient_identifiers as $patient_identifier) {
+            if ($patient_identifier->code === $identifier_config['code']) {
+                $existing_identifier = $patient_identifier;
+                break;
+            }
+        }
+        ?>
+      <tr>
+        <td>
+            <?= $identifier_config['label'] ?>
+          <br/>
+            <?php if ($existing_identifier) {
+                echo $form->error($existing_identifier, 'value');
+            } ?>
+        </td>
+        <td>
+            <?php
+            $placeholder = isset($identifier_config['placeholder']) ? $identifier_config['placeholder'] : $identifier_config['label'];
+            $value = $existing_identifier ? $existing_identifier->value : null;
+            $id = $existing_identifier ? $existing_identifier->id : null;
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $id);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $identifier_config['code']);
+            echo CHtml::textField('PatientIdentifier[' . $index . '][value]',
+                $value,
+                array(
+                    'placeholder' => $placeholder,
+                )); ?>
+        </td>
+      </tr>
+        <?php
+        $index++;
+    } ?>
+<?php } ?>
+

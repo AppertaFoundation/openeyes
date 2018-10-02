@@ -527,5 +527,18 @@ return array(
             'keep_temp_files' => false,
             'compression_quality' => 50,
         ),
+
+        /**
+         * Patient Identifiers
+         * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
+         */
+        /*'patient_identifiers' => array(
+            'some_number' => array(
+                'code' => 'SOME_NUMBER',
+                'label' => 'Some Number',
+                'placeholder' => 'Some number placeholder',
+                'mandatory' => true,
+            ),
+        ),*/
     ),
 );

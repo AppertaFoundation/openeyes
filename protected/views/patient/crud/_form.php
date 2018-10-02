@@ -17,9 +17,12 @@
  */
 ?>
 <?php
-/* @var $this PatientController */
-/* @var $patient Patient */
-/* @var $form CActiveForm */
+/**
+ * @var $this PatientController
+ * @var $patient Patient
+ * @var $form CActiveForm
+ * @var $patient_identifiers PatientIdentifier[]
+ */
 
 CHtml::$errorContainerTag = 'small';
 
@@ -50,7 +53,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
   <div class="patient-inputs-column">
-    <!-- <?php if ($patient->hasErrors() || $address->hasErrors()) { ?>
+    <!-- <?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">"
             <?= $form->errorSummary(array($contact, $patient, $address)) ?>
         </div>
@@ -227,6 +230,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                   array('empty' => '-- select --')); ?>
           </td>
         </tr>
+        <?= $this->renderPartial('crud/_patient_identifiers', array(
+                'form' => $form,
+                'patient_identifiers' => $patient_identifiers,
+                'patient' => $patient,
+            )
+        ) ?>
         </tbody>
       </table>
     </div>

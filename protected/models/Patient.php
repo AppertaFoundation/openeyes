@@ -56,6 +56,7 @@
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
  * @property TrialPatient[] $trials
+ * @property PatientIdentifier[] $identifiers
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses
@@ -179,6 +180,7 @@ class Patient extends BaseActiveRecordVersioned
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
             'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
             'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
+            'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
         );
     }
 
