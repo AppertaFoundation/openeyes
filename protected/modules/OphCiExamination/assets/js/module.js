@@ -1298,38 +1298,39 @@ function OphCiExamination_ColourVision_getNextKey(side) {
     }
 }
 
-function OphCiExamination_ColourVision_addReading(element, side) {
-    var method_id = $('option:selected', element).val();
-    if (method_id) {
-        var method_name = $('option:selected', element).text();
-        $('option:selected', element).remove();
-        var template = $('#colourvision_reading_template').html();
-        var method_values = '';
-        if (colourVisionMethodValues[method_id]) {
-            for (var id in colourVisionMethodValues[method_id]) {
-                if (colourVisionMethodValues[method_id].hasOwnProperty(id)) {
-                    method_values += '<option value="'+id+'">'+colourVisionMethodValues[method_id][id]+'</option>';
-                }
-            }
+function OphCiExamination_ColourVision_addReading(selected_items, eye_side, $table) {
+    let template = $('#colourvision_reading_template').html();
+    if (selected_items.length) {
+        for (let index in selected_items) {
+            let selected_data = [];
+            selected_data.method_id = selected_items[index]['id'];
+            selected_data.method_name = selected_items[index]['label'];
+            selected_data.side = eye_side;
+            selected_data.key = OphCiExamination_ColourVision_getNextKey(eye_side);
+            selected_data.method_values = OphCiExamination_ColourVision_getMethodValues(selected_items[index]['id']);
+
+            var form = Mustache.render(template, selected_data);
+            $table.find('tbody').append(form);
         }
-        var data = {
-            "key" : OphCiExamination_ColourVision_getNextKey(side),
-            "side": side,
-            "method_name": method_name,
-            "method_id": method_id,
-            "method_values": method_values
-        };
-        var form = Mustache.render(template, data);
-
-        // Show clear button
-        $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .clearCV').removeClass("hidden");
-
-        // Show table
-        var table = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
-        table.show();
-        $('tbody', table).append(form);
     }
 }
+
+/**
+ * @return {string}
+ */
+function OphCiExamination_ColourVision_getMethodValues(method_id) {
+    let method_values = '';
+    // ColourVisionMethod values are being set in form_Element_OphCiExamination_ColourVision
+    if (colourVisionMethodValues[method_id]) {
+        for (let id in colourVisionMethodValues[method_id]) {
+            if (colourVisionMethodValues[method_id].hasOwnProperty(id)) {
+                method_values += '<option value="' + id + '">' + colourVisionMethodValues[method_id][id] + '</option>';
+            }
+        }
+    }
+    return method_values;
+}
+
 
 // Global function to route eyedraw event to the correct element handler
 function eDparameterListener(drawing) {
