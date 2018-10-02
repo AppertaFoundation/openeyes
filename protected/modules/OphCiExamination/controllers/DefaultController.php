@@ -333,7 +333,21 @@ class DefaultController extends \BaseEventTypeController
 
     public function renderOpenElements($action, $form = null, $date = null)
     {
-        if ($action !== 'view') {
+        $elements = $this->getElements($action);
+
+        /* @var \OEModule\OphCoCvi\components\OphCoCvi_API $cvi_api */
+        $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+        /* @var models\Element_OphCiExamination_VisualAcuity $element */
+        $visualAcuity = array_shift(array_values(array_filter($elements, function ($element) {
+            return get_class($element) === models\Element_OphCiExamination_VisualAcuity::class;
+        })));
+
+        // Render the CVI alert above all th other elements
+        if ($cvi_api) {
+            echo $cvi_api->renderAlertForVA($this->patient, $visualAcuity, $action === 'view');
+        }
+
+        if ($action !== 'view' && $action !== 'createImage') {
             parent::renderOpenElements($action, $form, $date);
 
             return;
@@ -341,9 +355,9 @@ class DefaultController extends \BaseEventTypeController
 
         $this->renderPartial('view_summary', array('action' => $action, 'form' => $form, 'data' => $date));
 
-        $elements = $this->getElements($action);
-        $elements = array_filter($elements, function ($element) {
+        $filteredElements = array_filter($elements, function ($element) {
             return !in_array(get_class($element), array(
+                // Ignore elements that are displayed in the view summary
                 models\Element_OphCiExamination_History::class,
                 models\PastSurgery::class,
                 models\SystemicDiagnoses::class,
@@ -351,12 +365,10 @@ class DefaultController extends \BaseEventTypeController
                 models\HistoryMedications::class,
                 models\FamilyHistory::class,
                 models\SocialHistory::class,
-                models\HistoryRisks::class,
-                models\Allergies::class,
             ), true);
         });
 
-        $this->renderElements($elements, $action, $form, $date);
+        $this->renderElements($filteredElements, $action, $form, $date);
     }
 
     /**
@@ -792,55 +804,6 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         $element->diagnoses = $diagnoses;
-    }
-
-    /**
-     * Set the allergies against the Element_OphCiExamination_Allergy element
-     * It's a child element of History.
-     *
-     * @param Element_OphCiExamination_History $element
-     * @param $data
-     * @param $index
-     */
-    protected function setComplexAttributes_Element_OphCiExamination_History($element, $data, $index)
-    {
-        $allergies = array();
-        // we add the original rows
-        foreach ($this->patient->allergyAssignments as $paa) {
-            $allergies[] = $paa;
-        }
-
-        // we remove the deleted ones
-        if (!empty($data['deleted_allergies'])) {
-            $this->deletedAllergies = $data['deleted_allergies'];
-            foreach ($this->deletedAllergies as $deletedAssignmentId) {
-                foreach ($allergies as $key => $allergyRow) {
-                    if ($allergyRow->id == $deletedAssignmentId) {
-                        unset($allergies[$key]);
-                    }
-                }
-            }
-        }
-
-        // and finally we just add the new ones
-        if (!empty($data['selected_allergies'])) {
-            foreach ($data['selected_allergies'] as $i => $allergy_id) {
-                if ($data['other_names'][$i] == 'undefined') {
-                    $data['other_names'][$i] = '';
-                }
-                $newAllergy = new \PatientAllergyAssignment();
-                $newAllergy->allergy_id = $allergy_id;
-                $newAllergy->other = $data['other_names'][$i];
-                $newAllergy->comments = $data['allergy_comments'][$i];
-                $allergies[] = $newAllergy;
-            }
-        }
-
-        $this->allergies = $allergies;
-
-        if (isset($data['no_allergies']) && $data['no_allergies'] && !$this->patient->no_allergies_date) {
-            $this->patient->no_allergies_date = date('Y-m-d');
-        }
     }
 
     /**

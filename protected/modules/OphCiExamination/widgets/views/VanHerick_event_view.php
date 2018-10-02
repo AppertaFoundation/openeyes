@@ -17,15 +17,12 @@
 ?>
 
 <div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <div class="data-row">
-            <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not recorded';?></div>
-        </div>
+    <div class="js-element-eye right-eye column">
+      <div class="data-value"><?= $element->hasRight() ? $element->right_van_herick->name : 'Not recorded';?></div>
     </div>
 
-    <div class="element-eye left-eye column">
-        <div class="data-row">
-            <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not recorded';?></div>
-        </div>
+    <div class="js-element-eye left-eye column">
+      <div class="data-value"><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not recorded';?></div>
     </div>
 </div>
+ 

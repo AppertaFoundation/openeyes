@@ -27,19 +27,26 @@ $element_errors = $element->getErrors();
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-  <div class="data-group flex-layout">
+  <div class="data-group flex-layout cols-10">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error' : '' ?>">
+      <colgroup>
+        <col class="cols-2">
+        <col class="cols-4">
+        <col>
+        <col>
+        <col class="cols-1">
+      </colgroup>
         <thead style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
-            <th class="cols-2">
+            <th>
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
             </th>
-            <th class="cols-5"></th>
+            <th></th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
-            <th class="cols-1">Reason</th>
+            <th>Reason</th>
             <th></th>
         </tr>
         </thead>
@@ -123,17 +130,17 @@ $element_errors = $element->getErrors();
       element: $('#<?=$model_name?>_element')
     });
 
-    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());?>
+    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($key, $medication) {
-              return ['value' => $medication, 'id' => $key];
+              return ['label' => $medication['value'], 'id' => $medication['id'] , 'tags' => $medication['tags']];
           },array_keys($medications),  $medications)
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
-        return 1;
+        return true;
       },
       searchOptions: {
         searchSource: medicationsController.options.searchSource,

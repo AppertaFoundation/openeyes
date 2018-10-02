@@ -176,12 +176,33 @@ class Allergies extends \BaseEventTypeElement
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             if (preg_match('/^(\d+)\s\-\sChecked\sStatus/', $message, $match) === 1) {
                 return $attribute .'_' . ($match[1]-1) . '_allergy_has_allergy';
-            }
-            elseif (preg_match('/^(\d+)\s\-\sAllergy/', $message, $match) === 1) {
+            } elseif (preg_match('/^(\d+)\s\-\sAllergy/', $message, $match) === 1) {
                 return $attribute .'_' . ($match[1]-1) . '_allergy_id';
             }
         }
         return parent::errorAttributeException($attribute, $message);
+    }
+
+    public function getSortedEntries()
+    {
+        return $this->sortEntries($this->entries);
+    }
+
+    /**
+     * Returns sorted AllergyEntries
+     * @param $entries
+     * @return mixed
+     */
+    private function sortEntries($entries)
+    {
+        usort($entries, function ($a, $b) {
+            if ($a->has_allergy == $b->has_allergy) {
+                return 0;
+            }
+            return $a->has_allergy < $b->has_allergy ? 1 : -1;
+        });
+
+        return $entries;
     }
 
     /**
@@ -192,23 +213,16 @@ class Allergies extends \BaseEventTypeElement
         if ($this->no_allergies_date) {
             return 'Patient has no known allergies';
         } else {
-            $entries = $this->entries;
-            usort($entries, function ($a, $b){
-               if($a->has_allergy == $b->has_allergy) {
-                   return 0;
-               }
-               return $a->has_allergy < $b->has_allergy ? 1 : -1;
-            });
+            $entries = $this->sortEntries($this->entries);
             return implode(' <br /> ', $entries);
         }
     }
 
     public function getDisplayOrder($action)
     {
-        if ($action=='view'){
+        if ($action=='view') {
             return 50;
-        }
-        else{
+        } else {
             return parent::getDisplayOrder($action);
         }
     }

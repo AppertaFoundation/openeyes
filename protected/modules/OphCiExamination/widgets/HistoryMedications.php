@@ -121,7 +121,6 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     protected function setElementFromDefaults()
     {
-        parent::setElementFromDefaults();
         // because the entries cloned into the new element may contain stale data for related
         // prescription data (or that prescription item might have been deleted)
         // we need to update appropriately.
@@ -226,7 +225,7 @@ class HistoryMedications extends \BaseEventElementWidget
             $stopped = array();
             $current = array();
             foreach($this->element->entries as $entry){
-                if ($entry->end_date && $entry->end_date < date('Y-m-d')) {
+                if ($entry->end_date) {
                     $stopped[] = $entry;
                 } else {
                     $current[] = $entry;

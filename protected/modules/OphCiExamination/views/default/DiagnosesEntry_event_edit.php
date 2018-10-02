@@ -49,14 +49,23 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <input type="hidden" name="<?= $field_prefix ?>[row_key]" value="<?=$row_count?>" />
 
         <input type="hidden"
+               class="savedDiagnosis"
                name="<?= $field_prefix ?>[disorder_id]"
                value="<?=$values['disorder_id']?>"
         >
+
+        <div class='condition-secondary-to-wrapper' style='display:none;'>
+            <div>Associated diagnosis:</div>
+            <select class='condition-secondary-to'>
+                <option>Please select</option>
+            </select>
+        </div>
     </td>
 
     <?php $this->widget('application.widgets.EyeSelector', [
         'inputNamePrefix' => $field_prefix,
         'selectedEyeId' => $values['eye_id'],
+        'template' => "<td class='nowrap'><span class='oe-eye-lat-icons'>{Right}{Left}</span></td>"
     ]); ?>
 
     <td>
@@ -85,3 +94,8 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php endif; ?>
     </td>
 </tr>
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
+?>

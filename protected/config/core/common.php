@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201806131116',
+            'time' => '201810020900',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -299,6 +299,13 @@ return array(
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
+        'tinymce_default_options' => array(
+            'plugins' => 'table lists importcss',
+            'branding' => false,
+            'visual' => false,
+            'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
+            'valid_children' => '+body[style]'
+        ),
         'menu_bar_items' => array(
                 'admin' => array(
                     'title' => 'Admin',
@@ -378,16 +385,23 @@ return array(
         //'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
-        // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-        'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
-        'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
-        'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-        'wkhtmltopdf_footer_right' => 'OpenEyes',
-        'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '25mm',
-        'wkhtmltopdf_left_margin' => '20mm',
-        'wkhtmltopdf_right_margin' => '20mm',
-        'wkhtmltopdf_nice_level' => false,
+        'wkhtmltox' => array(
+            'image' => array(
+                'path' => '/usr/local/bin/wkhtmltoimage',
+            ),
+            'pdf' => array(
+                // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
+                'path' => '/usr/local/bin/wkhtmltopdf',
+                'footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+                'footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
+                'footer_right' => 'OpenEyes',
+                'top_margin' => '10mm',
+                'bottom_margin' => '25mm',
+                'left_margin' => '20mm',
+                'right_margin' => '20mm',
+                'nice_level' => false,
+            ),
+        ),
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -501,6 +515,17 @@ return array(
             // whiteboard will be refresh-able after operation booking is completed
             // overrides admin > Opbooking > whiteboard settings
             //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
+
+        /**
+         * Lightning Viewer
+         */
+
+        'lightning_viewer' => array(
+            'image_width' => 800,
+            'pdf_render_width' => 1250,
+            'keep_temp_files' => false,
+            'compression_quality' => 50,
         ),
     ),
 );

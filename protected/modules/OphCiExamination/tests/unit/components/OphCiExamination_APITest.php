@@ -789,7 +789,7 @@ class OphCiExamination_APITest extends CDbTestCase
             ->will($this->returnValue($this->event_type('event_type3')));
 
         $iopTable = $api->getIOPValuesAsTable($patient);
-        $expected = '<table><tr><th class="large-6">RE [20]</th><th class="large-6">LE [NR]</th></tr><tr><td>6:Gold</td>'.
+        $expected = '<table><colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [20]</th><th>LE [NR]</th></tr><tr><td>6:Gold</td>'.
             '<td>7:Gold</td></tr><tr><td>27:DCT</td><td>2:IOPcc</td></tr>'.
             '<tr><td>&nbsp;</td><td>4:I-care</td></tr></table>';
         $this->assertEquals($expected, $iopTable);

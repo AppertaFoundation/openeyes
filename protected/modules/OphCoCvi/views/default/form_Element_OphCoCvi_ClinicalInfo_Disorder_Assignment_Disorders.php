@@ -2,7 +2,7 @@
 <div class="cols-3">
   <h3 class="element-title">Disorders</h3>
 </div>
-<div class="element-fields">
+<div class="element-fields js-collapse">
 <?php foreach ($this->getDisorderSections() as $disorder_section) {
     $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);
     ?>
@@ -17,7 +17,7 @@
     <?php if ($disorder_section->disorders) { ?>
       <div class="element-fields element-eyes data-group">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-        <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
+        <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?= $eye_side?>">
           <div class="active-form">
               <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
                   'side' => $eye_side,
@@ -49,3 +49,36 @@
     </div>
 <?php } ?>
 </div>
+<script>
+    $(document).ready(function () {
+        $('.js-collapse .collapse-group').each(function () {
+            new Collapser($(this).find('.collapse-group-icon .oe-i'),
+                $(this).find('.collapse-group-content'), $(this).find('.collapse-group-header'), $(this).data('collapse'));
+        });
+
+        function Collapser($icon, $content, $header , initialState) {
+            var collapsed = initialState == 'collapsed';
+
+            $icon.click(change);
+            $header.click(function(e){
+                headerChange(e);
+            });
+
+            function change() {
+                $icon.toggleClass('minus plus');
+                collapsed = !collapsed;
+                $content.toggle(!collapsed)
+            }
+
+            function headerChange(e){
+                if(collapsed){
+                    e.preventDefault();
+                    $content.show();
+                    $icon.toggleClass('minus plus');
+                    collapsed = !collapsed;
+                }
+            }
+        }
+    });
+
+</script>

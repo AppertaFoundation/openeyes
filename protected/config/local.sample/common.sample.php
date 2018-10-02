@@ -142,7 +142,7 @@ $config = array(
         // flag to turn on drag and drop sorting for dashboards
         // 'dashboard_sortable' => true
         'event_print_method' => 'pdf',
-        'wkhtmltopdf_nice_level' => 19,
+        'wkhtmltox' => array('pdf' => array('nice_level' => 19)),
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions

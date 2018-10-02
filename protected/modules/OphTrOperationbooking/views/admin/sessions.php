@@ -126,7 +126,7 @@ $sessions = $sessions['data'];
 		</div>
 	<?php }?>
 
-	<table class="grid">
+	<table class="standard">
 		<thead>
 		<tr>
 			<th><input type="checkbox" id="checkall" class="sessions" /></th>

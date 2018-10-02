@@ -86,7 +86,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <td>
                     <?php echo $form->dropDownList($element, 'low_vision_status_id',
                         CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
-                            'id', 'name'), array('empty' => '- Please select -','nowrapper' => true), false, array('label' => 4, 'field' => 6)) ?>
+                            'id', 'name'), array('empty' => '- Please select -','nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
                 </td>
               </tr>
             <tr>
@@ -96,7 +96,7 @@ if ($this->checkClinicalEditAccess()) { ?>
               <td>
                   <?php echo $form->dropDownList($element, 'field_of_vision_id',
                       CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
-                          'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false, array('label' => 4, 'field' => 6)) ?>
+                          'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
               </td>
             </tr>
             </tbody>
@@ -110,7 +110,7 @@ if ($this->checkClinicalEditAccess()) { ?>
         </div>
         <div class="indent-correct element-eyes element-fields">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
-          <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?= $eye_side?>">
+          <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?= $eye_side?>">
             <div class="active-form data-group">
               <table class="cols-full">
                 <tbody>
@@ -163,7 +163,7 @@ if ($this->checkClinicalEditAccess()) { ?>
             'element' => $element,
             'form' => $form,
         ))?>
-        <?php echo $form->textArea($element, 'diagnoses_not_covered', array()) ?>
+        <?php echo $form->textArea($element, 'diagnoses_not_covered', [] , false ,['class' => 'autosize'],['label' => 3]) ?>
       </div>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));

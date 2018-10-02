@@ -36,7 +36,7 @@ use Yii;
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
     const FOLLOWUP_Q_MIN = 1;
-    const FOLLOWUP_Q_MAX = 12;
+    const FOLLOWUP_Q_MAX = 18;
 
     /**
      * Returns the static model of the specified AR class.
@@ -64,7 +64,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('description, followup_quantity, followup_period_id, role_id, role_comments, community_patient', 'safe'),
+                array('description, followup_quantity, followup_period_id, role_id, role_comments', 'safe'),
                 array('status_id', 'required'),
                 array('status_id', 'statusDependencyValidation'),
                 array('role_id', 'roleDependencyValidation'),
@@ -104,7 +104,6 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
                 'followup_period_id' => 'Follow-up period',
                 'role_id' => 'Role',
                 'role_comments' => 'Role comment',
-                'community_patient' => '',
         );
     }
 

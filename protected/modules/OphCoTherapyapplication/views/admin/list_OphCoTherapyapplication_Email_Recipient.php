@@ -31,7 +31,7 @@
 <div class="box admin">
 	<h2><?php echo $title ?></h2>
 	<form id="admin_email_recipients">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>

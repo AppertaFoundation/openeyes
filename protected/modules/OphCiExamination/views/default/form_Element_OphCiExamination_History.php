@@ -56,7 +56,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
     $items = array();
 
     foreach ($attribute->getAttributeOptions() as $option) {
-        $items[] = ['value' => (string)$option->slug];
+        $items[] = ['label' => (string)$option->slug];
     }
 
     $itemSets[] = $items;
@@ -69,14 +69,14 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
     new OpenEyes.UI.AdderDialog({
       openButton: $('#show-add-to-history'),
       itemSets: $.map(<?= CJSON::encode($itemSets) ?>, function ($x) {
-        return new OpenEyes.UI.AdderDialog.ItemSet($x);
+        return new OpenEyes.UI.AdderDialog.ItemSet($x, {'multiSelect': true});
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
 
         $(selectedItems).each(function (key, item) {
           inputText.val(inputText.val() ?
-            inputText.val() + item['value'] : item['value']
+            inputText.val() + item['label'] : item['label']
           );
         });
 

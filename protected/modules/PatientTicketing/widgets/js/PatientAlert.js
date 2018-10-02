@@ -15,40 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-var doPatientTicketingSpacing = false;
-
-function spaceElement(selector, height, cssProp) {
-	if (cssProp === undefined) {
-		cssProp = 'top';
-	}
-	var $el = $(selector);
-    var previouslyAdded = parseInt($el.data('patient-ticketing-height'), 10);
-    if (isNaN(previouslyAdded))
-        previouslyAdded = 0;
-    var current = parseInt($el.css(cssProp), 10);
-    if (previouslyAdded > height) {
-        $el.css(cssProp, current-(previouslyAdded-height));
-    } else {
-        $el.css(cssProp, current+(height-previouslyAdded));
-    }
-    $el.data('patient-ticketing-height', height);
-}
-
-function patientTicketingSpacer() {
-	if (!doPatientTicketingSpacing)
-		return;
-
-	var height = parseInt($('#patient-alert-patientticketing').height(), 10);
-    spaceElement('.event-header', height);
-    spaceElement('.event-content', height, 'padding-top');
-    spaceElement('.episode-content', height, 'padding-top');
-}
-
 $(document).ready(function () {
-	if ($('#patient-alert-patientticketing').parents('.messages.patient').hasClass('fixed')) {
-		doPatientTicketingSpacing = true;
-	}
-    patientTicketingSpacer();
 
     $(document).on('click', '#patient-alert-patientticketing .alert-box .toggle-trigger', function(e) {
 		if ($(this).hasClass('toggle-show')) {
@@ -68,9 +35,5 @@ $(document).ready(function () {
 			}
 		});
 	});
-    $('#patient-alert-patientticketing .js-toggle-container').on('oe:toggled', function(event) {
-    	patientTicketingSpacer();
-	});
-
 
 });

@@ -26,30 +26,30 @@
 
 <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
 
-    <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
+    <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
 
         <div class="active-form flex-layout">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <table class="cols-10">
                 <colgroup>
                     <col class="cols-3">
-                    <col class="cols-2">
                 </colgroup>
 
                 <thead>
                 <tr>
                     <th><?=$element->getAttributeLabel("{$eye_side}_van_herick_id"); ?></th>
                     <th></th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td><?php echo CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
-                    <td><?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster-images-link')); ?></td>
                 </tr>
                 </tbody>
             </table>
+          <div class="add-data-actions flex-item-bottom ">
+            <button class="button hint green js-foster-images-link" type="button"><i class="oe-i plus pro-theme"></i></button>
+          </div>
         </div>
         <div class="inactive-form" style="display: none;">
             <div class="add-side">
@@ -60,7 +60,8 @@
         </div>
     </div>
 <?php endforeach; ?>
-    <div class="js-foster-images-dialog dialog-content" title="Foster Images">
+  <div style="display: none;">
+    <div class="js-foster-images-dialog">
         <img usemap="#foster_images_map" src="<?php echo $this->getImgPublishedPath("gonioscopy.png");?>">
         <map name="foster_images_map">
             <area data-vh="Grade 0 (0-5%)" shape="rect" coords="0,0,225,225" />
@@ -71,7 +72,7 @@
             <area data-vh="Grade 4 (76-100%)" shape="rect" coords="225,450,450,675" />
         </map>
     </div>
-
+  </div>
 </div>
 
 
@@ -81,7 +82,7 @@
 
         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-        <div class="element-eye right-eye column side left<?=!$element->hasRight() ? ' inactive': '';?>" data-side="right">
+        <div class="js-element-eye right-eye column left<?=!$element->hasRight() ? ' inactive': '';?>" data-side="right">
 
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
@@ -103,7 +104,7 @@
             </div>
         </div>
 
-        <div class="element-eye left-eye column side right<?=!$element->hasLeft() ? ' inactive': '';?>" data-side="left">
+        <div class="js-element-eye left-eye column right<?=!$element->hasLeft() ? ' inactive': '';?>" data-side="left">
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
                 <div class="van_herick field-row">

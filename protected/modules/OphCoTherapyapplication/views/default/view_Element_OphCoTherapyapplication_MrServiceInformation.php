@@ -47,7 +47,7 @@
       </div>
     </td>
     <td>
-        <div class="data-value <?php echo is_null($service_info) ? 'not-recorded' : ''?>">
+        <div class="data-value <?php echo is_null($element->patient_sharedata_consent) ? 'not-recorded' : ''?>">
             <?php echo is_null($element->patient_sharedata_consent) ? 'Not recorded' : ($element->patient_sharedata_consent ? 'Yes' : 'No') ?>
         </div>
     </td>

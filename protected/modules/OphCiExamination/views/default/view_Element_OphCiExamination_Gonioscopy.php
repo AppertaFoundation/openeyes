@@ -18,10 +18,10 @@
 ?>
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column">
+      <div class="js-element-eye <?= $eye_side ?>-eye column">
         <div class="data-group">
             <?php if ($element->hasEye($eye_side)): ?>
-              <div class="eyedraw flex-layout flex-top flex-left gonioscopy">
+              <div class="eyedraw flex-layout flex-top gonioscopy">
                   <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
                       array('side' => $eye_side, 'element' => $element));
                   ?>

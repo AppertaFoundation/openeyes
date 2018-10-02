@@ -3,14 +3,14 @@ use Behat\Behat\Exception\BehaviorException;
 class Homepage extends OpenEyesPage {
 	protected $path = '/';
 	protected $elements = array (
-			//'siteID' => array (
-			//		'xpath' => "//*[@id='SiteAndFirmForm_site_id']"
-			//),
+			'siteID' => array (
+					'xpath' => "//*[@id='SiteAndFirmForm_site_id']"
+			),
 			'firmDropdown' => array (
 					'xpath' => "//*[@id='SiteAndFirmForm_firm_id']" 
 			),
 			'confirmSiteAndFirmButton' => array (
-					'xpath' => "//*[@id='site-and-firm-form']//*[@value='Confirm']" 
+					'xpath' => "//*[@id='site-and-firm-form']//*[@value='Confirm change']"
 			),
 			'mainSearch' => array (
 					'xpath' => "//input[@id='query']" 
@@ -19,7 +19,7 @@ class Homepage extends OpenEyesPage {
 					'xpath' => "//button[@type='submit']" 
 			),
 			'changeFirmHeaderLink' => array (
-					'xpath' => "//*[@id='user_firm']//*[contains(text(), 'Change')]" 
+					'xpath' => "//*[@id='change-firm']"
 			),
 			'invalidLogin' => array (
 					'xpath' => "//*[contains(text(),'Invalid login.')]" 
@@ -96,7 +96,7 @@ class Homepage extends OpenEyesPage {
 		$this->elements['siteID'] = array (
 			'xpath' => "//*[@id='{$mysite}']"
 		);
-		$this->waitForElementDisplayBlock('siteID');
+        $this->waitForElementDisplayBlock('siteID');
 		$this->getElement ( 'siteID' )->selectOption ( $siteAddress );
 	}
 	public function selectFirm($firm) {
@@ -120,7 +120,7 @@ class Homepage extends OpenEyesPage {
 	public function searchSubmit() {
 		$this->getElement ( 'searchSubmit' )->press ();
 		// make sure the patient page is shown after a search
-		$this->waitForTitle ( 'Patient summary' );
+//		$this->waitForTitle ( 'Patient summary' );
 		// $this->getSession()->wait(15000, "window.$ && $('h1.badge').html() == 'Patient summary' ");
 	}
 	public function followLink($link) {

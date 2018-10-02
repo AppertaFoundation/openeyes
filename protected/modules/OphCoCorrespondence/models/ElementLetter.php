@@ -184,6 +184,14 @@ class ElementLetter extends BaseEventTypeElement
         ));
     }
 
+    public function beforeValidate()
+    {
+        if(isset($_POST['ElementLetter'])){
+            $_POST['ElementLetter']['body'] = (new CHtmlPurifier)->purify($_POST['ElementLetter']['body']);
+        }
+        return parent::beforeValidate();
+    }
+
     public function afterValidate()
     {
 
@@ -801,29 +809,7 @@ class ElementLetter extends BaseEventTypeElement
 
     public function renderBody()
     {
-        $body = array();
-
-        foreach (explode(chr(10), CHtml::encode($this->body)) as $line) {
-            $processed_line = '';
-            if (preg_match('/^([\t]+)/', $line, $m)) {
-                for ($i = 0; $i < strlen($m[1]); ++$i) {
-                    for ($j = 0; $j < 8; ++$j) {
-                        $processed_line .= '&nbsp;';
-                    }
-                }
-                $processed_line .= preg_replace('/^[\t]+/', '', $line);
-            } elseif (preg_match('/^([\s]+)/', $line, $m)) {
-                for ($i = 0; $i < strlen($m[1]); ++$i) {
-                    $processed_line .= '&nbsp;';
-                }
-                $processed_line .= preg_replace('/^[\s]+/', '', $line);
-            } else {
-                $processed_line .= $line;
-            }
-            $body[] = $processed_line;
-        }
-
-        return implode('<br/>', $body);
+        return (new CHtmlPurifier())->purify($this->body);
     }
 
     public function getCreate_view()

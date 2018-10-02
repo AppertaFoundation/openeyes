@@ -140,7 +140,7 @@
 		<?php }?>
 
 		<?php if (!empty($results)) {?>
-			<table class="grid">
+			<table class="standard">
 				<thead>
 					<tr>
                         <th><?php echo CHtml::link('Sample Id', $this->getUri(array('sortby' => 'sample_id')))?></th>

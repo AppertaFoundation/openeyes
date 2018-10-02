@@ -140,33 +140,25 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     protected function afterValidate()
     {
-        $contra_flags = array('_unable_to_assess', '_eye_missing');
+        $model = str_replace('\\', '_', $this->elementType->class_name);
+        $va = $_POST[$model];
         foreach (array('left', 'right') as $side) {
-            $check = 'has'.ucfirst($side);
-            if ($this->$check()) {
-                if ($this->{$side.'_readings'}) {
-                    foreach ($this->{$side.'_readings'} as $i => $reading) {
-                        if (!$reading->validate()) {
-                            foreach ($reading->getErrors() as $fld => $err) {
-                                $this->addError($side.'_readings', ucfirst($side).' reading('.($i + 1).'): '.implode(', ', $err));
-                            }
-                        }
-                    }
-                    foreach ($contra_flags as $f) {
-                        if ($this->{$side.$f}) {
-                            $this->addError($side.$f, 'Cannot be '.$this->getAttributeLabel($side.$f).' with VA readings.');
-                        }
-                    }
-                } else {
-                    $valid = false;
-                    foreach ($contra_flags as $f) {
-                        if ($this->{$side.$f}) {
-                            $valid = true;
-                        }
-                    }
-                    if (!$valid) {
-                        $this->addError($side, ucfirst($side).' side has no data.');
-                    }
+            if (!$this->eyeHasSide($side, $va['eye_id'])){
+                continue;
+            }
+            $isAssessable =!($va[$side.'_unable_to_assess'] || $va[$side.'_eye_missing']);
+            $hasReadings = array_key_exists($side.'_readings', $va);
+
+            if (($isAssessable&&$hasReadings)||(!$isAssessable&&!$hasReadings)) {
+                continue;
+            } elseif ($isAssessable&&!$hasReadings) {
+                $this->addError($side, ucfirst($side).' side has no data.');
+            } else {
+                if ($va[$side.'_unable_to_assess']){
+                    $this->addError($side.'_unable_to_assess', 'Cannot be '.$this->getAttributeLabel($side.'_unable_to_assess').' with VA readings.');
+                }
+                if ($va[$side.'_eye_missing']){
+                    $this->addError($side.'_eye_missing', 'Cannot be '.$this->getAttributeLabel($side.'_eye_missing').' with VA readings.');
                 }
             }
         }
@@ -290,11 +282,19 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     public function getCombined($side, $unit_id = null)
     {
         $combined = array();
-        foreach ($this->{$side.'_readings'} as $reading) {
-            $combined[] = $reading->convertTo($reading->value, $unit_id).' '.$reading->method->name;
+        foreach ($this->getNamedReadings($side, $unit_id) as $method => $value) {
+            $combined[] = $value.' '.$method;
         }
 
         return implode(', ', $combined);
+    }
+
+    public function getNamedReadings($side, $unit_id = null){
+        $readings = array();
+        foreach ($this->{$side.'_readings'} as $reading) {
+            $readings[$reading->method->name] = $reading->convertTo($reading->value, $unit_id);
+        }
+        return $readings;
     }
 
     /**
@@ -381,8 +381,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getTextForSide($side)
     {
-        $checkFunc = 'has'.ucfirst($side);
-        if ($this->$checkFunc() && !$this->{$side.'_readings'}) {
+        if ($this->hasEye($side) && !$this->{$side.'_readings'}) {
             if ($this->{$side.'_unable_to_assess'}) {
                 $text = $this->getAttributeLabel($side.'_unable_to_assess');
                 if ($this->{$side.'_eye_missing'}) {
@@ -430,36 +429,28 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
-        if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find('name = ?', array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']))) {
-            throw new Exception('Configured visual acuity correspondence unit was not found: '.Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']);
+       $va_unit = OphCiExamination_VisualAcuityUnit::model()->find("name='ETDRS Letters'");
+        if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
+            'name = ?',
+            array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
+        )) {
+            throw new Exception('Configured visual acuity correspondence unit was not found: '
+                .Yii::app()->params['ophciexamination_visualacuity_correspondence_unit']
+            );
         }
 
-        $text = "Visual acuity:\n";
-
-        if ($this->hasRight()) {
-            $text .= 'Right Eye: ';
-            if ($this->getCombined('right')) {
-                $text .= $this->getCombined('right', $unit->id);
-            } else {
-                $text .= $this->getTextForSide('right');
-            }
-        } else {
-            $text .= 'Right Eye: not recorded';
-        }
-        $text .= "\n";
-
-        if ($this->hasLeft()) {
-            $text .= 'Left Eye: ';
-            if ($this->getCombined('left')) {
-                $text .= $this->getCombined('left', $unit->id);
-            } else {
-                $text .= $this->getTextForSide('left');
-            }
-        } else {
-            $text .= 'Left Eye: not recorded';
-        }
-
-        return $text."\n";
+        ob_start();
+        Yii::app()->controller->renderPartial(
+            'application.modules.OphCiExamination.views.default.letter.va',
+            array(
+                'left' => $this->getNamedReadings('left', $va_unit->id),
+                'right' => $this->getNamedReadings('right', $va_unit->id),
+                'va_unit' => $va_unit->name
+            )
+        );
+        $str_return = ob_get_contents();
+        ob_end_clean();
+        return $str_return;
     }
 
     /**
@@ -484,5 +475,13 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     public function getViewTitle()
     {
         return $this->getElementTypeName() . ' <small>' . $this->unit->name . '</small>';
+    }
+
+    /***
+     * @param $eye_side 'left'|'right' which side
+     * @return bool whether the eye is marked as assessable (not missing or otherwise unassessable)
+     */
+    public function eyeAssesable($eye_side){
+        return !($this->{$eye_side.'_unable_to_assess'} || $this->{$eye_side.'_eye_missing'});
     }
 }

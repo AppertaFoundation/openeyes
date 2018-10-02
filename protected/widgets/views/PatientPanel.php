@@ -57,20 +57,25 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
     </div>
 
   </div>
-    <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+
+    <?php if ($this->patient->allergies || $this->patient->risks || $this->patient->getDiabetes()) { ?>
       <div class="patient-allergies-risks risk-warning" id="js-allergies-risks-btn">
           <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
           <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
           <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
       </div>
-    <?php } elseif (!$this->patient->hasAllergyStatus() || !$this->patient->hasRiskStatus()) { ?>
-      <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
-        Allergies, Alerts
-      </div>
-    <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+    <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
       <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
         Allergies, Alerts
       </div>
+    <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+      <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
+        Allergies, Alerts
+      </div>
+    <?php } else { /*either risk or allergy status in unknown*/ ?>
+        <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+            Allergies, Alerts
+        </div>
     <?php } ?>
   <div class="patient-demographics" id="js-demographics-btn">
     <svg viewBox="0 0 60 60" class="icon">
@@ -97,10 +102,10 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
     <?php endif; ?>
 
      <!-- Widgets (extra icons, links etc) -->
-  <ul class="patient-widgets">
-      <?php foreach ($this->widgets as $widget) {
-        echo "<li>{$widget}</li>";
-        }?>
+      <ul class="patient-widgets">
+            <?php foreach ($this->widgets as $widget) {
+              echo "<li>{$widget}</li>";
+              }?>
         </ul>
   </div>
 </div>

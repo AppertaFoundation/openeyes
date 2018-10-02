@@ -17,13 +17,12 @@
  */
 ?>
 
-<section class="element view full">
+<section class="element view">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-
-    <div class="eyedraw flex-layout flex-top flex-left">
+    <div class="eyedraw flex-layout flex-top">
       <div class="eyedraw-canvas">
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(

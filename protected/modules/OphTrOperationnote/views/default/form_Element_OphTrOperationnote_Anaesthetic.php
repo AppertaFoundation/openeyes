@@ -22,7 +22,6 @@ $is_hidden = function () use ($element) {
     if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
         return true;
     }
-
     return false;
 }; ?>
 
@@ -38,7 +37,9 @@ $is_hidden = function () use ($element) {
           <td>Type</td>
           <td>
               <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
-                  false, false, false, false, array(), array('field' => 12)); ?>
+                  false, false, false, false,
+                  array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
+                  array('field' => 12)); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
@@ -161,14 +162,52 @@ $is_hidden = function () use ($element) {
       </table>
     </div>
   </div>
-  <div class="flex-item-bottom">
-    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
-            class="button js-add-comments"
-            type="button"
-            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-            style="<?php if ($element->anaesthetic_comment): ?>visibility: hidden;<?php endif; ?>"
-    >
-      <i class="oe-i comments small-icon"></i>
-    </button>
+
+  <div class="add-data-actions flex-item-bottom">
+    <div class="flex-item-bottom">
+      <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button"
+              class="button js-add-comments"
+              type="button"
+              data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+              style="<?= $element->anaesthetic_comment ? 'visibility: hidden;':'' ?>"
+      >
+        <i class="oe-i comments small-icon"></i>
+      </button>
+      <button class="button hint green js-add-select-search" id="add-anaesthetic-btn" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button><!-- popup to add data to element -->
+    </div>
   </div>
 </div>
+<?php
+  $complications = OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll();
+  $agents =  $this->getAnaesthetic_agent_list($element);
+?>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    new OpenEyes.UI.AdderDialog({
+      openButton: $('#add-anaesthetic-btn'),
+      itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($key, $value) {
+                return ['label' => $value, 'id' => $key];
+            }, array_keys($agents), $agents)) ?>, {'header':'Agents', 'id':'AnaestheticAgent', 'multiSelect': true}),
+        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($item) {
+                return ['label' => $item->name,
+                    'id' => $item->id];
+            }, $complications) ) ?>, {'header':'Complications', 'id':'OphTrOperationnote_AnaestheticComplications', 'multiSelect': true})
+      ],
+      onReturn: function (adderDialog, selectedItems) {
+        for (i in selectedItems) {
+          var id = selectedItems[i]['id'];
+          var $selector = $('#'+selectedItems[i]['itemSet'].options['id']);
+          $selector.val(id);
+          $selector.trigger('change');
+        }
+        return true;
+      }
+    });
+  });
+</script>

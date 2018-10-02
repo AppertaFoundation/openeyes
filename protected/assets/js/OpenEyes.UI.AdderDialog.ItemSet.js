@@ -10,6 +10,7 @@
 
   ItemSet._default_options = {
     'multiSelect': false,
+    'mandatory': false,
     'header': null,
     'id': null,
   };

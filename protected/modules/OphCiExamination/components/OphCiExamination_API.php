@@ -592,7 +592,20 @@ class OphCiExamination_API extends \BaseAPI
         if ($refract_element = models\Element_OphCiExamination_Refraction::model()->findByAttributes(array('event_id' => $event->id))) {
             $right_spherical = number_format($refract_element->{'right_sphere'} + 0.5 * $refract_element->{'right_cylinder'}, 2);
             $left_spherical = number_format($refract_element->{'left_sphere'} + 0.5 * $refract_element->{'left_cylinder'}, 2);
-            return $right_spherical . " Right Eye" . ", " . $left_spherical . " Left Eye";
+            return '<table>
+                        <thead>
+                        <tr>
+                           <th>Right Eye</th>
+                           <th>Left Eye</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td>' . $right_spherical . '</td>
+                              <td>' . $left_spherical . '</td>
+                            </tr>
+                        </tbody>
+                    </table>';
         }
 
 
@@ -998,28 +1011,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * get the va from the given episode for the left side of the episode patient.
-     * @param Pateint $patient
+     * @param Patient $patient
      * @param bool $include_nr_values
      * @param string $before_date
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeLeft($patient, $include_nr_values = false, $before_date = NULL, $use_context = false)
+    public function getLetterVisualAcuityForEpisodeLeft(
+        $patient,
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    )
     {
-
-        if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $patient,
-            $use_context,
-            $before_date)
-        ){
-            if ($va->hasLeft()) {
-                if ($best = $va->getBestReading('left')) {
-                    return $best->convertTo($best->value, $this->getSnellenUnitId());
-                } elseif ($include_nr_values) {
-                    return $va->getTextForSide('left');
-                }
-            }
-        }
+        $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -1030,22 +1035,49 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return OphCiExamination_VisualAcuity_Reading
      */
-    public function getLetterVisualAcuityForEpisodeRight($patient, $include_nr_values = false, $before_date = NULL, $use_context = false)
+    public function getLetterVisualAcuityForEpisodeRight(
+        $patient,
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    )
     {
+        $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
+    }
+
+    /**
+     * get the va from the given episode for the right side of the episode patient.
+     * @param Patient $patient
+     * @param string $side
+     * @param bool    $include_nr_values
+     * @param string $before_date
+     * @param bool $use_context
+     * @return models\OphCiExamination_VisualAcuity_Reading
+     * @var models\Element_OphCiExamination_VisualAcuity $va
+     */
+    public function getLetterVisualAcuityForEpisodeSide(
+        $patient,
+        $side = 'left',
+        $include_nr_values = false,
+        $before_date = NULL,
+        $use_context = false
+    ){
         if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
             $before_date)
         ){
-            if ($va->hasRight()) {
-                if ($best = $va->getBestReading('right')) {
+            if ($va->hasEye($side)) {
+                if ($best = $va->getBestReading($side)) {
                     return $best->convertTo($best->value, $this->getSnellenUnitId());
-                } elseif ($include_nr_values) {
-                    return $va->getTextForSide('right');
+                }
+                if ($include_nr_values) {
+                    return $va->getTextForSide($side);
                 }
             }
         }
     }
+
 
     /**
      * Get the VA string for both sides.
@@ -1133,20 +1165,23 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getManagementSummaries($patient, $use_context = false)
     {
-        $management_summaries = $this->getElements('models\Element_OphCiExamination_Management',$patient,$use_context);
+        $management_summaries = $this->getElements('models\Element_OphCiExamination_Management', $patient,
+            $use_context);
         if ($management_summaries) {
             $summary = [];
             foreach ($management_summaries as $summaries) {
-                $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
-                $created_date = date_format(date_create($summaries->event->event_date),'d.m.Y');
-                if(!array_key_exists($service, $summary)){
+                $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
+                $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
+                if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service.' ['.$created_date.']'] = $summaries->comments;
+                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments ? : $summaries->getChildrenString();
                 }
             }
+
             return $summary_with_dates;
         }
         $summary = [];
+
         return $summary;
     }
 
@@ -1420,7 +1455,7 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                if( !isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
                     $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
@@ -2150,7 +2185,7 @@ class OphCiExamination_API extends \BaseAPI
                 if ($i === 0) {
                     $lCCT = $this->getCCTLeftNoUnits($patient);
                     $rCCT = $this->getCCTRightNoUnits($patient);
-                    $output .= '<tr><th class="large-6">RE [' . $rCCT . ']</th><th class="large-6">LE [' . $lCCT . ']</th></tr>';
+                    $output .= '<colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [' . $rCCT . ']</th><th>LE [' . $lCCT . ']</th></tr>';
                 }
 
                 $output .= '<tr>';
@@ -2198,10 +2233,11 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    /*
+    /**
      * Examination diagnoses and findings
      * @param $patient
      * @param $use_context
+     * @var $diag models\Element_OphCiExamination_Diagnoses
      */
     public function getLetterDiagnosesAndFindings($patient, $use_context = false)
     {
@@ -2213,7 +2249,7 @@ class OphCiExamination_API extends \BaseAPI
             return $diag->letter_string;
         }
 
-        return;
+        return '[No diagnoses in latest event]';
     }
 
     /**
@@ -2607,8 +2643,7 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $operation = $entry->operation;
-                    $required[] = $operation;
+                    $required[] = $entry->operation;
                 }
             }
         }
