@@ -196,6 +196,7 @@ class RefSet extends BaseActiveRecordVersioned
 
     public function itemsCount()
     {
-        return count($this->refMedicationSets);
+        $result = Yii::app()->db->createCommand("SELECT COUNT(id) AS cnt FROM ref_medication_set WHERE ref_set_id = ".$this->id)->queryScalar();
+        return $result;
     }
 }
