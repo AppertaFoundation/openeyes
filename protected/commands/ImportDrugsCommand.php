@@ -424,18 +424,18 @@ EOD;
         $sql_commands = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/import_to_oe.sql');
 
         $scripts = [
-            'delete', 'copy_amp', 'copy_vmp', 'copy_vtm', 'forms_routes', 'sets'
+            'delete', 'copy_amp', 'copy_vmp', 'copy_vtm', 'forms_routes', 'sets', 'ref_medication_sets', 'ref_medication_sets_load'
         ];
 
         foreach ($scripts as $script) {
             $cmd = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/'.$script.'.sql');
-            echo $script.".sql ";
+            echo $script;
             Yii::app()->db->createCommand($cmd)->execute();
-            echo "OK".PHP_EOL;
+            echo " OK".PHP_EOL;
         }
 
         unlink('/tmp/ref_medication_set.csv');
-        
+
         echo "Data imported to OE.".PHP_EOL;
     }
 }
