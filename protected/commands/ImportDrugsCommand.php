@@ -434,7 +434,8 @@ EOD;
             echo "OK".PHP_EOL;
         }
 
-
+        unlink('/tmp/ref_medication_set.csv');
+        
         echo "Data imported to OE.".PHP_EOL;
     }
 }

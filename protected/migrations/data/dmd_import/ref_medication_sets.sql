@@ -13,10 +13,10 @@ SELECT
     SELECT
       mf.id
     FROM openeyes.ref_medication m
-      LEFT JOIN drugs2.f_amp_amps amp2 ON amp2.apid COLLATE utf8_general_ci = m.amp_code COLLATE utf8_general_ci
-      LEFT JOIN drugs2.f_vmp_drug_form dft ON dft.vpid COLLATE utf8_general_ci = amp2.vpid COLLATE utf8_general_ci
-      LEFT JOIN drugs2.f_lookup_form fhit ON fhit.cd COLLATE utf8_general_ci = dft.formcd COLLATE utf8_general_ci
-      LEFT JOIN openeyes.ref_medication_form mf ON mf.term COLLATE utf8_general_ci = fhit.desc COLLATE utf8_general_ci
+      LEFT JOIN drugs2.f_amp_amps amp2 ON amp2.apid = m.amp_code
+      LEFT JOIN drugs2.f_vmp_drug_form dft ON dft.vpid = amp2.vpid
+      LEFT JOIN drugs2.f_lookup_form fhit ON fhit.cd = dft.formcd
+      LEFT JOIN openeyes.ref_medication_form mf ON mf.term = fhit.desc
                                                    AND mf.source_type = 'DM+D'
     WHERE m.id = rm.id
     LIMIT 1
