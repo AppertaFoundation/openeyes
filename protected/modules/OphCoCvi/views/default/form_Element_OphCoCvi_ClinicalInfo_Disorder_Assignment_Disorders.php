@@ -1,7 +1,7 @@
 
-<div class="cols-3">
-  <h3 class="element-title">Disorders</h3>
-</div>
+<header class="element-header">
+    <h3 class="element-title">Disorders</h3>
+</header>
 <div class="element-fields js-collapse">
 <?php foreach ($this->getDisorderSections() as $disorder_section) {
     $is_open = $element->hasAffectedCviDisorderInSection($disorder_section);

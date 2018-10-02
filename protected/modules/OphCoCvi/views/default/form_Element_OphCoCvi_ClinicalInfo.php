@@ -103,11 +103,13 @@ if ($this->checkClinicalEditAccess()) { ?>
           </table>
         </div>
       </div>
+    </div>
 
-      <div class="data-group">
-        <div class="">
-          <h3 class="element-title">Visual Acuity</h3>
-        </div>
+    </section>
+        <section class="element full edit">
+            <header class="element-header">
+                <h3 class="element-title">Visual Acuity</h3>
+            </header>
         <div class="indent-correct element-eyes element-fields">
           <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
           <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?= $eye_side?>">
@@ -157,14 +159,17 @@ if ($this->checkClinicalEditAccess()) { ?>
           </div>
           <?php } ?>
         </div>
-      </div>
-      <div class="data-group">
+        </section>
+      <section class="element full edit">
+       <div class="data-group">
         <?php $this->renderPartial('form_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders', array(
             'element' => $element,
             'form' => $form,
         ))?>
         <?php echo $form->textArea($element, 'diagnoses_not_covered', [] , false ,['class' => 'autosize'],['label' => 3]) ?>
       </div>
+          <?php
+            /* Not closing the section tag as it's going to be closed from the element_container form */ ?>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>
