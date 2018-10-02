@@ -5,3 +5,4 @@ DELETE rmu FROM openeyes.event_medication_uses rmu LEFT JOIN openeyes.ref_medica
 DELETE FROM openeyes.ref_medication_form WHERE source_type = 'DM+D';
 DELETE FROM openeyes.ref_medication_route WHERE source_type = 'DM+D';
 DELETE FROM openeyes.ref_medication WHERE source_type = 'DM+D';
+DELETE FROM openeyes.ref_set WHERE `name` IN ('DM+D AMP', 'DM+D VMP', 'DM+D VTM');
