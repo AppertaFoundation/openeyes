@@ -76,6 +76,8 @@ class OperativeDeviceMappingController extends BaseAdminController
                 'placeholder' => 'search for adding operative devices',
             )
         );
+
+        $admin->div_wrapper_class = 'cols-7';
         //$admin->searchAll();
         $admin->listModel();
     }

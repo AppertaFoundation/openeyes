@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-    <div class="admin box">
+    <div class=<?=$admin->div_wrapper_class?>>
 
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
