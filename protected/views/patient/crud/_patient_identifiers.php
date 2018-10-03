@@ -16,7 +16,7 @@
         }
         ?>
       <tr>
-        <td>
+        <td class="<?= $identifier_config['required'] ? 'required' : '' ?>">
             <?= $identifier_config['label'] ?>
           <br/>
             <?php if ($existing_identifier) {
@@ -34,6 +34,7 @@
                 $value,
                 array(
                     'placeholder' => $placeholder,
+                    'maxlength' => 50
                 )); ?>
         </td>
       </tr>

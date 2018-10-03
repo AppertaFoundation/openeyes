@@ -531,12 +531,20 @@ return array(
         /**
          * Patient Identifiers
          * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
+         *
+         * Label is mandatory
+         * 'placeholder' is what appears as the placeholder in the text field (defaults to the label if not set)
+         * 'required' is whether the field needs to be entered or not (defaults to false)
+         * If 'validate_regex' is set, then the value must match that regex (unless the value is empty and required is false)
+         * 'validate_msg' is the message displayed if the regex match fails (defaults to 'Invalid format')
          */
         /*'patient_identifiers' => array(
             'SOME_NUMBER' => array(
                 'label' => 'Some Number',
-                'placeholder' => 'Some number placeholder',
-                'mandatory' => true,
+                //'placeholder' => 'Some number placeholder',
+                //'required' => true,
+                //'validate_regex' => '/^\d{8,}$/',
+                //'validate_msg' => ',
             ),
         ),*/
     ),
