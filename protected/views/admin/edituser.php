@@ -110,7 +110,7 @@
             </td>
         </tr>
         <tr>
-            <td>Firms</td>
+            <td><?=Firm::contextLabel()?></td>
             <td>
                 <?php
                 echo $form->multiSelectList(
@@ -122,7 +122,7 @@
                     null,
                     [
                         'class' => 'cols-full',
-                        'label' => 'Firms',
+                        'label' => Firm::contextLabel(),
                         'empty' => '-- Add --',
                         'nowrapper' => true
                     ]

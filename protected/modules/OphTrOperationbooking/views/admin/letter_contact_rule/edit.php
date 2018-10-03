@@ -16,8 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
+
+<div class="row divider">
+    <h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
+</div>
+
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'adminform',
             'enableAjaxValidation' => false,
@@ -27,7 +30,40 @@
                 'field' => 5,
             ),
         ))?>
-	<?php echo $form->errorSummary($rule); ?>
+
+<div class="cols-5">
+    <?php echo $form->errorSummary($rule); ?>
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-2">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td><?=$rule->getAttributeLabel('parent_rule_id');?></td>
+            <td><?=\CHtml::activeDropDownList($rule, 'rule_order',
+                    CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'),
+                    ['empty' => '- None -', 'class' => 'cols-full']);?>
+            </td>
+        </tr>
+        <tr>
+            <td><?=$rule->getAttributeLabel('rule_order');?></td>
+            <td><?=\CHtml::activeTextField($rule, 'rule_order', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <?php $dropdowns = [
+            'site_id' => Site::model()->getListForCurrentInstitution('name'),
+            'firm_id' => Firm::model()->getListWithSpecialties(), array('empty' => '- Not set -'),
+            'subspecialty_id' => CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty()),
+            
+        ]; ?>
+        <?php foreach (['site_id', 'firm_id'] as $key => $item) {
+            
+        }
+
+        </tbody>
+    </table>
+</div>
+
 	<?php echo $form->dropDownList($rule, 'parent_rule_id', CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'), array('empty' => '- None -'))?>
 	<?php echo $form->textField($rule, 'rule_order', array(), array(), array('field' => 2))?>
 	<?php echo $form->dropDownList($rule, 'site_id', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Not set -'))?>
@@ -59,7 +95,7 @@
         'delete' => $rule->id ? 'Delete' : false,
     ));?>
 	<?php $this->endWidget()?>
-</div>
+
 
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function() {

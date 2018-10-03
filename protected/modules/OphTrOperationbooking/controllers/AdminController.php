@@ -24,7 +24,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_EROD_Rule'));
 
-        $this->render('erodrules');
+        $this->render('/admin/erod_rule/index');
     }
 
     public function actionEditERODRule($id)
@@ -98,7 +98,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_EROD_Rule'));
 
-        $this->render('/admin/editerodrule', array(
+        $this->render('/admin/erod_rule/edit', array(
             'erod' => $erod,
             'errors' => $errors,
         ));
@@ -154,7 +154,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editerodrule', array(
+        $this->render('/admin/erod_rule/edit', array(
             'erod' => $erod,
             'errors' => $errors,
         ));
@@ -199,7 +199,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Letter_Contact_Rule'));
 
-        $this->render('lettercontactrules', array(
+        $this->render('/admin/letter_contact_rule/index', array(
             'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree(),
         ));
     }
@@ -215,11 +215,9 @@ class AdminController extends ModuleAdminController
         $criteria->addCondition('parent_rule_id is null');
         $criteria->order = 'rule_order asc';
 
-        $rule_ids = array();
-
         foreach (OphTrOperationbooking_Letter_Contact_Rule::model()->findAll($criteria) as $rule) {
-            if ($rule->applies($site_id, $subspecialty_id, $theatre_id, $firm_id)) {
-                $final = $rule->parse($site_id, $subspecialty_id, $theatre_id, $firm_id);
+            if ($rule->applies($site_id, $subspecialty_id, $theatre_id, $firm_id, false)) {
+                $final = $rule->parse($site_id, $subspecialty_id, $theatre_id, $firm_id, false);
                 echo json_encode(array($final->id));
 
                 return;
@@ -252,7 +250,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Letter_Contact_Rule'));
 
-        $this->render('editlettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -308,7 +306,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterContactRule';
 
-        $this->render('editlettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));

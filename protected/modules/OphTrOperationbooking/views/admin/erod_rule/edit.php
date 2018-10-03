@@ -17,22 +17,20 @@
  */
 ?>
 <div class="row divider">
-    <h2><?php echo $theatre->id ? 'Edit' : 'Add' ?> theatre</h2>
+  <h2><?php echo $erod->id ? 'Edit' : 'Add' ?> EROD rule</h2>
 </div>
-
-<?php
-$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'adminform',
-    'enableAjaxValidation' => false,
-    'focus' => '#username',
-    'layoutColumns' => array(
-        'label' => 2,
-        'field' => 5,
-    ),
-)) ?>
-
+    <?php
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'focus' => '#username',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    )) ?>
 <div class="cols-5">
-<?php echo $form->errorSummary($theatre); ?>
+    <?php echo $form->errorSummary($erod); ?>
     <table class="standard">
         <colgroup>
             <col class="cols-2">
@@ -40,29 +38,34 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         </colgroup>
         <tbody>
         <tr>
-            <td><?=$theatre->getAttributeLabel('site_id');?></td>
-            <td><?=CHtml::activeDropDownList($theatre, 'site_id', Site::model()->getListForCurrentInstitution(), ['empty' => '- Site -', 'class' => 'cols-full']);?></td>
+            <td><?=$erod->getAttributeLabel('subspecialty_id');?></td>
+            <td><?=\CHtml::activeDropDownList($erod, 'subspecialty_id', CHtml::listData($erod->getSubspecialtyOptions(), 'id', 'name'), ['class' => 'cols-full']);?></td>
         </tr>
-        <?php foreach(['name', 'code'] as $attr) :?>
         <tr>
-            <td><?=$theatre->getAttributeLabel($attr);?></td>
-            <td><?=CHtml::activeTextField($theatre, $attr, ['class' => 'cols-full'])?></td>
-        </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td>Ward:</td>
-            <td><?=$this->actionGetWardOptions($theatre->site_id, $theatre->ward_id);?></td>
+            <td><?=Firm::contextLabel();?></td>
+            <td>
+                <?php
+                echo $form->multiSelectList(
+                    $erod,
+                    'Firms',
+                    'firms',
+                    'item_id',
+                    Firm::model()->getListWithSpecialties(),
+                    null,
+                    ['empty' => '- ' . Firm::contextLabel() . 's -', 'class' => 'cols-full', 'nowrapper' => true]
+                );
+                ?>
+            </td>
         </tr>
         </tbody>
         <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
-                    <?=\CHtml::submitButton('Save', [ 'class' => 'button large', 'id' => 'et_save']);?>
-                    <?=\CHtml::htmlButton('Cancel', [ 'class' => 'button large', 'id' => 'et_cancel', 'data-uri' => '/OphTrOperationbooking/admin/viewTheatres']);?>
+                    <?=\CHtml::submitButton('Save', ['class' => 'button large', 'id' => 'et_save']);?>
+                    <?=\CHtml::button('Cancel', ['class' => 'button large', 'id' => 'et_cancel', "data-uri" => "/OphTrOperationbooking/admin/viewERODRules"]);?>
                 </td>
             </tr>
         </tfoot>
     </table>
-    <?php echo $form->errorSummary($theatre); ?>
 </div>
-<?php $this->endWidget() ?>
+<?php $this->endWidget();?>

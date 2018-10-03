@@ -80,18 +80,18 @@ if (!$get_row && $filters_ready) {
                             'i' => '{{key}}', 'row' => new $model(), 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, ));
                 } ?>
 			</tbody>
-
+            <?php if ($model::model()->hasAttribute('default')) {?>
+                <tr>
+                    <td class="generic-admin-no-default">
+                        No default
+                    </td>
+                    <td>
+                        <?=\CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
+                    </td>
+                </tr>
+            <?php } ?>
                 <tfoot class="pagination-container">
-                <?php if ($model::model()->hasAttribute('default')) {?>
-					<tr>
-						<td colspan="10" class="generic-admin-no-default">
-							No default
-						</td>
-						<td>
-							<?=\CHtml::radioButton('default', !$has_default, array('value' => 'NONE'))?>
-						</td>
-					</tr>
-                <?php } ?>
+
                 <tr>
                     <td colspan="10">
                         <?php if (!$this->cannot_add) {
