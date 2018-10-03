@@ -1808,13 +1808,8 @@ class PatientController extends BaseController
         $success = true;
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
-            if (isset(Yii::app()->params['patient_identifiers'])) {
-                foreach (Yii::app()->params['patient_identifiers'] as $config) {
-                    if ($config['code'] === $post_info->code) {
-                        $identifier_config = $config;
-                        break;
-                    }
-                }
+            if (isset(Yii::app()->params['patient_identifiers'][$post_info->code])) {
+                $identifier_config = Yii::app()->params['patient_identifiers'][$post_info->code];
             }
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(

@@ -533,8 +533,7 @@ return array(
          * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
          */
         /*'patient_identifiers' => array(
-            'some_number' => array(
-                'code' => 'SOME_NUMBER',
+            'SOME_NUMBER' => array(
                 'label' => 'Some Number',
                 'placeholder' => 'Some number placeholder',
                 'mandatory' => true,

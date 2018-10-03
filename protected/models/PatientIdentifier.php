@@ -71,12 +71,8 @@ class PatientIdentifier extends BaseActiveRecordVersioned
 
     public function getLabel()
     {
-        if (isset(Yii::app()->params['patient_identifiers'])) {
-            foreach (Yii::app()->params['patient_identifiers'] as $identifier_config) {
-                if ($identifier_config['code'] === $this->code) {
-                    return $identifier_config['label'];
-                }
-            }
+        if (isset(Yii::app()->params['patient_identifiers'][$this->code]['label'])) {
+            return Yii::app()->params['patient_identifiers'][$this->code]['label'];
         }
         return ucwords(strtolower(str_replace('_', ' ', $this->code)));
     }

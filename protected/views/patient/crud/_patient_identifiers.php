@@ -5,11 +5,11 @@
 ?>
 <?php if (isset(Yii::app()->params['patient_identifiers'])) { ?>
     <?php $index = 0;
-    foreach (Yii::app()->params['patient_identifiers'] as $identifier_config) {
+    foreach (Yii::app()->params['patient_identifiers'] as $identifier_code => $identifier_config) {
 
         $existing_identifier = null;
         foreach ($patient_identifiers as $patient_identifier) {
-            if ($patient_identifier->code === $identifier_config['code']) {
+            if ($patient_identifier->code === $identifier_code) {
                 $existing_identifier = $patient_identifier;
                 break;
             }
@@ -29,7 +29,7 @@
             $value = $existing_identifier ? $existing_identifier->value : null;
             $id = $existing_identifier ? $existing_identifier->id : null;
             echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $id);
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $identifier_config['code']);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $identifier_code);
             echo CHtml::textField('PatientIdentifier[' . $index . '][value]',
                 $value,
                 array(
