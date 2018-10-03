@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="row divider">
+<div class="row divider cols-7">
     <h2>Add <?php echo $title ?></h2>
 </div>
 

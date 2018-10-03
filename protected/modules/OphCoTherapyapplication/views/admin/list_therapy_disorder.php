@@ -17,6 +17,8 @@
  */
 ?>
 
+<div class="cols-3">
+
 <div class="row divider">
     <h2><?php echo $title ?></h2>
 </div>
@@ -89,4 +91,5 @@
 
     $this->endWidget();
     ?>
+</div>
 </div>
