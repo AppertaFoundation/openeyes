@@ -509,7 +509,7 @@ class PatientController extends BaseController
             ),
         );
 
-        $this->render('oescapes', array(
+        $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
