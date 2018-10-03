@@ -30,8 +30,14 @@ class AdminController extends \ModuleAdminController
     protected function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            Yii::app()->assetManager->registerScriptFile('js/jquery.jOrgChart.js', $this->assetPathAlias, 12);
-            Yii::app()->assetManager->registerCssFile('css/jquery.jOrgChart.css', $this->assetPathAlias, 12);
+
+            Yii::app()->clientScript->registerScriptFile(
+                Yii::app()->createUrl($this->assetPath . '/js/jquery.jOrgChart.js')
+            );
+
+            Yii::app()->clientScript->registerCssFile(
+                Yii::app()->createUrl($this->assetPath . '/css/jquery.jOrgChart.css')
+            );
 
             return true;
         }

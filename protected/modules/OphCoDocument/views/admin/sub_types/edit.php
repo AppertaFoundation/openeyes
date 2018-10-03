@@ -16,24 +16,28 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-    <h2>Edit sub type</h2>
-    <?php echo $this->renderPartial('/admin/sub_types/_form_errors', array('errors' => $errors))?>
-    <?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'subtypeform',
-        'enableAjaxValidation' => false,
-        'focus' => '#username',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
-    <?php $this->renderPartial('/admin/sub_types/_form' ,[
-            'model' => $model,
-            'form' => $form,
-            ]
-    );?>
 
-    <?php $this->endWidget()?>
-</div>
+    <h2>Edit sub type</h2>
+
+<?php echo $this->renderPartial('/admin/sub_types/_form_errors', array('errors' => $errors)) ?>
+
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'subtypeform',
+    'enableAjaxValidation' => false,
+    'focus' => '#username',
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+
+<?php $this->renderPartial(
+    '/admin/sub_types/_form',
+    [
+        'model' => $model,
+        'form' => $form,
+    ]
+); ?>
+
+<?php $this->endWidget() ?>

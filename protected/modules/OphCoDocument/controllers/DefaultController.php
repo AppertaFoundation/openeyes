@@ -232,8 +232,6 @@ class DefaultController extends BaseEventTypeController
     {
         if($element->{$index."_id"} > 0){
             $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index));
-        }else {
-            $this->renderPartial('form_empty_upload', array('index'=>$index));
         }
     }
 
@@ -436,4 +434,102 @@ class DefaultController extends BaseEventTypeController
         return $tmpfname;
     }
 
+
+    /**
+     * Creates a preview event image for the event with the given ID
+     *
+     * @param int $id The ID of the vent to genreate a preview image for
+     * @throws Exception
+     */
+    public function actionCreateImage($id)
+    {
+        try {
+            $this->initActionView();
+            $this->removeEventImages();
+
+            /* @var Element_OphCoDocument_Document $element */
+            $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
+            /* @var ProtectedFile $document */
+            foreach ([
+                         Eye::LEFT => $element->left_document,
+                         Eye::RIGHT => $element->right_document,
+                         null => $element->single_document,
+                     ] as $eye => $document) {
+                if (!$document) {
+                    continue;
+                }
+
+                switch ($document->mimetype) {
+                    case 'application/pdf':
+                        $this->createPdfPreviewImages($document->getPath(), $eye);
+                        break;
+                    case 'image/jpeg':
+                    case 'image/png':
+                    case 'image/gif':
+                        $imagick = new Imagick();
+                        $imagick->readImage($document->getPath());
+                        if($this->scaleImageForThumbnail($imagick)) {
+                            $parts = explode('/', $document->mimetype);
+                            $format = end($parts);
+                            $output_path = $this->getPreviewImagePath(['eye' => $eye], '.' . $format);
+                            $imagick->writeImage($output_path);
+                            $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
+                        } else {
+                            $this->saveEventImage('CREATED', array('image_path' => $document->getPath(), 'eye_id' => $eye));
+                        }
+
+                        break;
+                    case 'video/mp4':
+                    case 'video/ogg':
+                    case 'video/quicktime':
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye], '.jpg');
+
+                        // Use ffmpeg to generate a thumbnail of the video
+                        $command = 'ffmpeg -i ' . $document->getPath() . ' -vf "thumbnail" -frames:v 1 ' . $output_path . ' -y 2>&1';
+                        Yii::log('Executing command: ' . $command);
+                        $result = shell_exec($command);
+                        Yii::log('Result: ' . $result);
+
+                        // Resize the thumbnail
+                        $imagick = new Imagick();
+                        $imagick->readImage($output_path);
+                        $this->scaleImageForThumbnail($imagick);
+
+                        // Add a white triangle to the in the center of the preview
+                        $draw = new \ImagickDraw();
+
+                        $centreX = $imagick->getImageWidth() / 2;
+                        $centreY = $imagick->getImageHeight() / 2;
+                        $triangleSideLength = $imagick->getImageHeight() / 4;
+                        $triangleWidth = sqrt(3) / 2 * $triangleSideLength;
+
+                        $draw->setFillColor(new ImagickPixel('#4E4E4E'));
+                        $draw->circle($centreX, $centreY, $centreX + $triangleWidth, $centreY);
+
+                        $draw->setFillColor(new \ImagickPixel('white'));
+
+                        $draw->polygon([
+                            ['x' => $centreX - $triangleWidth / 3, 'y' => $centreY - $triangleSideLength / 2],
+                            ['x' => $centreX + $triangleWidth * 2 / 3, 'y' => $centreY],
+                            ['x' => $centreX - $triangleWidth / 3, 'y' => $centreY + $triangleSideLength / 2]
+                        ]);
+
+                        $imagick->drawImage($draw);
+
+                        if (!$imagick->writeImage($output_path)) {
+                            throw new Exception('An error occurred when resizing the video thumbnail');
+                        }
+
+                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
+                        break;
+                    default:
+                        // If the mime type isn't recognised, then use a preview of the entire event
+                        parent::actionCreateImage($id);
+                }
+            }
+        } catch (Exception $ex) {
+            $this->saveEventImage('FAILED', ['message' => (string)$ex]);
+            throw $ex;
+        }
+    }
 }

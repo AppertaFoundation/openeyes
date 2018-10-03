@@ -7,6 +7,8 @@
  * @var Episode[] $specialty_episodes
  **/
 
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
 $active_episodes = array();
@@ -85,6 +87,14 @@ if (is_array($ordered_episodes)):
               </li>
           <?php
           } ?>
+        <li class="icon-btn">
+          <a href="<?= Yii::app()->createUrl('/patient/lightningViewer', array('id' => $this->patient->id)) ?>"
+             class="lightning-viewer-icon active <?= $this->action->id === 'lightningViewer' ? 'selected' : '' ?>">
+            <svg viewBox="0 0 30 30" width="15" height="15">
+              <use xlink:href="<?= $navIconUrl ?>#lightning-viewer-icon"></use>
+            </svg>
+          </a>
+        </li>
       </ul>
     <?php endforeach;
 endif; ?>
