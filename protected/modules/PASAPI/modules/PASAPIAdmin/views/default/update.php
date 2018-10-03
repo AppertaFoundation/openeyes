@@ -17,8 +17,10 @@
  */
 ?>
 
+<div class="cols-5">
+
 <div class="row divider">
-    Update
+    <?= $title ?>
 </div>
 
 <?php
@@ -34,8 +36,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
 <table class="standard">
     <colgroup>
-        <col class="cols-1">
-        <col class="cols-11">
+        <col class="cols-2">
+        <col class="cols-10">
     </colgroup>
     <tbody>
     <?php
@@ -70,3 +72,5 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     <?php
 
 } ?>
+
+</div>

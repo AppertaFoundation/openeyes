@@ -23,10 +23,11 @@ $widgetPath = $assetManager->publish('protected/widgets/js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>
 
+<div class="cols-5">
+
 <div class="row divider">
     <?php echo $title ?></h2>
 </div>
-
 
 <form id="admin_patient_ticketing">
     <table class="standard">
@@ -53,3 +54,4 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
 
     <div id="chart" class="column large-8 end orgChart" style="color:white;overflow-y: auto;"></div>
 </form>
+</div>

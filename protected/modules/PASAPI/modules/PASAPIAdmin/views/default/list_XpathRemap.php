@@ -18,10 +18,7 @@
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
-<div class="row divider">
-    <h2><?php echo $title ?></h2>
-</div>
-
+<div class="cols-5">
     <table class="standard">
         <thead>
         <tr>
@@ -57,3 +54,4 @@
         </tr>
         </tfoot>
     </table>
+</div>

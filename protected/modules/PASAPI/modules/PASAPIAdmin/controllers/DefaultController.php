@@ -52,6 +52,7 @@ class DefaultController extends \BaseAdminController
             'model' => $model,
             'title' => 'Add Xpath Remap',
             'cancel_uri' => '/PASAPI/admin/default/viewXpathRemaps',
+            'title' => 'Create Xpath'
         ));
     }
 
@@ -76,6 +77,7 @@ class DefaultController extends \BaseAdminController
             'model' => $model,
             'title' => 'Update Xpath Remap',
             'cancel_uri' => '/PASAPI/admin/default/viewXpathRemaps',
+            'title' => 'Update Xpath'
         ));
     }
 
