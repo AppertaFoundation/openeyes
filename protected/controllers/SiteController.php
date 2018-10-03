@@ -146,9 +146,11 @@ class SiteController extends BaseController
             return $this->render('login_wrong_browser');
         }
 
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false
-         || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false) {
+        if (isset($_SERVER['HTTP_USER_AGENT']) && (
+                strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false
+                || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)) {
             $this->layout = 'unsupported_browser';
+
             return $this->render('login_unsupported_browser');
         }
 
