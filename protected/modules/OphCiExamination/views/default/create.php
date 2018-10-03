@@ -16,21 +16,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+    $form_id = 'examination-create';
+    $this->beginContent('//patient/event_container', array('no_face' => false , 'form_id' => $form_id)); ?>
+<?php
+    $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
+?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
-	<?php
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'examination-create'));
-    ?>
-
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'examination-create',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 4,
-            'field' => 8,
-        ),
-    ));
-    ?>
+<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => $form_id,
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 4,
+        'field' => 8,
+    ),
+));
+?>
 
       <?php
 
