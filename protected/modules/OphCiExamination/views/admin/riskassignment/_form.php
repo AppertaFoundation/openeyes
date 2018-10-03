@@ -19,7 +19,7 @@
  */
 ?>
 
-<div class="cols-7">
+<div class="cols-5">
     <table class="standard cols-full">
         <h2><?php echo $title ?></h2>
         <hr class="divider">

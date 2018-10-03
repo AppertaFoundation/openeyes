@@ -17,6 +17,7 @@
 $this->renderPartial('_menu_main');
 ?>
 
+<div class="cols-3">
 
 <div class="row divider">
     <h2>
@@ -24,7 +25,7 @@ $this->renderPartial('_menu_main');
     </h2>
 </div>
 
-	<?php $this->widget('zii.widgets.CListView', array(
+    <?php $this->widget('zii.widgets.CListView', array(
         'dataProvider' => $dataProvider,
         'itemView' => 'list_'.$dataProvider->modelClass,
         'itemsCssClass' => 'standard',
@@ -33,4 +34,6 @@ $this->renderPartial('_menu_main');
 
 <div class="box-actions">
     <a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/create'.$dataProvider->modelClass); ?>" class="button small">Add New</a>
+</div>
+
 </div>

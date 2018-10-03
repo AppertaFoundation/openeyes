@@ -17,28 +17,73 @@
  */
 ?>
 
-
-    <table class="cols-full" id="dicom-log-filter">
+<div id="dicom-log-filter">
+    <table class="standard">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
             <col class="cols-3">
             <col class="cols-3">
         </colgroup>
+        <thead>
+        <tr>
+            <td>Station ID</td>
+            <td>Location (like)</td>
+            <td>Patient Number</td>
+            <td>Status</td>
+        </tr>
+        </thead>
+
         <tbody>
         <tr>
-            <td><?=\CHtml::textField('station_id', /*@$_POST['station_id']*/'IOLM1120642', [
-                    'class' => 'small fixed-width', 'placeholder' => 'Station Id']); ?>
+            <td><?= \CHtml::textField(
+                'station_id', /*@$_POST['station_id']*/
+                'IOLM1120642',
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Station Id']
+            ); ?>
             </td>
-            <td><?=\CHtml::textField('location', @$_POST['location'],
-                    ['class' => 'small fixed-width', 'placeholder' => 'Location']); ?></td>
-            <td><?=\CHtml::textField('hos_num', @$_POST['hos_num'],
-                    ['class' => 'small fixed-width', 'placeholder' => 'Hospital Number']); ?></td>
-            <td><?=\CHtml::dropDownList('status', 'status',
-                    ['' => 'All Status', 'success' => 'Success', 'failed' => 'Failed']); ?></td>
+            <td><?= \CHtml::textField(
+                'location',
+                @$_POST['location'],
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Location']
+            ); ?></td>
+            <td><?= \CHtml::textField(
+                'hos_num',
+                @$_POST['hos_num'],
+                ['class' => 'small fixed-width cols-11', 'placeholder' => 'Hospital Number']
+            ); ?></td>
+            <td><?= \CHtml::dropDownList(
+                'status',
+                'status',
+                ['' => 'All', 'success' => 'Success', 'failed' => 'Failed'],
+                ['class' => 'cols-11']
+            ); ?></td>
         </tr>
-        <tr class="col-gap">
-            <td><?= CHtml::dropDownList('type', 'type', ['' => 'All types', 'biometry' => 'Biometry']); ?></td>
+        </tbody>
+    </table>
+
+    <table class="standard">
+        <colgroup>
+            <col class="cols-2">
+            <col class="cols-5">
+            <col class="cols-5">
+        </colgroup>
+        <thead>
+        <tr>
+            <td>Type</td>
+            <td>Study Instance ID (like)</td>
+            <td>File name (like)</td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td><?= CHtml::dropDownList(
+                'type',
+                'type',
+                ['' => 'All types', 'biometry' => 'Biometry'],
+                ['class' => 'cols-full']
+                ); ?></td>
             <td><?php
                 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                     'id' => 'study_id',
@@ -50,6 +95,7 @@
                     ),
                     'htmlOptions' => array(
                         'placeholder' => 'Type to search for Study Instance ID...',
+                        'class' => 'cols-full',
                     ),
                 ));
                 ?>
@@ -66,34 +112,26 @@
                     ),
                     'htmlOptions' => array(
                         'placeholder' => 'Type to search for File name...',
+                        'class' => 'cols-full',
                     ),
                 ));
                 ?>
             </td>
         </tr>
+        </tbody>
+    </table>
+
+    <table class="standard">
+        <tbody>
         <tr>
             <td>
-                <label class="inline" for="import_date">Import date:</label>
                 <?php
-                echo CHtml::radioButton('date_type', true, array(
-                    'value' => '1',
-                    'id' => 'import_date',
-                    'name' => 'date',
-                    'uncheckValue' => null,
-                )); ?>
-            </td>
-            <td>
-                <label class="inline" for="study_date">Study date:</label>
-                <?php
-                echo CHtml::radioButton('study_date', false, array(
-                    'value' => '2',
-                    'id' => 'study_date',
-                    'name' => 'date',
-                    'uncheckValue' => null,
-                ));
-                ?></span>&nbsp;
-            </td>
-            <td>
+                echo CHtml::radioButtonList(
+                    'date',
+                    2,
+                    ['1' => 'Import date', '2' => 'Study date'],
+                    ['separator' => '  ']
+                ); ?>
                 <label class="inline" for="date_from">From:</label>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date_from',
@@ -107,8 +145,6 @@
                         'class' => 'small fixed-width',
                     ),
                 )) ?>
-            </td>
-            <td>
                 <label class="inline" for="date_to">To:</label>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name' => 'date_to',
@@ -125,11 +161,13 @@
             </td>
         </tr>
         </tbody>
+
         <tfoot class="pagination-container">
         <tr>
-            <td>
+            <td colspan="3">
                 <button type="button" id="dicom-log-search" class="secondary large">Search</button>
             </td>
         </tr>
         </tfoot>
     </table>
+</div>

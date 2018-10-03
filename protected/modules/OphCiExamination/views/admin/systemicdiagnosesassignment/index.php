@@ -19,9 +19,7 @@
  */
 ?>
 
-<h2>Required Systemic Diagnoses Set</h2>
-
-<div class="cols-7">
+<div class="cols-5">
 
     <?php
     $columns = array(

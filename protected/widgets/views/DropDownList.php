@@ -28,7 +28,7 @@ else:
 <div id="div_<?=\CHtml::modelName($element)?>_<?=$field?>"
      class="data-group cols-full <?php
       echo !@$htmlOptions['vertical']?" flex-layout ":"";
-      echo !$stretch?' flex-left ':''
+      echo !$stretch?' ':''
      ?> "
      style="<?=(@$hidden) ?"display: none;":""?>"
 >

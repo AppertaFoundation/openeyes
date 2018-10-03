@@ -55,9 +55,9 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('create', array(
+        $this->render('update', array(
             'model' => $model,
-            'title' => 'Treatment Drug',
+            'title' => 'Add Treatment Drug',
             'cancel_uri' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs',
         ));
     }
@@ -80,9 +80,9 @@ class AdminController extends ModuleAdminController
         }
 
         $this->render('update', array(
-                'model' => $model,
-                'title' => 'Treatment Drug',
-                'cancel_uri' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs',
+            'model' => $model,
+            'title' => 'Edit Treatment Drug',
+            'cancel_uri' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs',
         ));
     }
 

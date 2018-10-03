@@ -26,10 +26,13 @@
     array("class" => "alert-box alert with-icon")
 ); ?>
 
-<div class="cols-7">
-    <table class="standard cols-full">
+<div class="cols-5">
+
+    <div class="row divider">
         <h2><?php echo $title ?></h2>
-        <hr class="divider">
+    </div>
+
+    <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
             <col class="cols-5">

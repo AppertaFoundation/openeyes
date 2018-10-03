@@ -19,9 +19,13 @@
  */
 ?>
 
-<h2>Required Surgical History Sets</h2>
 
-<div class="cols-7">
+
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2>Required Surgical History Sets</h2>
+    </div>
 
     <?php
     $columns = array(

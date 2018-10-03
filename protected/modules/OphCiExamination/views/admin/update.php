@@ -25,26 +25,32 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'label' => 2,
         'field' => 5,
     ),
-));
+)); ?>
 
-$this->renderPartial('form_' . Helper::getNSShortname($model), array(
-    'model' => $model,
-    'form' => $form,
-    'title' => $title,
-));
+<div class="cols-5">
 
-echo $form->formActions(array(
-    'submit' => $model->isNewRecord ? 'Create' : 'Save',
-    'cancel' => 'Cancel',
-    'delete' => false,
-    'cancel-uri' => @$cancel_uri,
-));
-$this->endWidget();
-?>
-
-<?php if (@$related_view) {
-    $this->renderPartial($related_view, array(
-        'model' => $model,
-    )) ?>
     <?php
-} ?>
+    $this->renderPartial('form_' . Helper::getNSShortname($model), array(
+        'model' => $model,
+        'form' => $form,
+        'title' => $title,
+    )); ?>
+
+    <?php
+    echo $form->formActions(array(
+        'submit' => $model->isNewRecord ? 'Create' : 'Save',
+        'cancel' => 'Cancel',
+        'delete' => false,
+        'cancel-uri' => @$cancel_uri,
+    ));
+    $this->endWidget(); ?>
+
+    <hr class="divider">
+
+    <?php if (@$related_view) {
+        $this->renderPartial($related_view, array(
+            'model' => $model,
+        )) ?>
+    <?php } ?>
+
+</div>

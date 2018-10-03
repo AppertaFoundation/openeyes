@@ -17,8 +17,6 @@
  */
 ?>
 
-<h2>Edit <?php echo $title ?></h2>
-
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'adminform',
@@ -38,6 +36,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 $this->renderPartial('form_' . get_class($model), array(
     'model' => $model,
     'form' => $form,
+    'title' => $title,
 )) ?>
 
 <?php echo $form->formActions(array('cancel-uri' => @$cancel_uri)) ?>

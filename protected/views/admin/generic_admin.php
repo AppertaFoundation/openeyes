@@ -18,7 +18,7 @@
 if (!@$options['get_row']) {
     $this->renderPartial('//base/_messages') ?>
 
-    <div class="row divider">
+    <div class="row divider <?= $options['div_wrapper_class'] ?>" >
         <h2><?php echo $title ?></h2>
     </div>
 

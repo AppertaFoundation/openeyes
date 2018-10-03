@@ -20,36 +20,37 @@
 
 <?php echo $form->hiddenField($model, 'id') ?>
 
-<div class="cols-4">
-    <table class="cols-full last-left standard">
-        <colgroup>
-            <col class="cols-1">
-            <col class="cols-1">
-        </colgroup>
-        <tbody>
-        <tr>
-            <td>Name</td>
-            <td>
-                <?= CHtml::activeTextField(
-                    $model,
-                    'name',
-                    ['autocomplete' => Yii::app()->params['html_autocomplete']]
-                ) ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Active</td>
-            <td>
-                <?php
-                $isActive = ($model->active == 1 ? 'checked' : '');
-                echo CHtml::activeCheckBox(
-                    $model,
-                    'active',
-                    ['checked' => $isActive]
-                );
-                ?>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<table class="standard">
+    <colgroup>
+        <col class="cols-1">
+        <col class="cols-3">
+    </colgroup>
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td>
+            <?= CHtml::activeTextField(
+                $model,
+                'name',
+                [
+                    'class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                ]
+            ) ?>
+        </td>
+    </tr>
+    <tr>
+        <td>Active</td>
+        <td>
+            <?php
+            $isActive = ($model->active == 1 ? 'checked' : '');
+            echo CHtml::activeCheckBox(
+                $model,
+                'active',
+                ['checked' => $isActive]
+            );
+            ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

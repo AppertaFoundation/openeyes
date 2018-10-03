@@ -31,7 +31,7 @@
     ?>
 </div>
 
-<div class="cols-4">
+<div class="cols-5">
     <form id="admin_treatment_drugs">
         <table class="standard">
             <thead>

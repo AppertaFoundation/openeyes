@@ -264,8 +264,8 @@ class AdminController extends ModuleAdminController
         Audit::add('admin', 'list', null, null, array('module' => 'OphCoTherapyapplication', 'model' => 'OphCoTherapyapplication_DecisionTree'));
 
         $this->render('list', array(
-                'dataProvider' => $data_provider,
-                'title' => 'Decision Trees',
+            'dataProvider' => $data_provider,
+            'title' => 'Decision Trees',
         ));
     }
 

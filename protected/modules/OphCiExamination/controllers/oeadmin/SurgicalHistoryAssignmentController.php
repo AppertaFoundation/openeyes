@@ -57,7 +57,7 @@
             $this->render('/admin/surgicalhistoryassignment/edit',array(
                 'model' => $model,
                 'errors' => $errors,
-                'title' => 'Edit Required Surgical History Set',
+                'title' => 'Create Required Surgical History Set',
             ));
         }
 
@@ -73,7 +73,7 @@
             $this->render('/admin/surgicalhistoryassignment/edit',array(
                 'model' => $model,
                 'errors' => $errors,
-                'title' => 'Create Required Surgical History Set',
+                'title' => 'Edit Required Surgical History Set',
             ));
         }
 
