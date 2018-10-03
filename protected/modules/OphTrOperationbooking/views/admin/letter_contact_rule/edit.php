@@ -17,33 +17,36 @@
  */
 ?>
 
-<div class="row divider">
-    <h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
-</div>
-
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'adminform',
-            'enableAjaxValidation' => false,
-            'focus' => '#contactname',
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ))?>
+<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => 'adminform',
+        'enableAjaxValidation' => false,
+        'focus' => '#contactname',
+        'layoutColumns' => array(
+            'label' => 2,
+            'field' => 5,
+        ),
+    ))?>
 
 <div class="cols-5">
+    <div class="row divider">
+        <h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
+    </div>
+
     <?php echo $form->errorSummary($rule); ?>
     <table class="standard">
         <colgroup>
             <col class="cols-2">
-            <col class="cols-2">
+            <col class="cols-4">
         </colgroup>
         <tbody>
         <tr>
             <td><?=$rule->getAttributeLabel('parent_rule_id');?></td>
-            <td><?=\CHtml::activeDropDownList($rule, 'rule_order',
-                    CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'),
-                    ['empty' => '- None -', 'class' => 'cols-full']);?>
+            <td><?=\CHtml::activeDropDownList(
+                $rule,
+                'rule_order',
+                CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'),
+                ['empty' => '- None -', 'class' => 'cols-full']
+            ); ?>
             </td>
         </tr>
         <tr>
@@ -52,53 +55,55 @@
         </tr>
         <?php $dropdowns = [
             'site_id' => Site::model()->getListForCurrentInstitution('name'),
-            'firm_id' => Firm::model()->getListWithSpecialties(), array('empty' => '- Not set -'),
-            'subspecialty_id' => CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty()),
-            'theatre_id' => [],
+            'firm_id' => Firm::model()->getListWithSpecialties(),
+            'subspecialty_id' => CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'),
+            'theatre_id' => CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->findAll(), 'id', 'name')
         ]; ?>
         <?php foreach ($dropdowns as $attr => $data) : ?>
             <tr>
                 <td><?=$rule->getAttributeLabel($attr);?></td>
-                <td></td>
+                <td><?=\CHtml::activeDropDownList(
+                    $rule,
+                    $attr,
+                    $data,
+                    ['empty' => '- Not set -', 'class' => 'cols-full']
+                ); ?>
+                </td>
             </tr>
         <?php endforeach; ?>
-
+        <?php $dropdowns = ['refuse_telephone', 'refuse_title', 'health_telephone']; ?>
+        <?php foreach ($dropdowns as $attr => $data) : ?>
+            <tr>
+                <td><?=$rule->getAttributeLabel($data);?></td>
+                <td><?=\CHtml::activeTextField($rule, $data, ['class' => 'cols-full']) ?></td>
+            </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
-</div>
 
-	<?php echo $form->dropDownList($rule, 'parent_rule_id', CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'), array('empty' => '- None -'))?>
-	<?php echo $form->textField($rule, 'rule_order', array(), array(), array('field' => 2))?>
-	<?php echo $form->dropDownList($rule, 'site_id', Site::model()->getListForCurrentInstitution('name'), array('empty' => '- Not set -'))?>
-	<?php echo $form->dropDownList($rule, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Not set -'))?>
-	<?php echo $form->dropDownList($rule, 'subspecialty_id', CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'), array('empty' => '- Not set -'))?>
-	<?php echo $form->dropDownList($rule, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', array('empty' => '- Not set -'))?>
-	<?php echo $form->textField($rule, 'refuse_telephone', array('size' => 20))?>
-	<?php echo $form->textField($rule, 'refuse_title', array('size' => 90))?>
-	<?php echo $form->textField($rule, 'health_telephone', array('size' => 90))?>
-	<?php if ($rule->children) {?>
-		<div class="data-group">
-			<div class="cols-<?php echo $form->layoutColumns['label'];?> column">
-				<div class="field-label">
-					Descendants:
-				</div>
-			</div>
-			<div class="cols-<?php echo 12 - $form->layoutColumns['label'];?> column">
-				<div class="panel" style="margin:0">
-					<?php $this->widget('CTreeView', array(
-					    'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
-          )); ?>
-				</div>
-			</div>
-		</div>
-	<?php }?>
+    <?php if ($rule->children) { ?>
+        <div class="data-group">
+            <div class="cols-<?php echo $form->layoutColumns['label']; ?> column">
+                <div class="field-label">
+                    Descendants:
+                </div>
+            </div>
+            <div class="cols-<?php echo 12 - $form->layoutColumns['label']; ?> column">
+                <div class="panel" style="margin:0">
+                    <?php $this->widget('CTreeView', array(
+                        'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
+                    )); ?>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 
-	<?php echo $form->errorSummary($rule); ?>
-	<?php echo $form->formActions(array(
+    <?php echo $form->errorSummary($rule); ?>
+    <?php echo $form->formActions(array(
         'delete' => $rule->id ? 'Delete' : false,
-    ));?>
-	<?php $this->endWidget()?>
-
+    )); ?>
+    <?php $this->endWidget() ?>
+</div>
 
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function() {

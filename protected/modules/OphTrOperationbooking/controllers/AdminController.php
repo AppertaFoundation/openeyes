@@ -277,7 +277,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterContactRule';
 
-        $this->render('deletelettercontactrule', array(
+        $this->render('/admin/letter_contact_rule/delete', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -318,7 +318,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Admission_Letter_Warning_Rule'));
 
-        $this->render('letterwarningrules', array(
+        $this->render('/admin/letter_warning_rules/index', array(
             'data' => OphTrOperationbooking_Admission_Letter_Warning_Rule::model()->findAllAsTree(),
         ));
     }
@@ -374,7 +374,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('editletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -403,7 +403,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('editletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -430,7 +430,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'LetterWarningRule';
 
-        $this->render('deleteletterwarningrule', array(
+        $this->render('/admin/letter_warning_rules/delete', array(
             'rule' => $rule,
             'errors' => $errors,
         ));

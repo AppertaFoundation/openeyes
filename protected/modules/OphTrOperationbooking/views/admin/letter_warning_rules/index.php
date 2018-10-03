@@ -16,25 +16,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
 <div class="row flex-layout divider">
-    <h2 class="box-title flex-left">Letter contact rules</h2>
-    <?=\CHtml::submitButton('Add letter contact rule', ['class' => 'button large flex-right', 'id' => 'et_add_letter_contact_rule']); ?>
+    <h2 class="box-title flex-left">Letter warning rules</h2>
+    <?= \CHtml::submitButton('Add letter warning rule', ['class' => 'button large flex-right', 'id' => 'et_add_letter_contact_rule']); ?>
 </div>
+
 
 <div class="row divider">
     <form id="rulestest" class="panel">
         <table class="standard">
             <tr>
                 <td class="fade">Test</td>
+                <td><?= \CHtml::dropDownList('lcr_rule_type_id', '', CHtml::listData(OphTrOperationbooking_Admission_Letter_Warning_Rule_Type::model()->findAll(), 'id', 'name'), ['class' => 'cols-11', 'empty' => '- Rule -']) ?></td>
                 <td><?= \CHtml::dropDownList('lcr_site_id', '', Site::model()->getListForCurrentInstitution('name'), ['class' => 'cols-11', 'empty' => '- Site -']) ?></td>
                 <td><?= \CHtml::dropDownList('lcr_subspecialty_id', '', CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'), ['class' => 'cols-11', 'empty' => '- Subspecialty -']) ?></td>
-                <td><?= \CHtml::dropDownList('lcr_firm_id', '', [], ['empty' => '- ' . Firm::contextLabel() . ' -', 'class' => 'cols-11']) ?></td>
-                <td><?= \CHtml::dropDownList('lcr_theatre_id', '', [], ['empty' => '- Theatre -', 'class' => 'cols-11']) ?></td>
+                <td><?= \CHtml::dropDownList('lcr_firm_id', '', array(), ['class' => 'cols-11', 'empty' => '- ' . Firm::contextLabel() . ' -']) ?></td>
+                <td><?= \CHtml::dropDownList('lcr_theatre_id', '', array(), ['class' => 'cols-11', 'empty' => '- Theatre -']) ?></td>
+                <td><?= \CHtml::dropDownList('lcr_is_child', '', array('' => '- Child/adult -', '1' => 'Child', '0' => 'Adult'), ['class' => 'cols-11']) ?></td>
             </tr>
         </table>
     </form>
 </div>
+
+
 
 <div id="nomatch" class="alert-box alert hide">No match</div>
 

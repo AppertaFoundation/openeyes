@@ -17,13 +17,13 @@
  */
 ?>
 <div class="data-group">
-	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-        <?=\CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']);?>
-		<?php if ($buttonOptions['cancel']) {
-    $cancelHtmlOptions = array('class' => 'button large');
-    if (@$buttonOptions['cancel-uri']) {
-        $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
-    }
+    <div class="cols-<?php echo 12 - $layoutColumns['label']; ?> large-offset-<?php echo $layoutColumns['label']; ?> column">
+        <?= \CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']); ?>
+        <?php if ($buttonOptions['cancel']) {
+            $cancelHtmlOptions = array('class' => 'button large');
+            if (@$buttonOptions['cancel-uri']) {
+                $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
+            }
             echo CHtml::submitButton(
                 $buttonOptions['cancel'],
                 [
@@ -33,19 +33,19 @@
                     'id' => 'et_cancel',
                 ]
             );
-        }?>
-		<?php if ($buttonOptions['delete']) {
-        echo CHtml::htmlButton($buttonOptions['delete'], ['name' => 'delete', 'class' => 'button large']);
-
-}?>
+        } ?>
+        <?php if ($buttonOptions['delete']) {
+            echo CHtml::htmlButton($buttonOptions['delete'], ['name' => 'delete', 'class' => 'button large', 'id' => 'et_delete']);
+        } ?>
         <?php
-        if(isset($buttonOptions['add-snippet'])){
+        if (isset($buttonOptions['add-snippet'])) {
 
             // GenericAdmin and FormActions is so great that I cannot add extra buttons dynamically.... so let's just hardcode here
             //@TODO: get rid of the GenericAdmin (+FormActions) to not to risk devs mental health
 
             echo EventAction::link('Add Snippet', $buttonOptions['add-snippet'], array(), array('type' => 'button', 'class' => 'button large'))->toHtml();
-         } ?>
-		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-	</div>
+        } ?>
+        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+             alt="loading..." style="display: none;"/>
+    </div>
 </div>
