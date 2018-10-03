@@ -31,6 +31,24 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+    <?php if (count($this->patient->identifiers) > 0) { ?>
+      <div class="patient-numbers flex-layout">
+        <div class="local-numbers">
+            <?php foreach ($this->patient->identifiers as $identifier) { ?>
+              <div class="num">
+                  <?= $identifier->getLabel() ?>
+                <label class="inline highlight">
+                    <?= $identifier->value ?>
+                </label>
+              </div>
+            <?php } ?>
+        </div>
+        <div class="nhs-number">
+            <?= Yii::app()->params['nhs_num_label'] ?>
+            <?= $this->patient->nhsnum ?>
+        </div>
+      </div>
+    <?php } ?>
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -93,12 +111,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>GP Telephone</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
           </tr>
-          <?php foreach ($this->patient->identifiers as $identifier) { ?>
-            <tr>
-              <td><?= $identifier->getLabel() ?></td>
-              <td><?= $identifier->value ?></td>
-            </tr>
-          <?php } ?>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
