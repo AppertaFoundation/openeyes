@@ -54,11 +54,14 @@
             'site_id' => Site::model()->getListForCurrentInstitution('name'),
             'firm_id' => Firm::model()->getListWithSpecialties(), array('empty' => '- Not set -'),
             'subspecialty_id' => CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty()),
-            
+            'theatre_id' => [],
         ]; ?>
-        <?php foreach (['site_id', 'firm_id'] as $key => $item) {
-            
-        }
+        <?php foreach ($dropdowns as $attr => $data) : ?>
+            <tr>
+                <td><?=$rule->getAttributeLabel($attr);?></td>
+                <td></td>
+            </tr>
+        <?php endforeach; ?>
 
         </tbody>
     </table>
