@@ -17,21 +17,21 @@
  */
 ?>
 
-<div class="cols-4">
-    <table class="standard cols-full">
-        <h2><?php echo $title ?></h2>
-        <hr class="divider">
-        <tbody>
-        <tr>
-            <td >
-                <?php echo $form->hiddenField($model, 'id')?>
-                <?php echo $form->textField(
-                    $model,
-                    'name',
-                    ['autocomplete' => Yii::app()->params['html_autocomplete']]
-                ) ?>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="row divider">
+    <h2><?php echo $title ?></h2>
 </div>
+
+<table class="standard cols-full">
+    <tbody>
+    <tr>
+        <td >
+            <?php echo $form->hiddenField($model, 'id')?>
+            <?php echo $form->textField(
+                $model,
+                'name',
+                ['autocomplete' => Yii::app()->params['html_autocomplete']]
+            ) ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

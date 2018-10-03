@@ -16,14 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-4">
-    <div class="data-group">
-        <div class="cols-8 column">
-            <h2>Laser operators</h2>
-        </div>
-        <div class="cols-4 column">
-        </div>
-    </div>
+<div class="cols-5">
+
     <form id="admin_users">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <table class="standard">
@@ -33,6 +27,7 @@
                 <th>Full name</th>
             </tr>
             </thead>
+
             <tbody>
             <?php
             foreach ($operators['items'] as $i => $operator) { ?>
@@ -43,6 +38,7 @@
                 </tr>
             <?php } ?>
             </tbody>
+
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="2">
@@ -63,7 +59,6 @@
                             'id' => 'et_delete_operator'
                         ]
                     ); ?>
-
                     <?php echo $this->renderPartial('_pagination', array(
                         'pagination' => $pagination,
                     )) ?>

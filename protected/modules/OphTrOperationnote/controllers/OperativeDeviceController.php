@@ -65,6 +65,7 @@ class OperativeDeviceController extends BaseAdminController
             'name' => 'text',
             'active' => 'checkbox',
         ));
+        $admin->div_wrapper_class = 'cols-5';
         $admin->editModel();
     }
 

@@ -16,8 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-    <h2><?php echo $laser_operator->id ? 'Edit' : 'Add' ?> laser operator</h2>
+
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $laser_operator->id ? 'Edit' : 'Add' ?> laser operator</h2>
+    </div>
+
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
@@ -28,12 +33,44 @@
             'field' => 5,
         ),
     )) ?>
+
     <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-    <?php echo $form->dropDownList($laser_operator, 'user_id', CHtml::listData(User::model()->findAll(array('condition' => 'active = 1', 'order' => 'last_name, first_name')), 'id', 'reversedFullName'), array('empty' => '- Select -')) ?>
-    <?php echo $form->formActions(array(
-        'delete' => $laser_operator->id ? 'Delete' : false,
-        'cancel-uri' => 'viewLaserOperators',
-    )); ?>
+
+    <table class="standard cols-full" id="finding-table">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Operator</td>
+            <td>
+                <?php echo CHtml::activeDropDownList(
+                    $laser_operator,
+                    'user_id',
+                    CHtml::listData(
+                        User::model()->findAll(array('condition' => 'active = 1', 'order' => 'last_name, first_name')),
+                        'id',
+                        'reversedFullName'
+                    ),
+                    ['class' => 'cols-full', 'empty' => '- Select -']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?php echo $form->formActions(array(
+                    'delete' => $laser_operator->id ? 'Delete' : false,
+                    'cancel-uri' => 'viewLaserOperators',
+                )); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+
     <?php $this->endWidget() ?>
 </div>
 

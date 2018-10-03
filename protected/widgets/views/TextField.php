@@ -31,7 +31,7 @@
     </div>
 <?php } else { ?>
   <div id="div_<?=\CHtml::modelName($element) ?>_<?= $field ?>"
-       class="data-group flex-layout flex-left cols-full"<?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;"<?php } ?> >
+       class="data-group flex-layout cols-full"<?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;"<?php } ?> >
     <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <?php
         $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];

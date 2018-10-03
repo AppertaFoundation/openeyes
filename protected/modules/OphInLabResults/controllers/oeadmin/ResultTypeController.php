@@ -58,7 +58,7 @@ class ResultTypeController  extends ModuleAdminController
             'result_element_id' => array(
                 'widget' => 'DropDownList',
                 'options' => $options,
-                'htmlOptions' => null,
+                'htmlOptions' => ['class' => 'cols-full'],
                 'hidden' => false,
                 'layoutColumns' => null,
             ),

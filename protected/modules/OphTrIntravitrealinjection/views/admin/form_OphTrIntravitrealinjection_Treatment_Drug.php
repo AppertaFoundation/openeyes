@@ -17,11 +17,16 @@
  */
 ?>
 
-<div class="cols-4">
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
+
     <table class="cols-full last-left standard">
         <colgroup>
             <col class="cols-1">
-            <col class="cols-1">
+            <col class="cols-3">
         </colgroup>
         <tbody>
         <tr>
@@ -30,7 +35,10 @@
                 <?= CHtml::activeTextField(
                     $model,
                     'name',
-                    ['autocomplete' => Yii::app()->params['html_autocomplete']]
+                    [
+                        'class' => 'cols-full',
+                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                    ]
                 ) ?>
             </td>
         </tr>

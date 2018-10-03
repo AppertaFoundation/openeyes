@@ -16,7 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php $this->renderPartial('//base/_messages') ?>
+
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -28,9 +30,8 @@
     $this->endWidget();
     ?>
 </div>
-<div class="cols-7">
-    <h2><?php echo $title ?></h2>
-    <hr class="divider">
+
+<div class="cols-5">
     <form id="admin_workflowrules">
         <table class="standard">
             <thead>
@@ -47,25 +48,17 @@
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphCiExamination/admin/editWorkflowRule/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="workflowrules[]" value="<?php echo $model->id ?>"/></td>
-                    <td>
-                        <?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?>
-                    </td>
-                    <td>
-                        <?php echo $model->firm ? $model->firm->name : 'All' ?>
-                    </td>
-                    <td>
-                        <?php echo $model->episode_status ? $model->episode_status->name : 'All' ?>
-                    </td>
-                    <td>
-                        <?php echo $model->workflow->name ?>
-                    </td>
+                    <td><?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?></td>
+                    <td><?php echo $model->firm ? $model->firm->name : 'All' ?></td>
+                    <td><?php echo $model->episode_status ? $model->episode_status->name : 'All' ?></td>
+                    <td><?php echo $model->workflow->name ?></td>
                 </tr>
             <?php } ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?=\CHtml::button(
+                    <?= \CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -74,7 +67,7 @@
                             'data-uri' => '/OphCiExamination/admin/addWorkflowRule',
                         ]
                     ); ?>
-                    <?=\CHtml::button(
+                    <?= \CHtml::button(
                         'Delete',
                         [
                             'class' => 'button large',

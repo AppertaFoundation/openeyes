@@ -233,7 +233,7 @@ class AdminController extends \ModuleAdminController
         }
 
         $this->render('create', array(
-                'model' => $model,
+            'model' => $model,
         ));
     }
 

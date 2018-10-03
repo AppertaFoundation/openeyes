@@ -32,8 +32,6 @@
 </div>
 
 <div class="cols-4">
-    <h2><?php echo $title ?></h2>
-    <hr class="divider">
     <form id="admin_workflows">
         <table class="standard">
             <thead>

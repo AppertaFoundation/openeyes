@@ -43,7 +43,7 @@
             <tr>
                 <td colspan="2">
                     <?= CHtml::submitButton('Save', ['class' => 'button large']); ?>
-                    <?= CHtml::button('Cancel', ['class' => 'button large','type' => 'button', 'id' => 'draggablelist-cancel']); ?>
+                    <?= CHtml::button('Cancel', ['class' => 'button large', 'type' => 'button', 'id' => 'draggablelist-cancel']); ?>
                 </td>
             </tr>
             <tr class="available-items">
