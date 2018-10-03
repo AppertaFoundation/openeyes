@@ -7,7 +7,7 @@ $(document).ready(function(){
         if(subspecialty_id){
             jQuery.ajax({
                 url: baseUrl + "/firm/getFirmsBySubspecialty",
-                data: {"subspecialty_id": subspecialty_id},
+                data: {"subspecialty_id": subspecialty_id , "runtime_selectable" : true},
                 dataType: "json",
                 beforeSend: function () {
                     $('.loader').show();

@@ -20,12 +20,16 @@
   <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
   <div style="z-index:10; position: relative; width: 150px; top: -800px;">
     <form action="#OphCiExamination_Episode_MedicalRetinalHistory" >
-        <?= CHtml::dropDownList(
+      <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
+      <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
+      <?= CHtml::dropDownList(
             'mr_history_va_unit_id',
             $va_unit->id,
-            CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+            CHtml::listData(
+              OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
                 'id',
-                'name')) ?>
+                'name')
+      ) ?>
     </form>
   </div>
 </div>

@@ -42,7 +42,7 @@
         });
     }
 </script>
-<tr data-id="<?php echo $i + 1 ?>" filename="<?php echo basename($log['filename']); ?>"
+<tr data-id="<?php echo $i + 1 ?>" data-filename="<?php echo basename($log['filename']); ?>"
     processor_id="<?php echo $log['processor_id']; ?>" status="<?php echo $log['status']; ?>">
     <td> <?php echo wordwrap(basename($log['filename']), 12, "\n", true); ?></td>
     <td> <?php echo $log['import_datetime']; ?></td>
@@ -63,7 +63,7 @@
             <p><b><?php echo basename($log['filename']) ?></b></p>
             <button onclick="reprocessFile('<?php echo $log['filename']?>', this)" style="float:right;margin-bottom: 20px;">Reprocess file</button>
             <p><b>History</b> <br>
-            <table class="grid audit-logs">
+            <table class="standard audit-logs">
                 <thead>
                 <tr>
                     <th>Status</th>
@@ -91,7 +91,7 @@
             </p>
 
             <p><b>Machine Details</b></p>
-            <table class="grid audit-logs">
+            <table class="standard audit-logs">
                 <tbody id="machineDetailsData">
                 <tr>
                     <td>Make :</td>

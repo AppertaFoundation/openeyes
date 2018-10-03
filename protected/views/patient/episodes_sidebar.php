@@ -24,7 +24,9 @@ $current_episode = @$this->current_episode;
 
 <nav class="sidebar-header">
     <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
-      <button id="add-event" class="button green add-event" type="button">Add Event</button>
+        <button id="add-event" class="button green add-event" type="button">Add Event</button>
+    <?php } else { ?>
+        <button class="button add-event disabled">You have View Only rights</button>
     <?php } ?>
 </nav>
 
@@ -46,3 +48,13 @@ $current_episode = @$this->current_episode;
 
     ?>
 </nav>
+
+<div class="oe-event-quickview" id="js-event-quickview" style="display: none;">
+  <div class="event-quickview">
+    <div class="quickview-details">
+      <div class="event-icon"></div>
+      <div class="event-date" id="js-quickview-date"></div>
+    </div>
+    <div class="quickview-screenshots"></div>
+  </div>
+</div>

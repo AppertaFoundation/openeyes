@@ -111,7 +111,8 @@
           <?php echo $element->getAttributeLabel('MultiSelect_Difficulties') ?>
       </td>
       <td>
-          <?php echo $form->multiSelectList(
+          <?php
+          echo $form->multiSelectList(
               $element,
               'MultiSelect_Difficulties',
               'difficulty_assignments',
@@ -136,7 +137,7 @@
           ) ?>
       </td>
     </tr>
-    <tr id="div_<?=  CHtml::modelName($element) ?>_difficulty_other"
+    <tr id="<?=  CHtml::modelName($element) ?>_difficulty_other"
         style="<?= !$element->hasMultiSelectValue('difficulties', 'Other') ? "display: none;":"" ?>">
       <td>
           <?php echo $element->getAttributeLabel('difficulty_other') ?>
@@ -174,7 +175,7 @@
               array('field' => 4)) ?>
       </td>
     </tr>
-    <tr id="div_<?= CHtml::modelName($element) ?>_complication_other"
+    <tr id="<?= CHtml::modelName($element) ?>_complication_other"
         style="<?= $element->hasMultiSelectValue('complications', 'Other') ? '' : 'display: none;' ?>">
       <td>
           <?php echo $element->getAttributeLabel('complication_other') ?>
@@ -186,3 +187,36 @@
     </tbody>
   </table>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(this).delegate('.trabeculectomy .MultiSelectList', 'MultiSelectChanged', function () {
+            if($.trim($(this).attr('id')) === 'MultiSelect_Difficulties'){
+                toggleAdditionalFields($(this), '_difficulty_other');
+
+            } else if($.trim($(this).attr('id')) ==='MultiSelect_Complications'){
+                toggleAdditionalFields($(this), '_complication_other');
+            }
+        });
+
+        function toggleAdditionalFields (element , field_name){
+            var container = element.closest('.multi-select');
+            var selections = container.find('.multi-select-selections');
+            var showOther = false;
+            var listItems = selections.find('li');
+            listItems.find('span').each(function(){
+                if($.trim($(this).text()) == 'Other'){
+                    showOther = true;
+                }
+            })
+            if (showOther) {
+                $('#<?= CHtml::modelName($element)?>'+field_name).show();
+            }
+            else {
+                $('#<?=CHtml::modelName($element)?>'+field_name).hide();
+                $('#<?= CHtml::modelName($element)?>'+field_name).find('textarea').val('');
+            }
+        }
+
+
+    });
+</script>

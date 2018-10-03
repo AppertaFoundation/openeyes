@@ -18,7 +18,7 @@
 ?>
 <div class="element-data full-width">
   <div class="data-value">
-    <ul class="dslash-list">
+    <ul class="dot-list">
           <?php if (empty($element->leaflets)) { ?>
             <li>None</li>
           <?php } else { ?>

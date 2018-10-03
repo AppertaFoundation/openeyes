@@ -50,7 +50,7 @@
             </td>
             <td>
                 <div class="cols-6">
-                    <?php echo $form->textField($element, 'length', array('nowrapper' => true, 'style' => 'width: 100%;')) ?>
+                    <?php echo $form->textField($element, 'length', ['nowrapper' => true, 'style' => 'width: 100%;']) ?>
                 </div>
             </td>
         </tr>
@@ -60,7 +60,7 @@
             </td>
             <td>
                 <div class="cols-6">
-                    <?php echo $form->textField($element, 'meridian', array('nowrapper' => true, 'style' => 'width: 100%;')) ?>
+                    <?php echo $form->textField($element, 'meridian', ['nowrapper' => true, 'style' =>'width:100%;']) ?>
                 </div>
             </td>
         </tr>
@@ -89,11 +89,14 @@
 
         <tr>
             <td colspan="2">
-                <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false,
-                    array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report')) ?>
+                <?php echo $form->textArea($element, 'report', [], false, ['rows' => 6, 'readonly' => true]) ?>
             </td>
         </tr>
-
+        <tr>
+            <td colspan="2">
+                <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
+            </td>
+        </tr>
         <tr>
             <td>
                 <?php echo $element->getAttributeLabel('iol_type_id'); ?>
@@ -101,7 +104,7 @@
             <td>
                 <div class="cols-6">
                     <?php
-                    if (isset(Yii::app()->modules["OphInBiometry"])): ?>
+                    if (isset(Yii::app()->modules["OphInBiometry"])) : ?>
                         <?php echo $form->dropDownList(
                             $element,
                             'iol_type_id',
@@ -119,7 +122,7 @@
                             $element->iol_hidden,
                             array('field' => 12)
                         ); ?>
-                    <?php else: ?>
+                    <?php else : ?>
                         <?php echo $form->dropDownList(
                             $element,
                             'iol_type_id',
@@ -154,6 +157,7 @@
             </td>
             <td>
                 <?= \CHtml::activeTextField($element, 'iol_power'); ?>
+
             </td>
         </tr>
         <tr>

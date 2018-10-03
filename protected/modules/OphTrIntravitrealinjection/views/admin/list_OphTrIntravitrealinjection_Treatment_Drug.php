@@ -31,7 +31,7 @@
 </div>
 <div class="box admin">
 	<form id="admin_treatment_drugs">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>

@@ -19,7 +19,7 @@
 <div class="box admin">
 <h2>Operation priorities</h2>
 <form id="admin_sessions">
-	<table class="grid">
+	<table class="standard">
 		<thead>
 		<tr>
 			<th><input type="checkbox" id="checkall" class="sessions" /></th>

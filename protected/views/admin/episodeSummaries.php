@@ -14,26 +14,63 @@
  */
 ?>
 <div id="episode-summary" class="box admin">
-	<div id="draggablelist">
-         <h2>Custom episode summaries</h2>
-         <?= CHtml::beginForm(array('/admin/updateEpisodeSummary'), 'post'); ?>
-             <?= CHtml::label('Subspecialty', 'subspecialty_id'); ?>
-             <?= CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name', 'specialty.name'), array('empty' => 'Default')); ?>
-             <?= CHtml::hiddenField('item_ids'); ?>
+    <div id="draggablelist">
+        <?php echo CHtml::beginForm(array('/admin/updateEpisodeSummary'), 'post'); ?>
+        <div class="cols-5 column">
+            <table class="standard">
+                <colgroup>
+                    <col class="cols-6">
+                    <col class="cols-6">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td id="subspecialty_id"><h2>Subspecialty</h2></td>
+                        <td>
+                            <?php echo CHtml::dropDownList(
+                                'subspecialty_id',
+                                $subspecialty_id,
+                                CHtml::listData(
+                                    Subspecialty::model()->findAll(),
+                                    'id',
+                                    'name',
+                                    'specialty.name'
+                                ),
+                                ['empty' => 'Default', 'class' => 'cols-full']
+                            ); ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <?php echo CHtml::hiddenField('item_ids'); ?>
              <div id="draggablelist-items" class="data-group">
-                 <div class="cols-6 column">
+                 <div class="cols-5 column">
                      <h2>Enabled items</h2>
-                     <?php $this->renderPartial('_episodeSummaries_table', array('id' => 'draggablelist-items-enabled', 'items' => $enabled_items)); ?>
-                     <div class="right">
-                         <button class="small" type="submit">Save</button>
-                         <button id="draggablelist-cancel" class="small warning" type="button">Cancel</button>
-                     </div>
+                        <?php $this->renderPartial(
+                            '_episodeSummaries_table',
+                            [
+                                'id' => 'draggablelist-items-enabled',
+                                'items' => $enabled_items
+                            ]
+                        ); ?>
                  </div>
-                <div class="cols-6 column">
+                <div class="cols-5 column">
                     <h2>Available items</h2>
-                     <?php $this->renderPartial('_episodeSummaries_table', array('id' => 'draggablelist-items-available', 'items' => $available_items)); ?>
+                    <?php $this->renderPartial(
+                        '_episodeSummaries_table',
+                        [
+                            'id' => 'draggablelist-items-available',
+                            'items' => $available_items
+                        ]
+                    ); ?>
                  </div>
              </div>
-         <?= CHtml::endForm(); ?>
+        <div class="right">
+            <button class="small" type="submit">Save</button>
+            <button id="draggablelist-cancel"
+                    class="small warning"
+                    type="button">Cancel</button>
+        </div>
+        <?php echo CHtml::endForm(); ?>
      </div>
 </div>

@@ -23,17 +23,34 @@ namespace OEModule\OphCoCvi;
  *
  * The followings are the available columns in table:
  * @property string $moduleShortSuffix
-  */
-
+ */
 class OphCoCviModule extends \BaseEventTypeModule
 {
-	public $controllerNamespace = '\OEModule\OphCoCvi\controllers';
-    
+    public $controllerNamespace = '\OEModule\OphCoCvi\controllers';
+
     public function init()
     {
         $this->setImport(array(
             'application.components.odtTemplateManager.*',
+            'OphCoCvi.models.*',
+            'OphCoCvi.views.*',
+            'OphCoCvi.components.*',
+            'OphCoCvi.controllers.*',
         ));
-       
+
+        $this->setModules(array('CviAdmin'));
+
+        parent::init();
+    }
+
+    public function beforeControllerAction($controller, $action)
+    {
+        if (parent::beforeControllerAction($controller, $action)) {
+            // this method is called before any module controller action is performed
+            // you may place customized code here
+            return true;
+        } else {
+            return false;
+        }
     }
 }

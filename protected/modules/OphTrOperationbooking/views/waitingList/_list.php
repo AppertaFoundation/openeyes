@@ -15,229 +15,232 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var WaitingListController $this
+ * @var Element_OphTrOperationbooking_Operation[] $operations
+ */
+
+if (isset($_POST['status']) && $_POST['status'] != '') {
+    $operations = array_filter($operations, function ($operation) {
+        return $operation->getNextLetter() == $_POST['status'];
+    });
+}
+
 ?>
 
-<h2>Search Results:</h2>
-
-<div class="panel">
-
-	<div id="pas_warnings" class="alert-box alert with-icon hide">
-		<ul>
-			<li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
-			<li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>
-		</ul>
-		<a href="#" class="close">×</a>
-	</div>
-
-	<table class="grid waiting-list">
-		<thead>
-		<tr>
-			<th>Letters sent</th>
-			<th>Patient</th>
-			<th>Hospital number</th>
-			<th>Location</th>
-			<th>Procedure</th>
-			<th>Eye</th>
-			<th>Firm</th>
-			<th>Decision date</th>
-			<th>Priority</th>
-			<th>Complexity</th>
-			<th>Book status (requires...)</th>
-			<th>
-				<label>
-					<input type="checkbox" id="checkall" value="" /> All
-				</label>
-			</th>
-            <?php if($this->module->isTheatreDiaryDisabled()): ?>
-            <th></th>
-            <?php endif; ?>
-		</tr>
-		</thead>
-		<tbody>
-		<?php if (empty($operations)) {?>
-			<tr>
-				<td>
-					There are no patients who match the specified criteria.
-				</td>
-			</tr>
-		<?php } else {?>
-			<?php
-            $i = 0;
-    foreach ($operations as $eo) {
-        $patient = $eo->event->episode->patient;
-        $contact = $patient->contact;
-        if (isset($_POST['status']) and $_POST['status'] != '') {
-            if ($eo->getNextLetter() != $_POST['status']) {
-                continue;
-            }
-                }?>
-
-				<?php if ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_PURPLE) {
-    $letterStatusClass = 'send-invitation-letter';
-} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
-    $letterStatusClass = 'send-another-reminder';
-} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
-    $letterStatusClass = 'send-another-reminder';
-} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
-    $letterStatusClass = 'send-gp-removal-letter';
-} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
-    $letterStatusClass = 'patient-due-removed';
-} else {
-    $letterStatusClass = '';
-                }?>
-
-				<tr>
-					<?php //FIXME: waiting list color needs adding to style for below to work ?>
-					<td class="letter-status <?php echo $letterStatusClass ?>">
-						<?php if ($eo->sentInvitation()) {?>
-							<img src="<?php echo $assetPath?>/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17" />
-						<?php }?>
-						<?php if ($eo->sent1stReminder()) {?>
-							<img src="<?php echo $assetPath?>/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17" />
-						<?php }?>
-						<?php if ($eo->sent2ndReminder()) {?>
-							<img src="<?php echo $assetPath?>/img/letterIcons/letter2.png" alt="2nd reminder" width="17" height="17" />
-						<?php }?>
-						<?php if ($eo->sentGPLetter()) {?>
-							<img src="<?php echo $assetPath?>/img/letterIcons/GP.png" alt="GP" width="17" height="17" />
-						<?php }?>
-					</td>
-					<td class="patient">
-						<?php echo CHtml::link('<strong>'.trim(strtoupper($contact->last_name)).'</strong>, '.$contact->first_name." ({$patient->age})", Yii::app()->createUrl('/OphTrOperationbooking/default/view/'.$eo->event_id))?>
-					</td>
-					<td><?php echo $patient->hos_num ?></td>
-					<td><?php echo $eo->site->short_name?></td>
-					<td><?php echo $eo->getProceduresCommaSeparated('short_format') ?></td>
-					<td><?php echo $eo->eye->name ?></td>
-					<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</td>
-					<td><?php echo $eo->NHSDate('decision_date') ?></td>
-					<td><?php echo $eo->priority->name?></td>
-					<td><?php echo $eo->getComplexityCaption();?></td>
-					<td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
-					<td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
-
-						<?php if (($patient && $patient->contact->correspondAddress)
-                            && $eo->id
-                            && ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
-                                || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
-                            )) {?>
-							<div>
-								<input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $eo->id ?>" value="1" />
-							</div>
-						<?php }?>
-
-						<?php if (!$patient->practice || !$patient->practice->contact->address) { ?>
-							<script type="text/javascript">
-								$('#pas_warnings').show();
-								$('#pas_warnings .no_gp').show();
-							</script>
-							<span class="no-gp error">No GP</span>
-						<?php }?>
-
-						<?php if ($patient && !$patient->contact->correspondAddress) { ?>
-							<script type="text/javascript">
-								$('#pas_warnings').show();
-								$('#pas_warnings .no_address').show();
-							</script>
-							<span class="no-address error">No Address</span>
-						<?php }?>
-					</td>
-                    <?php if($this->module->isTheatreDiaryDisabled()): ?>
-                    <td>
-                        <button data-event-id="<?php echo $eo->event_id; ?>" class="small btn-booked">Booked</button>
-                    </td>
-                    <?php endif; ?>
-				</tr>
-				<?php
-                ++$i;
-    }
-
-            if ($i == 0) {?>
-				<tr>
-					<td colspan="7">
-						There are no patients who match the specified criteria.
-					</td>
-				</tr>
-			<?php }?>
-		<?php }?>
-		</tbody>
-		<tfoot>
-		<tr>
-			<td colspan="11" class="waiting-list-key">
-				<h3>Colour Key:</h3>
-				<ul class="inline-list">
-					<li>
-						<span class="key-box send-invitation-letter"></span>
-						Send invitation letter
-					</li>
-					<li>
-						<span class="key-box send-another-reminder"></span>
-						Send another reminder (2 weeks)
-					</li>
-					<li>
-						<span class="key-box send-gp-removal-letter"></span>
-						Send GP removal letter
-					</li>
-					<li>
-						<span class="key-box patient-due-removed"></span>
-						Patient is due to be removed
-					</li>
-				</ul>
-		</tr>
-		<tr>
-			<td colspan="11" class="letters-sent-out">
-				<h3>Letters sent out:</h3>
-				<ul class="inline-list">
-					<li>
-						<img src="<?php echo $assetPath?>/img/letterIcons/invitation.png" alt="Invitation" height="17" width="17">
-						- Invitation
-					</li>
-					<li>
-						<img src="<?php echo $assetPath?>/img/letterIcons/letter1.png" alt="1st reminder" height="17" width="17">
-						- 1 <sup>st</sup> Reminder
-					</li>
-					<li>
-						<img src="<?php echo $assetPath?>/img/letterIcons/letter2.png" alt="2nd reminder" height="17" width="17">
-						- 2 <sup>nd</sup> Reminder
-					</li>
-					<li>
-						<img src="<?php echo $assetPath?>/img/letterIcons/GP.png" alt="GP" height="17" width="17">
-						- GP Removal
-					</li>
-				</ul>
-			</td>
-		</tr>
-		</tfoot>
-	</table>
+<div id="pas_warnings" class="alert-box alert with-icon" style="display: none;">
+  <ul>
+    <li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
+    <li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>
+  </ul>
+  <a href="#" class="close">×</a>
 </div>
+
+<table class="standard waiting-list">
+  <thead>
+  <tr>
+    <th>Letters sent</th>
+    <th>Patient</th>
+    <th>Num</th>
+    <th>Location</th>
+    <th>Procedure</th>
+    <th>Eye</th>
+    <th>Firm</th>
+    <th class="right">Decision date</th>
+    <th>Priority</th>
+    <th>Complexity</th>
+    <th>Book status (requires...)</th>
+    <th>
+      <label>
+        <input id="checkall" value="" type="checkbox">
+      </label>
+    </th>
+      <?php if ($this->module->isTheatreDiaryDisabled()): ?>
+        <th></th>
+      <?php endif; ?>
+  </tr>
+  </thead>
+  <tbody>
+  <?php if (empty($operations)) { ?>
+    <tr>
+      <td>
+        There are no patients who match the specified criteria.
+      </td>
+    </tr>
+  <?php } else { ?>
+      <?php foreach ($operations as $eo) {
+          $patient = $eo->event->episode->patient;
+          $contact = $patient->contact;
+          ?>
+
+          <?php
+          switch ($eo->getWaitingListStatus()) {
+              case Element_OphTrOperationbooking_Operation::STATUS_PURPLE:
+                  $letterStatusClass = 'send-invitation-letter';
+                  break;
+              case Element_OphTrOperationbooking_Operation::STATUS_GREEN1:
+                  $letterStatusClass = 'send-another-reminder';
+                  break;
+              case Element_OphTrOperationbooking_Operation::STATUS_GREEN2:
+                  $letterStatusClass = 'send-another-reminder';
+                  break;
+              case Element_OphTrOperationbooking_Operation::STATUS_ORANGE:
+                  $letterStatusClass = 'send-gp-removal-letter';
+                  break;
+              case Element_OphTrOperationbooking_Operation::STATUS_RED:
+                  $letterStatusClass = 'patient-due-removed';
+                  break;
+              default:
+                  $letterStatusClass = '';
+                  break;
+          } ?>
+      <tr>
+        <td class="letter-status <?php echo $letterStatusClass ?>">
+            <?php if ($eo->sentInvitation()) { ?>
+              <i class="oe-i letter-in small js-has-tooltip" data-tooltip-content="Invitation Letter"></i>
+            <?php } ?>
+            <?php if ($eo->sent1stReminder()) { ?>
+              <i class="oe-i letter-1 small js-has-tooltip" data-tooltip-content="1st Reminder"></i>
+            <?php } ?>
+            <?php if ($eo->sent2ndReminder()) { ?>
+              <i class="oe-i letter-2 small js-has-tooltip" data-tooltip-content="2nd Reminder"></i>
+            <?php } ?>
+            <?php if ($eo->sentGPLetter()) { ?>
+              <i class="oe-i letter-GP small js-has-tooltip" data-tooltip-content="GP Removal"></i>
+            <?php } ?>
+        </td>
+
+        <td>
+            <?= CHtml::link(
+                '<strong>' . CHtml::encode(strtoupper(trim($contact->last_name))) . '</strong>' . CHtml::encode(" {$contact->first_name} ({$patient->age})"),
+                Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $eo->event_id)
+            ) ?>
+        </td>
+
+        <td><?= CHtml::encode($patient->hos_num) ?></td>
+        <td><?= CHtml::encode($eo->site->short_name) ?></td>
+        <td><?= $eo->getProceduresCommaSeparated('short_format') ?></td>
+        <td>
+            <?php $this->widget('EyeLateralityWidget', array('eye' => $eo->eye)); ?>
+        </td>
+        <td><?= $eo->event->episode->firm->name ?>
+          (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name ?>)
+        </td>
+        <td class="right"><span class="oe-date">
+        <?php echo Helper::convertDate2HTML($eo->NHSDate('decision_date')) ?>
+        </td>
+
+        <td><?php echo $eo->priority->name ?></td>
+        <td><?php echo $eo->getComplexityCaption(); ?></td>
+        <td><?php echo ucfirst(preg_replace('/^Requires /', '', $eo->status->name)) ?></td>
+
+
+        <td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
+
+            <?php if (($patient && $patient->contact->correspondAddress)
+                && $eo->id
+                && ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
+                    || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
+                )) { ?>
+              <div>
+                <input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?>
+                    type="checkbox" id="operation<?php echo $eo->id ?>" value="1"/>
+              </div>
+            <?php } ?>
+
+            <?php if (!$patient->practice || !$patient->practice->contact->address) { ?>
+              <script type="text/javascript">
+                $('#pas_warnings').show();
+                $('#pas_warnings .no_gp').show();
+              </script>
+              <span class="no-gp error">No GP</span>
+            <?php } ?>
+
+            <?php if ($patient && !$patient->contact->correspondAddress) { ?>
+              <script type="text/javascript">
+                $('#pas_warnings').show();
+                $('#pas_warnings .no_address').show();
+              </script>
+              <span class="no-address error">No Address</span>
+            <?php } ?>
+        </td>
+          <?php if ($this->module->isTheatreDiaryDisabled()): ?>
+            <td>
+              <button data-event-id="<?php echo $eo->event_id; ?>" class="button blue hint btn-booked">Booked</button>
+            </td>
+          <?php endif; ?>
+      </tr>
+      <?php } ?>
+  <?php } ?>
+  </tbody>
+  <tfoot>
+  <tr>
+    <td colspan="13">
+      <div class="waiting-list-key">
+        <h3>Key</h3>
+        <ul>
+          <li>
+            <i class="oe-i letter-in small"></i>- Invitation
+          </li>
+          <li>
+            <i class="oe-i letter-1 small"></i>- 1<sup>st</sup> Reminder
+          </li>
+          <li>
+            <i class="oe-i letter-2 small"></i>- 2<sup>nd</sup> Reminder
+          </li>
+          <li>
+            <i class="oe-i letter-GP small"></i>- GP Removal
+          </li>
+        </ul>
+        <ul>
+          <li class="send-invitation-letter">
+            Send invitation letter
+          </li>
+          <li class="send-another-reminder">
+            Send another reminder (2 weeks)
+          </li>
+          <li class="send-gp-removal-letter">
+            Send GP removal letter
+          </li>
+          <li class="patient-due-removed">
+            Patient is due to be removed
+          </li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+  </tfoot>
+</table>
+
 <script type="text/javascript">
-	$('#checkall').click(function() {
-		$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));
-	});
+  $('#checkall').click(function () {
+    $('input[id^="operation"]:enabled')
+      .attr('checked', $('#checkall').is(':checked'))
+      .trigger('change');
+  });
 
-	// Row highlighting
-	$(this).undelegate('.waiting-list td','click').delegate('.waiting-list td','click',function() {
-		var $tr = $(this).closest("tr");
-		$tr.toggleClass('hover');
-	});
+  // Row highlighting
+  $(this).undelegate('.waiting-list td', 'click').delegate('.waiting-list td', 'click', function () {
+    var $tr = $(this).closest("tr");
+    $tr.toggleClass('hover');
+  });
 
-    // Mark item as booked (in case theatre diary is disabled)
-    $(document).on("click", ".btn-booked", function(e){
-        e.preventDefault();
-        var event_id = $(this).data("event-id");
-        $.get("/OphTrOperationbooking/waitingList/setBooked?event_id="+event_id,
-                function(data){
-                    if(data.success)
-                    {
-                        window.location.reload();
-                    }
-                    else
-                    {
-                        var alert = new OpenEyes.UI.Dialog.Alert({
-                            content: 'An error occured: '+data.message
-                        });
-                        alert.open();
-                    }
-                });
-    })
+  // Mark item as booked (in case theatre diary is disabled)
+  $(document).on("click", ".btn-booked", function (e) {
+    e.preventDefault();
+    var event_id = $(this).data("event-id");
+    $.get("/OphTrOperationbooking/waitingList/setBooked?event_id=" + event_id,
+      function (data) {
+        if (data.success) {
+          window.location.reload();
+        }
+        else {
+          var alert = new OpenEyes.UI.Dialog.Alert({
+            content: 'An error occured: ' + data.message
+          });
+          alert.open();
+        }
+      });
+  })
 </script>

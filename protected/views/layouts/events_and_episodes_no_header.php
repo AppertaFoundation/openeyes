@@ -26,6 +26,8 @@
 </head>
 
 <body class="open-eyes oe-grid">
+<!-- Minimum screed width warning -->
+<div id="oe-minimum-width-warning">Please increase your browser window</div>
 
 <?php //$this->renderPartial('//base/_banner_watermark'); ?>
 <?php $this->renderPartial('//base/_debug'); ?>
@@ -33,6 +35,9 @@
 <!-- Branding (logo) -->
 <div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+<div id="oe-restrict-print">
+    <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
 </div>
 
 <?php $this->renderPartial('//base/_header'); ?>

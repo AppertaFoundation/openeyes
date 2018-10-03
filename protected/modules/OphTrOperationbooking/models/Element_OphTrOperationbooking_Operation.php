@@ -84,6 +84,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         self::COMPLEXITY_HIGH => 'High'
     );
 
+    public static $complexity_colors = array(
+        self::COMPLEXITY_LOW => 'green',
+        self::COMPLEXITY_MEDIUM => 'amber',
+        self::COMPLEXITY_HIGH => 'red'
+    );
+
     const OVERNIGHT_STAY_NOT_REQUIRED_ID = 1;
 
     public $service;
@@ -442,7 +448,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if( !count($this->anaesthetic_type_assignments)){;
+        if( !count($this->anaesthetic_type_assignments)){
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -547,6 +553,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return;
     }
 
+    /**
+     * @return int
+     */
     public function getNextLetter()
     {
         if (is_null($this->getLastLetter())) {
@@ -1690,5 +1699,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function getComplexityCaption()
     {
         return array_key_exists($this->complexity, self::$complexity_captions) ? self::$complexity_captions[$this->complexity] : 'N/A';
+    }
+
+    public function getComplexityColor()
+    {
+        return array_key_exists($this->complexity, self::$complexity_colors) ? self::$complexity_colors[$this->complexity] : '';
     }
 }

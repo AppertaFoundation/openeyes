@@ -39,51 +39,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     VanHerickController.prototype.initialise = function () {
-        // in case if the user removes then re-adds the element
-        $('.' + this.imgContainerClass + '.ui-dialog-content').closest('.ui-dialog').remove();
-
-        this.initialiseDialog();
     };
 
     VanHerickController.prototype.initialiseTriggers = function () {
 
         var controller = this;
-        var $dialog = $("." + controller.imgContainerClass);
+        var $dialogContent = $("." + controller.imgContainerClass);
 
         this.$element.on('click', '.' + this.imgLinkClass, function () {
-            let side = $(this).closest('.element-eye').data('side');
+            let side = $(this).closest('.js-element-eye').data('side');
+            $dialogContent.data('side', side);
 
-            $dialog.data('side', side);
-            $dialog.dialog('open');
-        });
-
-        $('.' + this.imgContainerClass).on('click', 'map area', function () {
-            let value = $(this).data('vh');
-            let side = $dialog.data('side');
-            let $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
-
-            $dropdown.find('option').attr('selected', function () {
-                return ($(this).text() === value);
+            let dialog = new OpenEyes.UI.Dialog({
+                title: 'Foster Images',
+                content: $dialogContent.clone()
             });
+            // Remove any max-height limits so the images can appear without a scroll bar
+            dialog.content.find('.oe-popup-content').css('max-height', 'unset');
+            dialog.open();
 
-            $dialog.dialog('close');
+            $('.' + controller.imgContainerClass).on('click', 'map area', function () {
+                let value = $(this).data('vh');
+                let $dropdown = controller.$element.find('select[name*="[' + side + '_van_herick_id]"]');
 
-        });
-    };
+                $dropdown.find('option').attr('selected', function () {
+                    return ($(this).text() === value);
+                });
 
-    VanHerickController.prototype.initialiseDialog = function () {
-        let controller = this;
-
-        //@TODO: OK, this is BAD, but didn't find any workaround - let me know if can fix it!
-        // Without setTimeout the .dialog('open') won't work : cannot call methods on dialog prior to initialization; attempted to call method 'open'
-        setTimeout(function(){
-            $("." + controller.imgContainerClass).dialog({
-                autoOpen: false,
-                modal: true,
-                resizable: false,
-                width: 480
+                dialog.close();
             });
-        },50);
+        });
     };
 
     exports.VanHerickController = VanHerickController;

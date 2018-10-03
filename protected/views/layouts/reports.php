@@ -15,32 +15,46 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'application.widgets');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
-<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
-	<div class="container main" role="main">
-		<?php $this->renderPartial('//base/_header'); ?>
-		<div class="container content">
-			<div class="box content admin-content">
-				<div class="data-group">
-					<aside class="cols-3 column sidebar admin">
-						<?php $this->renderPartial('//report/sidebar'); ?>
-					</aside>
-					<div class="cols-9 column content admin">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php $this->renderPartial('//base/_footer'); ?>
-	</div>
+<body class="open-eyes oe-grid">
+<!-- Minimum screed width warning -->
+<div id="oe-minimum-width-warning">Please increase your browser window</div>
+<?php $this->renderPartial('//base/_debug'); ?>
+
+<!-- Branding (logo) -->
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+
+<?php $this->renderPartial('//base/_header'); ?>
+
+<div class="oe-full-header flex-layout">
+
+  <div class="title wordcaps"><b>Reports</b></div>
+
+</div>
+<div class="oe-full-content subgrid oe-reports">
+  <nav class="oe-full-side-panel reports-panels">
+      <?php $this->renderPartial('//report/sidebar'); ?>
+  </nav>
+  <main class="oe-full-main reports-main">
+      <?php echo $content; ?>
+  </main>
+</div>
+
+<?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>
+<script type="text/javascript">
+  $(document).ready(function(){
+    window.reportSidebar = new OpenEyes.Admin.Sidebar();
+  });
+</script>

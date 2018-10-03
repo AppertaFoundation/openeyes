@@ -15,14 +15,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-    var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapper($('.openeyes-brand'));
-    $('.openeyes-brand').off('mouseenter');
+  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapper($('.openeyes-brand'));
+  $('.openeyes-brand').off('mouseenter');
+  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapper($('#js-nav-shortcuts'));
 
-    var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapper($('#js-nav-shortcuts'));
-    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $('#js-nav-hotlist-btn'), $('#js-hotlist-panel'));
+  // If the patient ticketing popup exists ...
+  var $patientTicketingPopup = $('#patient-alert-patientticketing');
+  var $hotlistNavButton = $('#js-nav-hotlist-btn');
+  if ($patientTicketingPopup.length > 0) {
+    // ... then set it up to use the hotlist nav button
+    var vc_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $patientTicketingPopup);
+    $hotlistNavButton.find('svg').get(0).classList.add('vc');
+    checkBrowserSize();
+    $(window).resize(checkBrowserSize);
+
+    function checkBrowserSize() {
+      if ($(window).width() > 1800) { // min width for ticketing panel
+        vc_nav.fixed(true);
+      } else {
+        vc_nav.fixed(false);
+      }
+    }
+  } else {
+    // .. otherwise set up the hotlist
+    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel'));
     var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
+  }
 
 	// override the behaviour for showing search results
 	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
@@ -33,6 +53,7 @@ $(document).ready(function(){
 				.append( '<a>' + highlightedResult + '</a>' )
 				.appendTo( ul );
 	};
+
 
 	$(document).on('click', '.js-toggle', function(e) {
 
@@ -297,6 +318,33 @@ $(document).ready(function(){
     tip.css({"top": top + "px"});
 
   });
+
+    (function elementSubgroup() {
+        let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
+        if( $viewstate_btns.length === 0 ) {
+            return;
+        }
+        $viewstate_btns.each( function(){
+            new Viewstate( $(this) );
+        });
+
+        function Viewstate( $icon ){
+            let view_state = this;
+            let $content = $('#' + $icon.data('subgroup') );
+
+            $icon.click( function( e ){
+                e.preventDefault();
+                view_state.changeState();
+            });
+
+            this.changeState = function(){
+                $content.toggle();
+                $icon.toggleClass('collapse expand');
+            }
+
+        }
+    })();
+
 
 });
 

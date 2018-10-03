@@ -18,45 +18,47 @@
 ?>
 <?php if (isset($errors) && !empty($errors)) {
     ?>
-	<div class="alert-box error with-icon<?php if(isset($bottom) && $bottom) {
-    echo ' bottom';
-}
+    <div class="alert-box error with-icon<?php if (isset($bottom) && $bottom) {
+        echo ' bottom';
+    }
     ?>">
-		<p>Please fix the following input errors:</p>
-		<?php foreach ($errors as $field => $errs) { ?>
-			<?php foreach ($errs as $err) { ?>
-				<ul>
-					<li>
-						<?php echo $field.': '.$err?>
-					</li>
-				</ul>
-			<?php } ?>
-		<?php } ?>
-	</div>
+        <p>Please fix the following input errors:</p>
+        <?php foreach ($errors as $field => $errs) { ?>
+            <?php foreach ($errs as $err) { ?>
+                <ul>
+                    <li>
+                        <?php echo $field . ': ' . $err ?>
+                    </li>
+                </ul>
+            <?php } ?>
+        <?php } ?>
+    </div>
 <?php } ?>
 <script type="text/javascript">
-	$(document).ready(function () {
-		<?php if (isset($elements) && is_array($elements)) {
-                foreach ($elements as $element) { ?>
-		var errorObject = <?php $element->getFrontEndErrors(); ?>;
-		for (k = 0; k < errorObject.length; k++) {
-      var $field = $('#' + errorObject[k]);
-      $field.closest('.element').find('.element-title').addClass('error');
-      if ($field.length) {
-			  if ($field.is('tr')||$field.is('input')) {
-			    $field.addClass('highlighted-error error');
-        } else {
-          if(!$field.parent().hasClass('highlighted-error error')) {
-            $field.addClass('highlighted-error');
-          }
+    $(document).ready(function () {
+        <?php if (isset($elements) && is_array($elements)) {
+        foreach ($elements as $element) { ?>
+        var errorObject = <?php $element->getFrontEndErrors(); ?>;
+        for (k = 0; k < errorObject.length; k++) {
+            var $field = $('#' + errorObject[k]);
+            $field.closest('.element').find('.element-title').addClass('error');
+            if ($field.length) {
+                if ($field.is('tr') || $field.is('input')) {
+                    $field.addClass('highlighted-error error');
+                } else {
+                    if (!$field.parent().hasClass('highlighted-error error')) {
+                        $field.addClass('highlighted-error');
+                    }
+                }
+            } else {
+                if (!$('[id*="' + errorObject[k] + '"]').hasClass('error')) {
+                    $('[id*="' + errorObject[k] + '"]:not(:hidden)').addClass('error');
+                    $('[id*="' + errorObject[k] + '"]:not(:hidden)').parent().addClass('highlight error');
+
+                }
+            }
         }
-			} else {
-				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
-					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap('<div class="highlighted-error cols-full" style="display: inherit;" ></div>');
-				}
-			}
-		}
-		<?php }
-		}?>
-	});
+        <?php }
+        }?>
+    });
 </script>

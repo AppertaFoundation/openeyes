@@ -20,7 +20,7 @@
 	<h2>Lens types</h2>
 	<form id="admin_lens_types">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>

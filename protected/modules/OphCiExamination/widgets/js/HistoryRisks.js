@@ -33,6 +33,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
     {
+        this.callFunctionOnController('setRisksSelected' , [risks]);
         this.callFunctionOnController('addRisks', [risks, sourceElementName]);
     };
 
@@ -72,7 +73,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.otherSelector = '.' + this.options.modelName + '_other_risk';
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
         this.commentsSelector = '[name$="[comments]"]';
+        this.addCommentsButtonSelector = ".js-add-comments";
         this.pcrRiskLinks = this.options.pcrRiskLinks;
+        this.$risksOptions = $('#history-risks-option');
+        this.riskNotCheckedValue = this.options.riskNotCheckedValue;
+        this.riskNoValue = this.options.riskNoValue;
+        this.riskYesValue = this.options.riskYesValue;
 
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
@@ -89,6 +95,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController._defaultOptions = {
       modelName: 'OEModule_OphCiExamination_models_HistoryRisks',
       element: undefined,
+        riskNotCheckedValue: "-9",
+        riskNoValue: "0",
+        riskYesValue: "1",
       pcrRiskLinks: [
           {
               name: "Cannot Lie Flat",
@@ -125,6 +134,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.dedupeRiskSelectors();
         });
 
+        $(document).ready(function(){
+            controller.updateNoRisksState();
+        });
+
+        controller.$table.on('change', 'input[type=radio]', function () {
+            controller.updateNoRisksState();
+        });
+
         this.$popupSelector.on('click', '.js-add-select-search', function(e) {
             e.preventDefault();
             controller.$table.show();
@@ -147,12 +164,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             if (controller.$noRisksFld.prop('checked')) {
                 controller.$table.hide();
                 controller.$popupSelector.hide();
-            }
-            else {
+                controller.setRadioButtonsToNo();
+            } else {
               controller.$popupSelector.show();
+              controller.$table.show();
+              controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
     };
+
     HistoryRisksController.prototype.setPcrRisk = function(container, text)
     {
         var controller = this;
@@ -168,17 +188,49 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Show the no risks form section if there are no table entries
+     * Show the no risks form section if there are no table entries or
+     * if any of the values are checked to Yes or Not Checked
      */
     HistoryRisksController.prototype.updateNoRisksState = function()
     {
-        if (this.$table.find('tbody tr').length === 0) {
-            this.$noRisksWrapper.show();
-            this.$table.hide();
-        } else {
-            this.$noRisksWrapper.hide();
+        if (this.$noRisksFld.prop('checked') && this.isRisksChecked(this.riskNotCheckedValue)) {
             this.$noRisksFld.prop('checked', false);
+            this.$popupSelector.show();
         }
+        if(this.isRisksChecked(this.riskYesValue) || this.isRisksChecked(this.riskNotCheckedValue)){
+            this.$noRisksWrapper.hide();
+            this.$popupSelector.show();
+            this.$noRisksFld.prop('checked', false);
+        } else {
+            this.$noRisksWrapper.show();
+        }
+    };
+
+    /**
+     * Check checked radio boxes for a given value
+     * Return true if the value was found
+     * @param value
+     * @returns {boolean}
+     */
+    HistoryRisksController.prototype.isRisksChecked = function(value){
+        var valueChecked = false;
+
+        this.$table.find('input[type=radio]:checked , input[type=hidden]').each(function () {
+            if ($(this).val() === value) {
+                valueChecked = true;
+                return false;
+            }
+        });
+        return valueChecked;
+
+    };
+
+    HistoryRisksController.prototype.setRadioButtonsToNo = function () {
+        this.$table.find('input[type=radio]').each(function () {
+            if ($(this).val() === "0") {
+                $(this).prop('checked', 'checked');
+            }
+        });
     };
 
     /**
@@ -188,7 +240,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksController.prototype.createRow = function()
     {
-      var selected_option = $('#history-risks-option').find('.selected');
+        let selected_option = this.$risksOptions.find('.selected');
 
       var newRows = [];
       var template = this.templateText;
@@ -265,7 +317,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 // set the risk and comment
                 this.setHasRiskAndComments(rowEntry, risks[idx].comments);
             }
+        }
+    };
 
+    /**
+     * Mark the Risks as selected as the addRisks method looks
+     * for the selected risks and adds them to the table.
+     * This method is used when risks are coming from medications
+     */
+    HistoryRisksController.prototype.setRisksSelected = function(risks){
+        for(let i = 0 ; i < risks.length ; i++){
+            this.$risksOptions.find('li[data-id="' + risks[i].id + '"]').addClass('selected');
         }
     };
 
@@ -325,6 +387,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 finalList.push(comment);
             }
         }
+        row.find(this.addCommentsButtonSelector).trigger('click');
         row.find(this.commentsSelector).val(finalList.join(', '));
     };
 
@@ -398,7 +461,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       .attr('data-str', data['name'])
       .attr('data-id', data['id']);
     list_item.append(span);
-    $('#history-risks-option').append(list_item);
+    this.$risksOptions.append(list_item);
   };
 
   exports.HistoryRisksController = HistoryRisksController;
