@@ -38,8 +38,8 @@ class DrugSetController extends BaseAdminController
             $admin->setModelId($id);
         }
         $element = Element_OphDrPrescription_Details::model();
-        $admin->setCustomSaveURL('/OphDrPrescription/DrugSetAdmin/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
+        $admin->setCustomSaveURL('/OphDrPrescription/admin/drugSet/SaveDrugSet');
+        $admin->setCustomCancelURL('/OphDrPrescription/admin/drugSet/list');
 
         $admin->setEditFields(array(
             'active' => 'checkbox',
@@ -53,7 +53,7 @@ class DrugSetController extends BaseAdminController
             ),
             'setItems' => array(
                 'widget' => 'CustomView',
-                'viewName' => '/default/form_Element_OphDrPrescription_Details',
+                'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
                 'viewArguments' => array('element' => $element),
             ),
         ));
@@ -66,17 +66,35 @@ class DrugSetController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(DrugSet::model(), $this);
-        $admin->setListFields(array(
-            'id',
-            'name',
-            'subspecialty.name',
-            'active',
-        ));
-        $admin->searchAll();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->div_wrapper_class = 'cols-5';
-        $admin->listModel();
+        $criteria = new \CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '', 'subspecialty_id' => null]);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                if (is_numeric($search['query'])) {
+                    $criteria->addCondition('id = :query');
+                    $criteria->params[':query'] = $search['query'];
+                } else {
+                    $criteria->addSearchCondition('LOWER(name)', strtolower($search['query']));
+                }
+            }
+            if ($search['subspecialty_id']) {
+                $criteria->addCondition('subspecialty_id = :subspecialty_id');
+                $criteria->params[':subspecialty_id'] = $search['subspecialty_id'];
+            }
+
+
+            if ($search['active'] == 1) {
+                $criteria->addCondition('active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('active != 1');
+            }
+        }
+
+        $this->render('/drugset/index', [
+            'drug_sets' => DrugSet::model()->findAll($criteria),
+            'search' => $search
+        ]);
     }
 
     /**
