@@ -5,7 +5,8 @@ $(document).ready(function(){
 
         $('.js-firm-dropdown option').remove();
         if (subspecialty_id === '') {
-            $firm.append($('<option>').text("All Contexts"));
+            $firm.append($('<option>').text('All Contexts'));
+            $firm.append($('<option>').value(''));
             $firm.attr('disabled', true);
         } else {
             $.ajax({
@@ -15,7 +16,8 @@ $(document).ready(function(){
                 'success': function (data) {
                     $firm.attr('disabled', false);
                     $firm.append($('<option>', {
-                        text: 'All Contexts'
+                        text: 'All Contexts',
+                        value: '',
                     }));
                     for (var id in data) {
                         if (data.hasOwnProperty(id)) {
