@@ -127,6 +127,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
         return isset($this->value) && trim($this->value) !== '';
     }
 
+    public function displayIfEmpty()
+    {
+        return $this->getConfigOption('display_if_empty') === true;
+    }
+
     public function getConfig()
     {
         if ($this->_config === null) {
@@ -139,6 +144,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function getLabel()
     {
         return $this->getConfigOption('label') ?: ucwords(strtolower(str_replace('_', ' ', $this->code)));
+    }
+
+    public function getPlaceholder()
+    {
+        return $this->getConfigOption('placeholder') ?: $this->getLabel();
     }
 
     protected function beforeValidate()
@@ -161,14 +171,12 @@ class PatientIdentifier extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->hasValue() && $this->mustBeUnique()) {
-            $item_count = self::model()->count('code = :code AND value = :value AND id != :id',
+        if ($this->hasValue()
+            && $this->mustBeUnique()
+            && self::model()->exists('code = :code AND value = :value AND id != :id',
                 array(':code' => $this->code, ':value' => $this->value, ':id' => $this->id ?: -1)
-            );
-
-            if ($item_count) {
-                $this->addError('value', $this->getConflictMessage());
-            }
+            )) {
+            $this->addError('value', $this->getConflictMessage());
         }
 
         return parent::beforeValidate();

@@ -35,12 +35,14 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       <div class="patient-numbers flex-layout">
         <div class="local-numbers">
             <?php foreach ($this->patient->identifiers as $identifier) { ?>
-              <div class="num">
-                  <?= $identifier->getLabel() ?>
-                <label class="inline highlight">
-                    <?= $identifier->value ?>
-                </label>
-              </div>
+                <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
+                <div class="num">
+                    <?= $identifier->getLabel() ?>
+                  <label class="inline highlight">
+                      <?= $identifier->value ?>
+                  </label>
+                </div>
+                <?php } ?>
             <?php } ?>
         </div>
         <div class="nhs-number">

@@ -7,39 +7,35 @@
     <?php $index = 0;
     foreach (Yii::app()->params['patient_identifiers'] as $identifier_code => $identifier_config) {
 
-        $existing_identifier = null;
-        foreach ($patient_identifiers as $patient_identifier) {
-            if ($patient_identifier->code === $identifier_code) {
-                $existing_identifier = $patient_identifier;
+        $patient_identifier = null;
+        foreach ($patient_identifiers as $pi) {
+            if ($pi->code === $identifier_code) {
+                $patient_identifier = $pi;
                 break;
             }
         }
+
+        if ($patient_identifier === null) {
+            $patient_identifier = new PatientIdentifier();
+            $patient_identifier->code = $identifier_code;
+        }
         ?>
       <tr>
-        <td class="<?= isset($identifier_config['required']) && $identifier_config['required'] ? 'required' : '' ?>">
-            <?= $identifier_config['label'] ?>
+        <td class="<?= $patient_identifier->isRequired() ? 'required' : '' ?>">
+            <?= $patient_identifier->getLabel() ?>
           <br/>
-            <?php if ($existing_identifier) {
-                echo $form->error($existing_identifier, 'value');
-            } ?>
+            <?= $form->error($patient_identifier, 'value') ?>
         </td>
         <td>
             <?php
-            $placeholder = isset($identifier_config['placeholder']) ? $identifier_config['placeholder'] : $identifier_config['label'];
-            $value = null;
-            if ($existing_identifier) {
-                $value = $existing_identifier->value;
-            }
-
-            $id = $existing_identifier ? $existing_identifier->id : null;
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $id);
-            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $identifier_code);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][id]', $patient_identifier->id);
+            echo CHtml::hiddenField('PatientIdentifier[' . $index . '][code]', $patient_identifier->code);
             echo CHtml::textField('PatientIdentifier[' . $index . '][value]',
-                $value,
+                $patient_identifier->value,
                 array(
-                    'placeholder' => $placeholder,
+                    'placeholder' => $patient_identifier->getPlaceholder(),
                     'maxlength' => 50,
-                    isset($identifier_config['editable']) && !$identifier_config['editable'] ? 'readonly' : '' => 'readonly',
+                    !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
                 )); ?>
         </td>
       </tr>
