@@ -32,13 +32,29 @@ class PatientIdentifier extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
+        $rules = array(
             array('patient_id, code', 'required'),
             array('patient_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('code', 'length', 'max' => 50),
             array('value', 'length', 'max' => 255),
             array('last_modified_date, created_date', 'safe'),
         );
+
+        $config = $this->getConfig();
+
+        if ($config && isset($config['required']) && $config['required'] === true) {
+            $rules[] = array('value', 'required');
+        }
+
+        if ($config && isset($config['validate_pattern'])) {
+            $rule = array('value', 'match', 'pattern' => $config['validate_pattern']);
+            if (isset($config['validate_msg'])) {
+                $rule['message'] = $config['validate_msg'];
+            }
+            $rules[] = $rule;
+        }
+
+        return $rules;
     }
 
     /**
@@ -69,11 +85,40 @@ class PatientIdentifier extends BaseActiveRecordVersioned
         );
     }
 
+    protected function beforeValidate()
+    {
+        $config = $this->getConfig();
+        if ($config && $this->value == null && isset($config['auto_increment']) && $config['auto_increment'] === true) {
+            $last_identifier = self::model()->find(array(
+                    'condition' => 'code = :code',
+                    'order' => 'CONVERT(value, INTEGER) DESC',
+                    'params' => array(':code' => $this->code),
+                )
+            );
+
+            if ($last_identifier) {
+                $this->value = $last_identifier->value + 1;
+            } elseif (isset($config['start_val'])) {
+                $this->value = $config['start_va'];
+            } elseif (isset($config['required']) && $config['required'] === true && isset($config['editable']) && $config['editable'] === false) {
+                $this->value = 1;
+            }
+        }
+
+        return parent::beforeValidate();
+    }
+
+    public function getConfig()
+    {
+        return isset(Yii::app()->params['patient_identifiers']) ? Yii::app()->params['patient_identifiers'][$this->code] : null;;
+    }
+
     public function getLabel()
     {
         if (isset(Yii::app()->params['patient_identifiers'][$this->code]['label'])) {
             return Yii::app()->params['patient_identifiers'][$this->code]['label'];
         }
+
         return ucwords(strtolower(str_replace('_', ' ', $this->code)));
     }
 

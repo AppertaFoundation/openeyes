@@ -1719,7 +1719,7 @@ class PatientController extends BaseController
             $patient_identifier = new PatientIdentifier();
             $patient_identifier->patient_id = $patient->id;
             $patient_identifier->code = $post_info['code'];
-            $patient_identifier->value = $post_info['value'];
+            $patient_identifier->value = @$post_info['value'];
             $patient_identifiers[] = $patient_identifier;
         }
 
@@ -1808,9 +1808,6 @@ class PatientController extends BaseController
         $success = true;
         foreach ($patient_identifiers as $post_info) {
             $identifier_config = null;
-            if (isset(Yii::app()->params['patient_identifiers'][$post_info->code])) {
-                $identifier_config = Yii::app()->params['patient_identifiers'][$post_info->code];
-            }
 
             $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
                 ':patient_id' => $patient->id,
@@ -1828,19 +1825,6 @@ class PatientController extends BaseController
                 $success = false;
             }
 
-            if ($patient_identifier->value !== ''
-                && isset($identifier_config['validate_pattern'])
-                && !preg_match($identifier_config['validate_pattern'], $patient_identifier->value)) {
-
-                $msg = isset($identifier_config['validate_msg']) ? $identifier_config['validate_msg'] : 'Invalid format';
-                $patient_identifier->addError('value', $msg);
-                $success = false;
-            }
-
-            if ($patient_identifier->value === '' && isset($identifier_config['required']) && $identifier_config['required'] === true) {
-                $patient_identifier->addError('value', 'Value cannot be blank');
-                $success = false;
-            }
 
             $result[] = $patient_identifier;
         }

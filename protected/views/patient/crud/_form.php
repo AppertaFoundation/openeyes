@@ -53,11 +53,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
   <div class="patient-inputs-column">
-    <!-- <?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
-        <div class="alert-box error">"
+    <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
+        <div class="alert-box error">
             <?= $form->errorSummary(array($contact, $patient, $address)) ?>
+            <?= $form->errorSummary($patient_identifiers) ?>
         </div>
-      <?php } ?> -->
+      <?php } ?>-->
 
     <table class="standard highlight-rows">
       <tbody>
