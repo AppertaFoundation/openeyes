@@ -8,9 +8,7 @@ $(document).ready(function () {
         $("input[name^='comments_allowed']").each(function (key, value) {
             if (key < ($("input[name^='comments_allowed']").length - 1) && $(this).is(':checked')) {
                 var textbox_value = $("input[name^='comments_label']").eq(key).val();
-                console.log(textbox_value);
                 var text_length = (textbox_value).length;
-                console.log(text_length);
                 if (text_length == 0) {
                     alert("Please enter comments label");
                     check = false;
