@@ -39,7 +39,7 @@
                 array(
                     'placeholder' => $placeholder,
                     'maxlength' => 50,
-                    isset($identifier_config['editable']) && !$identifier_config['editable'] ? 'disabled' : '' => '1',
+                    isset($identifier_config['editable']) && !$identifier_config['editable'] ? 'readonly' : '' => 'readonly',
                 )); ?>
         </td>
       </tr>
