@@ -1829,8 +1829,8 @@ class PatientController extends BaseController
             }
 
             if ($patient_identifier->value !== ''
-                && isset($identifier_config['validate_regex'])
-                && !preg_match($identifier_config['validate_regex'], $patient_identifier->value)) {
+                && isset($identifier_config['validate_pattern'])
+                && !preg_match($identifier_config['validate_pattern'], $patient_identifier->value)) {
 
                 $msg = isset($identifier_config['validate_msg']) ? $identifier_config['validate_msg'] : 'Invalid format';
                 $patient_identifier->addError('value', $msg);
