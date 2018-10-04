@@ -36,19 +36,19 @@ class WKHtmlToPDF extends WKHtmlToX
 
     public function __construct()
     {
-        $this->param_key = 'pdf';
+        $this->param_key = 'wkhtmltopdf';
         $this->application_name = 'wkhtmltopdf';
 
         parent::__construct();
 
-        $this->left = Yii::app()->params['wkhtmltox']['pdf']['footer_left'];
-        $this->middle = Yii::app()->params['wkhtmltox']['pdf']['footer_middle'];
-        $this->right = Yii::app()->params['wkhtmltox']['pdf']['footer_right'];
+        $this->left = Yii::app()->params['wkhtmltopdf_footer_left'];
+        $this->middle = Yii::app()->params['wkhtmltopdf_footer_middle'];
+        $this->right = Yii::app()->params['wkhtmltopdf_footer_right'];
 
-        $this->top_margin = Yii::app()->params['wkhtmltox']['pdf']['top_margin'];
-        $this->bottom_margin = Yii::app()->params['wkhtmltox']['pdf']['bottom_margin'];
-        $this->left_margin = Yii::app()->params['wkhtmltox']['pdf']['left_margin'];
-        $this->right_margin = Yii::app()->params['wkhtmlto']['pdf']['right_margin'];
+        $this->top_margin = Yii::app()->params['wkhtmltopdf_top_margin'];
+        $this->bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
+        $this->left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
+        $this->right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
     }
 
     public function formatFooter($footer, $left, $middle, $right)
@@ -221,7 +221,7 @@ class WKHtmlToPDF extends WKHtmlToX
         $right_margin = $this->right_margin ? '-R ' . $this->right_margin : '';
 
 
-        $nice = Yii::app()->params['wkhtmltox']['pdf']['nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltox']['pdf']['nice_level'] . ' ' : '';
+        $nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n' . Yii::app()->params['wkhtmltopdf_nice_level'] . ' ' : '';
         $res = $this->execute($nice . escapeshellarg($this->application_path) . ' --footer-html ' . escapeshellarg($footer_file) . " --print-media-type $top_margin $bottom_margin $left_margin $right_margin " . escapeshellarg($html_file) . ' ' . escapeshellarg($pdf_file) . ' 2>&1');
 
         if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
