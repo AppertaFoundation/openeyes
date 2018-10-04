@@ -15,13 +15,19 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var int $queue_id
+ * @var int $data_width
+ */
 ?>
 
 <?php
-$this->widget('OEModule\PatientTicketing\widgets\QueueAssign', array(
-    'queue_id' => $queue_id,
-    'label_width' => $label_width,
-    'data_width' => $data_width,
-    'patient_id' => $patient_id, )
+$this->widget(OEModule\PatientTicketing\widgets\QueueAssign::class, array(
+        'queue_id' => $queue_id,
+        'label_width' => $label_width,
+        'data_width' => $data_width,
+        'patient_id' => $patient_id,
+    )
 );
 ?>

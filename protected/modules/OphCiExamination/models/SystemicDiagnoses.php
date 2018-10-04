@@ -159,7 +159,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     {
 
         if ($patient) {
-            $diagnoses = array();
+            $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
             $both = array(true, false);
             foreach ($both as $present) {
@@ -326,7 +326,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' ? 1 : null;
+        return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
     public function getDisplayOrder($action)

@@ -39,22 +39,29 @@ class EventLogController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(AutomaticExaminationEventLog::model(), $this);
-        $admin->setModelDisplayName('Examination Event Log(s)');
-        $admin->setListFields(array(
-            'event_id',
-            'unique_code',
-            'examination_date',
-            'import_status.status_value',
-        ));
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'status_value' => '']);
 
-        $admin->searchAll();
-        $admin->getSearch()->addSearchItem('import_success', array(
-            'type' => 'dropdown',
-            'options' => CHtml::listData(ImportStatus::model()->findAll(), 'id', 'status_value'),
-        ));
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel(false);
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                $criteria->addCondition('event_id = :query', 'OR');
+                $criteria->addCondition('unique_code = :query', 'OR');
+                $criteria->addCondition('examination_date = :query', 'OR');
+                $criteria->params[':query'] = $search['query'];
+            }
+
+            if ($search['status_value'] != '') {
+                $criteria->addCondition('import_success = :import_success');
+                $criteria->params[':import_success'] = $search['status_value'];
+            }
+        }
+
+        $this->render('/oeadmin/event_log/index', [
+            'pagination' => $this->initPagination(AutomaticExaminationEventLog::model(), $criteria),
+            'event_logs' => AutomaticExaminationEventLog::model()->findAll($criteria),
+            'search' => $search,
+            'statuses' => ImportStatus::model()->findAll()
+        ]);
     }
 
     /**
@@ -82,51 +89,39 @@ class EventLogController extends BaseAdminController
 
         $event = $eventQuery->event;
         $eventUniqueCode = $eventQuery->unique_code;
-        $buttons = array();
+        $button_options = [
+            'cancel-uri' => '/oeadmin/eventLog/list',
+        ];
+
 
         switch ($eventQuery->import_status->status_value) {
             case 'Success Event':
             case 'Dismissed Event':
             case 'Import Success':
-                $buttons = array(
+                $button_options = array(
                     'cancel' => false,
                     'submit' => 'Ok',
                 );
                 break;
             case 'Duplicate Event':
-                $buttons = array(
+                $button_options = array(
                     'cancel' => 'Dismiss New',
-                    'cancel-uri' => '/oeadmin/eventLog/dismiss/'.$id,
+                    'cancel-uri' => '/oeadmin/eventLog/dismiss/' . $id,
                     'submit' => 'Accept New',
                 );
                 break;
         }
 
-        $this->render('//eventlog/edit', array(
+
+        $this->render('/oeadmin/event_log/edit', array(
             'log_id' => $id,
             'event' => $event,
             'unique_code' => $eventUniqueCode,
             'status' => $eventQuery->import_status->status_value,
             'data' => json_decode($eventQuery->examination_data, true),
             'previous' => $this->previousEventLogData($eventQuery),
-            'buttons' => $buttons,
+            'button_options' => $button_options,
         ));
-    }
-
-    /**
-     * @param $id
-     */
-    public function actionDismiss($id)
-    {
-        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
-        if (!$eventQuery) {
-            throw new CHttpException(404, "Event not found: $id");
-        }
-
-        $eventQuery->import_success = ImportStatus::model()->find('status_value = "Dismissed Event"')->id;
-        $eventQuery->save();
-
-        $this->redirect('/oeadmin/eventLog/list/');
     }
 
     /**
@@ -154,6 +149,41 @@ class EventLogController extends BaseAdminController
         if (UniqueCodes::model()->examinationEventCheckFromUniqueCode($uniqueCode, $eventType['id'])) {
             $this->createExamination($eventQuery, $opNoteEvent->episode_id, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteEvent->id);
         }
+    }
+
+    /**
+     * @param $eventQuery
+     * @param $opNoteEvent
+     * @param $creator
+     * @param $portalUserId
+     * @param $examination
+     * @param $eventType
+     * @param $eyeIds
+     * @param $refractionType
+     *
+     * @throws CHttpException
+     */
+    protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
+    {
+        $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
+
+        try {
+            $examinationEvent = $creator->save($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
+            if ($eventQuery->event) {
+                //delete old event
+                $eventQuery->event->deleted = 1;
+                $eventQuery->event->save();
+            }
+            //update log for new event
+            $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
+            $eventQuery->event_id = $examinationEvent->id;
+            $eventQuery->save();
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(500, 'Saving Examination event failed');
+        }
+
+        $transaction->commit();
     }
 
     /**
@@ -191,7 +221,7 @@ class EventLogController extends BaseAdminController
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_id', $eventLog->event_id);
-        $criteria->addCondition('id <> '.$eventLog->id);
+        $criteria->addCondition('id <> ' . $eventLog->id);
         $criteria->order = 'created_date DESC, id ASC';
         $previous = AutomaticExaminationEventLog::model()->find($criteria);
 
@@ -203,37 +233,36 @@ class EventLogController extends BaseAdminController
     }
 
     /**
-     * @param $eventQuery
-     * @param $opNoteEvent
-     * @param $creator
-     * @param $portalUserId
-     * @param $examination
-     * @param $eventType
-     * @param $eyeIds
-     * @param $refractionType
-     *
+     * @param $id
      * @throws CHttpException
      */
-    protected function createExamination($eventQuery, $episodeId, $creator, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId = null)
+    public function actionDismiss($id)
     {
-        $transaction = $eventQuery->getDbConnection()->beginInternalTransaction();
-
-        try {
-            $examinationEvent = $creator->saveExamination($episodeId, $portalUserId, $examination, $eventType, $eyeIds, $refractionType, $opNoteId);
-            if ($eventQuery->event) {
-                //delete old event
-                $eventQuery->event->deleted = 1;
-                $eventQuery->event->save();
-            }
-            //update log for new event
-            $eventQuery->import_success = ImportStatus::model()->find('status_value = "Success Event"')->id;
-            $eventQuery->event_id = $examinationEvent->id;
-            $eventQuery->save();
-        } catch (Exception $e) {
-            $transaction->rollback();
-            throw new CHttpException(500, 'Saving Examination event failed');
+        $eventQuery = AutomaticExaminationEventLog::model()->findByPk($id);
+        if (!$eventQuery) {
+            throw new CHttpException(404, "Event not found: $id");
         }
 
-        $transaction->commit();
+        $eventQuery->import_success = ImportStatus::model()->find('status_value = "Dismissed Event"')->id;
+        $eventQuery->save();
+
+        $this->redirect('/oeadmin/eventLog/list/');
+    }
+
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $eventLogs = \Yii::app()->request->getPost('select', []);
+
+        foreach ($eventLogs as $eventLog_id) {
+            $eventLog = AutomaticExaminationEventLog::model()->findByPk($eventLog_id);
+
+            if (!$eventLog->delete()) {
+                echo 'Could not delete eventLog with id: ' . $eventLog_id . '.\n';
+            }
+        }
+        echo 1;
     }
 }

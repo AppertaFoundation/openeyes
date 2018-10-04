@@ -21,6 +21,7 @@
  *
  * @property bool $useContainerView When rendering the element, wrap the element
  * in a container view?
+ * @property Event $event
  */
 class BaseEventTypeElement extends BaseElement
 {
@@ -158,14 +159,6 @@ class BaseEventTypeElement extends BaseElement
         return null;
     }
 
-    /**
-     * For rendering purpose, if element is not individual, will render the page separate.
-     * @param $action
-     * @return bool
-     */
-    public function isIndividual($action){
-        return true;
-    }
     /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).

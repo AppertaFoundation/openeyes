@@ -63,6 +63,8 @@ class OPCSCode extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array();
+        return array(
+            'procedures' => array(self::MANY_MANY, 'Procedure', 'proc_opcs_assignment(opcs_code_id, proc_id)'),
+        );
     }
 }

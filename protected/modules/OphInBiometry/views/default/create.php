@@ -17,9 +17,10 @@
  */
 $assetManager = Yii::app()->getAssetManager();
 $assetManager->registerScriptFile('js/libs/uri-1.10.2.js');
-$this->beginContent('//patient/event_container', array('no_face'=>false));
+$form_id = 'create-form';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'create-form',
+    'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
         'label' => 2,
@@ -31,13 +32,14 @@ if ($this->isManualEntryDisabled()) {
     $isManualEntryDisabled = 1;
 }
 echo '<input type="hidden" id="show_disable_manual_warning" value='.$isManualEntryDisabled.'>';
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'create-form'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 $this->displayErrors($errors);
 $this->renderPartial('//patient/event_elements', array(
     'form' => $form,
     'disableOptionalElementActions' => true,
 ));
 
+$this->renderPartial('_va_view' , ['action' => 'view']);
 $this->displayErrors($errors, true);
 $this->endWidget();
 $this->endContent();

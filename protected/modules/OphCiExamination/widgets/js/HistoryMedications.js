@@ -48,7 +48,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     medicationSearchOptions: '.history-medication-search-options',
     medicationSearchInput: '#history-medication-search-field',
     medicationSearchResult: '#history-medication-search-results',
-    drugSelectSelector: 'select[name$="[drug_select]"]',
     medicationNameSelector: '.medication-name',
     medicationDisplaySelector: '.medication-display',
     startDateButtonSelector: '.start-medication.enable',
@@ -170,18 +169,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       var controller = this;
 
-      $row.on('change', controller.options.drugSelectSelector, function(e) {
-          var $option = $(this).find('option:selected'),
-              tags = "" + $option.data('tags');
-          controller.selectMedication($(this).parents('td'), {
-              value: $option.val(),
-              label: $option.text(),
-              name: $option.data('tallmanlabel'),
-              type: 'd', // only have pre-selected drugs available at the moment.
-              tags: tags.split(',')
-          });
-      });
-
       $row.on('click', '.medication-rename', function(e) {
           e.preventDefault();
           controller.resetSearchRow($row, true);
@@ -228,9 +215,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
 
-  HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
+  HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
-      $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
+      let drug_id = $row.find("input[name*='[drug_id]']").val();
+      $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
           for (var name in res) {
               var $input = $row.find('[name$="[' + name +']"]');
               if (name === 'dose') {
@@ -366,7 +354,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     var rows = this.createRow(selectedItems);
     for(var i in rows){
       this.$table.find('tbody').append(rows[i]);
-      this.initialiseRow(this.$table.find('tbody tr:last'));
+      let $lastRow = this.$table.find('tbody tr:last');
+      this.initialiseRow($lastRow);
+      this.loadDrugDefaults($lastRow);
     }
 
     $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
@@ -374,24 +364,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $(this.options.medicationSearchResult).empty();
   };
 
-  HistoryMedicationsController.prototype.selectMedication = function($container, item)
-    {
-        var displayText = this.getItemDisplayValue(item);
-        if (item.type === 't') {
-            $container.find(this.options.asTypedFieldSelector).val(item.value);
-        }
-        else if (item.type === 'd') {
-            $container.find(this.options.drugFieldSelector).val(item.value);
-            this.loadDrugDefaults($container.parents('tr'), item);
-        } else {
-            $container.find(this.options.medicationFieldSelector).val(item.value);
-        }
-        $container.find(this.options.medicationNameSelector).text(displayText);
-        $container.find(this.options.medicationDisplaySelector).show();
-        $container.find(this.options.medicationSearchSelector).hide();
-        $container.find(this.options.drugSelectSelector).hide();
-        this.processRisks(item);
-    };
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
     {
         if (item.type === 't') {

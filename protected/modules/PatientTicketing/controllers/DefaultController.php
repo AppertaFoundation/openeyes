@@ -457,6 +457,7 @@ class DefaultController extends \BaseModuleController
      */
     public function actionGetTicketTableRowHistory($id)
     {
+        /* @var models\Ticket $ticket */
         if (!$ticket = models\Ticket::model()->with(array('queue_assignments', 'queue_assignments.queue'))->findByPk($id)) {
             throw new \CHttpException(404, 'Invalid ticket id.');
         }
@@ -681,10 +682,11 @@ class DefaultController extends \BaseModuleController
     public function actionGetFirmsForSubspecialty()
     {
         if (!$subspecialty = \Subspecialty::model()->findByPk(@$_GET['subspecialty_id'])) {
-            throw new Exception('Subspecialty not found: '.@$_GET['subspecialty_id']);
+            throw new Exception('Subspecialty not found: ' . @$_GET['subspecialty_id']);
         }
 
-        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id), ['class' => 'cols-11', 'empty' => 'All '.Firm::ContextLabel.'s']);
+        echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
+            ['class' => 'cols-11', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
     }
 
     public function actionUndoLastStep($id)

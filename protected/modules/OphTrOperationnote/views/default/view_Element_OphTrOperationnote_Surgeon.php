@@ -27,7 +27,7 @@
       <div class="data-value flex-layout flex-top">
         <div class="cols-11">
           <div class="cols-11" id="js-listview-info-pro" style="">
-            <ul class="dslash-list large-text">
+            <ul class="dot-list large-text">
               <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
               <li>
                 <span class="fade">
@@ -46,11 +46,16 @@
 
           <div class="col-6 data-group" id="js-listview-info-full" style="display: none">
             <table class="last-left">
+              <colgroup>
+                <col class="cols-4">
+                <col class="cols-4">
+                <col class="cols-4">
+              </colgroup>
               <thead>
               <tr>
-                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
-                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
-                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
               </tr>
               </thead>
               <tbody>

@@ -19,41 +19,17 @@
  */
 ?>
 
+<?php echo CHtml::errorSummary(array_merge(array($model), $model->entries), null, null, array("class"=>"alert-box alert with-icon")); ?>
+
 <?php
+
     echo $form->textField($model, "name");
     echo "<br>";
 
-    $options = CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "subspecialty_id", $options, array('empty' => '-- select --', 'class' => 'subspecialty'));
-    $options = CHtml::listData(\Firm::model()->findAll(), 'id', 'name');
+    $this->widget('application.widgets.SubspecialtyFirmPicker', [
+        'model' => $model
+    ]);
 
-    $firms = [];
-    if($model->subspecialty_id){
-        $firms = \Firm::model()->getList($model->subspecialty_id);
-    }
-    ?>
-
-    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="data-group">
-
-        <div class="cols-2 column">
-            <label for="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id">Context:</label>
-        </div>
-
-        <div class="cols-5 column">
-            <?php
-            $is_disabled = !(bool)$model->subspecialty_id;
-            echo CHtml::activeDropDownList($model, "firm_id", $firms, [
-                'empty' => '-- select --',
-                'disabled' => $is_disabled,
-                'style' => ($is_disabled ? 'background-color:lightgray;':''), // oh where is the visual effect chrome, please ? @TODO:move to css input[diabled] {}
-
-            ]);
-            ?>
-        </div>
-        <div class="cols-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
-    </div>
-
-    <?php
     echo "<br>";
 
     $disorder = CHtml::listData([0 => \Disorder::model()->findByPk(103)], 'id', 'term');
@@ -71,7 +47,7 @@
                 'name' => 'Diagnosis',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($disorder){
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",null,
+                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]", null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -79,7 +55,7 @@
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            ]) : ''
+                            ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ]);
                 }
             ),
@@ -179,18 +155,19 @@
         $row.find('.diagnoses-search-autocomplete').data('diagnosesSearchController', diagnosesSearchController );
     }
 
-    $(document).ready(function(){
+
+    $(document).ready(function() {
 
         var $table = $('table.generic-admin'),
             $empty_tr = $table.find('.empty').closest('tr'),
             diagnosesSearchController;
 
-        $('#add_new_risk').on('click',function(e){
+        $('#add_new_risk').on('click', function (e) {
             var data = {},
                 $row;
 
             $empty_tr.hide();
-            data['row'] = OpenEyes.Util.getNextDataKey( $table.find('tbody tr'), 'row');
+            data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
             $row = Mustache.render(
                 $('#new_risk_entry').text(),
                 data
@@ -201,62 +178,13 @@
             initDiagnosesSearchController($row)
         });
 
-        $($table).on('click','.remove_risk_entry', function(e){
+        $($table).on('click', '.remove_risk_entry', function (e) {
             $(this).closest('tr').remove();
         });
 
-        $.each($table.find('tr'), function(i, tr){
+        $.each($table.find('tr'), function (i, tr) {
             var $tr = $(tr);
             initDiagnosesSearchController($tr);
         });
-
-        $('select.subspecialty').on('change', function() {
-
-            var subspecialty_id = $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_subspecialty_id').val();
-
-            if(subspecialty_id){
-                jQuery.ajax({
-                    url: baseUrl + "/OphCiExamination/oeadmin/RisksAssignment/getFirmsBySubspecialty",
-                    data: {"subspecialty_id": subspecialty_id},
-                    dataType: "json",
-                    beforeSend: function () {
-                        $('.loader').show();
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
-                    },
-                    success: function (data) {
-                        var options = [];
-
-                        //remove old options
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id option:gt(0)').remove();
-                        //create js array from obj to sort
-                        for (item in data) {
-                            options.push([item, data[item]]);
-                        }
-
-                        options.sort(function (a, b) {
-                            if (a[1] > b[1]) return -1;
-                            else if (a[1] < b[1]) return 1;
-                            else return 0;
-                        });
-                        options.reverse();
-
-                        //append new option to the dropdown
-                        $.each(options, function (key, value) {
-                            $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').append($("<option></option>")
-                                .attr("value", value[0]).text(value[1]));
-                        });
-
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', false).css({'background-color':'#ffffff'});
-                    },
-                    complete: function () {
-                        $('.loader').hide();
-                    }
-                });
-            } else {
-                $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
-            }
-        });
-
     });
-
 </script>

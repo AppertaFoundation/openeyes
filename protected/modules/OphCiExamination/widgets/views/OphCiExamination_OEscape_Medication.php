@@ -5,7 +5,6 @@
     <div id="highcharts-Meds-left" class="highcharts-Meds highcharts-left highchart-section" style="display: none;"></div>
 </div>
 
-
 <script type="text/javascript">
   $(document).ready(function () {
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;
@@ -14,6 +13,7 @@
     var series_no = Math.max(Object.keys(meds_data['left']).length, Object.keys(meds_data['right']).length);
     for (var i in sides) {
       setSeriesNo(series_no);
+      optionsMeds['xAxis']['categories'] = Object.keys(meds_data[sides[i]]);
       chart_Med[sides[i]] = new Highcharts.chart('highcharts-Meds-'+sides[i], optionsMeds);
       drawMedsSeries(chart_Med[sides[i]], meds_data[sides[i]], sides[i]);
     }

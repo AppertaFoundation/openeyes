@@ -64,7 +64,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		if (isset ( $this->environment [$environment] )) {
 			$homepage = $this->getPage ( 'HomePage' );
 			$homepage->open ();
-			$homepage->checkOpenEyesTitle ( 'Please login' );
+			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login' );
 		} else {
 			throw new \Exception ( "Environment $environment doesn't exist" );
 		}
@@ -167,21 +167,23 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		}
 	}
 	private function saveScreenshots() {
-		foreach ( $this->screenshots as $screenshot ) {
-			try {
-				if (! @is_dir ( dirname ( $screenshot ['filename'] ) )) {
-					echo "\n\nCreating dir " . dirname ( $screenshot ['filename'] ) . " \n";
-					@mkdir ( dirname ( $screenshot ['filename'] ), 0775, TRUE );
-				}
-				$screenshotSaved = file_put_contents ( $screenshot ['filename'], $screenshot ['screenshotContent'] );
-				if ($screenshotSaved === false) {
-					echo "\n\n ERROR saving SCREENSHOT : " . $screenshot ['filename'] . " \n\n";
-				}
-			} catch ( Exception $e ) {
-				echo "Saving screenshots Exception " . get_class ( $e ) . " \n\nFile: " . $e->getFile () . " \n\nMessage: " . $e->getMessage () . " \n\nLine: " . $e->getLine () . " \n\nCode: " . $e->getCode () . " \n\nTrace: " . $e->getTraceAsString ();
-			}
-		}
-		$this->screenshots = array ();
+	    echo 'There is an unknown error in the permissions for this function (saveScreenshots), for now it\'s disabled';
+	    return;
+//		foreach ( $this->screenshots as $screenshot ) {
+//			try {
+//				if (! @is_dir ( dirname ( $screenshot ['filename'] ) )) {
+//					echo "\n\nCreating dir " . dirname ( $screenshot ['filename'] ) . " \n";
+//					@mkdir ( dirname ( $screenshot ['filename'] ), 0775, TRUE );
+//				}
+//				$screenshotSaved = file_put_contents ( $screenshot ['filename'], $screenshot ['screenshotContent'] );
+//				if ($screenshotSaved === false) {
+//					echo "\n\n ERROR saving SCREENSHOT : " . $screenshot ['filename'] . " \n\n";
+//				}
+//			} catch ( Exception $e ) {
+//				echo "Saving screenshots Exception " . get_class ( $e ) . " \n\nFile: " . $e->getFile () . " \n\nMessage: " . $e->getMessage () . " \n\nLine: " . $e->getLine () . " \n\nCode: " . $e->getCode () . " \n\nTrace: " . $e->getTraceAsString ();
+//			}
+//		}
+//		$this->screenshots = array ();
 	}
 	
 	/**

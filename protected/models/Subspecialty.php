@@ -23,6 +23,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property string $short_name
  * @property string $ref_spec
  *
  * The followings are the available model relations:
@@ -58,7 +59,7 @@ class Subspecialty extends BaseActiveRecordVersioned
             array('name, ref_spec', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, ref_spec', 'safe', 'on' => 'search'),
+            array('id, name, short_name, ref_spec', 'safe', 'on' => 'search'),
         );
     }
 
