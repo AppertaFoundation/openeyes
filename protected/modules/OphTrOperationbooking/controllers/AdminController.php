@@ -442,7 +442,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('waitinglistcontactrules', array(
+        $this->render('/admin/waiting_list_contact_rules/index', array(
             'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree(),
         ));
     }
@@ -493,7 +493,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('editwaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -522,7 +522,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Waiting_List_Contact_Rule'));
 
-        $this->render('editwaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -549,7 +549,7 @@ class AdminController extends ModuleAdminController
 
         $this->jsVars['OE_rule_model'] = 'WaitingListContactRule';
 
-        $this->render('deletewaitinglistcontactrule', array(
+        $this->render('/admin/waiting_list_contact_rules/delete', array(
             'rule' => $rule,
             'errors' => $errors,
             'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
@@ -562,7 +562,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Name_Rule'));
 
-        $this->render('operationnamerules');
+        $this->render('/admin/name_rule/index');
     }
 
     public function actionAddOperationNameRule()
@@ -582,7 +582,7 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editoperationnamerule', array(
+        $this->render('/admin/name_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -609,7 +609,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Name_Rule'));
 
-        $this->render('/admin/editoperationnamerule', array(
+        $this->render('/admin/name_rule/edit', array(
             'rule' => $rule,
             'errors' => $errors,
         ));
@@ -1639,7 +1639,7 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'));
 
-        $this->render('patientunavailablereasons');
+        $this->render('/admin/patient_unavailable_reasons/index');
     }
 
     /**
@@ -1671,7 +1671,7 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, false, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'));
 
-        $this->render('/admin/editpatientunavailablereason', array(
+        $this->render('/admin/patient_unavailable_reasons/edit', array(
             'reason' => $reason,
             'errors' => $errors,
         ));
@@ -1696,10 +1696,10 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('/admin/editpatientunavailablereason', array(
-                    'reason' => $reason,
-                    'errors' => $errors,
-                ));
+        $this->render('/admin/patient_unavailable_reasons/edit', array(
+            'reason' => $reason,
+            'errors' => $errors,
+        ));
     }
 
     /**

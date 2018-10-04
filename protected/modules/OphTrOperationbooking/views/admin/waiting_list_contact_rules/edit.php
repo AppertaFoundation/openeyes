@@ -17,34 +17,39 @@
  */
 ?>
 
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'adminform',
-        'enableAjaxValidation' => false,
-        'focus' => '#contactname',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    ))?>
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'htmlOptions' => array('class' => 'sliding'),
+    'focus' => '#contactname',
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+))?>
 
 <div class="cols-7">
     <div class="row divider">
-        <h2><?php echo $rule->id ? 'Edit' : 'Add'?> letter contact rule</h2>
+        <h2><?php echo $rule->id ? 'Edit' : 'Add'?> waiting list contact rule</h2>
     </div>
 
     <?php echo $form->errorSummary($rule); ?>
+
     <table class="standard">
         <colgroup>
-            <col class="cols-2">
-            <col class="cols-4">
+            <col class="cols-1">
+            <col class="cols-9">
         </colgroup>
         <tbody>
         <tr>
             <td><?=$rule->getAttributeLabel('parent_rule_id');?></td>
             <td><?=\CHtml::activeDropDownList(
                 $rule,
-                'rule_order',
-                CHtml::listData(OphTrOperationbooking_Letter_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'),
+                'parent_rule_id',
+                CHtml::listData(OphTrOperationbooking_Waiting_List_Contact_Rule::model()->getListAsTree(), 'id', 'treeName'),
                 ['empty' => '- None -', 'class' => 'cols-full']
             ); ?>
             </td>
@@ -56,8 +61,7 @@
         <?php $dropdowns = [
             'site_id' => Site::model()->getListForCurrentInstitution('name'),
             'firm_id' => Firm::model()->getListWithSpecialties(),
-            'subspecialty_id' => CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'),
-            'theatre_id' => CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->findAll(), 'id', 'name')
+            'service_id' => CHtml::listData(Service::model()->findAll(array('order' => 'name')), 'id', 'name'),
         ]; ?>
         <?php foreach ($dropdowns as $attr => $data) : ?>
             <tr>
@@ -71,7 +75,7 @@
                 </td>
             </tr>
         <?php endforeach; ?>
-        <?php $dropdowns = ['refuse_telephone', 'refuse_title', 'health_telephone']; ?>
+        <?php $dropdowns = ['name', 'telephone']; ?>
         <?php foreach ($dropdowns as $attr => $data) : ?>
             <tr>
                 <td><?=$rule->getAttributeLabel($data);?></td>
@@ -81,10 +85,10 @@
         <?php if ($rule->children) { ?>
         <tr>
             <td>Descendants</td>
-            <td>
-                <?php $this->widget('CTreeView', array(
-                    'data' => OphTrOperationbooking_Letter_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
-                )); ?>
+            <td><?php
+                $this->widget('CTreeView', array(
+                    'data' => OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAllAsTree($rule, true, 'textPlain'),
+                )) ?>
             </td>
         </tr>
         <?php } ?>
@@ -100,19 +104,18 @@
         </tr>
         </tfoot>
     </table>
-
-    <?php $this->endWidget() ?>
 </div>
 
+<?php $this->endWidget() ?>
+
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function() {
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/view'+OE_rule_model+'s';
-	});
-	handleButton($('#et_save'),function() {
-		$('#adminform').submit();
-	});
-	handleButton($('#et_delete'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/delete'+OE_rule_model+'/<?php echo $rule->id?>';
-	});
+    handleButton($('#et_cancel'), function () {
+        window.location.href = baseUrl + '/OphTrOperationbooking/admin/view' + OE_rule_model + 's';
+    });
+    handleButton($('#et_save'), function () {
+        $('#adminform').submit();
+    });
+    handleButton($('#et_delete'), function () {
+        window.location.href = baseUrl + '/OphTrOperationbooking/admin/delete' + OE_rule_model + '/<?php echo $rule->id?>';
+    });
 </script>

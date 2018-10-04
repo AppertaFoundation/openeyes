@@ -16,8 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Patient Unavailable Reasons</h2>
+<div class="cols-5">
 	<form id="admin_patientunavailablereasons">
 		<table class="standard">
 			<thead>
@@ -40,7 +39,15 @@
 			<tfoot>
 			<tr>
 				<td colspan="2">
-					<?php echo EventAction::button('Add', 'add', null, array('class' => 'button small', 'data-uri' => '/OphTrOperationbooking/admin/AddPatientUnavailableReason'))->toHtml()?>
+                    <?= \CHtml::submitButton(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'data-uri' => '/OphTrOperationbooking/admin/AddPatientUnavailableReason',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
 				</td>
 			</tr>
 			</tfoot>

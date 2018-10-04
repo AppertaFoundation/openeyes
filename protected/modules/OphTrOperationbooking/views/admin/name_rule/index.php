@@ -16,8 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Operation name rules</h2>
+<div class="cols-5">
 	<form id="operation_name_rules">
 		<table class="standard">
 			<thead>
@@ -42,8 +41,25 @@
 			<tfoot>
 				<tr>
 					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
+                        <?= CHtml::submitButton(
+                            'Add',
+                            [
+                                'class' => 'button large',
+                                'name' => 'add_operation_name_rule',
+                                'id' => 'et_add_operation_name_rule',
+                            ]
+                        ); ?>
+                        <?= CHtml::submitButton(
+                            'Delete',
+                            [
+                                'class' => 'button large',
+                                'name' => 'delete_operation_name_rule',
+                                'id' => 'et_delete_operation_name_rule',
+                            ]
+                        ); ?>
+
+<!--						--><?php //echo EventAction::button('Add', 'add_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
+<!--						--><?php //echo EventAction::button('Delete', 'delete_operation_name_rule', null, array('class' => 'button small'))->toHtml()?>
 					</td>
 				</tr>
 			</tfoot>

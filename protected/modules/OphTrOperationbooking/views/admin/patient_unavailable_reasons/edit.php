@@ -16,30 +16,58 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2><?php echo $rule->id ? 'Edit' : 'Add'?> operation name rule</h2>
-	<?php
+<div class="cols-5">
+    <div class="row divider">
+        <h2><?php echo $reason->id ? 'Edit' : 'Add' ?> Patient Unavailable Reason</h2>
+    </div>
+
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
-        'focus' => '#username',
+        'focus' => '#OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason_name',
         'layoutColumns' => array(
             'label' => 2,
             'field' => 5,
         ),
     ))?>
-	<?php echo $form->errorSummary($rule); ?>
-	<?php echo $form->dropDownList($rule, 'theatre_id', 'OphTrOperationbooking_Operation_Theatre', array('style' => 'margin-bottom:6px;', 'empty' => '- Theatre -'))?>
-	<?php echo $form->textField($rule, 'name')?>
-	<?php echo $form->errorSummary($rule); ?>
-	<?php echo $form->formActions();?>
-	<?php $this->endWidget()?>
+
+    <?php echo $form->errorSummary($reason); ?>
+
+    <table class="standard cols-full" id="finding-table">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-3">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td><?=$reason->getAttributeLabel('name')?></td>
+            <td>
+                <?php echo CHtml::activeTextField(
+                    $reason,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?php echo $form->formActions(); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <?php $this->endWidget() ?>
+
 </div>
 
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewOperationNameRules';
+		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewPatientUnavailableReasons';
 	});
 	handleButton($('#et_save'),function(e) {
 		$('#adminform').submit();
