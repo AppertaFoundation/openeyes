@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2018
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -16,27 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-  <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape.js')?>"></script>
-
-<?php
-extract($this->getEpisodes());
-$current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
-?>
-
-<?php
-    $this->beginContent('//patient/oescapes_container', array(
-        'cssClass' => isset($cssClass) ? $cssClass : '',
-        'subspecialty' => $subspecialty
-    ));
-
-      $this->renderPartial('/clinical/oescapeSummary',
-          array('subspecialty' => $subspecialty)
-      );
-    if (count($legacyepisodes)) {?>
-		<h2>No OEscapes</h2>
-		<div class="alert-box alert with-icon">
-			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
-		</div>
-	<?php }
-    $this->endContent();
-?>
+<?php $this->beginContent('//patient/event_content_image'); ?>
+<?php $this->renderOpenElements($this->action->id); ?>
+<?php $this->renderOptionalElements($this->action->id); ?>
+<?php $this->endContent(); ?>

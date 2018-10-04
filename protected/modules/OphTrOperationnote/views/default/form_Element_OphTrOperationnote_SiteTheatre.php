@@ -36,7 +36,7 @@
                   'short_name'),
               array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
               false,
-              array('label' => 4, 'field' => 8)
+              array('label' => 2, 'field' => 8)
           );
           ?>
       </td>
@@ -58,7 +58,7 @@
                       CHtml::listData($getTheatreData, 'id', 'name'),
                       array('nowrapper' => false, 'class' => 'cols-full'),
                       false,
-                      array('label' => 4, 'field' => 8)
+                      array('label' => 2, 'field' => 8)
                   );
               } else {
                   echo $form->dropDownList(
@@ -67,24 +67,12 @@
                       CHtml::listData($getTheatreData, 'id', 'name'),
                       array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
                       false,
-                      array('label' => 4, 'field' => 8)
+                      array('label' => 2, 'field' => 8)
                   );
               }
           }
           ?>
       </td>
-        <?php if ($render_date): ?>
-          <td id="opnote_date">
-              <?php
-              echo $form->datePicker($this->event, 'event_date',
-                  array('maxDate' => 'today'),
-                  array('style' => 'margin-left:8px','nowrapper' => false,),
-                  array('label' => 4,'field' => 8,)
-              );
-              ?>
-            <style>#opnote_date input{width: 100%}</style>
-          </td>
-        <?php endif; ?>
     </tr>
     </tbody>
   </table>

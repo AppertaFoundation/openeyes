@@ -7,8 +7,6 @@ $(document).ready(function() {
         doPrint();
     }
 
-""
-
   $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_text').hide();
 
   $('#OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo_preferred_language_id').change(function(){
@@ -224,6 +222,8 @@ $(document).ready(function() {
         }
 
     });
+
+    $('.autosize').autosize();
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
