@@ -88,11 +88,7 @@
                     </td>
                     <td><?php echo $unique_code->id ?></td>
                     <td><?php echo $unique_code->code ?></td>
-                    <td>
-                        <?php echo ($unique_code->active) ?
-                            ('<i class="oe-i tick small"></i>') :
-                            ('<i class="oe-i remove small"></i>'); ?>
-                    </td>
+                    <td><i class="oe-i <?=($unique_code->active ? 'tick' : 'remove');?> small"></i></td>
                 </tr>
             <?php } ?>
             </tbody>

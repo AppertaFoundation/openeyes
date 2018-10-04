@@ -94,7 +94,7 @@
                 <td><?= $set->id; ?></td>
                 <td><?= $set->name; ?></td>
                 <td><?= $set->subspecialty->name; ?></td>
-                <td><?= $set->active; ?></td>
+                <td><i class="oe-i <?=($set->active ? 'tick' : 'remove');?> small"></i></td>
             </tr>
         <?php endforeach; ?>
         </tbody>

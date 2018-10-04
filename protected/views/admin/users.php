@@ -82,7 +82,7 @@
                             echo $roles ? CHtml::encode(implode(', ', $roles)) : '-';
                         ?>
                     </td>
-                    <td><?php echo $user->active ? 'Yes' : 'No' ?></td>
+                    <td><i class="oe-i <?=($user->active ? 'tick' : 'remove');?> small"></i></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
