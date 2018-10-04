@@ -547,6 +547,7 @@ return array(
                 // 'validate_msg' => ',
                 // 'editable' => true,
                 // 'auto_increment' => false,
+                // 'unique' => false
             ),
         ),*/
     ),

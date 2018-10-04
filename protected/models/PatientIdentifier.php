@@ -105,6 +105,17 @@ class PatientIdentifier extends BaseActiveRecordVersioned
             }
         }
 
+        if (isset($this->value) && trim($this->value) !== '' && $config && isset($config['unique']) && $config['unique'] === true) {
+            $item_count = self::model()->count('code = :code AND value = :value AND id != :id',
+                array(':code' => $this->code, ':value' => $this->value, ':id' => $this->id ?: -1)
+            );
+
+            if ($item_count) {
+                $msg = isset($config['conflict_msg']) ? $config['conflict_msg'] : $this->getLabel() . ' must be unique';
+                $this->addError('value', $msg);
+            }
+        }
+
         return parent::beforeValidate();
     }
 
