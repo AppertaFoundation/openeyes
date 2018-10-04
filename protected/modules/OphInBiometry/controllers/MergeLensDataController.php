@@ -28,15 +28,23 @@ class MergeLensDataController extends BaseAdminController
 
             foreach ($existing_cataract as $existing) {
                 $IOL_data = OphTrOperationnote_IOLType::model()->findByPk($existing['iol_type_id']);
-                if($IOL_data) {
-                    $new_IOL = new OphInBiometry_LensType_Lens();
-                    $new_IOL->id = $IOL_data->id + 10000;
-                    $new_IOL->name = $IOL_data->name;
-                    $new_IOL->display_name = $IOL_data->name;
-                    $new_IOL->display_order = $IOL_data->display_order;
-                    $new_IOL->active = $IOL_data->active;
-                    $new_IOL->description = 'Merged from operation note cataract element IOL type values';
-                    $new_IOL->save();
+                if ($IOL_data) {
+                    $_id = $IOL_data->id + 10000;
+                    $new_IOL = OphInBiometry_LensType_Lens::model()->findByPk($_id);
+
+                    if (!$new_IOL) {
+                        $new_IOL = new OphInBiometry_LensType_Lens();
+                        $new_IOL->id = $_id;
+                        $new_IOL->name = $IOL_data->name;
+                        $new_IOL->display_name = $IOL_data->name;
+                        $new_IOL->display_order = $IOL_data->display_order;
+                        $new_IOL->active = $IOL_data->active;
+                        $new_IOL->description = 'Merged from operation note cataract element IOL type values';
+                        $new_IOL->save();
+                    } else {
+                        // we do not modify/re-import them again at this point
+                    }
+
                     // update the existing data
                     $current_operations = Element_OphTrOperationnote_Cataract::model()->findAllByAttributes(array('iol_type_id'=>$existing['iol_type_id']));
                     $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
