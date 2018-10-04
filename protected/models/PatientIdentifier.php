@@ -19,6 +19,8 @@
  */
 class PatientIdentifier extends BaseActiveRecordVersioned
 {
+    private $_config;
+
     /**
      * @return string the associated database table name
      */
@@ -85,10 +87,64 @@ class PatientIdentifier extends BaseActiveRecordVersioned
         );
     }
 
+    private function getConfigOption($option)
+    {
+        return isset($this->getConfig()[$option]) ? $this->getConfig()[$option] : null;
+    }
+
+    public function hasAutoIncrement()
+    {
+        return $this->getConfigOption('auto_increment') === true;
+    }
+
+    public function getStartVal()
+    {
+        return $this->getConfigOption('start_val');
+    }
+
+    public function isRequired()
+    {
+        return $this->getConfigOption('required') === true;
+    }
+
+    public function isEditable()
+    {
+        return $this->getConfigOption('editable') === true || $this->getConfigOption('editable') === null;
+    }
+
+    public function mustBeUnique()
+    {
+        return $this->getConfigOption('unique') === true;
+    }
+
+    public function getConflictMessage()
+    {
+        return $this->getConfigOption('conflict_msg') ?: $this->getLabel() . ' must be unique';
+    }
+
+    public function hasValue()
+    {
+        return isset($this->value) && trim($this->value) !== '';
+    }
+
+    public function getConfig()
+    {
+        if ($this->_config === null) {
+            $this->_config = isset(Yii::app()->params['patient_identifiers'][$this->code]) ? Yii::app()->params['patient_identifiers'][$this->code] : null;
+        }
+
+        return $this->_config;
+    }
+
+    public function getLabel()
+    {
+        return $this->getConfigOption('label') ?: ucwords(strtolower(str_replace('_', ' ', $this->code)));
+    }
+
     protected function beforeValidate()
     {
-        $config = $this->getConfig();
-        if ($config && $this->value == null && isset($config['auto_increment']) && $config['auto_increment'] === true) {
+        if (!$this->hasValue() && $this->hasAutoIncrement()) {
+
             $last_identifier = self::model()->find(array(
                     'condition' => 'code = :code',
                     'order' => 'CONVERT(value, INTEGER) DESC',
@@ -98,39 +154,24 @@ class PatientIdentifier extends BaseActiveRecordVersioned
 
             if ($last_identifier) {
                 $this->value = $last_identifier->value + 1;
-            } elseif (isset($config['start_val'])) {
-                $this->value = $config['start_va'];
-            } elseif (isset($config['required']) && $config['required'] === true && isset($config['editable']) && $config['editable'] === false) {
+            } elseif ($this->getStartVal() !== null) {
+                $this->value = $this->getStartVal();
+            } elseif ($this->isRequired() && $this->isEditable()) {
                 $this->value = 1;
             }
         }
 
-        if (isset($this->value) && trim($this->value) !== '' && $config && isset($config['unique']) && $config['unique'] === true) {
+        if ($this->hasValue() && $this->mustBeUnique()) {
             $item_count = self::model()->count('code = :code AND value = :value AND id != :id',
                 array(':code' => $this->code, ':value' => $this->value, ':id' => $this->id ?: -1)
             );
 
             if ($item_count) {
-                $msg = isset($config['conflict_msg']) ? $config['conflict_msg'] : $this->getLabel() . ' must be unique';
-                $this->addError('value', $msg);
+                $this->addError('value', $this->getConflictMessage());
             }
         }
 
         return parent::beforeValidate();
-    }
-
-    public function getConfig()
-    {
-        return isset(Yii::app()->params['patient_identifiers']) ? Yii::app()->params['patient_identifiers'][$this->code] : null;;
-    }
-
-    public function getLabel()
-    {
-        if (isset(Yii::app()->params['patient_identifiers'][$this->code]['label'])) {
-            return Yii::app()->params['patient_identifiers'][$this->code]['label'];
-        }
-
-        return ucwords(strtolower(str_replace('_', ' ', $this->code)));
     }
 
     /**
