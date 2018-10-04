@@ -1,13 +1,17 @@
 
 $(function () {
   $(this).on('click', '.js-add-comments', function () {
-    $(this).css('visibility', 'hidden');
+    if($(this).data('hide-method') === 'display') {
+        $(this).hide();
+    } else {
+        $(this).css('visibility', 'hidden');
+    }
     var $container = $($(this).data('comment-container'));
     $container.show();
     $container.find('.js-comment-field').focus();
   });
 
-  $(this).on('blur', '.js-comment-field', function () {
+    $(this).on('blur', '.js-comment-field', function () {
     if ($(this).val().trim() === '') {
       var $container = $(this).closest('.js-comment-container');
       var $button = $($container.data('comment-button'));
@@ -21,6 +25,10 @@ $(function () {
     $container.find('.js-comment-field').val(null);
     $container.hide();
     var $button = $($container.data('comment-button'));
-    $button.css('visibility', 'visible');
+      if($button.data('hide-method') === 'display') {
+         $button.show();
+      } else {
+          $button.css('visibility', 'visible');
+      }
   });
 });
