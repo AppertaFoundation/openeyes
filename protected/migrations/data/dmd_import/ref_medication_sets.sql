@@ -25,5 +25,5 @@ FROM openeyes.ref_medication rm
 
 WHERE
   rm.source_type='DM+D'
-  AND
-  rm.source_subtype != 'VTM'
+ /* AND
+  rm.source_subtype != 'VTM' */

@@ -6,8 +6,8 @@ INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,p
     vmp.nm AS preferred_term,
     vmp.vpid AS preferred_code,
 
-    vtm.nm AS vtm_term,
-    vtm.vtmid AS vtm_code,
+    NULL,
+    NULL,
 
     vmp.nm AS vmp_term,
     vmp.vpid AS vmp_code,
@@ -17,4 +17,3 @@ INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,p
   FROM
     drugs2.f_vmp_vmps vmp
     LEFT JOIN drugs2.f_amp_amps amp ON vmp.vpid = amp.vpid
-    LEFT JOIN drugs2.f_vtm_vtm vtm ON vtm.vtmid = vmp.vtmid;
