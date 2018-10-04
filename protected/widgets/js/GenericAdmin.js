@@ -91,7 +91,8 @@ $(document).ready(function() {
 		var template = $('.generic-admin .newRow').html();
 
 		if (template) {
-			appendRow('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
+			// insert the new row before the template row
+            $('.generic-admin tbody tr:last').before('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
 		}
 		else {
 			$.ajax({
