@@ -16,8 +16,79 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->textArea($model, 'id', array(), true) ?>
-<?php echo $form->textField($model, 'name') ?>
-<?php echo $form->textField($model, 'display_order') ?>
-<?php echo $form->radioBoolean($model, 'is_active') ?>
-<?php echo $form->formActions(['cancel-uri' => '/'.  $this->module->id .'/' . $this->id])?>
+<div class="cols-5">
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr class="hidden">
+            <td>Id</td>
+            <td>
+                <?php echo CHtml::activeTextField(
+                    $model,
+                    'id',
+                    ['hidden' => true]
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>
+                <?php echo CHtml::activeTextField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Display Order</td>
+            <td>
+                <?php echo CHtml::activeTextField(
+                    $model,
+                    'display_order',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Is Active</td>
+            <td>
+                <?php echo CHtml::activeRadioButtonList(
+                    $model,
+                    'is_active',
+                    [1 => 'Yes', 0 => 'No'],
+                    ['separator' => ' ', 'selected' => '1']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <?php echo CHtml::button(
+                    'Save',
+                    [
+                        'class' => 'button large primary event-action',
+                        'name' => 'save',
+                        'type' => 'submit',
+                        'id' => 'et_save'
+                    ]
+                ); ?>
+                <?php echo CHtml::button(
+                    'Cancel',
+                    [
+                        'data-uri' => '/' . $this->module->id . '/' . $this->id,
+                        'class' => 'warning button large primary event-action',
+                        'type' => 'submit',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel',
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

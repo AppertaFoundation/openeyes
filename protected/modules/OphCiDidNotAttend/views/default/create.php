@@ -16,11 +16,11 @@
  */
 ?>
 
-<?php
-    $this->beginContent('//patient/event_container');?>
+<?php $form_id = 'create-form';
+$this->beginContent('//patient/event_container' , array('form_id' => $form_id));
 
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id'=>'create-form',
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id'=> $form_id,
     'enableAjaxValidation'=>false,
     'layoutColumns' => array(
         'label' => 2,
@@ -28,7 +28,7 @@
     )
 ));
 // Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=>'create-form'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=> $form_id));
 
 ?>
 

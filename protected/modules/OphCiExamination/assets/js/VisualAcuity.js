@@ -22,6 +22,12 @@ $(document).ready(function () {
 
   }
 
+  ($('.va_readings,.near-va-readings').each(function(){
+    if($(this).find('tbody tr').length){
+        $(this).siblings('.noReadings').hide();
+    }
+  }));
+
   $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
@@ -59,7 +65,6 @@ $(document).ready(function () {
         }
       }
 
-      
       if ($('tbody', activeForm).children('tr').length == 0) {
         $('.noReadings', activeForm).show();
         $('table', activeForm).hide();
@@ -258,13 +263,9 @@ function OphCiExamination_VisualAcuity_addReading(side, selected_data, template,
   }
 
   table.show();
-  var nextMethodId = OphCiExamination_VisualAcuity_getNextMethodId(side, suffix);
-
   $('tbody', table).append(form);
-  $('.method_id', table).last().val(nextMethodId);
 
   OphCiExamination_VisualAcuity_ReadingTooltip(table.find('tr').last());
-
 }
 
 /**

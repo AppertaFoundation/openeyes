@@ -35,12 +35,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     MultiSelectDropDownListController.prototype.init = function () {
         let controller = this;
-        $(controller.options.wrapperSelector).on('change', 'select', function(){
+
+        $('body').on('change', controller.options.wrapperSelector + ' select', function(){
             let $selected_option = $(this).find('option:selected');
             let $tr = $(this).closest('tr');
             controller.addToList($tr, {id:$selected_option.val(), label: $selected_option.text() });
         });
-        $(controller.options.wrapperSelector).on('click', '.remove-circle', function(){
+        $('body').on('click', controller.options.wrapperSelector + ' .remove-circle', function(){
             let $tr = $(this).closest('tr');
             let $li = $(this).closest('li');
             let value = $li.find('input[type="hidden"]').val();
