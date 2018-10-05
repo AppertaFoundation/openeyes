@@ -40,7 +40,7 @@
                     <td><?php echo $model->type->name ?></td>
                     <td><?php echo $model->wavelength ?></td>
                     <td><?php echo $model->site->name ?></td>
-                    <td><?php echo $model->active ? 'Yes' : 'No' ?></td>
+                    <td><i class="oe-i <?=($model->active ? 'tick' : 'remove');?> small"></i></td>
                     <td>
                         <?=\CHtml::link(
                             'Edit',

@@ -17,33 +17,34 @@
  */
 ?>
 
-<div class="row divider">
-    <h2>Wards</h2>
-</div>
+<div class="cols-5">
+    <div class="row divider">
+        <h2>Wards</h2>
+    </div>
 
 	<form id="admin_wards">
 		<table class="standard">
 			<thead>
 				<tr>
-					<th><input type="checkbox" id="checkall" class="wards" /></th>
 					<th>Site</th>
 					<th>Name</th>
 					<th>Code</th>
 					<th>Restrictions</th>
+					<th>Active</th>
 				</tr>
 			</thead>
 			<tbody class="sortable" data-sort-uri="/OphTrOperationbooking/admin/sortwards">
 				<?php
                 $criteria = new CDbCriteria();
                 $criteria->order = 'display_order asc';
-                foreach (OphTrOperationbooking_Operation_Ward::model()->active()->findAll() as $i => $ward) {?>
+                foreach ($model as $i => $ward) {?>
 					<tr class="clickable <?php if ($i % 2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
-						<td><input type="checkbox" name="ward[]" value="<?php echo $ward->id?>" class="wards" /></td>
 						<td><?php echo $ward->site->name?></td>
 						<td><?php echo $ward->name?></td>
 						<td><?php echo $ward->code?>&nbsp;</td>
 						<td><?php echo $ward->restrictionText?></td>
-					</tr>
+                        <td><?=$ward->active?><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
+                    </tr>
 				<?php }?>
 			</tbody>
 			<tfoot>
@@ -52,10 +53,6 @@
                         <?=\CHtml::htmlButton('Add', [
                             'class' => 'small button',
                             'id' => 'et_add_ward'
-                        ]);?>
-                        <?=\CHtml::htmlButton('Delete', [
-                            'class' => 'small button',
-                            'id' => 'et_delete_ward'
                         ]);?>
 					</td>
 				</tr>
@@ -79,6 +76,7 @@
 			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
+</div>
 
 
 <script type="text/javascript">
@@ -102,50 +100,6 @@
 
 			}
 		}).disableSelection();
-	});
-
-	handleButton($('#et_delete_ward'),function(e) {
-		e.preventDefault();
-
-		if ($('input[type="checkbox"][name="ward[]"]:checked').length <1) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select the ward(s) you wish to delete."
-			}).open();
-			enableButtons();
-			return;
-		}
-
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteWards',
-			'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(resp) {
-				if (resp == "1") {
-					enableButtons();
-
-					if ($('input[type="checkbox"][name="ward[]"]:checked').length == 1) {
-						$('#confirm_delete_wards').attr('title','Confirm delete ward');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the ward from the system.<br/><br/>This action cannot be undone.");
-						$('.btn_remove_wards').children('span').text('Remove ward');
-					} else {
-						$('#confirm_delete_wards').attr('title','Confirm delete wards');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the wards from the system.<br/><br/>This action cannot be undone.");
-						$('.btn_remove_wards').children('span').text('Remove wards');
-					}
-
-					$('#confirm_delete_wards').dialog({
-						resizable: false,
-						modal: true,
-						width: 560
-					});
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "One or more of the selected wards have active future bookings and so cannot be deleted."
-					}).open();
-					enableButtons();
-				}
-			}
-		});
 	});
 
 	$('.btn_cancel_remove_wards').click(function(e) {

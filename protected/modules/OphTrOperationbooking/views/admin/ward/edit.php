@@ -54,7 +54,7 @@
             <td><?=\CHtml::activeTextArea($ward, 'directions', ['class' => 'cols-full']);?></td>
         </tr>
 
-        <?php foreach (['restriction_male', 'restriction_female', 'restriction_child', 'restriction_adult'] as $attr) :?>
+        <?php foreach (['restriction_male', 'restriction_female', 'restriction_child', 'restriction_adult', 'active'] as $attr) :?>
             <tr>
                 <td><?=$ward->getAttributeLabel($attr);?></td>
                 <td>

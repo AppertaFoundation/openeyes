@@ -1514,11 +1514,16 @@ class AdminController extends ModuleAdminController
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('/admin/ward/index');
+        $this->render(
+            '/admin/ward/index',
+            [
+                'model' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
+            ]);
     }
 
     public function actionEditWard($id)
     {
+
         if (!$ward = OphTrOperationbooking_Operation_Ward::model()->findByPk($id)) {
             throw new Exception("Ward not found: $id");
         }
@@ -1529,6 +1534,8 @@ class AdminController extends ModuleAdminController
             $ward->attributes = $_POST['OphTrOperationbooking_Operation_Ward'];
 
             $ward->restriction = 0;
+
+            $ward->active = @$_POST['OphTrOperationbooking_Operation_Ward']['active'];
 
             if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_male']) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_MALE;
@@ -1624,6 +1631,7 @@ class AdminController extends ModuleAdminController
                     'empty' => '- Edit rights -',
                 ),
             ),
+            'div_wrapper_class' => 'cols-5',
         ));
     }
 
