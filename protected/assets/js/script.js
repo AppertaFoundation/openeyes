@@ -40,8 +40,7 @@ $(document).ready(function () {
     }
   } else {
     // .. otherwise set up the hotlist
-    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel'));
-    var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
+    var hotlist = new OpenEyes.UI.HotList($hotlistNavButton, $('#js-hotlist-panel'));
   }
 
 	// override the behaviour for showing search results

@@ -1,44 +1,54 @@
 (function (exports) {
 
-  function HotList(activity) {
-    this.create(activity);
+  function HotList($nav_button, $panel) {
+
+    this.$nav_button = $nav_button;
+    this.$panel = $panel;
+    this.fixable = $nav_button.data('fixable');
+    this.latched = false;
+
+    this.autoHideWidthPixels = 1800;
+
+    // The date to restrict he closed list to. Default to today
+    this.selected_date = new Date();
+
+    this.create();
   }
 
-  HotList.prototype.create = function (activity) {
+  HotList.prototype.create = function () {
     var hotlist = this;
 
     if ($('#js-nav-hotlist-btn').length === 0) {
       return;
     }
 
-    // The date to restrict he closed list to. Default to today
-    this.selected_date = new Date();
+    $(window).resize(function () {
+      hotlist.onBrowserSizeChange();
+    });
+    hotlist.onBrowserSizeChange();
 
-    // Fix Activity Panel if design allows it to be fixable!
-    if ($('#js-nav-hotlist-btn').data('fixable') === true) {
-      checkBrowserSize();
-
-      $(window).resize(function () {
-        checkBrowserSize();
-      });
-
-      function checkBrowserSize() {
-        if ($(window).width() > 1800) { // min width for fixing Activity Panel (allows some resizing)
-          activity.fixed(true);
-        } else {
-          activity.fixed(false);
-        }
+    this.$nav_button.on('click', function () {
+      if (hotlist.isFixable()) {
+        return;
       }
-    } else {
-      activity.useWrapper($('.js-hotlist-panel-wrapper'));
-      activity.latchable = true;
-    }
+      hotlist.latched = !hotlist.latched;
+      hotlist.$panel.toggle(hotlist.latched);
+    });
+
+    this.$nav_button.on('mouseover', function () {
+      hotlist.$panel.show();
+    });
+
+    this.$nav_button.on('mouseout', function () {
+      if (!hotlist.isFixable() && !hotlist.latched) {
+        hotlist.$panel.hide();
+      }
+    });
 
     $('.activity-list').find('textarea').autosize();
 
     // activity datepicker using pickmeup.
     // CSS controls it's positioning
-
     var $pmuWrap = $('#js-pickmeup-datepicker').hide();
     var pmu = pickmeup('#js-pickmeup-datepicker', {
       format: 'a d b Y',
@@ -155,6 +165,22 @@
 
       return false;
     });
+  };
+
+  HotList.prototype.onBrowserSizeChange = function () {
+    if (this.latched) {
+      return;
+    }
+
+    if ($(window).width() > this.autoHideWidthPixels) { // min width for fixing Activity Panel (allows some resizing)
+      this.$panel.toggle(this.isFixable());
+    } else {
+      this.$panel.hide();
+    }
+  };
+
+  HotList.prototype.isFixable = function () {
+    return this.$nav_button.data('fixable') && $(window).width() > this.autoHideWidthPixels;
   };
 
   HotList.prototype.setSelectedDate = function (date, display_date) {
