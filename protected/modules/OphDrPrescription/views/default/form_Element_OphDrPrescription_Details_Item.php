@@ -18,19 +18,16 @@
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
-  <?php if (isset($patient)): ?>
-    <?php if ($patient->hasDrugAllergy($item->drug_id)): ?>
-      allergyWarning
-    <?php endif; ?>
-  <?php endif; ?>
   <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
-
   <td>
       <button class="js-add-taper">
           <i class="oe-i child-arrow small"></i>
       </button>
   </td>
   <td>
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->drug_id)): ?>
+      <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
+      <?php endif; ?>
       <?php echo $item->drug->tallmanlabel; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php
