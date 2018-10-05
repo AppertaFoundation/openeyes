@@ -18,13 +18,13 @@
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
         <form id="generic-admin-list">
+            <table class="standard">
 		<?php
-
         if (is_array($admin->getFilterFields())) {
             foreach ($admin->getFilterFields() as $field => $params) { ?>
-				<div class="large-2 column"><label
-						for="<?php echo $params['dropDownName'] ?>"><?php echo $params['label']; ?>:</label></div>
-				<div class="large-4 column">
+                <tr>
+                    <td><?php echo $params['label']; ?></td>
+                    <td>
 					<?php
                     $searchParams = $this->request->getParam('search');
                 if (isset($searchParams['filterid'][$params['dropDownName']]['value']) && $searchParams['filterid'][$params['dropDownName']]['value'] != '') {
@@ -51,11 +51,12 @@
                     // for some functions we need to exclude fields from search
                     if (isset($params['excludeSearch']) && $params['excludeSearch']) {
                         $fieldName = $params['dropDownName'];
-                        $htmlClass = 'excluded';
+                        $htmlClass = 'excluded cols-full';
                     } else {
                         $fieldName = 'search[filterid]['.$params['dropDownName'].'][value]';
-                        $htmlClass = 'filterfieldselect';
+                        $htmlClass = 'filterfieldselect cols-full';
                     }
+
                 echo CHtml::dropDownList($fieldName,
                         $selectedValue[$params['dropDownName']],
                         CHtml::listData($params['listModel']->findAll($filterQuery),
@@ -66,12 +67,15 @@
                             'empty' => $params['emptyLabel'],
                         ));
                 ?>
-				</div>
+                </td>
+                </tr>
 			<?php
-
             }
         }
         ?>
+            </table>
+
+
             <div class="data-group">
                 <table class="standard">
                     <thead>

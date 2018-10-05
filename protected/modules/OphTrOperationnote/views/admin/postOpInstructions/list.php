@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="cols-6">
+<div class="cols-7">
     <table class="generic-admin standard sortable">
         <thead>
         <tr>
