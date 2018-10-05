@@ -1,17 +1,14 @@
-<div class="data-group">
-    <div  class="cols-2 column">
-        <label>Attachments:</label>
-    </div>
-    <div class="cols-10 column end">
-        <table id="correspondence_attachments_table">
-            <thead>
-            <tr>
-                <th>Attachment type</th>
-                <th>Title</th>
-                <th>Event Date</th>
-                <th>Action</th>
-            </tr>
-            </thead>
+<!-- This page is rendered in form_ElementLetter.php. The <section> tags visible in the DOM come from that file -->
+	<header class="element-header"><h3 class="element-title">Attachments</h3></header>
+	<div class="element-fields full-width flex-layout">	<table class="cols-10">
+			<thead>
+			<tr>
+				<th>Attachment type</th>
+				<th>Title</th>
+				<th>Event Date</th>
+				<th></th>
+			</tr>
+			</thead>
             <tbody>
             <?php
             if (empty($patient)) {
@@ -107,9 +104,9 @@
                                value="<?= $ac->short_code ?>"/>
                         <?= $event_date ?>
                     </td>
-                    <td>
-                        <button class="button small warning remove">remove</button>
-                    </td>
+									<td>
+										<i class="oe-i trash"></i>
+									</td>
                 </tr>
                 <?php $row_index++;
             }
@@ -137,9 +134,7 @@
                             <td>
                                 <?= Helper::convertDate2NHS($event->event_date); ?>
                             </td>
-                            <td>
-                                <button class="button small warning remove">remove</button>
-                            </td>
+                            <td><i class="oe-i trash"></i></td>
                         </tr>
                         <?php
                     }
@@ -168,4 +163,4 @@
             </tbody>
         </table>
     </div>
-</div>
+

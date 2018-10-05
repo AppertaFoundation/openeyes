@@ -5,6 +5,6 @@
                value="<?php echo $this->getEventSubType($event); ?>"/></td>
     <td><?= Helper::convertDate2NHS($event->event_date) ?></td>
     <td>
-        <button class="button small warning remove">remove</button>
+			<i class="oe-i trash"></i>
     </td>
 </tr>

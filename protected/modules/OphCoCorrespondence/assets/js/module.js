@@ -802,7 +802,7 @@ $(document).ready(function() {
         docman.setDeliveryMethods(0);
 	})
 
-	$('#attachments_content_container').on('click', 'button.remove', function(e) {
+	$('#attachments_content_container').on('click', 'i.trash', function(e) {
 		e.preventDefault();
         $(this).closest('tr').remove();
 
