@@ -93,6 +93,7 @@ class EventMedicationUse extends BaseElement
 			array('usage_type, ref_medication_id, start_date_string_YYYYMMDD', 'required'),
 			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
+			array('laterality', 'validateLaterality'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('usage_type, usage_subtype, dose_unit_term', 'length', 'max'=>45),
 			array('usage_type', 'default', 'value' => static::getUsageType(), 'on' => 'insert'),
@@ -106,6 +107,16 @@ class EventMedicationUse extends BaseElement
 			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, ref_medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
+
+    /**
+     * require laterality selection when a route is chosen that has laterality options
+     */
+    public function validateLaterality()
+    {
+        if (!$this->laterality && $this->route_id && in_array($this->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL))) {
+            $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
+        }
+    }
 
     /**
      * @inheritdoc
