@@ -633,7 +633,8 @@ class Patient extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->select ='t.name';
-        $criteria->condition= 'paa.patient_id = :patient_id AND dra.id = :drug_id';
+        $criteria->condition= 'paa.patient_id = :patient_id AND dra.drug_id = :drug_id';
+
         $join = array();
         $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = t.id';
         $join[] = 'JOIN drug_allergy_assignment dra ON dra.allergy_id = t.id';
