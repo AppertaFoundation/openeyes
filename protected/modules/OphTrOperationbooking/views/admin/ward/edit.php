@@ -66,7 +66,7 @@
         <tr>
             <td><?=$ward->getAttributeLabel('active')?></td>
             <td>
-                <?= CHtml::radioButtonList('OphTrOperationbooking_Operation_Ward[active]', $ward->active ? 1 : 0, array(1 => 'Yes', 0 => 'No'), ['separator' => ' ']); ?>
+                <?= CHtml::radioButtonList(CHtml::modelName($ward) .'[active]', $ward->active ? 1 : 0, [1 => 'Yes', 0 => 'No'], ['separator' => ' ']); ?>
             </td>
         </tr>
 

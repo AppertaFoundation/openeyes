@@ -43,7 +43,7 @@
 						<td><?php echo $ward->name?></td>
 						<td><?php echo $ward->code?>&nbsp;</td>
 						<td><?php echo $ward->restrictionText?></td>
-                        <td><?=$ward->active?><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
+                        <td><i class="oe-i <?=($ward->active ? 'tick' : 'remove');?> small"></i></td>
                     </tr>
 				<?php }?>
 			</tbody>
@@ -51,7 +51,7 @@
 				<tr>
 					<td colspan="5">
                         <?=\CHtml::htmlButton('Add', [
-                            'class' => 'small button',
+                            'class' => 'button large',
                             'id' => 'et_add_ward'
                         ]);?>
 					</td>

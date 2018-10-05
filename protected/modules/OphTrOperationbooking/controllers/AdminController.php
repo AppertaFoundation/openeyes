@@ -1637,7 +1637,7 @@ class AdminController extends ModuleAdminController
 
     public function actionScheduleOptions()
     {
-        $this->genericAdmin('Operation scheduling options', 'OphTrOperationbooking_ScheduleOperation_Options');
+        $this->genericAdmin('Operation scheduling options', 'OphTrOperationbooking_ScheduleOperation_Options', ['div_wrapper_class' => 'cols-5']);
     }
 
     /**
