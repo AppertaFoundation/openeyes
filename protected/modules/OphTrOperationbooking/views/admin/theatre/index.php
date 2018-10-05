@@ -17,9 +17,10 @@
  */
 ?>
 
-<div class="row divider">
-    <h2>Theatres</h2>
-</div>
+<div class="cols-5">
+    <div class="row divider">
+        <h2>Theatres</h2>
+    </div>
 
 	<form id="theatres">
 		<table class="standard">
@@ -73,6 +74,8 @@
 			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
+</div>
+
 
 <script type="text/javascript">
 	handleButton($('#et_delete_theatre'),function(e) {
