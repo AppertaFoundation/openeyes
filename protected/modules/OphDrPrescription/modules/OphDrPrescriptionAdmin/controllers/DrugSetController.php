@@ -106,6 +106,11 @@ class DrugSetController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+
         $admin = $this->initAdmin($id);
         $admin->editModel();
     }
