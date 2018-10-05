@@ -52,7 +52,7 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Add',
                             [
                                 'class' => 'button large',
@@ -62,7 +62,7 @@
                                 'id' => 'et_add'
                             ]
                         ); ?>
-                        <?php echo CHtml::button(
+                        <?=\CHtml::button(
                             'Delete',
                             [
                                 'class' => 'button large',

@@ -58,19 +58,19 @@
 <div class="row divider">
     <h3>How the rules are applied</h3>
 </div>
-<p align="justify">
+<p>
     The EROD is calculated by looking for the earliest available session that has space for the procedure, and meets the
     various criteria of the procedure itself (such as consultant, anaethetist etc).
 </p>
-<p align="justify">
+<p>
     The sessions that this criteria is applied to is filtered by the subspecialty of the operation booking episode.
 </p>
-<p align="justify">
+<p>
     If a rule is set on the subspecialty, then the sessions that are looked in will only be the sessions of the firms
     that are selected for that subspecialty rule. <i>As a result, only one rule for any subspecialty should be
         created.</i>
 </p>
-<p align="justify">
+<p>
     This provides the added convenience of allowing EROD to be calculated outside of the episode subspecialty by
     pointing at other subspecialties via the appropriate firms.
 </p>

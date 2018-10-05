@@ -45,7 +45,7 @@
         <tr>
             <td>Operator</td>
             <td>
-                <?php echo CHtml::activeDropDownList(
+                <?=\CHtml::activeDropDownList(
                     $laser_operator,
                     'user_id',
                     CHtml::listData(

@@ -37,19 +37,19 @@
         <tbody>
         <tr>
             <td><?= \CHtml::textField(
-                'station_id', /*@$_POST['station_id']*/
-                'IOLM1120642',
+                'station_id',
+                \Yii::app()->request->getPost('station_id'),
                 ['class' => 'small fixed-width cols-11', 'placeholder' => 'Station Id']
             ); ?>
             </td>
             <td><?= \CHtml::textField(
                 'location',
-                @$_POST['location'],
+                \Yii::app()->request->getPost('location'),
                 ['class' => 'small fixed-width cols-11', 'placeholder' => 'Location']
             ); ?></td>
             <td><?= \CHtml::textField(
                 'hos_num',
-                @$_POST['hos_num'],
+                \Yii::app()->request->getPost('hos_num'),
                 ['class' => 'small fixed-width cols-11', 'placeholder' => 'Hospital Number']
             ); ?></td>
             <td><?= \CHtml::dropDownList(
@@ -125,8 +125,7 @@
         <tbody>
         <tr>
             <td>
-                <?php
-                echo CHtml::radioButtonList(
+                <?=\CHtml::radioButtonList(
                     'date',
                     2,
                     ['1' => 'Import date', '2' => 'Study date'],
@@ -140,7 +139,7 @@
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                     ),
-                    'value' => @$_POST['date_from'],
+                    'value' => \Yii::app()->request->getPost('date_from'),
                     'htmlOptions' => array(
                         'class' => 'small fixed-width',
                     ),
@@ -153,7 +152,7 @@
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                     ),
-                    'value' => @$_POST['date_to'],
+                    'value' => \Yii::app()->request->getPost('date_to'),
                     'htmlOptions' => array(
                         'class' => 'small fixed-width',
                     ),

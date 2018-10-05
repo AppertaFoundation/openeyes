@@ -37,7 +37,7 @@
 				<?php
                 $criteria = new CDbCriteria();
                 $criteria->order = 'display_order asc';
-                foreach ($model as $i => $ward) {?>
+                foreach ($wards as $i => $ward) {?>
 					<tr class="clickable <?php if ($i % 2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $ward->id?>" data-uri="OphTrOperationbooking/admin/editWard/<?php echo $ward->id?>">
 						<td><?php echo $ward->site->name?></td>
 						<td><?php echo $ward->name?></td>

@@ -43,7 +43,7 @@
         <tr>
             <td><?=$reason->getAttributeLabel('name')?></td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $reason,
                     'name',
                     ['class' => 'cols-full']

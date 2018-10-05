@@ -43,7 +43,7 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="3">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
                             'class' => 'button large',
@@ -53,7 +53,7 @@
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Delete',
                         [
                             'data-uri' => '/OphTrOperationnote/admin/deletePostOpDrugs',

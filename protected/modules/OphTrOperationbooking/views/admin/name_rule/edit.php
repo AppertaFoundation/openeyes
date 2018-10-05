@@ -55,7 +55,7 @@
         <tr>
             <td><?=$rule->getAttributeLabel('name')?></td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $rule,
                     'name',
                     ['class' => 'cols-full']

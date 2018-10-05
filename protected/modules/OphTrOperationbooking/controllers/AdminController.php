@@ -1517,7 +1517,7 @@ class AdminController extends ModuleAdminController
         $this->render(
             '/admin/ward/index',
             [
-                'model' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
+                'wards' => OphTrOperationbooking_Operation_Ward::model()->findAll(),
             ]);
     }
 
@@ -1528,28 +1528,29 @@ class AdminController extends ModuleAdminController
             throw new Exception("Ward not found: $id");
         }
 
-        $errors = array();
+        $errors = [];
 
         if (!empty($_POST)) {
-            $ward->attributes = $_POST['OphTrOperationbooking_Operation_Ward'];
+            $attributes = \Yii::app()->request->getPost('OphTrOperationbooking_Operation_Ward');
+            $ward->attributes = $attributes;
 
             $ward->restriction = 0;
 
-            $ward->active = $_POST['OphTrOperationbooking_Operation_Ward']['active'];
+            $ward->active = isset($attributes['active']) ? $attributes['active'] : null;
 
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_male']) {
+            if (isset($attributes['restriction_male'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_MALE;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_female']) {
+            if (isset($attributes['restriction_female'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_FEMALE;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_child']) {
+            if (isset($attributes['restriction_child'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_CHILD;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_adult']) {
+            if (isset($attributes['restriction_adult'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_ADULT;
             }
-            if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_observation']) {
+            if (isset($attributes['restriction_observation'])) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_OBSERVATION;
             }
             if (!$ward->save()) {
@@ -1563,10 +1564,10 @@ class AdminController extends ModuleAdminController
 
         Audit::add('admin', 'view', $id, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_Ward'));
 
-        $this->render('/admin/ward/edit', array(
+        $this->render('/admin/ward/edit', [
             'ward' => $ward,
             'errors' => $errors,
-        ));
+        ]);
     }
 
     public function actionAddWard()

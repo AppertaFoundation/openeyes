@@ -27,7 +27,7 @@
     <tr>
         <td>Name</td>
         <td >
-            <?php echo CHtml::activeTextField(
+            <?=\CHtml::activeTextField(
                 $model,
                 'name',
                 [
@@ -40,7 +40,7 @@
     <tr>
         <td>Correspondence</td>
         <td>
-            <?php echo CHtml::activeTextField(
+            <?=\CHtml::activeTextField(
                 $model,
                 'letter_str',
                 [

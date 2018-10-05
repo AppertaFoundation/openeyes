@@ -28,7 +28,7 @@
     <tr>
         <td>Disorder Id</td>
         <td >
-            <?php echo CHtml::activeDropDownList(
+            <?=\CHtml::activeDropDownList(
                 $model,
                 'disorder_id',
                 CHtml::listData(
@@ -43,7 +43,7 @@
     <tr>
         <td>Question</td>
         <td>
-            <?php echo CHtml::activeTextField(
+            <?=\CHtml::activeTextField(
                 $model,
                 'question',
                 [

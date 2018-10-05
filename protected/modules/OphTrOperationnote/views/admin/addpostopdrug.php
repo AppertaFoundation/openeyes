@@ -40,7 +40,7 @@
         <tr>
             <td>Name</td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $drug,
                     'name',
                     ['class' => 'cols-full']
@@ -52,7 +52,7 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="2">
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Save',
                     [
                         'class' => 'button large',
@@ -61,7 +61,7 @@
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::button(
                     'Cancel',
                     [
                         'data-uri' => '/OphTrOperationnote/admin/viewPostOpDrugs',
