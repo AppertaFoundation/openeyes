@@ -808,42 +808,11 @@ $(document).ready(function() {
 
         var table = $('#correspondence_attachments_table');
         var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
-        $last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+        $table = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
         if(rows.length == 0){
-            $last_row.attr('data-id', 0);
+            $table.attr('data-id', 0);
 		}
 	});
-
-	$('#attachments_content_container').on('change', 'select#attachment_events', function(e){
-        disableButtons();
-
-        $select = $(this);
-        if($select.val() > 0){
-            $.ajax({
-                'type': 'POST',
-                'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-                'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: $select.val() , 'patient_id': OE_patient_id},
-                'success': function(response) {
-                    if(response.success == 1){
-                    	$last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
-
-                    	$content = $(response.content);
-                        $last_row.before($content);
-
-                        $data_id = parseInt($last_row.attr("data-id"));
-                        $content.attr('data-id', $data_id);
-                        $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id+ ']');
-                        $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id+ ']');
-
-                        $last_row.attr('data-id', $data_id + 1);
-
-                        $select.val('');
-                        enableButtons();
-                    }
-                }
-            });
-        }
-    });
 });
 
 function savePDFprint( module , event_id , $content, $data_id, title)
@@ -989,4 +958,30 @@ function OphCoCorrespondence_do_print(all) {
       enableButtons();
     }
   });
+}
+
+function OphCoCorrespondence_addAttachments(selectedItems){
+    disableButtons();
+    for(let key in selectedItems) {
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+            'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
+            'success': function (response) {
+                if (response.success == 1) {
+                    $table = $('#attachments_content_container').find('table > tbody');
+
+                    $content = $(response.content);
+                    $table.append($content);
+
+                    $data_id = parseInt($table.attr("data-id"));
+                    $content.attr('data-id', $data_id);
+                    $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
+                    $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
+
+                    enableButtons();
+                }
+            }
+        });
+    }
 }
