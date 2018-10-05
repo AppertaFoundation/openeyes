@@ -148,6 +148,25 @@ class ExaminationElementAttributesController extends BaseAdminController
         }
     }
 
+    protected function isAttributeElementDeletable(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element)
+    {
+        $check_dependencies = 1;
+
+        $check_dependencies &= !OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->count('attribute_element_id = :id', [':id' => $element->id]);
+
+        return $check_dependencies;
+    }
+
+    protected function isAttributeDeletable(OEModule\OphCiExamination\models\OphCiExamination_Attribute $attribute)
+    {
+        $check_dependencies = 1;
+
+        $check_dependencies &= !OEModule\OphCiExamination\models\OphCiExamination_AttributeElement::model()->count('attribute_id = :id', [':id' => $attribute->id]);
+
+        return $check_dependencies;
+    }
+
+
     /**
      * Deletes rows for the model.
      */
@@ -162,23 +181,27 @@ class ExaminationElementAttributesController extends BaseAdminController
 
         foreach ($attributeIdsArray as $key => $attributeId) {
             $element = $newOCEAE::model()->findByAttributes(array('attribute_id' => $attributeId));
-            if (is_object($element)) {
+            if ($element && $this->isAttributeElementDeletable($element)) {
                 if ($element->delete()) {
                     //echo success;
                 } else {
                     echo 'error';
                     print_r($element->getErrors(), true);
                 }
+            } else {
+                echo "Cannot delete; Attribute Element is in use";
             }
 
             $attribute = $newOCEA::model()->findByAttributes(array('id' => $attributeId));
-            if (is_object($attribute)) {
+            if ($attribute && $this->isAttributeDeletable($attribute)) {
                 if ($attribute->delete()) {
                     echo true;
                 } else {
                     echo 'error';
                     print_r($attribute->getErrors(), true);
                 }
+            } else {
+                echo "Cannot delete; Attribute is in use";
             }
         }
     }
