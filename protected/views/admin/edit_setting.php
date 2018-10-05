@@ -14,10 +14,12 @@
  */
 ?>
 
-<div class="row divider">
-    <h2>Edit setting</h2>
-</div>
-<div class="cols-full">
+
+<div class="cols-7">
+
+    <div class="row divider">
+        <h2>Edit setting</h2>
+    </div>
 
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(

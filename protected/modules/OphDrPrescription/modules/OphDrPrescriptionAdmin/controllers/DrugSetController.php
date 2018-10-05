@@ -190,7 +190,7 @@ class DrugSetController extends BaseAdminController
                 Yii::app()->user->setFlash('info.save_message',
                     'Unable to save drugs, please add at least one drug to the set. Set name and subspecialty saved.');
             }
-            $this->redirect('/OphDrPrescription/DrugSetAdmin/list');
+            $this->redirect('/OphDrPrescription/admin/drugSet/list');
         } else {
             if ($drugSetId > 0) {
                 $admin = $this->initAdmin($drugSetId);
