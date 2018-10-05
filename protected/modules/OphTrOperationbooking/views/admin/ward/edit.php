@@ -54,7 +54,7 @@
             <td><?=\CHtml::activeTextArea($ward, 'directions', ['class' => 'cols-full']);?></td>
         </tr>
 
-        <?php foreach (['restriction_male', 'restriction_female', 'restriction_child', 'restriction_adult', 'active'] as $attr) :?>
+        <?php foreach (['restriction_male', 'restriction_female', 'restriction_child', 'restriction_adult'] as $attr) :?>
             <tr>
                 <td><?=$ward->getAttributeLabel($attr);?></td>
                 <td>
@@ -62,6 +62,13 @@
                 </td>
             </tr>
         <?php endforeach; ?>
+
+        <tr>
+            <td><?=$ward->getAttributeLabel('active')?></td>
+            <td>
+                <?= CHtml::radioButtonList('OphTrOperationbooking_Operation_Ward[active]', $ward->active ? 1 : 0, array(1 => 'Yes', 0 => 'No'), ['separator' => ' ']); ?>
+            </td>
+        </tr>
 
         </tbody>
         <tfoot class="pagination-container">

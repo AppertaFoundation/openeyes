@@ -1535,7 +1535,7 @@ class AdminController extends ModuleAdminController
 
             $ward->restriction = 0;
 
-            $ward->active = @$_POST['OphTrOperationbooking_Operation_Ward']['active'];
+            $ward->active = $_POST['OphTrOperationbooking_Operation_Ward']['active'];
 
             if (@$_POST['OphTrOperationbooking_Operation_Ward']['restriction_male']) {
                 $ward->restriction += OphTrOperationbooking_Operation_Ward::RESTRICTION_MALE;
