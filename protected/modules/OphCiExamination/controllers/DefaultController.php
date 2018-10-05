@@ -251,16 +251,20 @@ class DefaultController extends \BaseEventTypeController
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 
             if($this->episode->diagnosis) {
-                if ($principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id)) {
-                    $d = new models\OphCiExamination_Diagnosis();
-                    $d->disorder_id = $principal_diagnosis->disorder_id;
-                    $d->principal = true;
-                    $d->date = $principal_diagnosis->date;
-                    $d->eye_id = $this->episode->eye_id;
-
-                    $diagnoses[] = $d;
+                $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id);
+                if(!$principal_diagnosis) {
+                    /* In this case the episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
                 }
+
+                $d = new models\OphCiExamination_Diagnosis();
+                $d->disorder_id = $principal_diagnosis ? $principal_diagnosis->disorder_id : $this->episode->diagnosis->id;
+                $d->principal = true;
+                $d->date = $principal_diagnosis ? $principal_diagnosis->date : null;
+                $d->eye_id = $this->episode->eye_id;
+
+                $diagnoses[] = $d;
             }
+
 
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
                 $d = new models\OphCiExamination_Diagnosis();
