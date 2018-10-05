@@ -408,7 +408,6 @@ class OphCiExamination_API extends \BaseAPI
      * Will return the average for multiple readings.
      * Returns nothing if no IOP has been recorded.
      *
-     * @todo verify if in use
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
      * @return string|void
@@ -431,7 +430,6 @@ class OphCiExamination_API extends \BaseAPI
      * Will return the average for multiple readings.
      * Returns nothing if no IOP has been recorded.
      *
-     * @todo verify if in use
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
      * @return string|void
@@ -717,7 +715,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit->value;
         }
-        return;
     }
 
     public function getVARight($vaid)
@@ -728,7 +725,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
     public function getVALeft($vaid)
@@ -739,7 +735,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
 
@@ -751,7 +746,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
     public function getNearVALeft($vaid)
@@ -762,7 +756,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
 
@@ -774,7 +767,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
     public function getMethodIdNearRight($vaid)
@@ -785,7 +777,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
     public function getMethodIdLeft($vaid, $episode)
@@ -796,7 +787,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
     public function getMethodIdNearLeft($vaid)
@@ -807,7 +797,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit;
         }
-        return;
     }
 
 
@@ -818,7 +807,6 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit->unit_id;
         }
-        return;
     }
 
     public function getNearUnitId($vaid, $episode)
@@ -827,7 +815,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit->unit_id;
         }
-        return;
+
     }
 
     /**
@@ -843,7 +831,7 @@ class OphCiExamination_API extends \BaseAPI
             return $unit->id;
         }
 
-        return;
+
     }
 
     public function getUnitName($unitId)
@@ -852,7 +840,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit->name;
         }
-        return;
+
     }
 
     public function getMethodName($methodId)
@@ -861,7 +849,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($unit) {
             return $unit->name;
         }
-        return;
+
     }
 
     /**
@@ -2001,7 +1989,7 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * Get the default findings string from Injection Management complex in the latest examination event (if it exists).
      *
-     * @TODO: make this work with both injection management elements (i.e. if complex not being used, use basic)
+     * make this work with both injection management elements (i.e. if complex not being used, use basic)
      *
      * @param $patient
      * @param $use_context
@@ -2234,9 +2222,7 @@ class OphCiExamination_API extends \BaseAPI
             }
 
              return implode(', ', $readings);
-        } else {
-            return;
-         }
+        }
     }
 
     /**
@@ -2356,8 +2342,6 @@ class OphCiExamination_API extends \BaseAPI
                 'right' => ($oManPlan->right_target_iop ? $oManPlan->right_target_iop->name : null),
             );
         }
-
-        return;
     }
 
     /**
@@ -2414,7 +2398,7 @@ class OphCiExamination_API extends \BaseAPI
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
-     * @todo: update to reflect change to allergies
+     * ? update to reflect change to allergies
      * @return string
      */
     public function getAllergies(\Patient $patient)
