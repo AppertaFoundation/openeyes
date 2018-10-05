@@ -34,7 +34,7 @@
                 $patient_identifier->value,
                 array(
                     'placeholder' => $patient_identifier->getPlaceholder(),
-                    'maxlength' => 50,
+                    'maxlength' => 255,
                     !$patient_identifier->isEditable() ? 'readonly' : '' => 'readonly',
                 )); ?>
         </td>
