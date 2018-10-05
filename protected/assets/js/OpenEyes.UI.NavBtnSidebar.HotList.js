@@ -1,49 +1,23 @@
-(function (exports) {
+(function (exports, Util) {
 
-  function HotList($nav_button, $panel) {
+  var NavBtnSidebar = exports;
 
-    this.$nav_button = $nav_button;
-    this.$panel = $panel;
-    this.fixable = $nav_button.data('fixable');
-    this.latched = false;
-
-    this.autoHideWidthPixels = 1800;
-
+  function HotList(options) {
+    options = $.extend(true, {}, HotList._defaultOptions, options);
     // The date to restrict he closed list to. Default to today
     this.selected_date = new Date();
 
-    this.create();
+    NavBtnSidebar.call(this, options);
   }
+
+  Util.inherits(NavBtnSidebar, HotList);
+
+  HotList._defaultOptions = {};
 
   HotList.prototype.create = function () {
     var hotlist = this;
 
-    if ($('#js-nav-hotlist-btn').length === 0) {
-      return;
-    }
-
-    $(window).resize(function () {
-      hotlist.onBrowserSizeChange();
-    });
-    hotlist.onBrowserSizeChange();
-
-    this.$nav_button.on('click', function () {
-      if (hotlist.isFixable()) {
-        return;
-      }
-      hotlist.latched = !hotlist.latched;
-      hotlist.$panel.toggle(hotlist.latched);
-    });
-
-    this.$nav_button.on('mouseover', function () {
-      hotlist.$panel.show();
-    });
-
-    this.$nav_button.on('mouseout', function () {
-      if (!hotlist.isFixable() && !hotlist.latched) {
-        hotlist.$panel.hide();
-      }
-    });
+    HotList._super.prototype.create.call(this);
 
     $('.activity-list').find('textarea').autosize();
 
@@ -255,4 +229,4 @@
 
   exports.HotList = HotList;
 
-}(OpenEyes.UI));
+}(OpenEyes.UI.NavBtnSidebar, OpenEyes.Util));
