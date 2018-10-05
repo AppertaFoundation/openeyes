@@ -41,7 +41,7 @@ $form = $this->beginWidget(
         <tbody>
 
         <?php
-        $personal_fields = ['username', 'title', 'first_name', 'last_name', 'email', 'qualifications'];
+        $personal_fields = ['username', 'title', 'first_name', 'last_name', 'email', 'qualifications', 'role'];
         foreach ($personal_fields as $field) : ?>
             <tr>
                 <td><?php echo $user->getAttributeLabel($field); ?></td>
@@ -57,20 +57,6 @@ $form = $this->beginWidget(
                 </td>
             </tr>
         <?php endforeach; ?>
-
-        <tr>
-            <td>Position</td>
-            <td>
-                <?php echo CHtml::activeTextField(
-                    $user,
-                    'role',
-                    [
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
-                        'class' => 'cols-full'
-                    ]
-                ); ?>
-            </td>
-        </tr>
 
         <tr>
             <td>Grade</td>
