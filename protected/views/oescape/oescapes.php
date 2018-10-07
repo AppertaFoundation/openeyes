@@ -24,19 +24,14 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 ?>
 
 <?php
-    $this->beginContent('//patient/oescapes_container', array(
+    $this->beginContent('//oescape/oescapes_container', array(
         'cssClass' => isset($cssClass) ? $cssClass : '',
         'subspecialty' => $subspecialty
     ));
 
-      $this->renderPartial('/clinical/oescapeSummary',
+      $this->renderPartial('/oescape/oescapeSummary',
           array('subspecialty' => $subspecialty)
       );
-    if (count($legacyepisodes)) {?>
-		<h2>No OEscapes</h2>
-		<div class="alert-box alert with-icon">
-			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
-		</div>
-	<?php }
+
     $this->endContent();
 ?>
