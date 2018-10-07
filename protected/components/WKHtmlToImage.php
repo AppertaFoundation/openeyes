@@ -21,7 +21,7 @@ class WKHtmlToImage extends WKHtmlToX
 {
     public function __construct()
     {
-        $this->param_key = 'image';
+        $this->param_key = 'wkhtmltoimage';
         $this->application_name = 'wkhtmltoimage';
 
         parent::__construct();

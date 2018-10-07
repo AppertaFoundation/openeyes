@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-    <div class="js-element-eye right-eye column">
+    <div class="js-element-eye right-eye">
         <div class="data-value">
         <span class="large-text">
           <?php if ($element->hasRight()) {
@@ -28,7 +28,7 @@
         </span>
         </div>
     </div>
-    <div class="js-element-eye left-eye column">
+    <div class="js-element-eye left-eye">
         <div class="data-value">
       <span class="large-text"><?php if ($element->hasLeft()) {
               echo Yii::app()->format->Ntext($element->left_description);

@@ -182,7 +182,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="group">
         <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
           <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-          <span class="oe-date"> <?= \Helper::convertMySQL2NHS($this->cviStatus[1] )?></span>
+          <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
         <?php } else { ?>
           <span class="data">CVI Status: NA</span>
         <?php } ?>
@@ -298,20 +298,28 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="cols-left">
       <div class="popup-overflow">
         <div class="subtitle">Management Summaries</div>
-        <ul class="management-summaries">
-            <?php $summaries = $exam_api->getManagementSummaries($patient);
-            foreach ($summaries as $service => $comments) {
-                if (strlen($comments) > 0) {
-                    ?>
-                  <li>
-                    <h6><?= $service ?></h6>
-                    <p><?= $comments ?></p>
-                  </li>
-                <?php } else { ?>
-                  <li></li>
-                <?php }
-            } ?>
-        </ul>
+          <table class="management-summaries">
+              <tbody>
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              if (sizeof($summaries) != 0) {
+                  foreach ($summaries as $summary) { ?>
+                      <tr>
+                          <td><?= $summary->service ?></td>
+                          <td class="fade">
+                                <span class="oe-date">
+                                    <span class="day"><?= $summary->date[0] ?></span>
+                                    <span class="month"><?= $summary->date[1] ?></span>
+                                    <span class="year"><?= $summary->date[2] ?></span>
+                                </span>
+                          </td>
+                          <td><?= $summary->comments ?></td>
+                          <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                 data-tooltip-content="<?= $summary->user ?>"></i></td>
+                      </tr>
+                  <?php }
+              } ?>
+              </tbody>
+          </table>
       </div><!-- .popup-overflow -->
     </div><!-- left -->
 
