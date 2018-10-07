@@ -18,8 +18,8 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container', array('no_face' => false, 'form_id' => $form_id));
 $form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face' => false, 'form_id' => $form_id));
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => $form_id,
     'enableAjaxValidation' => false,
