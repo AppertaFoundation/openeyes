@@ -141,22 +141,6 @@
     });
   };
 
-  HotList.prototype.onBrowserSizeChange = function () {
-    if (this.latched) {
-      return;
-    }
-
-    if ($(window).width() > this.autoHideWidthPixels) { // min width for fixing Activity Panel (allows some resizing)
-      this.$panel.toggle(this.isFixable());
-    } else {
-      this.$panel.hide();
-    }
-  };
-
-  HotList.prototype.isFixable = function () {
-    return this.$nav_button.data('fixable') && $(window).width() > this.autoHideWidthPixels;
-  };
-
   HotList.prototype.setSelectedDate = function (date, display_date) {
     this.selected_date = date;
     if (this.selected_date.toDateString() === (new Date).toDateString()) {

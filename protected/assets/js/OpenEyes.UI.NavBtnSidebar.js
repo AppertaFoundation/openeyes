@@ -29,18 +29,31 @@
         return;
       }
       self.latched = !self.latched;
-      self.$panel.toggle(self.latched);
+      self.toggle(self.latched);
     });
 
     this.$nav_button.on('mouseover', function () {
-      self.$panel.show();
+      self.show();
     });
 
     this.$nav_button.on('mouseout', function () {
       if (!self.isFixable() && !self.latched) {
-        self.$panel.hide();
+        self.hide();
       }
     });
+  };
+
+  NavBtnSidebar.prototype.show = function () {
+    this.toggle(true);
+  };
+
+  NavBtnSidebar.prototype.hide = function () {
+    this.toggle(false);
+  };
+
+  NavBtnSidebar.prototype.toggle = function (show) {
+    this.$panel.toggle(show);
+    this.$nav_button.toggleClass('active', show);
   };
 
   NavBtnSidebar.prototype.onBrowserSizeChange = function () {
@@ -49,9 +62,9 @@
     }
 
     if ($(window).width() > this.autoHideWidthPixels) {
-      this.$panel.toggle(this.isFixable());
+      this.toggle(this.isFixable());
     } else {
-      this.$panel.hide();
+      this.hide();
     }
   };
 
