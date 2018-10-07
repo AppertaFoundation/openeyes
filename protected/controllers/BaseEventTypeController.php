@@ -146,6 +146,14 @@ class BaseEventTypeController extends BaseModuleController
         );
     }
 
+    public function getPageTitle()
+    {
+        return ucfirst($this->getAction()->getId()) .
+            ($this->event_type ? ' ' . $this->event_type->name : '') .
+            ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
+            ' - OE';
+    }
+
     public function getTitle()
     {
         if (isset($this->title)) {
@@ -1915,16 +1923,16 @@ class BaseEventTypeController extends BaseModuleController
         $wk->setBarcode($this->event->barcodeHTML);
 
         foreach (array('left', 'middle', 'right') as $section) {
-            if (isset(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name])) {
+            if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                 $setMethod = 'set'.ucfirst($section);
-                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf']['footer_'.$section.'_'.$this->event_type->class_name]);
+                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-            if (isset(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name])) {
+            if (isset(Yii::app()->params['wkhtmltopdf_' . $margin.'_margin_'.$this->event_type->class_name])) {
                 $setMethod = 'setMargin'.ucfirst($margin);
-                $wk->$setMethod(Yii::app()->params['wkhtmltox']['pdf'][$margin.'_margin_'.$this->event_type->class_name]);
+                $wk->$setMethod(Yii::app()->params['wkhtmltopdf_' . $margin.'_margin_'.$this->event_type->class_name]);
             }
         }
 

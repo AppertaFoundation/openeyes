@@ -385,23 +385,17 @@ return array(
         //'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
-        'wkhtmltox' => array(
-            'image' => array(
-                'path' => '/usr/local/bin/wkhtmltoimage',
-            ),
-            'pdf' => array(
-                // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-                'path' => '/usr/local/bin/wkhtmltopdf',
-                'footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
-                'footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
-                'footer_right' => 'OpenEyes',
-                'top_margin' => '10mm',
-                'bottom_margin' => '25mm',
-                'left_margin' => '20mm',
-                'right_margin' => '20mm',
-                'nice_level' => false,
-            ),
-        ),
+        // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
+        'wkhtmltoimage_path' => '/usr/local/bin/wkhtmltoimage',
+        'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
+        'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+        'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
+        'wkhtmltopdf_footer_right' => 'OpenEyes',
+        'wkhtmltopdf_top_margin' => '10mm',
+        'wkhtmltopdf_bottom_margin' => '25mm',
+        'wkhtmltopdf_left_margin' => '20mm',
+        'wkhtmltopdf_right_margin' => '20mm',
+        'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
