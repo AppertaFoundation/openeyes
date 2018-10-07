@@ -146,6 +146,14 @@ class BaseEventTypeController extends BaseModuleController
         );
     }
 
+    public function getPageTitle()
+    {
+        return ucfirst($this->getAction()->getId()) .
+            ($this->event_type ? ' ' . $this->event_type->name : '') .
+            ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
+            ' - OE';
+    }
+
     public function getTitle()
     {
         if (isset($this->title)) {

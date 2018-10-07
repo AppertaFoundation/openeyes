@@ -32,6 +32,7 @@ class ReportController extends \BaseReportController
     public function actionReadyForSecondEyeUnbooked()
     {
         \Audit::add('Reports', 'view', print_r(['report-name' => 'Examination ReadyForSecondEyeUnbooked'], true));
+        $this->pageTitle = 'Ready for second eye (unbooked) report';
         $this->render('ready_for_second_eye_unbooked');
     }
 }
