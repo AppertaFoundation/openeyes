@@ -18,8 +18,15 @@
 ?>
 
 <div class="spacer"></div>
-<section>
-    <div class="element-data element-eyes">
+<section class="element view full eye-divider view">
+    <div class="element-both-eyes">
+        <div class="data-value">
+            <?php
+            echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
+            ?>
+        </div>
+    </div>
+    <div class="element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
                 <?php if ($element->hasEye($eye_side)) {
@@ -33,10 +40,3 @@
     </div>
 </section>
 <div class="spacer"></div>
-<div class="column" id="comments" style="background-color: inherit;">
-			<span class="field-info">&nbsp;
-                <?php
-                echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
-                ?>
-			</span>
-</div>
