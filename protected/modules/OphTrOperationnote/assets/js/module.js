@@ -50,7 +50,7 @@ function callbackAddProcedure(procedure_id) {
                         m[1] = m[1].replace(/ .*$/, '');
 
                         if (m[1] === 'Element_OphTrOperationnote_GenericProcedure' || $('.' + m[1]).length < 1) {
-                          $('.Element_OphTrOperationnote_ProcedureList').next('.sub-elements').append(html);
+                          $(html).insertBefore($('.Element_OphTrOperationnote_ProcedureList').nextAll('.element.required').first());
 
                           var $lastMatchedElement = $('.' + m[1] + ':last');
                             $lastMatchedElement.attr('style', 'display: none;');

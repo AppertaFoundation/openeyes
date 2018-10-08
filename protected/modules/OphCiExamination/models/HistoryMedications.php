@@ -204,14 +204,4 @@ class HistoryMedications extends \BaseEventTypeElement
     {
         return $action === 'view' || $action === 'createImage' ? 2 : null;
     }
-
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view'){
-            return 25;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
-    }
 }
