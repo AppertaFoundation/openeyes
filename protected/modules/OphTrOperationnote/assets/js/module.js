@@ -545,12 +545,11 @@ function PCIOLController(_drawing) {
 
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
-
+        let $iol_position;
         switch (_messageArray['eventName']) {
             // Ready notification
             case 'doodleAdded':
-                let $iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id');
-                let $fixation = $('#ed_canvas_edit_Cataract_fixation_control');
+                $iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id');
 
                 $('#eyedrawwidget_Cataract').on('change', '#ed_canvas_edit_Cataract_fixation_control', function(){
                     let text = $(this).find('option:selected').text();
