@@ -375,8 +375,12 @@ class OEMigration extends CDbMigration
             'required' => isset($params['required']) ? $params['required'] : false,
         );
 
-        if (isset($params['group_name'])) {
-            $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name']);
+        if (isset($params['parent_name'])) {
+            $parent_class = "Element_{$event_type}_{$params['parent_name']}";
+            $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($parent_class);
+        } elseif (isset($params['parent_class'])) {
+            // introduced for supporting elements that are a little more flexible on class name vs name
+            $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($params['parent_class']);
         }
 
         $this->insert('element_type', $row);
@@ -397,22 +401,6 @@ class OEMigration extends CDbMigration
             ->select('id')
             ->from('element_type')
             ->where('class_name=:class_name', array(':class_name' => $className))
-            ->queryScalar();
-    }
-
-    /**
-     * @description used within subclasses to find out the element_group id based on Name
-     *
-     * @param $className - string
-     *
-     * @return int - the value of the id. False is returned if there is no value.
-     */
-    protected function getIdOfElementGroupByName($name)
-    {
-        return $this->dbConnection->createCommand()
-            ->select('id')
-            ->from('element_group')
-            ->where('name = :name', array(':name' => $name))
             ->queryScalar();
     }
 
@@ -508,7 +496,8 @@ class OEMigration extends CDbMigration
             $confirmedDisplayOrder = isset($element_type_data['display_order']) ?
                 $element_type_data['display_order'] : $display_order * 10;
             //this is needed to se the parent id for those elements set as children elements of another element type
-            $thisGroupId = isset($element_type_data['element_group_id']) ? $element_type_data['element_group_id'] : null;
+            $thisParentId = isset($element_type_data['parent_element_type_id']) ?
+                $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
             $required = isset($element_type_data['required']) ? $element_type_data['required'] : null;
 
             $this->insert(
@@ -519,7 +508,7 @@ class OEMigration extends CDbMigration
                     'event_type_id' => $event_type_id,
                     'display_order' => $confirmedDisplayOrder,
                     'default' => $default,
-                    'element_group_id' => $thisGroupId,
+                    'parent_element_type_id' => $thisParentId,
                     'required' => $required,
                 )
             );

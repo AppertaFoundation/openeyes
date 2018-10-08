@@ -199,7 +199,7 @@
         // "Click" the sidebar-group-header to open the group if it is closed
         item.closest('.collapse-group').find('.collapse-group-header').click();
 
-        addElement($parentLi.clone(true), true, undefined, data, callback);
+        addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-children'), undefined, data, callback);
     };
 
     /**
@@ -330,6 +330,7 @@
           .data('element-type-class', itemData.class_name)
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
+          .data('element-parent-display-order', itemData.parent_display_order)
           .data('element-type-name', itemData.name)
           .addClass(itemClass);
 
@@ -374,6 +375,7 @@
             .data('element-type-class', this.class_name)
             .data('element-type-id', this.id)
             .data('element-display-order', this.display_order)
+            .data('element-parent-display-order', this.parent_display_order)
             .data('element-type-name', this.name)
             .attr('id','side-element-'+id_name ).addClass('element');
 
