@@ -245,6 +245,7 @@ class DefaultController extends \BaseModuleController
         }
 
         // render
+        $this->pageTitle = 'Virtual Clinic';
         $this->render('index', array(
                 'category' => $category,
                 'queueset' => $queueset,

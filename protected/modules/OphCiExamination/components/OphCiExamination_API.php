@@ -1218,19 +1218,26 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
         if ($management_summaries) {
             $summary = [];
+            $managment_summaries = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
+                $user = \User::model()->findByPk($summaries->event->episode->last_modified_user_id);
+                $user_name = $user->first_name .' '.$user->last_name;
+                $summary_obj = new \stdClass();
                 $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments ? : $summaries->getChildrenString();
+                    $summary_obj->service = $service;
+                    $summary_obj->comments = $summaries->comments ? : $summaries->getChildrenString();
+                    $date_parts = explode(' ', $created_date);
+                    $summary_obj->date = $date_parts;
+                    $summary_obj->user = $user_name;
+                    array_push($managment_summaries,$summary_obj);
                 }
             }
-
-            return $summary_with_dates;
+            return $managment_summaries;
         }
         $summary = [];
-
         return $summary;
     }
 

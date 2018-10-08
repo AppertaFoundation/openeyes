@@ -42,7 +42,6 @@ class BaseEventTypeElement extends BaseElement
     protected $audit = array();
 
     protected $_element_type;
-    protected $_children;
     protected $frontEndErrors = array();
     // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
@@ -179,53 +178,6 @@ class BaseEventTypeElement extends BaseElement
     public function isHiddenInUI()
     {
         return false;
-    }
-
-    /**
-     * get the child element types for this BaseEventElementType.
-     *
-     * @return ElementType[]
-     */
-    public function getChildElementTypes()
-    {
-        return ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
-    }
-    /**
-     * set the children for this element - allows external definition of what the children should
-     * be (for workflows determined by controllers and the like.
-     *
-     * @param BaseEventTypeElement[] $children
-     */
-    public function setChildren($children)
-    {
-        $this->_children = $children;
-    }
-
-    /**
-     * Return this elements children.
-     *
-     * @return array
-     */
-    public function getChildren()
-    {
-        if ($this->_children === null) {
-            $this->_children = array();
-            foreach ($this->getChildElementTypes() as $child_element_type) {
-                if ($this->event_id) {
-                    if ($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
-                        $this->_children[] = $element;
-                    }
-                } else {
-                    // set the children to be based on the standard defaults - can be overridden by setting the children
-                    // with setChildren method outside of the element model
-                    if ($child_element_type->default) {
-                        $this->_children[] = new $child_element_type->class_name();
-                    }
-                }
-            }
-        }
-
-        return $this->_children;
     }
 
     public function render($action)
@@ -485,44 +437,6 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
-
-    /**
-     * Return the display order of element, solve the problem elements has different order in different display mode.
-     * @param $action
-     * @return mixed
-     */
-    public function getDisplayOrder($action){
-        return $this->getElementType()->display_order;
-    }
-
-    public function getChildDisplayOrder($action) {
-        if($this->isChild($action)) {
-            return $this->getDisplayOrder($action);
-        } else {
-            return -1;
-        }
-    }
-
-    public function getParentDisplayOrder($action) {
-        if ($this->getElementType($action)->parent_element_type_id) {
-            return $this->getElementType($action)->parent_element_type->display_order;
-        } else {
-            return $this->getDisplayOrder($action);
-        }
-    }
-
-    /**
-     * Return the parent type of element, solve the problem elements has different parent in different display mode.
-     * @param $action
-     * @return mixed
-     */
-    public function getParentType($action){
-        return $this->getElementType()->parent_element_type->class_name;
-    }
-
-    public function isChild($action){
-        return $this->getElementType()->isChild();
-    }
     /**
      * Stub method for audit checking before an element is saved.
      */

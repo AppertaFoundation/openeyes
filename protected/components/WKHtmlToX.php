@@ -44,14 +44,14 @@ class WKHtmlToX
      */
     public function __construct()
     {
-        if (Yii::app()->params['wkhtmltox'][$this->param_key]['path']) {
-            if (!file_exists(Yii::app()->params['wkhtmltox'][$this->param_key]['path'])) {
+        if (Yii::app()->params[$this->param_key . '_path']) {
+            if (!file_exists(Yii::app()->params[$this->param_key . '_path'])) {
                 $this->application_path = trim($this->execute("which $this->application_name"));
                 if (!$this->application_path) {
                     throw new Exception($this->application_name . ' not found in the current path.');
                 }
             } else {
-                $this->application_path = Yii::app()->params['wkhtmltox'][$this->param_key]['path'];
+                $this->application_path = Yii::app()->params[$this->param_key . '_path'];
             }
         }
 

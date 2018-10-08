@@ -17,6 +17,12 @@
  */
 Yii::import('application.controllers.*');
 
+/**
+ * Class PatientController
+ *
+ * @property Episode $episode
+ * @property Patient $patient
+ */
 class PatientController extends BaseController
 {
     public $layout = '//layouts/home';
@@ -235,7 +241,7 @@ class PatientController extends BaseController
             $this->redirect(array($api->generateEpisodeLink($item)));
         } else {
             $this->renderPatientPanel = false;
-
+            $this->pageTitle = $term . ' - Search';
             $this->fixedHotlist = false;
             $this->render('results', array(
                 'data_provider' => $dataProvider,
@@ -312,6 +318,7 @@ class PatientController extends BaseController
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($_GET['id']);
+        $this->pageTitle = 'Episodes';
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -374,6 +381,7 @@ class PatientController extends BaseController
 
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
+        $this->pageTitle = $this->episode->getSubspecialtyText();
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -447,6 +455,7 @@ class PatientController extends BaseController
 
         $this->patient = $this->episode->patient;
         $this->layout = '//layouts/events_and_episodes';
+        $this->pageTitle = $this->episode->getSubspecialtyText();
 
         $episodes = $this->patient->episodes;
         // TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
@@ -496,6 +505,7 @@ class PatientController extends BaseController
         $this->patient = $patient;
         $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
+        $this->pageTitle = 'OEScape: ' . $subspecialty->name;
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -509,7 +519,7 @@ class PatientController extends BaseController
             ),
         );
 
-        $this->render('oescapes', array(
+        $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
@@ -524,6 +534,7 @@ class PatientController extends BaseController
             throw new SystemException('Patient not found: ' . $id);
         }
 
+        $this->pageTitle = 'Lightning Viewer';
         $this->layout = '//layouts/events_and_episodes';
         $this->title = 'Lightning Viewer';
 
@@ -639,6 +650,15 @@ class PatientController extends BaseController
         }
 
         return $model;
+    }
+
+    public function setPageTitle($pageTitle)
+    {
+        if ($this->patient) {
+            parent::setPageTitle($pageTitle . ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name);
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     /**
@@ -1673,6 +1693,7 @@ class PatientController extends BaseController
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
+        $this->pageTitle = 'Add New Patient';
 
         $patient = new Patient('manual');
         $patient->noPas();
@@ -1775,6 +1796,7 @@ class PatientController extends BaseController
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
+        $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
 
         //only local patient can be edited
         if($patient->is_local == 0){

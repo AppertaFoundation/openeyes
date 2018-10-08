@@ -104,6 +104,7 @@ class ReportController extends BaseReportController
             );
 
             Audit::add('Reports', 'view', "<pre>" . print_r(['report-name' => 'Therapy applications'], true) . "</pre>" );
+            $this->pageTitle = 'Therapy Application report';
             $this->render('applications', $context);
         }
     }
@@ -370,6 +371,7 @@ class ReportController extends BaseReportController
             Audit::add('Reports', 'view', "<pre>" . print_r($get, true) . "</pre>" );
         }
 
+        $this->pageTitle = 'Pending Applications report';
         $this->render('pending_applications', array('sent' => $sent));
     }
 

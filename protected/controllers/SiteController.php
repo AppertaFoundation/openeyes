@@ -35,6 +35,7 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
         $this->render('index');
@@ -131,6 +132,7 @@ class SiteController extends BaseController
     public function actionLogin()
     {
         $this->layout = 'home';
+        $this->pageTitle = 'Login';
 
         if (!Yii::app()->user->isGuest) {
             $this->redirect('/');

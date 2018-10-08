@@ -52,6 +52,10 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'PCIOL' => array(
             'fx' => array('id' => 'Element_OphTrOperationnote_Cataract_iol_position_id'),
         ),
+
+        'AntSeg' => array(
+            'pupilSize' => array('id' => 'pcrrisk_' . strtolower($this->selectedEyeForEyedraw->name) . '_pupil_size'),
+        ),
     ),
     'listenerArray' => array(
         'sidePortController',

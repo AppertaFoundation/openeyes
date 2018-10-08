@@ -216,8 +216,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 null, false, false,
                                 false, false,
                                 array(
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                                     'field'=>'AnaestheticType',
-                                    'label-class' => $element->getError('anaesthetic_type') ? 'error' : ''
                                 )
                             ); ?>
                         </td>
