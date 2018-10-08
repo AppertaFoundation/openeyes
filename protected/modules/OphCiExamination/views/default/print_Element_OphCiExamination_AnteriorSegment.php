@@ -17,25 +17,19 @@
  */
 ?>
 <div class="element-data element-eyes flex-layout flex-left col-gap">
-    <div class="js-element-eye right-eye cols-6 data-group">
-        <div class="data-value">
-            <span class="large-text">
-              <?php if ($element->hasRight()) {
-                  echo Yii::app()->format->Ntext($element->right_description);
-              } else { ?>
-                  Not recorded
-              <?php } ?>
-            </span>
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+      <div class="js-element-eye cols-6 <?= $eye_side ?>-eye" >
+        <div class="">
+            <?php if ($element->hasEye($eye_side)): ?>
+              <div class="eyedraw anterior-segment">
+                  <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+                      array('side' => $eye_side, 'element' => $element));
+                  ?>
+              </div>
+            <?php else: ?>
+              <div class="data-value not-recorded">Not recorded</div>
+            <?php endif; ?>
         </div>
-    </div>
-    <div class="js-element-eye left-eye cols-6">
-        <div class="data-value">
-            <span class="large-text"><?php if ($element->hasLeft()) {
-                  echo Yii::app()->format->Ntext($element->left_description);
-              } else { ?>
-                  Not recorded
-              <?php } ?>
-            </span>
-        </div>
-    </div>
+      </div>
+    <?php endforeach; ?>
 </div>
