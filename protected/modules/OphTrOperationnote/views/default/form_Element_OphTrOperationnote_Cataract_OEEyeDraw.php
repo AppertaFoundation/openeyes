@@ -28,15 +28,12 @@
                 'incisionType' => array('id' => 'Element_OphTrOperationnote_Cataract_incision_type_id', 'attribute' => 'data-value'),
                 'incisionLength' => array('id' => 'Element_OphTrOperationnote_Cataract_length'),
                 'incisionMeridian' => array('id' => 'Element_OphTrOperationnote_Cataract_meridian'),
-            ),
-
-            'PCIOL' => array(
-                'fx' => array('id' => 'Element_OphTrOperationnote_Cataract_iol_position_id'),
-            ),
+            )
         ),
         'listenerArray' => array(
             'sidePortController',
-            'AngleMarksController'
+            'AngleMarksController',
+            'PCIOLController'
         ),
 
         'idSuffix' => 'Cataract',
