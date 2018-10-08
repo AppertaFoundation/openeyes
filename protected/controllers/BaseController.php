@@ -405,4 +405,8 @@ class BaseController extends Controller
 
     }
 
+    public function setPageTitle($pageTitle)
+    {
+        parent::setPageTitle($pageTitle . ' - OE');
+    }
 }
