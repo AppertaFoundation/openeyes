@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes flex-layout flex-left col-gap">
+<div class="element-data element-eyes flex-layout">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
       <div class="js-element-eye cols-6 <?= $eye_side ?>-eye" >
         <div class="">

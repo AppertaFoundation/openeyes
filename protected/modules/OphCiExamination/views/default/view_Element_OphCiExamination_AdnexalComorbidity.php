@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes flex-layout flex-left col-gap">
+<div class="element-data element-eyes flex-layout">
     <div class="js-element-eye right-eye cols-6 data-group">
         <div class="data-value">
             <span class="large-text">
