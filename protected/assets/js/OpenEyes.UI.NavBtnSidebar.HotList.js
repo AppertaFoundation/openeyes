@@ -1,44 +1,28 @@
-(function (exports) {
+(function (exports, Util) {
 
-  function HotList(activity) {
-    this.create(activity);
-  }
+  var NavBtnSidebar = exports;
 
-  HotList.prototype.create = function (activity) {
-    var hotlist = this;
-
-    if ($('#js-nav-hotlist-btn').length === 0) {
-      return;
-    }
-
+  function HotList(options) {
+    options = $.extend(true, {}, HotList._defaultOptions, options);
     // The date to restrict he closed list to. Default to today
     this.selected_date = new Date();
 
-    // Fix Activity Panel if design allows it to be fixable!
-    if ($('#js-nav-hotlist-btn').data('fixable') === true) {
-      checkBrowserSize();
+    NavBtnSidebar.call(this, options);
+  }
 
-      $(window).resize(function () {
-        checkBrowserSize();
-      });
+  Util.inherits(NavBtnSidebar, HotList);
 
-      function checkBrowserSize() {
-        if ($(window).width() > 1800) { // min width for fixing Activity Panel (allows some resizing)
-          activity.fixed(true);
-        } else {
-          activity.fixed(false);
-        }
-      }
-    } else {
-      activity.useWrapper($('.js-hotlist-panel-wrapper'));
-      activity.latchable = true;
-    }
+  HotList._defaultOptions = {};
+
+  HotList.prototype.create = function () {
+    var hotlist = this;
+
+    HotList._super.prototype.create.call(this);
 
     $('.activity-list').find('textarea').autosize();
 
     // activity datepicker using pickmeup.
     // CSS controls it's positioning
-
     var $pmuWrap = $('#js-pickmeup-datepicker').hide();
     var pmu = pickmeup('#js-pickmeup-datepicker', {
       format: 'a d b Y',
@@ -229,4 +213,4 @@
 
   exports.HotList = HotList;
 
-}(OpenEyes.UI));
+}(OpenEyes.UI.NavBtnSidebar, OpenEyes.Util));
