@@ -108,7 +108,7 @@ class DefaultController extends \BaseEventTypeController
      * @param \BaseEventTypeElement[] $elements
      * @return boolean
      */
-    protected function checkChildElementsForData($elements)
+    protected function checkElementsForData($elements)
     {
         foreach($elements as $element)
         {
@@ -150,7 +150,7 @@ class DefaultController extends \BaseEventTypeController
         $final = array();
         foreach ($elements as $el) {
             if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
+                if($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
                     $final[] = $el;
                 }
             }else{
@@ -463,18 +463,6 @@ class DefaultController extends \BaseEventTypeController
         $elements = parent::getOptionalElements();
 
         return $this->filterElements($elements);
-    }
-
-    /**
-     * extends standard method to filter elements.
-     *
-     * (non-PHPdoc)
-     *
-     * @see NestedElementsEventTypeController::getChildOptionalElements()
-     */
-    public function getChildOptionalElements($parent_type)
-    {
-        return $this->filterElements(parent::getChildOptionalElements($parent_type));
     }
 
     /**
@@ -1284,26 +1272,6 @@ class DefaultController extends \BaseEventTypeController
         }
 
         models\OphCiExamination_FurtherFindings_Assignment::model()->deleteAll($criteria);
-    }
-
-    /**
-     * Render the optional child elements for the given parent element type.
-     *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     *
-     * @throws Exception
-     */
-    public function renderChildOptionalElements($parent_element, $action, $form = null, $data = null)
-    {
-        $this->setCurrentSet();
-        $elements = $this->getChildOptionalElements($parent_element->getElementType());
-        $this->filterElements($elements);
-        foreach ($elements as $element) {
-            $this->renderOptionalElement($element, $action, $form, $data);
-        }
     }
 
     /**

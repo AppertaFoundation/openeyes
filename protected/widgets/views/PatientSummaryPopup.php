@@ -61,7 +61,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           </tr>
           <tr>
             <td>Email</td>
-            <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
+            <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
           <tr>
             <td>Next of kin</td>
