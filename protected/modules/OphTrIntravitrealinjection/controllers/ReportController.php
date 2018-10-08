@@ -32,6 +32,7 @@ class ReportController extends BaseReportController
     public function actionInjections()
     {
         Audit::add('Reports', 'view', print_r(['report-name' => 'Intravitreal Injection'], true) );
+        $this->pageTitle = 'Intravitreal Injections report';
         $this->render('injections');
     }
 
