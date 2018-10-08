@@ -141,20 +141,22 @@
           </td>
           <td class="alerts">
 
-              <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
-                <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
-              <?php } else { ?>
-                <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
-              <?php } ?>
               <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
                   $msgs = array();
                   foreach ($warnings as $warn) {
                       $msgs[] = $warn['long_msg']." - ".$warn['details'];
                   }
                   ?>
-                <i class="oe-i exclamation medium pad js-has-tooltip"
-                   data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
+                  <i class="oe-i warning medium pad js-has-tooltip"
+                     data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
               <?php } ?>
+
+              <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
+                <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
+              <?php } else { ?>
+                <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
+              <?php } ?>
+
 
               <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
                 <i class="oe-i info medium pad js-has-tooltip"
