@@ -46,10 +46,9 @@ $is_hidden = function () use ($element) {
             style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
-            <div>
-                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', '',
-                    false, false, false, false); ?>
-            </div>
+                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
+                    false, false, false, false ,
+                    array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
@@ -62,8 +61,7 @@ $is_hidden = function () use ($element) {
             <fieldset id="<?php echo CHtml::modelName($element) . '_anaesthetist_id' ?>">
                 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
                     false, false, false, false,
-                    array('nowrapper' => true , 'label-class' => $element->getError('anaesthetist_id') ? 'error' : '')); ?>
-
+                    array('nowrapper' => true , 'label-class' => $element->getError('Anaesthetist') ? 'error' : '')); ?>
             </fieldset>
           </td>
         </tr>
