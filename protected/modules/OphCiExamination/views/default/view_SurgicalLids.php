@@ -18,7 +18,7 @@
 
 <div class="element-data element-eyes">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div class="js-element-eye <?= $eye_side; ?>-eye column">
+      <div class="js-element-eye <?= $eye_side; ?>-eye">
         <div class="data-group">
             <?php if ($element->hasEye($eye_side)): ?>
               <div class="eyedraw flex-layout flex-top anterior-segment">
