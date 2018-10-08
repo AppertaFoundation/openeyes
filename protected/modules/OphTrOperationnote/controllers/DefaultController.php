@@ -424,17 +424,18 @@ class DefaultController extends BaseEventTypeController
      * @param $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
      * @param array                               $data
+     * @throws Exception
      */
     public function renderAllProcedureElements($action, $form = null, $data = null)
     {
         foreach ($this->open_elements as $el) {
-            if (get_class($el) == 'Element_OphTrOperationnote_ProcedureList') {
-                $this->renderChildOpenElements($el, $action, $form, $data);
+            if (is_subclass_of($el, 'Element_OnDemand')) {
+                $this->renderElement($el, $action, $form, $data);
             }
         }
     }
 
-    /*
+    /**
      * Overloads BaseEventTypeController::renderOpenElements() to not render the event date as a separate element
      * The event date element is instead rendered as part of the Location element
      */
@@ -453,89 +454,13 @@ class DefaultController extends BaseEventTypeController
         $elements = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
-                if ($element->getElementType() && !$element->getElementType()->isChild()) {
+                if ($element->getElementType()) {
                     $elements[] = $element;
                 }
             }
         }
 
         return $elements;
-    }
-
-    public function getChildElements($parent_type)
-    {
-        $open_child_elements = array();
-        if (is_array($this->open_elements)) {
-            foreach ($this->open_elements as $open) {
-                $et = $open->getElementType();
-                if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
-                    $open_child_elements[] = $open;
-                }
-            }
-        }
-
-        return $open_child_elements;
-    }
-
-    /**
-     * Overrides for procedure list to render the elements in the order they are selected.
-     *
-     * @param BaseEventTypeElement $parent_element
-     * @param string $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
-     *
-     * @throws Exception
-     *
-     * (non-phpdoc)
-     *
-     * @see parent::renderChildOpenElements($parent_element, $action, $form, $data)
-     */
-    public function renderChildOpenElements($parent_element, $action, $form = null, $data = null)
-    {
-        if (get_class($parent_element) == 'Element_OphTrOperationnote_ProcedureList') {
-            // index the child elements
-            $by_cls = array();
-            $by_proc_id = array();
-            $children = $this->getChildElements($parent_element->getElementType());
-
-            foreach ($children as $child) {
-                $cls = get_class($child);
-                if ($child->hasAttribute('proc_id')) {
-                    $by_proc_id[$child->proc_id] = $child;
-                } else {
-                    if (isset($by_cls[$cls])) {
-                        $by_cls[$cls][] = $child;
-                    } else {
-                        $by_cls[$cls] = array($child);
-                    }
-                }
-            }
-
-            // generate correctly ordered list of elements based on procedure order
-            $elements = array();
-            foreach ($parent_element->procedures as $proc) {
-                if (isset($by_proc_id[$proc->id])) {
-                    $elements[] = $by_proc_id[$proc->id];
-                } else {
-                    $procedure_elements = $this->getProcedureSpecificElements($proc->id);
-                    foreach ($procedure_elements as $proc_el) {
-                        if (isset($by_cls[$proc_el->element_type->class_name])) {
-                            if ($el = array_shift($by_cls[$proc_el->element_type->class_name])) {
-                                $el->patientId = $this->patient->id;
-                                $elements[] = $el;
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach ($elements as $el) {
-                $this->renderElement($el, $action, $form, $data);
-            }
-        } else {
-            parent::renderChildOpenElements($parent_element, $action, $form, $data);
-        }
     }
 
     /**
