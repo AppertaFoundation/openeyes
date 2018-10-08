@@ -28,6 +28,7 @@ $event_type = $event->eventType->name;
 			at <?php echo date('H:i', strtotime($this->event->created_date)) ?>
 		</span>
 	<?php }?>
+    <div class="spacer"></div>
 	<?php if (!@$hide_modified) { ?>
 		<span class="info">
 			<?php echo $event_type ?> last modified by <span class="user"><?php echo $this->event->usermodified->fullname ?></span>
