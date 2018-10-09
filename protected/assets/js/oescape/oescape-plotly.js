@@ -24,7 +24,7 @@ var layout_plotly = {
   height: 800,
   margin:{
     l:50,
-    t:20,
+    t:30,
     pad:4,
   },
   paper_bgcolor: 'rgba(0,0,0,0)',
