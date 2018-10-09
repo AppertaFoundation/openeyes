@@ -99,6 +99,20 @@ class DrugController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        $drug = Drug::model()->findByPk($id);
+
+        $request = Yii::app()->getRequest();
+
+        if ($request->getIsPostRequest()) {
+            echo "<pre>" . print_r($_POST, true) . "</pre>";
+            die;
+        }
+
+        $this->render('/oeadmin/drug/edit', array(
+            'model' => $drug,
+        ));
+        die;
+
         $admin = new Admin(Drug::model(), $this);
         if ($id) {
             $admin->setModelId($id);
