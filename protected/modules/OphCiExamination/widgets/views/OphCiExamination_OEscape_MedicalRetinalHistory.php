@@ -17,24 +17,21 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js')?>"></script>
 
-
+<form action="#OphCiExamination_Episode_MedicalRetinalHistory" >
+  <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
+  <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
+  <?= CHtml::dropDownList(
+    'mr_history_va_unit_id',
+    $va_unit->id,
+    CHtml::listData(
+      OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+      'id',
+      'name')
+  ) ?>
+</form>
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
   <div id="highcharts-MR-right" class="highcharts-MR highcharts-right highchart-section"></div>
   <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
-  <div style="z-index:10; position: relative; width: 150px; top: -800px;">
-    <form action="#OphCiExamination_Episode_MedicalRetinalHistory" >
-      <input name="subspecialty_id" value=<?= $this->subspecialty->id ?> type="hidden">
-      <input name="patient_id" value=<?= $this->patient->id ?> type="hidden">
-      <?= CHtml::dropDownList(
-            'mr_history_va_unit_id',
-            $va_unit->id,
-            CHtml::listData(
-              OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
-                'id',
-                'name')
-      ) ?>
-    </form>
-  </div>
 </div>
 <div class="oes-data-row-input">
 </div>
@@ -46,13 +43,9 @@
 
     //left side plots
     $('#mr_history_va_unit_id').change(function () { this.form.submit(); });
-    var axis_index = 1;
-    var va_axis = <?= CJavaScript::encode($this->getVaAxis()); ?>;
-    options_MR['yAxis'][axis_index]['title']['text'] = "VA ("+va_axis+")";
+
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
     OEScape.full_va_ticks = va_ticks;
-    options_MR['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
-    options_MR['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
 
     var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
@@ -83,7 +76,6 @@
 
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
       setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
-
 
       var trace1 = {
         name: 'VA('+side+')',
@@ -134,26 +126,28 @@
       var j = Object.keys(injections_data[side]).length+1;
       flags_yaxis['range'] = [0, 20*j];
       flags_yaxis['domain'] = [0, 0.05*j];
-      layout_plotly['yaxis3'] = setYAxis_MR(flags_yaxis);
+			flags_yaxis['ticktext'] = [];
+			flags_yaxis['tickvals'] = [];
 
       var text = {
         showlegend: false,
         x:[],
         y:[],
-        text:[],
+        hovertext:[],
         hoverinfo: 'text',
         yaxis: 'y3',
         mode:'text',
       };
 
-
-
       //Set the flags for injections
       for (var key in injections_data[side]){
+        flags_yaxis['ticktext'].push(key);
+        flags_yaxis['tickvals'].push(20 * (j - 0.5));
+
         for (var i in injections_data[side][key]) {
           text['x'].push(new Date(injections_data[side][key][i]['x']));
-          text['y'].push(crt_yaxis['tick0'] -20 * j);
-          text['text'].push(key);
+          text['y'].push(20 * (j - 0.5));
+          text['hovertext'].push(key);
 
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
@@ -169,11 +163,13 @@
       }
 
       //set the flags for letters >5
+      flags_yaxis['ticktext'].push('>5');
+      flags_yaxis['tickvals'].push(20 * (j-0.5));
 
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
-        text['y'].push(crt_yaxis['tick0'] - 20*j);
-        text['text'].push('>5');
+        text['y'].push( 20*(j-0.5));
+        text['hovertext'].push('>5');
 
         var line_shape = {
           x0: new Date(VA_lines_data[side][i]['x']),
@@ -185,8 +181,7 @@
         };
         layout_plotly['shapes'].push(setMRFlags_options(line_shape));
       }
-      j--;
-
+      layout_plotly['yaxis3'] = setYAxis_MR(flags_yaxis);
 
       var data =[trace1, trace2, text];
 
@@ -200,12 +195,9 @@
       octImgStack['left'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
 
       var currentPlot = document.getElementById('highcharts-MR-'+side);
-
       currentPlot.on('plotly_hover', function (data) {
-        var pn='', tn='';
         for(var i=0; i < data.points.length; i++){
-          pn = data.points[i].pointNumber;
-          tn = data.points[i].curveNumber;
+          var tn = data.points[i].curveNumber;
           if (tn === 0){
             var side = data.points[i].data.text;
             var current_date = data.points[i].x;

@@ -17,10 +17,10 @@ var va_yaxis = {
 
 var flags_yaxis = {
   side: 'left',
-  title: 'injections',
   domain: [0, 0.3],
-  showticklabels: false,
   showgrid: false,
+	showticklabels: true,
+	ticks: 'inside',
 };
 
 function setYAxis_MR(options){
