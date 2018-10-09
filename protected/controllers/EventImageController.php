@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create'),
+                'actions' => array('view', 'create', 'getImageUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -35,6 +35,13 @@ class EventImageController extends BaseController
                 'users' => array('*'),
             ),
         );
+    }
+
+    public function actionGetImageUrl($event_id)
+    {
+        if (EventImage::model()->exists('event_id = ?', array($event_id))) {
+            echo $this->createUrl('view', array('id' => $event_id));
+        }
     }
 
     /**
