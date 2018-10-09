@@ -18,6 +18,8 @@
  */
 class CommonSystemicDisorderController extends BaseAdminController
 {
+    public $group = 'Disorders';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(CommonSystemicDisorder::model(), $this);

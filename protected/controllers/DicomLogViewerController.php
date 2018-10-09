@@ -23,6 +23,8 @@ class DicomLogViewerController extends BaseController
 
     public $items_per_page = 200;
 
+    public $group = 'System';
+
     public function accessRules()
     {
         return array(

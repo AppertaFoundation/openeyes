@@ -18,6 +18,7 @@
 class AdminController extends ModuleAdminController
 {
     //public $defaultAction = "manageLasers";
+    public $group = 'Laser';
 
     public function actionManageLasers()
     {

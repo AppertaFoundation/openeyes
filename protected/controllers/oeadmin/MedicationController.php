@@ -28,6 +28,8 @@ class MedicationController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Drugs';
+
     /**
      * Lists medications.
      *

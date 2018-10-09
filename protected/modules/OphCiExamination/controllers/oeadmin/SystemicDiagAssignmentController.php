@@ -24,6 +24,8 @@ use OEModule\OphCiExamination\models;
 
 class SystemicDiagAssignmentController extends \ModuleAdminController
 {
+    public $group = 'Examination';
+
     public function accessRules()
     {
         return array(
