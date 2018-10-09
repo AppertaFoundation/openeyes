@@ -1,7 +1,6 @@
-<!-- This page is rendered in form_ElementLetter.php. The <section> tags visible in the DOM come from that file -->
 	<header class="element-header"><h3 class="element-title">Attachments</h3></header>
 	<div class="element-fields full-width flex-layout">
-        <table class="cols-10">
+        <table id="correspondence_attachments_table" class="cols-10">
 			<thead>
 			<tr>
 				<th>Attachment type</th>
@@ -144,13 +143,11 @@
             ?>
             </tbody>
         </table>
-        <div class="flex-layout flex-right">
             <div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
                 <button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
                     <i class="oe-i plus pro-theme"></i>
                 </button>
             </div>
-        </div>
     </div>
 <script>
     <?php  $events = $this->getAttachableEvents($patient); ?>

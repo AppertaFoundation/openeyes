@@ -805,13 +805,6 @@ $(document).ready(function() {
 	$('#attachments_content_container').on('click', 'i.trash', function(e) {
 		e.preventDefault();
         $(this).closest('tr').remove();
-
-        var table = $('#correspondence_attachments_table');
-        var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
-        $table = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
-        if(rows.length == 0){
-            $table.attr('data-id', 0);
-		}
 	});
 });
 
@@ -843,7 +836,7 @@ function savePDFprint( module , event_id , $content, $data_id, title)
 var checkAttachmentFileExist = function( index ) {
 
     var table = $('#correspondence_attachments_table');
-    var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+    var rows = table.find('tbody tr');
 
     if (rows.length == index) {
         return 1;
@@ -961,27 +954,29 @@ function OphCoCorrespondence_do_print(all) {
 }
 
 function OphCoCorrespondence_addAttachments(selectedItems){
-    disableButtons();
-    for(let key in selectedItems) {
-        $.ajax({
-            'type': 'POST',
-            'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-            'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
-            'success': function (response) {
-                if (response.success == 1) {
-                    $table = $('#attachments_content_container').find('table > tbody');
+	if(selectedItems.length) {
+		disableButtons();
+		for (let key in selectedItems) {
+			$.ajax({
+				'type': 'POST',
+				'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+				'data': { 'YII_CSRF_TOKEN': YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
+				'success': function (response) {
+					if (response.success == 1) {
+						$table = $('#attachments_content_container').find('table > tbody');
 
-                    $content = $(response.content);
-                    $table.append($content);
+						$data_id = parseInt($table.children().length);
+						$content = $(response.content);
 
-                    $data_id = parseInt($table.attr("data-id"));
-                    $content.attr('data-id', $data_id);
-                    $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
-                    $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
+						$table.append($content);
+						$content.attr('data-id', $data_id);
+						$content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id + ']');
+						$content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id + ']');
 
-                    enableButtons();
-                }
-            }
-        });
-    }
+						enableButtons();
+					}
+				}
+			});
+		}
+	}
 }
