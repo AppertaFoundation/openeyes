@@ -122,6 +122,15 @@
         <tfoot class="pagination-container">
         <tr>
             <td colspan="4">
+                <?=\CHtml::button(
+                    'Add',
+                    [
+                        'class' => 'button large',
+                        'data-uri' => '/oeadmin/procedure/edit',
+                        'name' => 'add',
+                        'id' => 'et_add',
+                    ]
+                ); ?>
                 <?=\CHtml::submitButton(
                     'Delete',
                     [
