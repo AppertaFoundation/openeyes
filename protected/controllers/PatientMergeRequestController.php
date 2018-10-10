@@ -106,6 +106,7 @@ class PatientMergeRequestController extends BaseController
             ),
         ));
 
+        $this->pageTitle = 'Merge Requests';
         $this->render('//patientmergerequest/index', array(
             'data_provider' => $data_provider,
             'filters' => $filters,
@@ -183,6 +184,7 @@ class PatientMergeRequestController extends BaseController
             }
         }
 
+        $this->pageTitle = 'Create Patient Merge Request';
         $this->render('//patientmergerequest/create', array(
             'model' => $model,
         ));
@@ -205,6 +207,7 @@ class PatientMergeRequestController extends BaseController
             );
         }
 
+        $this->pageTitle = 'Patient Merge Request Log';
         $this->render('//patientmergerequest/log', array(
             'model' => $model,
             'data_provider' => new CArrayDataProvider($log),
@@ -220,6 +223,7 @@ class PatientMergeRequestController extends BaseController
     {
         $model = $this->loadModel($id);
 
+        $this->pageTitle = 'View Patient Merge Request';
         $this->render('//patientmergerequest/view', array(
             'model' => $model,
         ));
@@ -260,6 +264,7 @@ class PatientMergeRequestController extends BaseController
        $primary = Patient::model()->findByPk($merge_request->primary_id);
        $secondary = Patient::model()->findByPk($merge_request->secondary_id);
 
+       $this->pageTitle = 'Update Patient Merge Request';
        $this->render('//patientmergerequest/update', array(
             'model' => $merge_request,
             'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],
@@ -360,7 +365,7 @@ class PatientMergeRequestController extends BaseController
             }
         }
 
-
+        $this->pageTitle = 'Patient Merge';
         $this->render('//patientmergerequest/merge', array(
             'model' => $merge_request,
             'personal_details_conflict_confirm' => $personal_details_conflict_confirm['is_conflict'],

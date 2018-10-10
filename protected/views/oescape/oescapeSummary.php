@@ -35,6 +35,7 @@ if (!empty($subspecialty)) { ?>
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
             'patient' => $this->patient,
+            'subspecialty' => $subspecialty,
             'event_type' => $summaryItem->event_type,
         )); ?>
         <?php $widget->run_oescape(count($summaryItems));  }

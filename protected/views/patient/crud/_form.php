@@ -116,7 +116,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 $patient->dob = str_replace('-', '/', $patient->dob);
             }
             ?>
-            <?= $form->textField($patient, 'dob', array('placeholder' => 'dd/mm/yyyy')) ?>
+            <?= $form->textField($patient, 'dob', array('placeholder' => 'dd/mm/yyyy', 'class' => 'date
+            ')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
@@ -254,7 +255,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 }
                 ?>
 
-                <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy')) ?>
+                <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy', 'class' => 'date')) ?>
 
                 <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[date_of_death]',

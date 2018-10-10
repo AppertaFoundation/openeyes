@@ -629,6 +629,21 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+    public function getPatientDrugAllergy($drug_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select ='t.name';
+        $criteria->condition= 'paa.patient_id = :patient_id AND dra.drug_id = :drug_id';
+
+        $join = array();
+        $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = t.id';
+        $join[] = 'JOIN drug_allergy_assignment dra ON dra.allergy_id = t.id';
+        $criteria->join = implode(' ' , $join);
+        $criteria->params = array(':patient_id' => $this->id , ':drug_id' => $drug_id);
+
+        return Allergy::model()->findAll($criteria);
+    }
+
     /**
      * returns true if the patient has the allergy passed in.
      *
@@ -2002,26 +2017,26 @@ class Patient extends BaseActiveRecordVersioned
     {
         $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         $examination_api = Yii::app()->moduleAPI->get('OphCiExamination');
-        if ($examination_api){
-            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status', $this);
+        if ($examination_api) {
+            $examination_cvi = $examination_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status',
+                $this);
         }
         if ($cvi_api) {
             $CoCvi_cvi = $cvi_api->getLatestElement('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo', $this);
         }
-        if (isset($examination_cvi)&&isset($CoCvi_cvi)){
-            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date ){
+        if (isset($examination_cvi, $CoCvi_cvi)) {
+            if ($examination_cvi->element_date <= $CoCvi_cvi->examination_date) {
                 return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
-            }
-            else {
+            } else {
                 return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
             }
-        } else if (isset($examination_cvi)){
+        } elseif (isset($examination_cvi)) {
             return array($examination_cvi->cviStatus->name, $examination_cvi->element_date);
-        } else if (isset($CoCvi_cvi)){
+        } elseif (isset($CoCvi_cvi)) {
             return array($CoCvi_cvi->getDisplayConsideredBlind(), $CoCvi_cvi->examination_date);
-        }
-        else {
-            return array($this->getOPHInfo()->cvi_status->name, new DateTime());
+        } else {
+            $ophInfo = $this->getOphInfo();
+            return array($ophInfo->cvi_status->name, $ophInfo->cvi_status_date);
         }
     }
 

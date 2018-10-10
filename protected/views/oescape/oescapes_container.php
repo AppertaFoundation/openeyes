@@ -23,10 +23,10 @@
   </div>
 <?php } ?>
 
-<?php $this->renderPartial('//patient/oescape_header', array(
+<?php $this->renderPartial('//oescape/oescape_header', array(
     'subspecialty' => $subspecialty
 )) ?>
-<?php $this->renderPartial('//patient/oescape_content', array(
+<?php $this->renderPartial('//oescape/oescape_content', array(
     'cssClass' => $cssClass,
     'content' => $content,
 )) ?>
