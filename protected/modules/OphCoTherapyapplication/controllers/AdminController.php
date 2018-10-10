@@ -19,6 +19,8 @@ class AdminController extends ModuleAdminController
 {
     public $defaultAction = 'ViewDecisionTrees';
 
+    public $group = 'Therapy Application';
+
     /**
      * simple method for popup management.
      *

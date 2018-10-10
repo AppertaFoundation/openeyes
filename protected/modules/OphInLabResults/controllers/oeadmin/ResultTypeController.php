@@ -8,6 +8,8 @@
 class ResultTypeController  extends ModuleAdminController
 {
     protected $admin;
+    public $group = 'Lab Results';
+
 
     protected function beforeAction($action)
     {

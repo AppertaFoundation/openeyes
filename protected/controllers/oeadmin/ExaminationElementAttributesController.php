@@ -17,6 +17,8 @@ class ExaminationElementAttributesController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Examination';
+
     /**
      * @throws CHttpException
      */
