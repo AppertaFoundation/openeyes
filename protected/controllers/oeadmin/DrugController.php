@@ -108,6 +108,11 @@ class DrugController extends BaseAdminController
             die;
         }
 
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+
         $this->render('/oeadmin/drug/edit', array(
             'model' => $drug,
         ));
