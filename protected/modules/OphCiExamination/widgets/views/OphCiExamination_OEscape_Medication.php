@@ -2,17 +2,14 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-Meds.js')?>"></script>
 
 <div id="js-hs-chart-Meds" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-    <div id="highcharts-Meds-right" class="highcharts-Meds highcharts-right highchart-section"></div>
-    <div id="highcharts-Meds-left" class="highcharts-Meds highcharts-left highchart-section" style="display: none;"></div>
+    <div id="plotly-Meds-right" class="plotly-Meds plotly-right plotly-section"></div>
+    <div id="plotly-Meds-left" class="plotly-Meds plotly-left plotly-section" style="display: none;"></div>
 </div>
 
 <script type="text/javascript">
   $(document).ready(function () {
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;
     var sides = ['left', 'right'];
-    var chart_Med = {};
-    var series_no = Math.max(Object.keys(meds_data['left']).length, Object.keys(meds_data['right']).length);
-
     //plotly
     for (var side of sides){
       var data = [];
@@ -42,6 +39,7 @@
             y: y_values,
             hovertext: key+"<br>"+x_values[0].toLocaleDateString()+"-"+x_values[1].toLocaleDateString(),
             hoverinfo: 'text',
+            hoverlabel: trace_hoverlabel,
             line: {
               width: 20,
               color: (side=='right')?'#5f8e41':'#983e3e',
@@ -57,7 +55,7 @@
       layout_plotly['barmode'] = 'stack';
       layout_plotly['showlegend'] = false;
 
-      Plotly.newPlot('highcharts-Meds-'+side, data, layout_plotly, options_plotly);
+      Plotly.newPlot('plotly-Meds-'+side, data, layout_plotly, options_plotly);
     }
   });
 </script>

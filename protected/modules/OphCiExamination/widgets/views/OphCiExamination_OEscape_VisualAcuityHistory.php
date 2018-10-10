@@ -29,8 +29,8 @@
       )?>
   </form>
 <div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="highcharts-VA-right" class="highcharts-VA highcharts-right highchart-section"></div>
-  <div id="highcharts-VA-left" class="highcharts-VA highcharts-left highchart-section" style="display: none;"></div>
+  <div id="plotly-VA-right" class="plotly-VA plotly-right plotly-section"></div>
+  <div id="plotly-VA-left" class="plotly-VA plotly-left plotly-section" style="display: none;"></div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -69,6 +69,7 @@
           return OEScape.toolTipFormatters_plotly.VA( d, va_plotly[side]['y'][index], 'VA('+side+')');
         }),
         hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
         type: 'line',
       }];
       var yaxis_options = {
@@ -81,7 +82,7 @@
       layout_plotly['xaxis']['rangeslider'] = {};
 
       Plotly.newPlot(
-        'highcharts-VA-'+side, data, layout_plotly, options_plotly
+        'plotly-VA-'+side, data, layout_plotly, options_plotly
       );
     }
   });

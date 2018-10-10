@@ -25,7 +25,7 @@ var options_MR = {
         highHelp.drawBanners(this,Object.keys(drugs[eye_side]));
       },
       redraw: function(){
-        if ($(this['renderTo']).hasClass('highcharts-right')){
+        if ($(this['renderTo']).hasClass('plotly-right')){
           side = 'right';
         } else {
           side = 'left';

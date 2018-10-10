@@ -30,8 +30,8 @@
   ) ?>
 </form>
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="highcharts-MR-right" class="highcharts-MR highcharts-right highchart-section"></div>
-  <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
+  <div id="plotly-MR-right" class="plotly-MR plotly-right plotly-section"></div>
+  <div id="plotly-MR-left" class="plotly-MR plotly-left plotly-section" style="display: none;"></div>
 </div>
 <div class="oes-data-row-input">
 </div>
@@ -126,8 +126,8 @@
       var j = Object.keys(injections_data[side]).length+1;
       flags_yaxis['range'] = [0, 20*j];
       flags_yaxis['domain'] = [0, 0.05*j];
-			flags_yaxis['ticktext'] = [];
-			flags_yaxis['tickvals'] = [];
+      flags_yaxis['ticktext'] = [];
+      flags_yaxis['tickvals'] = [];
 
       var text = {
         showlegend: false,
@@ -135,6 +135,7 @@
         y:[],
         hovertext:[],
         hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
         yaxis: 'y3',
         mode:'text',
       };
@@ -186,7 +187,7 @@
       var data =[trace1, trace2, text];
 
       Plotly.newPlot(
-        'highcharts-MR-'+side, data, layout_plotly, options_plotly
+        'plotly-MR-'+side, data, layout_plotly, options_plotly
       );
 
       //Set the right image stack and mouse hover events
@@ -194,7 +195,7 @@
       octImgStack['right'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['right'].length?doc_list['right'][0]['doc_id']:null );
       octImgStack['left'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
 
-      var currentPlot = document.getElementById('highcharts-MR-'+side);
+      var currentPlot = document.getElementById('plotly-MR-'+side);
       currentPlot.on('plotly_hover', function (data) {
         for(var i=0; i < data.points.length; i++){
           var tn = data.points[i].curveNumber;

@@ -25,8 +25,8 @@ $(document).ready(function () {
 
     $('.js-oes-eyeside').removeClass('selected'); //deselect the other button
     $(this).addClass('selected'); //select the button
-    $('.highcharts-' + side).show(); //show the new side
-    $('.highcharts-' + other_side).hide(); //hide the other side
+    $('.plotly-' + side).show(); //show the new side
+    $('.plotly-' + other_side).hide(); //hide the other side
 
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
@@ -154,7 +154,7 @@ function setOEScapeSize(size_str){
     'large' : {"min_width":900, 'percent':70},
     'full'  : {"min_width":500, 'percent':100}
   };
-  var highcarts_list = $('.highchart-section');
+  var highcarts_list = $('.plotly-section');
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
   var reflow = function (){
     for (var i = 0; i<  highcarts_list.length; i++){

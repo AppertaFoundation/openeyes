@@ -18,6 +18,14 @@ var marking_annotations = {
   },
 };
 
+var trace_hoverlabel = {
+  bgcolor: '#141e2b',
+    bordercolor: '#3db0fb',
+    font: {
+    color:'#ffffff',
+  },
+};
+
 var layout_plotly = {
   title: '',
   autosize: false,

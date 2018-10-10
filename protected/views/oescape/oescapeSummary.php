@@ -59,19 +59,19 @@ if (!empty($subspecialty)) { ?>
       var charts = [];
       charts['VA'] = [];
       charts['VA']['major_axis'] = 'xAxis';
-      charts['VA']['right'] = $($('.highcharts-VA')[0]).highcharts();
-      charts['VA']['left'] = $($('.highcharts-VA')[1]).highcharts();
+      charts['VA']['right'] = $($('.plotly-VA')[0]).highcharts();
+      charts['VA']['left'] = $($('.plotly-VA')[1]).highcharts();
 
       charts['Med'] = [];
       charts['Med']['major_axis'] = 'yAxis';
-      charts['Med']['right'] = $($('.highcharts-Meds')[0]).highcharts();
-      charts['Med']['left'] = $($('.highcharts-Meds')[1]).highcharts();
+      charts['Med']['right'] = $($('.plotly-Meds')[0]).highcharts();
+      charts['Med']['left'] = $($('.plotly-Meds')[1]).highcharts();
 
 
       charts['IOP'] = [];
       charts['IOP']['major_axis'] = 'xAxis';
-      charts['IOP']['right'] = $($('.highcharts-IOP')[0]).highcharts();
-      charts['IOP']['left'] = $($('.highcharts-IOP')[1]).highcharts();
+      charts['IOP']['right'] = $($('.plotly-IOP')[0]).highcharts();
+      charts['IOP']['left'] = $($('.plotly-IOP')[1]).highcharts();
 
       var limits = [];
       ['right', 'left'].forEach(function(eye_side)  {

@@ -3,8 +3,8 @@
 
 
 <div id="js-hs-chart-IOP" class="highchart-area" data-highcharts-chart="1" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-    <div id="highcharts-IOP-right" class="highcharts-IOP highcharts-right highchart-section"></div>
-    <div id="highcharts-IOP-left" class="highcharts-IOP highcharts-left highchart-section" style="display: none;"></div>
+    <div id="plotly-IOP-right" class="plotly-IOP plotly-right plotly-section"></div>
+    <div id="plotly-IOP-left" class="plotly-IOP plotly-left plotly-section" style="display: none;"></div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -41,11 +41,12 @@
           return  d.getDate()+'/'+ d.getMonth()+'/'+ d.getFullYear() +'<br>IOP('+ side + '): ' +  iop_plotly_data[side]['y'][index];
         }),
         hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
         type: 'line',
       }];
 
       Plotly.newPlot(
-        'highcharts-IOP-'+side, data, layout_plotly, options_plotly
+        'plotly-IOP-'+side, data, layout_plotly, options_plotly
       );
     }
 
