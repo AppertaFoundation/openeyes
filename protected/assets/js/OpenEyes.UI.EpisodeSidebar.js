@@ -151,12 +151,16 @@
       if ($li.data('event-image-url')) {
         $img.show();
       } else {
+        if(self.imageLookupRequest) {
+          self.imageLookupRequest.abort();
+        }
+
         $img.hide();
         $loader.show();
 
         // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
         // So we'll send an ajax request to try and get the url of the image
-        $.ajax({
+        self.imageLookupRequest =  $.ajax({
           type: 'GET',
           url: '/eventImage/getImageUrl',
           data: {'event_id': $li.data('event-id')},
@@ -170,9 +174,6 @@
             // Otherwise display a message in place of the image
             $noImage.show();
           }
-        }).error(function (response) {
-          $noImage.show();
-          console.error('An error occurred when retrieving the event image url: ' + response);
         }).complete(function () {
           $loader.hide();
         });
