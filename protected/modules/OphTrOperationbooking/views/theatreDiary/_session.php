@@ -122,9 +122,19 @@
                    <?php if ($booking->confirmed) { ?>checked="checked" <?php } ?>/>
           </td>
           <td class="patient">
-              <?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?>
-            , <?php echo $booking->operation->event->episode->patient->first_name ?>
-            (<?php echo $booking->operation->event->episode->patient->age ?>)
+              <?php echo strtoupper($booking->operation->event->episode->patient->last_name) ?>,
+              <?php echo $booking->operation->event->episode->patient->first_name ?>
+              (<?php echo $booking->operation->event->episode->patient->age ?>)
+              <?php
+                $warnings = $booking->operation->event->episode->patient->getWarnings();
+                if ($warnings) {
+                    $msgs = [];
+                    foreach ($warnings as $warn) {
+                        $msgs[] = $warn['long_msg'] . " - " . $warn['details'];
+                    } ?>
+                    <i class="oe-i warning medium pad js-has-tooltip"
+                       data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
+                <?php } ?>
           </td>
           <td class="operation">
               <i class="oe-i circle-<?=$booking->operation->getComplexityColor()?> small pad-right js-has-tooltip" data-tooltip-content="<?=$booking->operation->getComplexityCaption()?> complexity"></i>
@@ -140,21 +150,12 @@
               <?php echo $booking->ward ? $booking->ward->name : 'None' ?>
           </td>
           <td class="alerts">
-
               <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>
                 <i class="oe-i male medium pad js-has-tooltip" data-tooltip-content="Male"></i>
               <?php } else { ?>
                 <i class="oe-i female medium pad js-has-tooltip" data-tooltip-content="Female"></i>
               <?php } ?>
-              <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
-                  $msgs = array();
-                  foreach ($warnings as $warn) {
-                      $msgs[] = $warn['long_msg']." - ".$warn['details'];
-                  }
-                  ?>
-                <i class="oe-i exclamation medium pad js-has-tooltip"
-                   data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
-              <?php } ?>
+
 
               <?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)): ?>
                 <i class="oe-i info medium pad js-has-tooltip"
