@@ -88,7 +88,7 @@ class AdminSidebar extends BaseCWidget
         foreach ($this->menu_items as $_box_title => $box_items) {
             foreach ($box_items as $_name => $data) {
                 if ($box_title === $_box_title && Yii::app()->getController()->request->requestUri == $data ||
-                    \Yii::app()->controller->group == $box_title) {
+                    isset(\Yii::app()->controller->group) && \Yii::app()->controller->group == $box_title) {
                     $state = 'expanded';
                 } else {
                     $state = 'collapsed';
