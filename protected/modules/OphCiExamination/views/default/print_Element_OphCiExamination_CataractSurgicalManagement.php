@@ -16,54 +16,71 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
-	<ul>
-		<li><?php echo $element->eye ? $element->eye->name : 'Eye no specified'?></li>
-                <?php if (isset($active_check) && ($active_check === 'on')) {
-    ?>
-		<?php if ($element->city_road) {
-    ?>
-			<li>At City Road</li>
-		<?php 
-}
-    ?>
-		<?php if ($element->satellite) {
-    ?>
-			<li>At satellite</li>
-		<?php 
-}
-}?>
+<table class="borders">
+    <tbody>
+        <tr>
+            <th class="cols-6"><?= $element->getAttributeLabel('eye_id') ?>:</th>
+            <td class="cols-6"><?= $element->eye ? $element->eye->name : 'Eye no specified' ?></td>
+        </tr>
 
-		<?php if ($element->fast_track) {
-    ?>
-			<li>Suitable for fast-track</li>
-		<?php 
-}?>
-		<li>
-			Target post-op refractive correction is <?php echo $element->target_postop_refraction?> Dioptres
-		</li>
-		<?php if ($element->correction_discussed) {
-    ?>
-			<li>Post-op refractive correction has been discussed with the patient</li>
-		<?php 
-} else {
-    ?>
-			<li>Post-op refractive correction has not been discussed with the patient</li>
-		<?php 
-}?>
-		<li>
-			Suitable for <?php echo $element->suitable_for_surgeon->name?> surgeon (<?php echo $element->supervised ? 'supervised' : 'unsupervised'?>)
-		</li>
-		<li>
-			<?php echo $element->vitrectomised_eye ? 'Vitrectomised eye' : 'Non-vitrectomised eye'?>
-		</li>
-		<li>
-			<?php
-            if ($element->reasonForSurgery) {
-                foreach ($element->reasonForSurgery as $reason) {
-                    echo $reason->name.'<br />';
-                }
-            }?>
-		</li>
-	</ul>
-</div>
+        <?php if (isset($active_check) && ($active_check === 'on')) { ?>
+            <?php if ($element->city_road) { ?>
+            <tr>
+                <th><?= $element->getAttributeLabel('city_road')?>:</th>
+                <td><?= $element->city_road ? 'Yes' : 'No'?></td>
+            </tr>
+            <?php } ?>
+
+            <?php if ($element->satellite) { ?>
+            <tr>
+                <th><?= $element->getAttributeLabel('satellite')?>:</th>
+                <td><?= $element->satellite ? 'Yes' : 'No'?></td>
+            </tr>
+            <?php } ?>
+
+        <?php } ?>
+
+        <?php if ($element->fast_track) { ?>
+        <tr>
+            <th><?= $element->getAttributeLabel('fast_track') ?>:</th>
+            <td><?= $element->fast_track ? 'Yes' : 'No'?></td>
+        </tr>
+        <?php } ?>
+
+        <tr>
+            <th><?= $element->getAttributeLabel('target_postop_refraction')?>:</th>
+            <td><?= $element->target_postop_refraction?></td>
+        </tr>
+
+        <tr>
+            <th><?= $element->getAttributeLabel('correction_discussed')?>:</th>
+            <td><?= $element->correction_discussed ? 'Yes' : 'No'?></td>
+        </tr>
+
+        <tr>
+            <th> <?=$element->getAttributeLabel('suitable_for_surgeon_id')?>:</th>
+            <td><?= $element->suitable_for_surgeon->name?></td>
+        </tr>
+        <tr>
+            <th><?php echo $element->getAttributeLabel('supervised')?>:</th>
+            <td><?= $element->supervised ? 'Yes' : 'No'?></td>
+        </tr>
+        <tr>
+            <th><?= $element->getAttributeLabel('vitrectomised_eye')?>:</th>
+            <td><?= $element->vitrectomised_eye ? 'Yes' : 'No'?></td>
+        </tr>
+        <tr>
+            <th>
+                <?= $element->getAttributeLabel('reasonForSurgery')?>:
+            </th>
+            <td>
+                <?php
+                if ($element->reasonForSurgery) {
+                    foreach ($element->reasonForSurgery as $reason) {
+                        echo $reason->name.'<br />';
+                    }
+                }?>
+            </td>
+        </tr>
+    </tbody>
+</table>
