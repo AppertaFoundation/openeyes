@@ -514,6 +514,8 @@ $creating = $creating ?: false;
       </div>
     <?php } ?>
 </div>
+</section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
+<section class="element edit full edit-xxx">
 <div id="attachments_content_container">
     <?php
     $associated_content = EventAssociatedContent::model()
