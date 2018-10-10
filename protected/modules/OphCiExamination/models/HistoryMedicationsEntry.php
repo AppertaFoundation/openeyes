@@ -17,8 +17,6 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use Symfony\Component\Validator\Constraints\DateTime;
-
 /**
  * Class HistoryMedicationsEntry - Supports linking to prescription items as shadow records
  * to enable a full medication history to be displayed in one place.
@@ -155,6 +153,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
         $this->start_date = $item->prescription->event->event_date;
+        $this->start_date = date('Y-m-d' , strtotime($this->start_date));
         if (!$this->end_date) {
             $end_date = $item->stopDateFromDuration();
 
@@ -282,14 +281,8 @@ class HistoryMedicationsEntry extends \BaseElement
         if (!$this->medication_name && !$this->medication_drug_id && !$this->drug_id) {
             $this->addError('medication_name', 'A drug must be provided.');
         }
-        if ($this->start_date && $this->end_date) {
-        	  $startDate = new \DateTime($this->start_date);
-        	  $formattedStartDate = $startDate->format('Y-m-d');
-					  $endDate = new \DateTime($this->end_date);
-					  $formattedEndDate = $endDate->format('Y-m-d');
-					  if ($formattedStartDate > $formattedEndDate){
-						    $this->addError('end_date', 'Stop date must be on or after start date');
-					  }
+        if ($this->start_date && $this->end_date && $this->start_date > $this->end_date) {
+            $this->addError('end_date', 'Stop date must be on or after start date');
         }
         parent::afterValidate();
     }
