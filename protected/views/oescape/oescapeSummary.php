@@ -20,7 +20,6 @@ if (!empty($subspecialty)) { ?>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oes-highchart-tools.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">

@@ -78,7 +78,7 @@ var OEScape = {
         }
       }
 
-      return  x.getDate()+'/'+ x.getMonth()+'/'+ x.getFullYear() +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
+      return OEScape.epochToDateStr(x) +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
     }
   },
   epochToDateStr: function(epoch){
@@ -95,16 +95,6 @@ function addSeries(chart, title, data, options){
   }, options));
 }
 
-function setYLabels(tick_positions, tick_labels){
-  return {
-    formatter: function () {
-      for (var i=0; i<tick_positions.length; i++)
-        if (tick_positions[i] === this.value)
-          return tick_labels[i];
-      return null;
-    }
-  }
-}
 
 //Takes a list (sorted smallest to largest) and removes overlapping labels
 function pruneYTicks(ticks, plotHeight, label_height){
@@ -129,15 +119,6 @@ function pruneYTicks(ticks, plotHeight, label_height){
   return new_ticks;
 }
 
-function cleanVATicks(ticks, options, charts, axis_index){
-  //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
-  //programmatically, please do it
-  ticks = pruneYTicks(ticks, charts.yAxis[axis_index].height, 17);
-  options['yAxis'][axis_index]['tickPositions'] = ticks['tick_position'];
-  options['yAxis'][axis_index]['labels'] = setYLabels(ticks['tick_position'], ticks['tick_labels']);
-  charts.update(options);
-  charts.redraw();
-}
 
 /**
  * Sets the horizontal size of the OEScape graphs
@@ -170,28 +151,5 @@ function setOEScapeSize(size_str){
   reflow();
 }
 
-function setXPlotLine(text_value,date,eye_side){
-  return {
-    className: 'oes-hs-plotline-'+eye_side+'-tight',
-    value: date,
-    label: {
-      text: text_value,
-      rotation: 90,
-      x: 2
-    },
-    zIndex: 1
-  };
-}
-
-function setMarkingEvents(options, data, plotLines, side){
-    for(key in data[side]){
-      for (j in data[side][key]){
-        options['xAxis']['plotLines'].push(setXPlotLine(key,data[side][key][j], side));
-        if (plotLines){
-          plotLines[side].push(setXPlotLine(key,data[side][key][j], side));
-        }
-      }
-    }
-}
 
 

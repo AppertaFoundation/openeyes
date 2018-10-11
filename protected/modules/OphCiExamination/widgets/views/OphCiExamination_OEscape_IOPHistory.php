@@ -37,7 +37,7 @@
         },
         text: iop_plotly_data[side]['x'].map(function (item, index) {
           var d = new Date(item);
-          return  d.getDate()+'/'+ d.getMonth()+'/'+ d.getFullYear() +'<br>IOP('+ side + '): ' +  iop_plotly_data[side]['y'][index];
+          return OEScape.epochToDateStr(d)+'<br>IOP('+ side + '): ' +  iop_plotly_data[side]['y'][index];
         }),
         hoverinfo: 'text',
         hoverlabel: trace_hoverlabel,

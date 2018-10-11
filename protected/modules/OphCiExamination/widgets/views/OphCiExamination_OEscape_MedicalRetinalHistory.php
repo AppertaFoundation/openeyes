@@ -89,6 +89,7 @@
         }),
         text: side,
         hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
         yaxis: 'y',
         type: 'scatter',
       };
@@ -103,9 +104,10 @@
         },
         hovertext: crt_plotly[side]['x'].map(function (item, index) {
           var d = new Date(item);
-          return d.getDate()+'/'+ d.getMonth()+'/'+ d.getFullYear()+'<br>CRT(' + side + '):' + crt_plotly[side]['y'][index];
+          return OEScape.epochToDateStr(d) +'<br>CRT(' + side + '):' + crt_plotly[side]['y'][index];
         }),
         hoverinfo: 'text',
+        hoverlabel: trace_hoverlabel,
         yaxis: 'y2',
       };
 
