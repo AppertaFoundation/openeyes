@@ -88,13 +88,6 @@ var OEScape = {
   full_va_ticks: {'tick_position':[0], 'tick_labels':['error']},
 };
 
-function addSeries(chart, title, data, options){
-  chart.addSeries(Object.assign({
-    name: title,
-    data: data,
-  }, options));
-}
-
 
 //Takes a list (sorted smallest to largest) and removes overlapping labels
 function pruneYTicks(ticks, plotHeight, label_height){
@@ -125,6 +118,7 @@ function pruneYTicks(ticks, plotHeight, label_height){
  * @param size_str string (small|medium|large|full)
  */
 function setOEScapeSize(size_str){
+  var eye_side = $('.js-oes-eyeside.selected').data('side');
   //This refers to the left and right of the screen, not the eyes
   var left = $('.oes-left-side'),
     right = $('.oes-right-side');
@@ -135,20 +129,23 @@ function setOEScapeSize(size_str){
     'large' : {"min_width":900, 'percent':70},
     'full'  : {"min_width":500, 'percent':100}
   };
-  var highcarts_list = $('.plotly-section');
+
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
-  var reflow = function (){
-    for (var i = 0; i<  highcarts_list.length; i++){
-      if ($(highcarts_list[i]).is(":visible")){
-        $(highcarts_list[i]).highcharts().reflow();
-      }
-    }
-  };
-  reflow();
+
   left.css({"min_width":sizes[size_str].min_width, "width":sizes[size_str].percent+'%'});
   right.css({"width":(100-sizes[size_str].percent)+'%'});
   right.toggle(size_str !== 'full');
-  reflow();
+
+  var current_width = $(document).width()*sizes[size_str].percent/100;
+  var update = {
+    width: current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width,
+  };
+
+  var plotly_list = $('.plotly-'+eye_side);
+  for (var i = 0; i < plotly_list.length; i++){
+    var plotly_id = plotly_list[i].id;
+    Plotly.relayout(plotly_id, update);
+  }
 }
 
 

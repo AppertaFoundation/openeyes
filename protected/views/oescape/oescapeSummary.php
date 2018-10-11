@@ -16,10 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (!empty($subspecialty)) { ?>
-<script src="https://code.highcharts.com/stock/js/highstock.js"></script>
-<script src="http://code.highcharts.com/highcharts-more.js"></script>
-	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
 <div class="oes-left-side"  style="width: 50%;">
