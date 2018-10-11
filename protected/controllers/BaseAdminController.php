@@ -21,6 +21,12 @@ class BaseAdminController extends BaseController
     public $layout = '//layouts/admin';
     public $items_per_page = 30;
 
+    /**
+     * Defines that which sidebar item should be open when the action performed
+     * @var string
+     */
+    public $group = 'Core';
+
     public function accessRules()
     {
         return array(array('allow', 'roles' => array('admin')));

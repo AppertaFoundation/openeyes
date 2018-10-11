@@ -185,8 +185,8 @@ $config = array(
         'signature_app_url' => 'https://dev.oesign.uk',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => 'admin',
-        'docman_password' => 'admin',
+        'docman_user' => 'docman_user',
+        'docman_password' => '1234qweR!',
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
         // possible values:
         // none => XML output is suppressed

@@ -26,6 +26,8 @@ use OEModule\OphCiExamination\models;
 
 class AdminController extends \ModuleAdminController
 {
+    public $group = 'Examination';
+
     public $defaultAction = 'ViewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason';
 
     public function actionEditIOPInstruments()

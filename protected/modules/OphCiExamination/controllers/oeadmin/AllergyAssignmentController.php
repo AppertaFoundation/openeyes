@@ -24,6 +24,8 @@ use OEModule\OphCiExamination\models;
 
 class AllergyAssignmentController extends \ModuleAdminController
 {
+    public $group = 'Examination';
+
     public function accessRules()
     {
         return array(

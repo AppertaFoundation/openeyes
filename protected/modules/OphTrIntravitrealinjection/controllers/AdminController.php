@@ -18,6 +18,7 @@
 class AdminController extends ModuleAdminController
 {
     public $defaultAction = 'ViewAllOphTrIntravitrealinjection_Treatment_Drug';
+    public $group = 'Intravitreal injection';
 
     public function actionViewTreatmentDrugs()
     {

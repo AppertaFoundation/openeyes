@@ -22,6 +22,7 @@ class LocalAuthoritiesController extends \AdminController
 {
     public $layout = '//layouts/admin';
     public $items_per_page = 30;
+    public $group = 'CVI';
 
     /**
      * @return array

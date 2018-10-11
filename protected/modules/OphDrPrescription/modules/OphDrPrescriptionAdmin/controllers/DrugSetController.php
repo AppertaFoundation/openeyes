@@ -23,6 +23,8 @@ class DrugSetController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Drugs';
+
     /**
      * Init the edit admin page, because we have a custom save URL, so we need to use
      * Admin in more then 1 function.

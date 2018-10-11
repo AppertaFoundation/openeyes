@@ -19,6 +19,7 @@ class AdminController extends BaseAdminController
 {
     public $layout = 'admin';
     public $items_per_page = 30;
+    public $group = 'Core';
 
     /**
      * @var int
@@ -32,15 +33,13 @@ class AdminController extends BaseAdminController
 
     public function actionEditPreviousOperation()
     {
-        $this->genericAdmin(
-            'Edit Surgical History Choices',
-            'CommonPreviousOperation',
-            ['div_wrapper_class' => 'cols-3']
-        );
+        $this->group = 'Examination';
+        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
     {
+        $this->group = 'Disorders';
         $this->genericAdmin(
             'Common Ophthalmic Disorder Groups',
             'CommonOphthalmicDisorderGroup',
@@ -50,8 +49,9 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $models = CommonOphthalmicDisorderGroup::model()->findAll();
-        $data = array_map(function($model){
+        $data = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
         }, $models);
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
@@ -63,7 +63,7 @@ class AdminController extends BaseAdminController
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
         }
 
-        if( Yii::app()->request->isPostRequest){
+        if (Yii::app()->request->isPostRequest) {
 
             $transaction = Yii::app()->db->beginTransaction();
 
@@ -71,9 +71,9 @@ class AdminController extends BaseAdminController
             $disorders = Yii::app()->request->getParam('CommonOphthalmicDisorder', array());
 
             $ids = array();
-            foreach($disorders as $key => $disorder){
+            foreach ($disorders as $key => $disorder) {
                 $common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
-                if(!$common_ophtalmic_disorder){
+                if (!$common_ophtalmic_disorder) {
                     $common_ophtalmic_disorder = new CommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -84,15 +84,14 @@ class AdminController extends BaseAdminController
                 //$_GET['subspecialty_id'] must be present, we do not use the default value 1
                 $common_ophtalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
 
-                if(!$common_ophtalmic_disorder->save()){
+                if (!$common_ophtalmic_disorder->save()) {
                     $errors[] = $common_ophtalmic_disorder->getErrors();
                 }
 
                 $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
             }
 
-            if(empty($errors)){
-
+            if (empty($errors)) {
                 //Delete items
                 $criteria = new CDbCriteria();
 
@@ -120,8 +119,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', 'List updated.');
 
             } else {
-
-                foreach($errors as $error){
+                foreach ($errors as $error) {
                     foreach($error as $attribute => $error_array){
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
@@ -145,7 +143,7 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->compare('subspecialty_id', $subspecialty_id);
 
-        $this->render('editcommonophthalmicdisorder',array(
+        $this->render('editcommonophthalmicdisorder', array(
             'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
                 'criteria' => $criteria,
                 'pagination' => false,
@@ -157,19 +155,20 @@ class AdminController extends BaseAdminController
 
     public function actionEditSecondaryToCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $errors = array();
         $parent_id = Yii::app()->request->getParam('parent_id', 1);
 
-        if( Yii::app()->request->isPostRequest){
+        if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
 
             $display_orders = Yii::app()->request->getParam('display_order', array());
             $disorders = Yii::app()->request->getParam('SecondaryToCommonOphthalmicDisorder', array());
 
             $ids = array();
-            foreach($disorders as $key => $disorder){
+            foreach ($disorders as $key => $disorder) {
                 $common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id']);
-                if(!$common_ophtalmic_disorder){
+                if (!$common_ophtalmic_disorder) {
                     $common_ophtalmic_disorder = new SecondaryToCommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -180,15 +179,14 @@ class AdminController extends BaseAdminController
                 //$_GET['parent_id'] must be present, we do not use the default value 1
                 $common_ophtalmic_disorder->parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
-                if(!$common_ophtalmic_disorder->save()){
+                if (!$common_ophtalmic_disorder->save()) {
                     $errors[] = $common_ophtalmic_disorder->getErrors();
                 }
 
                 $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
             }
 
-            if(empty($errors)){
-
+            if (empty($errors)) {
                 //Delete items
                 $criteria = new CDbCriteria();
 
@@ -216,8 +214,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', 'List updated.');
 
             } else {
-
-                foreach($errors as $error){
+                foreach ($errors as $error) {
                     foreach($error as $attribute => $error_array){
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
@@ -238,7 +235,7 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->compare('parent_id', $parent_id);
 
-        $this->render('editSecondaryToCommonOphthalmicdisorder',array(
+        $this->render('editSecondaryToCommonOphthalmicdisorder', array(
             'dataProvider' => new CActiveDataProvider('SecondaryToCommonOphthalmicDisorder', array(
                 'criteria' => $criteria,
                 'pagination' => false,
@@ -253,8 +250,8 @@ class AdminController extends BaseAdminController
             $findings = Yii::app()->request->getParam('Finding', []);
             $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
 
-            foreach($findings as $key => $finding){
-                if( isset($finding['id']) ){
+            foreach ($findings as $key => $finding) {
+                if (isset($finding['id'])) {
                     $finding_object = Finding::model()->findByPk($finding['id']);
                 } else {
                     $finding_object = new Finding();
@@ -266,7 +263,7 @@ class AdminController extends BaseAdminController
                 $finding_object->active = $finding['active'];
 
                 $subspecialities = [];
-                if(isset($subspecialities_ids[$key])){
+                if (isset($subspecialities_ids[$key])) {
                     $criteria = new \CDbCriteria();
                     $criteria->addInCondition('id', array_values($subspecialities_ids[$key]));
                     $subspecialities = Subspecialty::model()->findAll($criteria);
@@ -274,7 +271,7 @@ class AdminController extends BaseAdminController
 
                 $finding_object->subspecialties = $subspecialities;
 
-                if(!$finding_object->save()){
+                if (!$finding_object->save()) {
                     throw new Exception('Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
                 }
             }
@@ -1895,7 +1892,7 @@ class AdminController extends BaseAdminController
      */
     public function actionLogo()
     {
-
+        $this->group = "System";
         if (!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']) {
             throw new CHttpException(404);
         }
@@ -1958,11 +1955,14 @@ class AdminController extends BaseAdminController
 
     public function actionSettings()
     {
+        $this->group = "System";
         $this->render('/admin/settings');
     }
 
     public function actionEditSetting()
     {
+        $this->group = "System";
+
         $metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']));
         if (!$metadata) {
             $this->redirect(array('/admin/settings'));
@@ -1997,12 +1997,8 @@ class AdminController extends BaseAdminController
      */
     public function actionViewAnaestheticAgent()
     {
-
+        $this->group = "Drugs";
         $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent', ['div_wrapper_class' => 'cols-3']);
-
-        /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
-
-        $this->render('anaestheticagent');*/
     }
 
     public function actionAddAnaestheticAgent()

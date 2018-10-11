@@ -285,7 +285,7 @@
                     <td></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($element->is_golden_patient  && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+            <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
                 <tr>
                     <td>
                         <h3 class="data-title">

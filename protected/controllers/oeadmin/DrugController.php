@@ -31,6 +31,8 @@ class DrugController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Drugs';
+
     /**
      * Lists procedures.
      *

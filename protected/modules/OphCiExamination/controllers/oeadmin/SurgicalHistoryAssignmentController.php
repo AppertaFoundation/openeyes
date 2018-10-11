@@ -26,6 +26,8 @@
 
     class SurgicalHistoryAssignmentController extends \ModuleAdminController
     {
+        public $group = 'Examination';
+
         /**
          * @inheritdoc
          */

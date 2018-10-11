@@ -18,6 +18,8 @@
 
 class TagsAdminController extends BaseAdminController
 {
+    public $group = 'Drugs';
+
     public $itemsPerPage = 50;
 
     /**

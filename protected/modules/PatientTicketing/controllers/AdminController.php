@@ -27,6 +27,8 @@ class AdminController extends \ModuleAdminController
     public static $QUEUE_SERVICE = 'PatientTicketing_Queue';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
 
+    public $group = 'PatientTicketing';
+
     protected function beforeAction($action)
     {
         if (parent::beforeAction($action)) {

@@ -17,6 +17,9 @@
  */
 class CommonDrugController extends BaseAdminController
 {
+
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(SiteSubspecialtyDrug::model(), $this);

@@ -18,6 +18,8 @@
  */
 class PostOpDrugMappingsController extends BaseAdminController
 {
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(OphTrOperationnote_PostopSiteSubspecialtyDrug::model(), $this);
