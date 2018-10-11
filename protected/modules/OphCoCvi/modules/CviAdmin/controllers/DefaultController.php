@@ -18,6 +18,8 @@
 
 class DefaultController extends \ModuleAdminController
 {
+    public $group = 'CVI';
+
     public $defaultAction = 'clinicalDisorderSection';
 
     public $layout = 'application.views.layouts.admin';

@@ -36,6 +36,8 @@ class ProcedureController extends BaseAdminController
      */
     public $itemsPerPage = 30;
 
+    public $group = 'Procedure Management';
+
     /**
      * Lists procedures.
      *

@@ -15,6 +15,8 @@
  */
 class DefaultController extends BaseAdminController
 {
+    public $group = 'Drugs';
+
     /**
      * @description Common drugs administration page - it lists the common drugs based on site and subspecialty
      *

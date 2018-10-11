@@ -19,6 +19,7 @@ class AdminController extends BaseAdminController
 {
     public $layout = 'admin';
     public $items_per_page = 30;
+    public $group = 'Core';
 
     /**
      * @var int
@@ -32,16 +33,19 @@ class AdminController extends BaseAdminController
 
     public function actionEditPreviousOperation()
     {
+        $this->group = 'Examination';
         $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
     {
+        $this->group = 'Disorders';
         $this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
     }
 
     public function actionEditCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $models = CommonOphthalmicDisorderGroup::model()->findAll();
         $data = array_map(function($model){
             return $model->getAttributes(array("id", "name"));
@@ -149,6 +153,7 @@ class AdminController extends BaseAdminController
 
     public function actionEditSecondaryToCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $errors = array();
         $parent_id = Yii::app()->request->getParam('parent_id', 1);
 
@@ -1856,7 +1861,7 @@ class AdminController extends BaseAdminController
      */
     public function actionLogo()
     {
-
+        $this->group = "System";
         if (!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']) {
             throw new CHttpException(404);
         }
@@ -1919,6 +1924,7 @@ class AdminController extends BaseAdminController
 
     public function actionSettings()
     {
+        $this->group = "System";
         $this->render('/admin/settings');
     }
 
@@ -1956,7 +1962,7 @@ class AdminController extends BaseAdminController
      */
     public function actionViewAnaestheticAgent()
     {
-
+        $this->group = "Drugs";
         $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
 
         /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));

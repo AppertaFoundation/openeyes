@@ -18,6 +18,8 @@
  */
 class OperativeDeviceMappingController extends BaseAdminController
 {
+    public $group = 'Operation Note';
+
     /**
      * To list the operative devices per site per subspeciality
      */

@@ -21,6 +21,7 @@
  */
 class InternalReferralSettingsController extends ModuleAdminController
 {
+    public $group = 'Correspondence';
 
     public function actionSettings()
     {

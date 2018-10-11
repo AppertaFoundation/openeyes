@@ -26,6 +26,8 @@ class OperativeDeviceController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Operation Note';
+
     /**
      * Lists operative devices.
      *
