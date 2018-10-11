@@ -253,6 +253,10 @@
     var right = (w - btnPos.right);
     var bottom = (h - btnPos.bottom);
 
+	if(h - bottom < 240){
+		bottom = h - 245;
+	}
+	
     // set CSS Fixed position
     this.popup.css({
       bottom: bottom,
