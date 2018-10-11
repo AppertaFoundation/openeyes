@@ -30,13 +30,13 @@
     if ($this->checkAccess('OprnCreateEvent', $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) {
         ?>
 			<li>
-				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
+				<?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
 			</li>
 		<?php 
     } else {
         ?>
 			<li id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add '.$eventType->name ?>">
-				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', '#')?>
+				<?=\CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>', '#')?>
 			</li>
 		<?php 
     }

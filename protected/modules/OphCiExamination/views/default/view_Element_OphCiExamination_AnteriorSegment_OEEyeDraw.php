@@ -50,7 +50,7 @@
 
     <?php if ($description = $element->{$side . '_description'}): ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_description') ?>:</div>
-      <div class="data-value"><?php echo CHtml::encode($description) ?></div>
+      <div class="data-value"><?=\CHtml::encode($description) ?></div>
     <?php endif; ?>
 
     <?php /* See OE-4283 */ ?>

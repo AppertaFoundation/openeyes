@@ -41,7 +41,7 @@
             <tr>
                 <td>Name</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'name',
                         [
@@ -55,7 +55,7 @@
             <tr>
                 <td>Description</td>
                 <td>
-                    <?php echo CHtml::activeTextArea(
+                    <?=\CHtml::activeTextArea(
                         $definition,
                         'description',
                         [
@@ -78,7 +78,7 @@
             <tr>
                 <td>Start time</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'start_time',
                         [
@@ -91,7 +91,7 @@
             </tr><tr>
                 <td>End time</td>
                 <td>
-                    <?php echo CHtml::activeTextField(
+                    <?=\CHtml::activeTextField(
                         $definition,
                         'end_time',
                         [
@@ -109,21 +109,19 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'button large primary event-action',
+                            'class' => 'button large',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Cancel',
                         [
                             'data-uri' => '/worklistAdmin/definitions',
-                            'class' => 'warning button large primary event-action',
-                            'type' => 'submit',
+                            'class' => 'button large',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

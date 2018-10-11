@@ -26,7 +26,7 @@
     <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-title">
-            <?php echo CHtml::encode($element->getAttributeLabel('protocol_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('protocol_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -36,7 +36,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('device_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('device_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -46,7 +46,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('epithelial_status_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('epithelial_status_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -58,7 +58,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -70,7 +70,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_diameter_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('epithelial_removal_diameter_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -80,7 +80,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('mitomycin_c')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('mitomycin_c')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -92,7 +92,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('iontophoresis_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -104,7 +104,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_current_value')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('iontophoresis_current_value')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -116,7 +116,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_duration_value')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('iontophoresis_duration_value')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -131,7 +131,7 @@
     <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -143,7 +143,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('interval_between_drops_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('interval_between_drops_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -153,7 +153,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('soak_duration_range_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('soak_duration_range_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -163,7 +163,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('uv_irradiance_range_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('uv_irradiance_range_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -175,7 +175,7 @@
     <div class="data-group">
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('total_exposure_time_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('total_exposure_time_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -185,7 +185,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('uv_total_energy_value')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('uv_total_energy_value')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -197,7 +197,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('uv_pulse_duration_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('uv_pulse_duration_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -207,7 +207,7 @@
       </div>
       <div class="cols-3 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('interpulse_duration_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('interpulse_duration_id')) ?>:
         </h4>
         <div class="data-value">
             <?php
@@ -223,7 +223,7 @@
     </div>
     <div class="cols-9 column">
         <h4 class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('cxl_comments')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('cxl_comments')) ?>:
         </h4>
         <div class="data-value">
             <?php

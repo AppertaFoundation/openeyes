@@ -21,36 +21,36 @@
 <table class="subtleWhite normalText">
 	<tbody>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('target_iop'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('target_iop'))?></td>
 			<td><span class="big"><?php echo $element->target_iop?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></td>
 			<td><span class="big"><?php echo $element->clinic_interval ? $element->clinic_interval->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('photo_id'))?></td>
 			<td><span class="big"><?php echo $element->photo ? $element->photo->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('oct_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('oct_id'))?></td>
 			<td><span class="big"><?php echo $element->oct ? $element->oct->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('hfa_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('hfa_id'))?></td>
 			<td><span class="big"><?php echo $element->hfa ? $element->hfa->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('gonio_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('gonio_id'))?></td>
 			<td><span class="big"><?php echo $element->gonio ? $element->gonio->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('hrt_id'))?></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('hrt_id'))?></td>
 			<td><span class="big"><?php echo $element->hrt ? $element->hrt->name : 'None'?></span></td>
 		</tr>
 		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></td>
-			<td><span class="big"><?php echo CHtml::encode($element->comments)?></span></td>
+			<td width="30%"><?=\CHtml::encode($element->getAttributeLabel('comments'))?></td>
+			<td><span class="big"><?=\CHtml::encode($element->comments)?></span></td>
 		</tr>
 	</tbody>
 </table>

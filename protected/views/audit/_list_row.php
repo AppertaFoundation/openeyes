@@ -41,14 +41,14 @@
 	</td>
 	<td>
 		<?php if ($log->patient) {?>
-			<?php echo CHtml::link($log->patient->displayName, array('patient/view/'.$log->patient_id))?>
+			<?=\CHtml::link($log->patient->displayName, array('patient/view/'.$log->patient_id))?>
 		<?php } else {?>
 			-
 		<?php }?>
 	</td>
 	<td>
 		<?php if ($log->episode) {?>
-			<?php echo CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
+			<?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
 		<?php } else {?>
 			-
 		<?php }?>

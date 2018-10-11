@@ -142,7 +142,7 @@
                     <?php if (Yii::app()->params['ophtroperationbooking_referral_link']) { ?>
                         <tr>
                             <td>
-                                <?php echo CHtml::label($operation->getAttributeLabel('referral_id') . ':',
+                                <?=\CHtml::label($operation->getAttributeLabel('referral_id') . ':',
                                     'referral_id'); ?>
                             </td>
                             <td>

@@ -27,7 +27,7 @@
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php if ($definition->displayed_mappings) {?>
         <h3>Displayed Mapping Items</h3>
-        <table class="generic-admin grid">
+        <table class="generic-admin standard">
             <thead>
             <tr>
                 <th>Order</th>
@@ -76,7 +76,7 @@
 }
         if ($definition->hidden_mappings) {?>
             <h2>Hidden Mapping Items</h2>
-            <table class="generic-admin grid">
+            <table class="generic-admin standard">
                 <thead>
                 <tr>
                     <th>Order</th>

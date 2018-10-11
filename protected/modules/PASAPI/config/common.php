@@ -45,11 +45,10 @@ return array(
         ),
     ),
 
+    'modules' => ['PASAPIAdmin'],
+
 
     'params' => array(
-        'admin_menu' => array(
-            'Value Remaps' => '/PASAPI/admin/viewXpathRemaps',
-        ),
 
         'pasapi' => array(
             'enabled' => false,

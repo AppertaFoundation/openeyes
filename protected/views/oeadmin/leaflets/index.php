@@ -59,22 +59,21 @@ $form = $this->beginWidget(
             <tfoot>
             <tr>
                 <td colspan="6">
-                    <?php echo CHtml::htmlButton(
+                    <?=\CHtml::htmlButton(
                         'Add',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-add',
                             'type' => 'button',
                             'data-model' => 'OphTrConsent_Leaflet',
                             'id' => 'et_admin-add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Save',
                         [
-                            'class' => 'small primary button',
+                            'class' => 'button large',
                             'name' => 'admin-save',
-                            'type' => 'submit',
                             'id' => 'et_admin-save'
                         ]
                     ); ?>

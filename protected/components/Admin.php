@@ -40,6 +40,11 @@ class Admin
     /**
      * @var string
      */
+    public $div_wrapper_class = 'cols-full';
+
+    /**
+     * @var string
+     */
     protected $listTemplate = '//admin/generic/list';
 
     /**

@@ -46,7 +46,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>
                                 :
                             </div>
                         </td>
@@ -57,7 +57,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('length')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('length')) ?>
                                 :
                             </div>
                         </td>
@@ -68,7 +68,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('meridian')) ?>
                                 :
                             </div>
                         </td>
@@ -79,7 +79,7 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('incision_type_id')) ?>
                                 :
                             </div>
                         </td>
@@ -90,18 +90,18 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('report2')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_type_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_type_id')) ?>
                                 :
                             </div>
                         </td>
@@ -114,41 +114,41 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_power')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_power')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->iol_power) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->iol_power) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div
-                                    class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction')) ?>
+                                    class="data-label"><?=\CHtml::encode($element->getAttributeLabel('predicted_refraction')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->predicted_refraction) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->predicted_refraction) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_position_id')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('iol_position_id')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->iol_position->name) ?></div>
+                            <div class="data-value"><?=\CHtml::encode($element->iol_position->name) ?></div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('phaco_cde')) ?>
                                 :
                             </div>
                         </td>
@@ -161,12 +161,12 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?php echo CHtml::encode($element->pcr_risk) ?>%</div>
+                            <div class="data-value"><?=\CHtml::encode($element->pcr_risk) ?>%</div>
                         </td>
                     </tr>
 
@@ -175,7 +175,7 @@
                         <tr>
                             <td>
                                 <div class="data-label">
-                                    <?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?>
+                                    <?=\CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?>
                                 </div>
                             </td>
                             <td>
@@ -187,7 +187,7 @@
                         <tr>
                             <td>
                                 <div class="data-label">
-                                    <?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?>
+                                    <?=\CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?>
                                 </div>
                             </td>
                             <td>
@@ -222,18 +222,18 @@
     <?php if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)): ?>
         <section class="element view tile">
             <header class="element-header">
-                <h3 class="element-title"><?php echo CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
+                <h3 class="element-title"><?=\CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
             </header>
             <div class="element-data full-width">
                 <div class="data-value">
                     <div class="tile-data-overflow">
                         <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
-                            <?php echo CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
+                            <?=\CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
                         </div>
                         <div class="data-group">
-                            <h4 class="data-label"><?php echo CHtml::encode($instructions->getAttributeLabel('comments')) ?></h4>
+                            <h4 class="data-label"><?=\CHtml::encode($instructions->getAttributeLabel('comments')) ?></h4>
                             <div class="data-value<?php if (!$instructions->comments) { ?> none<?php } ?>">
-                                <?php echo CHtml::encode($instructions->comments) ? Yii::app()->format->Ntext($instructions->comments) : 'None' ?>
+                                <?=\CHtml::encode($instructions->comments) ? Yii::app()->format->Ntext($instructions->comments) : 'None' ?>
                             </div>
                         </div>
                     </div>
@@ -286,7 +286,7 @@
                             <?php } ?>
                             </tbody>
                         </table>
-                        <?php echo CHtml::encode($element->complication_notes) ?>
+                        <?=\CHtml::encode($element->complication_notes) ?>
                     <?php } ?>
                 </div>
             </div>
