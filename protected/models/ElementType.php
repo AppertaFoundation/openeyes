@@ -24,10 +24,12 @@
  * @property int $id
  * @property string $name
  * @property string $class_name
+ * @property int $parent_element_type_id
+ * @property int $tile_size
  *
  * The followings are the available model relations:
  * @property ElementType $parent_element_type
- * @property ElementGroup[] $elementGroups
+ * @property ElementType[] $child_element_types
  * @property EventType $event_type
  */
 class ElementType extends BaseActiveRecordVersioned
@@ -62,7 +64,7 @@ class ElementType extends BaseActiveRecordVersioned
             array('name, class_name', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, class_name', 'safe', 'on' => 'search'),
+            array('id, name, class_name, parent_element_type_id, tile_size', 'safe', 'on' => 'search'),
         );
     }
 
@@ -75,8 +77,11 @@ class ElementType extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'elementGroups' => array(self::BELONGS_TO, 'ElementGroup', 'element_group_id'),
+            'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
+            'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id',
+                'alias' => 'child',
+                'order' => 'child.display_order ASC'),
+            'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id')
         );
     }
 
@@ -90,6 +95,26 @@ class ElementType extends BaseActiveRecordVersioned
             'name' => 'Name',
             'class_name' => 'Class Name',
         );
+    }
+
+    /**
+     * Recursively get all children of an element type.
+     *
+     * @return ElementType[]
+     */
+    public function getDescendents()
+    {
+        $element_types = array();
+        if ($child_element_types = $this->child_element_types) {
+            foreach ($child_element_types as $child_element_type) {
+                $element_types[] = $child_element_type;
+                if ($descendents = $child_element_type->getDescendents()) {
+                    $element_types = array_merge($element_types, $descendents);
+                }
+            }
+        }
+
+        return $element_types;
     }
 
     /**
@@ -114,6 +139,16 @@ class ElementType extends BaseActiveRecordVersioned
     }
 
     /**
+     * If the element type is a child, returns true.
+     *
+     * @return bool
+     */
+    public function isChild()
+    {
+        return ($this->parent_element_type_id) ? true : false;
+    }
+
+    /**
      * Generator method to return a new instance of the element type class.
      *
      * @return BaseEventTypeElement
@@ -121,5 +156,19 @@ class ElementType extends BaseActiveRecordVersioned
     public function getInstance()
     {
         return new $this->class_name();
+    }
+
+    /**
+     * Returns a fully qualified name for the element type by prefixing with the
+     * parent element type name if it has one.
+     *
+     * @return string
+     */
+    public function getNameWithParent()
+    {
+        if (!$this->isChild()) {
+            return $this->name;
+        }
+        return $this->parent_element_type->name . ' - ' . $this->name;
     }
 }

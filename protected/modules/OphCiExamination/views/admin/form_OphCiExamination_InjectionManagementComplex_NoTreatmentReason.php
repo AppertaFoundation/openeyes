@@ -16,10 +16,39 @@
  */
 ?>
 
-<h2><?php echo $model->isNewRecord ? 'Create' : 'Edit'; ?> No Treatment Reason</h2>
+<div class="row divider">
+    <h2><?php echo $model->isNewRecord ? 'Create' : 'Edit'; ?> No Treatment Reason</h2>
+</div>
 
 <?php echo $form->errorSummary($model); ?>
 
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
-
-<?php echo $form->textField($model, 'letter_str', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+<table class="standard cols-full">
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td >
+            <?=\CHtml::activeTextField(
+                $model,
+                'name',
+                [
+                    'class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                ]
+            ); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>Correspondence</td>
+        <td>
+            <?=\CHtml::activeTextField(
+                $model,
+                'letter_str',
+                [
+                    'class' => 'cols-full',
+                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                ]
+            ); ?>
+        </td>
+    </tr>
+    </tbody>
+</table>

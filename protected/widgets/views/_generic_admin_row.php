@@ -69,7 +69,7 @@ if (@$disabled) {
 	</td>
 	<?php if ($model::model()->hasAttribute('default')) {?>
 		<td>
-			<?php echo CHtml::radioButton('default', $row->default, array('value' => $i))?>
+			<?=\CHtml::radioButton('default', $row->default, array('value' => $i))?>
 		</td>
 	<?php }?>
 </tr>

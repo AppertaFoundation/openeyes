@@ -26,22 +26,12 @@ $(document).ready(function () {
   var $hotlistNavButton = $('#js-nav-hotlist-btn');
   if ($patientTicketingPopup.length > 0) {
     // ... then set it up to use the hotlist nav button
-    var vc_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $patientTicketingPopup);
+    var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
-    checkBrowserSize();
-    $(window).resize(checkBrowserSize);
-
-    function checkBrowserSize() {
-      if ($(window).width() > 1800) { // min width for ticketing panel
-        vc_nav.fixed(true);
-      } else {
-        vc_nav.fixed(false);
-      }
-    }
+    $('#js-hotlist-panel').hide();
   } else {
     // .. otherwise set up the hotlist
-    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel'));
-    var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
+    var hotlist = new OpenEyes.UI.NavBtnSidebar.HotList();
   }
 
 	// override the behaviour for showing search results

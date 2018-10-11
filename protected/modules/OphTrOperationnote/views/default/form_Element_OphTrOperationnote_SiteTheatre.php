@@ -96,7 +96,7 @@
       onReturn: function (adderDialog, selectedItems) {
         for (i in selectedItems) {
           var id = selectedItems[i]['id'];
-          var $selector = $('#<?=CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
+          var $selector = $('#<?=\CHtml::modelName($element)?>_'+selectedItems[i]['itemSet'].options['id']);
           $selector.val(id);
           $selector.trigger('change');
         }

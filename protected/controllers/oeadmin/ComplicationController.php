@@ -32,6 +32,8 @@ class ComplicationController extends BaseAdminController
     public $itemsPerPage = 100;
     public $items_per_page = 100;
 
+    public $group = 'Procedure Management';
+
     /**
      * Lists procedures.
      *

@@ -10,6 +10,8 @@
   function AdderDialog(options) {
 
     this.searchRequest = null;
+    this.isOpen = false;
+    this.blackoutDiv = null;
 
     EventEmitter.call(this);
     this.options = $.extend(true, {}, AdderDialog._defaultOptions, options);
@@ -31,6 +33,7 @@
    * @property {string} [id=null] - The ID of the popup div
    * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
    * @property {string} [liClass='auto-width'] - The class to use for the items
+   * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
    * @private
    */
   AdderDialog._defaultOptions = {
@@ -47,6 +50,7 @@
     liClass: 'auto-width',
     searchOptions: null,
     width: null,
+    createBlackoutDiv: true,
   };
 
   /**
@@ -157,7 +161,7 @@
 
       dialog.searchWrapper.hide();
       dialog.selectWrapper.show();
-      dialog.selectWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
 
     $searchButton.click(function () {
@@ -166,7 +170,7 @@
 
       dialog.searchWrapper.show();
       dialog.selectWrapper.hide();
-      dialog.searchWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
   };
 
@@ -249,6 +253,10 @@
     var right = (w - btnPos.right);
     var bottom = (h - btnPos.bottom);
 
+	if(h - bottom < 240){
+		bottom = h - 245;
+	}
+	
     // set CSS Fixed position
     this.popup.css({
       bottom: bottom,
@@ -275,6 +283,7 @@
    * @name OpenEyes.UI.AdderDialog#open
    */
   AdderDialog.prototype.open = function () {
+    this.isOpen = true;
     this.popup.show();
     var lists = this.popup.find('ul');
     $(lists).each(function () {
@@ -284,6 +293,10 @@
       }
     });
 
+    this.positionFixedPopup(this.options.openButton);
+    if (this.options.createBlackoutDiv) {
+      this.createBlackoutBox();
+    }
     this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
@@ -295,7 +308,13 @@
    * @name OpenEyes.UI.AdderDialog#close
    */
   AdderDialog.prototype.close = function () {
+    this.isOpen = false;
     this.popup.hide();
+
+    if (this.blackoutDiv) {
+      this.blackoutDiv.remove();
+      this.blackoutDiv = null;
+    }
 
     if (this.options.onClose) {
       this.popup.onClose();
@@ -321,6 +340,7 @@
     var dialog = this;
     openButton.click(function () {
       dialog.open();
+      return false;
     });
   };
 
@@ -402,6 +422,23 @@
           .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
         dialog.searchResultList.append(item);
       });
+    });
+  };
+
+  /**
+   * Creates a "blackout div", a mask behind the popup that will close teh dialog if the user clicks anywhere else on the screen
+   */
+  AdderDialog.prototype.createBlackoutBox = function () {
+    var dialog = this;
+
+    this.blackoutDiv = $('<div />', {
+      id: 'blackout-div',
+      style: 'height: 100%; width: 100%; position: absolute;'
+    }).appendTo($('body'));
+
+    this.blackoutDiv.css('z-index', this.popup.css('z-index') - 1);
+    this.blackoutDiv.on('click', function () {
+      dialog.close();
     });
   };
 
