@@ -49,7 +49,7 @@
 					<tr class="status <?php echo $operation->transportColour?>">
 						<td><?php echo $operation->event->episode->patient->hos_num?></td>
 						<td class="patient">
-							<?php echo CHtml::link('<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.$operation->event->episode->patient->first_name, Yii::app()->createUrl('OphTrOperationbooking/default/view/'.$operation->event_id))?>
+							<?=\CHtml::link('<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.$operation->event->episode->patient->first_name, Yii::app()->createUrl('OphTrOperationbooking/default/view/'.$operation->event_id))?>
 						</td>
 						<td><?php echo date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
 						<td><?php echo $operation->latestBooking->session_start_time?></td>

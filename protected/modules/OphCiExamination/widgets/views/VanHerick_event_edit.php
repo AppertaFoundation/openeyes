@@ -43,7 +43,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><?php echo CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
+                    <td><?=\CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
                 </tr>
                 </tbody>
             </table>
@@ -88,10 +88,10 @@
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
 
                 <div class="van_herick field-row">
-                    <label for="<?php echo CHtml::modelName($element).'_right_van_herick_id';?>">
+                    <label for="<?=\CHtml::modelName($element).'_right_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('right_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
-                         <?php echo CHtml::activeDropDownList($element, 'right_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
+                        (<?=\CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                         <?=\CHtml::activeDropDownList($element, 'right_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
                 </div>
             </div>
@@ -108,10 +108,10 @@
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
                 <div class="van_herick field-row">
-                    <label for="<?php echo CHtml::modelName($element).'_left_van_herick_id';?>">
+                    <label for="<?=\CHtml::modelName($element).'_left_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('left_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
-                        <?php echo CHtml::activeDropDownList($element, 'left_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
+                        (<?=\CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                        <?=\CHtml::activeDropDownList($element, 'left_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
                 </div>
             </div>

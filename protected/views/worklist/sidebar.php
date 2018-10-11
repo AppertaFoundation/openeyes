@@ -34,7 +34,7 @@
                     <?php if ($requestUri == $uri) {?>
                         <span class="viewing"><?php echo $title?></span>
                     <?php } else {?>
-                        <?php echo CHtml::link($title, array($uri))?>
+                        <?=\CHtml::link($title, array($uri))?>
                     <?php }?>
                 </li>
             <?php }?>

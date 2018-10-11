@@ -152,7 +152,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->dose = $item->dose;
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
-        $this->start_date = $item->prescription->event->event_date;
+        $this->start_date = date('Y-m-d',strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
             $end_date = $item->stopDateFromDuration();
 

@@ -33,7 +33,7 @@
 
             <?php echo $content;?>
             <div class="sub-elements">
-                <?php $this->renderOpenElements($element, 'print', @$form, @$data)?>
+                <?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
             </div>
         </div>
     </section>
@@ -41,7 +41,7 @@
     <section class="element-no-display">
         <?php echo $content;?>
         <div class="sub-elements">
-            <?php $this->renderOpenElements($element, 'print', @$form, @$data)?>
+            <?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
         </div>
     </section>
 <?php } ?>

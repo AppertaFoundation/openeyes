@@ -32,11 +32,15 @@
           </tr>
           </thead>
           <tbody>
-          <?php foreach ($element->items as $key => $item) {
-              $additional_class = $this->patient->hasDrugAllergy($item->drug_id) ? ' allergyWarning' : '';
-              ?>
-            <tr class="prescription-item<?= $additional_class ?>">
-              <td class="priority-text"><?php echo $item->drug->tallmanlabel; ?></td>
+          <?php foreach ($element->items as $key => $item) { ?>
+            <tr class="prescription-item">
+              <td class="priority-text">
+                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->drug_id)): ?>
+                      <i class="oe-i warning small pad js-has-tooltip"
+                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->drug_id))?>">
+                      </i>
+                  <?php endif; ?>
+                  <?php echo $item->drug->tallmanlabel; ?></td>
               <td><?php echo $item->dose ?></td>
               <td><?php echo $item->route->name ?>
                   <?php if ($item->route_option) {
@@ -48,7 +52,7 @@
               <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
                 <td class="prescription-label">
                     <?php if(!is_null($item->comments)): ?>
-                        <i><?php echo CHtml::encode($item->comments); ?></i>
+                        <i><?=\CHtml::encode($item->comments); ?></i>
                     <?php endif; ?>
                 </td>
             </tr>

@@ -19,55 +19,77 @@
  */
 ?>
 
-<?php echo CHtml::errorSummary(array_merge(array($model), $model->entries), null, null, array("class"=>"alert-box alert with-icon")); ?>
+<?=\CHtml::errorSummary(
+    array_merge(array($model), $model->entries),
+    null,
+    null,
+    array("class" => "alert-box alert with-icon")
+); ?>
 
-<?php
-    echo $form->textField($model, "name");
-    echo "<br>";
-?>
+<div class="cols-5">
 
-<?php
-$this->widget('application.widgets.SubspecialtyFirmPicker', [
-    'model' => $model
-]);
-?>
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
+
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?=\CHtml::activeTelField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <?php
+        $this->widget('application.widgets.SubspecialtyFirmPicker', [
+            'model' => $model
+        ]);
+        ?>
+        </tbody>
+    </table>
+
     <?php
-    echo "<br>";
-
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
     }, 'name');
-?>
+    ?>
 
-<div id="risks" class="field-row">
+    <div id="risks" class="field-row">
         <?php
         $columns = array(
             array(
                 'header' => 'Operation',
                 'name' => 'Operation',
                 'type' => 'raw',
-                'value' => function($data, $row) {
+                'value' => function ($data, $row) {
                     return
-                        '<div>'.
+                        '<div>' .
                         CHtml::dropDownList(null, '',
                             CHtml::listData(CommonPreviousOperation::model()->findAll(
-                            array('order' => 'display_order asc')), 'id', 'name'),
+                                array('order' => 'display_order asc')), 'id', 'name'),
                             array('empty' => '- Select -', 'class' => 'common_prev_op_select')) . '<br />' .
                         CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][operation]", $data->operation, array(
                             'placeholder' => 'Select from above or type',
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'class' => 'common-operation',
-                        )).
-                        '</div>'
-                        ;
+                        )) .
+                        '</div>';
                 }
             ),
             array(
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($gender_options){
+                'value' => function ($data, $row) use ($gender_options) {
                     echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
                 }
             ),
@@ -75,22 +97,22 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => '',
                 'type' => 'raw',
-                'value' => function($data, $row){
+                'value' => function ($data, $row) {
                     return CHtml::link('remove', '#', array('class' => 'remove_shs_entry'));
                 }
             ),
@@ -100,48 +122,78 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
         $dataProvider->setData($model->entries);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
-            'itemsCssClass' => 'generic-admin grid',
+            'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
         ));
         ?>
-        <button id="add_new_entry" type="button" class="small primary right">Add</button>
+    </div>
 
+    <?=\CHtml::button(
+        'Add Entry',
+        [
+            'class' => 'button large',
+            'type' => 'button',
+            'id' => 'add_new_entry'
+        ]
+    ); ?>
+
+    <?=\CHtml::submitButton(
+        'Save',
+        [
+            'class' => 'button large',
+            'name' => 'save',
+            'id' => 'et_save'
+        ]
+    ); ?>
+
+    <?=\CHtml::button(
+        'Cancel',
+        [
+            'class' => 'button large',
+            'type' => 'button',
+            'name' => 'cancel',
+            'id' => 'et_cancel'
+        ]
+    ); ?>
 </div>
-
 
 <script type="text/template" id="new_risk_entry" class="hidden">
     <tr data-row="{{row}}">
         <td>
             <div>
-            <?php
-                echo  CHtml::dropDownList(null, '',
+                <?php
+                echo CHtml::dropDownList(null, '',
                         CHtml::listData(CommonPreviousOperation::model()->findAll(
-                                array('order' => 'display_order asc')), 'id', 'name'),
+                            array('order' => 'display_order asc')), 'id', 'name'),
                         array('empty' => '- Select -', 'class' => 'common_prev_op_select')) . '<br />' .
                     CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][operation]", '', array(
                         'placeholder' => 'Select from above or type',
                         'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'class' => 'common-operation',
                     ));
-            ?>
+                ?>
             </div>
         </td>
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
             ?>
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_SurgicalHistorySetEntry_{{row}}_age_min">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][age_min]"
+                   id="OEModule_OphCiExamination_models_SurgicalHistorySetEntry_{{row}}_age_min">
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_SurgicalHistorySetEntry_{{row}}_age_max">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][age_max]"
+                   id="OEModule_OphCiExamination_models_SurgicalHistorySetEntry_{{row}}_age_max">
         </td>
         <td>
             <a href="javascript:void(0)" class="remove_shs_entry">remove</a>
@@ -151,22 +203,22 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
 
 <script type="text/javascript">
 
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         var $table = $('table.generic-admin');
 
-        $(document).on("change", ".common_prev_op_select", function(e){
+        $(document).on("change", ".common_prev_op_select", function (e) {
             var textVal = $(e.target).find("option:selected").text();
             var $textInput = $(e.target).parent('div').find('.common-operation');
             $textInput.val(textVal);
             $(e.target).val('');
         });
 
-        $('#add_new_entry').on('click',function(e){
+        $('#add_new_entry').on('click', function (e) {
             var data = {}, $row;
             $table = $('table.generic-admin');
 
-            data['row'] = OpenEyes.Util.getNextDataKey( $table.find('tbody tr'), 'row');
+            data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
             $row = Mustache.render(
                 $('#new_risk_entry').text(),
                 data
@@ -176,62 +228,20 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
 
         });
 
-        $($table).on('click','.remove_shs_entry', function(e){
+        $($table).on('click', '.remove_shs_entry', function (e) {
             $(this).closest('tr').remove();
-            if($table.find('tbody tr').length <= 1){
+            if ($table.find('tbody tr').length <= 1) {
                 $table.find('td.empty').closest('tr').show();
             }
         });
-/*
-        $('select.subspecialty').on('change', function() {
-
-            var subspecialty_id = $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_subspecialty_id').val();
-
-            if(subspecialty_id){
-                jQuery.ajax({
-                    url: baseUrl + "/OphCiExamination/oeadmin/RisksAssignment/getFirmsBySubspecialty",
-                    data: {"subspecialty_id": subspecialty_id},
-                    dataType: "json",
-                    beforeSend: function () {
-                        $('.loader').show();
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
-                    },
-                    success: function (data) {
-                        var options = [];
-
-                        //remove old options
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id option:gt(0)').remove();
-
-                        //create js array from obj to sort
-                        for (item in data) {
-                            options.push([item, data[item]]);
-                        }
-
-                        options.sort(function (a, b) {
-                            if (a[1] > b[1]) return -1;
-                            else if (a[1] < b[1]) return 1;
-                            else return 0;
-                        });
-                        options.reverse();
-
-                        //append new option to the dropdown
-                        $.each(options, function (key, value) {
-                            $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').append($("<option></option>")
-                                .attr("value", value[0]).text(value[1]));
-                        });
-
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', false).css({'background-color':'#ffffff'});
-                    },
-                    complete: function () {
-                        $('.loader').hide();
-                    }
-                });
-            } else {
-                $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
-            }
-        });
-*/
-
     });
 
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#et_cancel').click(function () {
+            window.location.href = '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/';
+        });
+    });
 </script>

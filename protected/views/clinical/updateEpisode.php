@@ -86,7 +86,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           <legend class="data-title">Principal eye:</legend>
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) { ?>
               <label class="inline">
-                  <?php echo CHtml::radioButton('eye_id', ($eye->id == $eye_id),
+                  <?=\CHtml::radioButton('eye_id', ($eye->id == $eye_id),
                       array('value' => $eye->id, 'class' => 'episodeSummaryRadio')) ?>
                   <?php echo $eye->name ?>
               </label>
@@ -163,8 +163,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     </header>
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
-        <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
-            <?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
+        <label for="episode_status_id"><?=\CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
+            <?=\CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
                 EpisodeStatus::Model()->getList()) ?>
       </div>
     </div>

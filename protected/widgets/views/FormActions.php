@@ -17,26 +17,35 @@
  */
 ?>
 <div class="data-group">
-	<div class="cols-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-		<?php echo EventAction::button($buttonOptions['submit'], 'save', array(), array('class' => 'button small'))->toHtml()?>
-		<?php if ($buttonOptions['cancel']) {
-    $cancelHtmlOptions = array('class' => 'warning button small');
-    if (@$buttonOptions['cancel-uri']) {
-        $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
-    }
-    echo EventAction::button($buttonOptions['cancel'], 'cancel', array(), $cancelHtmlOptions)->toHtml();
-}?>
-		<?php if ($buttonOptions['delete']) {
-    echo EventAction::button($buttonOptions['delete'], 'delete', array(), array('class' => 'warning button small'))->toHtml();
-}?>
+    <div class="cols-<?php echo 12 - $layoutColumns['label']; ?> large-offset-<?php echo $layoutColumns['label']; ?> column">
+        <?= \CHtml::htmlButton($buttonOptions['submit'], ['name' => 'save', 'class' => 'button large', 'type' => 'submit', 'id' => 'et_save']); ?>
+        <?php if ($buttonOptions['cancel']) {
+            $cancelHtmlOptions = array('class' => 'button large');
+            if (@$buttonOptions['cancel-uri']) {
+                $cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
+            }
+            echo CHtml::submitButton(
+                $buttonOptions['cancel'],
+                [
+                    'data-uri' => isset($buttonOptions['cancel-uri']) ? $buttonOptions['cancel-uri'] : '',
+                    'class' => 'button large',
+                    'name' => 'cancel',
+                    'id' => 'et_cancel',
+                ]
+            );
+        } ?>
+        <?php if ($buttonOptions['delete']) {
+            echo CHtml::htmlButton($buttonOptions['delete'], ['name' => 'delete', 'class' => 'button large', 'id' => 'et_delete']);
+        } ?>
         <?php
-        if(isset($buttonOptions['add-snippet'])){
+        if (isset($buttonOptions['add-snippet'])) {
 
             // GenericAdmin and FormActions is so great that I cannot add extra buttons dynamically.... so let's just hardcode here
             //@TODO: get rid of the GenericAdmin (+FormActions) to not to risk devs mental health
 
-            echo EventAction::link('Add Snippet', $buttonOptions['add-snippet'], array(), array('type' => 'button', 'class' => 'button small'))->toHtml();
-         } ?>
-		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-	</div>
+            echo EventAction::link('Add Snippet', $buttonOptions['add-snippet'], array(), array('type' => 'button', 'class' => 'button large'))->toHtml();
+        } ?>
+        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+             alt="loading..." style="display: none;"/>
+    </div>
 </div>

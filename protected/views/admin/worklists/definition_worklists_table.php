@@ -17,7 +17,7 @@
  ?>
 
 <?php if ($definition->worklists) { ?>
-    <table class="generic-admin grid">
+    <table class="generic-admin standard">
         <thead>
         <tr>
             <th>Date</th>

@@ -14,10 +14,12 @@
  */
 ?>
 
-<div class="row divider">
-    <h2>Edit setting</h2>
-</div>
-<div class="cols-full">
+
+<div class="cols-7">
+
+    <div class="row divider">
+        <h2>Edit setting</h2>
+    </div>
 
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -64,19 +66,17 @@
         <tr>
             <td colspan="2">
                 <?php if ($metadata->key != 'city_road_satellite_view') : ?>
-                    <?= CHtml::htmlButton('Save', [
-                            'class' => 'button small',
+                    <?= CHtml::submitButton('Save', [
+                            'class' => 'button large',
                             'name' => 'save',
-                            'type' => 'submit',
                             'id' => 'et_save'
                         ]
                     );
                     ?>
 
-                    <?= CHtml::htmlButton('Cancel', [
-                            'class' => 'button small',
+                    <?= CHtml::submitButton('Cancel', [
+                            'class' => 'button large',
                             'name' => 'cancel',
-                            'type' => 'submit',
                             'id' => 'et_cancel'
                         ]
                     );

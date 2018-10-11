@@ -16,96 +16,108 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<table class="row standard">
+    <colgroup>
+        <col class="cols-1">
+        <col class="cols-2">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td><?=$model->getAttributeLabel('name')?></td>
+            <td><?=\CHtml::activeTextField($model, 'name', [
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'class' => 'cols-full'
+                    ])?></td>
+        </tr>
+        <tr>
+            <td><?=$model->getAttributeLabel('summary')?></td>
+            <td><?=\CHtml::activeTextArea($model, 'summary', [
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'maxlength' => 40,
+                    'class' => 'cols-full',
+                    ])?></td>
+        </tr>
+    </tbody>
+</table>
 
-<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 40))?>
-<?php	echo $form->textArea($model, 'summary', array(), false, array(), array('field' => 10))?>
-
-<?php	if ($model->files) {?>
-	<div class="data-group">
-		<div class="cols-<?php echo $form->columns('label');?>">
-			<div class="field-label">
-				Uploaded files:
-			</div>
-		</div>
-		<div class="cols-<?php echo $form->columns('field');?>">
-			<div class="field-value">
-				<a href="<?php echo Yii::app()->createUrl('/OphCoTherapyapplication/Default/downloadFileCollection', array('id' => $model->id)) ?>">Download zip</a>
-			</div>
-			<ul id="currentFiles" class="current-files">
-				<?php foreach ($model->files as $file) { ?>
-					<li data-file-id="<?php echo $file->id ?>">
-						<a href="<?php echo $file->getDownloadURL() ?>"><?php echo $file->name ?></a> | <a href="#" class="removeFile">delete</a>
-					</li>
-				<?php } ?>
-			</ul>
-		</div>
-	</div>
-<?php }?>
-
-<?php
-/**
- * utility function that should probably sit somewhere else, but is only for this template at the moment
- * calculates the byte size of the passed in value.
- *
- * @param $size_str
- *
- * @return int
- */
-function return_bytes($size_str)
-{
-    switch (substr($size_str, -1)) {
-        case 'M': case 'm': return (int) $size_str * 1048576;
-        case 'K': case 'k': return (int) $size_str * 1024;
-        case 'G': case 'g': return (int) $size_str * 1073741824;
-        default: return $size_str;
-    }
-}
-?>
-
-
-<div id="div_OphCoTherapyapplication_FileCollection_file" class="data-group">
-	<div class="cols-<?php echo $form->columns('label');?>">
-		<label for="OphCoTherapyapplication_FileCollection_files">File(s):</label>
-	</div>
-	<div class="cols-<?php echo $form->columns('field');?>">
-		<div class="data-group">
-			<input
-				type="file"
-				id="OphCoTherapyapplication_FileCollection_files"
-				class="OphCoTherapyapplication_FileCollection_file"
-				name="OphCoTherapyapplication_FileCollection_files[]"
-			  multiple="multiple"
-			  data-count-limit="<?php echo return_bytes(ini_get('max_file_uploads')); ?>"
-				data-max-filesize="<?php echo return_bytes(ini_get('upload_max_filesize')); ?>"
-				data-total-max-size="<?php echo return_bytes(ini_get('post_max_size')); ?>" />
-			<!--
-			if non-html5 browser being used, this could be reinstated to add multiple files
-			<button class="addFile classy green mini" type="button">
-				<span class="button-span button-span-green">Add File</span>
-			</button>
-			-->
-		</div>
-		<div class="field-info">
-			Maximum file size is <?php echo ini_get('upload_max_filesize'); ?><br />
-			Maximum number of files is <?php echo ini_get('max_file_uploads'); ?><br />
-			Maximum total upload size is <?php echo ini_get('post_max_size'); ?>
-		</div>
-	</div>
+<?php if ($model->files) : ?>
+<div class="row divider">
+    <h4>Uploaded files:</h4>
 </div>
 
+    <div class="cols-cols-full">
+        <table class="row standard">
+            <colgroup>
+                <col class="cols-6">
+                <col class="cols-6">
+            </colgroup>
+            <tbody>
+             <?php foreach ($model->files as $file) : ?>
+                <tr>
+                    <td><?php echo $file->name ?></td>
+                    <td>
+                        <a href="<?php echo $file->getDownloadURL() ?>">download</a> | <a class="removeFile">delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td>
+                    <a href="<?=Yii::app()->createUrl(
+                            '/OphCoTherapyapplication/Default/downloadFileCollection',
+                            ['id' => $model->id]) ?>"
+                       class="button small"
+                    >Download zip file
+                    </a>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+<?php endif; ?>
+<hr class="divider">
+
+<div class="row divider">
+    <h4>Add Files:</h4>
+</div>
+    <table class="standard" id="div_OphCoTherapyapplication_FileCollection_file">
+        <colgroup>
+            <col class="cols-5">
+        </colgroup>
+        <tr>
+            <td>
+                <input
+                        type="file"
+                        id="OphCoTherapyapplication_FileCollection_files"
+                        class="OphCoTherapyapplication_FileCollection_file"
+                        name="OphCoTherapyapplication_FileCollection_files[]"
+                        multiple="multiple"
+                        data-count-limit="<?=$this->returnBytes(ini_get('max_file_uploads')); ?>"
+                        data-max-filesize="<?=$this->returnBytes(ini_get('upload_max_filesize')); ?>"
+                        data-total-max-size="<?=$this->returnBytes(ini_get('post_max_size')); ?>"/>
+            </td>
+        </tr>
+        <tr><td><div class="alert-box info">Maximum file size is <?php echo ini_get('upload_max_filesize'); ?></div></td></tr>
+        <tr><td><div class="alert-box info">Maximum number of files is <?php echo ini_get('max_file_uploads'); ?></div></td></tr>
+        <tr><td><div class="alert-box info">Maximum total upload size is <?php echo ini_get('post_max_size'); ?></div></td></tr>
+    </table>
+
 <div id="confirm_remove_file_dialog" title="Confirm remove file" style="display: none;">
-	<div id="delete_file">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the file from the collection. The file will still be attached to any applications that have been processed.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="remove_file_id" value="" />
-			<button type="submit" class="warning btn_remove_file">Remove file</button>
-			<button type="submit" class="secondary btn_cancel_remove_file">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
+    <div id="delete_file">
+        <div class="alert-box alert with-icon">
+            <strong>WARNING: This will remove the file from the collection. The file will still be attached to any
+                applications that have been processed.</strong>
+        </div>
+        <p>
+            <strong>Are you sure you want to proceed?</strong>
+        </p>
+        <div class="buttons">
+            <input type="hidden" id="remove_file_id" value=""/>
+            <button type="submit" class="warning btn_remove_file">Remove file</button>
+            <button type="submit" class="secondary btn_cancel_remove_file">Cancel</button>
+            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+                 alt="loading..." style="display: none;"/>
+        </div>
+    </div>
 </div>

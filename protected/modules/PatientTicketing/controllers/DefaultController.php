@@ -687,7 +687,7 @@ class DefaultController extends \BaseModuleController
         }
 
         echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-11', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
     }
 
     public function actionUndoLastStep($id)

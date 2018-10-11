@@ -451,7 +451,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             $have_further_findings = false;
 
-            foreach ($controller->getElements() as $element) {
+            foreach ($controller->getChildElements($et_diagnoses) as $element) {
                 if (\CHtml::modelName($element) == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
                     $have_further_findings = true;
                 }
@@ -475,9 +475,41 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return "Eye Diagnoses";
     }
 
+    public function getDisplayOrder($action)
+    {
+        if ($action === 'view'){
+            return 10;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
+
+    public function getChildDIsplayOrder($action)
+    {
+        return $action === 'view' ? 25 : parent::getChildDisplayOrder($action);
+    }
+
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
+    public function getParentType($action){
+        if ($action=='view'){
+            return Element_OphCiExamination_History::class;
+        }
+        else{
+            return parent::getParentType($action);
+        }
+    }
+
+    public function isChild($action){
+        if ($action=='view'){
+            return true;
+        }
+        else{
+            return parent::isChild($action);
+        }
+    }
 }
