@@ -659,6 +659,7 @@ class AdminController extends \ModuleAdminController
                 'extra_fields' => array(
                     array('field' => 'subspecialty_id', 'type' => 'lookup', 'model' => 'Subspecialty'),
                 ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }

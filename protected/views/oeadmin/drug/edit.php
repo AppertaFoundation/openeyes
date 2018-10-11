@@ -91,23 +91,17 @@
             </td>
         </tr>
 
-<!--Allergy Warnings-->
         <tr>
             <td>Allergy Warnings</td>
             <td>
-                <?php echo $form->multiSelectList(
-                    $model,
-                    'allergies',
-                    'allergies',
-                    'id',
-                    CHtml::listData(Allergy::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
-                    null,
-                    array('empty' => '- Select -', 'label' => 'Allergies', 'nowrapper' => true, 'class' => 'cols-full')
-                ) ?>
+                <ul class="MultiSelectList multi-select-selections" id="alergy_display"></ul>
+                <div class="flex-layout flex-right">
+                    <button class="button hint green" id="add-prescription-btn" type="button"><i
+                            class="oe-i plus pro-theme"></i></button>
+                </div>
             </td>
         </tr>
 
-<!--TAGS-->
         <tr>
             <td>Tags</td>
             <td>
@@ -160,3 +154,47 @@
 
     <?php $this->endWidget() ?>
 </div>
+
+
+
+<script type="text/javascript">
+
+    /**
+     * add an allergy to the ul list
+     * @param allergy_name
+     * @param allergy_id
+     */
+    function addAllergy(allergy_name, allergy_id) {
+        console.log(allergy_id);
+        $('#alergy_display').append(
+            '<input type="hidden" name="' + '<?= CHtml::modelName($model) ?>' + '[allergies][]" value="' + allergy_id + '">' +
+            '<li><span class="text">' + allergy_name +
+            '</span><span data-text="Vitamin" class="multi-select-remove remove-one cols-full"><i class="oe-i remove-circle small"></i></span><input type="hidden" name="tags[]" value="' +
+            allergy_id + '"></li>');
+    }
+
+    $(document).ready(function () {
+        <?php $allergies = Allergy::model()->active()->findAll(array('order' => 'name')); ?>
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-prescription-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($allergy) {
+                    return [
+                        'label' => $allergy['name'],
+                        'id' => $allergy['id'] ,
+                    ];
+                }, $allergies)
+            ) ?>, {'multiSelect': true})],
+            searchOptions: {
+                searchSource: 'allergy/autocomplete',
+            },
+            onReturn: function (adderDialog, selectedItems) {
+                for (var i = 0; i < selectedItems.length; i++) {
+                    addAllergy(selectedItems[i].label, selectedItems[i].id);
+                }
+                return true;
+            }
+        });
+    })
+</script>
