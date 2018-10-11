@@ -1,4 +1,3 @@
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-Meds.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-Meds.js')?>"></script>
 
 <div id="js-hs-chart-Meds" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
@@ -10,6 +9,7 @@
   $(document).ready(function () {
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;
     var sides = ['left', 'right'];
+    var layout_meds = JSON.parse(JSON.stringify(layout_plotly));
     //plotly
     for (var side of sides){
       var data = [];
@@ -49,13 +49,12 @@
         }
       }
       data.push(text_trace);
+      layout_meds['yaxis'] = meds_yaxis;
+      layout_meds['height'] = 45*Object.keys(meds_data[side]).length+50;
+      layout_meds['showlegend'] = false;
+      layout_meds['xaxis']['showticklabels'] = false;
 
-      layout_plotly['yaxis'] = meds_yaxis;
-      layout_plotly['height'] = 45*Object.keys(meds_data[side]).length+50;
-      layout_plotly['barmode'] = 'stack';
-      layout_plotly['showlegend'] = false;
-
-      Plotly.newPlot('plotly-Meds-'+side, data, layout_plotly, options_plotly);
+      Plotly.newPlot('plotly-Meds-'+side, data, layout_meds, options_plotly);
     }
   });
 </script>

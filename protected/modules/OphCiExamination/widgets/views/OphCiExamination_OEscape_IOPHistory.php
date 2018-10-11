@@ -1,4 +1,3 @@
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-IOP.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-IOP.js')?>"></script>
 
 
@@ -8,7 +7,6 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function () {
-    var IOP_data = <?= CJavaScript::encode($this->getIOPData()); ?>;
     var IOP_target = <?= CJavaScript::encode($this->getTargetIOP()); ?>;
     var opnote_marking = <?= CJavaScript::encode($this->getOpnoteEvent()); ?>;
     var laser_marking = <?= CJavaScript::encode($this->getLaserEvent()); ?>;
@@ -21,14 +19,15 @@
       var x_data = iop_plotly_data[side]['x'].map(function (item) {
         return new Date(item);
       });
-      layout_plotly['shapes'] = [];
-      layout_plotly['annotations'] = [];
-      layout_plotly['yaxis'] = setYAxis_IOP();
+      var layout_iop = JSON.parse(JSON.stringify(layout_plotly));
+      layout_iop['shapes'] = [];
+      layout_iop['annotations'] = [];
+      layout_iop['yaxis'] = setYAxis_IOP();
 
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side, 0, 70);
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side, 0, 70);
+      setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, opnote_marking, side, 0, 70);
+      setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, laser_marking, side, 0, 70);
 
-      setYTargetLine(layout_plotly, marker_line_plotly_options, marking_annotations, IOP_target, side, x_data[0], x_data[x_data.length - 1]);
+      setYTargetLine(layout_iop, marker_line_plotly_options, marking_annotations, IOP_target, side, x_data[0], x_data[x_data.length - 1]);
       var data =[{
         name: 'IOP('+((side=='right')?'R':'L')+')',
         x: x_data,
@@ -46,7 +45,7 @@
       }];
 
       Plotly.newPlot(
-        'plotly-IOP-'+side, data, layout_plotly, options_plotly
+        'plotly-IOP-'+side, data, layout_iop, options_plotly
       );
     }
 

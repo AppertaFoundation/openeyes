@@ -13,7 +13,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-MR.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-MR.js')?>"></script>
 
@@ -66,16 +65,16 @@
 
 
     for (var side of sides){
+      var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
+      layout_MR['shapes'] = [];
+      layout_MR['annotations'] = [];
+      layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
+      layout_MR['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
+      layout_MR['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      layout_MR['xaxis']['rangeslider'] = {};
 
-      layout_plotly['shapes'] = [];
-      layout_plotly['annotations'] = [];
-      layout_plotly['yaxis'] = setYAxis_MR(va_yaxis);
-      layout_plotly['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
-      layout_plotly['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
-      layout_plotly['xaxis']['rangeslider'] = {};
-
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side);
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side);
+      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side);
+      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side);
 
       var trace1 = {
         name: 'VA('+side+')',
@@ -120,7 +119,7 @@
       }
       crt_yaxis['dtick'] = 10;
       crt_yaxis['overlaying'] = 'y';
-      layout_plotly['yaxis2'] = setYAxis_MR(crt_yaxis);
+      layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
 
 
       var j = Object.keys(injections_data[side]).length+1;
@@ -158,7 +157,7 @@
             color: (side == 'right') ? '#9fec6d' : '#fe6767',
             yaxis: 'y3',
           };
-          layout_plotly['shapes'].push(setMRFlags_options(inj_shape));
+          layout_MR['shapes'].push(setMRFlags_options(inj_shape));
         }
         j--;
       }
@@ -180,14 +179,14 @@
           color: (side == 'right') ? '#9fec6d' : '#fe6767',
           yaxis: 'y3',
         };
-        layout_plotly['shapes'].push(setMRFlags_options(line_shape));
+        layout_MR['shapes'].push(setMRFlags_options(line_shape));
       }
-      layout_plotly['yaxis3'] = setYAxis_MR(flags_yaxis);
+      layout_MR['yaxis3'] = setYAxis_MR(flags_yaxis);
 
       var data =[trace1, trace2, text];
 
       Plotly.newPlot(
-        'plotly-MR-'+side, data, layout_plotly, options_plotly
+        'plotly-MR-'+side, data, layout_MR, options_plotly
       );
 
       //Set the right image stack and mouse hover events

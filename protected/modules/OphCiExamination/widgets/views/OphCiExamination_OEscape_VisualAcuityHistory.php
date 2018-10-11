@@ -49,11 +49,11 @@
 
 
     for (var side of sides){
-
-      layout_plotly['shapes'] = [];
-      layout_plotly['annotations'] = [];
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 120);
-      setMarkingEvents_plotly(layout_plotly, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 120);
+      var layout_VA = JSON.parse(JSON.stringify(layout_plotly));
+      layout_VA['shapes'] = [];
+      layout_VA['annotations'] = [];
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 120);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 120);
 
       var data =[{
         name: 'VA('+side+')',
@@ -77,12 +77,12 @@
         tickvals: va_plotly_ticks['tick_position'],
         ticktext: va_plotly_ticks['tick_labels'],
       };
-      layout_plotly['yaxis'] = setYAxis_VA(yaxis_options);
-      layout_plotly['height'] = 800;
-      layout_plotly['xaxis']['rangeslider'] = {};
+      layout_VA['yaxis'] = setYAxis_VA(yaxis_options);
+      layout_VA['height'] = 800;
+      layout_VA['xaxis']['rangeslider'] = {};
 
       Plotly.newPlot(
-        'plotly-VA-'+side, data, layout_plotly, options_plotly
+        'plotly-VA-'+side, data, layout_VA, options_plotly
       );
     }
   });
