@@ -28,12 +28,12 @@
             ?>
 			<div class="data-group columns-<?php echo $columns;?>">
 				<div class="column">
-					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
+					<h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
 					<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
 				</div>
                 <?php if ( count($element->anaesthetic_type) > 1 || ( count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA")) ) {?>
                     <div class="column">
-                        <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
+                        <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
                         <div class="data-value <?php if (!$element->anaesthetic_delivery) {?> none<?php }?>">
                             <?php
                             $text = '';
@@ -46,11 +46,11 @@
                         </div>
                     </div>
                     <div class="column">
-						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
+						<h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
                         <div class="data-value <?php if (!$element->anaesthetist) {?> none<?php }?>"><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None'?></div>
 					</div>
 					<div class="column">
-						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
+						<h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('agents'))?></h4>
 						<div class="data-value <?php if (!$element->anaesthetic_agents) {?> none<?php }?>">
 							<?php if (!$element->anaesthetic_agents) {?>
 								None
@@ -62,7 +62,7 @@
 						</div>
 					</div>
 					<div class="column">
-						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
+						<h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('complications'))?></h4>
 						<div class="data-value">
 							<?php if (!$element->anaesthetic_complications) {?>
 								None
@@ -76,7 +76,7 @@
 				<?php }?>
 			</div>
 				<div class="cols-12 column">
-					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
+					<h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
 					<div class="data-value"><?php echo  Yii::app()->format->Ntext($element->anaesthetic_comment)?></div>
 				</div>
 		</div>

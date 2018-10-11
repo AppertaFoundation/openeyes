@@ -26,7 +26,7 @@
 ?>
 
 
-<?php echo CHtml::dropDownList('',
+<?=\CHtml::dropDownList('',
         null,
         $address_targets,
         array(
@@ -44,7 +44,7 @@
 
     echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id);
 ?>
-<?php echo CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full')); ?>
+<?=\CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full')); ?>
 <div>
     <textarea rows="4" cols="10" style="width: 100%" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
 </div>

@@ -43,7 +43,7 @@ if ($flash_message) {
             <label for="to_queue_id">To:</label>
           </div>
           <div class="cols-3 column">
-              <?php echo CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
+              <?=\CHtml::dropDownList('to_queue_id', $this->outcome_queue_id, $this->outcome_options, array(
                   'id' => 'to_queue_id-' . $this->ticket->id,
                   'empty' => ' - Please Select -',
               )); ?>

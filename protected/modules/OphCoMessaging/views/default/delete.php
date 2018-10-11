@@ -30,7 +30,7 @@ $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
         <?php $this->displayErrors(@$errors) ?>
         <div style="width:300px; margin-bottom: 0.6em;">
             <p>Reason for deletion:</p>
-            <?php echo CHtml::textArea('delete_reason', '') ?>
+            <?=\CHtml::textArea('delete_reason', '') ?>
         </div>
         <p>
             <strong>Are you sure you want to proceed?</strong>
@@ -46,7 +46,7 @@ $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
         </button>
         <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
              alt="loading..." style="display: none;"/>
-        <?php echo CHtml::endForm() ?>
+        <?=\CHtml::endForm() ?>
     </div>
 
 <?php $this->endContent() ?>

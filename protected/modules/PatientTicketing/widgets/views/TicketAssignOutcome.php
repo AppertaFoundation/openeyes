@@ -48,7 +48,7 @@
 <tr>
   <td>Clinic location:</td>
   <td>
-      <?php echo CHtml::dropDownList($this->form_name . '[clinic_location]',
+      <?=\CHtml::dropDownList($this->form_name . '[clinic_location]',
           @$this->form_data[$this->form_name]['clinic_location'],
           \CHtml::listData(OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')),
               'name', 'name'), $html_options); ?>

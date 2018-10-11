@@ -35,7 +35,7 @@
         </div>
         <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/update', array('id' => $model->id))?>" method="post">
             <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-            <?php echo CHTML::activeHiddenField($model, 'id') ?>
+            <?=\CHtml::activeHiddenField($model, 'id') ?>
             <div class="data-group">
                 <div class="cols-5 column">
                     <h2 class="secondaryPatient">Secondary</h2>
@@ -56,7 +56,7 @@
             <hr>
             <div class="data-group">
                 <div class="cols-5 column">Comment:
-                    <?php echo CHTML::activeTextArea($model, 'comment'); ?>
+                    <?=\CHtml::activeTextArea($model, 'comment'); ?>
                 </div>
             </div>
             <br>
@@ -68,13 +68,13 @@
                         Please confirm you selected the right patients. <br>
                         Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
                         <label>
-                        <?php echo CHTML::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby confirm that I selected the right patients.</label>
+                        <?=\CHtml::checkBox('PatientMergeRequest[personal_details_conflict_confirm]', false); ?> I hereby confirm that I selected the right patients.</label>
                     </div>
                 </div>
               <div class="cols-12 column text-left"></div>
             <?php endif; ?>
             <div class="cols-3 column text-right large-offset-9">
-              <?php echo CHtml::link('cancel', array('patientMergeRequest/index'), array('class' => 'button primary')); ?>
+              <?=\CHtml::link('cancel', array('patientMergeRequest/index'), array('class' => 'button primary')); ?>
               <input type="submit" value="Save" class="secondary button" id="mergeRequestUpdate">
             </div>
           </form>

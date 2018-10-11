@@ -16,10 +16,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Edit Per Op drug</h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
-	<?php
+
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2>Edit Per Op drug</h2>
+    </div>
+
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'adminform',
         'enableAjaxValidation' => false,
@@ -28,14 +33,63 @@
             'label' => 2,
             'field' => 5,
         ),
-    ))?>
-		<?php echo $form->textField($drug, 'name')?>
-		<?php echo $form->checkBox($drug, 'active')?>
-		<?php echo $form->formActions(array('cancel-uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'))?>
-	<?php $this->endWidget()?>
+    )) ?>
+
+    <table class="standard">
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td>
+                <?=\CHtml::activeTextField(
+                    $drug,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>
+                <?= CHtml::activeCheckBox(
+                    $drug,
+                    'active'
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="2">
+                <?=\CHtml::button(
+                    'Save',
+                    [
+                        'class' => 'button large',
+                        'name' => 'save',
+                        'type' => 'submit',
+                        'id' => 'et_save'
+                    ]
+                ); ?>
+                <?=\CHtml::button(
+                    'Cancel',
+                    [
+                        'data-uri' => '/OphTrOperationnote/admin/viewPostOpDrugs',
+                        'class' => 'button large',
+                        'type' => 'submit',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel',
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <?php $this->endWidget() ?>
 </div>
+
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#OphTrOperationnote_PostopDrug_name').focus();
-	});
+    $(document).ready(function () {
+        $('#OphTrOperationnote_PostopDrug_name').focus();
+    });
 </script>

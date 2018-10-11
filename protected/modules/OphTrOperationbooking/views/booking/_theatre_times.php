@@ -92,7 +92,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         <tr>
                             <td style="float:left">
                                 <span class="session-unavailable">
-                                    <?php echo CHtml::encode($selectedSession->unbookableReason($operation)) ?>
+                                    <?=\CHtml::encode($selectedSession->unbookableReason($operation)) ?>
                                 </span>
                             </td>
                         </tr>

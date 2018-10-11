@@ -128,7 +128,7 @@ $cols = array(
   <div class="cols-12 column">
     <div class="box generic">
         <?php $this->widget('zii.widgets.grid.CGridView', array(
-            'itemsCssClass' => 'grid',
+            'itemsCssClass' => 'standard',
             'dataProvider' => $dp,
             'htmlOptions' => array('id' => 'inbox-table'),
             'summaryText' => '<small> {start}-{end} of {count} </small>',

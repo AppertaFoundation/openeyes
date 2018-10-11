@@ -32,7 +32,7 @@ $key = 0;
   <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+            <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
           if ($element->unit->information) { ?>

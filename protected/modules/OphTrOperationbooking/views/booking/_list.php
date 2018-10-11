@@ -55,7 +55,7 @@ if (!$reschedule) {
                 <td><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
                 <td><?php echo "{$booking->operation->total_duration} minutes"; ?></td>
                 <td><?php echo $booking->admission_time ?></td>
-                <td><?php echo CHtml::encode($booking->operation->comments) ?></td>
+                <td><?=\CHtml::encode($booking->operation->comments) ?></td>
             </tr>
             <?php ++$counter;
         } ?>
@@ -90,7 +90,7 @@ if (!$reschedule) {
                         Ward
                     </td>
                     <td>
-                        <?php echo CHtml::dropDownList('Booking[ward_id]', @$_POST['Booking']['ward_id'], $operation->getWardOptions($session), array('class' => 'cols-full')) ?>
+                        <?=\CHtml::dropDownList('Booking[ward_id]', @$_POST['Booking']['ward_id'], $operation->getWardOptions($session), array('class' => 'cols-full')) ?>
                         <span id="Booking_ward_id_error"></span>
                     </td>
                 </tr>
@@ -101,7 +101,7 @@ if (!$reschedule) {
                     <td>
                         <input type="text" id="Booking_admission_time" name="Booking[admission_time]" class="cols-full"
                                autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-                               value="<?php echo CHtml::encode($_POST['Booking']['admission_time']) ?>" size="6"/>
+                               value="<?=\CHtml::encode($_POST['Booking']['admission_time']) ?>" size="6"/>
                         <span id="Booking_admission_time_error"></span>
                     </td>
                 </tr>
@@ -111,7 +111,7 @@ if (!$reschedule) {
                     </td>
                     <td>
                     <textarea id="Session_comments" name="Session[comments]"
-                              class="cols-full"><?php echo CHtml::encode($_POST['Session']['comments']) ?></textarea>
+                              class="cols-full"><?=\CHtml::encode($_POST['Session']['comments']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>
@@ -133,7 +133,7 @@ if (!$reschedule) {
                 <?php if ($reschedule) { ?>
                     <tr>
                         <td>
-                            <?php echo CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
+                            <?=\CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
                         </td>
                         <td>
                             <?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -141,7 +141,7 @@ if (!$reschedule) {
                             } else {
                                 $listIndex = 2;
                             } ?>
-                            <?php echo CHtml::dropDownList('cancellation_reason', '',
+                            <?=\CHtml::dropDownList('cancellation_reason', '',
                                 OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
                                 array('empty' => 'Select a reason')
                             ); ?>
@@ -149,27 +149,27 @@ if (!$reschedule) {
                     </tr>
                     <tr>
                         <td>
-                            <?php echo CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
+                            <?=\CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
                         </td>
                         <td>
-                    <textarea name="cancellation_comment" class="cols-full"><?php echo CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
+                    <textarea name="cancellation_comment" class="cols-full"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
                         </td>
                     </tr>
                 <?php } ?>
                 <tr>
                     <td>
-                        <?php echo CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
+                        <?=\CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full"><?php echo CHtml::encode($_POST['Operation']['comments']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments']) ?></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <?php echo CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
+                        <?=\CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full"><?php echo CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>

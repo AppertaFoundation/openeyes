@@ -28,6 +28,7 @@ class SnippetController extends ModuleAdminController
     {
         $this->admin = new Admin(LetterString::model(), $this);
         $this->admin->setModelDisplayName('Letter String');
+        $this->admin->div_wrapper_class = 'cols-10';
 
         return parent::beforeAction($action);
     }
@@ -70,10 +71,9 @@ class SnippetController extends ModuleAdminController
 
         $group_id = Yii::app()->request->getParam('group_id');
 
-        if(!$id && $group_id){
+        if (!$id && $group_id) {
             $this->admin->getModel()->letter_string_group_id = $group_id;
         }
-
 
         $this->admin->setEditFields(array(
             'site_id' => array(

@@ -17,9 +17,9 @@
  */
 ?>
 
-    <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
+    <?=\CHtml::activeHiddenField($document_set, 'id') ?>
+    <?=\CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
+    <?=\CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
 
 <?php $element->draft = 1; ?>
 <?php $is_mandatory = false; ?>
@@ -57,8 +57,8 @@
                 <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                     <td> 
                         <?php echo $target->ToCc; ?>
-                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
-                        <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
+                        <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][id]", $target->id); ?>
+                        <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", $target->ToCc); ?>
                     </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_name_address', array(

@@ -24,17 +24,17 @@
 
           <div class="cols-11">
             <ul id="js-listview-risks-pro" class="dot-list">
-              <li><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?>
                 : <?php echo $element->clinic_interval ?: 'None' ?></li>
-              <li><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('photo_id')) ?>
                 : <?php echo $element->photo ? $element->photo->name : 'None' ?></li>
-              <li><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('oct_id')) ?>
                 : <?php echo $element->oct ? $element->oct->name : 'None' ?></li>
               <li><?php echo $element->oct ? $element->oct->name : 'None' ?>
                 : <?php echo $element->hfa ? $element->hfa->name : 'None' ?></li>
-              <li><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('gonio_id')) ?>
                 : <?php echo $element->gonio ? $element->gonio->name : 'None' ?></li>
-              <li><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?>
+              <li><?=\CHtml::encode($element->getAttributeLabel('hrt_id')) ?>
                 : <?php echo $element->hrt ? $element->hrt->name : 'None' ?></li>
             </ul>
           </div>
@@ -44,12 +44,12 @@
             <table class="cols-full last-left">
               <thead>
               <tr>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('hfa_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('photo_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('oct_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('hfa_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('gonio_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('hrt_id')) ?></th>
               </tr>
               </thead>
               <tbody>
@@ -74,7 +74,7 @@
       </div>
       <?php if ($element->comments !== ''): ?>
         <div class="flex-layout">
-          <div class="data-label cols-1"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
+          <div class="data-label cols-1"><?=\CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
           <div class="data-value cols-11"><?php echo $element->textWithLineBreaks('comments') ?></div>
         </div>
       <?php endif; ?>
@@ -90,7 +90,7 @@
                   </colgroup>
                   <tbody>
                   <tr>
-                    <td><?php echo CHtml::encode($element->getAttributeLabel($eye_side . '_target_iop_id')) ?></td>
+                    <td><?=\CHtml::encode($element->getAttributeLabel($eye_side . '_target_iop_id')) ?></td>
                     <td><?php echo $element->{$eye_side . '_target_iop'}->name ?> mmHg</td>
                   </tr>
                   </tbody>
