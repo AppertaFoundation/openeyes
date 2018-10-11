@@ -59,4 +59,7 @@
         </tr>
         </tfoot>
     </table>
+
+    <div class="box_admin" id="step_element_types">
+    </div>
 </form>

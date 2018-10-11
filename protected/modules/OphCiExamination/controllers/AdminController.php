@@ -555,7 +555,8 @@ class AdminController extends \ModuleAdminController
 
     public function actionSaveWorkflowStepName()
     {
-        if (!$step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']))) {
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']));
+        if (!$step) {
             throw new \Exception('Unknown element set '.@$_POST['element_set_id'].' for workflow '.@$_POST['workflow_id']);
         }
 
