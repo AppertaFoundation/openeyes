@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data element-eyes">
-	<div class="element-eye right-eye column">
+	<div class="right-eye">
     <div class="data-value">
         <?php if ($element->hasRight()) { ?>
 					<?php echo $element->right_value?> &micro;m
@@ -27,7 +27,7 @@
 				<?php } ?>
 			</div>
 	</div>
-	<div class="element-eye left-eye column">
+	<div class="left-eye">
     <div class="data-value">
         <?php if ($element->hasLeft()) { ?>
 					<?php echo $element->left_value?> &micro;m

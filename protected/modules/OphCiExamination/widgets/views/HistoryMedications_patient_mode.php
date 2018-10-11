@@ -48,12 +48,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($current_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td>
-                    <?php
-                    $laterality = $entry->getLateralityDisplay();
-                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality))
-                    ?>
-                </td>
+                  <td>
+                      <i class="oe-i info small pro-theme js-has-tooltip"
+                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                      </i>
+                  </td>
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
               </tr>
             <?php endforeach; ?>
@@ -71,7 +70,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <th>Stopped</th>
               <th></th>
               <th>
-                <i class="oe-i small js-patient-expand-btn pad expand"></i>
+                <i class="oe-i small pro-theme js-patient-expand-btn pad expand"></i>
               </th>
             </tr>
             </thead>
@@ -83,7 +82,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                 <td>
                     <?php if ($entry->prescription_item): ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
-                            class="js-has-tooltip fa oe-i eye small"
+                            class="js-has-tooltip fa oe-i eye small pro-theme"
                             data-tooltip-content="View prescription"></span></a>
                     <?php endif; ?>
                 </td>
@@ -117,6 +116,11 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
                       ?>
                   </td>
+                    <td>
+                    <i class="oe-i info small pro-theme js-has-tooltip"
+                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                    </i>
+                    </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 </tr>
               <?php endforeach; ?>
@@ -126,15 +130,12 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 
             <?php if ($stopped_eye_meds): ?>
             <table>
-              <colgroup>
-                <col class="cols-7">
-              </colgroup>
               <thead>
               <tr>
                 <th>Stopped</th>
                 <th></th>
                 <th>
-                  <i class="oe-i small pad js-patient-expand-btn expand"></i>
+                  <i class="oe-i small pad pro-theme js-patient-expand-btn expand"></i>
                 </th>
               </tr>
               </thead>
@@ -142,11 +143,16 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <?php foreach ($stopped_eye_meds as $entry): ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
+                    <td>
+                        <?php $laterality = $entry->getLateralityDisplay();
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                        ?>
+                    </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                   <td>
                       <?php if ($entry->prescription_item): ?>
                         <a href="<?= $this->getPrescriptionLink($entry) ?>">
-                          <span class="js-has-tooltip fa oe-i eye small"
+                          <span class="js-has-tooltip fa oe-i eye small pro-theme"
                                 data-tooltip-content="View prescription"></span>
                         </a>
                       <?php endif; ?>

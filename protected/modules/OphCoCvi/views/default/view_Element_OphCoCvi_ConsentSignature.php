@@ -20,7 +20,7 @@
   <div class="data-value flex-layout flex-top">
       <div class="cols-11">
         <div id="js-listview-info-pro data-group" class="cols-11">
-          <ul class="dslash-list large-text">
+          <ul class="dot-list large-text">
             <li><?php echo $element->is_patient ? 'Yes' : 'No' ?></li>
             <li><?php echo CHtml::encode($element->NHSDate('signature_date')) ?></li>
           </ul>

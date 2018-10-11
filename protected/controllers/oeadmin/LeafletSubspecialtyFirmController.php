@@ -18,195 +18,149 @@
  */
 class LeafletSubspecialtyFirmController extends BaseAdminController
 {
+    public $group = 'Consent';
+
+    /**
+     * Render the view for LeafletSubspecialtyFirm controller
+     */
     public function actionList()
     {
-        $search = $this->request->getParam('search');
-        $session = new CHttpSession();
-        $session->open();
-        $firmId = $this->request->getParam('firm_id');
-        $subspecialtyId = $this->request->getParam('subspecialty_id');
-        if ($firmId > 0 &&
-            (isset($search['filterid']['subspecialty_id']['value']) && $search['filterid']['subspecialty_id']['value'] > 0)
-        ) {
-            $session['lastSubspecialtyId'] = $search['filterid']['subspecialty_id']['value'];
-            $this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][firm_id][value]='.$firmId.'&subspecialty_id='.$search['filterid']['subspecialty_id']['value']);
+        // set 'subspecialty-id' based on the default context provided
+        @$_POST['subspecialty-id'] = $this->actionGetSubspecialtyByFirm(Yii::app()->session['selected_firm_id']);
+
+        $this->render('/oeadmin/leaflet_subspecialty_firm/index', [
+            'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+        ]);
+    }
+
+    /**
+     * Create table entries from leaflets, specific to a type retrieved from GET
+     */
+    public function actionGetLeaflets()
+    {
+        $id = @$_GET['id'];
+        $type = @$_GET['type']; //firm
+        $types = @$_GET['types']; //firm
+
+        $criteria = new CDbCriteria();
+        $criteria->with = array(
+            $types => array(
+                'select' => false,
+                'joinType' => 'INNER JOIN',
+                'on' => $types . '.leaflet_id=t.id'
+            ),
+        );
+        $criteria->together = true;
+
+        $criteria->addCondition($types . '.' . $type . '_id = :query');
+        $criteria->params[':query'] = $id;
+
+        $leaflets = OphTrConsent_Leaflet::model()->findAll($criteria);
+
+        $html_tbody = '';
+        foreach ($leaflets as $key => $leaflet) {
+            $html_tbody .=
+                '<tr>
+                    <td>' . $leaflet->id . '</td>
+                    <td>' . $leaflet->name . '</td>
+                    <td>
+                        <input id="' . $leaflet->id . '-' . $type . '-button" 
+                        type="button" value="DELETE" onclick="deleteLeaflet(this);" />
+                    </td>
+                </tr>';
         }
 
-        $lastSubspecialtyId = $session['lastSubspecialtyId'];
-        // check if it's been already set
-        if (!($lastSubspecialtyId > 0)) {
-            if (isset($search['filterid']['subspecialty_id']['value'])) {
-                $session['lastSubspecialtyId'] = $search['filterid']['subspecialty_id']['value'];
-            } else {
-                $session['lastSubspecialtyId'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-            }
-        }
-        // || ($this->request->getParam("subspecialty_id")!=$session['lastSubspecialtyId'] && $search['filterid']['firm_id']['value']=="")
-        if (($subspecialtyId > 0
-                && $subspecialtyId != $session['lastSubspecialtyId']
-                && isset($search['filterid']['firm_id']['value']))
-            || ($subspecialtyId == $session['lastSubspecialtyId'] && $search['filterid']['firm_id']['value'] == '')
-        ) {
-            $session['lastSubspecialtyId'] = '';
-            $this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][subspecialty_id][value]='.$subspecialtyId);
-        }
+        echo $html_tbody;
+    }
 
-        if (isset($search['filterid']['firm_id']['value']) && $search['filterid']['firm_id']['value'] > 0) {
-            $excludeSubspecialty = true;
-            $excludeFirm = false;
-            $admin = new AdminListAutocomplete(OphTrConsent_Leaflet_Firm::model(), $this);
-            $admin->setCustomDeleteURL('/oeadmin/LeafletSubspecialtyFirm/deleteFirm');
-        } else {
-            $excludeSubspecialty = false;
-            $excludeFirm = true;
-            $admin = new AdminListAutocomplete(OphTrConsent_Leaflet_Subspecialty::model(), $this);
-            $admin->setCustomDeleteURL('/oeadmin/LeafletSubspecialtyFirm/deleteSubspecialty');
-        }
+    /**
+     * Get the ID of a subspecialty, given the firm ID
+     *
+     * @param integer firm_id - id of the given firm
+     * @return int Id of the corresponding subspecialty
+     */
+    public function actionGetSubspecialtyByFirm($firm_id)
+    {
+        $criteria = new CDbCriteria();
 
-        $admin->setListFields(array(
-            'id',
-            'leaflet.name',
-        ));
-        $admin->setCustomSaveURL('/oeadmin/LeafletSubspecialtyFirm/add');
-        $admin->setModelDisplayName('Leaflet Subspecialty ' . Firm::contextLabel() . ' Assignment');
-        if ($subspecialtyId > 0) {
-            $defaultSubspecialty = $subspecialtyId;
-        } else {
-            $defaultSubspecialty = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-        }
+        $criteria->addCondition('t.id = :query');
+        $criteria->params[':query'] = $firm_id;
 
-        $admin->setFilterFields(
-            array(
-                array(
-                    'label' => 'Subspecialty',
-                    'dropDownName' => 'subspecialty_id',
-                    'defaultValue' => $defaultSubspecialty,
-                    'listModel' => Subspecialty::model(),
-                    'listIdField' => 'id',
-                    'listDisplayField' => 'name',
-                    'excludeSearch' => $excludeSubspecialty,
-                ),
-                array(
-                    'label' => Firm::contextLabel(),
-                    'dropDownName' => 'firm_id',
-                    'defaultValue' => null,
-                    'listModel' => Firm::model(),
-                    'listIdField' => 'id',
-                    'listDisplayField' => 'name',
-                    'emptyLabel' => '-- All --',
-                    'dependsOnFilterName' => 'subspecialty_id',
-                    'dependsOnDbFieldName' => 'subspecialty_id',
-                    'dependsOnJoinedTable' => 'serviceSubspecialtyAssignment',
-                    'excludeSearch' => $excludeFirm,
-                ),
+        $criteria->with = array(
+            'serviceSubspecialtyAssignment' => array(
+                'joinType' => 'INNER JOIN',
+                'on' => 'serviceSubspecialtyAssignment.id=t.service_subspecialty_assignment_id',
             )
         );
-        // we set default search options
-        if ($this->request->getParam('search') == '') {
-            $admin->getSearch()->initSearch(array(
-                    'filterid' => array(
-                            'subspecialty_id' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id,
-                        ),
-                )
-            );
-        }
-        $admin->setAutocompleteField(
-            array(
-                'fieldName' => 'leaflet_id',
-                'allowBlankSearch' => 1,
-                'jsonURL' => '/oeadmin/LeafletSubspecialtyFirm/search',
-                'placeholder' => 'search for leaflets',
-            )
-        );
-        //$admin->searchAll();
-        $admin->listModel();
+        $criteria->together = true;
+
+        return Firm::model()->find($criteria)->serviceSubspecialtyAssignment->subspecialty_id;
     }
 
     /**
-     * @param $itemId
-     * @param $model
+     * Delete the relation between a leaflet and a Firm or a Subspecialty,
+     *  depending on the type provided in the GET variable
      */
-    protected function deleteItem($itemId, $model)
+    public function actionDelete()
     {
-        if ($leafletItem = $model->findByPk($itemId)) {
-            $leafletItem->delete();
-            echo 'success';
+        $leaflet_id = @$_GET['leaflet_id'];
+        $type = @$_GET['type'];
+        $type_id = @$_GET['type_id'];
+
+        if ($type === 'firm') {
+            $model = OphTrConsent_Leaflet_Firm::model();
+        } elseif ($type === 'subspecialty') {
+            $model = OphTrConsent_Leaflet_Subspecialty::model();
         } else {
-            $this->render('errorpage', array('errormessage' => 'recordmissing'));
+            echo 'error';
+            return;
+        }
+
+        $leaflet = $model->findByAttributes(array($type . '_id' => $type_id, 'leaflet_id' => $leaflet_id));
+
+        if (!$leaflet->delete()) {
+            echo 'error';
         }
     }
 
     /**
-     * @param $itemId
+     * Add a relation between a leaflet and a Firm or a Subspecialty,
+     *  depending on the type provided in the GET variable
      */
-    public function actionDeleteFirm($itemId)
-    {
-        /*
-        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
-        */
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
-        } else {
-            $this->deleteItem($itemId, OphTrConsent_Leaflet_Firm::model());
-        }
-    }
-
-    /**
-     * @param $itemId
-     */
-    public function actionDeleteSubspecialty($itemId)
-    {
-        /*
-        * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
-        */
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
-        } else {
-            $this->deleteItem($itemId, OphTrConsent_Leaflet_Subspecialty::model());
-        }
-    }
-
     public function actionAdd()
     {
-        $firmId = $this->request->getParam('firm_id');
-        $subspecialtyId = $this->request->getParam('subspecialty_id');
-        $leafletId = $this->request->getParam('leaflet_id');
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errormessage' => 'notajaxcall'));
-        } else {
-            if (!is_numeric($leafletId)) {
-                echo 'error 1';
-            } elseif ($firmId > 0) {
-                $newLFF = new OphTrConsent_Leaflet_Firm();
-                $newLFF->firm_id = $firmId;
-                $newLFF->leaflet_id = $leafletId;
-                if ($newLFF->save()) {
-                    echo 'success';
-                } else {
-                    echo 'error 2';
-                }
-            } elseif ($subspecialtyId > 0) {
-                $newLFS = new OphTrConsent_Leaflet_Subspecialty();
-                $newLFS->subspecialty_id = $subspecialtyId;
-                $newLFS->leaflet_id = $leafletId;
-                if ($newLFS->save()) {
-                    echo 'success';
-                } else {
-                    echo 'error 3';
-                }
-            }
+        $leaflet_id = @$_GET['leaflet_id'];
+        $type = @$_GET['type'];
+        $type_id = @$_GET['type_id'];
+        $new_leaflet = null;
+
+        if ($type === 'subspecialty') {
+            $new_leaflet = new OphTrConsent_Leaflet_Subspecialty();
+            $new_leaflet->subspecialty_id = $type_id;
+        }
+        if ($type === 'firm') {
+            $new_leaflet = new OphTrConsent_Leaflet_Firm();
+            $new_leaflet->firm_id = $type_id;
+        }
+
+        $new_leaflet->leaflet_id = $leaflet_id;
+
+        if (!$new_leaflet->save()) {
+            echo 'error';
         }
     }
 
+    /**
+     * Return a list with all leaflets.
+     */
     public function actionSearch()
     {
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             if (isset($_GET['term'])) {
                 $term = $_GET['term'];
-                $criteria->addCondition(array('LOWER(name) LIKE :term'),
-                    'OR');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $criteria->addCondition(array('LOWER(name) LIKE :term'), 'OR');
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
             $criteria->order = 'name';
             $criteria->select = 'id, name';

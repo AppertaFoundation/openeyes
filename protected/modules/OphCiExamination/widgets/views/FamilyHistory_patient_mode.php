@@ -14,11 +14,10 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
-if (!$element) { ?>
+if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
     <div class="family-history-status-unknown"
          style="font-style: italic; color: rgba(255,255,255,0.5);">
-      Patient family history is unknown
+        Patient family history is unknown
     </div>
 <?php } else {
     Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_BEGIN);
@@ -32,10 +31,13 @@ if (!$element) { ?>
         ),
     ))?>
     <div class="family-history-status-none"
-         style="font-style: italic;
-         color: rgba(255,255,255,0.5);
-         display: <?php if (!$element->no_family_history_date) { echo 'none'; } ?>">
-      Patient has no known family history</div>
+         style="
+            font-style: italic;
+            color: rgba(255,255,255,0.5);
+            display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>"
+    >
+        Patient has no family history
+    </div>
 
     <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
         <thead>

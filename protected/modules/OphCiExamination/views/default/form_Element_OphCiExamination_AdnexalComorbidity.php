@@ -19,9 +19,9 @@
 <div class="element-fields element-eyes">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
-        <div class="element-eye <?=$eye_side?>-eye column <?=$page_side?> side"
+        <div class="js-element-eye <?=$eye_side?>-eye column <?=$page_side?>"
              data-side="<?=$eye_side?>" >
-            <div class="active-form field-row flex-layout"
+            <div class="active-form flex-layout"
                  style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
               <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
               <div class="cols-11 flex-layout">

@@ -14,7 +14,7 @@
  */
 $field = $element->{"{$side}_field"};
 ?>
-<div class="element-eye <?= $side ?>-eye column">
+<div class="js-element-eye <?= $side ?>-eye column">
 	<?php if ($field): ?>
     <div class="cols-12 column"><?= ucfirst($side) ?> Eye</div>
 			<div class="cols-12 column"><a class="OphInVisualfields_field_image" data-image-id="<?= $field->image_id ?>" href="#"><img

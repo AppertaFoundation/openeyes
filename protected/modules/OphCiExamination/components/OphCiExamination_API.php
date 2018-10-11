@@ -592,7 +592,20 @@ class OphCiExamination_API extends \BaseAPI
         if ($refract_element = models\Element_OphCiExamination_Refraction::model()->findByAttributes(array('event_id' => $event->id))) {
             $right_spherical = number_format($refract_element->{'right_sphere'} + 0.5 * $refract_element->{'right_cylinder'}, 2);
             $left_spherical = number_format($refract_element->{'left_sphere'} + 0.5 * $refract_element->{'left_cylinder'}, 2);
-            return $right_spherical . " Right Eye" . ", " . $left_spherical . " Left Eye";
+            return '<table>
+                        <thead>
+                        <tr>
+                           <th>Right Eye</th>
+                           <th>Left Eye</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                              <td>' . $right_spherical . '</td>
+                              <td>' . $left_spherical . '</td>
+                            </tr>
+                        </tbody>
+                    </table>';
         }
 
 
@@ -1156,19 +1169,26 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
         if ($management_summaries) {
             $summary = [];
+            $managment_summaries = [];
             foreach ($management_summaries as $summaries) {
                 $service = $summaries->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->short_name;
-                $created_date = date_format(date_create($summaries->event->event_date), 'd.m.Y');
+                $user = \User::model()->findByPk($summaries->event->episode->last_modified_user_id);
+                $user_name = $user->first_name .' '.$user->last_name;
+                $summary_obj = new \stdClass();
+                $created_date = \Helper::convertDate2NHS($summaries->event->event_date);
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
-                    $summary_with_dates[$service . ' [' . $created_date . ']'] = $summaries->comments;
+                    $summary_obj->service = $service;
+                    $summary_obj->comments = $summaries->comments ? : $summaries->getChildrenString();
+                    $date_parts = explode(' ', $created_date);
+                    $summary_obj->date = $date_parts;
+                    $summary_obj->user = $user_name;
+                    array_push($managment_summaries,$summary_obj);
                 }
             }
-
-            return $summary_with_dates;
+            return $managment_summaries;
         }
         $summary = [];
-
         return $summary;
     }
 
@@ -1442,7 +1462,7 @@ class OphCiExamination_API extends \BaseAPI
                         's');
                 }
 
-                if( isset($patient_ticket_followup['assignment_date']) && ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
+                if( !isset($patient_ticket_followup['assignment_date']) || !isset($o->event->event_date) || ($o->event->event_date < $patient_ticket_followup['assignment_date'])){
                     $follow_up_text = $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
                 }
             }
@@ -2220,10 +2240,11 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    /*
+    /**
      * Examination diagnoses and findings
      * @param $patient
      * @param $use_context
+     * @var $diag models\Element_OphCiExamination_Diagnoses
      */
     public function getLetterDiagnosesAndFindings($patient, $use_context = false)
     {
@@ -2235,7 +2256,7 @@ class OphCiExamination_API extends \BaseAPI
             return $diag->letter_string;
         }
 
-        return;
+        return '[No diagnoses in latest event]';
     }
 
     /**

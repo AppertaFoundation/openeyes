@@ -8,7 +8,7 @@
   <div class="title wordcaps">Worklists</div>
 </div>
 
-<div class="oe-full-content oe-worklists flex-layout flex-top">
+<div class="oe-full-content subgrid oe-worklists">
 
   <nav class="oe-full-side-panel">
     <p>Automatic Worklists</p>
@@ -22,9 +22,9 @@
     </div>
     <h3>Select list</h3>
     <ul>
-      <li><a href="#">All</a></li>
+      <li><a class="js-worklist-filter" href="#" data-worklist="all">All</a></li>
         <?php foreach ($worklists as $worklist): ?>
-          <li><a href="#worklist_<?= $worklist->id ?>"><?= $worklist->name ?></a></li>
+          <li><a href="#" class="js-worklist-filter" data-worklist="js-worklist-<?= strtolower(str_replace(' ','-',$worklist->name))?>"><?= $worklist->name ?></a></li>
         <?php endforeach; ?>
     </ul>
   </nav>
@@ -56,4 +56,23 @@
         .set('date_to', $('#worklist-date-to').val());
     });
   });
+
+  $('.js-worklist-filter').click(function (e) {
+      e.preventDefault();
+      resetFilters();
+      $(this).addClass('selected');
+      updateWorkLists($(this).data('worklist'));
+  });
+  function resetFilters(){
+      $('.js-worklist-filter').removeClass('selected');
+  }
+
+  function updateWorkLists( listID ){
+      if(listID == 'all'){
+          $('.worklist-group').show();
+      } else {
+          $('.worklist-group').hide();
+          $('#'+listID).show();
+      }
+  }
 </script>

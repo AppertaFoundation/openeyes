@@ -553,6 +553,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return;
     }
 
+    /**
+     * @return int
+     */
     public function getNextLetter()
     {
         if (is_null($this->getLastLetter())) {

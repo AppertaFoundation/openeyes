@@ -41,6 +41,7 @@ class AuditController extends BaseController
 
     public function actionIndex()
     {
+        $this->pageTitle = 'Audit';
         $this->render('index');
     }
 

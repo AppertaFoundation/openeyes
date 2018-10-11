@@ -47,7 +47,7 @@
                 'name' => 'Diagnosis',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($disorder){
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",null,
+                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]", null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -55,7 +55,7 @@
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            ]) : ''
+                            ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ]);
                 }
             ),
@@ -156,4 +156,35 @@
     }
 
 
+    $(document).ready(function() {
+
+        var $table = $('table.generic-admin'),
+            $empty_tr = $table.find('.empty').closest('tr'),
+            diagnosesSearchController;
+
+        $('#add_new_risk').on('click', function (e) {
+            var data = {},
+                $row;
+
+            $empty_tr.hide();
+            data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
+            $row = Mustache.render(
+                $('#new_risk_entry').text(),
+                data
+            );
+            $table.find('tbody').append($row);
+            $row = $table.find('tbody tr:last');
+
+            initDiagnosesSearchController($row)
+        });
+
+        $($table).on('click', '.remove_risk_entry', function (e) {
+            $(this).closest('tr').remove();
+        });
+
+        $.each($table.find('tr'), function (i, tr) {
+            var $tr = $(tr);
+            initDiagnosesSearchController($tr);
+        });
+    });
 </script>

@@ -17,6 +17,8 @@
  */
 class SnippetGroupController extends ModuleAdminController
 {
+    public $group = 'Correspondence';
+
     protected $admin;
 
     /**

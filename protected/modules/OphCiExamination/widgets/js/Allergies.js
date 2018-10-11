@@ -141,7 +141,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     AllergiesController.prototype.showEditableIfOther = function () {
-        console.log('showEditableOther ran');
         var controller = this;
         $(this.allergySelector).each(function () {
             var isOther = (this.value == controller.options.allergyOtherValue);
@@ -155,7 +154,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.$noAllergiesFld.prop('checked', false);
             this.$popupSelector.show();
         }
-        if(this.isAllergiesChecked(this.allergyYesValue)){
+        if(this.isAllergiesChecked(this.allergyYesValue) || this.isAllergiesChecked(this.allergyNotCheckedValue)){
             this.$noAllergiesWrapper.hide();
             this.$popupSelector.show();
             this.$noAllergiesFld.prop('checked', false);

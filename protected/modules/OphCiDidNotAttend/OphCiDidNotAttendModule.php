@@ -36,10 +36,16 @@ class OphCiDidNotAttendModule extends \BaseEventTypeModule
         // import the module-level models and components
         $this->setImport(array(
             'OphCiDidNotAttend.models.*',
+            'OphCiDidNotAttend.views.*',
             'OphCiDidNotAttend.components.*',
+            'OphCiDidNotAttend.controllers.*',
         ));
 
         $this->moduleShortSuffix = "Did Not Attend";
+
+        $this->setModules(array('DidNotAttendAdmin'));
+
+        parent::init();
     }
 
     public function beforeControllerAction($controller, $action)
@@ -48,7 +54,8 @@ class OphCiDidNotAttendModule extends \BaseEventTypeModule
             // this method is called before any module controller action is performed
             // you may place customized code here
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 }

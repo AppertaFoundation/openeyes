@@ -22,7 +22,6 @@ $is_hidden = function () use ($element) {
     if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
         return true;
     }
-
     return false;
 }; ?>
 
@@ -39,7 +38,7 @@ $is_hidden = function () use ($element) {
           <td>
               <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
                   false, false, false, false,
-                  array('fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : ''),
+                  array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
                   array('field' => 12)); ?>
           </td>
         </tr>
@@ -47,10 +46,9 @@ $is_hidden = function () use ($element) {
             style="<?php if ($is_hidden()): ?>display: none;<?php endif; ?>">
           <td>LA Delivery Methods</td>
           <td>
-            <div>
-                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', '',
-                    false, false, false, false); ?>
-            </div>
+                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
+                    false, false, false, false ,
+                    array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')); ?>
           </td>
         </tr>
         <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
@@ -62,8 +60,8 @@ $is_hidden = function () use ($element) {
           <td>
             <fieldset id="<?php echo CHtml::modelName($element) . '_anaesthetist_id' ?>">
                 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
-                    false, false, false, false, array('nowrapper' => true)); ?>
-
+                    false, false, false, false,
+                    array('nowrapper' => true , 'label-class' => $element->getError('Anaesthetist') ? 'error' : '')); ?>
             </fieldset>
           </td>
         </tr>

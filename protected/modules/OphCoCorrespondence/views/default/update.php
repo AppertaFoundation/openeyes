@@ -16,11 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
-
 <?php
+$form_id = 'correspondence-create';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'correspondence-create',
+    'id' => $form_id,
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
         'label' => 2,
@@ -39,7 +40,7 @@ foreach($actions as $action_id => $action){
             $action,
             $action_id,
             array('level' => 'secondary'),
-            array('id' => 'et_' . $action_id, 'class' => 'button small', 'form' => 'correspondence-create')
+            array('id' => 'et_' . $action_id, 'class' => 'button small', 'form' => $form_id)
         );
     }
 }

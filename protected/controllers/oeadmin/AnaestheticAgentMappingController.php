@@ -18,6 +18,8 @@
  */
 class AnaestheticAgentMappingController extends BaseAdminController
 {
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgent::model(), $this);
