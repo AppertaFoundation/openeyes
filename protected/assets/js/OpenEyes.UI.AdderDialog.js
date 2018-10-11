@@ -161,7 +161,7 @@
 
       dialog.searchWrapper.hide();
       dialog.selectWrapper.show();
-      dialog.selectWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
 
     $searchButton.click(function () {
@@ -170,7 +170,7 @@
 
       dialog.searchWrapper.show();
       dialog.selectWrapper.hide();
-      dialog.searchWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
   };
 
