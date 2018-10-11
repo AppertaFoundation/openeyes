@@ -187,7 +187,7 @@
                 }, $allergies)
             ) ?>, {'multiSelect': true})],
             searchOptions: {
-                searchSource: 'allergy/autocomplete',
+                searchSource: '/allergy/autocomplete',
             },
             onReturn: function (adderDialog, selectedItems) {
                 for (var i = 0; i < selectedItems.length; i++) {

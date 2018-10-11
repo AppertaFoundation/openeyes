@@ -30,11 +30,11 @@ class AllergyController extends BaseController
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = array();
-            if (isset($_GET['term']) && $term = $_GET['term']) {
-                $criteria->addCondition('LOWER(term) LIKE :term COLLATE utf8_general_ci');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+            if (isset($_GET['term']) && $name = $_GET['term']) {
+                $criteria->addCondition('LOWER(name) LIKE :name COLLATE utf8_general_ci');
+                $params[':name'] = '%'.strtolower(strtr($name, array('%' => '\%'))).'%';
             }
-            $criteria->order = 'term';
+            $criteria->order = 'name';
 
             // Limit results
             $criteria->limit = '200';
