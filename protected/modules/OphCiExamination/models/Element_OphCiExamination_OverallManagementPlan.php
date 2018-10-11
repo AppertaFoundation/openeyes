@@ -188,4 +188,9 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
     {
         return 'Clinic: ' . $this->clinic_interval;
     }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
 }
