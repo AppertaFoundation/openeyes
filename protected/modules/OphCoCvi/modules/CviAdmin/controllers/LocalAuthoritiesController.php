@@ -20,6 +20,8 @@
  */
 class LocalAuthoritiesController extends \BaseAdminController
 {
+    public $group = 'CVI';
+
     /**
      * @return array
      */

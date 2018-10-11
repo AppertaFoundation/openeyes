@@ -20,6 +20,8 @@ class AdminController extends ModuleAdminController
     public $sequences_items_per_page = 20;
     public $sessions_items_per_page = 20;
 
+    public $group = 'Operation booking';
+
     public function actionViewERODRules()
     {
         Audit::add('admin', 'list', null, null, array('module' => 'OphTrOperationbooking', 'model' => 'OphTrOperationbooking_Operation_EROD_Rule'));

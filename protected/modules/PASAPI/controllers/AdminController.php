@@ -22,6 +22,8 @@ use OEModule\PASAPI\models\RemapValue;
 
 class AdminController extends \BaseAdminController
 {
+    public $group = 'PASAPI';
+
     public function actionViewXpathRemaps()
     {
         \Audit::add('admin', 'list', null, false, array('module' => 'PASAPI', 'model' => 'OEModule\PASAPI\models\XpathRemap'));

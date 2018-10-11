@@ -17,6 +17,8 @@
  */
 class AdminController extends \ModuleAdminController
 {
+    public $group = 'Correspondence';
+
     public $defaultAction = 'letterMacros';
 
     public function actionLetterMacros()

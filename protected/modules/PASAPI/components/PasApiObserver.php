@@ -127,6 +127,7 @@ class PasApiObserver
 
                     // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw it away
 
+                    $resource->partial_record = !$_patient->isNewRecord;
                     if (!$resource->save() && ($data['patient'] instanceof \Patient)) {
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
                         \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
