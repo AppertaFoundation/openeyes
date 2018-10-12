@@ -640,7 +640,6 @@ class DefaultController extends BaseEventTypeController
 
         $pdf_path = $this->getPdfPath($event);
 
-        Yii::log($pdf_path);
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
