@@ -42,7 +42,7 @@
 		</div>
 	</div>
 
-	<?php echo CHtml::endForm(); ?>
+	<?=\CHtml::endForm(); ?>
 	<table class="generic-admin" id="common_drugs_list">
 		<thead>
 		<tr>

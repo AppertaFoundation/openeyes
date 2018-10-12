@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -26,7 +23,7 @@ if (!isset($uniqueid)) {
 }
 ?>
 <?php $this->renderPartial('//base/_messages'); ?>
-<div class="admin box">
+<div class='<?=$admin->div_wrapper_class?>' >
     <?php if (!$admin->isSubList()): ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
     <?php endif; ?>
@@ -135,33 +132,33 @@ if (!isset($uniqueid)) {
                 <tr>
                     <td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
                         <?php if (isset($buttons) && ($buttons == true)) { ?>
-                            <?php echo EventAction::button(
+                            <?=\CHtml::button(
                                 'Add',
-                                'add',
-                                array(),
-                                array(
-                                    'class' => 'small',
+                                [
+                                    'class' => 'button large',
                                     'data-uri' => '/' . $uniqueid . '/edit',
                                     'formmethod' => 'get',
-                                )
-                            )->toHtml() ?>
-                            <?php echo EventAction::button(
+                                    'name' => 'add',
+                                    'id' => 'et_add'
+                                ]
+                            ); ?>
+                            <?=\CHtml::button(
                                 'Delete',
-                                'delete',
-                                array(),
-                                array(
-                                    'class' => 'small',
+                                [
+                                    'class' => 'button large',
+                                    'name' => 'delete',
                                     'data-uri' => '/' . $uniqueid . '/delete',
                                     'data-object' => $admin->getModelName(),
-                                )
-                            )->toHtml() ?>
+                                    'id' => 'et_delete'
+                                ]
+                            ); ?>
                         <?php } ?>
                         <?php echo EventAction::button(
                             'Sort',
                             'sort',
                             array(),
                             array(
-                                'class' => 'small',
+                                'class' => 'button large',
                                 'style' => 'display:none;',
                                 'data-uri' => '/' . $uniqueid . '/sort',
                                 'data-object' => $admin->getModelName(),

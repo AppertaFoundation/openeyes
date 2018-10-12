@@ -20,17 +20,17 @@ class WKHtmlToPDFTest extends CTestCase
 	public function setUp()
 	{
 		parent::setUp();
-		$this->wkhtmltopdf = Yii::app()->params['wkhtmltopdf_path'];
+		$this->wkhtmltopdf = Yii::app()->params['wkhtmltox']['pdf']['path'];
 	}
 
 	public function tearDown()
 	{
-		Yii::app()->params['wkhtmltopdf_path'] = $this->wkhtmltopdf;
+		Yii::app()->params['wkhtmltox']['pdf']['path'] = $this->wkhtmltopdf;
 	}
 
 	public function testConstruct_InvalidPath()
 	{
-		Yii::app()->params['wkhtmltopdf_path'] = '2r9hy21dw8s9h8x32dh89y3deqw';
+		Yii::app()->params['wkhtmltox']['pdf']['path'] = '2r9hy21dw8s9h8x32dh89y3deqw';
 
 		$this->setExpectedException('Exception','2r9hy21dw8s9h8x32dh89y3deqw is missing.');
 
@@ -39,14 +39,14 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstruct_ValidPath()
 	{
-		Yii::app()->params['wkhtmltopdf_path'] = __FILE__;
+		Yii::app()->params['wkhtmltox']['pdf']['path'] = __FILE__;
 
 		$wk = new WKHtmlToPDF;
 	}
 
 	public function testConstruct_ValidPath_ReducedFunctionality()
 	{
-		Yii::app()->params['wkhtmltopdf_path'] = __FILE__;
+		Yii::app()->params['wkhtmltox']['pdf']['path'] = __FILE__;
 
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->setMethods(array('execute'))
@@ -333,7 +333,7 @@ class WKHtmlToPDFTest extends CTestCase
 			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
-		Yii::app()->params['wkhtmltopdf_path'] = __FILE__;
+		Yii::app()->params['wkhtmltox']['pdf']['path'] = __FILE__;
 
 		$wk->__construct();
 
@@ -361,7 +361,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 		$wk->expects($this->once())
 			->method('execute')
-			->with("'".__FILE__ . "' --footer-html '/blah/one/two/seven/footer.html' --print-media-type -T ".Yii::app()->params['wkhtmltopdf_top_margin']." -B ".Yii::app()->params['wkhtmltopdf_bottom_margin']." -L ".Yii::app()->params['wkhtmltopdf_left_margin']." -R ".Yii::app()->params['wkhtmltopdf_right_margin']." '/blah/one/two/seven/event.html' '/blah/one/two/seven/event.pdf' 2>&1");
+			->with("'".__FILE__ . "' --footer-html '/blah/one/two/seven/footer.html' --print-media-type -T ".Yii::app()->params['wkhtmltox']['pdf']['top_margin']." -B ".Yii::app()->params['wkhtmltox']['pdf']['bottom_margin']." -L ".Yii::app()->params['wkhtmltox']['pdf']['left_margin']." -R ".Yii::app()->params['wkhtmltox']['pdf']['right_margin']." '/blah/one/two/seven/event.html' '/blah/one/two/seven/event.pdf' 2>&1");
 
 		$wk->expects($this->any())
 			->method('fileExists')
@@ -549,7 +549,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_Left()
 	{
-		Yii::app()->params['wkhtmltopdf_footer_left'] = 'fisjfisdjfodsfs';
+		Yii::app()->params['wkhtmltox']['pdf']['footer_left'] = 'fisjfisdjfodsfs';
 
 		$wk = new WKHtmlToPDF;
 
@@ -558,7 +558,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_Right()
 	{
-		Yii::app()->params['wkhtmltopdf_footer_right'] = 'fjsdoifh2923ewc';
+		Yii::app()->params['wkhtmltox']['pdf']['footer_right'] = 'fjsdoifh2923ewc';
 
 		$wk = new WKHtmlToPDF;
 
@@ -567,7 +567,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_Middle()
 	{
-		Yii::app()->params['wkhtmltopdf_footer_middle'] = '2j398fh29ewcdewdc92e';
+		Yii::app()->params['wkhtmltox']['pdf']['footer_middle'] = '2j398fh29ewcdewdc92e';
 
 		$wk = new WKHtmlToPDF;
 
@@ -576,7 +576,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_TopMargin()
 	{
-		Yii::app()->params['wkhtmltopdf_top_margin'] = '2d9h2cd8hw9812h9wh923';
+		Yii::app()->params['wkhtmltox']['pdf']['top_margin'] = '2d9h2cd8hw9812h9wh923';
 
 		$wk = new WKHtmlToPDF;
 
@@ -585,7 +585,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_BottomMargin()
 	{
-		Yii::app()->params['wkhtmltopdf_bottom_margin'] = '390fh2908chj09wecjhe298';
+		Yii::app()->params['wkhtmltox']['pdf']['bottom_margin'] = '390fh2908chj09wecjhe298';
 
 		$wk = new WKHtmlToPDF;
 
@@ -594,7 +594,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_LeftMargin()
 	{
-		Yii::app()->params['wkhtmltopdf_left_margin'] = '1298dy19d8yw9d8219d';
+		Yii::app()->params['wkhtmltox']['pdf']['left_margin'] = '1298dy19d8yw9d8219d';
 	 
 		$wk = new WKHtmlToPDF;
  
@@ -603,7 +603,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 	public function testConstructor_SetParams_RightMargin()
 	{
-		Yii::app()->params['wkhtmltopdf_right_margin'] = '2398rfeh29cucI(HDSU*(H(';
+		Yii::app()->params['wkhtmltox']['pdf']['right_margin'] = '2398rfeh29cucI(HDSU*(H(';
 	
 		$wk = new WKHtmlToPDF;
 

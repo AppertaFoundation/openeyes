@@ -21,17 +21,16 @@ if ($this->checkClericalEditAccess()) {
     $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
     ?>
   <div class="element-fields full-width">
-    <div class="data-group">
       <table class="cols-full">
         <colgroup>
-          <col class="cols-6">
-          <col class="cols-3">
+          <col class="cols-5">
+          <col class="cols-4">
         </colgroup>
         <tbody>
         <?php foreach ($this->getPatientFactors() as $factor) { ?>
           <tr class="col-gap">
             <td>
-              <label> <?php echo $factor->name ?> </label>
+               <?php echo $factor->name ?>
                 <?php
                 $field_base_name = CHtml::modelName($element) . "[patient_factors][{$factor->id}]";
                 $factor_field_name = "{$field_base_name}[is_factor]";
@@ -43,9 +42,9 @@ if ($this->checkClericalEditAccess()) {
                 $comments = $answer ? $answer->comments : null;
                 ?>
             </td>
+              <td>
               <?php if ($factor->require_comments) {
                   $comment_button_id = CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_button'; ?>
-                <td>
                   <div class="cols-full ">
                     <button id="<?= $comment_button_id ?>"
                         type="button"
@@ -58,7 +57,7 @@ if ($this->checkClericalEditAccess()) {
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
                           style="<?php if (!$comments): ?>display: none;<?php endif; ?>"
                           data-comment-button="#<?= $comment_button_id ?>">
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
+                        <?=\CHtml::textArea("{$field_base_name}[comments]", $comments, array(
                             'class' => 'js-comment-field',
                             'rows' => 2,
                             'placeholder' => 'Comments',
@@ -66,23 +65,21 @@ if ($this->checkClericalEditAccess()) {
                       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                     </span>
                   </div>
-                </td>
-              <?php } else { ?>
-                <td></td>
               <?php } ?>
+                </td>
             <td>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 1),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 1),
                       array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
                 Yes
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 0),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 0),
                       array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
                 No
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 2),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 2),
                       array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
                 Unknown
               </label>
@@ -91,6 +88,7 @@ if ($this->checkClericalEditAccess()) {
         <?php } ?>
         </tbody>
       </table>
+      <hr class="divider">
     </div>
     <div class="flex-layout flex-top col-gap">
       <div class="cols-6 data-group">
@@ -113,7 +111,7 @@ if ($this->checkClericalEditAccess()) {
                             '`active` = ?',
                             array(1),
                             array('order' => 'display_order asc')), 'id', 'name'),
-                    array('empty' => '- Please select -', 'nowrapper' => true),
+                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
             </td>
@@ -129,7 +127,7 @@ if ($this->checkClericalEditAccess()) {
                         'id',
                         'name'
                     ),
-                    array('empty' => '- Please select -', 'nowrapper' => true),
+                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
                 <?php
@@ -181,7 +179,7 @@ if ($this->checkClericalEditAccess()) {
             <td>
                 <?php echo $form->dropDownList($element, 'preferred_language_id',
                     CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id',
-                        'name') + array('0' => 'Other'), array('nowrapper' => true), false, array()) ?>
+                        'name') + array('0' => 'Other'), array('nowrapper' => true , 'class' => 'cols-full'), false, array()) ?>
                 <?php echo $form->textField($element, 'preferred_language_text', array('size' => '20',), false,
                     array('label' => 6, 'field' => 6)) ?>
             </td>
@@ -199,7 +197,6 @@ if ($this->checkClericalEditAccess()) {
         </table>
       </div>
     </div>
-  </div>
 
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClericalInfo', array('element' => $element));

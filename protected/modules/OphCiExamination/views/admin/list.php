@@ -17,13 +17,31 @@
  */
 ?>
 
-<div class="box admin">
-	<header class="box-header">
-		<h2 class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></h2>
-		<div class="box-actions">
-			<a class="button small" href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create'.$model_class); ?>">Add New</a>
-		</div>
-	</header>
+<div class="cols-4">
+
+    <table class="cols-full standard">
+        <title class="box-title"><?php echo $title ? $title : 'Examination Admin' ?></title>
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-1">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td><h2>No Treatment Reasons</h2></td>
+            <td>
+                <?= CHtml::submitButton(
+                    'Add New',
+                    [
+                        'class' => 'button large',
+                        'name' => 'cancel',
+                        'data-uri' => Yii::app()->createUrl('OphCiExamination/admin/create'.$model_class),
+                        'id' => 'et_cancel',
+                    ]
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 	<table class="standard">
 		<thead>

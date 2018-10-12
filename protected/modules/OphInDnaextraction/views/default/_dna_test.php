@@ -21,7 +21,7 @@
 
 <tr class="transaction-row" data-index="<?php echo $i; ?>">
   <td>
-      <?php echo CHtml::activeHiddenField($transaction, "[$i]id") ?>
+      <?=\CHtml::activeHiddenField($transaction, "[$i]id") ?>
 
       <?php
       $value = Yii::app()->request->getQuery('OphInDnaextraction_DnaTests_Transaction');
@@ -47,17 +47,17 @@
       ?>
   </td>
   <td>
-      <?php echo CHtml::activeDropDownList(
+      <?=\CHtml::activeDropDownList(
           $transaction, "[$i]study_id",
           CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(), 'id', 'name'),
           array('empty' => '- Select -', 'disabled' => $disabled, 'class' => "study",)
       ) ?>
   </td>
   <td>
-      <?php echo CHtml::activeTextField($transaction, "[$i]volume", array('class' => "volume", 'disabled' => $disabled)) ?>
+      <?=\CHtml::activeTextField($transaction, "[$i]volume", array('class' => "volume", 'disabled' => $disabled)) ?>
   </td>
   <td>
-      <?php echo CHtml::activeTextField($transaction, "[$i]comments", array('class' => "comments", 'disabled' => $disabled)) ?>
+      <?=\CHtml::activeTextField($transaction, "[$i]comments", array('class' => "comments", 'disabled' => $disabled)) ?>
   </td>  
   <td class="<?php echo $is_remove_allowed ? '': 'hidden'?> ">
       <?php if (!$disabled) {

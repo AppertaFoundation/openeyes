@@ -14,9 +14,7 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php
 $this->beginContent('//patient/event_container');?>
 
 <div id="delete_event">
@@ -27,7 +25,7 @@ $this->beginContent('//patient/event_container');?>
     <?php $this->displayErrors($errors)?>
     <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-        <?php echo CHtml::textArea('delete_reason','')?>
+        <?=\CHtml::textArea('delete_reason','')?>
     </div>
     <p>
         <strong>Are you sure you want to proceed?</strong>
@@ -43,7 +41,7 @@ $this->beginContent('//patient/event_container');?>
         Cancel
     </button>
   <i class="spinner" title="Loading..." style="display: none;"></i>
-    <?php echo CHtml::endForm()?>
+    <?=\CHtml::endForm()?>
 </div>
 
 <?php $this->endContent()?>

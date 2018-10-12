@@ -17,6 +17,12 @@
  */
 Yii::import('application.controllers.*');
 
+/**
+ * Class PatientController
+ *
+ * @property Episode $episode
+ * @property Patient $patient
+ */
 class PatientController extends BaseController
 {
     public $layout = '//layouts/home';
@@ -43,7 +49,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape', 'lightningViewer'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -235,7 +241,7 @@ class PatientController extends BaseController
             $this->redirect(array($api->generateEpisodeLink($item)));
         } else {
             $this->renderPatientPanel = false;
-
+            $this->pageTitle = $term . ' - Search';
             $this->fixedHotlist = false;
             $this->render('results', array(
                 'data_provider' => $dataProvider,
@@ -312,6 +318,7 @@ class PatientController extends BaseController
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($_GET['id']);
+        $this->pageTitle = 'Episodes';
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -374,6 +381,7 @@ class PatientController extends BaseController
 
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
+        $this->pageTitle = $this->episode->getSubspecialtyText();
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -447,6 +455,7 @@ class PatientController extends BaseController
 
         $this->patient = $this->episode->patient;
         $this->layout = '//layouts/events_and_episodes';
+        $this->pageTitle = $this->episode->getSubspecialtyText();
 
         $episodes = $this->patient->episodes;
         // TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
@@ -496,6 +505,7 @@ class PatientController extends BaseController
         $this->patient = $patient;
         $this->fixedHotlist = false;
         $this->layout = '//layouts/events_and_episodes';
+        $this->pageTitle = 'OEScape: ' . $subspecialty->name;
 
         //if $this->patient was merged we redirect the user to the primary patient's page
         $this->redirectIfMerged();
@@ -509,13 +519,123 @@ class PatientController extends BaseController
             ),
         );
 
-        $this->render('oescapes', array(
+        $this->render('/oescape/oescapes', array(
             'title' => '' ,
             'subspecialty' => $subspecialty,
             'site' => $site,
             'noEpisodes' => false,
         ));
     }
+
+    public function actionLightningViewer($id, $preview_type = null)
+    {
+        $this->patient = Patient::model()->findByPk($id);
+        if (!$this->patient) {
+            throw new SystemException('Patient not found: ' . $id);
+        }
+
+        $this->pageTitle = 'Lightning Viewer';
+        $this->layout = '//layouts/events_and_episodes';
+        $this->title = 'Lightning Viewer';
+
+        /* @var array(string => Event[]) $eventTypeMap */
+        $eventTypeMap = array();
+
+        // Letters is the fallback if no events exist, so its key is initialised to an empty array
+        $previewGroups = ['Letters' => []];
+
+        // Find all events for this patient
+        /* @var EventType $eventType */
+        foreach (EventType::model()->findAll() as $eventType) {
+            $eventTypeMap[$eventType->name] = array();
+            $api = $eventType->getApi();
+            if ($api) {
+                $eventTypeMap[$eventType->name] += $eventType->getApi()->getEvents($this->patient);
+            }
+        }
+
+        // For every document sub type...
+        /* @var OphCoDocument_Sub_Types $documentTyoe */
+        foreach (OphCoDocument_Sub_Types::model()->findAll() as $documentType) {
+
+            // Find the document events for that subtype ...
+            $documentEvents = array_filter($eventTypeMap['Document'], function($documentEvent) use ($documentType) {
+                $documentElement = $documentEvent->getElementByClass(Element_OphCoDocument_Document::class);
+                return $documentElement->sub_type->id === $documentType->id;
+            });
+
+            // And add them to the preview groups
+            // Referral letters should be put in the Letter bucket, along with correspondence events
+            if ($documentType->name === 'Referral Letter') {
+                $previewGroups['Letters'] += $documentEvents;
+            } else {
+                $previewGroups[$documentType->name] = $documentEvents;
+            }
+        }
+
+        foreach ($eventTypeMap as $eventType => $events) {
+            switch ($eventType) {
+                // Document events should be ignored, as they have already been broken down by document sub type
+                case 'Document':
+                    continue 2;
+                // Biometry events and report documents should be in the same bucket
+                case 'Biometry':
+                    $groupType = 'BiometryReport';
+                    break;
+                // Correspondence events should go in th 'Letters' bucket
+                case 'Correspondence':
+                    $groupType = 'Letters';
+                    break;
+                default:
+                    $groupType = $eventType;
+                    break;
+            }
+
+            if (!array_key_exists($groupType, $previewGroups)) {
+                $previewGroups[$groupType] = [];
+            }
+            $previewGroups[$groupType] += $events;
+        }
+
+        // Default to letters if no other preview type exists
+        if (!$preview_type || !isset($previewGroups[$preview_type])) {
+            $preview_type = 'Letters';
+            // but if there aren't any letters, then default to the first non-empty group
+            if (count($previewGroups['Letters']) === 0) {
+                foreach ($previewGroups as $key => $group) {
+                    if (count($group) > 0) {
+                        $preview_type = $key;
+                        break;
+                    }
+                }
+            }
+        }
+        $selectedPreviews = $previewGroups[$preview_type];
+
+        $previewsByYear = array();
+
+        if (count($selectedPreviews) > 0) {
+            // Sort the documents and split them into different years
+            usort($selectedPreviews, function ($a, $b) {
+                return $a->event_date > $b->event_date ? -1 : 1;
+            });
+
+            foreach ($selectedPreviews as $event) {
+                $year = (new DateTime($event->event_date))->format('Y');
+                if (!isset($previewsByYear[$year])) {
+                    $previewsByYear[$year] = array();
+                }
+                $previewsByYear[$year][] = $event;
+            }
+        }
+
+        $this->render('lightning_viewer', array(
+            'selectedPreviewType' => $preview_type,
+            'previewGroups' => $previewGroups,
+            'previewsByYear' => $previewsByYear,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -530,6 +650,15 @@ class PatientController extends BaseController
         }
 
         return $model;
+    }
+
+    public function setPageTitle($pageTitle)
+    {
+        if ($this->patient) {
+            parent::setPageTitle($pageTitle . ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name);
+        } else {
+            parent::setPageTitle($pageTitle);
+        }
     }
 
     /**
@@ -1563,6 +1692,8 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
+        $this->pageTitle = 'Add New Patient';
 
         $patient = new Patient('manual');
         $patient->noPas();
@@ -1618,7 +1749,7 @@ class PatientController extends BaseController
                         $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
                     } else {
                         Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                        $this->redirect(array('view', 'id' => $patient->id));
+                        $this->redirect(array('episodes', 'id' => $patient->id));
                     }
 
                 } else {
@@ -1661,9 +1792,11 @@ class PatientController extends BaseController
 
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
+        $this->fixedHotlist = true;
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
+        $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
 
         //only local patient can be edited
         if($patient->is_local == 0){

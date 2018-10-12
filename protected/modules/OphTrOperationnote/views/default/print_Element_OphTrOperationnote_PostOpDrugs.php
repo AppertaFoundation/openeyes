@@ -17,7 +17,7 @@
  */
 ?>
 <section class="element">
-	<h3 class="element-title"><?php echo CHtml::encode($element->elementType->name)?></h3>
+	<h3 class="element-title"><?=\CHtml::encode($element->elementType->name)?></h3>
 	<div class="details">
 		<div class="element-data">
 				<div class="data-value <?php if (!$element->drugs) {?> none<?php }?>">

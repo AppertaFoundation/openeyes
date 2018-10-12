@@ -21,7 +21,7 @@
   <?php echo $form->hiddenField($element, 'booking_event_id')?>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('eye_id')); ?>
+        <?=\CHtml::encode($element->getAttributeLabel('eye_id')); ?>
     </td>
     <td>
       <?php echo $form->radioButtons(
@@ -37,7 +37,7 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
+        <?=\CHtml::encode($element->getAttributeLabel('Anaesthetic Type')); ?>
     </td>
     <td>
         <?php echo $form->checkBoxes(
@@ -47,7 +47,7 @@
             'Anaesthetic Type',
             false, false, false, false,
             array(
-                'label-class' => $element->getError('anaesthetic_type') ? 'error' : '',
+                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                 'nowrapper' => true
             )
         ); ?>

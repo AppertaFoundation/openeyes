@@ -18,9 +18,9 @@
         foreach ($sidebarLinks as $title => $uri) { ?>
             <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
                 <?php if ($current_uri == $uri) { ?>
-                    <?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+                    <?=\CHtml::link($title, array($uri), array('class' => 'selected')) ?>
                 <?php } else { ?>
-                    <?php echo CHtml::link($title, array($uri)) ?>
+                    <?=\CHtml::link($title, array($uri)) ?>
                 <?php } ?>
             </li>
     <?php } ?>
@@ -45,9 +45,9 @@
         foreach ($sidebarLinks as $title => $uri) { ?>
             <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
                 <?php if ($current_uri == $uri) { ?>
-                    <?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+                    <?=\CHtml::link($title, array($uri), array('class' => 'selected')) ?>
                 <?php } else { ?>
-                    <?php echo CHtml::link($title, array($uri)) ?>
+                    <?=\CHtml::link($title, array($uri)) ?>
                 <?php } ?>
             </li>
         <?php } ?>

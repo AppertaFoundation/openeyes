@@ -14,9 +14,9 @@
             array( 'Diagnoses' => '/report/diagnoses',) as $title => $uri) {?>
           <li <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {?> class="selected"<?php }?>>
               <?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//', '', $uri)) {?>
-                  <?php echo CHtml::link($title, array($uri), array('class' => 'selected'))?>
+                  <?=\CHtml::link($title, array($uri), array('class' => 'selected'))?>
               <?php } else {?>
-                  <?php echo CHtml::link($title, array($uri))?>
+                  <?=\CHtml::link($title, array($uri))?>
               <?php }?>
           </li>
         <?php }?>
@@ -34,9 +34,9 @@
                 $action = array_pop($e)?>
               <li<?php if (Yii::app()->getController()->action->id == $action) {?> class="selected"<?php }?>>
                   <?php if (Yii::app()->getController()->action->id == $action) {?>
-                      <?php echo CHtml::link($item, array($uri), array('class' => 'selected'))?>
+                      <?=\CHtml::link($item, array($uri), array('class' => 'selected'))?>
                   <?php } else {?>
-                      <?php echo CHtml::link($item, array($uri))?>
+                      <?=\CHtml::link($item, array($uri))?>
                   <?php }?>
               </li>
             <?php }?>

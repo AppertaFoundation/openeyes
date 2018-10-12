@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (C) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -51,10 +48,11 @@
     </div>
 
 <?php endif; ?>
-<div class="box admin">
 
 
+    <div class="row divider">
     <h2>Logo</h2>
+    </div>
     <?php
     $form = $this->beginWidget(
             'BaseEventTypeCActiveForm', array(
@@ -90,7 +88,7 @@
                     <?php 
                     if (!empty($headerLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$headerLogo; ?>"  />
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
                     } ?>
                     <?php echo $form->fileField($model, 'header_logo'); ?>
                 </td>
@@ -100,7 +98,7 @@
                 <td><?php 
                     if (!empty($secondaryLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
                         <?php echo '<br/><br/><br/>';
                     } ?> 
                     <?php echo $form->fileField($model, 'secondary_logo'); ?>
@@ -110,7 +108,7 @@
     </table>
 <?php echo $form->formActions(array('cancel-uri' => '/admin/logo')); ?>
 <?php $this->endWidget() ?>
-</div>
+
 <script type="text/javascript">
 
     $(".flash-success").delay(3000).fadeOut("slow");

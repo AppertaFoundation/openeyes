@@ -23,7 +23,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -35,31 +35,31 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('stay_suture'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('stay_suture'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
 					<div class="data-value">
-						<?php echo CHtml::encode($element->stay_suture ? 'Yes' : 'No')?>
+						<?=\CHtml::encode($element->stay_suture ? 'Yes' : 'No')?>
 					</div>
 				</div>
 			</div>
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('site_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('site_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
 					<div class="data-value">
-						<?php echo CHtml::encode($element->site->name)?>
+						<?=\CHtml::encode($element->site->name)?>
 					</div>
 				</div>
 			</div>
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('size_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('size_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -71,7 +71,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('sclerostomy_type_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('sclerostomy_type_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -83,7 +83,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_type_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_type_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -95,7 +95,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_removed'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_removed'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -107,7 +107,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">

@@ -30,7 +30,9 @@ $worklist_patients->getData();
 <div class="worklist-group" id="js-worklist-<?= strtolower(str_replace(' ','-',$worklist->name))?>">
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
-
+  <div class="summary">
+    <?php $this->widget('LinkPager', ['pages' => $worklist_patients->getPagination()]); ?>
+  </div>
 </div>
 
 <?php

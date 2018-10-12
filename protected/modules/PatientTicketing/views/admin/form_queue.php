@@ -30,7 +30,7 @@
 				<label for="name">Name:</label>
 			</div>
 			<div class="cols-8 column end left">
-				<?php echo CHtml::textField('name', $queue->name); ?>
+				<?=\CHtml::textField('name', $queue->name); ?>
 			</div>
 		</fieldset>
 		<fieldset class="data-group">
@@ -38,7 +38,7 @@
 				<label for="description">Description:</label>
 			</div>
 			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('description', $queue->description); ?>
+				<?=\CHtml::textArea('description', $queue->description); ?>
 			</div>
 		</fieldset>
 		<fieldset class="data-group">
@@ -46,7 +46,7 @@
 				<label for="description">Action Label:</label>
 			</div>
 			<div class="cols-8 column end left">
-				<?php echo CHtml::textField('action_label', $queue->action_label); ?>
+				<?=\CHtml::textField('action_label', $queue->action_label); ?>
 			</div>
 		</fieldset>
 		<fieldset class="data-group">
@@ -54,7 +54,7 @@
 				<label for="report_definition">Report Definition:</label>
 			</div>
 			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('report_definition', $queue->report_definition); ?>
+				<?=\CHtml::textArea('report_definition', $queue->report_definition); ?>
 			</div>
 		</fieldset>
 		<fieldset class="data-group">
@@ -62,7 +62,7 @@
 				<label for="assignment_fields">Assignment Fields:</label>
 			</div>
 			<div class="cols-8 column end left">
-				<?php echo CHtml::textArea('assignment_fields', $queue->assignment_fields); ?>
+				<?=\CHtml::textArea('assignment_fields', $queue->assignment_fields); ?>
 			</div>
 		</fieldset>
 		<?php

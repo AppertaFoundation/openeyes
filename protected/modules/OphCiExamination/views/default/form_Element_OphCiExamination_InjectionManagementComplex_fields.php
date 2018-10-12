@@ -136,7 +136,7 @@ $el_model_name = CHtml::modelName($element);
       </td>
     </tr>
     <?php $questions = $element->getInjectionQuestionsForSide($eye); ?>
-    <tr id="<?=Chtml::modelName($element).'_'.$eye.'_Questions_Parent'?>"
+    <tr id="<?=\CHtml::modelName($element).'_'.$eye.'_Questions_Parent'?>"
         style="<?= empty($questions)?"display:none;":''?>"
     >
       <td>

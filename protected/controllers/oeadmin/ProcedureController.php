@@ -34,7 +34,9 @@ class ProcedureController extends BaseAdminController
     /**
      * @var int
      */
-    public $itemsPerPage = 100;
+    public $itemsPerPage = 30;
+
+    public $group = 'Procedure Management';
 
     /**
      * Lists procedures.
@@ -43,21 +45,42 @@ class ProcedureController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(Procedure::model(), $this);
-        $admin->setListFields(array(
-                            'term',
-                            'snomed_code',
-                            'opcsCodes.name',
-                            'default_duration',
-                            'aliases',
-                            'has_benefits',
-                            'has_complications',
-                            'active',
-        ));
-        $admin->searchAll();
-        $admin->getSearch()->addActiveFilter();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                $criteria->params[':query'] = $search['query'];
+
+                $criteria->with = array(
+                    'opcsCodes' => array(
+                        'select' => false,
+                        'joinType' => 'INNER JOIN',
+                    )
+                );
+                $criteria->together = true;
+
+                $criteria->addSearchCondition('term', $search['query'], true, 'OR');
+                $criteria->addSearchCondition('snomed_code', $search['query'], true, 'OR');
+                $criteria->addSearchCondition('opcsCodes.name', $search['query'], true, 'OR');
+                $criteria->addCondition('default_duration = :query', 'OR');
+                $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
+            }
+
+            if ($search['active'] == 1) {
+                $criteria->addCondition('t.active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('t.active != 1');
+            }
+        }
+
+        $procedure = Procedure::model();
+
+        $this->render('/oeadmin/procedure/index', [
+            'pagination' => $this->initPagination($procedure, $criteria),
+            'procedures' => $procedure->findAll($criteria),
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -69,79 +92,137 @@ class ProcedureController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        //$this->admin as for generic view calls $this->admin
-        $this->admin = $admin = new Admin(Procedure::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
+        $errors = [];
+        $criteria = new CDbCriteria();
+        $criteria->with = ['opcsCodes', 'benefits', 'complications'];
+        $criteria->together = true;
+
+        $procedure = Procedure::model()->findByPk($id, $criteria);
+
+        if (!$procedure) {
+            $procedure = new Procedure();
         }
-        $admin->setEditFields(array(
-            'term' => 'text',
-            'short_format' => 'text',
-            'default_duration' => 'text',
-            'snomed_code' => 'text',
-            'snomed_term' => 'text',
-            'aliases' => 'text',
-            'unbooked' => 'checkbox',
-            'active' => 'checkbox',
-            'opcsCodes' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'OPCS Code',
-                'options' => CHtml::encodeArray(CHtml::listData(
-                    OPCSCode::model()->findAll(),
-                    'id',
-                    function ($model) {
-                        return $model->name.': '.$model->description;
-                    }
-                )),
-            ),
-            'benefits' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'Benefit',
-                'options' => CHtml::encodeArray(CHtml::listData(
-                    Benefit::model()->findAll(),
-                    'id',
-                    'name'
-                )),
-            ),
-            'complications' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'Complication',
-                'options' => CHtml::encodeArray(CHtml::listData(
-                    Complication::model()->findAll(),
-                    'id',
-                    'name'
-                )),
-            ),
+
+        if (Yii::app()->request->isPostRequest) {
+            // get data from POST
+            $user_data = \Yii::app()->request->getPost('Procedure');
+            $user_opcs_cods = \Yii::app()->request->getPost('opcs_codes', []);
+            $user_benefits = \Yii::app()->request->getPost('benefits');
+            $user_complications = \Yii::app()->request->getPost('complications');
+            $user_notes = \Yii::app()->request->getPost('notes', []);
+
+            // set user data
+            $procedure->term = $user_data['term'];
+            $procedure->short_format = $user_data['short_format'];
+            $procedure->default_duration = $user_data['default_duration'];
+            $procedure->snomed_code = $user_data['snomed_code'];
+            $procedure->aliases = $user_data['aliases'];
+            $procedure->unbooked = $user_data['unbooked'];
+            $procedure->active = $user_data['active'];
+
+            // set notes
+            $notes = [];
+            if (isset($user_notes)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', array_values($user_notes));
+                $notes = ElementType::model()->findAll($criteria);
+            }
+            $procedure->operationNotes = $notes;
+
+            // set opcs_cods
+            $opcsCodes = [];
+            if (isset($user_opcs_cods)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', array_values($user_opcs_cods));
+                $opcsCodes = OPCSCode::model()->findAll($criteria);
+            }
+            $procedure->opcsCodes = $opcsCodes;
+
+            // set benefits
+            $benefits = [];
+            if (isset($user_benefits)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', array_values($user_benefits));
+                $benefits = Benefit::model()->findAll($criteria);
+            }
+            $procedure->benefits = $benefits;
+
+            // set complications
+            $complications = [];
+            if (isset($user_complications)) {
+                $criteria = new \CDbCriteria();
+                $criteria->addInCondition('id', array_values($user_complications));
+                $complications = Benefit::model()->findAll($criteria);
+            }
+            $procedure->complications = $complications;
+
+            // try saving the data
+            if (!$procedure->save()) {
+                $errors = $procedure->getErrors();
+            } else {
+                $this->redirect('/oeadmin/procedure/list/');
+            }
+        }
+
+        $this->render('/oeadmin/procedure/edit', array(
+            'procedure' => $procedure,
+            'opcs_code' => OPCSCode::model()->findAll(),
+            'benefits' => Benefit::model()->findAll(),
+            'complications' => Complication::model()->findAll(),
+            'notes' => ElementType::model()->findAll(),
+            'errors' => $errors,
         ));
-        if (isset($admin->getModel()->operationNotes)) {
-            $admin->setEditFields(array_merge(
-                $admin->getEditFields(),
-                array(
-                    'operationNotes' => array(
-                        'widget' => 'MultiSelectList',
-                        'relation_field_id' => 'id',
-                        'label' => 'Operation Note Element',
-                        'options' => CHtml::encodeArray(CHtml::listData(
-                            ElementType::model()->findAllByAttributes(array(), 'event_type_id in (select id from event_type where name = "Operation Note")'),
-                            'id',
-                            'name'
-                        )),
-                    ),
-                )
-            ));
-        }
-        $admin->editModel();
     }
 
     /**
-     * Deletes rows for the model.
+     * @param Procedure $procedure - procedure to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given procedure
+     */
+    protected function isProcedureDeletable(Procedure $procedure)
+    {
+        $check_dependencies = 1;
+
+        $options = [':id' => $procedure->id];
+        $check_dependencies &= !Element_OphTrOperationnote_GenericProcedure::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !EtOphtrconsentProcedureProceduresProcedures::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !EtOphtrconsentProcedureAddProcsAddProcs::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphTrOperationbooking_Operation_Procedures::model()->count('proc_id = :id', $options);
+        $check_dependencies &= !OphTrLaser_LaserProcedure::model()->count('procedure_id = :id', $options);
+        $check_dependencies &= !OphTrLaser_LaserProcedureAssignment::model()->count('procedure_id = :id', $options);
+
+        return $check_dependencies;
+    }
+
+    /**
+     * Deletes rows from the model.
      */
     public function actionDelete()
     {
-        $admin = new Admin(Procedure::model(), $this);
-        $admin->deleteModel();
+        $procedures = \Yii::app()->request->getPost('select', []);
+
+        foreach ($procedures as $procedure_id) {
+            $procedure = Procedure::model()->findByPk($procedure_id);
+
+            if ($procedure && $this->isProcedureDeletable($procedure)) {
+                $procedure->specialties = [];
+                $procedure->subspecialtySubsections = [];
+                $procedure->opcsCodes = [];
+                $procedure->additional = [];
+                $procedure->benefits = [];
+                $procedure->complications = [];
+
+                if (!$procedure->save()) {
+                    echo 'Could not save procedure.';
+                    return;
+                }
+                if (!$procedure->delete()) {
+                    echo 'Could not delete procedure.';
+                    return;
+                }
+            } else {
+                echo 'Procedure cannot be deleted. Other tables depend on it.';
+            }
+        }
+        echo 1;
     }
 }

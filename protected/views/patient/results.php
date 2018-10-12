@@ -119,20 +119,7 @@ $based_on = implode(', ', $based_on);
       <tfoot>
       <tr>
         <td colspan="8">
-          <div class="pagination">
-              <?php
-              $this->widget('LinkPager', array(
-                  'pages' => $data_provider->getPagination(),
-                  'maxButtonCount' => 15,
-                  'cssFile' => false,
-                  'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                  'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                  'htmlOptions' => array(
-                      'class' => 'pagination',
-                  ),
-              ));
-              ?>
-          </div>
+            <?php $this->widget('LinkPager', [ 'pages' => $data_provider->getPagination() ]); ?>
         </td>
       </tr>
       </tfoot>

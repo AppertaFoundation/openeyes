@@ -78,7 +78,7 @@
                             'empty' => '- Please select -',
                             'textAttribute' => 'data-value',
                             'nolabel' => true,
-                            'style'=> 'width: 100%;'
+                            'style' => 'width: 100%;'
                         ),
                         false,
                         array('field' => 12)
@@ -97,8 +97,6 @@
                 <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
             </td>
         </tr>
-
-
         <tr>
             <td>
                 <?php echo $element->getAttributeLabel('iol_type_id'); ?>
@@ -106,7 +104,7 @@
             <td>
                 <div class="cols-6">
                     <?php
-                    if (isset(Yii::app()->modules["OphInBiometry"])): ?>
+                    if (isset(Yii::app()->modules["OphInBiometry"])) : ?>
                         <?php echo $form->dropDownList(
                             $element,
                             'iol_type_id',
@@ -124,7 +122,7 @@
                             $element->iol_hidden,
                             array('field' => 12)
                         ); ?>
-                    <?php else: ?>
+                    <?php else : ?>
                         <?php echo $form->dropDownList(
                             $element,
                             'iol_type_id',
@@ -158,13 +156,8 @@
                 <label>IOL power</label>
             </td>
             <td>
-                <input id="Element_OphTrOperationnote_Cataract_iol_power"
-                       type="text"
-                       name="Element_OphTrOperationnote_Cataract[iol_power]"
-                       autocomplete="off"
-                       value="<?php echo $element->iol_power; ?>"
-                       class="cols-6"
-                >
+                <?= \CHtml::activeTextField($element, 'iol_power'); ?>
+
             </td>
         </tr>
         <tr>
@@ -172,13 +165,7 @@
                 <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
             </td>
             <td>
-                <input id="Element_OphTrOperationnote_Cataract_predicted_refraction"
-                       type="text"
-                       name="Element_OphTrOperationnote_Cataract[predicted_refraction]"
-                       autocomplete="off"
-                       value="<?php echo $element->predicted_refraction; ?>"
-                       class="cols-6"
-                >
+                <?= \CHtml::activeTextField($element, 'predicted_refraction'); ?>
             </td>
         </tr>
         <tr>
@@ -198,7 +185,10 @@
                         $element->iol_hidden, array('field' => 12)
                     ) ?>
                     <style>
-                        #Element_OphTrOperationnote_Cataract_iol_position_id {min-width: 100%; max-width: 100%}
+                        #Element_OphTrOperationnote_Cataract_iol_position_id {
+                            min-width: 100%;
+                            max-width: 100%
+                        }
                     </style>
                 </div>
             </td>
@@ -220,14 +210,9 @@
                 Phaco CDE:
             </td>
             <td>
-                <input autocomplete="off"
-                       type="text"
-                       name="Element_OphTrOperationnote_Cataract[phaco_cde]"
-                       id="Element_OphTrOperationnote_Cataract_phaco_cde"
-                       value="<?php echo $element->phaco_cde?>"
-                       class="cols-6"
-                >
-                <i class="oe-i info small pad js-has-tooltip " data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></i>
+                <?= \CHtml::activeTextField($element, 'phaco_cde');?>
+                <i class="oe-i info small pad js-has-tooltip "
+                   data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></i>
             </td>
         </tr>
         <tr>
@@ -257,14 +242,16 @@
     </table>
 </div>
 <style>
-    .Element_OphTrOperationnote_Cataract .multi-select-dropdown-container select{
+    .Element_OphTrOperationnote_Cataract .multi-select-dropdown-container select {
         max-width: 50%;
         min-width: 50%;
     }
-    #ophTrOperationnotePCRRiskDiv #div_Element_OphTrOperationnote_Cataract_pcr_risk{
+
+    #ophTrOperationnotePCRRiskDiv #div_Element_OphTrOperationnote_Cataract_pcr_risk {
         padding-left: 135px;
         padding-right: 50px;
     }
+
     #ophTrOperationnotePCRRiskDiv #div_Element_OphTrOperationnote_Cataract_pcr_risk #left_eye_pcr,
     #ophTrOperationnotePCRRiskDiv #div_Element_OphTrOperationnote_Cataract_pcr_risk #right_eye_pcr {
         width: 91.66667% !important;

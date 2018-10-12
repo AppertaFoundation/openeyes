@@ -30,6 +30,9 @@ class ComplicationController extends BaseAdminController
      * @var int
      */
     public $itemsPerPage = 100;
+    public $items_per_page = 100;
+
+    public $group = 'Procedure Management';
 
     /**
      * Lists procedures.
@@ -38,16 +41,30 @@ class ComplicationController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(Complication::model(), $this);
-        $admin->setListFields(array(
-                            'id',
-                            'name',
-                            'active',
-        ));
-        $admin->searchAll();
-        $admin->getSearch()->addActiveFilter();
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $criteria = new CDbCriteria();
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                $criteria->addCondition('name = :query', 'OR');
+                $criteria->addCondition('id = :query', 'OR');
+                $criteria->params[':query'] = $search['query'];
+            }
+
+            if ($search['active'] == 1) {
+                $criteria->addCondition('t.active = 1');
+            } elseif ($search['active'] != '') {
+                $criteria->addCondition('t.active != 1');
+            }
+        }
+
+        $complication = Complication::model();
+
+        $this->render('/oeadmin/complication/index', [
+            'pagination' => $this->initPagination($complication, $criteria),
+            'complications' => $complication->findAll($criteria),
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -59,16 +76,50 @@ class ComplicationController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(Complication::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
+        $errors = [];
+        $complication_object = Complication::model()->findByPk($id);
+
+        if (!$complication_object) {
+            $complication_object = new Complication();
+            if ($id) {
+                $complication_object->id = $id;
+            }
         }
-        $admin->setEditFields(array(
-                'name' => 'text',
-                'active' => 'checkbox',
-            )
-        );
-        $admin->editModel();
+
+        if (Yii::app()->request->isPostRequest) {
+            // get data from POST
+            $user_data = \Yii::app()->request->getPost('Complication');
+
+            $complication_object->name = $user_data['name'];
+            $complication_object->active = $user_data['active'];
+
+            // try saving the data
+            if (!$complication_object->save()) {
+                $errors = $complication_object->getErrors();
+            } else {
+                $this->redirect('/oeadmin/complication/list/');
+            }
+        }
+
+        $this->render('/oeadmin/complication/edit', array(
+            'complication' => $complication_object,
+            'errors' => $errors
+        ));
+    }
+
+
+    /**
+     * @param Complication $complication - complication to look for dependencies
+     * @return bool|int - true if there are no tables depending on the given complication
+     */
+    protected function isComplicationDeletable(Complication $complication)
+    {
+        $check_dependencies = 1;
+
+        $options = [':id' => $complication->id];
+        $check_dependencies &= !ProcedureComplication::model()->count('complication_id = :id', $options);
+
+        return $check_dependencies;
     }
 
     /**
@@ -76,7 +127,19 @@ class ComplicationController extends BaseAdminController
      */
     public function actionDelete()
     {
-        $admin = new Admin(Complication::model(), $this);
-        $admin->deleteModel();
+        $complications = \Yii::app()->request->getPost('select', []);
+
+        foreach ($complications as $complication_id) {
+            $complication = Complication::model()->findByPk($complication_id);
+
+            if ($this->isComplicationDeletable($complication)) {
+                if (!$complication->delete()) {
+                    echo 'Could not delete complication with id: ' . $complication_id . '.\n';
+                }
+            } else {
+                echo 'Complication with id ' . $complication_id .' cannot be deleted. Other tables depend on it.\n';
+            }
+        }
+        echo 1;
     }
 }

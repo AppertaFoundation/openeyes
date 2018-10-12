@@ -420,7 +420,9 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
 		hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
 		// check if the other side is visible
 		// if it isn't disable the form elements
-		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('div.js-element-eye.' + side).hasClass('inactive')) {
+		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+			.find('div.js-element-eye.' + side)
+			.find('.active-form:hidden')) {
 			$('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).attr('disabled', 'disabled') });
 		}
 	}
