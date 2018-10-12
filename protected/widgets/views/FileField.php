@@ -17,4 +17,4 @@
  */
 ?>
 <?php //echo CHtml::fileField($name, $value, $htmlOptions)?>
-<?php echo CHtml::fileField(CHtml::modelName($element).'['.$field.']', $value, $htmlOptions)?>
+<?=\CHtml::fileField(CHtml::modelName($element).'['.$field.']', $value, $htmlOptions)?>

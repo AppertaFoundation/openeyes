@@ -25,24 +25,24 @@ $form = $this->beginWidget('CActiveForm', array(
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
-<?php echo CHtml::hiddenField('returnUrl', $this->returnUrl) ?>
+<?=\CHtml::hiddenField('returnUrl', $this->returnUrl) ?>
 
 <?php if ($this->subspecialty): ?>
-    <?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id) ?>
+    <?=\CHtml::hiddenField('subspecialty_id', $this->subspecialty->id) ?>
   <p>
     To add an event to this episode you must switch to a <?php echo $this->subspecialty->name ?> firm.
   </p>
 <?php endif; ?>
 
 <?php if ($this->support_services): ?>
-    <?php echo CHtml::hiddenField('support_services', 1) ?>
+    <?=\CHtml::hiddenField('support_services', 1) ?>
   <p>
     To add an event to this episode you must switch to a support services firm.
   </p>
 <?php endif; ?>
 
 <?php if ($this->patient): ?>
-    <?php echo CHtml::hiddenField('patient_id', $this->patient->id) ?>
+    <?=\CHtml::hiddenField('patient_id', $this->patient->id) ?>
 <?php endif; ?>
 
 <?php
@@ -75,7 +75,7 @@ if ($errors = $form->errorSummary($model)) {
   <?php if ($this->mode === "popup"): ?>
     <tr>
       <td colspan="2" class="align-right">
-          <?php echo CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
+          <?=\CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
       </td>
     </tr>
   <?php endif; ?>

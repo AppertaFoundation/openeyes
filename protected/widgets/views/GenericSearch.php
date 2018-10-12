@@ -18,11 +18,11 @@
 ?>
 
 <?php
-if ($search->getSearchItems() && is_array($search->getSearchItems())):
-    if (isset($subList) && $subList):?>
+if ($search->getSearchItems() && is_array($search->getSearchItems())) :
+    if (isset($subList) && $subList) : ?>
         <div id="generic-search-form">
-    <?php
-    else:
+        <?php
+    else :
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'generic-search-form',
             'enableAjaxValidation' => false,
@@ -30,36 +30,38 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
             'action' => '#',
         ));
     endif; ?>
-    <div>
+    <table class="standard">
+        <tr>
         <?php
-        foreach ($search->getSearchItems() as $key => $value):
+        foreach ($search->getSearchItems() as $key => $value) :
             $name = 'search[' . $key . ']';
-            if (is_array($value)):
+            if (is_array($value)) :
                 $type = isset($value['type']) ? $value['type'] : 'compare';
                 $default = isset($value['default']) ? $value['default'] : '';
                 switch ($type) {
                     case 'compare':
                         $comparePlaceholder = $search->getModel()->getAttributeLabel($key);
-                        foreach ($value as $searchKey => $searchValue):
-                            if ($searchKey === 'compare_to'):
-                                foreach ($searchValue as $compareTo):
+                        foreach ($value as $searchKey => $searchValue) :
+                            if ($searchKey === 'compare_to') :
+                                foreach ($searchValue as $compareTo) :
                                     $comparePlaceholder .= ', ' . $search->getModel()->getAttributeLabel($compareTo);
                                     echo CHtml::hiddenField('search[' . $key . '][compare_to][' . $compareTo . ']', $compareTo);
                                 endforeach;
                             endif;
                         endforeach; ?>
-                        <div class="single-search-field">
+                        <td class="single-search-field">
                             <?php
                             $name .= '[value]';
                             echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
                                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                                 'placeholder' => $comparePlaceholder,
                             )); ?>
-                        </div>
-                        <?php break;
+                        </td>
+                        <?php
+                        break;
                     case 'boolean':
                         ?>
-                        <div>
+                        <td>
                             <?php
                             echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key), array(
                                 '' => 'All',
@@ -67,12 +69,12 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                 '0' => 'Exclude ' . $search->getModel()->getAttributeLabel($key),
                             ));
                             ?>
-                        </div>
+                        </td>
                         <?php
                         break;
                     case 'dropdown':
                         ?>
-                        <div>
+                        <td>
                             <?php
                             echo CHtml::dropDownList(
                                 $name,
@@ -82,26 +84,26 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                             );
                             echo CHtml::hiddenField('search[exact][' . $key . ']', true)
                             ?>
-                        </div>
+                        </td>
                         <?php
                         break;
                     case 'id':
                         ?>
-                        <div>
+                        <td>
                             <?php
                             $comparePlaceholder = $search->getModel()->getAttributeLabel($key);
                             $name = 'search[precision][' . $key . ']';
-                            
+
                             echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
                                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                                 'placeholder' => $comparePlaceholder,
                             )); ?>
-                        </div>
+                        </td>
                         <?php
-                        break;                        
+                        break;
                     case 'disorder':
                         ?>
-                        <div id="diagnosis-search">
+                        <td id="diagnosis-search">
                             <span id="enteredDiagnosisText" style="display: none;">&nbsp;</span>
                             <?php
                                 $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
@@ -113,11 +115,11 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                     'placeholder' => 'Search for a diagnosis',
                                 ));
                             ?>
-                        </div>
-                    <?php
-                    break;
+                        </td>
+                        <?php
+                        break;
                     case 'datepicker':
-                        ?><div><?php
+                        ?><td><?php
 
                         $changeMonth = (isset($value['changeMonth']) ? $value['changeMonth'] : false);
                         $changeYear = (isset($value['changeYear']) ? $value['changeYear'] : false);
@@ -141,34 +143,34 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                                 'placeholder' => $search->getModel()->getAttributeLabel($key),
                             )
-                        ))
-                        ?>
+                        )) ?>
                         <input type="hidden" name="<?php echo $name ?>" id="<?php echo $datePickerID.'_alt' ?>" />
-                        </div> <?php
-                    break;
+                        </td> <?php
+                        break;
                 }
-            else: ?>
-                <div>
+            else : ?>
+                <td>
                     <?php
                     echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
                         'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'placeholder' => $search->getModel()->getAttributeLabel($key),
                     ));
                     ?>
-                </div>
+                </td>
                 <?php
             endif;
         endforeach;
         ?>
-        <div class="submit-row">
+        <td class="submit-row">
             <button class="button small primary event-action" name="save" formmethod="get" type="submit">Search</button>
-        </div>
-    </div>
+        </td>
+        </tr>
+    </table>
 
     <?php
-    if (isset($subList) && $subList):
+    if (isset($subList) && $subList) :
         ?></div><?php
-    else:
+    else :
         $this->endWidget();
     endif;
 endif;

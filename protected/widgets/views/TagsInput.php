@@ -27,7 +27,7 @@
     <div class="cols-<?php echo $layoutColumns['field'];?> column end">
         <div class="oe-tagsinput-wrapper">
             <input
-                name="<?php echo CHtml::modelName($element)."[$field]"; ?>" id="tags"
+                name="<?=\CHtml::modelName($element)."[$field]"; ?>" id="tags"
                 value="<?php echo implode(',', $this->default_tags); ?>"
                 type="text" class="tagsinput"
                 <?php if($this->autocomplete_url){ echo 'data-autocomplete-url = "'.$this->autocomplete_url.'"';} ?>

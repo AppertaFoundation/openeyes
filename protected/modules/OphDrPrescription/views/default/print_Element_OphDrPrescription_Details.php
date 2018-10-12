@@ -160,7 +160,7 @@ foreach ($items_data as $group => $items) { ?>
           <tr class="prescriptionComments">
             <td class="prescriptionLabel">Comments:</td>
             <td colspan="<?php echo strpos($group_name, "Hospital") !== false ? 7 : 4 ?>">
-              <i><?php echo CHtml::encode($item->comments); ?></i></td>
+              <i><?=\CHtml::encode($item->comments); ?></i></td>
           </tr>
         <?php }
     } ?>

@@ -88,7 +88,7 @@ class DrugController extends BaseAdminController
         $criteria->with = array('tags');
 
         $admin->getSearch()->setCriteria($criteria);
-
+        $admin->div_wrapper_class = 'cols-9';
         $admin->listModel();
     }
 
@@ -101,6 +101,25 @@ class DrugController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        $drug = Drug::model()->findByPk($id);
+
+        $request = Yii::app()->getRequest();
+
+        if ($request->getIsPostRequest()) {
+            echo "<pre>" . print_r($_POST, true) . "</pre>";
+            die;
+        }
+
+        $assetManager = \Yii::app()->getAssetManager();
+        $baseAssetsPath = \Yii::getPathOfAlias('application.assets.js');
+        $assetManager->publish($baseAssetsPath);
+        \Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath) . '/events_and_episodes.js');
+
+        $this->render('/oeadmin/drug/edit', array(
+            'model' => $drug,
+        ));
+        die;
+
         $admin = new Admin(Drug::model(), $this);
         if ($id) {
             $admin->setModelId($id);

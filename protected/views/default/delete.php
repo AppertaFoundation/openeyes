@@ -19,7 +19,7 @@
 
 <div class="oe-popup-wrap" id="js-delete-event" style="display: none; z-index:100">
     <div class="oe-popup">
-        <?php echo CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
+        <?=\CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')) ?>
         <div class="title">
             <i class="oe-i trash large selected pro-theme"></i>
             Delete Event
@@ -42,7 +42,7 @@
                 </tr>
                 <tr>
                     <td>Reason for deletion:</td>
-                    <td><?php echo CHtml::textArea('delete_reason', '', array('cols' => 40,'id' => 'js-text-area')) ?></textarea></td>
+                    <td><?=\CHtml::textArea('delete_reason', '', array('cols' => 40,'id' => 'js-text-area')) ?></textarea></td>
                 </tr>
                 </tbody>
             </table>
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    <?php echo CHtml::endForm(); ?>
+    <?=\CHtml::endForm(); ?>
 </div>
 
 <script>

@@ -17,7 +17,7 @@
  ?>
 
 <?php if ($definition->display_contexts) {?>
-    <table class="generic-admin grid">
+    <table class="generic-admin standard">
         <thead>
         <tr>
             <th>Site</th>

@@ -16,43 +16,55 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<div class="data-group">
-		<div class="cols-8 column">
-			<h2>Laser operators</h2>
-		</div>
-		<div class="cols-4 column">
-		</div>
-	</div>
-	<form id="admin_users">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Full name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-                foreach ($operators['items'] as $i => $operator) {?>
-					<tr class="clickable" data-id="<?php echo $operator->id?>" data-uri="OphTrLaser/admin/editLaserOperator/<?php echo $operator->id?>">
-						<td><input type="checkbox" name="operators[]" value="<?php echo $operator->id?>" /></td>
-						<td><?php echo $operator->operator->fullName?></td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="9">
-						<?php echo EventAction::button('Add', 'add_operator', null, array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_operator', null, array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('_pagination', array(
-						    'pagination' => $pagination,
-            ))?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+<div class="cols-5">
+
+    <form id="admin_users">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Full name</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <?php
+            foreach ($operators['items'] as $i => $operator) { ?>
+                <tr class="clickable" data-id="<?php echo $operator->id ?>"
+                    data-uri="OphTrLaser/admin/editLaserOperator/<?php echo $operator->id ?>">
+                    <td><input type="checkbox" name="operators[]" value="<?php echo $operator->id ?>"/></td>
+                    <td><?php echo $operator->operator->fullName ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="2">
+                    <?=\CHtml::submitButton(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add_operator',
+                            'id' => 'et_add_operator'
+                        ]
+                    ); ?>
+                    <?=\CHtml::submitButton(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete_operator',
+                            'data-object' => 'users',
+                            'id' => 'et_delete_operator'
+                        ]
+                    ); ?>
+                    <?php echo $this->renderPartial('_pagination', array(
+                        'pagination' => $pagination,
+                    )) ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>
