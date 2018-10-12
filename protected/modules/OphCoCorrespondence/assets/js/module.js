@@ -806,7 +806,31 @@ $(document).ready(function() {
 		e.preventDefault();
         $(this).closest('tr').remove();
 	});
+
+    getCorrespondenceEventImages();
 });
+
+function getCorrespondenceEventImages(){
+    $.ajax({
+        type: 'GET',
+        url: '/eventImage/getImageInfo',
+        data: {'event_id': OE_event_id},
+    }).success(function (response) {
+        if (response) {
+            $image_container = $('.js-correspondence-image-overlay');
+            $image_container.html('');
+            response = JSON.parse(response);
+            for (let index = 0; index < response.page_count; index++) {
+                $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+            }
+
+            $('#correspondence_image_0').show();
+            new OpenEyes.OphCoCorrespondence.DocumentViewerController();
+        }
+    }).complete(function () {
+
+    });
+}
 
 function savePDFprint( module , event_id , $content, $data_id, title)
 {

@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create'),
+                'actions' => array('view', 'create' ,'getImageInfo'),
                 'users' => array('@'),
             ),
             array(
@@ -114,5 +114,24 @@ class EventImageController extends BaseController
         }
 
         return $model;
+    }
+
+    public function actionGetImageInfo($event_id)
+    {
+        $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
+            array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
+        if ($event_image->last_modified_date <  Event::model()->findByPk($event_id)->last_modified_date) {
+            // Then try to make it
+            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event_id;
+            exec($command);
+        }
+
+        $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
+        if ($page_count != 0) {
+            // THen return that url
+            $image_info = ['page_count' => $page_count , 'url' => $this->createUrl('view', array('id' => $event_id))];
+            echo CJSON::encode($image_info);
+        }
+        // otherwise return nothing
     }
 }
