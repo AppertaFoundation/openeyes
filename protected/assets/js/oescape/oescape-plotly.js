@@ -69,7 +69,7 @@ var options_plotly = {
 function setMarkingEvents_plotly(layout, options, annotation, data, side, y_start, y_end){
   for (var key in data[side]) {
     for (var item of data[side][key]) {
-      var current_marker_line = Object.assign({}, options);
+      var current_marker_line = JSON.parse(JSON.stringify(options));
       current_marker_line['x0'] = new Date(item);
       current_marker_line['x1'] = new Date(item);
       current_marker_line['y0'] = y_start;
@@ -78,7 +78,7 @@ function setMarkingEvents_plotly(layout, options, annotation, data, side, y_star
       layout['shapes'].push(current_marker_line);
 
 
-      var current_annotation = Object.assign({}, annotation);
+      var current_annotation = JSON.parse(JSON.stringify(annotation));
       current_annotation['x']=new Date(item);
       current_annotation['y']= 70;
       current_annotation['text']=key;

@@ -16,7 +16,7 @@ function setYAxis_IOP() {
 }
 
 function setYTargetLine(layout, option, annotation, target, side, x_start, x_end){
-  var current_marker_line = Object.assign({}, option);
+  var current_marker_line = JSON.parse(JSON.stringify(option));
   current_marker_line['x0'] = x_start;
   current_marker_line['x1'] = x_end;
   current_marker_line['y0'] = target[side];
@@ -25,7 +25,7 @@ function setYTargetLine(layout, option, annotation, target, side, x_start, x_end
   layout['shapes'].push(current_marker_line);
 
 
-  var current_annotation = Object.assign({}, annotation);
+  var current_annotation = JSON.parse(JSON.stringify(annotation));
   current_annotation['x']= x_start;
   current_annotation['y']= target[side];
   current_annotation['text']='Target IOP('+ side + ')';
