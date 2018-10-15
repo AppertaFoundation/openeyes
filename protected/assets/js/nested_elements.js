@@ -159,7 +159,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
  * @returns {*}
  */
 function findMenuItemForElementClass(elementTypeClass) {
-    return $('#episodes-and-events').find('.collapse-group .element').filter(
+    return $('#episodes-and-events').find('.collapse-group-content .element').filter(
         function () {
             return $(this).data('elementTypeClass') === elementTypeClass;
         }
