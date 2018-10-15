@@ -1,9 +1,9 @@
-<div class="element-data element-eyes">
+<div class="element-data element-eyes flex-layout">
     <?php
     $pcr = new PcrRisk();
     foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
     ?>
-        <div class="flex-layout <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="cols-6 <?= $eye_side ?>-eye <?= $page_side ?>" data-side="<?= $eye_side ?>">
             <?php if ($element->{$eye_side . '_glaucoma'}) { ?>
             <div class="cols-12">
                 <table>
