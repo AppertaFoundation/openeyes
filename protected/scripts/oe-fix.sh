@@ -120,7 +120,10 @@ if [ "$composer" == "1" ]; then
 	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
-	sudo npm install $npmextra
+	sudo npm update --no-save $npmextra
+
+	# If we've switched from dev to live, remove dev dependencies
+	[ "$OE_MODE" == "LIVE" ] && npm prune --production
 
 fi
 

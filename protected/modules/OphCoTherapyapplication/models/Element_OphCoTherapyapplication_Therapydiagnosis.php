@@ -262,4 +262,9 @@ class Element_OphCoTherapyapplication_Therapydiagnosis extends SplitEventTypeEle
             }
         }
     }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
+    }
 }
