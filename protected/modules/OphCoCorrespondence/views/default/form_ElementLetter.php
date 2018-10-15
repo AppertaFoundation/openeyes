@@ -56,7 +56,7 @@ $creating = $creating ?: false;
         <div class="data-group">
           <table class="cols-full">
             <colgroup>
-              <col class="cols-5">
+              <col class="cols-3">
               <col class="cols-7">
             </colgroup>
             <tbody>
@@ -66,7 +66,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?=\CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
-                      array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full')); ?>
+                      array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
               </td>
             </tr>
             <tr>
@@ -89,6 +89,10 @@ $creating = $creating ?: false;
         </div>
         <div class="data-group">
           <table class="cols-full pad-top">
+						<colgroup>
+							<col class="cols-3">
+							<col class="cols-7">
+						</colgroup>
             <tbody>
             <tr>
               <td>
@@ -96,7 +100,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => '- Please select -', 'nowrapper' => true)) ?>
+                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <tr>
@@ -105,7 +109,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'),
-                      array('nowrapper' => true)) ?>
+                      array('nowrapper' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
             <tr>
@@ -115,7 +119,7 @@ $creating = $creating ?: false;
               <td>
                   <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
+                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
@@ -125,7 +129,7 @@ $creating = $creating ?: false;
               </td>
               <td>
                   <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'),
-                      array('nowrapper' => true, 'null' => true)) ?>
+                      array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')) ?>
               </td>
             </tr>
             <!--                    Direct Line-->
@@ -134,7 +138,7 @@ $creating = $creating ?: false;
                 Direct Line
               </td>
               <td>
-                  <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true), array(),
+                  <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
@@ -144,7 +148,7 @@ $creating = $creating ?: false;
                 Fax
               </td>
               <td>
-                  <?php echo $form->textField($element, 'fax', array('nowrapper' => true), array(),
+                  <?php echo $form->textField($element, 'fax', array('nowrapper' => true, 'class' => 'cols-full'), array(),
                       array_merge($layoutColumns, array('field' => 2))) ?>
               </td>
             </tr>
