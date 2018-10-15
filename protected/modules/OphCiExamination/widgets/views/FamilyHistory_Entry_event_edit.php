@@ -41,7 +41,7 @@ if (!isset($values)) {
     <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?= $values['relative_id'] ?>"/>
       <?= $values['relative_display'] ?>
     <div class="other_relative_wrapper" style="display: none">
-        <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $values['other_condition'] ? $values['other_relative'] : ''),
+        <?=\CHtml::textField($field_prefix . '[other_relative]', ( $values['other_condition'] ? $values['other_relative'] : ''),
             array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </div>
   </td>
@@ -53,20 +53,32 @@ if (!isset($values)) {
     <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?= $values['condition_id'] ?>"/>
       <?= $values['condition_display'] ?>
     <div class="other_condition_wrapper" style="display: none">
-        <?php echo CHtml::textField($field_prefix . '[other_condition]',
+        <?=\CHtml::textField($field_prefix . '[other_condition]',
             ( $values['other_condition'] ? $values['other_condition']: ''), array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </div>
   </td>
-  <td>
-      <?php if (!$editable): ?>
-          <?= $values['comments'] ?>
-      <?php else: ?>
-        <div class="cols-full ">
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'],
-                array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-        </div>
-      <?php endif; ?>
-  </td>
+	<td>
+		<?php if (!$editable): ?>
+			<?= $values['comments'] ?>
+		<?php else: ?>
+			<span class="comment-group js-comment-container"
+						id="<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+						style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+						data-comment-button="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button">
+            <?=\CHtml::textField($field_prefix . '[comments]', $values['comments'],
+							array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+				<i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+				</span>
+			<button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+							class="button js-add-comments"
+							data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comment_container]') ?>"
+							type="button"
+							style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+			>
+				<i class="oe-i comments small-icon"></i>
+			</button>
+		<?php endif; ?>
+	</td>
 
     <?php if ($editable) : ?>
       <td>

@@ -17,210 +17,214 @@
  */
 ?>
 <?php
+
 $copy = $data['copy'];
 
 $header_text = null;
 $footer_text = null;
 
-$allowed_tags='<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
+$allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup><u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
 $header_param = Yii::app()->params['prescription_boilerplate_header'];
-if(!is_null($header_param)) {
+if ($header_param !== null) {
     $header_text = strip_tags($header_param, $allowed_tags);
 }
 
 $footer_param = Yii::app()->params['prescription_boilerplate_footer'];
-if(!is_null($footer_param)) {
+if ($footer_param !== null) {
     $footer_text = strip_tags($footer_param, $allowed_tags);
 }
 
 ?>
 
-<h1>
-    <?php
-    if($this->attachment_print_title){
-        echo $this->attachment_print_title;
-    } else {
-        echo 'Prescription Form';
-    }
-    ?>
-</h1>
+  <h1>
+      <?php
+      if ($this->attachment_print_title) {
+          echo $this->attachment_print_title;
+      } else {
+          echo 'Prescription Form';
+      }
+      ?>
+  </h1>
 
 <?php
 $firm = $element->event->episode->firm;
-$consultantName = $firm->consultant ? $firm->consultant->fullName : 'None';
+$consultantName = $firm->consultant ? $firm->consultant->getFullName() : 'None';
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 
-<?php if(!is_null($header_text)): ?>
-    <div class="clearfix"><?=$header_text?></div>
+<?php if ($header_text !== null): ?>
+  <div class="clearfix"><?= $header_text ?></div>
 <?php endif; ?>
 
-<table class="borders prescription_header">
-	<tr>
-		<th>Patient Name</th>
-		<td><?php echo $this->patient->fullname ?> (<?php echo $this->patient->gender ?>)</td>
-		<th>Hospital Number</th>
-		<td><?php echo $this->patient->hos_num ?></td>
-	</tr>
-	<tr>
-		<th>Date of Birth</th>
-		<td><?php echo $this->patient->NHSDate('dob') ?> (<?php echo $this->patient->age ?>)</td>
-		<th>NHS Number</th>
-		<td><?php echo $this->patient->getNhsnum() ?></td>
-	</tr>
-	<tr>
-		<th>Consultant</th>
-		<td><?php echo $consultantName ?></td>
-		<th>Service</th>
-		<td><?php echo $subspecialty->name ?></td>
-	</tr>
+  <table class="borders prescription_header">
     <tr>
-		<th>Patient's address</th>
-        <td colspan="3"><?php echo $this->patient->getSummaryAddress(", ") ?></td>
-	</tr>
-</table>
+      <th>Patient Name</th>
+      <td><?php echo $this->patient->fullname ?> (<?php echo $this->patient->gender ?>)</td>
+      <th>Hospital Number</th>
+      <td><?php echo $this->patient->hos_num ?></td>
+    </tr>
+    <tr>
+      <th>Date of Birth</th>
+      <td><?php echo $this->patient->NHSDate('dob') ?> (<?php echo $this->patient->age ?>)</td>
+      <th>NHS Number</th>
+      <td><?php echo $this->patient->getNhsnum() ?></td>
+    </tr>
+    <tr>
+      <th>Consultant</th>
+      <td><?php echo $consultantName ?></td>
+      <th>Service</th>
+      <td><?php echo $subspecialty->name ?></td>
+    </tr>
+    <tr>
+      <th>Patient's address</th>
+      <td colspan="3"><?php echo $this->patient->getSummaryAddress(', ') ?></td>
+    </tr>
+  </table>
 
-<div class="spacer"></div>
+  <div class="spacer"></div>
 
-		<?php
-		$items_data = $this->groupItems($element->items);
-		foreach ($items_data as $group => $items) {?>
-			<b>
-					<?php
-						$group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
-						echo $group_name; ?>
-			</b>
-			<table class="borders prescription_items">
-			<thead>
-			<tr>
-				<th class="prescriptionLabel">Prescription details</th>
-				<th>Dose</th>
-				<th>Route</th>
-				<th>Freq.</th>
-				<th>Duration</th>
-				<?php if(strpos($group_name,"Hospital") !== false ){?>
-					<th>Dispense Location</th>
-					<th>Dispensed</th>
-					<th>Checked Status</th>
-				<?php }?>
-			</tr>
-			</thead>
-			<tbody>
-			<?php
-			foreach ($items as $item) {
-				?>
-				<tr
-					class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
-					<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
-                    <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
-					<td><?php echo $item->route->name ?><?php if ($item->route_option) {
-							echo ' (' . $item->route_option->name . ')';
-						} ?></td>
-					<td><?php echo $item->frequency->long_name; ?></td>
-					<td><?php echo $item->duration->name ?></td>
-					<?php if(strpos($group_name,"Hospital") !== false ){?>
-						<td><?php echo $item->dispense_location->name ?></td>
-						<td></td>
-						<td></td>
-					<?php }?>
-				</tr>
-				<?php foreach ($item->tapers as $taper) { ?>
-					<tr class="prescriptionTaper">
-						<td class="prescriptionLabel">then</td>
-                        <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
-						<td>-</td>
-						<td><?php if ($data['copy'] == 'patient') {
-								echo $taper->frequency->long_name;
-							} else {
-								echo $taper->frequency->name;
-							} ?>
-						</td>
-						<td><?php echo $taper->duration->name ?></td>
-                        <?php if(strpos($group_name,"Hospital") !== false ){?>
-                            <td></td>
-						    <td>-</td>
-							<td>-</td>
-						<?php }?>
-					</tr>
-					<?php
-				}
+  <h2>Allergies</h2>
+  <table class="borders">
+    <tr>
+      <td><?php echo $this->patient->getAllergiesString(); ?></td>
+    </tr>
+  </table>
 
-				if(!is_null($item->comments)) { ?>
+  <div class="spacer"></div>
+
+<?php
+$items_data = $this->groupItems($element->items);
+foreach ($items_data as $group => $items) { ?>
+  <b>
+      <?php
+      $group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
+      echo $group_name; ?>
+  </b>
+  <table class="borders prescription_items">
+    <thead>
+    <tr>
+      <th class="prescriptionLabel">Prescription details</th>
+      <th>Dose</th>
+      <th>Route</th>
+      <th>Freq.</th>
+      <th>Duration</th>
+        <?php if (strpos($group_name, 'Hospital') !== false) { ?>
+          <th>Dispense Location</th>
+          <th>Dispensed</th>
+          <th>Checked Status</th>
+        <?php } ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($items as $item) {
+        ?>
+      <tr
+          class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
+        <td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
+        <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
+        <td><?php echo $item->route->name ?><?php if ($item->route_option) {
+                echo ' (' . $item->route_option->name . ')';
+            } ?></td>
+        <td><?php echo $item->frequency->long_name; ?></td>
+        <td><?php echo $item->duration->name ?></td>
+          <?php if (strpos($group_name, 'Hospital') !== false) { ?>
+            <td><?php echo $item->dispense_location->name ?></td>
+            <td></td>
+            <td></td>
+          <?php } ?>
+      </tr>
+        <?php foreach ($item->tapers as $taper) { ?>
+        <tr class="prescriptionTaper">
+          <td class="prescriptionLabel">then</td>
+          <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
+          <td>-</td>
+          <td><?php if ($data['copy'] == 'patient') {
+                  echo $taper->frequency->long_name;
+              } else {
+                  echo $taper->frequency->name;
+              } ?>
+          </td>
+          <td><?php echo $taper->duration->name ?></td>
+            <?php if (strpos($group_name, "Hospital") !== false) { ?>
+              <td></td>
+              <td>-</td>
+              <td>-</td>
+            <?php } ?>
+        </tr>
+            <?php
+        }
+
+        if (strlen($item->comments) > 0) { ?>
           <tr class="prescriptionComments">
             <td class="prescriptionLabel">Comments:</td>
-            <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
+            <td colspan="<?php echo strpos($group_name, "Hospital") !== false ? 7 : 4 ?>">
+              <i><?=\CHtml::encode($item->comments); ?></i></td>
           </tr>
-            <?php }
-			} ?>
-			</tbody>
-		</table>
-		<?php } ?>
-<div class="spacer"></div>
+        <?php }
+    } ?>
+    </tbody>
+  </table>
+<?php } ?>
+  <div class="spacer"></div>
 
-<table class="borders prescription_items">
-  <colgroup>
-    <col width="25%">
-    <col width="75%">
-  </colgroup>
-	<tbody>
-  <tr>
-    <td>Other medications patient is taking</td>
-    <td>
-        <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-            'patient' => $this->patient,
-            'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
-        )); ?>
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <table class="borders prescription_items">
+    <colgroup>
+      <col width="25%">
+      <col width="75%">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>Other medications patient is taking</td>
+      <td>
+          <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+              'patient' => $this->patient,
+              'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW,
+          )); ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 
-<h2>Allergies</h2>
-<table class="borders">
-	<tr>
-		<td><?php echo $this->patient->getAllergiesString(); ?></td>
-	</tr>
-</table>
+  <h2>Comments</h2>
+  <table class="borders">
+    <tr>
+      <td><?php echo $element->comments ? $element->textWithLineBreaks('comments') : '&nbsp;' ?></td>
+    </tr>
+  </table>
 
-<h2>Comments</h2>
-<table class="borders">
-	<tr>
-		<td><?php echo $element->comments ? $element->textWithLineBreaks('comments') : '&nbsp;'?></td>
-	</tr>
-</table>
+  <div class="spacer"></div>
+<?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) { ?>
+  <table class="borders done_bys">
+    <tr>
+      <th>Site</th>
+      <td><?php echo $site_theatre->site->name ?></td>
+        <?php if ($site_theatre->theatre) { ?>
+          <th>Theatre</th>
+          <td><?php echo $site_theatre->theatre->name ?></td>
+        <?php } ?>
+    </tr>
+  </table>
+  <div class="spacer"></div>
+<?php } ?>
+  <table class="borders done_bys">
+    <tr>
+      <th>Prescribed by</th>
+      <td><?php echo $element->usermodified->fullname ?><?php if ($element->usermodified->registration_code) echo ' (' . $element->usermodified->registration_code . ')' ?>
+      </td>
+      <th>Date</th>
+      <td><?php echo $element->NHSDate('last_modified_date') ?>
+      </td>
+    </tr>
+    <tr class="handWritten">
+      <th>Clinical Checked by</th>
+      <td>&nbsp;</td>
+      <th>Date</th>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
 
-<div class="spacer"></div>
-<?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) {?>
-	<table  class="borders done_bys">
-		<tr>
-			<th>Site</th>
-			<td><?php echo  $site_theatre->site->name?></td>
-            <?php if($site_theatre->theatre){ ?>
-			<th>Theatre</th>
-			<td><?php echo  $site_theatre->theatre->name?></td>
-            <?php  } ?>
-		</tr>
-	</table>
-	<div class="spacer"></div>
-<?php }?>
-<table class="borders done_bys">
-	<tr>
-		<th>Prescribed by</th>
-		<td><?php echo $element->usermodified->fullname ?><?php if($element->usermodified->registration_code) echo ' ('.$element->usermodified->registration_code.')' ?>
-		</td>
-		<th>Date</th>
-		<td><?php echo $element->NHSDate('last_modified_date') ?>
-		</td>
-	</tr>
-	<tr class="handWritten">
-		<th>Clinical Checked by</th>
-        <td>&nbsp;</td>
-		<th>Date</th>
-		<td>&nbsp;</td>
-	</tr>
-</table>
-
-<?php if(!is_null($footer_text)): ?>
-    <div><?=$footer_text?></div>
+<?php if ($footer_text !== null): ?>
+  <div><?= $footer_text ?></div>
 <?php endif; ?>

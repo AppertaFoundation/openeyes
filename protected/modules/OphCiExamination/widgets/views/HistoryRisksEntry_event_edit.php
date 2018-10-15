@@ -44,7 +44,7 @@ if (!isset($values)) {
         <label class="risk-display" data-id="<?= $values['risk_id'] ?>"
                data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display']; ?></label>
         <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['other'] ?: 'none' ?>">
-        <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
+        <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>
     </td>
@@ -52,13 +52,13 @@ if (!isset($values)) {
         <?php if ($removable) {
             if ($values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+                    <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                         $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
                         array('value' => HistoryRisksEntry::$PRESENT)); ?>
                     Yes
                 </label>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+                    <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                         $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
                         array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
                     No
@@ -68,42 +68,42 @@ if (!isset($values)) {
             }
         } else { ?>
             <label class="inline highlight">
-                <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
+                <?=\CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
                     array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
                 Not checked
             </label>
             <label class="inline highlight">
-                <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+                <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
                     array('value' => HistoryRisksEntry::$PRESENT)); ?>
                 Yes
             </label>
             <label class="inline highlight">
-                <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+                <?=\CHtml::radioButton($field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
                     array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
                 No
             </label>
         <?php } ?>
     </td>
-    <td>
-        <button
-                id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
-                type="button"
-                class="button js-add-comments"
-                style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
-                data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
-            <i class="oe-i comments small-icon"></i>
-        </button>
+	<td>
         <span class="comment-group js-comment-container"
-              id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
-              style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
-              data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
+							id="<?= strtr($field_prefix, '[]', '__') ?>_comment_container"
+							style="<?php if (!$values['comments']): ?>display: none;<?php endif; ?>"
+							data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button">
       <input type="text" class="js-comment-field" name="<?= $field_prefix ?>[comments]"
-             value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
+						 value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"/>
       <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
     </span>
-    </td>
+		<button
+			id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+			type="button"
+			class="button js-add-comments"
+			style="<?php if ($values['comments']): ?>visibility: hidden;<?php endif; ?>"
+			data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comment_container">
+			<i class="oe-i comments small-icon"></i>
+		</button>
+	</td>
     <?php if ($removable) : ?>
         <td>
             <i class="oe-i trash"></i>

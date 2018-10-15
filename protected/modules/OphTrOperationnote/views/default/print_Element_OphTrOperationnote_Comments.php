@@ -18,7 +18,7 @@
 ?>
 
 <section class="element">
-	<h3 class="element-title"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h3>
+	<h3 class="element-title"><?=\CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h3>
 	<div class="details">
 		<div class="element-data">
       <div class="data-value<?php if (!$element->postop_instructions) {?> none<?php }?>"><?php echo $element->postop_instructions ? Yii::app()->format->Ntext($element->postop_instructions) : 'None'?></div>
@@ -27,7 +27,7 @@
 </section>
 
 <section class="element">
-	<h3 class="element-title"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></h3>
+	<h3 class="element-title"><?=\CHtml::encode($element->getAttributeLabel('comments'))?></h3>
 	<div class="details">
 		<div class="element-data">
       <div class="data-value<?php if (!$element->comments) {?> none<?php }?>"><?php echo $element->comments ? Yii::app()->format->Ntext($element->comments) : 'None'?></div>

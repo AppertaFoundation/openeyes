@@ -11,7 +11,7 @@ $(document).ready(function () {
 
         // If the user clicked on an input element, or if this cell contains an input
         // element then do nothing.
-        if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+        if (target.is(':input') || (target.is('td') && target.find('input, button').length)) {
             return;
         }
 
@@ -19,7 +19,7 @@ $(document).ready(function () {
 
         if (uri) {
             var url = uri.split('/');
-            url.unshift(baseUrl);
+            url.unshift(window.baseUrl);
             window.location.href = url.join('/');
         }
     });
@@ -105,11 +105,13 @@ $(document).ready(function () {
         $('.box_admin_elements').toggle();
     });
 
+    // when changing the global rights radiobutton, remove the firms
     $globalFirmRights.on('change', function(){
+        $wrapper = $('#User_firms').closest('.multi-select');
         if($("input:radio[name='User[global_firm_rights]']:checked").val() === '1'){
-            $('#div_User_Firms').hide();
+            $wrapper.hide();
         } else {
-            $('#div_User_Firms').show();
+            $wrapper.show();
         }
     });
 

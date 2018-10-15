@@ -24,7 +24,7 @@
          style="display: <?= count($element->entries) ? ' none' : ''?>"
          id="<?=$model_name?>_no_family_history_wrapper">
       <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
-        <?php echo CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
+        <?=\CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
     </div>
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
@@ -32,13 +32,20 @@
   <table id="<?= $model_name ?>_entry_table"
          style="display:  <?= !count($element->entries) ? 'none' :''?>"
          class="cols-10">
+		<colgroup>
+			<col>
+			<col>
+			<col>
+			<col class="cols-4">
+			<col class="cols-1">
+		</colgroup>
       <thead>
       <tr>
           <th>Relative</th>
           <th>Side</th>
           <th>Condition</th>
-          <th>Comments</th>
-          <th>Action</th>
+          <th></th>
+          <th></th>
       </tr>
       </thead>
       <tbody>

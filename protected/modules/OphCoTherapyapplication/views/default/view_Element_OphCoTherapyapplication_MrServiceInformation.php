@@ -21,7 +21,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>
+          <?=\CHtml::encode($element->getAttributeLabel('consultant_id')) ?>
       </div>
     </td>
     <td>
@@ -32,7 +32,7 @@
     <tr>
       <td>
         <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:
+            <?=\CHtml::encode($element->getAttributeLabel('site_id')) ?>:
         </div>
       </td>
       <td>
@@ -43,7 +43,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo CHtml::encode($element->getAttributeLabel('patient_sharedata_consent')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('patient_sharedata_consent')) ?>:
       </div>
     </td>
     <td>

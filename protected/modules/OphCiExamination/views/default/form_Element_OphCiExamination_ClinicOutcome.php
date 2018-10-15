@@ -36,10 +36,10 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     <?php echo $form->hiddenField($element, 'role_comments'); ?>
 
   <div class="cols-7">
-      <?php echo CHtml::textField('follow-up-dummy-input', '', array(
+      <?=\CHtml::textField('follow-up-dummy-input', '', array(
           'class' => 'cols-full',
           'rows' => 1,
-          'placeholder' => 'Follow-up',
+          'placeholder' => 'Please select an option from the right',
           'disabled' => true,
           'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
       )) ?>
@@ -187,7 +187,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
               </td>
               <td>
                 <div class="flex-layout flex-top flex-left">
-                    <?php echo CHtml::textField('follow_up_role_comments', $element->role_comments,
+                    <?=\CHtml::textField('follow_up_role_comments', $element->role_comments,
                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Role')) ?>
                 </div>
               </td>

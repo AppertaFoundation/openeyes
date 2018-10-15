@@ -17,13 +17,14 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
 <?php
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'laser-create'));
+$form_id = 'laser-create';
+$this->beginContent('//patient/event_container', array('no_face'=>false, 'form_id' => $form_id));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-'id' => 'laser-create',
+'id' => $form_id,
 'enableAjaxValidation' => false,
 'layoutColumns' => array(
     'label' => 4,

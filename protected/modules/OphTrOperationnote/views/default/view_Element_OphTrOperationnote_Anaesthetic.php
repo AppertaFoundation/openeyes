@@ -28,16 +28,15 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <div class="element-data full-width">
     <div class="data-group">
       <div class="data-value flex-layout flex-top">
         <div class="cols-full">
             <?php if (count($element->anaesthetic_type) > 1 || (count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA"))) { ?>
           <div class="cols-11" id="js-listview-anaesthetic-pro">
-            <ul class="dslash-list large-text">
+            <ul class="dot-list large">
               <li><?= $element->getAnaestheticTypeDisplay() ?></li>
               <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
-              <li><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?>:
+              <li><?=\CHtml::encode($element->getAttributeLabel('agents')) ?>:
                 <span <?php if (!$element->anaesthetic_agents){ ?>class="none"<?php } ?>>
                    <?php echo $anaesthetic_agents ?>
                 </span>
@@ -46,7 +45,7 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
                   <?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
               </li>
               <li>
-                  <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>:
+                  <?=\CHtml::encode($element->getAttributeLabel('complications')) ?>:
                   <?php echo $anaesthetic_complications ?: 'None' ?>
               </li>
             </ul>
@@ -61,9 +60,9 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
               <tr>
                 <th>Type</th>
                 <th>Delivery</th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('complications')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('agents')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('anaesthetist_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('complications')) ?></th>
               </tr>
               </thead>
               <tbody>
@@ -84,15 +83,15 @@ $anaesthetic_complications = implode('<br />', array_map(function($complication)
               </tbody>
             </table>
 
-            <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment')) ?></h4>
+            <h4 class="data-label"><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_comment')) ?></h4>
             <div
-                class="data-value<?php if (!$element->anaesthetic_comment) { ?> none<?php } ?>"><?php echo CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?>
+                class="data-value<?php if (!$element->anaesthetic_comment) { ?> none<?php } ?>"><?=\CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?>
             </div>
           </div>
         </div>
           <?php if ($element->getSetting('fife')) { ?>
             <div class="cols-3 column">
-              <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id')) ?></h4>
+              <h4 class="data-label"><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id')) ?></h4>
               <div class="data-value<?php if (!$element->witness) { ?> none<?php } ?>">
                   <?php echo $element->witness ? $element->witness->fullName : 'None' ?>
               </div>

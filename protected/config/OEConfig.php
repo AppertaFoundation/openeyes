@@ -107,6 +107,7 @@ class OEConfig
 
                 if (!empty($config['modules'])) {
                     foreach ($config['modules'] as $module_name2) {
+                        $modules_path .= "$module_name/modules/";
                         $configs = self::importModuleConfig($modules_path, $module_name2, $environment, $configs);
                     }
                 }

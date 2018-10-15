@@ -17,29 +17,31 @@
  */
 ?>
 <?php
+/***
+ * @var $element \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity
+ */
 list($values, $val_options) = $element->getUnitValuesForForm(null, true);
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
 $key = 0;
 ?>
 
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'nearvisualacuity_unit_change',
               @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
               array('class' => 'inline'));
-          ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-        <div class="info">
-          <small><em><?php echo $element->unit->information ?></em></small>
-        </div>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <div class="info">
+              <small><em><?php echo $element->unit->information ?></em></small>
+            </div>
+              <?php
+          } } ?>
   </div>
 </div>
 
@@ -49,13 +51,15 @@ $key = 0;
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-      <div class="active-form data-group flex-layout">
+    <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> <?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+          data-side="<?= $eye_side ?>"
+    >
+      <div class="active-form data-group flex-layout"
+           style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+      >
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
-          <table class="cols-full blank near-va-readings"
-                 style=" <?= !$element->{$eye_side . '_readings'}? 'display: none; ': '' ?> ">
+          <table class="cols-full blank near-va-readings">
             <tbody>
             <?php foreach ($element->{$eye_side.'_readings'} as $reading) {
                 // Adjust currently element readings to match unit steps
@@ -74,24 +78,22 @@ $key = 0;
             }?>
             </tbody>
           </table>
-          <div class="data-group noReadings"
-               style=" <?=($element->{$eye_side . '_readings'})?  'display: none; ': '' ?>" >
-            <div class="cols-4 column">
-              <div class="data-value not-recorded">Not recorded</div>
-            </div>
+          <div class="data-group noReadings">
             <div class="cols-8 column">
-                <?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                <?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
+                <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
+                <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
             </div>
           </div>
         </div>
-        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-near-va-reading">
+        <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-NearVisualAcuity-reading"
+             style=" <?= !$element->eyeAssesable($eye_side) ? 'display: none; ': '' ?> ">
           <button class="button hint green addReading" id="<?= $eye_side ?>-add-near-va-btn" type="button">
             <i class="oe-i plus pro-theme"></i>
           </button>
         </div>
       </div>
-      <div class="inactive-form" style="display: none;">
+      <div class="inactive-form"
+           style="<?= $element->hasEye($eye_side)? 'display: none;': ''?>" >
         <div class="add-side">
           <a href="#">
             Add <?= $eye_side ?> side <span class="icon-add-side"></span>
@@ -105,28 +107,35 @@ $key = 0;
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($key, $value) {
               return ['label' => $value, 'id' => $key];
-              }, array_keys($values), $values) ) ?>),
+              }, array_keys($values), $values))?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
                 return ['label' => $method, 'id' => $key];
-                }, array_keys($methods), $methods)) ?>)
+                }, array_keys($methods), $methods))?>, {'header':'Method', 'id':'method'})
          ],
         onReturn: function (adderDialog, selectedItems) {
           var tableSelector = $('.<?= $eye_side ?>-eye .near-va-readings');
-          if(selectedItems.length){
-            var selected_data = {
-              'reading_value': selectedItems[0]['id'],
-              'reading_display': selectedItems[0]['value'],
-              'method_id': selectedItems[1]['id'],
-              'method_display': selectedItems[1]['value'],
-              'tooltip': <?= CJSON::encode($val_options)?>[selectedItems[0]['id']]['data-tooltip']
-            };
-              OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
-              newRow = tableSelector.find('tbody tr:last');
+          if(selectedItems.length==2){
+            var selected_data = {};
+            for (i in selectedItems) {
+              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = selectedItems[i]['id'];
+                selected_data.reading_display = selectedItems[i]['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+              }
+              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = selectedItems[i]['id'];
+                selected_data.method_display = selectedItems[i]['label'];
+              }
+            }
+            OphCiExamination_NearVisualAcuity_addReading('<?= $eye_side ?>', selected_data);
+            newRow = tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
           }
-          return true;
         }
 
       });
@@ -159,7 +168,6 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath.'/components/chosen/');
 
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
-
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {

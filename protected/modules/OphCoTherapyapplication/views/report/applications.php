@@ -4,10 +4,10 @@
     <table class="standard cols-full">
       <tbody>
       <tr>
-        <td><?php echo CHtml::label('Consultant', 'firm_id') ?></td>
+        <td><?=\CHtml::label('Consultant', 'firm_id') ?></td>
         <td>
             <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-                <?php echo CHtml::dropDownList('firm_id', null, $firms, array('empty' => 'All consultants')) ?>
+                <?=\CHtml::dropDownList('firm_id', null, $firms, array('empty' => 'All consultants')) ?>
             <?php else: ?>
                 <?php
                 $firm = Firm::model()->findByAttributes(array('consultant_id' => Yii::app()->user->id));
@@ -36,7 +36,7 @@
         </td>
       </tr>
       <tr>
-        <td><?php echo CHtml::label('Date From', 'date_from') ?></td>
+        <td><?=\CHtml::label('Date From', 'date_from') ?></td>
         <td>
           <input id="date_from"
                  placeholder="dd-mm-yyyy"
@@ -47,7 +47,7 @@
           >
 
         </td>
-        <td><?php echo CHtml::label('Date To', 'date_to') ?></td>
+        <td><?=\CHtml::label('Date To', 'date_to') ?></td>
         <td>
           <input id="date_to"
                  placeholder="dd-mm-yyyy"
@@ -61,19 +61,19 @@
       <tr>
         <td>Submission Information</td>
         <td>
-            <?php echo CHtml::label('Submission Date', 'submission') ?>
-            <?php echo CHtml::checkBox('submission'); ?>
+            <?=\CHtml::label('Submission Date', 'submission') ?>
+            <?=\CHtml::checkBox('submission'); ?>
         </td>
       </tr>
       <tr>
         <td>Injection Information</td>
         <td>
-            <?php echo CHtml::label('First Injection', 'first_injection') ?>
-            <?php echo CHtml::checkBox('first_injection'); ?>
+            <?=\CHtml::label('First Injection', 'first_injection') ?>
+            <?=\CHtml::checkBox('first_injection'); ?>
         </td>
         <td>
-            <?php echo CHtml::label('Last Injection', 'last_injection') ?>
-            <?php echo CHtml::checkBox('last_injection'); ?>
+            <?=\CHtml::label('Last Injection', 'last_injection') ?>
+            <?=\CHtml::checkBox('last_injection'); ?>
         </td>
       </tr>
       </tbody>
@@ -87,7 +87,7 @@
                 'readonly' => 'readonly',
             );
         } ?>
-        <?php echo CHtml::submitButton('Generate Report', $htmlOptions) ?>
+        <?=\CHtml::submitButton('Generate Report', $htmlOptions) ?>
       &nbsp; &nbsp;
     </div>
   </form>

@@ -17,23 +17,23 @@
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 ?>
-<div class="home-messages flex-layout flex-top">
+<div class="home-messages subgrid">
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
       <li>
-        <?php echo CHtml::link(
+        <?=\CHtml::link(
             $inbox_unread > 0 ? "Inbox ($inbox_unread)" : 'Inbox',
             '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
       </li>
       <li>
-        <?php echo CHtml::link(
+        <?=\CHtml::link(
             $urgent_unread > 0 ? "Urgent ($urgent_unread)" : 'Urgent',
             '#',
             array('id' => 'display-urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
       <li>
-        <?php echo CHtml::link(
+        <?=\CHtml::link(
             $sent_unread > 0 ? "Sent ($sent_unread)" : 'Sent',
             '#', array('id' => 'display-sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
       </li>

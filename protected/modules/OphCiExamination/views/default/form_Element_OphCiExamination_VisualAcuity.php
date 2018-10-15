@@ -18,23 +18,28 @@
 ?>
 <?php
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
+//Reverse the unit values to ensure bigger value display first.
+$values = array_reverse($values, true);
+//Get the base value that should be displayed whe popup open.
+$unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'Snellen Metre'))->id;
+$default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
+
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-    'id', 'name');
+	'id', 'name');
 $key = 0;
 ?>
 <div class="element-both-eyes">
-  <div style="text-align: center">
+  <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+            <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
-            ?>
-      <?php } ?>
-      <?php if ($element->unit->information) { ?>
-          <span class="js-has-tooltip fa oe-i info small"
-                data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-      <?php } ?>
+          if ($element->unit->information) { ?>
+            <span class="js-has-tooltip fa oe-i info small"
+                  data-tooltip-content="<?php echo $element->unit->information ?>"></span>
+              <?php }
+      } ?>
       </div>
 </div>
 
@@ -46,19 +51,21 @@ if ($cvi_api) {
 }
 ?>
 <div class="element-fields element-eyes">
-  <input type="hidden" name="visualacuity_readings_valid" value="1"/>
+    <input type="hidden" name="visualacuity_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
-          data-side="<?= $eye_side ?>">
-        <div class="active-form data-group flex-layout">
+      <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
+          data-side="<?= $eye_side ?>"
+      >
+        <div class="active-form data-group flex-layout"
+             style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
+        >
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full blank va_readings"
-                   style="<?= !$element->{$eye_side . '_readings'}? 'display: none;': '' ?>" >
+            <table class="cols-full blank va_readings">
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -77,11 +84,7 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div class="data-group noReadings"
-                style="<?= $element->{$eye_side . '_readings'}? 'display: none;':'' ?>">
-              <div class="cols-4 column">
-                <div class="data-value not-recorded">Not recorded</div>
-              </div>
+            <div class="data-group noReadings">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
@@ -90,7 +93,8 @@ if ($cvi_api) {
               </div>
             </div>
           </div>
-          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-reading">
+          <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-VisualAcuity-reading"
+               style="<?= !$element->eyeAssesable($eye_side)? 'display: none;': '' ?>">
             <button class="button hint green addReading" id="add-reading-btn-<?= $eye_side?>" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
@@ -99,7 +103,7 @@ if ($cvi_api) {
           <!--flex bottom-->
         </div>
         <!-- active form-->
-        <div class="inactive-form" style="display: none">
+        <div class="inactive-form"  style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
           <div class="add-side">
             <a href="#">
               Add <?= $eye_side ?> side <span class="icon-add-side"></span>
@@ -112,8 +116,8 @@ if ($cvi_api) {
       new OpenEyes.UI.AdderDialog({
         openButton:$('#add-reading-btn-<?= $eye_side?>'),
         itemSets:[new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($key, $value) {
-                return ['label' => $value, 'id' => $key];
+            array_map(function ($key, $value) use ($default_display_value) {
+                return $key==$default_display_value? ['label' => $value, 'id' => $key, 'set-default' => true]: ['label' => $value, 'id' => $key];
             }, array_keys($values), $values)) ?>, {'header':'Value', 'id':'reading_val'}),
           new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
               array_map(function ($key, $method) {
@@ -122,7 +126,7 @@ if ($cvi_api) {
         ],
         onReturn: function(adderDialog, selectedItems){
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
-          if(selectedItems.length){
+          if(selectedItems.length==2){
             var selected_data = {};
             for (i in selectedItems) {
               if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
@@ -139,8 +143,10 @@ if ($cvi_api) {
             var newRow =  tableSelector.find('tbody tr:last');
             OphCiExamination_VisualAcuity_ReadingTooltip(newRow);
             newRow.find('.va-selector').trigger('change');
+            return true;
+          } else {
+            return false;
           }
-          return true;
         },
       });
     });

@@ -51,7 +51,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . "[id]", $values['operation']); ?>
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
-            <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
+            <?=\CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
                 'placeholder' => 'Enter procedure name',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
@@ -64,7 +64,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php if(!$required) {
             if ($values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton(
+                    <?=\CHtml::radioButton(
                         $field_prefix . '[had_operation]',
                         $values['had_operation'] === (string)PastSurgery_Operation::$PRESENT,
                         array('value' => PastSurgery_Operation::$PRESENT)
@@ -72,7 +72,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
                     yes
                 </label>
                 <label class="inline highlight">
-                    <?php echo CHtml::radioButton(
+                    <?=\CHtml::radioButton(
                         $field_prefix . '[had_operation]',
                         $values['had_operation'] === (string)PastSurgery_Operation::$NOT_PRESENT,
                         array('value' => PastSurgery_Operation::$NOT_PRESENT)
@@ -84,7 +84,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             }
         } else { ?>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $posted_not_checked,
                 array('value' => PastSurgery_Operation::$NOT_CHECKED)
@@ -92,7 +92,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             Not checked
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $values['had_operation'] === (string) PastSurgery_Operation::$PRESENT,
                 array('value' => PastSurgery_Operation::$PRESENT)
@@ -100,7 +100,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             yes
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton(
+            <?=\CHtml::radioButton(
                 $field_prefix . '[had_operation]',
                 $values['had_operation'] === (string) PastSurgery_Operation::$NOT_PRESENT,
                 array('value' => PastSurgery_Operation::$NOT_PRESENT)

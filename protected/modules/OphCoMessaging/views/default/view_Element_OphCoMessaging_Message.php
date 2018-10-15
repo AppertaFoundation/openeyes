@@ -42,7 +42,7 @@ if (!@$comment) {
             </tr>
             <tr>
                 <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
+                    <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
                 </td>
                 <td>
                     <div class="data-value "><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
@@ -58,7 +58,7 @@ if (!@$comment) {
             </tr>
             <tr>
                 <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
+                    <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
                 </td>
                 <td>
                     <div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None' ?></div>
@@ -86,19 +86,36 @@ if (!@$comment) {
 
   </div>
   <div class="cols-6">
-      <p class="data-value"><?= Yii::app()->format->Ntext($element->message_text) ?></p>
-  </div>
+      <div class="row divider">
+        <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
+      </div>
+
     <?= $element->comments ? '<hr />' : '' ?>
     <?php foreach ($element->comments as $comment) { ?>
-      <div class="data-group comment">
-        <div class="cols-2 column">
-          <div class="data-label">@<?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
-        </div>
-        <div class="cols-10 column end">
-          <div class="data-value"><?= Yii::app()->format->Ntext($comment->comment_text) ?></div>
-        </div>
-      </div>
+        <p>
+            <i class="oe-i child-arrow small pad-right no-click"></i>
+           <em><?= Yii::app()->format->Ntext($comment->comment_text) ?></em>
+        </p>
+        <table class="label-value">
+            <tbody>
+            <tr>
+                <td>
+                    <div class="data-label">Reply date</div>
+                </td>
+                <td>
+                    <div class="data-value"><?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
+                </td>
+            </tr><tr>
+                <td>
+                    <div class="data-label">From</div>
+                </td>
+                <td>
+                    <div class="data-value"><?php echo $comment->user->getFullnameAndTitle();?></div>
+                </td>
+            </tr>			</tbody>
+        </table>
     <?php } ?>
+  </div>
     <?php if ($this->canComment()) { ?>
       <div class="<?= $this->show_comment_form ? '' : 'hidden' ?>" id="new-comment-form">
           <?php
@@ -112,7 +129,7 @@ if (!@$comment) {
               ),
           ));
           ?>
-          <?php echo $form->textArea($comment, 'comment_text', array('rows' => 6, 'cols' => 80), false, null, array('label' => 2, 'field' => 6)) ?>
+          <?php echo $form->textArea($comment, 'comment_text', array('rows' => 6, 'cols' => 80), false, null, array('label' => 3, 'field' => 6)) ?>
         <div class="data-group">
           <div class="cols-2 column">&nbsp;</div>
           <div class="cols-4 column end">

@@ -114,7 +114,7 @@
       <td>User</td>
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+              <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
                   CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
           <?php else: ?>
               <?php
@@ -168,8 +168,7 @@
           &nbsp;
           <button type="submit" class="button green hint download-report" name="run"><span
                 class="button-span button-span-blue">Download report</span></button>
-          <img class="loader" style="display: none;"
-               src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>&nbsp;
+          <i class="spinner loader" style="display: none;"></i>
         </div>
       </td>
     </tr>

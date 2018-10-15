@@ -62,7 +62,7 @@ ComplianceCalculator.prototype.init = function()
 ComplianceCalculator.prototype.showOutcome = function(outcome_id, source_node_id)
 {
 	var node_elem = this._elem.find('#' + this._side + '_outcome_' + outcome_id);
-	this._elem.find('div.outcome').hide().each(function() {$(this).data('source-node-id', null); });
+	this._elem.find('span.outcome').hide().each(function() {$(this).data('source-node-id', null); });
 	node_elem.show().data('source-node-id', source_node_id);
 	this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val(node_elem.data('comp-val'));
 }
@@ -80,7 +80,6 @@ ComplianceCalculator.prototype.hideOutcome = function(outcome_id, source_node_id
 		node_elem.data('source-node-id', null);
 		this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val('');
 	}
-
 }
 
 /*
@@ -283,7 +282,7 @@ function OphCoTherapyapplication_ComplianceCalculator_init(side) {
 function OphCoTherapyapplication_ComplianceCalculator_update(elem) {
 	var node = elem.parents('.dt-node');
 	var id = node.data('defn').id;
-	var side = node.closest('.side').data('side');
+	var side = node.closest('.js-element-eye').data('side');
 
 	$('#OphCoTherapyapplication_ComplianceCalculator_' + side).data('calc_obj').update(id);
 }
@@ -420,7 +419,9 @@ function OphCoTherapyapplication_ExceptionalCircumstances_check(side) {
 		hideSplitElementSide('Element_OphCoTherapyapplication_ExceptionalCircumstances', side);
 		// check if the other side is visible
 		// if it isn't disable the form elements
-		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('div.side.' + side).hasClass('inactive')) {
+		if ($('.Element_OphCoTherapyapplication_ExceptionalCircumstances')
+			.find('div.js-element-eye.' + side)
+			.find('.active-form:hidden')) {
 			$('.Element_OphCoTherapyapplication_ExceptionalCircumstances').find('input, select, textarea').each(function() { $(this).attr('disabled', 'disabled') });
 		}
 	}
@@ -730,7 +731,7 @@ $(document).ready(function() {
 
 
 	// extend the removal behaviour for diagnosis to affect the dependent elements
-	$(this).delegate('.element-fields .side .active-form a.remove-side', 'click', function(e) {
+	$(this).delegate('.element-fields .js-element-eye .active-form a.remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		var other_side = 'left';
 		if (side == 'left') {
@@ -745,7 +746,7 @@ $(document).ready(function() {
 	});
 
 	// extend the adding behaviour for diagnosis to affect dependent elements
-	$(this).delegate('.element-fields .side .inactive-form a', 'click', function(e) {
+	$(this).delegate('.element-fields .js-element-eye .inactive-form a', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		OphCoTherapyapplication_PatientSuitability_check(side);
 		OphCoTherapyapplication_ContraIndications_check();

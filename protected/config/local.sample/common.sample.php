@@ -16,15 +16,18 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+// If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
+// Note, docker secrets are the recommended approach for docker environments
+
 if (file_exists('/etc/openeyes/db.conf')) {
     $db = parse_ini_file('/etc/openeyes/db.conf');
 } else {
     $db = array(
-        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : '127.0.0.1',
+        'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
         'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
         'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
-        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : 'openeyes',
-        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : 'openeyes',
+        'username' => getenv('DATABASE_USER') ? getenv('DATABASE_USER') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes' ),
+        'password' => getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes' ),
     );
 }
 
@@ -117,7 +120,7 @@ $config = array(
         'OphInDnaextraction',
         'OphInGeneticresults',*/
         'OphCoDocument',
-	'OphCiDidNotAttend',
+        'OphCiDidNotAttend',
     ),
 
     'params' => array(
@@ -130,7 +133,7 @@ $config = array(
         'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
         'ldap_password' => '',
         'ldap_dn' => 'CN=Users,dc=example,dc=com',
-        'environment' => 'dev',
+        'environment' => getenv('OE_MODE') == "LIVE" ? 'live' : 'dev',
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
@@ -182,8 +185,8 @@ $config = array(
         'signature_app_url' => 'https://dev.oesign.uk',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => 'admin',
-        'docman_password' => 'admin',
+        'docman_user' => 'docman_user',
+        'docman_password' => '1234qweR!',
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
         // possible values:
         // none => XML output is suppressed

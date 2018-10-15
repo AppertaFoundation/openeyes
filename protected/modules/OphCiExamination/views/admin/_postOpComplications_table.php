@@ -14,25 +14,25 @@
  */
 ?>
 <table>
-  <colgroup>
-    <col class="cols-6">
-  </colgroup>
-	<thead>
-		<th>Item name</th>
-	</thead>
-	<tbody id="<?= $id ?>">
-	<?php
+    <colgroup>
+        <col class="cols-6">
+    </colgroup>
 
-    foreach ($items as $item) {
-        ?><tr class="draggablelist-item" data-item-id="<?= $item->id ?>"><td><?= $item->name ?></td></tr><?php
+    <thead>
+    <th>Item name</th>
+    </thead>
 
-    }
+    <tbody id="<?= $id ?>">
+    <?php
+    foreach ($items as $item) { ?>
+        <tr class="draggablelist-item" data-item-id="<?= $item->id ?>">
+            <td><?= $item->name ?></td>
+        </tr>
+    <?php } ?>
 
-    ?>
-	<tr class="draggablelist-empty" style="display: none"><td class="text-center">(drag items here)</td></tr>
-	</tbody>
+    <tr class="draggablelist-empty" style="display: none">
+        <td class="text-center">(drag items here)</td>
+    </tr>
+
+    </tbody>
 </table>
-
-
-
-

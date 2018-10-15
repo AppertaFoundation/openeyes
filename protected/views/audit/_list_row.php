@@ -17,7 +17,7 @@
  */
 ?>
 <tr class="<?php 
-    echo (($i % 2 == 0) ? 'even' : 'edd'); 
+    echo (($i % 2 == 0) ? 'even' : 'edd');
     echo ' '.strtolower($log->colour);?>" 
 	id="audit<?php echo $log->id?>" <?php if (@$hidden) {?> style="display: none;"<?php }?>>
 	<td>
@@ -41,14 +41,14 @@
 	</td>
 	<td>
 		<?php if ($log->patient) {?>
-			<?php echo CHtml::link($log->patient->displayName, array('patient/view/'.$log->patient_id))?>
+			<?=\CHtml::link($log->patient->displayName, array('patient/view/'.$log->patient_id))?>
 		<?php } else {?>
 			-
 		<?php }?>
 	</td>
 	<td>
 		<?php if ($log->episode) {?>
-			<?php echo CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
+			<?=\CHtml::link('view', array('patient/episode/'.$log->episode_id))?>
 		<?php } else {?>
 			-
 		<?php }?>
@@ -58,6 +58,7 @@
 	<td colspan="9">
 		<div class="panel logs">
 			<table class="blank plain log-details">
+                <tbody>
 				<tr>
 					<th scope="col">IP address:</th>
 					<td><?php echo $log->ip_addr ? $log->ip_addr->name : '-'?></td>
@@ -97,6 +98,7 @@
 						<?php }?>
 					</td>
 				</tr>
+                </tbody>
 			</table>
 		</div>
 	</td>

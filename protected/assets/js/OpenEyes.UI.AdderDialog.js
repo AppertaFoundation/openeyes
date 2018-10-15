@@ -10,6 +10,8 @@
   function AdderDialog(options) {
 
     this.searchRequest = null;
+    this.isOpen = false;
+    this.blackoutDiv = null;
 
     EventEmitter.call(this);
     this.options = $.extend(true, {}, AdderDialog._defaultOptions, options);
@@ -31,6 +33,7 @@
    * @property {string} [id=null] - The ID of the popup div
    * @property {string} [popupClass='oe-add-select-search auto-width'] - The classes to use for the popup
    * @property {string} [liClass='auto-width'] - The class to use for the items
+   * @property {boolean} [createBlackoutDiv] - Whether a blackout div should be created, closing the popup if the user clicks anywhere else
    * @private
    */
   AdderDialog._defaultOptions = {
@@ -47,6 +50,7 @@
     liClass: 'auto-width',
     searchOptions: null,
     width: null,
+    createBlackoutDiv: true,
   };
 
   /**
@@ -57,7 +61,7 @@
     var dialog = this;
 
     var content = $('<div />', {class: this.options.popupClass, id: this.options.id});
-    if(this.options.width) {
+    if (this.options.width) {
       content.css('width', this.options.width);
     }
     var $closeButton = $('<div />', {class: 'close-icon-btn'})
@@ -97,13 +101,19 @@
       });
     } else {
       this.popup.on('click', 'li', function () {
+
         if (!$(this).hasClass('selected')) {
           if (!$(this).closest('ul').data('multiselect')) {
             $(this).parent('ul').find('li').removeClass('selected');
           }
           $(this).addClass('selected');
         } else {
-          $(this).removeClass('selected');
+
+          // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
+          if (!$(this).data('itemSet').options.mandatory
+            || $(this).closest('ul').find('li.selected').length > 1) {
+            $(this).removeClass('selected');
+          }
         }
       });
     }
@@ -151,7 +161,7 @@
 
       dialog.searchWrapper.hide();
       dialog.selectWrapper.show();
-      dialog.selectWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
 
     $searchButton.click(function () {
@@ -160,7 +170,7 @@
 
       dialog.searchWrapper.show();
       dialog.selectWrapper.hide();
-      dialog.searchWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
   };
 
@@ -208,16 +218,24 @@
    */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
-    var $list = $('<ul />', {class: 'add-options cols-full', 'data-multiselect': itemSet.options.multiSelect});
+    var $list = $('<ul />', {
+      class: 'add-options cols-full',
+      'data-multiselect': itemSet.options.multiSelect,
+      'data-id': itemSet.options.id
+    });
 
     itemSet.items.forEach(function (item) {
+
       var dataset = AdderDialog.prototype.constructDataset(item);
       var $listItem = $('<li />', dataset);
       $('<span />', {class: dialog.options.liClass}).text(item['label']).appendTo($listItem);
+      if (item.selected) {
+        $listItem.addClass('selected');
+      }
+
       $listItem.data('itemSet', itemSet);
       $listItem.appendTo($list);
     });
-
     return $list;
   };
 
@@ -235,6 +253,10 @@
     var right = (w - btnPos.right);
     var bottom = (h - btnPos.bottom);
 
+	if(h - bottom < 240){
+		bottom = h - 245;
+	}
+	
     // set CSS Fixed position
     this.popup.css({
       bottom: bottom,
@@ -261,7 +283,20 @@
    * @name OpenEyes.UI.AdderDialog#open
    */
   AdderDialog.prototype.open = function () {
+    this.isOpen = true;
     this.popup.show();
+    var lists = this.popup.find('ul');
+    $(lists).each(function () {
+      var defaultItem = $(this).find('li[data-set-default="true"]').get(0);
+      if (defaultItem) {
+        defaultItem.scrollIntoView();
+      }
+    });
+
+    this.positionFixedPopup(this.options.openButton);
+    if (this.options.createBlackoutDiv) {
+      this.createBlackoutBox();
+    }
     this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
       this.options.onOpen();
@@ -273,7 +308,13 @@
    * @name OpenEyes.UI.AdderDialog#close
    */
   AdderDialog.prototype.close = function () {
+    this.isOpen = false;
     this.popup.hide();
+
+    if (this.blackoutDiv) {
+      this.blackoutDiv.remove();
+      this.blackoutDiv = null;
+    }
 
     if (this.options.onClose) {
       this.popup.onClose();
@@ -299,6 +340,7 @@
     var dialog = this;
     openButton.click(function () {
       dialog.open();
+      return false;
     });
   };
 
@@ -320,31 +362,30 @@
    * @param Object item
    * @returns Object
    */
-  AdderDialog.prototype.constructDataset =  function(item){
+  AdderDialog.prototype.constructDataset = function (item) {
     var dataset = {};
-    if(typeof item === 'string'){
+    if (typeof item === 'string') {
       dataset['data-label'] = item;
     } else {
-      for (var key in item){
-        dataset['data-'+key] = item[key];
+      for (var key in item) {
+        dataset['data-' + key] = item[key];
       }
     }
     return dataset;
   };
 
   AdderDialog.prototype.return = function () {
+    var shouldClose = true;
     if (this.options.onReturn) {
       var selectedItems = this.getSelectedItems();
-      var result = this.options.onReturn(this, selectedItems);
-      if (result) {
-        this.close();
-      }
-    } else {
-      this.close();
+      shouldClose = this.options.onReturn(this, selectedItems) !== false;
     }
 
-    if (this.options.deselectOnReturn) {
-      this.popup.find('li').removeClass('selected');
+    if (shouldClose) {
+      if (this.options.deselectOnReturn) {
+        this.popup.find('li').removeClass('selected');
+      }
+      this.close();
     }
   };
 
@@ -371,12 +412,33 @@
       dialog.searchResultList.toggle(!no_data);
       dialog.noSearchResultsWrapper.toggle(no_data);
 
+      if (dialog.options.searchOptions.resultsFilter) {
+        results = dialog.options.searchOptions.resultsFilter(results);
+      }
+
       $(results).each(function (index, result) {
         var dataset = AdderDialog.prototype.constructDataset(result);
         var item = $("<li />", dataset)
           .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
         dialog.searchResultList.append(item);
       });
+    });
+  };
+
+  /**
+   * Creates a "blackout div", a mask behind the popup that will close teh dialog if the user clicks anywhere else on the screen
+   */
+  AdderDialog.prototype.createBlackoutBox = function () {
+    var dialog = this;
+
+    this.blackoutDiv = $('<div />', {
+      id: 'blackout-div',
+      style: 'height: 100%; width: 100%; position: absolute;'
+    }).appendTo($('body'));
+
+    this.blackoutDiv.css('z-index', this.popup.css('z-index') - 1);
+    this.blackoutDiv.on('click', function () {
+      dialog.close();
     });
   };
 

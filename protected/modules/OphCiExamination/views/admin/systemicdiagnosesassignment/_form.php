@@ -19,35 +19,60 @@
  */
 ?>
 
-<?php echo CHtml::errorSummary(array_merge(array($model), $model->entries), null, null, array("class"=>"alert-box alert with-icon")); ?>
+<?=\CHtml::errorSummary(
+    array_merge(array($model), $model->entries),
+    null,
+    null,
+    array("class" => "alert-box alert with-icon")
+); ?>
 
-<?php
+<div class="cols-5">
 
-    echo $form->textField($model, "name");
-    echo "<br>";
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
 
-    $this->widget('application.widgets.SubspecialtyFirmPicker', [
-        'model' => $model
-    ]);
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?=\CHtml::activeTelField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <?php
+        $this->widget('application.widgets.SubspecialtyFirmPicker', [
+            'model' => $model
+        ]);
+        ?>
+        </tbody>
+    </table>
 
-    echo "<br>";
-
+    <?php
     $disorder = CHtml::listData([0 => \Disorder::model()->findByPk(103)], 'id', 'term');
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
     }, 'name');
-?>
+    ?>
 
-<div id="risks" class="data-group">
+    <div id="risks" class="data-group">
         <?php
         $columns = array(
             array(
                 'header' => 'Diagnosis',
                 'name' => 'Diagnosis',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($disorder){
-                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",null,
+                'value' => function ($data, $row) use ($disorder) {
+                    return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]", null,
                         [
                             'class' => 'diagnoses-search-autocomplete',
                             'data-saved-diagnoses' => $data->disorder ? json_encode([
@@ -55,7 +80,7 @@
                                 'name' => $data->disorder->term,
                                 'disorder_id' => $data->disorder->id,
 
-                            ]) : ''
+                            ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ]);
                 }
             ),
@@ -63,7 +88,7 @@
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($gender_options){
+                'value' => function ($data, $row) use ($gender_options) {
                     echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
                 }
             ),
@@ -71,22 +96,22 @@
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
-                'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
+                'value' => function ($data, $row) {
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
                 }
             ),
             array(
                 'header' => '',
                 'type' => 'raw',
-                'value' => function($data, $row){
+                'value' => function ($data, $row) {
                     return CHtml::link('remove', '#', array('class' => 'remove_risk_entry'));
                 }
             ),
@@ -97,40 +122,72 @@
         $dataProvider->setData($model->entries);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
-            'itemsCssClass' => 'generic-admin grid',
+            'itemsCssClass' => 'generic-admin standard',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression'=>'array("data-row" => $row, "data-key" => $row)',
+            'rowHtmlOptionsExpression' => 'array("data-row" => $row, "data-key" => $row)',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'id'=>'OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_diagnoses_table'
+            'id' => 'OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_diagnoses_table'
 
         ));
         ?>
-        <button id="add_new_risk" type="button" class="small primary right">Add</button>
+
+        <?=\CHtml::button(
+            'Add Risk',
+            [
+                'class' => 'button large',
+                'type' => 'button',
+                'id' => 'add_new_risk'
+            ]
+        ); ?>
+
+        <?=\CHtml::submitButton(
+            'Save',
+            [
+                'class' => 'button large',
+                'name' => 'save',
+                'id' => 'et_save'
+            ]
+        ); ?>
+
+        <?=\CHtml::button(
+            'Cancel',
+            [
+                'class' => 'button large',
+                'type' => 'button',
+                'name' => 'cancel',
+                'id' => 'et_cancel'
+            ]
+        ); ?>
+    </div>
 </div>
 
-<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);?>
-<script type="text/javascript" src="<?=$js_path;?>"></script>
+<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1); ?>
+<script type="text/javascript" src="<?= $js_path; ?>"></script>
 
 <script type="text/template" id="new_risk_entry" class="hidden">
     <tr data-row="{{row}}" data-key="{{row}}">
         <td>
             <?php
-                echo CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][disorder_id]",null,['class' => 'diagnoses-search-autocomplete']);
+            echo CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][disorder_id]", null, ['class' => 'diagnoses-search-autocomplete']);
             ?>
         </td>
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
             ?>
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_{{row}}_age_min">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][age_min]"
+                   id="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_{{row}}_age_min">
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_{{row}}_age_max">
+            <input style="width:55px;" type="number"
+                   name="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][age_max]"
+                   id="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_{{row}}_age_max">
         </td>
         <td>
             <a href="javascript:void(0)" class="remove_risk_entry">remove</a>
@@ -140,11 +197,11 @@
 
 <script>
 
-    function initDiagnosesSearchController($row){
+    function initDiagnosesSearchController($row) {
         diagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': 'OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry',
-            singleTemplate :
+            singleTemplate:
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
                 "<span class='diagnosis-name'></span></span>" +
                 "<select class='commonly-used-diagnosis cols-full'></select>" +
@@ -152,8 +209,46 @@
                 "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][id]' class='savedDiagnosisId' value=''>" +
                 "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
-        $row.find('.diagnoses-search-autocomplete').data('diagnosesSearchController', diagnosesSearchController );
+        $row.find('.diagnoses-search-autocomplete').data('diagnosesSearchController', diagnosesSearchController);
     }
 
 
+    $(document).ready(function () {
+        var $table = $('table.generic-admin'),
+            $empty_tr = $table.find('.empty').closest('tr'),
+            diagnosesSearchController;
+
+        $('#add_new_risk').on('click', function (e) {
+            var data = {},
+                $row;
+
+            $empty_tr.hide();
+            data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
+            $row = Mustache.render(
+                $('#new_risk_entry').text(),
+                data
+            );
+            $table.find('tbody').append($row);
+            $row = $table.find('tbody tr:last');
+
+            initDiagnosesSearchController($row)
+        });
+
+        $($table).on('click', '.remove_risk_entry', function (e) {
+            $(this).closest('tr').remove();
+        });
+
+        $.each($table.find('tr'), function (i, tr) {
+            var $tr = $(tr);
+            initDiagnosesSearchController($tr);
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#et_cancel').click(function () {
+            window.location.href = '/OphCiExamination/oeadmin/SystemicDiagAssignment/';
+        });
+    });
 </script>

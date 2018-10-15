@@ -14,14 +14,12 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-
-<?php
-$this->beginContent('//patient/event_container', array());?>
+$form_id = 'update-form';
+$this->beginContent('//patient/event_container', array('form_id' => $form_id));?>
 
 <?php
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id'=>'update-form',
+    'id'=> $form_id,
     'enableAjaxValidation'=>false,
     'layoutColumns' => array(
         'label' => 2,
@@ -30,7 +28,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 
 // Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=>'update-form'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=> $form_id));
 
 ?>
 

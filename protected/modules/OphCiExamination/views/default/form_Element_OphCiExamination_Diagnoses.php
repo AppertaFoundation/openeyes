@@ -52,15 +52,27 @@ foreach ($this->patient->episodes as $ep) {
 <?php $model_name = CHtml::modelName($element); ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
-    <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table id="<?= $model_name ?>_diagnoses_table" class="cols-10">
-        <colgroup>
-            <col class="cols-6">
-            <col class="cols-1" span="3">
-        </colgroup>
+			<colgroup>
+				<col class="cols-4">
+				<col class="cols-2">
+				<col class="cols-2">
+				<col class="cols-3">
+				<col class="cols-1">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Diagnosis</th>
+					<th>Side</th>
+					<th>Principal</th>
+					<th>Date</th>
+					<th></th>
+				</tr>
+			</thead>
         <tbody id="OphCiExamination_diagnoses" class="js-diagnoses">
         <?php
 
@@ -142,7 +154,11 @@ foreach ($this->patient->episodes as $ep) {
         openButton: $('#add-ophthalmic-diagnoses'),
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
-                return ['label' => $disorder_item['label'], 'id' => $disorder_item['id']];
+                return [
+                        'label' => $disorder_item['label'],
+                    'id' => $disorder_item['id'] ,
+                    'secondary' => json_encode($disorder_item['secondary'])
+                ];
             }, $disorder_list)
         ) ?>, {'multiSelect': true})],
         searchOptions: {

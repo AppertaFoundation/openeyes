@@ -22,7 +22,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('cerebrovascular_accident')) ?>:
       </div>
     </td>
     <td>
@@ -32,7 +32,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('ischaemic_attack')) ?>:
       </div>
     </td>
     <td>
@@ -42,7 +42,7 @@
   <tr>
     <td>
       <div class="data-label">
-          <?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction')) ?>:
+          <?=\CHtml::encode($element->getAttributeLabel('myocardial_infarction')) ?>:
       </div>
     </td>
     <td>

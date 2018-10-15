@@ -38,13 +38,13 @@ foreach ($lasertypes as $lt) {
 ?>
 
 <div
-    id="div_<?php echo CHtml::modelName($element)?>_treatment_fields"
+    id="div_<?=\CHtml::modelName($element)?>_treatment_fields"
     class="element-eyes sub-element-fields jsTreatmentFields"
 >
 	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
 	<div
-      class="element-eye <?=$eye?>-eye column <?=$side?> side <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
+      class="js-element-eye <?=$eye?>-eye column <?=$side?> <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
       data-side="<?=$eye?>"
   >
 		<div class="active-form">

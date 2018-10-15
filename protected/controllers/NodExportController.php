@@ -1,19 +1,17 @@
 <?php
-
 /**
- * OpenEyes
+ * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 // this extract's execution time is more than the default 500sec
@@ -35,11 +33,11 @@ class NodExportController extends BaseController
     private $startDate = '';
     private $endDate = '';
     
-    // Refactoring : 
+    // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
      * two or more extract running at the same time can use different tmp tables
-     * @var int 
+     * @var int
      */
     private $extractIdentifier;
     
@@ -51,11 +49,6 @@ class NodExportController extends BaseController
                 'roles' => array('NOD Export'),
             ),
         );
-    }
-
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
     }
 
     public function init()
@@ -111,7 +104,7 @@ class NodExportController extends BaseController
     
     public function actionIndex()
     {
-        // TODO: need to create views!!!
+        $this->pageTitle = 'NOD Export';
         $this->render('//nodexport/index');
     }
     
@@ -128,9 +121,7 @@ class NodExportController extends BaseController
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
         }
-        
     }
     
     /**
@@ -204,8 +195,7 @@ class NodExportController extends BaseController
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
-            if(count($data) > 0)
-            {
+            if (count($data) > 0) {
                 $csv = $this->array2Csv($data, null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
@@ -218,8 +208,6 @@ class NodExportController extends BaseController
         }
         return $resultIds;
     }
-
-
 
     private function createAllTempTables()
     {

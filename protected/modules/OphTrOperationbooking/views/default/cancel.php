@@ -43,7 +43,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 		</div>
 		<div class="flex-layout">
 			<div class="cols-2">
-				<?php echo CHtml::label('Cancellation reason: ', 'cancellation_reason'); ?>
+				<?=\CHtml::label('Cancellation reason: ', 'cancellation_reason'); ?>
 			</div>
 			<div class="cols-10">
 				<?php if (!empty($operation->booking) && (strtotime($operation->booking->session->date) <= strtotime('now'))) {
@@ -51,14 +51,14 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 				} else {
 				  $listIndex = 2;
 				} ?>
-				<?php echo CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
+				<?=\CHtml::dropDownList('cancellation_reason', '', OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
             array('empty' => 'Select a reason')
         ); ?>
 			</div>
 		</div>
 		<div class="flex-layout">
 			<div class="cols-2">
-				<?php echo CHtml::label('Comments: ', 'cancellation_comment'); ?>
+				<?=\CHtml::label('Comments: ', 'cancellation_comment'); ?>
 			</div>
 			<div class="cols-10">
 				<textarea id="cancellation_comment" name="cancellation_comment"></textarea>
@@ -71,7 +71,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 			</div>
 		</div>
 	</div>
-	<?php echo CHtml::endForm(); ?>
+	<?=\CHtml::endForm(); ?>
   </section>
 </section>
 <?php $this->endContent();?>

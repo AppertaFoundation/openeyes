@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201806131116',
+            'time' => '201810091400',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -300,7 +300,9 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'table lists',
+            'plugins' => 'table lists importcss',
+            'branding' => false,
+            'visual' => false,
             'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
             'valid_children' => '+body[style]'
         ),
@@ -384,6 +386,7 @@ return array(
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
+        'wkhtmltoimage_path' => '/usr/local/bin/wkhtmltoimage',
         'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
         'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
         'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
@@ -506,6 +509,17 @@ return array(
             // whiteboard will be refresh-able after operation booking is completed
             // overrides admin > Opbooking > whiteboard settings
             //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
+
+        /**
+         * Lightning Viewer
+         */
+
+        'lightning_viewer' => array(
+            'image_width' => 800,
+            'pdf_render_width' => 1250,
+            'keep_temp_files' => false,
+            'compression_quality' => 50,
         ),
     ),
 );

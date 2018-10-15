@@ -16,65 +16,67 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphCoCorrespondence.assets'));
-Yii::app()->clientScript->registerScriptFile($modulePath.'/js/siteSecretary.js');
+Yii::app()->clientScript->registerScriptFile($modulePath . '/js/siteSecretary.js');
 ?>
-<div class="box admin">
-		<div class="large-8 column">
-			<h2>Contact Numbers</h2>
-		</div>
-	<?php
-    $deleteForm = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'deleteSecretaryForm',
-        'action' => '/OphCoCorrespondence/admin/deleteSiteSecretary/',
-        'enableAjaxValidation' => false,
-    )) ?>
 
-	<?php $this->endWidget() ?>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-	<?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'editSecretaryForm',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    )) ?>
-	<table>
-		<thead>
-			<tr>
-				<td>Site</td>
-				<td>Direct Line</td>
-				<td>Fax</td>
-				<td>Action</td>
-			</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
-			<tr class="secretaryFormRow">
-				<td>
-					<?php echo CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>
-					<?php echo CHtml::activeHiddenField($siteSecretary, "[$id]id"); ?>
-					<?php echo CHtml::activeDropDownList($siteSecretary, "[$id]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
-				</td>
-				<td>
-					<?php echo CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-				</td>
-				<td>
-					<?php echo CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-				</td>
-				<td>
-					<button type="submit" form="deleteSecretaryForm" name="id" class="small" value="<?php echo $siteSecretary->id ?>">Delete</button>
-				</td>
-			</tr>
-		<?php endforeach;?>
-			<tr>
-				<td>
-					<?php echo $form->formActions();?>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+    <div class="row divider">
+        <h2>Contact Numbers</h2>
+    </div>
+<?php
+$deleteForm = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'deleteSecretaryForm',
+    'action' => '/OphCoCorrespondence/admin/deleteSiteSecretary/',
+    'enableAjaxValidation' => false,
+)) ?>
 
-	<?php $this->endWidget() ?>
-</div>
+<?php $this->endWidget() ?>
+
+<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'editSecretaryForm',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+    <table class="standard cols-full">
+        <thead>
+        <tr>
+            <td>Site</td>
+            <td>Direct Line</td>
+            <td>Fax</td>
+            <td>Action</td>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($siteSecretaries as $id => $siteSecretary): ?>
+            <tr class="secretaryFormRow">
+                <td>
+                    <?=\CHtml::activeHiddenField($siteSecretary, "[$id]firm_id"); ?>
+                    <?=\CHtml::activeHiddenField($siteSecretary, "[$id]id"); ?>
+                    <?=\CHtml::activeDropDownList($siteSecretary, "[$id]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
+                </td>
+                <td>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                </td>
+                <td>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                </td>
+                <td>
+                    <button type="submit" form="deleteSecretaryForm" name="id" class="small"
+                            value="<?php echo $siteSecretary->id ?>">Delete
+                    </button>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td>
+                <?php echo $form->formActions(); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+<?php $this->endWidget() ?>

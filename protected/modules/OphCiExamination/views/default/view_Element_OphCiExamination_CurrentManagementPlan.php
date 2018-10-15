@@ -27,7 +27,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
     $hasEyeFunc = "has".ucfirst($eye);
   ?>
-	<section class="element-eye <?=$side?> side <?=$eye?>-eye">
+	<section class="js-element-eye <?=$side?> <?=$eye?>-eye">
     <?php if ($element->$hasEyeFunc()):?>
     <div class="data-group">
       <table>
@@ -45,7 +45,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
         <tr>
           <td class="cols-5 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_glaucoma_status_id'))?>
+                <?=\CHtml::encode($element->getAttributeLabel($eye.'_glaucoma_status_id'))?>
             </div>
           </td>
           <td class="cols-7 column end">
@@ -59,7 +59,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
         <tr>
           <td class="cols-5 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drop-related_prob_id'))?>
+                <?=\CHtml::encode($element->getAttributeLabel($eye.'_drop-related_prob_id'))?>
             </div>
           </td>
           <td class="cols-7 column end">
@@ -71,7 +71,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
         <tr>
           <td class="cols-5 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_drops_id'))?>
+                <?=\CHtml::encode($element->getAttributeLabel($eye.'_drops_id'))?>
             </div>
           </td>
           <td class="cols-7 column end">
@@ -85,7 +85,7 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
         <tr>
           <td class="cols-5 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel($eye.'_surgery_id'))?>
+                <?=\CHtml::encode($element->getAttributeLabel($eye.'_surgery_id'))?>
             </div>
           </td>
           <td class="cols-7 column end">

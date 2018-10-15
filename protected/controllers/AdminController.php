@@ -3,8 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,13 +12,14 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class AdminController extends BaseAdminController
 {
     public $layout = 'admin';
     public $items_per_page = 30;
+    public $group = 'Core';
 
     /**
      * @var int
@@ -33,18 +33,27 @@ class AdminController extends BaseAdminController
 
     public function actionEditPreviousOperation()
     {
+        $this->group = 'Examination';
         $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
     {
-        $this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
+        $this->group = 'Disorders';
+        $this->genericAdmin(
+            'Common Ophthalmic Disorder Groups',
+            'CommonOphthalmicDisorderGroup',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 
     public function actionEditCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $models = CommonOphthalmicDisorderGroup::model()->findAll();
-        $data = array_map(create_function('$model','return $model->getAttributes(array("id", "name"));'), $models);
+        $data = array_map(function ($model) {
+            return $model->getAttributes(array("id", "name"));
+        }, $models);
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
@@ -54,7 +63,7 @@ class AdminController extends BaseAdminController
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
         }
 
-        if( Yii::app()->request->isPostRequest){
+        if (Yii::app()->request->isPostRequest) {
 
             $transaction = Yii::app()->db->beginTransaction();
 
@@ -62,9 +71,9 @@ class AdminController extends BaseAdminController
             $disorders = Yii::app()->request->getParam('CommonOphthalmicDisorder', array());
 
             $ids = array();
-            foreach($disorders as $key => $disorder){
-
-                if(!$common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id'])){
+            foreach ($disorders as $key => $disorder) {
+                $common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
+                if (!$common_ophtalmic_disorder) {
                     $common_ophtalmic_disorder = new CommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -75,15 +84,14 @@ class AdminController extends BaseAdminController
                 //$_GET['subspecialty_id'] must be present, we do not use the default value 1
                 $common_ophtalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
 
-                if(!$common_ophtalmic_disorder->save()){
+                if (!$common_ophtalmic_disorder->save()) {
                     $errors[] = $common_ophtalmic_disorder->getErrors();
                 }
 
                 $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
             }
 
-            if(empty($errors)){
-
+            if (empty($errors)) {
                 //Delete items
                 $criteria = new CDbCriteria();
 
@@ -111,8 +119,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', 'List updated.');
 
             } else {
-
-                foreach($errors as $error){
+                foreach ($errors as $error) {
                     foreach($error as $attribute => $error_array){
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
@@ -136,7 +143,7 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->compare('subspecialty_id', $subspecialty_id);
 
-        $this->render('editcommonophthalmicdisorder',array(
+        $this->render('editcommonophthalmicdisorder', array(
             'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
                 'criteria' => $criteria,
                 'pagination' => false,
@@ -148,19 +155,20 @@ class AdminController extends BaseAdminController
 
     public function actionEditSecondaryToCommonOphthalmicDisorder()
     {
+        $this->group = 'Disorders';
         $errors = array();
         $parent_id = Yii::app()->request->getParam('parent_id', 1);
 
-        if( Yii::app()->request->isPostRequest){
+        if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
 
             $display_orders = Yii::app()->request->getParam('display_order', array());
             $disorders = Yii::app()->request->getParam('SecondaryToCommonOphthalmicDisorder', array());
 
             $ids = array();
-            foreach($disorders as $key => $disorder){
-
-                if(!$common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id'])){
+            foreach ($disorders as $key => $disorder) {
+                $common_ophtalmic_disorder = SecondaryToCommonOphthalmicDisorder::model()->findByPk($disorder['id']);
+                if (!$common_ophtalmic_disorder) {
                     $common_ophtalmic_disorder = new SecondaryToCommonOphthalmicDisorder;
                     $disorder['id'] = null;
                 }
@@ -171,15 +179,14 @@ class AdminController extends BaseAdminController
                 //$_GET['parent_id'] must be present, we do not use the default value 1
                 $common_ophtalmic_disorder->parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
 
-                if(!$common_ophtalmic_disorder->save()){
+                if (!$common_ophtalmic_disorder->save()) {
                     $errors[] = $common_ophtalmic_disorder->getErrors();
                 }
 
                 $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
             }
 
-            if(empty($errors)){
-
+            if (empty($errors)) {
                 //Delete items
                 $criteria = new CDbCriteria();
 
@@ -207,8 +214,7 @@ class AdminController extends BaseAdminController
                 Yii::app()->user->setFlash('success', 'List updated.');
 
             } else {
-
-                foreach($errors as $error){
+                foreach ($errors as $error) {
                     foreach($error as $attribute => $error_array){
                         $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
@@ -229,7 +235,7 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->compare('parent_id', $parent_id);
 
-        $this->render('editSecondaryToCommonOphthalmicdisorder',array(
+        $this->render('editSecondaryToCommonOphthalmicdisorder', array(
             'dataProvider' => new CActiveDataProvider('SecondaryToCommonOphthalmicDisorder', array(
                 'criteria' => $criteria,
                 'pagination' => false,
@@ -240,28 +246,41 @@ class AdminController extends BaseAdminController
 
     public function actionManageFindings()
     {
-        $this->genericAdmin(
-            'Findings',
-            'Finding',
-            array(
-                'extra_fields' => array(
-                    array(
-                        'field' => 'subspecialties',
-                        'type' => 'multilookup',
-                        'noSelectionsMessage' => 'All Subspecialties',
-                        'htmlOptions' => array(
-                            'empty' => '- Please Select -',
-                            'nowrapper' => true,
-                        ),
-                        'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
-                    ),
-                    array(
-                        'field' => 'requires_description',
-                        'type' => 'boolean',
-                    ),
-                ),
-            )
-        );
+        if (Yii::app()->request->isPostRequest) {
+            $findings = Yii::app()->request->getParam('Finding', []);
+            $subspecialities_ids = Yii::app()->request->getParam('subspecialty-ids', []);
+
+            foreach ($findings as $key => $finding) {
+                if (isset($finding['id'])) {
+                    $finding_object = Finding::model()->findByPk($finding['id']);
+                } else {
+                    $finding_object = new Finding();
+                }
+
+                $finding_object->name = $finding['name'];
+                $finding_object->display_order = $finding['display_order'];
+                $finding_object->requires_description = $finding['requires_description'];
+                $finding_object->active = $finding['active'];
+
+                $subspecialities = [];
+                if (isset($subspecialities_ids[$key])) {
+                    $criteria = new \CDbCriteria();
+                    $criteria->addInCondition('id', array_values($subspecialities_ids[$key]));
+                    $subspecialities = Subspecialty::model()->findAll($criteria);
+                }
+
+                $finding_object->subspecialties = $subspecialities;
+
+                if (!$finding_object->save()) {
+                    throw new Exception('Unable to save Finding: ' . print_r($finding_object->getErrors(), true));
+                }
+            }
+        }
+
+        $this->render('findings/index', [
+            'findings' => Finding::model()->findAll(),
+            'subspecialty' => Subspecialty::model()->findAll(),
+        ]);
     }
 
     public function actionDrugs()
@@ -280,7 +299,8 @@ class AdminController extends BaseAdminController
     public function actionAddDrug()
     {
         return; //disabled OE-4474
-        $drug = new Drug('create');
+
+        /*$drug = new Drug('create');
 
         if (!empty($_POST)) {
             $drug->attributes = $_POST['Drug'];
@@ -311,13 +331,15 @@ class AdminController extends BaseAdminController
         $this->render('/admin/adddrug', array(
             'drug' => $drug,
             'errors' => @$errors,
-        ));
+        ));*/
     }
 
     public function actionEditDrug($id)
     {
         return; //disabled OE-4474
-        if (!$drug = Drug::model()->findByPk($id)) {
+
+        /*$drug = Drug::model()->findByPk($id);
+        if (!$drug) {
             throw new Exception("Drug not found: $id");
         }
         $drug->scenario = 'update';
@@ -372,7 +394,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/editdrug', array(
             'drug' => $drug,
             'errors' => @$errors,
-        ));
+        ));*/
     }
 
     public function actionUserFind()
@@ -409,6 +431,7 @@ class AdminController extends BaseAdminController
 
         $pagination = $this->initPagination(User::model(), $criteria);
         $search = !empty($_GET['search']) ? $_GET['search'] : '';
+
         $this->render('/admin/users', array(
             'users' => User::model()->findAll($criteria),
             'pagination' => $pagination,
@@ -423,81 +446,22 @@ class AdminController extends BaseAdminController
      */
     public function actionAddUser()
     {
-        $user = new User();
-        $request = Yii::app()->getRequest();
-
-        if ($request->getIsPostRequest()) {
-            $userAtt = $request->getPost('User');
-
-            $user->attributes = $userAtt;
-
-            if (!$user->validate()) {
-                $errors = $user->getErrors();
-            } else {
-                if (!$user->save()) {
-                    throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
-                }
-
-                if (!$contact = $user->contact) {
-                    $contact = new Contact();
-                }
-
-                $contact->title = $user->title;
-                $contact->first_name = $user->first_name;
-                $contact->last_name = $user->last_name;
-                $contact->qualifications = $user->qualifications;
-
-                if (!$contact->save()) {
-                    throw new Exception('Unable to save user contact: ' . print_r($contact->getErrors(), true));
-                }
-
-                if (!$user->contact) {
-                    $user->contact_id = $contact->id;
-
-                    if (!$user->save()) {
-                        throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
-                    }
-                }
-
-                Audit::add('admin-User', 'add', $user->id);
-
-                if (!isset($userAtt['roles']) || ( empty($userAtt['roles']))) {
-                    $userAtt['roles'] = array();
-                }
-
-                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
-                    $userAtt['firms'] = array();
-                }
-
-                $user->saveRoles($userAtt['roles']);
-
-                try {
-                    $user->saveFirms($userAtt['firms']);
-                    $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
-                } catch (FirmSaveException $e) {
-                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
-                    $errors = $user->getErrors();
-                }
-            }
-        }
-
-        $user->password = '';
-
-        $this->render('/admin/adduser', array(
-            'user' => $user,
-            'errors' => @$errors,
-            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
-        ));
+        return $this->actionEditUser();
     }
 
     /**
      * @param $id
      * @throws Exception
      */
-    public function actionEditUser($id)
+    public function actionEditUser($id = null)
     {
-        if (!$user = User::model()->findByPk($id)) {
+
+        $user = User::model()->findByPk($id);
+
+        if ($id && !$user) {
             throw new Exception("User not found: $id");
+        } else if(!$id){
+            $user = new User();
         }
 
         $request = Yii::app()->getRequest();
@@ -505,7 +469,7 @@ class AdminController extends BaseAdminController
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
 
-            if (empty($userAtt['password'])) {
+            if ($id && empty($userAtt['password'])) {
                 unset($userAtt['password']);
             }
             $user->attributes = $userAtt;
@@ -518,7 +482,8 @@ class AdminController extends BaseAdminController
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
-                if (!$contact = $user->contact) {
+                $contact = $user->contact;
+                if (!$contact) {
                     $contact = new Contact();
                 }
 
@@ -560,7 +525,9 @@ class AdminController extends BaseAdminController
                 }
             }
         } else {
-            Audit::add('admin-User', 'view', $id);
+            if ($id) {
+                Audit::add('admin-User', 'view', $id);
+            }
         }
 
         $user->password = '';
@@ -609,7 +576,7 @@ class AdminController extends BaseAdminController
     public function actionFirms()
     {
         Audit::add('admin-Firm', 'list');
-        $search = new ModelSearch(Firm::model());
+/*        $search = new ModelSearch(Firm::model());
         $search->addSearchItem('name', array(
             'type' => 'compare',
             'compare_to' => array(
@@ -621,12 +588,32 @@ class AdminController extends BaseAdminController
             ),
         ));
         $search->addSearchItem('active', array('type' => 'boolean'));
+*/
+        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+        $criteria = new \CDbCriteria();
 
-        $this->render('/admin/firms', array(
-            'pagination' => $search->initPagination(),
-            'firms' => $search->retrieveResults(),
-            'search' => $search,
-            'displayOrder' => $this->displayOrder,
+        if(Yii::app()->request->isPostRequest) {
+            if ($search['query']) {
+                if (is_numeric($search['query'])) {
+                    $criteria->addCondition('id = :id');
+                    $criteria->params[':id'] = $search['query'];
+                } else {
+                    $criteria->addSearchCondition('pas_code', $search['query'], true, 'OR');
+                    $criteria->addSearchCondition('name', $search['query'], true, 'OR');
+                }
+            }
+
+            if($search['active'] == 1){
+                $criteria->addCondition('active = 1');
+            } elseif ($search['active'] !== '') {
+                $criteria->addCondition('active != 1');
+            }
+        }
+
+        $this->render('/admin/contexts/index', array(
+            'pagination' => $this->initPagination(Firm::model(), $criteria),
+            'firms' => Firm::model()->findAll($criteria),
+            'search' => $search
         ));
     }
 
@@ -651,7 +638,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editfirm', array(
+        $this->render('/admin/contexts/edit', array(
             'firm' => $firm,
             'errors' => @$errors,
         ));
@@ -659,7 +646,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditFirm($id)
     {
-        if (!$firm = Firm::model()->findByPk($id)) {
+        $firm = Firm::model()->findByPk($id);
+        if (!$firm) {
             throw new Exception("Firm not found: $id");
         }
 
@@ -687,7 +675,7 @@ class AdminController extends BaseAdminController
             $siteSecretaries[] = $firmSiteSecretaries;
         }
 
-        $this->render('/admin/editfirm', array(
+        $this->render('/admin/contexts/edit', array(
             'firm' => $firm,
             'errors' => @$errors,
             'siteSecretaries' => $siteSecretaries,
@@ -698,7 +686,8 @@ class AdminController extends BaseAdminController
     {
         Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
 
-        if ($user = User::model()->find('username=?', array($_GET['username']))) {
+        $user = User::model()->find('username=?', array($_GET['username']));
+        if ($user) {
             echo $user->id;
         } else {
             echo 'NOTFOUND';
@@ -710,7 +699,7 @@ class AdminController extends BaseAdminController
         $contacts = $this->searchContacts();
         Audit::add('admin-Contact', 'list');
 
-        $this->render('/admin/contacts', array('contacts' => @$contacts));
+        $this->render('/admin/contacts', array('contacts' => $contacts));
     }
 
     public function actionContactlabels($id = false)
@@ -728,32 +717,32 @@ class AdminController extends BaseAdminController
 
     public function searchContacts()
     {
+        $q = \Yii::app()->request->getQuery('q');
+        $label = \Yii::app()->request->getQuery('label');
+
         $criteria = new CDbCriteria();
-        Audit::add('admin-Contact', 'search', @$_GET['q']);
-
-        $ex = explode(' ', @$_GET['q']);
-
-        if (empty($ex)) {
-            throw new Exception("Empty search query string, this shouldn't happen");
-        }
-
         $criteria->addCondition('t.first_name != :blank or t.last_name != :blank');
         $criteria->params[':blank'] = '';
+        Audit::add('admin-Contact', 'search', $q);
 
-        if (count($ex) == 1) {
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$_GET['q']), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$_GET['q']), false, 'OR');
-        } elseif (count($ex) == 2) {
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$ex[0]), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$ex[1]), false);
-        } elseif (count($ex) >= 3) {
-            $criteria->addSearchCondition('lower(`t`.title)', strtolower(@$ex[0]), false);
-            $criteria->addSearchCondition('lower(`t`.first_name)', strtolower(@$ex[1]), false);
-            $criteria->addSearchCondition('lower(`t`.last_name)', strtolower(@$ex[2]), false);
+        if($q){
+            $query = explode(' ', $q);
+
+            if (count($query) == 1) {
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($q), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($q), false, 'OR');
+            } elseif (count($query) == 2) {
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[0]), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[1]), false);
+            } elseif (count($query) >= 3) {
+                $criteria->addSearchCondition('lower(`t`.title)', strtolower($query[0]), false);
+                $criteria->addSearchCondition('lower(`t`.first_name)', strtolower($query[1]), false);
+                $criteria->addSearchCondition('lower(`t`.last_name)', strtolower($query[2]), false);
+            }
         }
 
-        if (@$_GET['label']) {
-            $criteria->compare('contact_label_id', @$_GET['label']);
+        if ($label) {
+            $criteria->compare('contact_label_id', $label);
         }
 
         $criteria->order = 'title, first_name, last_name';
@@ -762,10 +751,7 @@ class AdminController extends BaseAdminController
         $contacts = Contact::model()->findAll($criteria);
 
         if (count($contacts) == 1) {
-            foreach ($contacts as $contact) {
-            }
-            $this->redirect(array('/admin/editContact?contact_id=' . $contact->id));
-
+            $this->redirect(array('/admin/editContact?contact_id=' . $contacts[0]->id));
             return;
         }
 
@@ -781,7 +767,8 @@ class AdminController extends BaseAdminController
             $id = @$_GET['contact_id'];
         }
 
-        if (!$contact = Contact::model()->findByPk($id)) {
+        $contact = Contact::model()->findByPk($id);
+        if (!$contact) {
             throw new Exception('Contact not found: ' . $id);
         }
 
@@ -809,7 +796,8 @@ class AdminController extends BaseAdminController
 
     public function actionContactLocation()
     {
-        if (!$cl = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
+        $cl = ContactLocation::model()->findByPk(@$_GET['location_id']);
+        if (!$cl) {
             throw new Exception('ContactLocation not found: ' . @$_GET['location_id']);
         }
 
@@ -822,7 +810,8 @@ class AdminController extends BaseAdminController
 
     public function actionRemoveLocation()
     {
-        if (!$cl = ContactLocation::model()->findByPk(@$_POST['location_id'])) {
+        $cl = ContactLocation::model()->findByPk(@$_POST['location_id']);
+        if (!$cl) {
             throw new Exception('ContactLocation not found: ' . @$_POST['location_id']);
         }
 
@@ -845,7 +834,8 @@ class AdminController extends BaseAdminController
 
     public function actionAddContactLocation()
     {
-        if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+        $contact = Contact::model()->findByPk(@$_GET['contact_id']);
+        if (!$contact) {
             throw new Exception('Contact not found: ' . @$_GET['contact_id']);
         }
 
@@ -853,7 +843,8 @@ class AdminController extends BaseAdminController
         $sites = array();
 
         if (!empty($_POST)) {
-            if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+            $institution = Institution::model()->findByPk(@$_POST['institution_id']);
+            if (!$institution) {
                 $errors['institution_id'] = array('Please select an institution');
             } else {
                 $sites = $institution->sites;
@@ -863,7 +854,8 @@ class AdminController extends BaseAdminController
                 $cl = new ContactLocation();
                 $cl->contact_id = $contact->id;
 
-                if ($site = Site::model()->findByPk(@$_POST['site_id'])) {
+                $site = Site::model()->findByPk(@$_POST['site_id']);
+                if ($site) {
                     $cl->site_id = $site->id;
                 } else {
                     $cl->institution_id = $institution->id;
@@ -887,7 +879,8 @@ class AdminController extends BaseAdminController
 
     public function actionGetInstitutionSites()
     {
-        if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+        if (!$institution) {
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 
@@ -910,7 +903,7 @@ class AdminController extends BaseAdminController
         ));
         $search->addSearchItem('active', array('type' => 'boolean'));
 
-        $this->render('/admin/institutions', array(
+        $this->render('/admin/institutions/index', array(
             'pagination' => $search->initPagination(),
             'institutions' => $search->retrieveResults(),
             'search' => $search,
@@ -960,7 +953,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/addinstitution', array(
+        $this->render('/admin/institutions/add', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => @$errors,
@@ -969,7 +962,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditInstitution()
     {
-        if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+        $institution = Institution::model()->findByPk(@$_GET['institution_id']);
+        if (!$institution) {
             throw new Exception('Institution not found: ' . @$_GET['institution_id']);
         }
 
@@ -1003,13 +997,13 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-Institution', 'edit', $institution->id);
 
-                $this->redirect('/admin/institutions');
+                $this->redirect('/admin/institutions/index');
             }
         } else {
             Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
         }
 
-        $this->render('/admin/editinstitution', array(
+        $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
             'address' => $address,
             'errors' => $errors,
@@ -1037,7 +1031,7 @@ class AdminController extends BaseAdminController
 
         $pagination = $this->initPagination(Site::model(), $criteria);
 
-        $this->render('/admin/sites', array(
+        $this->render('/admin/sites/index', array(
             'sites' => Site::model()->findAll($criteria),
             'pagination' => $pagination,
         ));
@@ -1094,7 +1088,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/addsite', array(
+        $this->render('/admin/sites/add', array(
             'site' => $site,
             'errors' => $errors,
             'address' => $address,
@@ -1104,7 +1098,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditsite()
     {
-        if (!$site = Site::model()->findByPk(@$_GET['site_id'])) {
+        $site = Site::model()->findByPk(@$_GET['site_id']);
+        if (!$site) {
             throw new Exception('Site not found: ' . @$_GET['site_id']);
         }
 
@@ -1135,13 +1130,13 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-Site', 'edit', $site->id);
 
-                $this->redirect('/admin/sites');
+                $this->redirect('/admin/sites/index');
             }
         } else {
             Audit::add('admin-Site', 'view', @$_GET['site_id']);
         }
 
-        $this->render('/admin/editsite', array(
+        $this->render('/admin/sites/edit', array(
             'site' => $site,
             'address' => $site->contact->address,
             'errors' => $errors,
@@ -1199,7 +1194,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditContactLabel($id)
     {
-        if (!$contactlabel = ContactLabel::model()->findByPk($id)) {
+        $contactlabel = ContactLabel::model()->findByPk($id);
+        if (!$contactlabel) {
             throw new Exception("ContactLabel not found: $id");
         }
 
@@ -1228,7 +1224,8 @@ class AdminController extends BaseAdminController
 
     public function actionDeleteContactLabel()
     {
-        if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
+        $contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id']);
+        if (!$contactlabel) {
             throw new Exception('ContactLabel not found: ' . @$_POST['contact_label_id']);
         }
 
@@ -1253,7 +1250,8 @@ class AdminController extends BaseAdminController
 
     public function actionEditDataSource($id)
     {
-        if (!$source = ImportSource::model()->findByPk($id)) {
+        $source = ImportSource::model()->findByPk($id);
+        if (!$source) {
             throw new Exception("Source not found: $id");
         }
 
@@ -1309,23 +1307,21 @@ class AdminController extends BaseAdminController
             foreach ($_POST['source'] as $source_id) {
                 if (Institution::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
                 if (Site::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
                 if (Person::model()->find('source_id=?', array($source_id))) {
                     echo '0';
-
                     return;
                 }
             }
 
             foreach ($_POST['source'] as $source_id) {
-                if ($source = ImportSource::model()->findByPk($source_id)) {
+                $source = ImportSource::model()->findByPk($source_id);
+                if ($source) {
                     if (!$source->delete()) {
                         throw new Exception('Unable to delete import source: ' . print_r($source->getErrors(), true));
                     }
@@ -1363,16 +1359,18 @@ class AdminController extends BaseAdminController
     public function actionCommissioning_bodies()
     {
         Audit::add('admin-CommissioningBody', 'list');
-        $this->render('commissioning_bodies');
+        $this->render('/admin/commissioning_bodies/index');
     }
 
     public function actionEditCommissioningBody()
     {
         if (isset($_GET['commissioning_body_id'])) {
-            if (!$cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id'])) {
+            $cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id']);
+            if (!$cb) {
                 throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_id']);
             }
-            if (!$address = $cb->contact->address) {
+            $address = $cb->contact->address;
+            if (!$address) {
                 $address = new Address();
                 $address->country_id = 1;
             }
@@ -1398,7 +1396,8 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
 
-                    if (!$contact = $cb->contact) {
+                    $contact = $cb->contact;
+                    if (!$contact) {
                         $contact = new Contact();
                         if (!$contact->save()) {
                             $errors = array_merge($errors, $contact->getErrors());
@@ -1442,7 +1441,7 @@ class AdminController extends BaseAdminController
             Audit::add('admin-CommissioningBody', 'view', @$_GET['commissioning_body_id']);
         }
 
-        $this->render('/admin/editCommissioningBody', array(
+        $this->render('/admin/commissioning_bodies/edit', array(
             'cb' => $cb,
             'address' => $address,
             'errors' => $errors,
@@ -1493,13 +1492,15 @@ class AdminController extends BaseAdminController
     public function actionCommissioning_body_types()
     {
         Audit::add('admin-CommissioningBodyType', 'list');
-        $this->render('commissioning_body_types');
+        $this->render('/admin/commissioning_body_types/index');
     }
 
     public function actionEditCommissioningBodyType()
     {
         if (isset($_GET['commissioning_body_type_id'])) {
-            if (!$cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id'])) {
+
+            $cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id']);
+            if (!$cbt) {
                 throw new Exception('CommissioningBody not found: ' . @$_GET['commissioning_body_type_id']);
             }
         } else {
@@ -1532,7 +1533,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editCommissioningBodyType', array(
+        $this->render('/admin/commissioning_body_types/edit', array(
             'cbt' => $cbt,
             'errors' => $errors,
         ));
@@ -1581,7 +1582,7 @@ class AdminController extends BaseAdminController
     {
         Audit::add('admin-CommissioningBodyService', 'list');
         $commissioningBodyId = Yii::app()->request->getQuery('commissioning_body_id');
-        $this->render('commissioning_body_services', array("commissioningBody" => $commissioningBodyId));
+        $this->render('/admin/commissioning_body_services/index', array("commissioningBody" => $commissioningBodyId));
     }
 
     public function actionEditCommissioningBodyService()
@@ -1593,8 +1594,10 @@ class AdminController extends BaseAdminController
         $commissioning_bt = null;
         $commissioning_bst = null;
 
-        if ($cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id')) {
-            if (!$cbs = CommissioningBodyService::model()->findByPk($cbs_id)) {
+        $cbs_id = $this->getApp()->request->getQuery('commissioning_body_service_id');
+        if ($cbs_id) {
+            $cbs = CommissioningBodyService::model()->findByPk($cbs_id);
+            if (!$cbs) {
                 throw new Exception('CommissioningBody not found: ' . $cbs_id);
             }
 
@@ -1606,13 +1609,17 @@ class AdminController extends BaseAdminController
             }
         } else {
             $cbs = new CommissioningBodyService;
-            if ($commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id')) {
-                if (!$commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id)) {
+            $commissioning_bt_id = Yii::app()->request->getQuery('commissioning_body_type_id');
+            if ($commissioning_bt_id) {
+                $commissioning_bt = CommissioningBodyType::model()->findByPk($commissioning_bt_id);
+                if (!$commissioning_bt) {
                     throw new CHttpException(404, 'Unrecognised Commissioning Body Type ID');
                 }
             }
-            if ($service_type_id = Yii::app()->request->getQuery('service_type_id')) {
-                if (!$commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id)) {
+            $service_type_id = Yii::app()->request->getQuery('service_type_id');
+            if ($service_type_id) {
+                $commissioning_bst = CommissioningBodyServiceType::model()->findByPk($service_type_id);
+                if (!$commissioning_bst) {
                     throw new CHttpException(404, 'Unrecognised Service Type ID');
                 };
                 $cbs->setAttribute('commissioning_body_service_type_id', $service_type_id);
@@ -1621,10 +1628,22 @@ class AdminController extends BaseAdminController
 
         $errors = array();
 
-        if (!$return_url = Yii::app()->request->getQuery('return_url')) {
-            $return_url = '/admin/commissioning_body_services';
-        }
+        $return_url = Yii::app()->request->getQuery('return_url', '/admin/commissioning_body_services');
 
+        $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
+
+        $this->render('//admin/commissioning_body_services/edit', array(
+            'commissioning_bt' => $commissioning_bt,
+            'commissioning_bst' => $commissioning_bst,
+            'cbs' => $cbs,
+            'address' => $address,
+            'errors' => $errors,
+            'return_url' => $return_url
+        ));
+    }
+
+    private function saveEditCommissioningBodyService($cbs, $contact, $address, $return_url)
+    {
         if (!empty($_POST)) {
             $cbs->attributes = $_POST['CommissioningBodyService'];
 
@@ -1673,15 +1692,6 @@ class AdminController extends BaseAdminController
                 $this->redirect($return_url);
             }
         }
-
-        $this->render('//admin/editCommissioningBodyService', array(
-            'commissioning_bt' => $commissioning_bt,
-            'commissioning_bst' => $commissioning_bst,
-            'cbs' => $cbs,
-            'address' => $address,
-            'errors' => $errors,
-            'return_url' => $return_url
-        ));
     }
 
     public function actionAddCommissioningBodyService()
@@ -1715,13 +1725,14 @@ class AdminController extends BaseAdminController
 
     public function actionCommissioning_Body_Service_Types()
     {
-        $this->render('commissioning_body_service_types');
+        $this->render('/admin/commissioning_body_service_types/index');
     }
 
     public function actionEditCommissioningBodyServiceType()
     {
         if (isset($_GET['commissioning_body_service_type_id'])) {
-            if (!$cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id'])) {
+            $cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id']);
+            if (!$cbs) {
                 throw new Exception('CommissioningBodyServiceType not found: ' . @$_GET['commissioning_body_service_type_id']);
             }
         } else {
@@ -1757,7 +1768,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        $this->render('/admin/editCommissioningBodyServiceType', array(
+        $this->render('/admin/commissioning_body_service_types/edit', array(
             'cbs' => $cbs,
             'errors' => $errors,
         ));
@@ -1785,7 +1796,8 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->addInCondition('id', @$_POST['commissioning_body_service_type']);
 
-        if (!$er = CommissioningBodyServiceType::model()->deleteAll($criteria)) {
+        $er = CommissioningBodyServiceType::model()->deleteAll($criteria);
+        if (!$er) {
             throw new Exception('Unable to delete CommissioningBodyServiceTypes: ' . print_r($er->getErrors(), true));
         }
 
@@ -1806,7 +1818,8 @@ class AdminController extends BaseAdminController
 
     public function actionApproveEventDeletionRequest($id)
     {
-        if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
+        $event = Event::model()->find('id=? and delete_pending=?', array($id, 1));
+        if (!$event) {
             throw new Exception("Event not found: $id");
         }
 
@@ -1825,7 +1838,8 @@ class AdminController extends BaseAdminController
 
     public function actionRejectEventDeletionRequest($id)
     {
-        if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
+        $event = Event::model()->find('id=? and delete_pending=?', array($id, 1));
+        if (!$event) {
             throw new Exception("Event not found: $id");
         }
 
@@ -1878,7 +1892,7 @@ class AdminController extends BaseAdminController
      */
     public function actionLogo()
     {
-
+        $this->group = "System";
         if (!isset(Yii::app()->params['letter_logo_upload']) || !Yii::app()->params['letter_logo_upload']) {
             throw new CHttpException(404);
         }
@@ -1941,12 +1955,16 @@ class AdminController extends BaseAdminController
 
     public function actionSettings()
     {
+        $this->group = "System";
         $this->render('/admin/settings');
     }
 
     public function actionEditSetting()
     {
-        if (!$metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']))) {
+        $this->group = "System";
+
+        $metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']));
+        if (!$metadata) {
             $this->redirect(array('/admin/settings'));
         }
 
@@ -1954,8 +1972,9 @@ class AdminController extends BaseAdminController
 
         if (Yii::app()->request->isPostRequest) {
             foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
-                if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
-                    if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+                if (@$_POST['hidden_' . $metadata->key] || isset($_POST[$metadata->key])) {
+                    $setting = $metadata->getSetting($metadata->key, null, true);
+                    if (!$setting) {
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
@@ -1978,11 +1997,8 @@ class AdminController extends BaseAdminController
      */
     public function actionViewAnaestheticAgent()
     {
-        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
-
-        /*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
-
-        $this->render('anaestheticagent');*/
+        $this->group = "Drugs";
+        $this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent', ['div_wrapper_class' => 'cols-3']);
     }
 
     public function actionAddAnaestheticAgent()

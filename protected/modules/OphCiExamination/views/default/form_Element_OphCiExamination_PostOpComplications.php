@@ -48,7 +48,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
   <div id="div_Element_OphTrOperationnote_ProcedureList_id">
     <div class="cols-5 column end">
-        <?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
+        <?=\CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
             array(
                 'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
@@ -62,7 +62,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
       <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
           $eye_abbr = $eye_side === 'right' ? 'R' : 'L'; ?>
-        <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?>" data-side="<?= $eye_side ?>">
           <hr/>
           <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
@@ -135,7 +135,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
             </table>
           </div>
 
-          <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
             <div class="add-side">
               <a href="#">
                 Add <?= $eye_side ?> eye <span class="icon-add-side"></span>

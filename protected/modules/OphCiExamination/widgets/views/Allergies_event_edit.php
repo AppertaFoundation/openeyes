@@ -30,9 +30,9 @@ $required_allergy_ids = array_map(function ($r) {
 
     <table id="<?= $model_name ?>_entry_table" class="cols-10">
         <colgroup>
-            <col class="cols-3">
-            <col class="cols-3">
+            <col class="cols-7">
             <col class="cols-4">
+            <col class="cols-1">
         </colgroup>
         <tbody>
 
@@ -40,7 +40,7 @@ $required_allergy_ids = array_map(function ($r) {
             id="<?= $model_name ?>_no_allergies_wrapper">
             <td colspan="5" class="align-left">
                 <label class="inline highlight" for="<?= $model_name ?>_no_allergies">
-                    <?=CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
+                    <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
                     Confirm patient has no allergies
                 </label>
             </td>

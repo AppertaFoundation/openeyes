@@ -31,17 +31,105 @@
         ),
     ))?>
 
-    <?php echo $form->textField($definition, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
-    <?php echo $form->textArea($definition, 'description')?>
-    <?php $this->widget('application.widgets.RRuleField', array(
-        'element' => $definition,
-        'field' => 'rrule',
-        'name' => CHtml::modelName($definition).'[rrule]',
-    ));?>
-    <?php echo $form->textField($definition, 'start_time', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 1))?>
-    <?php echo $form->textField($definition, 'end_time', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '<i>Appointments will match on any time <b>before</b> the end time specified here.</i>'), null, array('field' => 1, 'append-text' => 6))?>
+    <div class="cols-8">
+        <table class="standard cols-full">
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-8">
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>Name</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $definition,
+                        'name',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full',
+                            'field' => 2
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td>
+                    <?=\CHtml::activeTextArea(
+                        $definition,
+                        'description',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full',
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                <?php $this->widget('application.widgets.RRuleField', array(
+                    'element' => $definition,
+                    'field' => 'rrule',
+                    'name' => CHtml::modelName($definition).'[rrule]',
+                ));?>
+                </td>
+            </tr>
+            <tr>
+                <td>Start time</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $definition,
+                        'start_time',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full',
+                            'field' => 1
+                        ]
+                    ); ?>
+                </td>
+            </tr><tr>
+                <td>End time</td>
+                <td>
+                    <?=\CHtml::activeTextField(
+                        $definition,
+                        'end_time',
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full',
+                            'append-text' => '<i>Appointments will match on any time <b>before</b> the end time specified here.</i>',
+                            'field' => 1,
+                            'append-text' => 6,
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tbody>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/worklistAdmin/definitions'))?>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?=\CHtml::submitButton(
+                        'Save',
+                        [
+                            'class' => 'button large',
+                            'name' => 'save',
+                            'id' => 'et_save'
+                        ]
+                    ); ?>
+                    <?=\CHtml::submitButton(
+                        'Cancel',
+                        [
+                            'data-uri' => '/worklistAdmin/definitions',
+                            'class' => 'button large',
+                            'name' => 'cancel',
+                            'id' => 'et_cancel'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
     <?php $this->endWidget()?>
-
 </div>

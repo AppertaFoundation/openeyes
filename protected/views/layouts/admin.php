@@ -24,6 +24,8 @@
         <?php $this->renderPartial('//base/head/_tracking'); ?>
     </head>
     <body class="open-eyes oe-grid">
+    <!-- Minimum screed width warning -->
+    <div id="oe-minimum-width-warning">Please increase your browser window</div>
 
         <?php $this->renderPartial('//base/_debug'); ?>
 
@@ -32,17 +34,28 @@
             <?php $this->renderPartial('//base/_brand'); ?>
         </div>
         <div id="oe-restrict-print">
-            <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+            <h1>
+                This page is intended to be viewed online and may not be printed.<br>
+                Please use the print icon on the page to generate a hard copy.
+            </h1>
         </div>
         <?php $this->renderPartial('//base/_header'); ?>
 
         <div class="oe-full-header flex-layout">
-            <div class="title wordcaps">Admin: <b>Users</b></div>
+            <div class="title wordcaps"><b>Admin: </b>
+            <?php
+                $admin = new AdminSidebar();
+                $admin->init();
+                echo $admin->getCurrentTitle();
+            ?>
+            </div>
         </div>
 
         <div class="oe-full-content subgrid oe-admin flex-layout flex-top">
-            <?php $this->widget('application.widgets.AdminSidebar'); ?>
-            <?php echo $content; ?>
+            <?php $this->widget('application.widgets.AdminSidebar');?>
+            <main class="oe-full-main admin-main">
+                <?php echo $content; ?>
+            </main>
         </div>
 
         <?php $this->renderPartial('//base/_footer'); ?>

@@ -41,7 +41,7 @@ $biometry_data = [
             <tr>
                 <td>
                     <div class="data-label">
-                        <?php echo CHtml::encode($element->getAttributeLabel('lens_id_'.$side)) ?>
+                        <?=\CHtml::encode($element->getAttributeLabel('lens_id_'.$side)) ?>
                     </div>
                 </td>
                 <td>
@@ -58,15 +58,15 @@ $biometry_data = [
             <tr>
                 <td>
                     <div class="data-label">
-                        <?php echo CHtml::encode($element->getAttributeLabel('power')) ?>
+                        <?=\CHtml::encode($element->getAttributeLabel('power')) ?>
                     </div>
                 </td>
                 <td>
-                    <div class="data-value large-text highlighter orange js-iol-display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
+                    <div class="data-value large-text highlighter orange js-iol-display"><?=\CHtml::encode($element->{'iol_power_'.$side}) ?></div>
                 </td>
                 <td>
                     <div class="data-label">
-                        <?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_'.$side)) ?>
+                        <?=\CHtml::encode($element->getAttributeLabel('predicted_refraction_'.$side)) ?>
                     </div>
                 </td>
                 <td>
@@ -78,13 +78,13 @@ $biometry_data = [
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('formula_')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('formula_')) ?>
                 </td>
                 <td>
                     <?php echo $element->{'formula_' . $side} ? $element->{'formula_' . $side} : 'None' ?>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('lens_acon_' . $side)) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('lens_acon_' . $side)) ?>
                 </td>
                 <td>
                     <?php echo $element->{'lens_acon_' . $side} ? $this->formatAconst($element->{'lens_acon_' . $side}) : 'None' ?>
@@ -92,22 +92,10 @@ $biometry_data = [
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('axial_length_' . $side)) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('axial_length_' . $side)) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'axial_length_' . $side}) ?>
-                </td>
-                <td colspan="2"></td>
-                <td>
-                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('snr_' . $side)) ?>
-                </td>
-                <td>
-                    <?php echo CHtml::encode($element->{'snr_' . $side}) ?>
+                    <?=\CHtml::encode($element->{'axial_length_' . $side}) ?>
                 </td>
                 <td colspan="2"></td>
                 <td>
@@ -116,18 +104,30 @@ $biometry_data = [
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('k1_' . $side)) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('snr_' . $side)) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'k1_' . $side}) ?>D
+                    <?=\CHtml::encode($element->{'snr_' . $side}) ?>
+                </td>
+                <td colspan="2"></td>
+                <td>
+                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?=\CHtml::encode($element->getAttributeLabel('k1_' . $side)) ?>
+                </td>
+                <td>
+                    <?=\CHtml::encode($element->{'k1_' . $side}) ?>D
                 </td>
                 <td>@</td>
-                <td><?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
+                <td><?=\CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
                 <td><?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?></td>
             </tr>
             <tr>
                 <td>
-                    &Delta;<?php echo CHtml::encode($element->getAttributeLabel('delta_k_' . $side)) ?>
+                    &Delta;<?=\CHtml::encode($element->getAttributeLabel('delta_k_' . $side)) ?>
                 </td>
                 <td>
                     <?php if (($element->{'delta_k_' . $side}) > 0) {
@@ -136,21 +136,21 @@ $biometry_data = [
                     echo CHtml::encode($element->{'delta_k_' . $side}) ?>D
                 </td>
                 <td>@</td>
-                <td><?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;</td>
+                <td><?=\CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;</td>
                 <td><?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?></td>
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('k2_' . $side)) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('k2_' . $side)) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'k2_' . $side}) ?>D
+                    <?=\CHtml::encode($element->{'k2_' . $side}) ?>D
                 </td>
                 <td>
                     @
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
+                    <?=\CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
                 </td>
                 <td>
                     <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
@@ -158,10 +158,10 @@ $biometry_data = [
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('acd_' . $side)) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('acd_' . $side)) ?>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'acd_' . $side}) ?>mm
+                    <?=\CHtml::encode($element->{'acd_' . $side}) ?>mm
                 </td>
                 <td></td>
                 <td></td>
@@ -181,13 +181,13 @@ $biometry_data = [
             <tr>
                 <td>
                     <div class="data-label">
-                        <?php echo CHtml::encode($element->getAttributeLabel('status_' . $side)) ?>
+                        <?=\CHtml::encode($element->getAttributeLabel('status_' . $side)) ?>
                     </div>
                 </td>
                 <td>
                     <div class="data-value">
                         <span class="large-text">
-                            <?php echo CHtml::encode($element->{'status_' . $side}) ?>
+                            <?=\CHtml::encode($element->{'status_' . $side}) ?>
                         </span>
                     </div>
                 </td>
@@ -197,7 +197,7 @@ $biometry_data = [
                     <div class="data-label"><b>Comments</b></div>
                 </td>
                 <td>
-                    <div class="data-value"><?php echo CHtml::encode($element->{'comments'}) ?></div>
+                    <div class="data-value"><?=\CHtml::encode($element->{'comments'}) ?></div>
                 </td>
             </tr>
             </tbody>

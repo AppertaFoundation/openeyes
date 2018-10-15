@@ -31,7 +31,10 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
             'id' => $element_name.'_patient_unavailables_'.$key.'_start_date',
             'nowrapper' => true,
             'class' => 'unavailable-start-date',
-        ), ));
+        ),
+        'options' => array(
+            'minDate' => 'today',
+        ) ));
 		?>
 	</td>
 	<td>
@@ -43,11 +46,14 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
             'id' => $element_name.'_patient_unavailables_'.$key.'_end_date',
             'nowrapper' => true,
             'class' => 'unavailable-end-date',
-        ), ));
+        ),
+        'options' => array(
+            'minDate' => 'today',
+        )));
 		?>
 	</td>
 	<td>
-		<?php echo CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
+		<?=\CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
         $unavailable->reason_id,
         CHtml::listData($unavailable->getPatientUnavailbleReasons(), 'id', 'name'),
         array('class' => 'small', 'empty' => '- Please select -'))?>

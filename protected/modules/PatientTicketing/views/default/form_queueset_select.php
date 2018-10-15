@@ -15,6 +15,13 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSet $queueset
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetCategory $category
+ * @var \OEModule\PatientTicketing\services\PatientTicketing_QueueSetCategoryService $qsc_svc
+ * @var int $cat_id
+ */
 ?>
 
 <?php
@@ -25,49 +32,50 @@ $form = $this->beginWidget('CActiveForm', array(
     'id' => 'ticket-filter',
     'enableAjaxValidation' => false,
     'method' => 'get',
-    'action' => ["/{$this->module->id}/default/"]
+    'action' => ["/{$this->module->id}/default/"],
 ));
 ?>
 
-<div <?php if (!$queueset) { ?> style="display: none;"<?php } ?>>
-    <button class="button blue hint" id="js-virtual-clinic-btn">Change <?= $category->name ?></button>
-</div>
 <div class="oe-popup-wrap" style="display: none">
-    <div class="oe-popup">
-        <div class="title">Change Virtual Clinic</div>
-        <div class="close-icon-btn">
-            <i class="oe-i remove-circle pro-theme" id="close-btn"></i>
-        </div>
-        <div class="oe-popup-content previous-elements">
-            <input type="hidden" name="cat_id" value="<?= $cat_id; ?>"/>
-            <?php echo CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
-            <ul class="oe-btn-list">
-                <?php foreach ($queueset_list as $item) {?>
-                    <li><a id="<?php echo $item?>"><?php echo $item ?></a> </li>
-                <?php }?>
-            </ul>
-        </div>
+  <div class="oe-popup">
+    <div class="title">Change Virtual Clinic</div>
+    <div class="close-icon-btn">
+      <i class="oe-i remove-circle pro-theme" id="close-btn"></i>
     </div>
+    <div class="oe-popup-content previous-elements">
+      <input type="hidden" name="cat_id" value="<?= $cat_id; ?>"/>
+        <?=\CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
+      <ul class="oe-btn-list">
+          <?php foreach ($queueset_list as $id => $item) { ?>
+            <li id="<?= $id ?>" class="<?= $queueset && (integer)$queueset_id === $id ? 'selected' : '' ?>">
+              <a><?= $item ?></a>
+            </li>
+          <?php } ?>
+      </ul>
+    </div>
+  </div>
 </div>
 
 
 <?php
 $this->endWidget(); ?>
 <script>
-    $(document).on('click', '.button.blue.hint', function (e) {
-        e.preventDefault();
-        $('.oe-popup-wrap').css('display', 'flex');
-    });
+  $(document).on('click', '#js-virtual-clinic-btn', function (e) {
+    e.preventDefault();
+    $('.oe-popup-wrap').show();
+  });
 
-    $(document).on('click', '.oe-i.remove-circle.pro-theme', function (e) {
-        e.preventDefault();
-        $('.oe-popup-wrap').css('display', 'none');
-    });
+  $(document).on('click', '.oe-popup .close-icon-btn', function (e) {
+    e.preventDefault();
+    $('.oe-popup-wrap').hide();
+  });
 
-    $(".oe-btn-list").ready(function() {
-        $("li").click(function(event) {
-           $('#ticket-filter').submit();
-        });
+  $(".oe-btn-list").ready(function () {
+    $("li").click(function (event) {
+      var $ticketFilter = $('#ticket-filter');
+      $ticketFilter.find('input[name="queueset_id"]').val($(this).attr('id'));
+      $ticketFilter.submit();
     });
+  });
 </script>
 

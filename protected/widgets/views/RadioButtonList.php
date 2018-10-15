@@ -17,60 +17,60 @@
  */
 ?>
 
+<?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : '';
+$label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] : '';
+?>
+<?php if (@$htmlOptions['nowrapper']) { ?>
 
-<?php if (@$htmlOptions['nowrapper']) {?>
+    <?php if (!$no_element) { ?>
+    <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
+    <?php } ?>
 
-	<?php if (!$no_element) {?>
-		<input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
-	<?php }?>
+    <?php foreach ($data as $id => $data_value) { ?>
+        <?php
+        $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
 
-	<?php foreach ($data as $id => $data_value) {?>
-		<?php
-            $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$field.'_'.$id);
+        if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+            foreach ($htmlOptions['options'][$id] as $k => $v) {
+                $options[$k] = $v;
+            }
+        } ?>
+    <label class="inline highlight <?= $label_class ?>">
+        <?=\CHtml::radioButton($name,
+            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
+      <span><?=\CHtml::encode($data_value) ?></span>
+    </label>
+    <?php } ?>
 
-    if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
-        foreach ($htmlOptions['options'][$id] as $k => $v) {
-            $options[$k] = $v;
-        }
-            }?>
-			<label class="inline highlight">
-				<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
-                <span><?php echo CHtml::encode($data_value)?></span>
-	 		</label>
-	<?php }?>
+<?php } else { ?>
 
-<?php } else {?>
-
-    <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : ''; ?>
-
-	<fieldset id="<?php echo CHtml::modelName($element).'_'.$field?>" class="cols-full flex-layout flex-left<?=$fieldset_class?> <?php echo $hidden ? 'hidden' : ''?>" >
-		<?php	// Added hidden input below to enforce posting of current form element name.
-				// When using radio or checkboxes if no value is selected then nothing is posted
-				// not triggereing server side validation.
-		?>
-		<label class="cols-<?php echo $layoutColumns['label'];?> column">
-			<?php if ($field_value) {?><?php echo CHtml::encode($element->getAttributeLabel($field_value)); ?>
-			<?php }elseif (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?>
-		</label>
-		<?php if (!$no_element) {?>
-			<input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
-		<?php }?>
+  <fieldset id="<?=\CHtml::modelName($element) . '_' . $field ?>"
+            class="cols-full flex-layout flex-left<?= $fieldset_class ?> <?php echo $hidden ? 'hidden' : '' ?>">
+      <?php // Added hidden input below to enforce posting of current form element name.
+      // When using radio or checkboxes if no value is selected then nothing is posted
+      // not triggereing server side validation.
+      ?>
+    <label class="cols-<?php echo $layoutColumns['label']; ?> column">
+        <?php if ($field_value) { ?><?=\CHtml::encode($element->getAttributeLabel($field_value)); ?>
+        <?php } elseif (!$label_above) { ?><?=\CHtml::encode($element->getAttributeLabel($field)); ?>:<?php } ?>
+    </label>
+      <?php if (!$no_element) { ?>
+        <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
+      <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>
           <label for="">
-              <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>
+              <?=\CHtml::encode($element->getAttributeLabel($field)) ?>
           </label>
         <?php } ?>
         <?php foreach ($data as $id => $data_value) { ?>
-            <?php
-            $label_style = '';
+            <?php $label_style = '';
             if (isset($htmlOptions['labelOptions'][$id])) {
                 $label_style = 'style="' . $htmlOptions['labelOptions'][$id] . '"';
-            }
-            ?>
+            } ?>
 
-          <label class="inline highlight" <?= $label_style; ?>>
+          <label class="inline highlight <?= $label_class ?>" <?= $label_style; ?>>
               <?php $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
 
               if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
@@ -79,14 +79,15 @@
                   }
               }
 
-    $class = isset($options['class']) ? ($options['class'] . " ") : '';
-    $options['class'] = $class . str_replace(' ', '', $data_value);
+              $class = isset($options['class']) ? ($options['class'] . " ") : '';
+              $options['class'] = $class . str_replace(' ', '', $data_value);
 
-    echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
-    ?>
-                    <span><?php echo CHtml::encode($data_value)?></span>
-				</label>
-			<?php }?>
-		</div>
-	</fieldset>
+              echo CHtml::radioButton($name,
+                  (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
+              ?>
+            <span><?=\CHtml::encode($data_value) ?></span>
+          </label>
+        <?php } ?>
+    </div>
+  </fieldset>
 <?php } ?>

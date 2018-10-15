@@ -26,6 +26,8 @@ class OperativeDeviceController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Operation Note';
+
     /**
      * Lists operative devices.
      *
@@ -43,6 +45,7 @@ class OperativeDeviceController extends BaseAdminController
         $admin->searchAll();
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 
@@ -64,6 +67,7 @@ class OperativeDeviceController extends BaseAdminController
             'name' => 'text',
             'active' => 'checkbox',
         ));
+        $admin->div_wrapper_class = 'cols-5';
         $admin->editModel();
     }
 

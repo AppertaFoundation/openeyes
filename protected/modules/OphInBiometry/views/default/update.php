@@ -15,16 +15,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>false));
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'update-form',
+$form_id = 'update-form';
+$this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id));
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+        'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
             'label' => 2,
             'field' => 10,
         ),
     ));
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'update-form'));
+        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
         // Add the open in forum button if FORUM integration is enabled
         $biometry_imported_events =OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));

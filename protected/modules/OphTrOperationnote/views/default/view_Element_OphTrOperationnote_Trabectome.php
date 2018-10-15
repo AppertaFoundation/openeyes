@@ -17,12 +17,11 @@
  */
 ?>
 
-<section class="element view full">
+<section class="element view">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-
     <div class="eyedraw flex-layout flex-top">
       <div class="eyedraw-canvas">
           <?php
@@ -46,7 +45,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('power_id')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('power_id')) ?>
               </div>
             </td>
             <td>
@@ -58,7 +57,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
               </div>
             </td>
             <td>
@@ -71,7 +70,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('hpmc')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('hpmc')) ?>
               </div>
             </td>
             <td>
@@ -84,7 +83,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('description')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('description')) ?>
               </div>
             </td>
             <td>
@@ -97,7 +96,7 @@
           <tr>
             <td>
               <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>
+                  <?=\CHtml::encode($element->getAttributeLabel('complications')) ?>
               </div>
             </td>
             <td>

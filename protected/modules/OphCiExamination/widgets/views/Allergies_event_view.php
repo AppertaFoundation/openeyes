@@ -4,8 +4,8 @@
     <div class="flex-layout flex-top">
         <div class="cols-11">
             <?php if (!count($element->entries)) : ?>
-                <div class="data-value not-recorded">
-                    No diagnoses recorded during this encounter
+                <div class="data-value not-recorded left" style="text-align: left;">
+                  Patient has no allergies (confirmed)
                 </div>
             <?php else : ?>
                 <?php
@@ -21,18 +21,22 @@
                 );
                 ?>
               <div id="js-listview-allergies-pro">
-                <ul class="dslash-list large">
-                  <li>Present:</li>
-                    <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
-                      <li><?= $entry->getDisplayAllergy(); ?></li>
-                    <?php endforeach; ?>
-                </ul>
-                <ul class="dslash-list large">
-                  <li>Not Present:</li>
-                    <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
-                      <li><?= $entry->getDisplayAllergy(); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+                <?php if(count($entries[(string)AllergyEntry::$PRESENT]) > 0) {?>
+                  <ul class="dot-list large">
+                    <li>Present:</li>
+                      <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
+                        <li><?= $entry->getDisplayAllergy(); ?></li>
+                      <?php endforeach; ?>
+                  </ul>
+                <?php } ?>
+                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>}
+                  <ul class="dot-list large">
+                    <li>Not Present:</li>
+                      <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
+                        <li><?= $entry->getDisplayAllergy(); ?></li>
+                      <?php endforeach; ?>
+                  </ul>
+                <?php } ?>
               </div>
                 <div class="" id="js-listview-allergies-full" style="display: none;">
                     <table class="last-left large">
