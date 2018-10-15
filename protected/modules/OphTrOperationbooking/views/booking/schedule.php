@@ -95,6 +95,9 @@
                         <td>
                             <div class="alert-box info"><?php echo $firm->name ?></div>
                         </td>
+                        <?php if (empty($sessions)) { ?>
+                            <div class="alert-box alert">This <?php echo Firm::model()->contextLabel()?> has no scheduled sessions.</div>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>
