@@ -112,6 +112,11 @@ if($correspondeceApp === "on") {
             </tr>
         </table>
     </div>
-    <?php } ?>
-<div class="js-correspondence-image-overlay"></div>
+    <?php }
+    $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;?>
+
+<div class="js-correspondence-image-overlay">
+    <div class="oe-popup-wrap"><div class="spinner"></div></div>
+</div>
+
 </div>
