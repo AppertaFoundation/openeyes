@@ -37,7 +37,7 @@
     <tr>
       <td>Phrases:</td>
       <td class="phraseList">
-          <?php echo CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
+          <?=\CHtml::textField('OphCoCorrespondence_ReportLetters[phrases][]', '') ?>
       </td>
       <td>
         <button type="button" class="button green hint" id="add_letter_phrase">
@@ -136,7 +136,7 @@
       <td>Author</td>
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?php echo CHtml::dropDownList(
+              <?=\CHtml::dropDownList(
                   'OphCoCorrespondence_ReportLetters[author_id]',
                   '',
                   CHtml::listData(User::model()->findAll(
@@ -161,7 +161,7 @@
       </td>
       <td>Site</td>
       <td>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'OphCoCorrespondence_ReportLetters[site_id]',
               '',
               Site::model()->getListForCurrentInstitution(),

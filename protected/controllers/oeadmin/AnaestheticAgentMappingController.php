@@ -18,6 +18,8 @@
  */
 class AnaestheticAgentMappingController extends BaseAdminController
 {
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(SiteSubspecialtyAnaestheticAgent::model(), $this);
@@ -71,6 +73,7 @@ class AnaestheticAgentMappingController extends BaseAdminController
             )
         );
         //$admin->searchAll();
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 

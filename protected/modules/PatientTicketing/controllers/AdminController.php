@@ -27,6 +27,8 @@ class AdminController extends \ModuleAdminController
     public static $QUEUE_SERVICE = 'PatientTicketing_Queue';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
 
+    public $group = 'PatientTicketing';
+
     protected function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
@@ -67,8 +69,9 @@ class AdminController extends \ModuleAdminController
     public function actionQueueSetCategories()
     {
         $this->genericAdmin(
-                'Edit Queue Set Categories',
-                'OEModule\PatientTicketing\models\QueueSetCategory'
+            'Edit Queue Set Categories',
+            'OEModule\PatientTicketing\models\QueueSetCategory',
+            ['div_wrapper_class' => 'cols-5']
         );
     }
 
@@ -89,6 +92,7 @@ class AdminController extends \ModuleAdminController
                         'type' => 'boolean',
                     ),
                 ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -479,6 +483,10 @@ class AdminController extends \ModuleAdminController
 
     public function actionClinicLocations()
     {
-        $this->genericAdmin('Clinic locations', 'OEModule\PatientTicketing\models\ClinicLocation');
+        $this->genericAdmin(
+            'Clinic locations',
+            'OEModule\PatientTicketing\models\ClinicLocation',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 }

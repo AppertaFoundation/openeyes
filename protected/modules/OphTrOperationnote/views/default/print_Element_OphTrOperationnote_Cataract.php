@@ -24,7 +24,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -36,31 +36,31 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('length'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('length'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
 					<div class="data-value">
-						<?php echo CHtml::encode($element->length)?>
+						<?=\CHtml::encode($element->length)?>
 					</div>
 				</div>
 			</div>
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('meridian'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
 					<div class="data-value">
-						<?php echo CHtml::encode($element->meridian)?>
+						<?=\CHtml::encode($element->meridian)?>
 					</div>
 				</div>
 			</div>
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -111,7 +111,7 @@
 							<li><?php echo $complication->name?></li>
 						<?php }?>
 						</ul>
-						<?php echo CHtml::encode($element->complication_notes)?>
+						<?=\CHtml::encode($element->complication_notes)?>
 					<?php }?>
 				</div>
 			</div>
@@ -141,14 +141,14 @@
                         'attribute' => 'eyedraw2',
                     ));
                     ?>
-					<?php echo CHtml::encode($element->report2)?>
+					<?=\CHtml::encode($element->report2)?>
 				</div>
 			</div>
 
 			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -162,19 +162,19 @@
 			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('iol_power'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('iol_power'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
 					<div class="data-value">
-						<?php echo CHtml::encode($element->iol_power)?>
+						<?=\CHtml::encode($element->iol_power)?>
 					</div>
 				</div>
 			</div>
 			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -186,7 +186,7 @@
 			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('iol_position_id'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('iol_position_id'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -198,7 +198,7 @@
 			<div class="data-group">
 				<div class="cols-6 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:
+						<?=\CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:
 					</div>
 				</div>
 				<div class="cols-6 column">

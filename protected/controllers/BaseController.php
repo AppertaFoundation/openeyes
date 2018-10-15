@@ -24,7 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
-    public $fixedHotlist = false;
+    public $fixedHotlist = true;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;

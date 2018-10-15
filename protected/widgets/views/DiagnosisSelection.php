@@ -36,7 +36,7 @@
     </div>
 </td>
 <td>
-    <?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
+    <?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
 </td>
 <td>
     <?php $this->controller->renderPartial('//disorder/disorderAutoComplete', array(

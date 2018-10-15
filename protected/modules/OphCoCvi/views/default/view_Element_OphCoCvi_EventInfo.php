@@ -20,7 +20,7 @@
 <div class="element-data">
     <div class="data-group">
         <div class="cols-2">
-            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
+            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('site_id')) ?>:</div>
         </div>
         <div class="cols-10">
             <div class="data-value"><?php echo $element->site ? $element->site->name : '-' ?></div>

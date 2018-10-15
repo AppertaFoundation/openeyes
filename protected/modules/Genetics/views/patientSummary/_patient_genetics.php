@@ -33,7 +33,7 @@
                 <div class="cols-8 column">
                      <div class="data-value">
                         <?php echo $subject->id; ?>
-                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/subject/view/' . $subject->id)) ?> )
+                        ( <?=\CHtml::link('View', Yii::app()->createUrl('/Genetics/subject/view/' . $subject->id)) ?> )
                      </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                             echo $status->status->name;
                         }
                         ?>
-                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?> )
+                        ( <?=\CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?> )
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
         <div class="data-group">
             
             <div class="data-label column" style="margin-bottom:10px;">
-                <?php echo CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
+                <?=\CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
             </div>
         </div>
       <?php } ?>

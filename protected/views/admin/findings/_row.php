@@ -23,8 +23,8 @@
         ); ?>
     </td>
     <td>
-        <?php echo CHtml::activeHiddenField($data['finding'], "[" . $data['key'] . "]id");?>
-        <?php echo CHtml::activeTextField(
+        <?=\CHtml::activeHiddenField($data['finding'], "[" . $data['key'] . "]id");?>
+        <?=\CHtml::activeTextField(
             $data['finding'],
             "[" . $data['key'] . "]name",
             [
@@ -57,13 +57,13 @@
     ]);
     ?>
     <td>
-        <?php echo CHtml::activeCheckBox(
+        <?=\CHtml::activeCheckBox(
             $data['finding'],
             "[" . $data['key'] . "]requires_description"
         ) ?>
     </td>
     <td>
-        <?php echo CHtml::activeCheckBox(
+        <?=\CHtml::activeCheckBox(
             $data['finding'],
             "[" . $data['key'] . "]active"
         ) ?>

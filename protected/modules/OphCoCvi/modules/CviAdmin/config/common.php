@@ -45,8 +45,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                'OphCoCvi/admin/<controller:\w+>/<action:\w+>' => 'OphCoCvi/CviAdmin/<controller>/<action>',
-                'OphCoCvi/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => 'OphCoCvi/CviAdmin/<controller>/<action>',
+                'OphCoCvi/admin/<controller:\w+>/<action:\w+>' => '/OphCoCvi/CviAdmin/<controller>/<action>',
+                'OphCoCvi/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphCoCvi/CviAdmin/<controller>/<action>',
             ]
         ]
     ]

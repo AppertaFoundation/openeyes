@@ -16,4 +16,4 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo CHtml::hiddenField(CHtml::modelName($element).'['.$field.']', $value, $htmlOptions)?>
+<?=\CHtml::hiddenField(CHtml::modelName($element).'['.$field.']', $value, $htmlOptions)?>

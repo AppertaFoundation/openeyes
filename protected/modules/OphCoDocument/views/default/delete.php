@@ -18,7 +18,7 @@
 ?>
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
-<?php echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>
+<?=\CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>
 <div id="delete_event">
     <h3>Delete event</h3>
     <div class="alert-box alert with-icon">
@@ -27,7 +27,7 @@
     <?php $this->displayErrors(@$errors)?>
     <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-        <?php echo CHtml::textArea('delete_reason', '')?>
+        <?=\CHtml::textArea('delete_reason', '')?>
     </div>
     <p>
         <strong>Are you sure you want to proceed?</strong>
@@ -41,7 +41,7 @@
         Cancel
     </button>
     <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-    <?php echo CHtml::endForm(); ?>
+    <?=\CHtml::endForm(); ?>
 </div>
 
 <?php $this->endContent() ?>

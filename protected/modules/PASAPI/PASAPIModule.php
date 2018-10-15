@@ -24,9 +24,8 @@ class PASAPIModule extends \BaseModule
     public function init()
     {
         // import the module-level components
-        $this->setImport(array(
-                        'PASAPI.components.*',
-                ));
+        $this->setImport(['PASAPI.components.*',]);
+        $this->setModules(['PASAPIAdmin']);
 
         parent::init();
     }

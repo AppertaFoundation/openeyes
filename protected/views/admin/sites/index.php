@@ -14,6 +14,8 @@
  */
 ?>
 
+<div class="cols-7">
+
     <?php if (!$sites) :?>
     <div class="row divider">
         <div class="alert-box issue"><b>No results found</b></div>
@@ -67,8 +69,8 @@
             </tbody>
             <tfoot class="pagination-container">
                 <tr>
-                    <td colspan="5">
-                        <?php echo CHtml::button(
+                    <td colspan="2">
+                        <?=\CHtml::button(
                             'Add Site',
                             [
                                 'class' => 'button large',
@@ -76,7 +78,7 @@
                             ]
                         ); ?>
                     </td>
-                    <td colspan="4">
+                    <td colspan="2">
                         <?php $this->widget(
                             'LinkPager',
                             ['pages' => $pagination]
@@ -86,3 +88,4 @@
             </tfoot>
         </table>
     </form>
+</div>

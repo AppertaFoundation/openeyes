@@ -35,7 +35,7 @@
       </div>
     </td>
     <td>
-        <?php echo CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date')) ?>
+        <?=\CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date')) ?>
     </td>
   </tr>
   <tr>
