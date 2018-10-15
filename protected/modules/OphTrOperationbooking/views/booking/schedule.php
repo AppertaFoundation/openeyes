@@ -70,29 +70,6 @@
                 </div>
                 <table class="cols-full last-left">
                     <tbody>
-                    <?php
-                    if ($event->episode->firm_id != $firm->id) { ?>
-                        <tr>
-                            <?php if ($firm->name == 'Emergency List') {
-                                $class = 'alert-box alert';
-                                $message = 'You are booking into the Emergency List.';
-                            } else {
-                                $class = 'alert-box info';
-                                $message = 'You are booking into the list for ';
-                            } ?>
-                            <td>
-                                <?php echo $message; ?>
-                            </td>
-                            <td>
-                                <div class="<?php echo $class; ?>"> <?php echo $firm->name ?></div>
-                            </td>
-                            <?php if (empty($sessions)) { ?>
-                                <div class="alert-box alert">This <?php echo Firm::model()->contextLabel()?> has no scheduled sessions.</div>
-                                <?php
-                            }
-                            ?>
-                        </tr>
-                    <?php } ?>
                     <?php if ($operation->booking) { ?>
                         <tr>
                             <td>
@@ -219,42 +196,7 @@
                         </tbody>
                     </table>
                 <?php } ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="cols-6">
-            <?php
-            $initial_erod = ($operation->firstBooking) ? $operation->firstBooking->erod : null;
-            $erod = $operation->calculateEROD($firm);
-            if ($initial_erod || $erod) { ?>
-                <table class="cols-full last-left">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <?= CHtml::encode($schedule_options->getAttributeLabel('schedule_options_id')) ?>:
-                        </td>
-                        <td class="large-text">
-                            <?= CHtml::encode($schedule_options->schedule_options->name) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            EROD
-                        </td>
-                        <td>
-                            <?php if ($erod) {
-                                echo $erod->getDescription();
-                            } else {
-                                echo 'N/A';
-                            }
-                            if ($initial_erod) {
-                                echo ' <span class="initial-erod">Initially: ' . $initial_erod->getDescription();
-                            } ?>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            <?php } ?>
+            </div>
         </div>
 </section>
 <section class="element edit full  edit-select-theatre-date">
