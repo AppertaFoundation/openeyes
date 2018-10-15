@@ -227,9 +227,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (typeof selectedItems.eye_id === 'undefined') {
             selectedItems.eye_id = null;
         }
-
-
-          console.log();  // show current date-time in console
         data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
         data.date = OpenEyes.Util.formatTime(new Date($('.js-event-date-input').val())  );
