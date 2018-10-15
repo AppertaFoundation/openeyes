@@ -329,6 +329,16 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
             }
 
+            // Delete existing relations to medication management items
+
+            foreach ($existing_item_ids as $item_id) {
+                $related = EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $item_id]);
+                foreach ($related as $record) {
+                    $record->setAttribute('prescription_item_id', null);
+                    $record->save();
+                }
+            }
+
             // Delete remaining (removed) ids
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));

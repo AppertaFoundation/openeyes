@@ -214,7 +214,10 @@ class RefMedicationAdminController extends BaseAdminController
 
         $sheet->fromArray($sets_array, null, 'E1');
 
-        $medications = RefMedication::model()->findAll();
+        $cond = new CDbCriteria();
+        $cond->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE ref_set_id IN (".implode(",", $ref_set_ids)."))");
+
+        $medications = RefMedication::model()->findAll($cond);
 
         $cells_array = [];
 
