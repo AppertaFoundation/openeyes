@@ -118,7 +118,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
           data['operation'] = '';
         } else {
           data['operation'] = this['label'];
-          data['read_only'] = true;
         }
         newRows.push( Mustache.render(
           template,
@@ -137,8 +136,8 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         for(var i in rows){
           this.$table.find('tbody').append(rows[i]);
 
-          let $operation_name = this.$table.find('tbody tr:last').find('.common-operation');
-          $operation_name.prop('readonly' , $operation_name.val());
+          let $operation = this.$table.find('tbody tr:last').find('.common-operation');
+          $operation.prop('readonly' , $operation.val());
 
           this.setDatepicker();
         }
