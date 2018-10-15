@@ -42,7 +42,7 @@
         echo CHtml::hiddenField('booking_id', isset($operation->booking) ? $operation->booking->id : null); ?>
       <div class="data-group">
         <div class="cols-2 column">
-            <?php echo CHtml::label('Re-schedule reason: ', 'cancellation_reason'); ?>
+            <?=\CHtml::label('Re-schedule reason: ', 'cancellation_reason'); ?>
         </div>
         <div class="cols-4 column end">
             <?php
@@ -64,7 +64,7 @@
         <?php
         echo CHtml::label('Comments: ', 'cancellation_comment') ?>
       <div style="height: 0.4em;"></div>
-        <?php echo CHtml::textArea('cancellation_comment', @$_POST['cancellation_comment'],
+        <?=\CHtml::textArea('cancellation_comment', @$_POST['cancellation_comment'],
             array('rows' => 6, 'cols' => 40)) ?>
       <div style="height: 0.4em;"></div>
       <div class="clear"></div>

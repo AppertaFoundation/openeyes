@@ -22,8 +22,8 @@
  */
 ?>
 <script type="text/javascript">
-	var widgetSliderTable_<?php echo CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSliderTable({
-		'range_id': '<?php echo CHtml::modelName($element)?>_<?php echo $field?>',
+	var widgetSliderTable_<?=\CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSliderTable({
+		'range_id': '<?=\CHtml::modelName($element)?>_<?php echo $field?>',
 		'data': {
 			<?php foreach ($data as $i => $val) { 
                 if ($i > 1) {
@@ -34,10 +34,10 @@
 		}
 	});
 </script>
-<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+<div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
 	<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
 	<div class="data">
-		<span class="widgetSliderValue" id="<?php echo CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $data[$value]?></span>
-		<input class="widgetSlider" type="range" id="<?php echo CHtml::modelName($element)?>_<?php echo $field?>" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]" min="<?php echo $min?>" max="<?php echo $max?>" value="<?php echo $value?>" step="<?php echo $step?>" />
+		<span class="widgetSliderValue" id="<?=\CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $data[$value]?></span>
+		<input class="widgetSlider" type="range" id="<?=\CHtml::modelName($element)?>_<?php echo $field?>" name="<?=\CHtml::modelName($element)?>[<?php echo $field?>]" min="<?php echo $min?>" max="<?php echo $max?>" value="<?php echo $value?>" step="<?php echo $step?>" />
 	</div>
 </div>

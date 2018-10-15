@@ -17,6 +17,8 @@
  */
 class SnippetGroupController extends ModuleAdminController
 {
+    public $group = 'Correspondence';
+
     protected $admin;
 
     /**
@@ -28,6 +30,7 @@ class SnippetGroupController extends ModuleAdminController
     {
         $this->admin = new Admin(LetterStringGroup::model(), $this);
         $this->admin->setModelDisplayName('Letter Snippet Group');
+        $this->admin->div_wrapper_class = 'cols-3';
 
         return parent::beforeAction($action);
     }
@@ -81,7 +84,7 @@ class SnippetGroupController extends ModuleAdminController
         ));
 
         $group_id = '';
-        if($id){
+        if ($id) {
             $group_id = '?group_id=' . $id;
         }
 

@@ -252,9 +252,10 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         parent::afterSave();
     }
     
+    
     public function getPrint_view()
     {
         return 'print_'.$this->getDefaultView();
     }
-
+    
 }

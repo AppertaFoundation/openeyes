@@ -52,7 +52,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 	<?php if ($operation->event->hasIssue()) {?>
 		<div class="alert-box issue with-icon">
-			<?php echo CHtml::encode($operation->event->getIssueText())?>
+			<?=\CHtml::encode($operation->event->getIssueText())?>
 		</div>
 	<?php }?>
 

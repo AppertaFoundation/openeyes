@@ -42,7 +42,7 @@ if (!@$comment) {
             </tr>
             <tr>
                 <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
+                    <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
                 </td>
                 <td>
                     <div class="data-value "><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
@@ -58,7 +58,7 @@ if (!@$comment) {
             </tr>
             <tr>
                 <td>
-                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
+                    <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
                 </td>
                 <td>
                     <div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None' ?></div>
