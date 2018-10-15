@@ -21,6 +21,12 @@ class BaseAdminController extends BaseController
     public $layout = '//layouts/admin';
     public $items_per_page = 30;
 
+    /**
+     * Defines that which sidebar item should be open when the action performed
+     * @var string
+     */
+    public $group = 'Core';
+
     public function accessRules()
     {
         return array(array('allow', 'roles' => array('admin')));
@@ -82,7 +88,8 @@ class BaseAdminController extends BaseController
             'filter_fields' => array(),
             'filters_ready' => true,
             'label_extra_field' => false,
-            'description' => ''
+            'description' => '',
+            'div_wrapper_class' => 'cols-full',
         ), $options);
 
         $columns = $model::model()->metadata->columns;

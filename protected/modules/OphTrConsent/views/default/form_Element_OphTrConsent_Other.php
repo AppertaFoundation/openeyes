@@ -43,7 +43,7 @@
                     'class' => 'cols-full',
                 ),
             )); ?>
-            <?php echo CHtml::textField('Consultant',
+            <?=\CHtml::textField('Consultant',
                 $element->consultant ? $element->consultant->fullNameAndTitleAndQualifications : '',
                 array(
                     'autocomplete' => Yii::app()->params['html_autocomplete'],

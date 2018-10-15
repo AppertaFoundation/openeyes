@@ -52,7 +52,7 @@
               <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
                 <td class="prescription-label">
                     <?php if(!is_null($item->comments)): ?>
-                        <i><?php echo CHtml::encode($item->comments); ?></i>
+                        <i><?=\CHtml::encode($item->comments); ?></i>
                     <?php endif; ?>
                 </td>
             </tr>

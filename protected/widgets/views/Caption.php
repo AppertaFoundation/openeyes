@@ -19,7 +19,7 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo $value?>
 <?php } else {?>
-	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="data-group "<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+	<div id="div_<?=\CHtml::modelName($element)?>_<?php echo $field?>" class="data-group "<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 		<div class="cols-<?php echo $layoutColumns['label'];?> column">
 			<?php
 			if($label) {

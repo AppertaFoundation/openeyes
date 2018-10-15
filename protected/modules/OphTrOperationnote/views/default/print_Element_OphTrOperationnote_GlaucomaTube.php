@@ -23,7 +23,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('plate_position_id'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('plate_position_id'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -35,7 +35,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('plate_limbus'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('plate_limbus'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -47,7 +47,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('tube_position_id'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('tube_position_id'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -59,7 +59,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('stent'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('stent'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -71,7 +71,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('slit'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('slit'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -83,7 +83,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('visco_in_ac'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('visco_in_ac'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -95,7 +95,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('flow_tested'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('flow_tested'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">
@@ -107,7 +107,7 @@
 			<div class="data-group">
 				<div class="cols-4 column">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
+						<?=\CHtml::encode($element->getAttributeLabel('description'))?>
 					</div>
 				</div>
 				<div class="cols-8 column">

@@ -28,8 +28,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                'OphCiDidNotAttend/admin/<controller:\w+>/<action:\w+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
-                '<module:\w+>/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => 'OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
+                'OphCiDidNotAttend/admin/<controller:\w+>/<action:\w+>' => '/OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
+                'OphCiDidNotAttend/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphCiDidNotAttend/DidNotAttendAdmin/<controller>/<action>',
             ]
         ]
     ]

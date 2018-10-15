@@ -82,21 +82,21 @@
                             echo $roles ? CHtml::encode(implode(', ', $roles)) : '-';
                         ?>
                     </td>
-                    <td><?php echo $user->active ? 'Yes' : 'No' ?></td>
+                    <td><i class="oe-i <?=($user->active ? 'tick' : 'remove');?> small"></i></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Add User',
                         [
                             'class' => 'button large',
                             'id' => 'et_add'
                         ]
                     ); ?>
-                    <?php echo CHtml::button(
+                    <?=\CHtml::button(
                         'Deactivate Users',
                         [
                             'class' => 'button large',

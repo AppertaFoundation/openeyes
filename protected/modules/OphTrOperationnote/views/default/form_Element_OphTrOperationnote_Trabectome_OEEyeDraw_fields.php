@@ -94,7 +94,7 @@
     <tr style="<?= $element->hasOtherComplication() ? '' : 'display: none;' ?>"
         id="div_<?= CHtml::modelName($element) ?>_complication_other">
       <td>
-        <label for="<?php echo CHtml::modelName($element) ?>_complication_other">
+        <label for="<?=\CHtml::modelName($element) ?>_complication_other">
             <?php echo $element->getAttributeLabel('complication_other') ?>
         </label>
       </td>

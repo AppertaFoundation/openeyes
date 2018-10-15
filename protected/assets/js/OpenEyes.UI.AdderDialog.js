@@ -161,7 +161,7 @@
 
       dialog.searchWrapper.hide();
       dialog.selectWrapper.show();
-      dialog.selectWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
 
     $searchButton.click(function () {
@@ -170,7 +170,7 @@
 
       dialog.searchWrapper.show();
       dialog.selectWrapper.hide();
-      dialog.searchWrapper.find('li').removeClass('selected');
+      dialog.popup.find('li').removeClass('selected');
     });
   };
 
@@ -253,6 +253,10 @@
     var right = (w - btnPos.right);
     var bottom = (h - btnPos.bottom);
 
+	if(h - bottom < 240){
+		bottom = h - 245;
+	}
+	
     // set CSS Fixed position
     this.popup.css({
       bottom: bottom,

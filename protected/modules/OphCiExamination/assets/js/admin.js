@@ -153,7 +153,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('div.column.content').on('click', '.workflow-item-attr',  function(){
+    $('#step_element_types').on('click', 'tr.clickable .workflow-item-attr',  function(){
         var item = this,
             $itemTd = $(this).parent(),
             $itemTr = $itemTd.parent(),

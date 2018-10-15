@@ -19,7 +19,7 @@
 <div class="element-data">
 	<div class="data-group">
 		<div class="cols-3 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
+			<div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('type_id'))?>:</div>
 		</div>
 		<div class="cols-9 column">
 			<div class="data-value"><?php echo $element->type ? $element->type->name : 'None'?>
