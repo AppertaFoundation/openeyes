@@ -16,52 +16,57 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h1><?php echo $title ?></h1>
-<?php $this->renderPartial('//base/_messages')?>
-<div class="box admin">
-	<form id="admin_manage_lasers">
-		<table class="standard">
-			<thead>
-			<tr>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Wavelength</th>
-				<th>Site</th>
-				<th>Active</th>
-				<th>Edit</th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($model_list as $i => $model) {?>
-				<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphTrLaser/admin/editLaser/<?php echo $model->id?>">
-					<td>
-						<?php echo $model->name?>
-					</td>
-					<td>
-						<?php echo $model->type->name?>
-					</td>
-					<td>
-						<?php echo $model->wavelength?>
-					</td>
-					<td>
-						<?php echo $model->site->name ?>
-					</td>
-					<td>
-						<?php echo $model->active ? 'Yes' : 'No' ?>
-					</td>
-					<td>
-						<?php echo CHtml::link('Edit', '/OphTrLaser/admin/editLaser/'.$model->id, array('class' => 'small event-action'))?>
-					</td>
-				</tr>
-			<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="2">
-					<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrLaser/admin/addLaser'))->toHtml()?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<?php $this->renderPartial('//base/_messages') ?>
+
+<div class="cols-8">
+    <form id="admin_manage_lasers">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Wavelength</th>
+                <th>Site</th>
+                <th>Active</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($model_list as $i => $model) { ?>
+                <tr class="clickable" data-id="<?php echo $model->id ?>"
+                    data-uri="OphTrLaser/admin/editLaser/<?php echo $model->id ?>">
+                    <td><?php echo $model->name ?></td>
+                    <td><?php echo $model->type->name ?></td>
+                    <td><?php echo $model->wavelength ?></td>
+                    <td><?php echo $model->site->name ?></td>
+                    <td><i class="oe-i <?=($model->active ? 'tick' : 'remove');?> small"></i></td>
+                    <td>
+                        <?=\CHtml::link(
+                            'Edit',
+                            '/OphTrLaser/admin/editLaser/' . $model->id,
+                            ['class' => 'small event-action']
+                        ) ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="6">
+                    <?=\CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'type' => 'button',
+                            'name' => 'add',
+                            'data-uri' => '/OphTrLaser/admin/addLaser',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

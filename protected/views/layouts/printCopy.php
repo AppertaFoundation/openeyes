@@ -21,7 +21,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+<title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
 <style>

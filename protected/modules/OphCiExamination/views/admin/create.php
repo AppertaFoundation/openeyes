@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="box admin">
+<div class="cols-5">
 	<?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'OphCiExamination_adminform',
@@ -29,8 +29,8 @@
         ));
 
         $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-                'model' => $model,
-                'form' => $form,
+            'model' => $model,
+            'form' => $form,
         ));
 
         echo $form->formActions(array(

@@ -29,7 +29,7 @@ if (!empty($sub_types)) {
                 <?=\CHtml::activeHiddenField($sub_type, "[$i]id");?>
             <td><?php echo $sub_type->name?></td>
             <td><?php echo $sub_type->display_order?></td>
-            <td><?php echo $sub_type->is_active ? 'Yes' : 'No'?></td>
-		</tr>
+            <td><i class="oe-i <?=($sub_type->is_active ? 'tick' : 'remove');?> small"></i></td>
+        </tr>
 	<?php }
 } 

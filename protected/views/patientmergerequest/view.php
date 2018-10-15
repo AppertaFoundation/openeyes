@@ -38,7 +38,7 @@
         action="<?php echo Yii::app()->createUrl('/patientMergeRequest/merge', array('id' => $model->id)) ?>"
         method="post">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-      <?php echo CHTML::activeHiddenField($model, 'id') ?>
+      <?=\CHtml::activeHiddenField($model, 'id') ?>
     <div class="data-group">
       <div class="cols-5 column">
         <h2 class="secondaryPatient">Secondary</h2>
@@ -61,7 +61,7 @@
     </div>
     <hr>
     <div class="cols-5 column">Comment:
-        <?php echo CHTML::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
+        <?=\CHtml::activeTextArea($model, 'comment', array('disabled' => 'disabled')); ?>
     </div>
     <br>
   </form>

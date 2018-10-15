@@ -19,8 +19,8 @@ if (!empty($operation->booking)) {
     ?>
   <div class="data">
 
-      <span style="display:inline-block; width:160px;">Firm:</span><strong><?php echo CHtml::encode($session->FirmName); ?></strong><br>
-      <span style="display:inline-block; width:160px;">Location:</span><strong><?php echo CHtml::encode($session->TheatreName); ?></strong><br>
+      <span style="display:inline-block; width:160px;">Firm:</span><strong><?=\CHtml::encode($session->FirmName); ?></strong><br>
+      <span style="display:inline-block; width:160px;">Location:</span><strong><?=\CHtml::encode($session->TheatreName); ?></strong><br>
       <span style="display:inline-block; width:160px;">Date of operation:</span><strong><?php echo $session->NHSDate('date'); ?></strong><br>
       <span style="display:inline-block; width:160px;">Session time:</span><strong><?php echo substr($session->start_time, 0, 5).' - '.substr($session->end_time, 0, 5); ?></strong><br>
       <span style="display:inline-block; width:160px;">Admission time:</span><strong><?php echo substr($operation->booking->admission_time, 0, 5); ?></strong> <br>

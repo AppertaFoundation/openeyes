@@ -110,7 +110,7 @@ if (@$_POST[CHtml::modelName($element)]) {
     </td>
   </tr>
 
-  <tr id="<?php echo CHtml::modelName($element) . '_' . $side; ?>_fluid_fields"
+  <tr id="<?=\CHtml::modelName($element) . '_' . $side; ?>_fluid_fields"
       style="<?php if ($hide_fluid) { ?>display: none;<?php } ?>"
   >
     <td class="flex-layout flex-top" style="height: auto;">

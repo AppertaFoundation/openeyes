@@ -55,14 +55,14 @@
                         'Add Definition',
                         '/worklistAdmin/definitionUpdate/',
                         array(),
-                        array('class' => 'button primary small')
+                        array('class' => 'button large')
                     )->toHtml()?>
                     <?php echo EventAction::button(
                         'Sort',
                         'sort',
                         array(),
                         array(
-                            'class' => 'small',
+                            'class' => 'button large',
                             'style' => 'display:none;',
                             'data-uri' => '/worklistAdmin/definitionSort/',
                             'data-object' => 'WorklistDefinition',

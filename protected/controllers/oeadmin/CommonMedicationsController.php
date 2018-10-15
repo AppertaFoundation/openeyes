@@ -18,6 +18,9 @@
  */
 class CommonMedicationsController extends BaseAdminController
 {
+
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(CommonMedications::model(), $this);
@@ -39,6 +42,7 @@ class CommonMedicationsController extends BaseAdminController
                 'placeholder' => 'search for medication drug',
             )
         );
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 

@@ -16,10 +16,31 @@
 $this->renderPartial('//base/_messages');
 $model = OEModule\OphCiExamination\models\FamilyHistory_Entry::model();
 ?>
-<div class="box admin">
-    <h2>Family History</h2>
-    <ul>
-        <li><a href="/OphCiExamination/admin/familyHistoryRelative"><?= CHtml::encode($model->getAttributeLabel('relative_id')) ?></a></li>
-        <li><a href="/OphCiExamination/admin/familyHistoryCondition"><?= CHtml::encode($model->getAttributeLabel('condition_id')) ?></a></li>
-    </ul>
+
+<div class="cols-3">
+    <div class="row divider">
+        <h2>Social History</h2>
+    </div>
+    <table class="standard">
+        <tbody>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('relative_id')),
+                    '/OphCiExamination/admin/familyHistoryRelative',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?= CHtml::link(
+                    CHtml::encode($model->getAttributeLabel('condition_id')),
+                    '/OphCiExamination/admin/familyHistoryCondition',
+                    []
+                ) ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
