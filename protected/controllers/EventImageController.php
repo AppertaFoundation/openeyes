@@ -132,7 +132,6 @@ class EventImageController extends BaseController
             $image_info = ['page_count' => $page_count , 'url' => $this->createUrl('view', array('id' => $event_id))];
             echo CJSON::encode($image_info);
         }
-        // otherwise r
-        //eturn nothing
+        // otherwise return nothing
     }
 }
