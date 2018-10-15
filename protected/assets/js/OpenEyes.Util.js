@@ -64,6 +64,16 @@
             return 0;
         }
 	}
+
+    Util.formatTimeToFuzzyDate =function (date) {
+        let day = date.getDate();
+        let displayDay = day < 10 ? '0' + day.toString() : day;
+        let month = date.getMonth() + 1;
+        let displayMonth = month < 10 ? '0' + month.toString() : month;
+        let year = date.getFullYear();
+
+        return year + '-' + displayMonth + '-' + displayDay;
+    }
 	exports.Util = Util;
 
 }(this.OpenEyes));
