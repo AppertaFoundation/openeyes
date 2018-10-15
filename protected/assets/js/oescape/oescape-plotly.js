@@ -64,6 +64,8 @@ var layout_plotly = {
 
 
 var options_plotly = {
+	displayLogo: false,
+	displayModeBar: false,
 };
 
 function setMarkingEvents_plotly(layout, options, annotation, data, side, y_start, y_end){
