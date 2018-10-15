@@ -120,9 +120,10 @@ class EventImageController extends BaseController
     {
         $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
             array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
-        if (!isset($event_image) || $event_image->last_modified_date <  Event::model()->findByPk($event_id)->last_modified_date) {
+        $event = Event::model()->findByPk($event_id);
+        if (!isset($event_image) ||  isset($event) && $event_image->last_modified_date <  $event->last_modified_date) {
             // Then try to make it
-            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event_id;
+            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event->id;
             exec($command);
         }
 
