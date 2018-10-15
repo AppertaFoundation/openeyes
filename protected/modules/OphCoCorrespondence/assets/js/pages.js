@@ -28,7 +28,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         let controller = this;
         var page = Math.ceil(controller.pageCount * yRatio);
         if(page !== 0){
-            page = page - 1
+            page = page - 1;
         }
         controller.changePreviewPage(page);
     };
