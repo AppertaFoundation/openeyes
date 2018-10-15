@@ -816,19 +816,20 @@ function getCorrespondenceEventImages(){
         url: '/eventImage/getImageInfo',
         data: {'event_id': OE_event_id},
     }).success(function (response) {
+        $image_container = $('.js-correspondence-image-overlay');
+        $image_container.html('');
         if (response) {
-            $image_container = $('.js-correspondence-image-overlay');
-            $image_container.html('');
             response = JSON.parse(response);
-            for (let index = 0; index < response.page_count; index++) {
-                $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+            if(response.error){
+                $('#correspondence_out').show();
+			} else {
+                for (let index = 0; index < response.page_count; index++) {
+                    $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+                }
+                $('#correspondence_image_0').show();
+                new OpenEyes.OphCoCorrespondence.DocumentViewerController();
             }
-
-            $('#correspondence_image_0').show();
-            new OpenEyes.OphCoCorrespondence.DocumentViewerController();
         }
-    }).complete(function () {
-
     });
 }
 

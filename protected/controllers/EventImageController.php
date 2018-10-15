@@ -118,20 +118,25 @@ class EventImageController extends BaseController
 
     public function actionGetImageInfo($event_id)
     {
-        $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
-            array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
-        $event = Event::model()->findByPk($event_id);
-        if (!isset($event_image) ||  isset($event) && $event_image->last_modified_date <  $event->last_modified_date) {
-            // Then try to make it
-            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event->id;
-            exec($command);
-        }
+        try {
+            $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
+                array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
+            $event = Event::model()->findByPk($event_id);
+            if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
+                // Then try to make it
+                $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event->id;
+                exec($command);
+            }
 
-        $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
-        if ($page_count != 0) {
-            // THen return that url
-            $image_info = ['page_count' => $page_count , 'url' => $this->createUrl('view', array('id' => $event_id))];
-            echo CJSON::encode($image_info);
+            $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
+            if ($page_count != 0) {
+                // THen return that url
+                $image_info = ['page_count' => $page_count, 'url' => $this->createUrl('view', array('id' => $event_id))];
+                echo CJSON::encode($image_info);
+            }
+        }
+        catch (Exception $exception){
+            echo CJSON::encode(['error' => $exception->getMessage()]);
         }
         // otherwise return nothing
     }
