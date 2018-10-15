@@ -24,6 +24,7 @@ class RefSetAdminController extends BaseAdminController
         $admin->setListFields(array(
             'id',
             'name',
+            'rulesString',
             'itemsCount',
             'adminListAction'
         ));

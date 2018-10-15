@@ -20,6 +20,7 @@
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Site $site
+ * @property Subspecialty $subspecialty
  */
 class RefSetRule extends BaseActiveRecordVersioned
 {

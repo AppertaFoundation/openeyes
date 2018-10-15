@@ -100,6 +100,7 @@ class RefSet extends BaseActiveRecordVersioned
 			'created_date' => 'Created Date',
             'adminListAction' => 'Action',
             'itemsCount' => 'Items count',
+            'rulesString' => 'Rules',
 		);
 	}
 
@@ -198,5 +199,17 @@ class RefSet extends BaseActiveRecordVersioned
     {
         $result = Yii::app()->db->createCommand("SELECT COUNT(id) AS cnt FROM ref_medication_set WHERE ref_set_id = ".$this->id)->queryScalar();
         return $result;
+    }
+
+    public function rulesString()
+    {
+        $ret_val = [];
+        foreach ($this->refSetRules as $rule) {
+            $ret_val[]= "Site: ".(is_null($rule->site_id) ? "-" : $rule->site->name).
+                ", SS: ".(is_null($rule->subspecialty_id) ? "-" : $rule->subspecialty->name).
+                ", Usage code: ".$rule->usage_code;
+        }
+
+        return implode(" // ", $ret_val);
     }
 }
