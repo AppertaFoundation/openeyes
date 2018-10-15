@@ -88,4 +88,9 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
 
         return $this->find($criteria);
     }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
 }
