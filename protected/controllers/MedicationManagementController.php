@@ -34,7 +34,7 @@
         {
             header('Content-type: application/json');
             /** @var RefSet $ref_set */
-            if(!$ref_sets = RefSet::model()->findAll('id IN (SELECT ref_set_id FROM ref_set_rules WHERE usage_code =\'Formulary\'')) {
+            if(!$ref_sets = RefSet::model()->findAll('id IN (SELECT ref_set_id FROM ref_set_rules WHERE usage_code =\'Formulary\')')) {
                 echo CJSON::encode([]);
                 exit;
             }
