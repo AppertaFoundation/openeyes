@@ -110,10 +110,10 @@
           enableButtons(this.options.formSelector);
         }
         else {
-          if (!window.formHasChanged) {
+            // The form data is saved with the above 'form.serialize()'
+            // success should mean this data is already saved, so we don't need to warn the users
             $(window).off('beforeunload');
-          }
-          window.location.href = href;
+            window.location.href = href;
         }
       }.bind(this),
       error: function (jqXHR, status, error) {
@@ -156,6 +156,7 @@
         } else {
           //this.reloadPatientAlert();
           if (response.redirectURL) {
+              window.onbeforeunload = null;
             window.patientTicketChanged = false;
             window.location = response.redirectURL;
           }
@@ -168,7 +169,7 @@
       complete: function () {
         enableButtons(this.options.formSelector);
       }.bind(this)
-    })
+    });
   };
 
 
