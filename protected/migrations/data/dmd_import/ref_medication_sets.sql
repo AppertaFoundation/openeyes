@@ -2,11 +2,6 @@ SELECT id INTO @amp_id FROM ref_set WHERE `name` = 'DM+D AMP';
 SELECT id INTO @vmp_id FROM ref_set WHERE `name` = 'DM+D VMP';
 SELECT id INTO @vtm_id FROM ref_set WHERE `name` = 'DM+D VTM';
 
-INSERT INTO ref_set_rules (ref_set_id, site_id, subspecialty_id, usage_code) VALUES
-  (@amp_id, NULL, NULL, 'Formulary'),
-  (@vmp_id, NULL, NULL, 'Formulary'),
-  (@vtm_id, NULL, NULL, 'Formulary');
-
 SELECT
   rm.id,
   CASE rm.source_subtype
@@ -30,5 +25,3 @@ FROM openeyes.ref_medication rm
 
 WHERE
   rm.source_type='DM+D';
- /* AND
-  rm.source_subtype != 'VTM' */
