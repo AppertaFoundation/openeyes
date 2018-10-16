@@ -242,13 +242,10 @@ $(document).ready(function() {
 			});
 		}
 		if (allergic) {
-			$(this).closest('.wrapper').addClass('allergyWarning');
 			$(this).closest('.wrapper').prepend('<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip" data-tooltip-content="Allergic to ' + allergyName + '"></i>');
 		}
 		else {
 			$(this).closest('.wrapper').find('.js-allergy-warning').remove();
-			console.log($(this).closest('.wrapper').find('.js-allergy-warning'));
-			$(this).closest('.wrapper').removeClass('allergyWarning');
 		}
 	})
 
