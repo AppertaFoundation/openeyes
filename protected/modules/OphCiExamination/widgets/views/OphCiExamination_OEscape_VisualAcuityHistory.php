@@ -12,6 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
@@ -42,18 +43,21 @@
 
     var sides = ['left', 'right'];
 
+    var widget_count = <?= CJavaScript::encode($widget_no); ?>;
+    var height = (widget_count===1)? 800: 600;
+
     //Plotly
     var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
 
-    var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
+    var va_plotly_ticks = pruneYTicks(va_ticks, height, 17);
 
 
     for (var side of sides){
       var layout_VA = JSON.parse(JSON.stringify(layout_plotly));
       layout_VA['shapes'] = [];
       layout_VA['annotations'] = [];
-      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 120);
-      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 120);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
+      setMarkingEvents_plotly(layout_VA, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
 
       var data =[{
         name: 'VA('+side+')',
@@ -78,7 +82,7 @@
         ticktext: va_plotly_ticks['tick_labels'],
       };
       layout_VA['yaxis'] = setYAxis_VA(yaxis_options);
-      layout_VA['height'] = 800;
+      layout_VA['height'] = height;
       layout_VA['xaxis']['rangeslider'] = {};
 
       Plotly.newPlot(

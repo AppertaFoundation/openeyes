@@ -23,6 +23,7 @@
       layout_iop['shapes'] = [];
       layout_iop['annotations'] = [];
       layout_iop['yaxis'] = setYAxis_IOP();
+      layout_iop['height'] = 400;
 
       setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, opnote_marking, side, 0, 70);
       setMarkingEvents_plotly(layout_iop, marker_line_plotly_options, marking_annotations, laser_marking, side, 0, 70);
