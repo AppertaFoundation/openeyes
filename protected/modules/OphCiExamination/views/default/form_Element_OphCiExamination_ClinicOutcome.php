@@ -142,7 +142,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                   </ul>
                 </div>
               </td>
-
               <td>
                   <div class="follow-up-options-follow-up-only data-group"
                        style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
@@ -164,6 +163,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                       <?php endforeach; ?>
                   </ul>
                 </div>
+                  </div>
               </td>
               <td class="flex-layout flex-top">
                   <div class="follow-up-options-follow-up-only data-group"
