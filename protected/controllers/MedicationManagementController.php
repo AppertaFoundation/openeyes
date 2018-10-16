@@ -30,11 +30,11 @@
             );
         }
 
-        public function actionFindRefMedications($ref_set_id, $term = '', $limit = 50)
+        public function actionFindRefMedications($term = '', $limit = 50)
         {
             header('Content-type: application/json');
             /** @var RefSet $ref_set */
-            if(!$ref_set = RefSet::model()->find(array('condition'=>'id=:id', 'params'=>array('id'=>$ref_set_id)))) {
+            if(!$ref_sets = RefSet::model()->findAll('id IN (SELECT ref_set_id FROM ref_set_rules WHERE usage_code =\'Formulary\'')) {
                 echo CJSON::encode([]);
                 exit;
             }
@@ -52,34 +52,37 @@
             $criteria->order = "refMedications.preferred_term";
             $criteria->with = 'refMedicationsSearchIndexes';
 
-            foreach ($ref_set->refMedications($criteria) as $med) {
-                $ref_med_set = RefMedicationSet::model()
-                    ->find('ref_medication_id = :ref_medication_id AND ref_set_id = :ref_set_id', [
-                        'ref_medication_id' => $med->id,
-                        'ref_set_id' => $ref_set->id
-                    ]);
+            foreach ($ref_sets as $ref_set) {
+                foreach ($ref_set->refMedications($criteria) as $med) {
+                    $ref_med_set = RefMedicationSet::model()
+                        ->find('ref_medication_id = :ref_medication_id AND ref_set_id IN :ref_set_id', [
+                            'ref_medication_id' => $med->id,
+                            'ref_set_id' => $ref_set->id
+                        ]);
 
-                $tabsize = 0;
+                    $tabsize = 0;
 
-                if($med->isVMP()) {
-                    $tabsize = 1;
+                    if($med->isVMP()) {
+                        $tabsize = 1;
+                    }
+                    elseif ($med->isAMP()) {
+                        $tabsize = 2;
+                    }
+
+                    $ret_data[] = array_merge($med->getAttributes(), [
+                            'label' => $med->preferred_term,
+                            'dose_unit_term' => $ref_med_set->default_dose_unit_term,
+                            'dose' => $ref_med_set->default_dose,
+                            'default_form' => $ref_med_set->default_form,
+                            'frequency_id' => $ref_med_set->default_frequency,
+                            'route_id' => $ref_med_set->default_route,
+                            'tabsize' => $tabsize,
+                            'will_copy' => $med->getToBeCopiedIntoMedicationManagement()
+                        ]
+                    );
                 }
-                elseif ($med->isAMP()) {
-                    $tabsize = 2;
-                }
-
-                $ret_data[] = array_merge($med->getAttributes(), [
-                        'label' => $med->preferred_term,
-                        'dose_unit_term' => $ref_med_set->default_dose_unit_term,
-                        'dose' => $ref_med_set->default_dose,
-                        'default_form' => $ref_med_set->default_form,
-                        'frequency_id' => $ref_med_set->default_frequency,
-                        'route_id' => $ref_med_set->default_route,
-                        'tabsize' => $tabsize,
-                        'will_copy' => $med->getToBeCopiedIntoMedicationManagement()
-                    ]
-                );
             }
+
 
             echo CJSON::encode($ret_data);
         }

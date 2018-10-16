@@ -321,7 +321,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $row.find(".js-medication-search-autocomplete").autocomplete({
           minLength: 2,
           delay: 700,
-          source: '/MedicationManagement/findRefMedications?ref_set_id=29',
+          source: '/MedicationManagement/findRefMedications',
           select: function(event, ui){
               $row.find(".medication-name .textual-display").text(ui.item.preferred_term);
               switch_alternative($(event.target));
