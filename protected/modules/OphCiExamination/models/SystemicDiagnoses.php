@@ -157,7 +157,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
@@ -166,10 +165,17 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                 foreach ($patient->getSystemicDiagnoses($present) as $sd) {
                     $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
                     $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
-                    $diagnoses[] = $diagnosis;
+                    $duplicate_diagnosis = false;
+                    foreach($diagnoses as $current_diagnosis){
+                        if($diagnosis->disorder_id === $current_diagnosis->disorder_id){
+                            $duplicate_diagnosis = true;
+                        }
+                    }
+                    if(!$duplicate_diagnosis){
+                        $diagnoses[] = $diagnosis;
+                    }
                 }
             }
-
             $this->diagnoses = $diagnoses;
         }
     }
