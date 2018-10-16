@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -14,16 +14,10 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2018, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<!--
-      *******  Element Data Type (VIEW): * Risks *
-      *******  CSS: "element-data view-risks" (+ any extra css)
-      *******  CSS hook used for element specific styling only where required
-      *******  Only minimum required DOM and CSS for UI is shown here
--->
 <div class="cols-12">
     <?php if (!$this->patient->hasRiskStatus()) { ?>
         <p class="data-value flex-layout flex-top">Patient has no known risks.</p>
