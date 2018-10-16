@@ -55,7 +55,7 @@
             foreach ($ref_sets as $ref_set) {
                 foreach ($ref_set->refMedications($criteria) as $med) {
                     $ref_med_set = RefMedicationSet::model()
-                        ->find('ref_medication_id = :ref_medication_id AND ref_set_id IN :ref_set_id', [
+                        ->find('ref_medication_id = :ref_medication_id AND ref_set_id = :ref_set_id', [
                             'ref_medication_id' => $med->id,
                             'ref_set_id' => $ref_set->id
                         ]);
