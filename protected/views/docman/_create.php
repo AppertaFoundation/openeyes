@@ -22,11 +22,16 @@
 ?>
 
 <table class="cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
+	<colgroup>
+		<col span="3">
+		<col class="cols-2">
+
+	</colgroup>
     <thead>
         <tr id="dm_0">
             <th>To/CC</th>
             <th>Recipient/Address</th>
-            <th>Role</th>
+            <th></th>
             <th>Delivery Method(s)</th>
             <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
         </tr>
@@ -111,7 +116,7 @@
                 <?php $index = $row_index + $cc_index ?>
                 <tr class="rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
                     <td> Cc <?=\CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
-                    <td>
+                    <td class="cols-3">
                         <?php 
                             $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;

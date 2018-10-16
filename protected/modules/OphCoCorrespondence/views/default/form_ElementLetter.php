@@ -17,7 +17,6 @@
  */
 ?>
 
-
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
@@ -354,19 +353,6 @@ $creating = $creating ?: false;
               } ?>
           </div>
         </div>
-          <?php if (!$element->document_instance): ?>
-            <div class="data-group">
-              <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-                  <?php echo $form->dropDownListNoPost('address_target', $element->address_targets,
-                      $element->address_target,
-                      array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width')) ?>
-              </div>
-              <div class="cols-6 column end">
-                  <?php echo $form->textArea($element, 'address',
-                      array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
-              </div>
-            </div>
-          <?php endif; ?>
         <div class="data-group">
           <table class="cols-full">
             <colgroup>

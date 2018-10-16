@@ -285,8 +285,8 @@ var docman = (function() {
         }
 
             if(contact_id != 'OTHER' ){
-
-                if(other_rowindex !== undefined){
+            	console.log('it works!');
+            	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
 
@@ -300,7 +300,7 @@ var docman = (function() {
                 this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
                 this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
 
-            } else if(contact_id == 'OTHER'){
+            } else if(contact_id.toUpperCase() == 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
