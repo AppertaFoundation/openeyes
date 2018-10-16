@@ -142,9 +142,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                   </ul>
                 </div>
               </td>
-              <td>
-                  <div class="follow-up-options-follow-up-only data-group"
-                       style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
+              <td class="follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                 <div class="flex-layout flex-top flex-left">
                   <ul class="add-options" id="follow-uo-quantity-options">
                       <?php foreach ($element->getFollowUpQuantityOptions() as $quantity): ?>
@@ -165,9 +163,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                 </div>
                   </div>
               </td>
-              <td class="flex-layout flex-top">
-                  <div class="follow-up-options-follow-up-only data-group"
-                       style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
+              <td class="flex-layout flex-top follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                   <ul class="add-options" id="follow-up-role-options">
                       <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role::model()->findAll() as $role): ?>
                         <li data-str="<?= $role->name ?>" data-role-id="<?= $role->id ?>"
@@ -178,9 +174,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                   </ul>
                 </div>
               </td>
-              <td>
-                  <div class="follow-up-options-follow-up-only data-group"
-                       style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
+              <td class="follow-up-options-follow-up-only"  style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>;">
                 <div class="flex-layout flex-top flex-left">
                     <?=\CHtml::textField('follow_up_role_comments', $element->role_comments,
                         array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Role')) ?>
