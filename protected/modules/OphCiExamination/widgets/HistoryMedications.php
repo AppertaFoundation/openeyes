@@ -71,6 +71,7 @@ class HistoryMedications extends BaseMedicationWidget
                 }
             }
         }
+
         return $untracked;
     }
     /**
@@ -157,7 +158,6 @@ class HistoryMedications extends BaseMedicationWidget
                 $entries,
                 $untracked);
         }
-
     }
 
     /**
@@ -166,12 +166,14 @@ class HistoryMedications extends BaseMedicationWidget
 
     public function getMergedManagementEntries()
     {
-        $this->setEntriesFromPreviousManagement();
+        if(empty($this->element->entries)) {
+            $this->setEntriesFromPreviousManagement();
+        }
+
         $this->element->assortEntries();
         return [
-            'debug_info' => print_r($this->element->entries, true),
-            'current' => $this->element->current_entries,
-            'stopped' => $this->element->closed_entries
+            'current' => array_merge($this->element->current_entries, $this->element->prescribed_entries),
+            'stopped' => $this->element->closed_entries,
         ];
     }
 
@@ -264,5 +266,37 @@ class HistoryMedications extends BaseMedicationWidget
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
+    }
+
+    /**
+     * @throws \CHttpException
+     */
+    protected function initialiseElement()
+    {
+        if (!$this->element) {
+            if (!$this->patient) {
+                throw new \CHttpException('Patient required to initialise ' . static::class . ' with no element.');
+            }
+
+            if ($this->mode != self::$EVENT_EDIT_MODE) {
+                // must be in a view mode so just load the most recent
+                $this->element = $this->getNewElement()->getMostRecentForPatient($this->patient);
+            } else {
+                $this->element = $this->getNewElement();
+            }
+        }
+
+        if (($this->element && $this->element->getIsNewRecord()) || ($this->mode == self::$PATIENT_POPUP_MODE || $this->mode == self::$PATIENT_SUMMARY_MODE)) {
+            // when new we want to always set to default so we can track changes
+            // but if this element already exists then we don't want to override
+            // it with the tip data
+            $this->setElementFromDefaults();
+        }
+
+        if ($this->data) {
+            // we set the element to the provided data
+            $this->updateElementFromData($this->element, $this->data);
+        }
+        $this->element->widget = $this;
     }
 }
