@@ -149,7 +149,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           </table>
         </div>
         <div class="follow-up-options-follow-up-only data-group"
-             style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>">
+             style="<?= !($element->status && $element->status->followup) ? 'display: none;' : '' ?>; padding: 0px">
           <table>
             <tbody>
             <tr>
@@ -211,7 +211,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     },
       <?php endforeach ?>
   };
-
   $(function () {
     setUpAdder(
       $('#add-to-follow-up'),
