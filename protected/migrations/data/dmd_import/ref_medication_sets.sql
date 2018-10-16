@@ -24,6 +24,11 @@ FROM openeyes.ref_medication rm
   LEFT JOIN openeyes.ref_medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
 
 WHERE
-  rm.source_type='DM+D'
+  rm.source_type='DM+D';
  /* AND
   rm.source_subtype != 'VTM' */
+
+INSERT INTO ref_set_rules (ref_set_id, site_id, subspecialty_id, usage_code) VALUES
+  (@amp_id, NULL, NULL, 'Formulary'),
+  (@vmp_id, NULL, NULL, 'Formulary'),
+  (@vtm_id, NULL, NULL, 'Formulary');
