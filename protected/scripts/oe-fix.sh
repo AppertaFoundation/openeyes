@@ -24,6 +24,7 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
+norestart=0
 
 while [[ $# -gt 0 ]]
 do
@@ -48,6 +49,8 @@ do
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
+            -nr|--no-restart) norestart=1
+            ;;
 	    *)  echo "Unknown command line: $i"
         ;;
     esac
@@ -193,6 +196,12 @@ fi
 git config core.fileMode false 2>/dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+
+# restart apache
+if [ "$norestart" == "0" ]; then
+    echo -e "\nrestarting apache..\n"
+    sudo service apache2 restart
+fi
 
 echo ""
 echo "...Done"
