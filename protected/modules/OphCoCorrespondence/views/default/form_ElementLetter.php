@@ -22,7 +22,6 @@
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
-
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
 
 if (!$macro_id) {
@@ -38,15 +37,12 @@ if ($macro_id) {
 $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id);
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
-
-$creating = $creating ?: false;
+$creating = isset($creating) ? $creating : false;
 ?>
 <?php if ($creating === false): ?>
   <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 <?php endif; ?>
-
 <div class="element-fields full-width flex-layout flex-top col-gap">
-
     <?php
     $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
     if ($correspondeceApp === "on") {
@@ -153,7 +149,6 @@ $creating = $creating ?: false;
             </tr>
             <tr>
                 <?php if ($element->isInternalReferralEnabled()): ?>
-
                   <div
                       class="data-group internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
                     <div class="cols-2 column"></div>
@@ -162,7 +157,6 @@ $creating = $creating ?: false;
                         <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
                     </div>
                   </div>
-
                 <?php endif; ?>
             </tr>
             </tbody>
@@ -172,8 +166,7 @@ $creating = $creating ?: false;
           <table class="cols-full last-left pad-top">
             <tbody>
             <tr>
-              <td>
-                &nbsp;
+              <td>&nbsp;
               </td>
             </tr>
             <tr>

@@ -35,8 +35,7 @@
         }
     }
     ?>
-    <?php if($contact_type == 'GP'): ?>
-        
+    <?php if ($contact_type == 'GP'): ?>
         <?php if($can_send_electronically): ?>
             <div>
 							<label class="inline highlight electronic-label docman">

@@ -148,31 +148,31 @@ var docman = (function() {
                         //electronic_sending_method_label is coming from config
                         electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
                             
-                        delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
-                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+                        delivery_methods = '<div><label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
+                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>';
                         }
 
                     }
                     else if(contact_type == 'INTERNALREFERRAL'){
                         internal_referral_method_label = internal_referral_method_label ? internal_referral_method_label : 'Electronic (Internal Referral)';
 
-                        delivery_methods = '<label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
-                        delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+                        delivery_methods = '<div><label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
+                        delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label></div>';
 
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                            delivery_methods += '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label></div>>';
                         }
                     }
                     else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){
-                            delivery_methods = '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label>';
+                            delivery_methods = '<div><label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]" type="checkbox" checked> Print</label></div>';
                         }
                     }
                     $(this).find('.docman_delivery_method').html(delivery_methods);
@@ -283,9 +283,8 @@ var docman = (function() {
             if(selected_type){
                 other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
         }
-
+1
             if(contact_id != 'OTHER' ){
-            	console.log('it works!');
             	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
@@ -304,7 +303,7 @@ var docman = (function() {
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
-
+								$('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
