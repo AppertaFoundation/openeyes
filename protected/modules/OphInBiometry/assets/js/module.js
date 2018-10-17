@@ -107,7 +107,7 @@ $(document).ready(function() {
 	$(this).delegate('#event-content .js-element-eye .active-form .remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		var other_side = 'left';
-		if (side == 'left') {
+		if (side === 'left') {
 			other_side = 'right';
 		}
 		OphInBiometry_hide(side,	this);
