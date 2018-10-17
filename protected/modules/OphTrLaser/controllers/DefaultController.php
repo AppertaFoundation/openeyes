@@ -63,6 +63,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function initActionCreate()
     {
+        $this->jsVars['site_id'] = Yii::app()->session['selected_site_id'];
+        $this->jsVars['lasers_available'] = count(OphTrLaser_Site_Laser::model()->findAllByAttributes(['site_id' => 1])) > 0;
         parent::initActionCreate();
         $this->_jsCreate();
     }
