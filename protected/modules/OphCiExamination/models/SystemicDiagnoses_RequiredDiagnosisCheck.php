@@ -33,6 +33,16 @@ class SystemicDiagnoses_RequiredDiagnosisCheck extends SystemicDiagnoses_Diagnos
 {
 
     /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return static
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()
