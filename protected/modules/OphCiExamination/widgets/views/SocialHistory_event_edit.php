@@ -35,13 +35,18 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('occupation_id')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_occupation_id',
+              '',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->dropDownList(
               $element,
               'occupation_id',
               CHtml::listData($element->occupation_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true),
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
               false,
-              array('label' => 4, 'field' => 4, 'full_dropdown' => true)
+              ['label' => 4, 'field' => 4, 'full_dropdown' => true]
           );
           ?>
           <?= $form->textField(
@@ -62,6 +67,11 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_driving_statuses',
+              'Nothing selected.',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->multiSelectList(
               $element,
               CHtml::modelName($element) . '[driving_statuses]',
@@ -69,7 +79,9 @@
               'id',
               CHtml::listData($element->driving_statuses_options, 'id', 'name'),
               array(),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true]
+
+
           ); ?>
       </td>
     </tr>
@@ -78,11 +90,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('smoking_status_id')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_smoking_status_id',
+              '',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->dropDownList(
               $element,
               'smoking_status_id',
               CHtml::listData($element->smoking_status_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
           ?>
       </td>
@@ -90,11 +107,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_accommodation_id',
+              '',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->dropDownList(
               $element,
               'accommodation_id',
               CHtml::listData($element->accommodation_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
           ?>
       </td>
@@ -120,11 +142,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_carer_id',
+              '',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->dropDownList(
               $element,
               'carer_id',
               CHtml::listData($element->carer_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           );
           ?>
       </td>
@@ -134,11 +161,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
       </td>
       <td>
+          <?=\CHtml::textField(
+              'textField_substance_misuse_id',
+              '',
+              ['readonly' => true, 'class' => 'cols-8']
+          ); ?>
           <?= $form->dropDownList(
               $element,
               'substance_misuse_id',
               CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-              array('empty' => '- Select -', 'nowrapper' => true)
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           ); ?>
       </td>
       <td colspan="2" class="js-comment-container"
@@ -198,6 +230,8 @@
   });
 
   $(document).ready(function () {
+    // hide the driving status select
+    $('#OEModule_OphCiExamination_models_SocialHistory_driving_statuses').hide();
 
     var controller = new OpenEyes.OphCiExamination.SocialHistoryController();
 

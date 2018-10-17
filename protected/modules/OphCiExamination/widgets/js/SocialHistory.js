@@ -51,8 +51,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var item = selectedItems[i];
         var itemSetId = item['itemSet'].options['id'];
         var $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
+        var $textField = this.$tableSelector.find('#textField' + '_' + itemSetId);
+
         $field.val(item['id']);
         $field.change();
+
+        //TODO: load elements for edit page
+
+        // hide the textField for multiple select driving_statuses
+        if (itemSetId == "driving_statuses") {
+          $textField.hide();
+        } else {
+          // for the rest of the elements, show the info in the textField
+          $textField.val($field.find(":selected").text());
+        }
       }
 
       this.$popupSelector.find('.selected').removeClass('selected');
