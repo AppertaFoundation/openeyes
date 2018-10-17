@@ -196,10 +196,8 @@
     });
 
     function initialiseProcedureAdder() {
-        $('.add-options[data-id="subsections"] > li').each(function () {
-            $(this).on('click', function () {
+        $('.add-options[data-id="subsections"]').on('click' , 'li' , function(){
                 updateProcedureDialog($(this).data('id'))
-            })
         });
         if ($('.add-options[data-id="subsections"] > li').length === 0) {
             $('.add-options[data-id="subsections"]').hide();
@@ -211,27 +209,25 @@
     }
 
     function updateProcedureDialog(subsection) {
-        if (subsection != '') {
+        if (subsection !== '') {
             $.ajax({
                 'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
                 'type': 'POST',
-                'data': {'subsection': subsection, 'dialog':true , 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
+                'data': {'subsection': subsection, 'dialog': true, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
                 'success': function (data) {
                     $('.add-options[data-id="select"]').each(function () {
-                            $(this).html(data);
-                            $(this).show();
-                        });
-                    }
-                });
+                        $(this).html(data);
+                        $(this).show();
+                    });
+                }
+            });
         }
     }
 
     function updateProcedureSelect(identifier) {
-        var subsection_field = $('select[id=subsection_id_' + identifier + ']');
-        var subsection = subsection_field.val();
-        if (subsection != '') {
-
-
+        let subsection_field = $('select[id=subsection_id_' + identifier + ']');
+        let subsection = subsection_field.val();
+        if (subsection !== '') {
             $.ajax({
                 'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
                 'type': 'POST',
