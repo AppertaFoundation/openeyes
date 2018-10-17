@@ -808,33 +808,6 @@ $(document).ready(function() {
 	});
 });
 
-function getCorrespondenceEventImages(){
-    $.ajax({
-        type: 'GET',
-        url: '/eventImage/getImageInfo',
-        data: {'event_id': OE_event_id},
-    }).success(function (response) {
-        $image_container = $('.js-correspondence-image-overlay');
-        $image_container.html('');
-        if (response) {
-            response = JSON.parse(response);
-            if(response.error){
-                $('#correspondence_out').show();
-			} else {
-            	if(response.page_count === 1){
-                    $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
-				} else {
-                    for (let index = 0; index < response.page_count; index++) {
-                        $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
-                    }
-                }
-                $('#correspondence_image_0').show();
-                new OpenEyes.OphCoCorrespondence.DocumentViewerController();
-            }
-        }
-    });
-}
-
 function savePDFprint( module , event_id , $content, $data_id, title)
 {
 	if(typeof title == 'undefined'){
