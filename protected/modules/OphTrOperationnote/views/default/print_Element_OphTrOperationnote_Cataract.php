@@ -20,7 +20,7 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
     <div class="data-group flex-layout">
         <div class="cols-6">
-            <table class="label-item">
+            <table>
                 <tbody>
                     <tr>
                         <th><?= \CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>:</th>
