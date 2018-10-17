@@ -124,8 +124,11 @@ class EventImageController extends BaseController
             $event = Event::model()->findByPk($event_id);
             if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
                 // Then try to make it
-                $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event->id;
-                exec($command);
+                $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
+                $runner = new CConsoleCommandRunner();
+                $runner->addCommands($commandPath);
+                $args = array('EventImageCommand.php', 'eventimage', 'create', '--event='. $event->id);
+                $runner->run($args);
             }
 
             $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));

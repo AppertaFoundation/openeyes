@@ -175,3 +175,8 @@ if($correspondeceApp === "on") {
 </div>
 
 </div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        getCorrespondenceEventImages();
+    });
+</script>

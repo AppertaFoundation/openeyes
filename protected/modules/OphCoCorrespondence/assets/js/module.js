@@ -806,8 +806,6 @@ $(document).ready(function() {
 		e.preventDefault();
         $(this).closest('tr').remove();
 	});
-
-    getCorrespondenceEventImages();
 });
 
 function getCorrespondenceEventImages(){
@@ -823,8 +821,12 @@ function getCorrespondenceEventImages(){
             if(response.error){
                 $('#correspondence_out').show();
 			} else {
-                for (let index = 0; index < response.page_count; index++) {
-                    $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+            	if(response.page_count === 1){
+                    $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
+				} else {
+                    for (let index = 0; index < response.page_count; index++) {
+                        $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+                    }
                 }
                 $('#correspondence_image_0').show();
                 new OpenEyes.OphCoCorrespondence.DocumentViewerController();

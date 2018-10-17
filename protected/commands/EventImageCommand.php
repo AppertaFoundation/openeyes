@@ -139,10 +139,10 @@ EOH;
     public function createImageForEvent($event)
     {
         $url = 'http://localhost/' . $event->eventType->class_name . '/default/createImage/' . $event->id;
-        echo 'Curling URL "' . $url . "\"\n";
+        Yii::log( 'Curling URL "' . $url . "\"\n");
         curl_setopt($this->curlConnection, CURLOPT_URL, $url);
         $content = curl_exec($this->curlConnection);
         $http_code = curl_getinfo($this->curlConnection, CURLINFO_HTTP_CODE);
-        echo 'Result: ' . $http_code . "\n";
+        Yii::log('Result: ' . $http_code . "\n");
     }
 }
