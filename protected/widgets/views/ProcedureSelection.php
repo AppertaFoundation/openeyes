@@ -197,7 +197,7 @@
 
     function initialiseProcedureAdder() {
         $('.add-options[data-id="subsections"]').on('click' , 'li' , function(){
-                updateProcedureDialog($(this).data('id'))
+                updateProcedureDialog($(this).data('id'));
         });
         if ($('.add-options[data-id="subsections"] > li').length === 0) {
             $('.add-options[data-id="subsections"]').hide();
