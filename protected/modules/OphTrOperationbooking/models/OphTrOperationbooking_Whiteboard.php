@@ -90,9 +90,15 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
 
-        $this->iol_model = ($biometry && $booking->eye_id == $biometry->eye_id) ? $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
-        $this->iol_power = ($biometry && $booking->eye_id == $biometry->eye_id) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
-        $this->predicted_refractive_outcome = ($biometry && $booking->eye_id == $biometry->eye_id) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
+        $this->iol_model = 'Unknown';
+        $this->iol_power = 'None';
+        $this->predicted_refractive_outcome = 'Unknown';
+
+        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, \EYE::BOTH])) {
+            $this->iol_model = $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br> ' . $biometry->attributes['formula_' . $eyeLabel];
+            $this->iol_power = $biometry->attributes['iol_power_' . $eyeLabel];
+            $this->predicted_refractive_outcome = $biometry->attributes['predicted_refraction_' . $eyeLabel];
+        }
 
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
         $this->anticoagulants = $patient->hasRisk('Anticoagulants');
