@@ -158,6 +158,10 @@ fi
 sudo phpenmod mcrypt
 sudo phpenmod imagick
 
+#  update ImageMagick policy to allow PDFs
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
+
 echo --------------------------------------------------
 echo SYSTEM SOFTWARE INSTALLED
 echo Please check previous messages for any errors
