@@ -12,7 +12,7 @@
         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]",($row_index == 0 ? 'To' : 'Cc')); ?>
     </td>
     <td>
-        <?php $this->renderPartial('//docman/table/contact_type', array(
+        <?php $this->renderPartial('//docman/table/contact_name_type', array(
 						'address_targets' => $element->address_targets,
 						'contact_id' => $contact_id,
 						'contact_name' => $contact_name,
@@ -26,7 +26,7 @@
 		<td>
 			<?php
 			$contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
-			$this->renderPartial('//docman/table/contact_name_address', array(
+			$this->renderPartial('//docman/table/contact_address', array(
 				'contact_id' => $contact_id,
 				'is_editable_address' => $contact_type != 'GP',
 				'contact_type' => $contact_type,

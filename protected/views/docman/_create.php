@@ -43,7 +43,7 @@
 										<?php
 										$contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
 										if($contact_type == 'PRACTICE'){$contact_type = 'GP';}
-										$this->renderPartial('//docman/table/contact_type', array(
+										$this->renderPartial('//docman/table/contact_name_type', array(
 											'address_targets' => $element->address_targets,
 											'contact_name' => $macro_data["to"]["contact_name"],
 											'contact_id' => $macro_data["to"]["contact_id"],
@@ -61,7 +61,7 @@
 							<td>
 								<?php
 								$contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
-								$this->renderPartial('//docman/table/contact_name_address', array(
+								$this->renderPartial('//docman/table/contact_address', array(
 									'contact_id' => $macro_data["to"]["contact_id"],
 									'contact_type' => $contact_type,
 									'row_index' => $row_index,
@@ -108,7 +108,7 @@
                             $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
                             $contact_id = isset($macro["contact_id"]) ? $macro["contact_id"] : null;
-                            $this->renderPartial('//docman/table/contact_name_address', array(
+                            $this->renderPartial('//docman/table/contact_address', array(
                                         'contact_id' => $contact_id,
                                         'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
@@ -120,7 +120,7 @@
                         ?>
                     </td>
                     <td>
-                        <?php $this->renderPartial('//docman/table/contact_type', array(
+                        <?php $this->renderPartial('//docman/table/contact_name_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
 

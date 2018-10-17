@@ -68,7 +68,7 @@
 											$contact_type = strtoupper($target->contact_type);
 											$contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
 
-											$this->renderPartial('//docman/table/contact_type', array(
+											$this->renderPartial('//docman/table/contact_name_type', array(
 												'address_targets' => $element->address_targets,
 												'contact_id' => $target->contact_id,
 												'contact_name' => $target->contact_name,
@@ -89,7 +89,7 @@
 										<?php endif; ?>
 									</td>
                     <td>
-                        <?php $this->renderPartial('//docman/table/contact_name_address', array(
+                        <?php $this->renderPartial('//docman/table/contact_address', array(
                                     'contact_id' => $target->contact_id,
                                     'target' => $target,
                                     'contact_type' => $target->contact_type,
