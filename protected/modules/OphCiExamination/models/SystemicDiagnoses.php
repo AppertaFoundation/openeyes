@@ -103,6 +103,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'diagnoses' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis', 'element_id'),
+            'required_diagnoses_check' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_RequiredDiagnosisCheck', 'element_id'),
             'orderedDiagnoses' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
                 'element_id',
