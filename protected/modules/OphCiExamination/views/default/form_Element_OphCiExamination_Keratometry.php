@@ -89,7 +89,7 @@
                   </tr>
                   <tr>
                       <td>
-                          <label style="word-wrap: break-word;white-space: normal;">
+                          <label>
                               <?php echo $element->getAttributeLabel($eye_side . '_thinnest_point_pachymetry_value') ?>
                           </label>
                       </td>
@@ -110,6 +110,10 @@
                   </tbody>
               </table>
               <table class="cols-6">
+                  <colgroup>
+                      <col class="cols-4">
+                      <col class="cols-2">
+                  </colgroup>
                   <tbody>
                   <tr>
                       <td>
@@ -148,6 +152,7 @@
                   <label><?php echo $element->getAttributeLabel($eye_side . '_flourescein_value') ?>:</label>
                 </td>
                 <td>
+                    <div class="flex-layout">
                     <?php $form->radioButtons(
                         $element,
                         $eye_side . '_flourescein_value',
@@ -169,6 +174,7 @@
                             'field' => 8,
                         ));
                     ?>
+                        <div class="flex-layout">
                 </td>
               </tr>
               <tr>
