@@ -175,6 +175,10 @@ if [ $noperms = 0 ]; then
 
 	sudo chown -R "$USER" ~/.config 2>/dev/null || :
 	sudo chown -R "$USER" ~/.composer 2>/dev/null || :
+
+	#  update ImageMagick policy to allow PDFs
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
 fi
 
 if [ $buildassests = 1 ]; then
