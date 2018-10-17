@@ -115,7 +115,7 @@ $(document).ready(function() {
 		side = getSplitElementSide($(this));
 
 		var other_side = 'left';
-		if (side == 'left') {
+		if (side === 'left') {
 			other_side = 'right';
 		}
 		OphInBiometry_hide(side,	this);

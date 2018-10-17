@@ -129,7 +129,9 @@ $(document).ready(function() {
 		element.find('.side.inactive').removeClass('inactive');
 
 		e.preventDefault();
-		var checker = getOEEyeDrawChecker();
-		checker.resync();
+        if (typeof(getOEEyeDrawChecker) === 'function') {
+            var checker = getOEEyeDrawChecker();
+            checker.resync();
+        }
 	});
 });
