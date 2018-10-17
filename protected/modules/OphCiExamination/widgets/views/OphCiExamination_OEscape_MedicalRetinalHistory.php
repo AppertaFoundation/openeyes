@@ -29,8 +29,8 @@
   ) ?>
 </form>
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="plotly-MR-right" class="plotly-MR plotly-right plotly-section"></div>
-  <div id="plotly-MR-left" class="plotly-MR plotly-left plotly-section" style="display: none;"></div>
+  <div id="plotly-MR-right" class="plotly-MR plotly-right plotly-section" data-eye-side="right"></div>
+  <div id="plotly-MR-left" class="plotly-MR plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 <div class="oes-data-row-input">
 </div>

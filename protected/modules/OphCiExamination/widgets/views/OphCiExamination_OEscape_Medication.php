@@ -1,8 +1,8 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-Meds.js')?>"></script>
 
 <div id="js-hs-chart-Meds" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-    <div id="plotly-Meds-right" class="plotly-Meds plotly-right plotly-section"></div>
-    <div id="plotly-Meds-left" class="plotly-Meds plotly-left plotly-section" style="display: none;"></div>
+    <div id="plotly-Meds-right" class="plotly-Meds plotly-right plotly-section" data-eye-side="right"></div>
+    <div id="plotly-Meds-left" class="plotly-Meds plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 
 <script type="text/javascript">

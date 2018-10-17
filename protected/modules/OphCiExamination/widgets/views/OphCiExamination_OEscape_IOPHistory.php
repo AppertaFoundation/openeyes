@@ -2,8 +2,8 @@
 
 
 <div id="js-hs-chart-IOP" class="highchart-area" data-highcharts-chart="1" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-    <div id="plotly-IOP-right" class="plotly-IOP plotly-right plotly-section"></div>
-    <div id="plotly-IOP-left" class="plotly-IOP plotly-left plotly-section" style="display: none;"></div>
+    <div id="plotly-IOP-right" class="plotly-IOP plotly-right plotly-section" data-eye-side="right"></div>
+    <div id="plotly-IOP-left" class="plotly-IOP plotly-left plotly-section" data-eye-side="left" style="display: none;"></div>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {

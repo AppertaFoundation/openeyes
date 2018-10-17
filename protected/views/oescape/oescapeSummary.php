@@ -85,6 +85,17 @@ if (!empty($subspecialty)) { ?>
         }
 
       });
+
+      $('.rangeslider-container').on('mouseenter mouseover', function (e) {
+        var chart_VA = $(this).parents('.plotly-VA')[0];
+        var eye_side = $(chart_VA).attr('data-eye-side');
+        var current_range = chart_VA['layout']['xaxis']['range'];
+
+        var chart_list = $('.plotly-'+eye_side);
+        for (var i=0; i < chart_list.length; i++){
+          Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+        }
+      });
     }
   });
 </script>
