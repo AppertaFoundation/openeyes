@@ -71,14 +71,10 @@ $(document).ready(function() {
 		}
 	});
 
-    checkForLasers();
+    initSiteSelector();
 });
 
-function OphTrLaser_AnteriorSegment_init() {
-
-}
-
-function checkForLasers() {
+function initSiteSelector() {
     // if site contains lasers
     if (lasers_available) {
         var site_selector = $('#Element_OphTrLaser_Site_site_id');
