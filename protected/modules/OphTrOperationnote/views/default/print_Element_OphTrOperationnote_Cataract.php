@@ -79,6 +79,10 @@
 					<?php }?>
 					</ul>
 				</div>
+                <div>
+                    <div><h4>Comments:</h4></div>
+                    <div><?= $element->comments ?></div>
+                </div>
 			</div>
 
 			<div class="data-group">
@@ -141,7 +145,6 @@
                         'attribute' => 'eyedraw2',
                     ));
                     ?>
-					<?=\CHtml::encode($element->report2)?>
 				</div>
 			</div>
 
@@ -207,6 +210,18 @@
 					</div>
 				</div>
 			</div>
+            <div class="data-group">
+                <div class="cols-6 column">
+                    <div class="data-label">
+                        <?=\CHtml::encode($element->getAttributeLabel('phaco_cde'))?>:
+                    </div>
+                </div>
+                <div class="cols-6 column">
+                    <div class="data-value">
+                        <?php echo $element->phaco_cde?>
+                    </div>
+                </div>
+            </div>
 		</div>
 	</div>
 </section>
