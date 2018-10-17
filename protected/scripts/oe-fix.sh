@@ -121,10 +121,10 @@ if [ "$composer" == "1" ]; then
 
 	echo "Installing/updating npm dependencies"
 	rm $WROOT/package-lock.json &> /dev/null
-	sudo npm update --no-save $npmextra
+	sudo npm update --no-save --prefix $WROOT $npmextra
 
 	# If we've switched from dev to live, remove dev dependencies
-	[ "$OE_MODE" == "LIVE" ] && npm prune --production
+	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
 
 fi
 
