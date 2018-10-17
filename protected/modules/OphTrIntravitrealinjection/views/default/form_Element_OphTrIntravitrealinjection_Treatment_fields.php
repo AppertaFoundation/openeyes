@@ -24,14 +24,15 @@ $antiseptic_drugs_opts = array(
     'nowrapper' => true,
     'options' => array(),
 );
-$antiseptic_allergic = false;
+$antiseptic_allergy = null;
 foreach ($antiseptic_drugs as $drug) {
     $opts = array();
     foreach ($drug->allergies as $allergy) {
         if ($this->patient->hasAllergy($allergy)) {
             $opts['data-allergic'] = 1;
+            $opts['data-allergy'] = $allergy->name;
             if ($drug->id == $element->{$side . '_pre_antisept_drug_id'}) {
-                $antiseptic_allergic = true;
+                $antiseptic_allergy = $allergy->name;
             }
         }
     }
@@ -39,14 +40,15 @@ foreach ($antiseptic_drugs as $drug) {
 }
 $skin_drugs = OphTrIntravitrealinjection_SkinDrug::model()->with('allergies')->activeOrPk($element->{$side . '_pre_skin_drug_id'})->findAll();
 $skin_drugs_opts = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
-$skin_allergic = false;
+$skin_allergy = null;
 foreach ($skin_drugs as $drug) {
     $opts = array();
     foreach ($drug->allergies as $allergy) {
         if ($this->patient->hasAllergy($allergy)) {
             $opts['data-allergic'] = 1;
+            $opts['data-allergy'] = $allergy->name;
             if ($drug->id == $element->{$side . '_pre_skin_drug_id'}) {
-                $skin_allergic = true;
+                $skin_allergy = $allergy->name;
             }
         }
     }
@@ -63,9 +65,11 @@ foreach ($skin_drugs as $drug) {
             <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
         </label>
       </td>
-      <td class="wrapper<?php if ($antiseptic_allergic) {
-          echo ' allergyWarning';
-      } ?>">
+      <td class="wrapper">
+          <?php if (isset($antiseptic_allergy)) {
+          echo '<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip" 
+          data-tooltip-content="Allergic to ' .  $antiseptic_allergy . '"></i>';
+      } ?>
           <?php echo $form->dropDownList($element, $side . '_pre_antisept_drug_id',
               CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts); ?>
       </td>
@@ -77,9 +81,11 @@ foreach ($skin_drugs as $drug) {
             <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
         </label>
       </td>
-      <td class="wrapper<?php if ($skin_allergic) {
-          echo ' allergyWarning';
-      } ?>">
+      <td class="wrapper">
+          <?php if (isset($skin_allergy)) {
+          echo '<i class="oe-i warning pad-right js-allergy-warning js-has-tooltip"
+           data-tooltip-content="Allergic to ' .  $skin_allergy . '"></i>';
+      } ?>
           <?php echo $form->dropDownList($element, $side . '_pre_skin_drug_id',
               CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts); ?>
       </td>
