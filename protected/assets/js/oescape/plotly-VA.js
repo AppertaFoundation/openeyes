@@ -6,7 +6,7 @@ function setYAxis_VA(options) {
     /* Grid line settings of yaxis */
     showgrid: true,
     gridwidth: 0.25,
-    gridcolor: '#8c8c8c',
+    gridcolor: '#444',
 
     /*Ticks setting of yaxis*/
     ticks: 'outside',

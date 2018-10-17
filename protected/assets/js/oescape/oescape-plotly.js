@@ -16,6 +16,7 @@ var marking_annotations = {
   font: {
     color: '#3db0fb',
   },
+  bgcolor: '#141e2b',
 };
 
 var trace_hoverlabel = {
@@ -64,8 +65,8 @@ var layout_plotly = {
 
 
 var options_plotly = {
-	displayLogo: false,
-	displayModeBar: false,
+  displayLogo: false,
+  displayModeBar: false,
 };
 
 function setMarkingEvents_plotly(layout, options, annotation, data, side, y_start, y_end){
@@ -82,7 +83,7 @@ function setMarkingEvents_plotly(layout, options, annotation, data, side, y_star
 
       var current_annotation = JSON.parse(JSON.stringify(annotation));
       current_annotation['x']=new Date(item);
-      current_annotation['y']= 70;
+      current_annotation['y']= y_end;
       current_annotation['text']=key;
       layout['annotations'].push(current_annotation);
     }

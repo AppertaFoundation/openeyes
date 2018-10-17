@@ -12,7 +12,6 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oescape-plotly.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/plotly-VA.js')?>"></script>
@@ -24,7 +23,8 @@
         'va_history_unit_id',
         $va_unit->id,
         CHtml::listData(
-          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+          OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+          model()->active()->findAllByAttributes(array('is_near'=>0)),
           'id',
           'name')
       )?>

@@ -3,7 +3,7 @@ var crt_yaxis = {
   title: 'CRT(um)',
   domain: [0.35, 1],
   showticklabels: true,
-  showgrid: true,
+  showgrid: false,
 };
 
 var va_yaxis = {
@@ -19,20 +19,21 @@ var flags_yaxis = {
   side: 'left',
   domain: [0, 0.3],
   showgrid: false,
-	showticklabels: true,
-	ticks: 'inside',
+  showticklabels: true,
+  ticks: 'inside',
 };
 
 function setYAxis_MR(options){
-	var yaxis_setting = {
-		gridcolor: '#8c8c8c',
-		ticks: 'outside',
-	};
-	for (var key in options){
-		yaxis_setting[key] = options[key];
-	}
+  var yaxis_setting = {
+    gridwidth: 0.25,
+    gridcolor: '#444',
+    ticks: 'outside',
+  };
+  for (var key in options){
+    yaxis_setting[key] = options[key];
+  }
 
-	return  yaxis_setting;
+  return  yaxis_setting;
 }
 
 function setMRFlags_options(options){

@@ -23,7 +23,8 @@
     'mr_history_va_unit_id',
     $va_unit->id,
     CHtml::listData(
-      OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+      OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+      model()->active()->findAllByAttributes(array('is_near'=>0)),
       'id',
       'name')
   ) ?>
@@ -73,8 +74,8 @@
       layout_MR['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
       layout_MR['xaxis']['rangeslider'] = {};
 
-      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side);
-      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side);
+      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
+      setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
 
       var trace1 = {
         name: 'VA('+side+')',
@@ -116,10 +117,10 @@
         crt_yaxis['range'] = [250, 600];
         crt_yaxis['tick0'] = 250;
       } else {
-        crt_yaxis['range'] = [Math.min.apply(Math, crt_plotly[side]['y']), Math.max.apply(Math, crt_plotly[side]['y'])+20];
-        crt_yaxis['tick0'] = Math.min.apply(Math, crt_plotly[side]['y']);
+        crt_yaxis['range'] = [Math.min(crt_plotly[side]['y'])-10, Math.max(crt_plotly[side]['y'])+20];
+        crt_yaxis['tick0'] = Math.min( crt_plotly[side]['y']);
       }
-      crt_yaxis['dtick'] = 10;
+      crt_yaxis['dtick'] = Math.round((crt_yaxis['range'][1]-crt_yaxis['range'][0])/10);
       crt_yaxis['overlaying'] = 'y';
       layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
 
