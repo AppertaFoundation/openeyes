@@ -23,7 +23,7 @@ function OphCoTherapyapplication_AddDiagnosis(disorder_id, name) {
 $(document).ready(function () {
 	$(this).delegate('#et_add2', 'click', function(e) {
 		e.preventDefault();
-		$('#add-new-form').removeClass('hidden');
+		$('#add-new-form').show();
 	});
 
 	$('.OphCoTherapyapplication_DecisionTree').delegate('.add_node', 'click', function (e) {

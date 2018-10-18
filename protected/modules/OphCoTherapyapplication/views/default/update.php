@@ -18,29 +18,29 @@
 ?>
 
 <?php
-    $this->beginContent('//patient/event_container', array('no_face'=>false));
+$form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face' => false, 'form_id' => $form_id));
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => $form_id,
+    'enableAjaxValidation' => false,
+    'focus' => '#procedure_id',
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 10,
+    ),
 
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'clinical-create',
-        'enableAjaxValidation' => false,
-        'focus' => '#procedure_id',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 10,
-        ),
+));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
-    ));
-    $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
-
-    $service = new OphCoTherapyapplication_Processor($this->event);
-    if ($service->getApplicationStatus() == $service::STATUS_SENT) { ?>
-		<div class="alertBox">
-			<strong>WARNING: This application has already been sent.  Editing it will allow it to be re-sent.</strong>
-		</div>
-	<?php } ?>
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderOpenElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-	<?php $this->endWidget()?>
-<?php $this->endContent();?>
+$service = new OphCoTherapyapplication_Processor($this->event);
+if ($service->getApplicationStatus() == $service::STATUS_SENT) { ?>
+    <div class="alertBox">
+        <strong>WARNING: This application has already been sent. Editing it will allow it to be re-sent.</strong>
+    </div>
+<?php } ?>
+<?php $this->displayErrors($errors) ?>
+<?php $this->renderOpenElements($this->action->id, $form) ?>
+<?php $this->renderOptionalElements($this->action->id, $form) ?>
+<?php $this->displayErrors($errors) ?>
+<?php $this->endWidget() ?>
+<?php $this->endContent(); ?>

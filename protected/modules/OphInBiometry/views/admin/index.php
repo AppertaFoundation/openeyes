@@ -36,7 +36,7 @@
             <tbody>
             <tr class="col-gap">
                 <td>
-                    <?php echo CHtml::textField(
+                    <?=\CHtml::textField(
                         'search[query]',
                         $search['query'],
                         [
@@ -108,23 +108,21 @@
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="4">
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Add',
                         [
                             'class' => 'button large',
                             'data-uri' => '/OphInBiometry/lensTypeAdmin/edit',
-                            'type' => 'submit',
                             'name' => 'add',
                             'id' => 'et_add'
                         ]
                     ); ?>
                     <!-- Does not delete the lens type: sets it as INACTIVE -->
-                    <?php echo CHtml::button(
+                    <?=\CHtml::submitButton(
                         'Deactivate Lens Type',
                         [
                             'class' => 'button large',
                             'data-uri' => '/OphInBiometry/lensTypeAdmin/delete',
-                            'type' => 'submit',
                             'name' => 'delete',
                             'data-object' => 'lensTypes',
                             'id' => 'et_delete'

@@ -35,8 +35,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'id' => 'add-new-episode-form',
     ));
     ?>
-		<?php echo CHtml::hiddenField('firm_id', $firm->id)?>
-		<?php echo CHtml::hiddenField('patient_id', $patient->id)?>
+		<?=\CHtml::hiddenField('firm_id', $firm->id)?>
+		<?=\CHtml::hiddenField('patient_id', $patient->id)?>
 		<div class="details">
 			<p><span>Firm:</span> <strong><?php echo $firm->name?></strong></p>
 			<p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>

@@ -74,7 +74,7 @@
                 <td></td>
                 <td>
                     <span id="projected_duration_<?php echo $identifier ?>">
-                        <?php echo CHtml::encode($totalDuration) ?> mins
+                        <?=\CHtml::encode($totalDuration) ?> mins
                     </span>
                     <span class="fade">(calculated)</span>
                 </td>

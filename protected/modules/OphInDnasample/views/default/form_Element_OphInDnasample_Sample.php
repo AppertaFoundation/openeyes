@@ -40,7 +40,7 @@
             <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
         </div>
         <div class="cols-10 column end">
-            <?php echo CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
+            <?=\CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
         </div>
     </div>
 

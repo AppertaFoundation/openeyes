@@ -62,8 +62,7 @@ if ($this->checkUserSigned()) {
                                 <input type="password" maxlength="4" name="signature_pin" id="signature_pin">
                             </div>
                             <div class="cols-4 column end">
-                                <?php echo CHtml::button('Sign this eCVI', array(
-                                    'type' => 'submit',
+                                <?=\CHtml::submitButton('Sign this eCVI', array(
                                     'id' => 'et_sign_cvi',
                                     'name' => 'sign_cvi',
                                     'class' => 'small button primary event-action'

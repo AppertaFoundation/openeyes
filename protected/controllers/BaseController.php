@@ -24,7 +24,7 @@ class BaseController extends Controller
 {
 
     public $renderPatientPanel = false;
-    public $fixedHotlist = false;
+    public $fixedHotlist = true;
     public $selectedFirmId;
     public $selectedSiteId;
     public $firms;
@@ -405,4 +405,8 @@ class BaseController extends Controller
 
     }
 
+    public function setPageTitle($pageTitle)
+    {
+        parent::setPageTitle($pageTitle . ' - OE');
+    }
 }

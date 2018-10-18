@@ -24,7 +24,7 @@
 				<div class="data-group">
 					<div class="cols-6 column text-right">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('membrane_blue'))?>:
+							<?=\CHtml::encode($element->getAttributeLabel('membrane_blue'))?>:
 						</div>
 					</div>
 					<div class="cols-6 column">
@@ -39,7 +39,7 @@
 				<div class="data-group">
 					<div class="cols-6 column text-right">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue'))?>:
+							<?=\CHtml::encode($element->getAttributeLabel('brilliant_blue'))?>:
 						</div>
 					</div>
 					<div class="cols-6 column">
@@ -54,12 +54,12 @@
 				<div class="data-group">
 					<div class="cols-6 column text-right">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('other_dye'))?>:
+							<?=\CHtml::encode($element->getAttributeLabel('other_dye'))?>:
 						</div>
 					</div>
 					<div class="cols-6 column">
 						<div class="data-value">
-							<?php echo CHtml::encode($element->other_dye)?>
+							<?=\CHtml::encode($element->other_dye)?>
 						</div>
 					</div>
 				</div>
@@ -69,7 +69,7 @@
 				<div class="data-group">
 					<div class="cols-6 column text-right">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>:
+							<?=\CHtml::encode($element->getAttributeLabel('comments'))?>:
 						</div>
 					</div>
 					<div class="cols-6 column">

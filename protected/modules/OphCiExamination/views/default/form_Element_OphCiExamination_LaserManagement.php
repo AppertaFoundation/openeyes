@@ -38,7 +38,7 @@ foreach ($lasertypes as $lt) {
 ?>
 
 <div
-    id="div_<?php echo CHtml::modelName($element)?>_treatment_fields"
+    id="div_<?=\CHtml::modelName($element)?>_treatment_fields"
     class="element-eyes sub-element-fields jsTreatmentFields"
 >
 	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>

@@ -15,15 +15,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
-	<?php
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form' => 'clinical-create'));
+$form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form' => $form_id));
     ?>
 
 	<?php $this->renderPartial('//base/_messages'); ?>
 
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'clinical-create',
+        'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
             'label' => 3,
@@ -34,7 +34,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 		<?php $this->displayErrors($errors)?>
 		<?php $this->renderOpenElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php echo CHtml::hiddenField('Event[parent_id]', CHtml::encode(isset($_GET['parent_event_id']) ? $_GET['parent_event_id'] : null))?>
+		<?=\CHtml::hiddenField('Event[parent_id]', CHtml::encode(isset($_GET['parent_event_id']) ? $_GET['parent_event_id'] : null))?>
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>

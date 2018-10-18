@@ -17,6 +17,9 @@
  */
 class CommonDrugController extends BaseAdminController
 {
+
+    public $group = 'Drugs';
+
     public function actionList()
     {
         $admin = new AdminListAutocomplete(SiteSubspecialtyDrug::model(), $this);
@@ -69,6 +72,7 @@ class CommonDrugController extends BaseAdminController
             )
         );
         //$admin->searchAll();
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 }

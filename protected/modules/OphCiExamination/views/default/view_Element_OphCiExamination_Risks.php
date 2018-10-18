@@ -18,7 +18,7 @@
 ?>
 <div class="element-data">
     Comments:
-		<div class="data-value">
-			<?= Yii::app()->format->Ntext($element->comments) ?>
-		</div>
+    <div class="data-value">
+        <?= Yii::app()->format->Ntext($element->comments) ?>
+    </div>
 </div>

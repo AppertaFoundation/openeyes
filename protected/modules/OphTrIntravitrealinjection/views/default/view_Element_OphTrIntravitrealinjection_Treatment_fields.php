@@ -72,7 +72,7 @@
           <?php echo $element->getAttributeLabel($side . '_number') ?>:
       </div>
     </td>
-    <td><?php echo CHtml::encode($element->{$side . '_number'}) ?></td>
+    <td><?=\CHtml::encode($element->{$side . '_number'}) ?></td>
   </tr>
   <tr>
     <td>
@@ -80,7 +80,7 @@
           <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
       </div>
     </td>
-    <td><?php echo CHtml::encode($element->{$side . '_batch_number'}) ?></td>
+    <td><?=\CHtml::encode($element->{$side . '_batch_number'}) ?></td>
   </tr>
   <tr>
     <td>

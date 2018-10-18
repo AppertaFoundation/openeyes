@@ -61,7 +61,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	<div class="data-group">
 		<div class="cols-2 column"><label for="set_name">Set name:</label></div>
 		<div class="cols-4 column">
-			<?php echo CHtml::textField('set_name'); ?>
+			<?=\CHtml::textField('set_name'); ?>
 		</div>
 		<div class="cols-2 column"><label for="site_id">Subspeciality:</label></div>
 		<div class="cols-4 column end">

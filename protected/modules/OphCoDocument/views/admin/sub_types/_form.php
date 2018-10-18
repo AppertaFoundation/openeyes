@@ -26,7 +26,7 @@
         <tr class="hidden">
             <td>Id</td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $model,
                     'id',
                     ['hidden' => true]
@@ -36,7 +36,7 @@
         <tr>
             <td>Name</td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $model,
                     'name',
                     ['class' => 'cols-full']
@@ -46,7 +46,7 @@
         <tr>
             <td>Display Order</td>
             <td>
-                <?php echo CHtml::activeTextField(
+                <?=\CHtml::activeTextField(
                     $model,
                     'display_order',
                     ['class' => 'cols-full']
@@ -56,7 +56,7 @@
         <tr>
             <td>Is Active</td>
             <td>
-                <?php echo CHtml::activeRadioButtonList(
+                <?=\CHtml::activeRadioButtonList(
                     $model,
                     'is_active',
                     [1 => 'Yes', 0 => 'No'],
@@ -68,21 +68,19 @@
         <tfoot>
         <tr>
             <td colspan="2">
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Save',
                     [
                         'class' => 'button large primary event-action',
                         'name' => 'save',
-                        'type' => 'submit',
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?php echo CHtml::button(
+                <?=\CHtml::submitButton(
                     'Cancel',
                     [
                         'data-uri' => '/' . $this->module->id . '/' . $this->id,
                         'class' => 'warning button large primary event-action',
-                        'type' => 'submit',
                         'name' => 'cancel',
                         'id' => 'et_cancel',
                     ]

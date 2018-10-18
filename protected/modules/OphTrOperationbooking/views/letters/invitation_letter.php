@@ -34,7 +34,7 @@
 
 	<p class="accessible">
 		I have been asked to arrange your <?php	if ($patient->isChild()) {?>child's <?php }?> admission for surgery under the care of
-		<?php echo CHtml::encode($consultantName) ?>. This is currently anticipated to be
+		<?=\CHtml::encode($consultantName) ?>. This is currently anticipated to be
 		<?php
         if ($overnightStay) {
             echo 'an overnight stay';

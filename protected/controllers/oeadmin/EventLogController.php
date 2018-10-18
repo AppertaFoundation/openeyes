@@ -32,6 +32,8 @@ class EventLogController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Core';
+
     /**
      * Lists procedures.
      *

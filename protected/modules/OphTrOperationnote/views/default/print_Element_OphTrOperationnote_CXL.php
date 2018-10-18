@@ -22,37 +22,37 @@
         <div class="element-data">
             <div class="data-group columns-6">
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('protocol_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('protocol_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->protocol_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('device_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('device_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->device_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('epithelial_status_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('epithelial_status_id'))?></h4>
                     <div class="data-value><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->epithelial_status_id)?></div>
                 </div>
                     <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->epithelial_removal_method_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_diameter_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('epithelial_removal_diameter_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->epithelial_removal_diameter_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('mitomycin_c'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('mitomycin_c'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->mitomycin_c)?></div>
                 </div>
             </div>
             <div class="data-group columns-6">
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('iontophoresis_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->iontophoresis_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_current_value'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('iontophoresis_current_value'))?></h4>
                     <div class="data-value">
                         <?php
                         if($element->iontophoresis_current_value){
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_duration_value'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('iontophoresis_duration_value'))?></h4>
                     <div class="data-value">
                         <?php
                         if($element->iontophoresis_duration_value){
@@ -72,29 +72,29 @@
                     </div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->riboflavin_preparation_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('interval_between_drops_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('interval_between_drops_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->interval_between_drops_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('soak_duration_range_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('soak_duration_range_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->soak_duration_range_id)?></div>
                 </div>
             </div>
             <div class="data-group columns-6">
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('uv_irradiance_range_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('uv_irradiance_range_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->uv_irradiance_range_id) . " mW/cm2"; ?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('total_exposure_time_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('total_exposure_time_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->total_exposure_time_id) . " minutes"; ?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('uv_total_energy_value'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('uv_total_energy_value'))?></h4>
                     <div class="data-value>                    <?php
                     if($element->uv_total_energy_value){
                         echo $element->uv_total_energy_value . ' J/cm2';
@@ -103,11 +103,11 @@
               </div>
                     </div>
                     <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('uv_pulse_duration_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('uv_pulse_duration_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->uv_pulse_duration_id)?></div>
                 </div>
                 <div class="column">
-                    <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('interpulse_duration_id'))?></h4>
+                    <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('interpulse_duration_id'))?></h4>
                     <div class="data-value"><?php echo OphTrOperationnote_CXL_Protocol::model()->getName($element->interpulse_duration_id)?></div>
                 </div>
                 <div class="column">
@@ -116,7 +116,7 @@
             </div>
 
           <div class="cols-12 column">
-            <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('cxl_comments'))?></h4>
+            <h4 class="data-title"><?=\CHtml::encode($element->getAttributeLabel('cxl_comments'))?></h4>
             <div class="data-value"><?php echo $element->cxl_comments?></div>
           </div>
         </div>
