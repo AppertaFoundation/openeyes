@@ -31,7 +31,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
         } ?>
       <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-          <?php echo CHtml::textArea('delete_reason', '') ?>
+          <?=\CHtml::textArea('delete_reason', '') ?>
       </div>
       <p>
         <strong>Are you sure you want to proceed?</strong>
@@ -47,7 +47,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
         Cancel
       </button>
       <i class="spinner loader" style="display: none;"></i>
-        <?php echo CHtml::endForm() ?>
+        <?=\CHtml::endForm() ?>
     </div>
   </section>
 

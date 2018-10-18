@@ -25,7 +25,7 @@
     		false, null, false, false, array('label' => 10, 'field' => 12)) ?>
     </div>
 
-    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="data-group">
         <div class="cols-6 column end">
             <label>
@@ -37,5 +37,5 @@
         </div>
     </div>
 
-    <?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_description'))) ?>
+    <?=\CHtml::activeTextArea($element, $side.'_description', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_description'))) ?>
 </div>

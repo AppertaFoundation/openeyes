@@ -62,7 +62,7 @@ ComplianceCalculator.prototype.init = function()
 ComplianceCalculator.prototype.showOutcome = function(outcome_id, source_node_id)
 {
 	var node_elem = this._elem.find('#' + this._side + '_outcome_' + outcome_id);
-	this._elem.find('div.outcome').hide().each(function() {$(this).data('source-node-id', null); });
+	this._elem.find('span.outcome').hide().each(function() {$(this).data('source-node-id', null); });
 	node_elem.show().data('source-node-id', source_node_id);
 	this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val(node_elem.data('comp-val'));
 }
@@ -80,7 +80,6 @@ ComplianceCalculator.prototype.hideOutcome = function(outcome_id, source_node_id
 		node_elem.data('source-node-id', null);
 		this._elem.find('#Element_OphCoTherapyapplication_PatientSuitability_' + this._side + '_nice_compliance').val('');
 	}
-
 }
 
 /*

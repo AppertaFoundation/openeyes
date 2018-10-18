@@ -31,6 +31,8 @@ source $SCRIPTDIR/modules.conf
 
 MODULEROOT=$WROOT/protected/modules
 
+# TODO: Should be able to replace current modules.conf method with a recursive lookup using gitbranch function to determine which modules to display
+
 # Check modules
 if [ -d "$MODULEROOT/sample" ]; then modules=(${modules[@]} sample); fi # Add sample DB to list if it exists
 

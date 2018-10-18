@@ -57,7 +57,7 @@ if ($this->checkClericalEditAccess()) {
                           id="<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_container'; ?>"
                           style="<?php if (!$comments): ?>display: none;<?php endif; ?>"
                           data-comment-button="#<?= $comment_button_id ?>">
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
+                        <?=\CHtml::textArea("{$field_base_name}[comments]", $comments, array(
                             'class' => 'js-comment-field',
                             'rows' => 2,
                             'placeholder' => 'Comments',
@@ -69,17 +69,17 @@ if ($this->checkClericalEditAccess()) {
                 </td>
             <td>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 1),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 1),
                       array('id' => $factor_field_name . '_1', 'value' => 1)) ?>
                 Yes
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 0),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 0),
                       array('id' => $factor_field_name . '_0', 'value' => 0)) ?>
                 No
               </label>
               <label class="inline highlight">
-                  <?php echo CHtml::radioButton($factor_field_name, ($value === 2),
+                  <?=\CHtml::radioButton($factor_field_name, ($value === 2),
                       array('id' => $factor_field_name . '_2', 'value' => 2)) ?>
                 Unknown
               </label>

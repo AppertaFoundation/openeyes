@@ -16,15 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-    <div class="data-group">
-        <div class="cols-8 column">
-            <h2>Whiteboard Settings</h2>
-        </div>
-        <div class="cols-4 column">
-        </div>
-    </div>
-
+<div class="cols-5">
     <form id="whiteboard_settings">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
         <table class="standard">

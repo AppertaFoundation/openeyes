@@ -20,6 +20,6 @@
   <div class="data-value">
       <?php echo $element->images ? $element->images->name : 'None'?>
     <i class="oe-i info small pad js-has-tooltip"
-       data-tooltip-content="<?php echo CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
+       data-tooltip-content="<?=\CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
   </div>
 </div>

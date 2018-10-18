@@ -24,7 +24,7 @@
   <div class="element-data element-eyes">
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
           <div class="<?= $eye_side ?>-eye">
-              <h3 class="<?= $eye_side ?>-color-text"><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+              <h3 class="<?= $eye_side ?>-color-text"><?=\CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
               <?php if ($element->hasEye($eye_side)) {
                   $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
                       array('side' => $eye_side, 'element' => $element));
