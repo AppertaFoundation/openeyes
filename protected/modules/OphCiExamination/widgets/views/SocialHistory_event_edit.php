@@ -37,7 +37,7 @@
       <td>
           <?=\CHtml::textField(
               'textField_occupation_id',
-              '',
+              $element->occupation_options[$element->occupation_id - 1]['name'],
               ['readonly' => true, 'class' => 'cols-8']
           ); ?>
           <?= $form->dropDownList(
@@ -46,7 +46,7 @@
               CHtml::listData($element->occupation_options, 'id', 'name'),
               ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
               false,
-              ['label' => 4, 'field' => 4, 'full_dropdown' => true]
+              array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only')
           );
           ?>
           <?= $form->textField(
@@ -70,7 +70,7 @@
           <?=\CHtml::textField(
               'textField_driving_statuses',
               'Nothing selected.',
-              ['readonly' => true, 'class' => 'cols-8']
+              ['readonly' => true, 'class' => 'cols-8', 'hidden' => count($element['driving_statuses'] > 0)]
           ); ?>
           <?= $form->multiSelectList(
               $element,
@@ -80,8 +80,6 @@
               CHtml::listData($element->driving_statuses_options, 'id', 'name'),
               array(),
               ['empty' => '- Select -', 'nowrapper' => true]
-
-
           ); ?>
       </td>
     </tr>
@@ -92,7 +90,7 @@
       <td>
           <?=\CHtml::textField(
               'textField_smoking_status_id',
-              '',
+              $element->smoking_status_options[$element->smoking_status_id - 1]['name'],
               ['readonly' => true, 'class' => 'cols-8']
           ); ?>
           <?= $form->dropDownList(
@@ -109,7 +107,7 @@
       <td>
           <?=\CHtml::textField(
               'textField_accommodation_id',
-              '',
+              $element->accommodation_options[$element->accommodation_id - 1],
               ['readonly' => true, 'class' => 'cols-8']
           ); ?>
           <?= $form->dropDownList(
@@ -144,7 +142,7 @@
       <td>
           <?=\CHtml::textField(
               'textField_carer_id',
-              '',
+              $element->carer_options[$element->carer_id - 1],
               ['readonly' => true, 'class' => 'cols-8']
           ); ?>
           <?= $form->dropDownList(
@@ -163,7 +161,7 @@
       <td>
           <?=\CHtml::textField(
               'textField_substance_misuse_id',
-              '',
+              $element->substance_misuse_options[$element->substance_misuse_id - 1],
               ['readonly' => true, 'class' => 'cols-8']
           ); ?>
           <?= $form->dropDownList(
