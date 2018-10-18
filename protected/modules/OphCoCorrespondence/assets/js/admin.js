@@ -40,6 +40,8 @@ $(document).ready(function() {
         setTypeFilter($(this).val());
 	});
 
+    $('#LetterMacro_type').trigger('change');
+
 	$('#LetterMacro_body').select(function() {
 		if ($(this)[0].selectionStart != undefined) {
 			var text = $(this).val().substring($(this)[0].selectionStart-1,$(this)[0].selectionEnd+1);
@@ -211,8 +213,10 @@ var macro_cursor_position = 0;
  */
 function setTypeFilter(type)
 {
-    $('#div_LetterMacro_site_id, #div_LetterMacro_subspecialty_id, #div_LetterMacro_firm_id').hide();
-    $('#div_LetterMacro_'+type+'_id').show();
+
+    $('#LetterMacro_site_id, #LetterMacro_subspecialty_id, #LetterMacro_firm_id').hide();
+    $('#LetterMacro_'+type+'_id').show();
+	$('#LetterMacro_type_dropdown').text(type.charAt(0).toUpperCase() + type.slice(1));
 }
 
 function updateMacroList(preserve)

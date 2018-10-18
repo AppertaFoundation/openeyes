@@ -29,7 +29,7 @@
 				</label>
 			</div>
 			<div class="cols-6 column end">
-				<?php echo CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code', 'description'), array('empty' => '- Select -'))?>
+				<?=\CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code', 'description'), array('empty' => '- Select -'))?>
 			</div>
 		</div>
 	</div>

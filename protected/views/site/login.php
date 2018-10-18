@@ -41,7 +41,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
             <?php endif; ?>
 
             <?php if (Yii::app()->params['help_url']): ?>
-              <?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'],
+              <?=\CHtml::link('Help Documentation', Yii::app()->params['help_url'],
                       array('target' => '_blank')) ?>
             <?php endif; ?>
 

@@ -28,14 +28,16 @@ if (@$htmlOptions['id']) {
 <div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
     <?php unset($htmlOptions['hidden']) ?>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-    <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
-        <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
+    <label for="<?=\CHtml::modelName($element) . '_' . $field . '_0'; ?>">
+        <?=\CHtml::encode($element->getAttributeLabel($field)) ?>:
     </label>
   </div>
   <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
     <input class="<?= @$htmlOptions['class'] ?>"
+           style="<?= @$htmlOptions['style']?>"
            id="<?= $input_id ?>"
+           <?=isset($htmlOptions['form']) ? 'form='.$htmlOptions['form'] :''?>
            placeholder="yyyy-mm-dd"
            name="<?= $name ?>"
            value="<?= $value ?>"

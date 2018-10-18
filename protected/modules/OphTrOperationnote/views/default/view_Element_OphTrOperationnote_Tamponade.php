@@ -27,7 +27,7 @@
         <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('gas_type_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('gas_type_id')) ?>
             </div>
           </div>
           <div class="cols-8 column">
@@ -39,7 +39,7 @@
         <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('gas_percentage_id')) ?>
             </div>
           </div>
           <div class="cols-8 column">
@@ -51,7 +51,7 @@
         <div class="data-group">
           <div class="cols-4 column">
             <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id')) ?>
+                <?=\CHtml::encode($element->getAttributeLabel('gas_volume_id')) ?>
             </div>
           </div>
           <div class="cols-8 column">

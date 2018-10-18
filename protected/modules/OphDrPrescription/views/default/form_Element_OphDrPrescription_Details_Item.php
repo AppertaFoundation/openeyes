@@ -18,26 +18,23 @@
 ?>
 
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
-  <?php if (isset($patient)): ?>
-    <?php if ($patient->hasDrugAllergy($item->drug_id)): ?>
-      allergyWarning
-    <?php endif; ?>
-  <?php endif; ?>
   <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
-
   <td>
       <button class="js-add-taper">
           <i class="oe-i child-arrow small"></i>
       </button>
   </td>
   <td>
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->drug_id)): ?>
+      <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
+      <?php endif; ?>
       <?php echo $item->drug->tallmanlabel; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php
       } ?>
     <input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id ?>"/>
       <?php if($item->comments){ ?>
-        <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=CHtml::encode($item->comments);?>"></i>
+        <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=\CHtml::encode($item->comments);?>"></i>
        <?php } else { ?>
         <i class="oe-i comments medium-icon pad js-add-comments"style=""></i>
        <?php } ?>
@@ -58,11 +55,11 @@
 
   </td>
   <td class="prescriptionItemDose">
-      <?php echo CHtml::textField('prescription_item[' . $key . '][dose]', $item->dose,
+      <?=\CHtml::textField('prescription_item[' . $key . '][dose]', $item->dose,
           array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
   </td>
   <td>
-      <?php echo CHtml::dropDownList('prescription_item[' . $key . '][route_id]', $item->route_id,
+      <?=\CHtml::dropDownList('prescription_item[' . $key . '][route_id]', $item->route_id,
           CHtml::listData(DrugRoute::model()->activeOrPk($item->route_id)->findAll(array('order' => 'display_order asc')),
               'id', 'name'), array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')); ?>
   </td>
@@ -80,17 +77,17 @@
     <?php } ?>
 
   <td class="prescriptionItemFrequencyId">
-      <?php echo CHtml::dropDownList('prescription_item[' . $key . '][frequency_id]', $item->frequency_id,
+      <?=\CHtml::dropDownList('prescription_item[' . $key . '][frequency_id]', $item->frequency_id,
           CHtml::listData(DrugFrequency::model()->activeOrPk($item->frequency_id)->findAll(array('order' => 'display_order asc')),
               'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
   </td>
   <td class="prescriptionItemDurationId">
-      <?php echo CHtml::dropDownList('prescription_item[' . $key . '][duration_id]', $item->duration_id,
+      <?=\CHtml::dropDownList('prescription_item[' . $key . '][duration_id]', $item->duration_id,
           CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')),
               'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
   </td>
   <td>
-      <?php echo CHtml::dropDownList('prescription_item[' . $key . '][dispense_condition_id]',
+      <?=\CHtml::dropDownList('prescription_item[' . $key . '][dispense_condition_id]',
           $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
               'condition' => "active or id='" . $item->dispense_condition_id . "'",
               'order' => 'display_order',
@@ -126,7 +123,7 @@ foreach ($item->tapers as $taper): ?>
     </td>
 
     <td>
-        <?php echo CHtml::textField('prescription_item[' . $key . '][taper][' . $count . '][dose]', $taper->dose,
+        <?=\CHtml::textField('prescription_item[' . $key . '][taper][' . $count . '][dose]', $taper->dose,
             array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
     </td>
     <td></td>
@@ -134,13 +131,13 @@ foreach ($item->tapers as $taper): ?>
         <td></td>
       <?php } ?>
     <td>
-        <?php echo CHtml::dropDownList('prescription_item[' . $key . '][taper][' . $count . '][frequency_id]',
+        <?=\CHtml::dropDownList('prescription_item[' . $key . '][taper][' . $count . '][frequency_id]',
             $taper->frequency_id,
             CHtml::listData(DrugFrequency::model()->activeOrPk($taper->frequency_id)->findAll(array('order' => 'display_order asc')),
                 'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
     </td>
     <td>
-        <?php echo CHtml::dropDownList('prescription_item[' . $key . '][taper][' . $count . '][duration_id]',
+        <?=\CHtml::dropDownList('prescription_item[' . $key . '][taper][' . $count . '][duration_id]',
             $taper->duration_id,
             CHtml::listData(DrugDuration::model()->activeOrPk($taper->duration_id)->findAll(array('order' => 'display_order asc')),
                 'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>

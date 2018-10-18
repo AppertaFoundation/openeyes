@@ -56,7 +56,7 @@
                         <div class="data-group">
                             <div class="column cols-4 text-right"><label for="subspecialty_id">Subspecialty:</label></div>
                             <div class="column cols-8">
-                                <?php echo CHtml::dropDownList('subspecialty_id',
+                                <?=\CHtml::dropDownList('subspecialty_id',
                                     (array_key_exists('subspecialty_id', $list_filter) ? $list_filter['subspecialty_id'] : null),
                                     Subspecialty::model()->getList(),
                                     array('class' => 'filter-field', 'empty' => 'All specialties',))?>
@@ -65,7 +65,7 @@
                             <div class="data-group">
                             <div class="column cols-4 text-right"><label for="site_id">Site:</label></div>
                             <div class="column cols-8">
-                                <?php echo CHtml::dropDownList('site_id',
+                                <?=\CHtml::dropDownList('site_id',
                                     (array_key_exists('site_id', $list_filter) ? $list_filter['site_id'] : null),
                                     Site::model()->getListForCurrentInstitution(),
                                     array('class' => 'filter-field', 'empty' => 'All sites',))?>

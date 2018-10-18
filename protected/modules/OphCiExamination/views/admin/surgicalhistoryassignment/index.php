@@ -19,17 +19,25 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Required Surgical History Sets</h2>
 
-<?php
 
+<div class="cols-5">
+
+    <div class="row divider">
+        <h2>Required Surgical History Sets</h2>
+    </div>
+
+    <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
-            'value' => function($data, $row){
-                return CHtml::checkBox("OEModule_OphCiExamination_models_SurgicalHistorySet[][id]",false, ['value' => $data->id]);
+            'value' => function ($data, $row) {
+                return CHtml::checkBox(
+                    "OEModule_OphCiExamination_models_SurgicalHistorySet[][id]",
+                    false,
+                    ['value' => $data->id]
+                );
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -38,7 +46,7 @@
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
         ),
@@ -46,7 +54,7 @@
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->firm ? $data->firm->name : null;
             }
         ),
@@ -57,30 +65,47 @@
 
     ?>
 
-    <form id="generic-admin-form">
-    <?php $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin grid',
-        //'template' => '{items}',
-        "emptyTagName" => 'span',
-        'summaryText' => false,
-        'rowHtmlOptionsExpression'=>'array("data-row"=>$row, "data-id" => $data->id)',
-        'enableSorting' => false,
-        'enablePagination' => false,
-        'columns' => $columns,
-        'rowCssClass' => array('clickable'),
-    ));
-?>
+    <form id="generic-admin-form"><?php
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard',
+            //'template' => '{items}',
+            "emptyTagName" => 'span',
+            'summaryText' => false,
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row, "data-id" => $data->id)',
+            'enableSorting' => false,
+            'enablePagination' => false,
+            'columns' => $columns,
+            'rowCssClass' => array('clickable'),
+        ));
+        ?>
     </form>
 
-    <a class="button small primary event-action" href="/OphCiExamination/oeadmin/SurgicalHistoryAssignment/create">Add</a>
-    <button data-object="SurgicalHistorySet" data-uri="/OphCiExamination/oeadmin/SurgicalHistoryAssignment/delete" class="small primary event-action" name="delete" type="submit" id="et_delete">Delete</button>
+    <?=\CHtml::submitButton(
+        'Add',
+        [
+            'class' => 'button large',
+            'name' => 'add',
+            'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/create',
+            'id' => 'et_add'
+        ]
+    ); ?>
+
+    <?=\CHtml::submitButton(
+        'Delete',
+        [
+            'class' => 'button large',
+            'name' => 'delete',
+            'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/delete',
+            'id' => 'et_delete'
+        ]
+    ); ?>
 
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function(){
+    $(document).ready(function () {
+        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/update/' + id;
         });

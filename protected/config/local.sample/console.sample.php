@@ -16,18 +16,33 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/**
+* Obtain db access credentials.
+* - If old db.conf file exists (old method from OpenEyes v2.x) then use it.
+*   - Else test environment variables
+*     - Else chack for docker secrets
+*        - Else use default values
+**/
+if (file_exists('/etc/openeyes/db.conf')) {
+    $db = parse_ini_file('/etc/openeyes/db.conf');
+    $db_host = $db['host'];
+    $db_port = $db['port'];
+    $db_name = $db['host'];
+    $db_user = $db['username'];
+    $db_pass = $db['password'];
+} else {
+     $db_host = getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost';
+     $db_port = getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306';
+     $db_name = getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes';
+     $db_user = getenv('DATABASE_USER') ? getenv('DATABASE_USER') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes' );
+     $db_pass = getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes' );
+}
 
-$db_name = getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes';
-$db_host = getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : '127.0.0.1';
-$db_port = getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306';
-$db_user = getenv('DATABASE_USER') ? getenv('DATABASE_USER') : 'openeyes';
-$db_pass = getenv('DATABASE_PASS') ? getenv('DATABASE_PASS') : 'openeyes';
-
-$db_test_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_TEST_NAME') : 'openeyes_test';
-$db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_TEST_HOST') : '127.0.0.1';
-$db_test_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_TEST_PORT') : '3306';
-$db_test_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_TEST_USER') : 'openeyes';
-$db_test_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_TEST_PASS') : 'openeyes';
+ $db_test_host = getenv('DATABASE_TEST_HOST') ? getenv('DATABASE_HOST') : 'localhost';
+ $db_test_port = getenv('DATABASE_TEST_PORT') ? getenv('DATABASE_PORT') : '3306';
+ $db_test_name = getenv('DATABASE_TEST_NAME') ? getenv('DATABASE_NAME') : 'openeyes_test';
+ $db_test_user = getenv('DATABASE_TEST_USER') ? getenv('DATABASE_USER') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : 'openeyes' );
+ $db_test_pass = getenv('DATABASE_TEST_PASS') ? getenv('DATABASE_PASS') : ( rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : 'openeyes' );
 
 return array(
     'components' => array(

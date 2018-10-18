@@ -1,1 +1,1 @@
-<?php echo CHtml::image('file://'.$element->{$index}->getPath(), '', ['border'=>0]); ?>
+<?=\CHtml::image('file://'.$element->{$index}->getPath(), '', ['border'=>0]); ?>

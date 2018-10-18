@@ -216,8 +216,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                 null, false, false,
                                 false, false,
                                 array(
+                                    'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                                     'field'=>'AnaestheticType',
-                                    'label-class' => $element->getError('anaesthetic_type') ? 'error' : ''
                                 )
                             ); ?>
                         </td>
@@ -282,7 +282,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                             ?>
                         </td>
                     </tr>
-                    <?php if (Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+                    <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
                         <tr>
                             <td><?= $element->getAttributeLabel('is_golden_patient'); ?> </td>
                             <td>
@@ -322,8 +322,8 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                     Doctor organizing admission
                 </td>
                 <td>
-                    <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[organising_admission_user_id]"
-                           id="<?php echo CHtml::modelName($element) ?>_organising_admission_user_id"
+                    <input type="hidden" name="<?=\CHtml::modelName($element) ?>[organising_admission_user_id]"
+                           id="<?=\CHtml::modelName($element) ?>_organising_admission_user_id"
                            value="<?php echo $element->organising_admission_user_id ?>"/>
                     <span class="organising_admission_user">
                         <?php echo $element->organising_admission_user ? $element->organising_admission_user->reversedFullname . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>

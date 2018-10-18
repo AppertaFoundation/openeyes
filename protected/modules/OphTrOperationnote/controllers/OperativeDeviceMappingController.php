@@ -18,6 +18,8 @@
  */
 class OperativeDeviceMappingController extends BaseAdminController
 {
+    public $group = 'Operation Note';
+
     /**
      * To list the operative devices per site per subspeciality
      */
@@ -76,6 +78,8 @@ class OperativeDeviceMappingController extends BaseAdminController
                 'placeholder' => 'search for adding operative devices',
             )
         );
+
+        $admin->div_wrapper_class = 'cols-7';
         //$admin->searchAll();
         $admin->listModel();
     }

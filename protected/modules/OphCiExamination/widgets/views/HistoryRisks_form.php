@@ -44,7 +44,7 @@
             <label for="<?=$model_name?>_other_risk">Other Risk:</label>
         </div>
         <div class="cols-3 column end">
-            <?php echo CHtml::textField($model_name . '_other_risk', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::textField($model_name . '_other_risk', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         </div>
     </div>
 
@@ -53,7 +53,7 @@
             <label for="<?= $model_name ?>_comments">Comments:</label>
         </div>
         <div class="cols-3 column">
-            <?php echo CHtml::textField($model_name . '_comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::textField($model_name . '_comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         </div>
         <div class="cols-4 column end">
             <button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button>

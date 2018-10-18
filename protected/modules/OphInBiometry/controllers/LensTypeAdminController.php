@@ -13,6 +13,8 @@ class LensTypeAdminController extends BaseAdminController
      */
     public $itemsPerPage = 100;
 
+    public $group = 'Biometry';
+
     /**
      * Lists lens types.
      *
