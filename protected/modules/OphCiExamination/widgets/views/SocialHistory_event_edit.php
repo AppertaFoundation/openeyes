@@ -35,18 +35,16 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('occupation_id')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_occupation_id',
-              $element->occupation_options[$element->occupation_id - 1]['name'],
-              ['readonly' => true, 'class' => 'cols-8']
-          ); ?>
+          <div id="textField_occupation_id" class="cols-8">
+              <?= isset($element->occupation_options[$element->occupation_id]) ? $element->occupation_options[$element->occupation_id - 1]['name'] : 'Nothing selected.' ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'occupation_id',
               CHtml::listData($element->occupation_options, 'id', 'name'),
               ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true],
               false,
-              array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only')
+              array('label' => 4, 'field' => 4, 'full_dropdown' => true, 'class' => 'oe-input-is-read-only', 'hidden' => true)
           );
           ?>
           <?= $form->textField(
@@ -57,6 +55,7 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'style' => 'width: 100%',
                   'nowrapper' => true,
+                  'hidden' => true
               ),
               null,
               array('label' => 4, 'field' => 5)
@@ -67,11 +66,7 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_driving_statuses',
-              'Nothing selected.',
-              ['readonly' => true, 'class' => 'cols-8', 'hidden' => count($element['driving_statuses'] > 0)]
-          ); ?>
+          <div id="textField_driving_statuses" class="cols-8" <?=(count($element['driving_statuses']) > 0) ? 'hidden' : '' ?>>Nothing selected.</div>
           <?= $form->multiSelectList(
               $element,
               CHtml::modelName($element) . '[driving_statuses]',
@@ -79,7 +74,7 @@
               'id',
               CHtml::listData($element->driving_statuses_options, 'id', 'name'),
               array(),
-              ['empty' => '- Select -', 'nowrapper' => true]
+              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
           ); ?>
       </td>
     </tr>
@@ -88,11 +83,9 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('smoking_status_id')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_smoking_status_id',
-              $element->smoking_status_options[$element->smoking_status_id - 1]['name'],
-              ['readonly' => true, 'class' => 'cols-8']
-          ); ?>
+          <div id="textField_smoking_status_id" class="cols-8">
+              <?= isset($element->smoking_status_options[$element->smoking_status_id]) ? $element->smoking_status_options[$element->smoking_status_id - 1]['name'] : 'Nothing selected.'?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'smoking_status_id',
@@ -105,18 +98,15 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('accommodation_id')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_accommodation_id',
-              $element->accommodation_options[$element->accommodation_id - 1],
-              ['readonly' => true, 'class' => 'cols-8']
-          ); ?>
+          <div id="textField_accommodation_id" class="cols-8">
+              <?= isset($element->accommodation_options[$element->accommodation_id]) ? $element->accommodation_options[$element->accommodation_id - 1] : 'Nothing selected.' ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'accommodation_id',
               CHtml::listData($element->accommodation_options, 'id', 'name'),
               ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-          );
-          ?>
+          ); ?>
       </td>
     </tr>
     <tr>
@@ -124,6 +114,9 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
       </td>
       <td class="flex-layout flex-left">
+          <div id="textField_alcohol_intake" class="cols-1">
+              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: '0'?>
+          </div>
           <?= $form->textField(
               $element,
               'alcohol_intake',
@@ -132,6 +125,7 @@
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
                   'append-text' => 'units/week',
+                  'hidden' => true
               )
           );
           ?>
@@ -140,11 +134,9 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('carer_id')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_carer_id',
-              $element->carer_options[$element->carer_id - 1],
-              ['readonly' => true, 'class' => 'cols-8']
-          ); ?>
+          <div id="textField_carer_id" class="cols-8">
+              <?= isset($element->carer_options[$element->carer_id]) ? $element->carer_options[$element->carer_id - 1] : 'Nothing selected.' ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'carer_id',
@@ -159,11 +151,9 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
       </td>
       <td>
-          <?=\CHtml::textField(
-              'textField_substance_misuse_id',
-              $element->substance_misuse_options[$element->substance_misuse_id - 1],
-              ['readonly' => true, 'class' => 'cols-8']
-          ); ?>
+          <div id="textField_substance_misuse_id" class="cols-8">
+              <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
+          </div>
           <?= $form->dropDownList(
               $element,
               'substance_misuse_id',

@@ -56,14 +56,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $field.val(item['id']);
         $field.change();
 
-        //TODO: load elements for edit page
-
         // hide the textField for multiple select driving_statuses
         if (itemSetId == "driving_statuses") {
           $textField.hide();
+        } else if (itemSetId == "alcohol_intake") {
+          console.log($textField);
+          $textField.html(item['id']);
         } else {
           // for the rest of the elements, show the info in the textField
-          $textField.val($field.find(":selected").text());
+          $textField.html($field.find(":selected").text());
         }
       }
 
