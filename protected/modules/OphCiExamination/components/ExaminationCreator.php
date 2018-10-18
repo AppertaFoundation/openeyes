@@ -66,9 +66,6 @@ class ExaminationCreator
 
             $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
-            if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
-                $this->createPupillaryAbnormalities($userId, $examinationEvent);
-
                 if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                     $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
                     $unit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
@@ -80,7 +77,6 @@ class ExaminationCreator
                     $nearUnit = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
                     $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, $nearUnit, true);
                 }
-            }
 
             foreach ($examination['patient']['eyes'] as $eye) {
                 $eyeLabel = strtolower($eye['label']);
@@ -152,28 +148,6 @@ class ExaminationCreator
         }
 
         return $eyeIds;
-    }
-
-    /**
-     * @param $userId
-     * @param $examination
-     * @param $examinationEvent
-     *
-     * @throws \CDbException
-     * @throws \Exception
-     */
-    protected function createPupillaryAbnormalities($userId, $examinationEvent)
-    {
-        //create pupillaryAbnormality, required for visual acuity to show.
-        $pupillaryAbnormality = new \OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities();
-        $pupillaryAbnormality->event_id = $examinationEvent->id;
-        $pupillaryAbnormality->eye_id = $this->examinationEyeId;
-        $pupillaryAbnormality->left_rapd = 0;
-        $pupillaryAbnormality->right_rapd = 0;
-        $pupillaryAbnormality->created_user_id = $pupillaryAbnormality->last_modified_user_id = $userId;
-        if (!$pupillaryAbnormality->save(true, null, true)) {
-            throw new \CDbException('Visual Function failed: '.print_r($pupillaryAbnormality->getErrors(), true));
-        }
     }
 
     /**
