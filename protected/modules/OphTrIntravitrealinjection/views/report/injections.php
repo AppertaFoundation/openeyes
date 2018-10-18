@@ -13,7 +13,7 @@
     <tbody>
     <tr>
       <td>
-          <?php echo CHtml::label('Date From', 'date_from') ?>
+          <?=\CHtml::label('Date From', 'date_from') ?>
       </td>
       <td>
         <input id="date_from"
@@ -25,7 +25,7 @@
         >
       </td>
       <td>
-          <?php echo CHtml::label('Date To', 'date_to') ?>
+          <?=\CHtml::label('Date To', 'date_to') ?>
       </td>
       <td>
         <input id="date_to"
@@ -39,11 +39,11 @@
     </tr>
     <tr>
       <td>
-          <?php echo CHtml::label('Given by', 'given_by_id') ?>
+          <?=\CHtml::label('Given by', 'given_by_id') ?>
       </td>
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?php echo CHtml::dropDownList('given_by_id', '',
+              <?=\CHtml::dropDownList('given_by_id', '',
                   CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')), 'id',
                       'fullName'), array('empty' => '- Please select -')) ?>
           <?php else: ?>
@@ -62,10 +62,10 @@
           <?php endif ?>
       </td>
       <td>
-          <?php echo CHtml::label('Drugs', 'drug_id') ?>
+          <?=\CHtml::label('Drugs', 'drug_id') ?>
       </td>
       <td>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'drug_id',
               '',
               CHtml::listData(
@@ -76,10 +76,10 @@
     </tr>
     <tr>
       <td>
-          <?php echo CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
+          <?=\CHtml::label('Pre Injection Antiseptic', 'pre_antisept_drug_id') ?>
       </td>
       <td>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'pre_antisept_drug_id',
               '',
               CHtml::listData(
@@ -90,8 +90,8 @@
       </td>
       <td>
         <input type="hidden" name="summary" value="0"/>
-          <?php echo CHtml::checkBox('summary'); ?>
-          <?php echo CHtml::label('Summarise patient data', 'summary') ?>
+          <?=\CHtml::checkBox('summary'); ?>
+          <?=\CHtml::label('Summarise patient data', 'summary') ?>
       </td>
     </tr>
     </tbody>
@@ -106,13 +106,13 @@
     <tr>
       <td>
         <input type="hidden" name="pre_va" value="0"/>
-          <?php echo CHtml::checkBox('pre_va'); ?>
-          <?php echo CHtml::label('Pre injection VA', 'pre_va') ?>
+          <?=\CHtml::checkBox('pre_va'); ?>
+          <?=\CHtml::label('Pre injection VA', 'pre_va') ?>
       </td>
       <td>
         <input type="hidden" name="post_va" value="0"/>
-          <?php echo CHtml::checkBox('post_va'); ?>
-          <?php echo CHtml::label('Post injection VA', 'post_va') ?>
+          <?=\CHtml::checkBox('post_va'); ?>
+          <?=\CHtml::label('Post injection VA', 'post_va') ?>
       </td>
     </tr>
     </tbody>

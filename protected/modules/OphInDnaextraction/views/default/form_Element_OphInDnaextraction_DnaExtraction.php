@@ -31,7 +31,7 @@
                 <label></label>
             </div>
             <div class="cols-2 column end">
-                 <?php echo CHtml::button('Add new storage', 
+                 <?=\CHtml::button('Add new storage',
                     array(
                         'id'        => 'addNewStoragePopup',
                         'class'     => 'button small secondary', 

@@ -13,7 +13,7 @@
         <label>To Service:* </label>
       </div>
       <div class="cols-3 column">
-          <?php echo CHtml::activeDropDownList($element, "to_subspecialty_id",
+          <?=\CHtml::activeDropDownList($element, "to_subspecialty_id",
               CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'),
               array('empty' => '- None -')) ?>
       </div>
@@ -23,7 +23,7 @@
         <label>For Consultant: </label>
       </div>
       <div class="cols-3 column end">
-          <?php echo CHtml::activeDropDownList($element, "to_firm_id", Firm::model()->getListWithSpecialties(),
+          <?=\CHtml::activeDropDownList($element, "to_firm_id", Firm::model()->getListWithSpecialties(),
               array('empty' => '- None -')) ?>
       </div>
     </div>
@@ -70,7 +70,7 @@
       <div class="cols-3 column end">
         <label class="inline">
           <label>
-              <?php echo CHTML::activeCheckBox($element, 'is_urgent'); ?>
+              <?=\CHtml::activeCheckBox($element, 'is_urgent'); ?>
               <?php echo $element->getAttributeLabel('is_urgent'); ?>
           </label>
         </label>

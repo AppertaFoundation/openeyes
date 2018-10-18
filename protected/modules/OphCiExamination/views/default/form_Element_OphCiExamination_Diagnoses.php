@@ -52,7 +52,7 @@ foreach ($this->patient->episodes as $ep) {
 <?php $model_name = CHtml::modelName($element); ?>
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
-    <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 

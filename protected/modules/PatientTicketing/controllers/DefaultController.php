@@ -245,6 +245,7 @@ class DefaultController extends \BaseModuleController
         }
 
         // render
+        $this->pageTitle = 'Virtual Clinic';
         $this->render('index', array(
                 'category' => $category,
                 'queueset' => $queueset,
@@ -686,7 +687,7 @@ class DefaultController extends \BaseModuleController
         }
 
         echo \CHtml::dropDownList('firm-id', '', \Firm::model()->getList($subspecialty->id),
-            ['class' => 'cols-11', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
+            ['class' => 'cols-full', 'empty' => 'All ' . \Firm::contextLabel() . 's']);
     }
 
     public function actionUndoLastStep($id)

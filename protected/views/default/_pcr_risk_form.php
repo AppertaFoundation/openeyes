@@ -59,7 +59,7 @@ if ($side === 'left') {
     <?php }
     $criteria = new CDbCriteria(); ?>
 
-<div class="sub-element-fields element" id="div_<?php echo CHtml::modelName($element) ?>_pcr_risk">
+<div class="sub-element-fields element" id="div_<?=\CHtml::modelName($element) ?>_pcr_risk">
   <div>
     <header class="element-header">
       <h4 class="element-title"> PCR Risk (<?php echo $side; ?>) </h4>

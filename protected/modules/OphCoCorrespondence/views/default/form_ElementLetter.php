@@ -65,7 +65,7 @@ $creating = $creating ?: false;
                 Macro
               </td>
               <td>
-                  <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
+                  <?=\CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros,
                       array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full')); ?>
               </td>
             </tr>
@@ -461,13 +461,13 @@ $creating = $creating ?: false;
 
                   <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                       <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                      <div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[$key]", $value,
+                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[$key]", $value,
                               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
                             href="#" class="removeEnclosure">Remove</a></div>
                       <?php } ?>
                   <?php } else { ?>
                       <?php foreach ($element->enclosures as $i => $item) { ?>
-                      <div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[enclosure$i]",
+                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[enclosure$i]",
                               $item->content,
                               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
                             href="#" class="removeEnclosure">Remove</a></div>
@@ -481,7 +481,7 @@ $creating = $creating ?: false;
                         <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
                         <div class=" row collapse in enclosureItem">
                           <div class="cols-8 column">
-                              <?php echo CHtml::textField("EnclosureItems[$key]", $value,
+                              <?=\CHtml::textField("EnclosureItems[$key]", $value,
                                   array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                           </div>
                           <div class="cols-4 column end">
@@ -493,7 +493,7 @@ $creating = $creating ?: false;
                         <?php foreach ($element->enclosures as $i => $item) { ?>
                         <div class="data-group collapse in enclosureItem">
                           <div class="cols-8 column">
-                              <?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
+                              <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
                                   array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                           </div>
                           <div class="cols-4 column end">
@@ -514,6 +514,8 @@ $creating = $creating ?: false;
       </div>
     <?php } ?>
 </div>
+</section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
+<section class="element edit full edit-xxx">
 <div id="attachments_content_container">
     <?php
     $associated_content = EventAssociatedContent::model()

@@ -70,6 +70,7 @@ class WaitingListController extends BaseModuleController
             Audit::add('waiting list', 'search');
         }
 
+        $this->pageTitle = 'Partial Bookings Waiting List';
         $this->render('index');
     }
 

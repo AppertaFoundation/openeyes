@@ -185,7 +185,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?php echo CHtml::activeTextField($pastintervention, 'relevanttreatment_other', array(
+        <?=\CHtml::activeTextField($pastintervention, 'relevanttreatment_other', array(
             'autocomplete' => Yii::app()->params['html_autocomplete'],
             'name' => $name_stub . "[$key][relevanttreatment_other]",
         )); ?>
@@ -199,7 +199,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?php echo CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
+        <?=\CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
             array('empty' => '- Please select -', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
         ?>
     </td>
@@ -212,7 +212,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?php echo CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
+        <?=\CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
             array('empty' => '- Please select -', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true)); ?>
     </td>
   </tr>
@@ -253,7 +253,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?php echo CHtml::activeTextArea($pastintervention, 'stopreason_other',
+        <?=\CHtml::activeTextArea($pastintervention, 'stopreason_other',
             array('name' => $name_stub . "[$key][stopreason_other]", 'rows' => 2, 'cols' => 25, 'nowrapper' => true)) ?>
     </td>
   </tr>
@@ -265,7 +265,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
       </label>
     </td>
     <td>
-        <?php echo CHtml::activeTextArea($pastintervention, 'comments', array(
+        <?=\CHtml::activeTextArea($pastintervention, 'comments', array(
             'placeholder' => 'Please provide pre and post treatment CMT',
             'name' => $name_stub . "[$key][comments]",
             'rows' => 3,

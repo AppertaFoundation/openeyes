@@ -16,37 +16,53 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-  <div class="cols-8 column">
-    <h2>Default Incision Lengths</h2>
-  </div>
-	<form id="admin_incisionLengths">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Value</th>
-					<th><?php echo Firm::contextLabel() ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach (OphTrOperationnote_CataractIncisionLengthDefault::model()->findAll() as $i => $incisionLength) {?>
-					<tr class="clickable" data-id="<?php echo $incisionLength->id?>" data-uri="OphTrOperationnote/admin/incisionLengthDefaultAddForm/<?php echo $incisionLength->id?>">
-						<td><input type="checkbox" name="incisionLengths[]" value="<?php echo $incisionLength->id?>" /></td>
-						<td><?php echo $incisionLength->value?></td>
-						<td><?php echo $incisionLength->firm->getNameAndSubspecialty(); ?></td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/incisionLengthDefaultAddForm'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphTrOperationnote/admin/deleteIncisionLengthDefaults', 'data-object' => 'incisionLength'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<div class="cols-5">
+    <form id="admin_incisionLengths">
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Value</th>
+                <th><?php echo Firm::contextLabel() ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach (OphTrOperationnote_CataractIncisionLengthDefault::model()->findAll() as $i => $incisionLength) { ?>
+                <tr class="clickable" data-id="<?php echo $incisionLength->id ?>"
+                    data-uri="OphTrOperationnote/admin/incisionLengthDefaultAddForm/<?php echo $incisionLength->id ?>">
+                    <td><input type="checkbox" name="incisionLengths[]" value="<?php echo $incisionLength->id ?>"/></td>
+                    <td><?php echo $incisionLength->value ?></td>
+                    <td><?php echo $incisionLength->firm->getNameAndSubspecialty(); ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="3">
+                    <?=\CHtml::submitButton(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'name' => 'add',
+                            'data-uri' => '/OphTrOperationnote/admin/incisionLengthDefaultAddForm',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
+                    <?=\CHtml::submitButton(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'incisionLengths',
+                            'data-uri' => '/OphTrOperationnote/admin/deleteIncisionLengthDefaults',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

@@ -31,13 +31,13 @@
               <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
               <li>
                 <span class="fade">
-                    <?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('assistant_id')) ?>
                   : <?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?>
                 </span>
               </li>
               <li>
                 <span class="fade">
-                    <?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?>
+                    <?=\CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?>
                   : <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
                 </span>
               </li>
@@ -53,9 +53,9 @@
               </colgroup>
               <thead>
               <tr>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
-                <th><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
+                <th><?=\CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
               </tr>
               </thead>
               <tbody>

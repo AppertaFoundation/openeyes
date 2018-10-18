@@ -24,7 +24,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('gauge_id')); ?>:
+						<?=\CHtml::encode($element->getAttributeLabel('gauge_id')); ?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -37,7 +37,7 @@
 			<div class="data-group">
 				<div class="cols-6 column text-right">
 					<div class="data-label">
-						<?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')); ?>:
+						<?=\CHtml::encode($element->getAttributeLabel('pvd_induced')); ?>:
 					</div>
 				</div>
 				<div class="cols-6 column">
@@ -51,7 +51,7 @@
 				<div class="data-group">
 					<div class="cols-6 column text-right">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('comments')); ?>:
+							<?=\CHtml::encode($element->getAttributeLabel('comments')); ?>:
 						</div>
 					</div>
 					<div class="cols-6 column">

@@ -23,8 +23,8 @@
         ); ?>
     </td>
     <td>
-        <?php echo CHtml::activeHiddenField($data['leaflet'], "[" . $data['key'] . "]id");?>
-        <?php echo CHtml::activeTextField(
+        <?=\CHtml::activeHiddenField($data['leaflet'], "[" . $data['key'] . "]id");?>
+        <?=\CHtml::activeTextField(
             $data['leaflet'],
             "[" . $data['key'] . "]name",
             [
@@ -34,7 +34,7 @@
         ); ?>
     </td>
     <td>
-        <?php echo CHtml::activeCheckBox(
+        <?=\CHtml::activeCheckBox(
             $data['leaflet'],
             "[" . $data['key'] . "]active"
         ) ?>

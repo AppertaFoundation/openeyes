@@ -17,15 +17,85 @@
  */
 ?>
 
-<?php echo $form->textField($model, 'name')?>
-<?php echo $form->dropDownList($model, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -'))?>
-<?php
-    $types = OphTrLaser_Type::model()->findAll();
-    $typesArray = array();
-    foreach ($types as $type) {
-        $typesArray[$type->id] = $type->name;
-    }
-?>
-<?php echo $form->dropDownList($model, 'type_id', $typesArray, array('empty' => '- Type -'))?>
-<?php echo $form->textField($model, 'wavelength')?>
-<?php echo $form->radioBoolean($model, 'active')?>
+<div class="cols-5">
+    <div class="row divider">
+        <h2><?php echo $title ?></h2>
+    </div>
+
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td class="cols-full">
+                <?=\CHtml::activeTelField(
+                    $model,
+                    'name',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>
+                <?= CHtml::activeDropDownList(
+                    $model,
+                    'site_id',
+                    Site::model()->getListForCurrentInstitution(),
+                    ['empty' => '- Site -', 'class' => 'cols-full']
+                ); ?>
+                <?php
+                $types = OphTrLaser_Type::model()->findAll();
+                $typesArray = array();
+                foreach ($types as $type) {
+                    $typesArray[$type->id] = $type->name;
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>
+                <?= CHtml::activeDropDownList(
+                    $model,
+                    'type_id',
+                    $typesArray,
+                    ['empty' => '- Type -', 'class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Wavelength</td>
+            <td>
+                <?=\CHtml::activeTelField(
+                    $model,
+                    'wavelength',
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>
+                <?=\CHtml::activeRadioButtonList(
+                    $model,
+                    'active',
+                    [1 => 'Yes', 0 => 'No'],
+                    ['separator' => ' ', 'selected' => '1']
+                ); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+

@@ -35,11 +35,11 @@
             $is_factor = $factor['is_factor'];
             $comments = $factor['comments']; ?>
           <tr>
-            <td><?php echo CHtml::encode($factor['name']) ?>
+            <td><?=\CHtml::encode($factor['name']) ?>
                 <?php if ($factor['is_comments'] == 1) { ?>
                   <div class="data-group"><br/>
                     <div class="cols-4 column large-push-1"
-                         style="font-style: italic;"><?php echo CHtml::encode($factor['label']) ?></div>
+                         style="font-style: italic;"><?=\CHtml::encode($factor['label']) ?></div>
                     <div class="cols-6 column large-push-1 end"><?php echo $comments; ?></div>
                   </div>
                 <?php } ?>
@@ -57,7 +57,7 @@
         <?php } ?>
         <tr>
           <td>
-              <?php echo CHtml::encode($element->getAttributeLabel('employment_status_id')) ?>
+              <?=\CHtml::encode($element->getAttributeLabel('employment_status_id')) ?>
           </td>
           <td>
               <?php echo $element->employment_status ? $element->employment_status->name : 'None' ?>
@@ -65,7 +65,7 @@
         </tr>
         <tr>
           <td>
-              <?php echo CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?>
+              <?=\CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?>
           </td>
           <td>
               <?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None' ?>
@@ -78,16 +78,16 @@
             ?>
           <tr>
             <td>
-              <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('info_email')) ?></div>
+              <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('info_email')) ?></div>
             </td>
             <td>
-              <div class="data-value"><?php echo CHtml::encode($element->info_email) ?></div>
+              <div class="data-value"><?=\CHtml::encode($element->info_email) ?></div>
             </td>
           </tr>
         <?php } ?>
         <tr>
           <td>
-              <?php echo CHtml::encode($element->getAttributeLabel('contact_urgency_id')) ?>
+              <?=\CHtml::encode($element->getAttributeLabel('contact_urgency_id')) ?>
           </td>
           <td>
               <?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None' ?>
@@ -95,7 +95,7 @@
         </tr>
         <tr>
           <td>
-              <?php echo CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?>
+              <?=\CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?>
           </td>
           <td>
               <?php
@@ -109,10 +109,10 @@
         </tr>
         <tr>
           <td>
-              <?php echo CHtml::encode($element->getAttributeLabel('social_service_comments')) ?>
+              <?=\CHtml::encode($element->getAttributeLabel('social_service_comments')) ?>
           </td>
           <td>
-              <?php echo CHtml::encode($element->social_service_comments) ?>
+              <?=\CHtml::encode($element->social_service_comments) ?>
           </td>
         </tr>
         </tbody>

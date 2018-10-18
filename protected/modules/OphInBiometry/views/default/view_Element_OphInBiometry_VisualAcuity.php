@@ -17,7 +17,7 @@
  */
 ?>
 
-<?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
+<?=\CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
 <div class="element-data element-eyes">
     <div class="js-element-eye right-eye column">

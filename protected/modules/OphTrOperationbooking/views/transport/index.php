@@ -95,8 +95,8 @@
 				<div id="searchResults">
 					<form id="csvform" method="post" class="csvform" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/transport/downloadcsv')?>">
 						<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken; ?>" />
-						<input type="hidden" name="date_from" value="<?php echo CHtml::encode(@$_GET['date_from'])?>" />
-						<input type="hidden" name="date_to" value="<?php echo CHtml::encode(@$_GET['date_to'])?>" />
+						<input type="hidden" name="date_from" value="<?=\CHtml::encode(@$_GET['date_from'])?>" />
+						<input type="hidden" name="date_to" value="<?=\CHtml::encode(@$_GET['date_to'])?>" />
 						<input type="hidden" name="include_bookings" value="<?php echo @$_GET['include_bookings'] ? 1 : 0?>" />
 						<input type="hidden" name="include_reschedules" value="<?php echo @$_GET['include_reschedules'] ? 1 : 0?>" />
 						<input type="hidden" name="include_cancellations" value="<?php echo @$_GET['include_cancellations'] ? 1 : 0?>" />

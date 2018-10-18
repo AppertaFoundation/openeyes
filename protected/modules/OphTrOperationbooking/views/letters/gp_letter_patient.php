@@ -34,7 +34,7 @@
 
 	<p class="accessible">
 		I recently invited you to telephone to arrange a date for your admission for surgery under the care of
-		<?php echo CHtml::encode($consultantName)?>.
+		<?=\CHtml::encode($consultantName)?>.
 	</p>
 
 	<p class="accessible">

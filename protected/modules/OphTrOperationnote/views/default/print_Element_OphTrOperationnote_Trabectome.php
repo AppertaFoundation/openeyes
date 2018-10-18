@@ -25,7 +25,7 @@
 				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('power_id'))?>
+							<?=\CHtml::encode($element->getAttributeLabel('power_id'))?>
 						</div>
 					</div>
 					<div class="cols-8 column">
@@ -37,7 +37,7 @@
 				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('blood_reflux'))?>
+							<?=\CHtml::encode($element->getAttributeLabel('blood_reflux'))?>
 						</div>
 					</div>
 					<div class="cols-8 column">
@@ -49,7 +49,7 @@
 				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('hpmc'))?>
+							<?=\CHtml::encode($element->getAttributeLabel('hpmc'))?>
 						</div>
 					</div>
 					<div class="cols-8 column">
@@ -61,7 +61,7 @@
 				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('description'))?>
+							<?=\CHtml::encode($element->getAttributeLabel('description'))?>
 						</div>
 					</div>
 					<div class="cols-8 column">
@@ -73,7 +73,7 @@
 				<div class="data-group">
 					<div class="cols-4 column">
 						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('complications'))?>
+							<?=\CHtml::encode($element->getAttributeLabel('complications'))?>
 						</div>
 					</div>
 					<div class="cols-8 column">

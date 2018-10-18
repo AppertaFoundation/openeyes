@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -34,11 +33,11 @@ class NodExportController extends BaseController
     private $startDate = '';
     private $endDate = '';
     
-    // Refactoring : 
+    // Refactoring :
     /**
      * This number will be appended after the tmp tables so the
      * two or more extract running at the same time can use different tmp tables
-     * @var int 
+     * @var int
      */
     private $extractIdentifier;
     
@@ -50,11 +49,6 @@ class NodExportController extends BaseController
                 'roles' => array('NOD Export'),
             ),
         );
-    }
-
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
     }
 
     public function init()
@@ -110,7 +104,7 @@ class NodExportController extends BaseController
     
     public function actionIndex()
     {
-        // TODO: need to create views!!!
+        $this->pageTitle = 'NOD Export';
         $this->render('//nodexport/index');
     }
     
@@ -127,9 +121,7 @@ class NodExportController extends BaseController
 
         if (file_exists($this->exportPath . '/' . $this->zipName)) {
             Yii::app()->getRequest()->sendFile($this->zipName, file_get_contents($this->exportPath . '/' . $this->zipName));
-        } else {
         }
-        
     }
     
     /**
@@ -203,8 +195,7 @@ class NodExportController extends BaseController
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
             }
 
-            if(count($data) > 0)
-            {
+            if (count($data) > 0) {
                 $csv = $this->array2Csv($data, null, $dataFormatter);
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
@@ -217,8 +208,6 @@ class NodExportController extends BaseController
         }
         return $resultIds;
     }
-
-
 
     private function createAllTempTables()
     {

@@ -56,6 +56,7 @@ class ReportController extends BaseReportController
         $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));
 
         Audit::add('Reports', 'view', print_r(['report-name' => 'Prescribed Drugs'], true) );
+        $this->pageTitle = 'Prescribed Drugs report';
         $this->render('prescribedDrugs', array('drugs' => $drugs, 'users' => $users));
     }
 

@@ -64,7 +64,7 @@
 				<?php }?>
 				<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 		<?php }?>
-				<?php echo CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
+				<?=\CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
 		<?php if (!$nowrapper) {?>
 				</div>
 			</div>
