@@ -82,6 +82,12 @@ if (!empty($subspecialty)) { ?>
 
         for(var key in charts){
             Plotly.relayout(charts[key][eye_side], 'xaxis.range', [limits[eye_side].min, limits[eye_side].max]);
+          if (key==='IOP'){
+            var index = charts[key][eye_side].layout.shapes.length-1;
+            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+          }
         }
 
       });
@@ -96,6 +102,40 @@ if (!empty($subspecialty)) { ?>
           Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
         }
       });
+    }
+
+    var plots = $('.plotly-section');
+    for (var j = 0; j < plots.length; j++) {
+      function get_hover_func(index){
+        return function (data) {
+          var pn = '', tn = '';
+          for (var i = 0; i < data.points.length; i++) {
+            pn = data.points[i].pointNumber;
+            tn = data.points[i].curveNumber;
+            size = data.points[i].data.marker.size;
+          }
+          var sizes = new Array(plots[index].data[tn].x.length).fill(10);
+          sizes[pn] = 15;
+          var update = {'marker': {size: sizes}};
+          Plotly.restyle(plots[index], update, [tn]);
+        }
+      }
+
+      function get_unhover_func(index){
+        return function (data) {
+          var pn='', tn='';
+          for(var i=0; i < data.points.length; i++){
+            pn = data.points[i].pointNumber;
+            tn = data.points[i].curveNumber;
+          }
+          var update = {'marker':{size:10}};
+          Plotly.restyle(plots[index], update, [tn]);
+        }
+      }
+      if (!$(plots[j]).hasClass('plotly-Meds')){
+        plots[j].on('plotly_hover', get_hover_func(j));
+        plots[j].on('plotly_unhover', get_unhover_func(j));
+      }
     }
   });
 </script>

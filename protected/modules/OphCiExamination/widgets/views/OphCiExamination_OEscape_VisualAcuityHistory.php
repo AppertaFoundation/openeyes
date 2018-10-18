@@ -75,6 +75,11 @@
         hoverinfo: 'text',
         hoverlabel: trace_hoverlabel,
         type: 'line',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       }];
       var yaxis_options = {
         range: [-15, 150],

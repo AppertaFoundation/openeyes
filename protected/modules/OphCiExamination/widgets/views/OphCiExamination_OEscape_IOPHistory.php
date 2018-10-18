@@ -43,6 +43,11 @@
         hoverinfo: 'text',
         hoverlabel: trace_hoverlabel,
         type: 'line',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       }];
 
       Plotly.newPlot(

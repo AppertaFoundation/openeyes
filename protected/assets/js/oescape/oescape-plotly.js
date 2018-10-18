@@ -17,6 +17,7 @@ var marking_annotations = {
     color: '#3db0fb',
   },
   bgcolor: '#141e2b',
+  xshift: 10,
 };
 
 var trace_hoverlabel = {

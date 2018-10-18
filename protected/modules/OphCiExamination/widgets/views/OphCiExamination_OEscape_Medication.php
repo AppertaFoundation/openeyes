@@ -33,7 +33,6 @@
           var x_values = [new Date(meds_data[side][key][i]['low']), new Date(meds_data[side][key][i]['high'])];
           var y_values = [key, key];
           var trace = {
-            type: 'scatter',
             mode: "lines",
             x: x_values,
             y: y_values,
