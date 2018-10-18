@@ -57,10 +57,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $field.change();
 
         // hide the textField for multiple select driving_statuses
-        if (itemSetId == "driving_statuses") {
+        if (itemSetId === "driving_statuses") {
           $textField.hide();
-        } else if (itemSetId == "alcohol_intake") {
-          console.log($textField);
+        } else if (itemSetId === "alcohol_intake") {
           $textField.html(item['id']);
         } else {
           // for the rest of the elements, show the info in the textField
