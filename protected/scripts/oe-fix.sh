@@ -24,6 +24,7 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
+norestart=0
 
 while [[ $# -gt 0 ]]
 do
@@ -48,6 +49,8 @@ do
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
+            -nr|--no-restart) norestart=1
+            ;;
 	    *)  echo "Unknown command line: $i"
         ;;
     esac
@@ -120,10 +123,11 @@ if [ "$composer" == "1" ]; then
 	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
-	sudo npm update --no-save $npmextra
+	rm $WROOT/package-lock.json &> /dev/null
+	sudo npm update --no-save --prefix $WROOT $npmextra
 
 	# If we've switched from dev to live, remove dev dependencies
-	[ "$OE_MODE" == "LIVE" ] && npm prune --production
+	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
 
 fi
 
@@ -174,6 +178,10 @@ if [ $noperms = 0 ]; then
 
 	sudo chown -R "$USER" ~/.config 2>/dev/null || :
 	sudo chown -R "$USER" ~/.composer 2>/dev/null || :
+
+	#  update ImageMagick policy to allow PDFs
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
+	sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
 fi
 
 if [ $buildassests = 1 ]; then
@@ -188,6 +196,12 @@ fi
 git config core.fileMode false 2>/dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+
+# restart apache
+if [ "$norestart" == "0" ]; then
+    echo -e "\nrestarting apache..\n"
+    sudo service apache2 restart
+fi
 
 echo ""
 echo "...Done"

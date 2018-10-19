@@ -349,6 +349,15 @@ class HistoryMedicationsEntry extends \BaseElement
         return implode(' ', $res);
     }
 
+    public function getEndDateDisplay()
+    {
+        if ($this->end_date) {
+            return \Helper::formatFuzzyDate($this->end_date);
+        } else {
+            return '';
+        }
+    }
+
     public function getStartDateDisplay()
     {
         return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->start_date) . '</div>';

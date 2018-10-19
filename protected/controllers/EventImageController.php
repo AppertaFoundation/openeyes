@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create'),
+                'actions' => array('view', 'create', 'getImageUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -35,6 +35,24 @@ class EventImageController extends BaseController
                 'users' => array('*'),
             ),
         );
+    }
+
+    public function actionGetImageUrl($event_id)
+    {
+        // If the event image doesn't already exist
+        if (!EventImage::model()->exists('event_id = ? AND status_id = ?',
+            array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id))) {
+            // Then try to make it
+            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event_id;
+            exec($command);
+        }
+
+        // Check again to see if it exists (an error might have occurred during generation)
+        if (EventImage::model()->exists('event_id = ?', array($event_id))) {
+            // THen return that url
+            echo $this->createUrl('view', array('id' => $event_id));
+        }
+        // otherwise return nothing
     }
 
     /**
