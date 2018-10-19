@@ -17,24 +17,28 @@
  */
 ?>
 
-<section>
-    <div class="element-data element-eyes">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-            <div class="<?= $eye_side ?>-eye">
-               <?php if ($element->hasEye($eye_side))  {
-                    $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
-                        array('side' => $eye_side, 'element' => $element));
-                } else { ?>
-                    <div class="data-value not-recorded">Not recorded</div>
-                <?php } ?>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<div class="column" id="comments" style="background-color: inherit;">
-			<span class="field-info">&nbsp;
+<div class="spacer"></div>
+    <header class="element-header"><h3 class="element-title">General Comments</h3></header>
+    <div class="element-data eye-divider">
+        <div class="element-both-eyes">
+            <div class="data-value">
                 <?php
                 echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
                 ?>
-			</span>
-</div>
+            </div>
+        </div>
+        <div class="element-eyes">
+            <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+                <div class="<?= $eye_side ?>-eye">
+                    <?php if ($element->hasEye($eye_side)) {
+                        $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
+                            array('side' => $eye_side, 'element' => $element));
+                    } else { ?>
+                        <div class="data-value not-recorded">Not recorded</div>
+                    <?php } ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+<div class="spacer"></div>

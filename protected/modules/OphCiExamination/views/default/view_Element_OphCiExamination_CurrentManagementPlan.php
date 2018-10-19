@@ -20,14 +20,14 @@ $iop = $element->getLatestIOP($this->patient);
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $targetIOP = $exam_api->getTargetIOP($this->patient);
 ?>
-<div class="element-data element-eyes">
+<div class="element-data element-eyes flex-layout">
 	<script type="text/javascript">
 		var previous_iop = <?php echo json_encode($iop);?>;
 	</script>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
     $hasEyeFunc = "has".ucfirst($eye);
   ?>
-	<section class="js-element-eye <?=$side?> <?=$eye?>-eye">
+    <section class="js-element-eye cols-6 <?=$side?> <?=$eye?>-eye">
     <?php if ($element->$hasEyeFunc()):?>
     <div class="data-group">
       <table>
@@ -102,6 +102,6 @@ $targetIOP = $exam_api->getTargetIOP($this->patient);
     <?php else:?>
       Not recorded
     <?php endif;?>
-	</section>
+    </section>
   <?php endforeach; ?>
 </div>
