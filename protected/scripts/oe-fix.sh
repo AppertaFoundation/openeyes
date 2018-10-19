@@ -200,7 +200,7 @@ git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 # restart apache
 if [ "$norestart" == "0" ]; then
     echo -e "\nrestarting apache..\n"
-    sudo service apache2 restart
+    sudo service apache2 restart &> /dev/null
 fi
 
 echo ""
