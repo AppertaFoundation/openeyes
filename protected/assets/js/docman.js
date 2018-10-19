@@ -86,6 +86,7 @@ var docman = (function() {
             $('#docman_block').on("change", '.docman_recipient', function(event){
                 if(event.target.value){
                     docman.getRecipientData(event.target.value, event.target);
+										// $.first('.autosize').trigger('autosize');
                 }
             });
             $('#docman_block').on("change", '.docman_contact_type', function (){
@@ -302,6 +303,7 @@ var docman = (function() {
             } else if(contact_id.toUpperCase() == 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
+								$('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
 								$('#DocumentTarget_' + rowindex + '_attributes_contact_type').removeAttr('disabled');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
@@ -340,6 +342,7 @@ var docman = (function() {
                 'success': function (resp) {
 
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
+										$('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
