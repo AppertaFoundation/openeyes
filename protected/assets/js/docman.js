@@ -300,7 +300,7 @@ var docman = (function() {
                 this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
                 this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param);
 
-            } else if(contact_id.toUpperCase() == 'OTHER'){
+            } else if(contact_id.toUpperCase() === 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
 								$('#Document_Target_Address_' + rowindex).trigger('autosize');
