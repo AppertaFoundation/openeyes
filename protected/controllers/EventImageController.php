@@ -57,13 +57,15 @@ class EventImageController extends BaseController
         if (EventImage::model()->exists('event_id = ? AND status_id = ?',
             array($event_id, $created_image_status_id))) {
             // THen return that url
+            $url = $this->createUrl('view', array('id' => $event_id));
             if ($return_value) {
-                return $this->createUrl('view', array('id' => $event_id));
+                return $url;
             } else {
-                echo $this->createUrl('view', array('id' => $event_id));
+                echo $url;
             }
         }
         // otherwise return nothing
+        return '';
     }
 
     public function actionGetImageInfo($event_id)
