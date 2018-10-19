@@ -241,7 +241,7 @@
             <?php
             $selected_driving_statuses = array_map(function ($status) {
                 return $status->id;
-            }, $element->driving_statuses);
+            }, is_array($element->driving_statuses) ? $element->driving_statuses : []);
 
             echo CJSON::encode(array_map(function ($item, $label) use ($selected_driving_statuses) {
                     return [
