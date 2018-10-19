@@ -106,13 +106,9 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
             });
         });
     </script>
-
-
     <?php endforeach; ?>
 </div>
 </div>
-
-
 <script id="colourvision_reading_template" type="text/html">
     <?php
     $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
