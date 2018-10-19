@@ -859,7 +859,7 @@ $(document).ready(function() {
         sort_selectbox(method_select);
 
         // No readings
-        if ($('[class*="colourvision_table"] tbody tr', wrapper).length == 0) {
+        if ($('[class*="colourvision_table"] tbody tr', wrapper).length === 0) {
             // Hide vision table
             $('[class*="colourvision_table"]', wrapper).hide();
             // Hide clear button
