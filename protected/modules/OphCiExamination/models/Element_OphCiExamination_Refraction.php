@@ -216,4 +216,9 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         return "Refraction:\nright: ".$this->getCombined('right')."\nleft: ".$this->getCombined('left')."\n";
     }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
 }
