@@ -131,14 +131,14 @@ function setOEScapeSize(size_str){
   };
 
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
-
   left.css({"min_width":sizes[size_str].min_width, "width":sizes[size_str].percent+'%'});
-  right.css({"width":(100-sizes[size_str].percent)+'%'});
-  right.toggle(size_str !== 'full');
 
   var current_width = $(document).width()*sizes[size_str].percent/100;
+  var left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
+  right.css({"width":$(document).width()-left_width});
+  right.toggle(size_str !== 'full');
   var update = {
-    width: current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width,
+    width: left_width,
   };
 
   var plotly_list = $('.plotly-'+eye_side);
