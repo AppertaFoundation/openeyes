@@ -6,7 +6,7 @@
     $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
 
 ?>
-<tr class="new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
+<tr class="valign-top new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
         <?php echo ($row_index == 0 ? 'To' : 'Cc') ?>
         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]",($row_index == 0 ? 'To' : 'Cc')); ?>
