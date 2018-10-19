@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create','getImageInfo 'getImageUrl'),
+                'actions' => array('view', 'create','getImageInfo', 'getImageUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -37,22 +37,46 @@ class EventImageController extends BaseController
         );
     }
 
-    public function actionGetImageUrl($event_id)
+    public function actionGetImageUrl($event_id, $return_value = false)
     {
         // If the event image doesn't already exist
-        if (!EventImage::model()->exists('event_id = ? AND status_id = ?',
-            array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id))) {
+        $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
+            array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
+        $event = Event::model()->findByPk($event_id);
+        if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
             // Then try to make it
-            $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $event_id;
-            exec($command);
+            $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
+            $runner = new CConsoleCommandRunner();
+            $runner->addCommands($commandPath);
+            $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event->id);
+            $runner->run($args);
         }
 
         // Check again to see if it exists (an error might have occurred during generation)
         if (EventImage::model()->exists('event_id = ?', array($event_id))) {
             // THen return that url
-            echo $this->createUrl('view', array('id' => $event_id));
+            if ($return_value) {
+                return $this->createUrl('view', array('id' => $event_id));
+            } else {
+                echo $this->createUrl('view', array('id' => $event_id));
+            }
         }
         // otherwise return nothing
+    }
+
+    public function actionGetImageInfo($event_id)
+    {
+        try {
+            $url = $this->actionGetImageUrl($event_id , true);
+            $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
+            if ($page_count != 0) {
+                $image_info = ['page_count' => $page_count, 'url' => $url];
+                echo CJSON::encode($image_info);
+            }
+        }
+        catch (Exception $exception){
+            echo CJSON::encode(['error' => $exception->getMessage()]);
+        }
     }
 
     /**
@@ -132,33 +156,5 @@ class EventImageController extends BaseController
         }
 
         return $model;
-    }
-
-    public function actionGetImageInfo($event_id)
-    {
-        try {
-            $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
-                array($event_id, EventImageStatus::model()->find('name = "CREATED"')->id));
-            $event = Event::model()->findByPk($event_id);
-            if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
-                // Then try to make it
-                $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
-                $runner = new CConsoleCommandRunner();
-                $runner->addCommands($commandPath);
-                $args = array('EventImageCommand.php', 'eventimage', 'create', '--event='. $event->id);
-                $runner->run($args);
-            }
-
-            $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
-            if ($page_count != 0) {
-                // THen return that url
-                $image_info = ['page_count' => $page_count, 'url' => $this->createUrl('view', array('id' => $event_id))];
-                echo CJSON::encode($image_info);
-            }
-        }
-        catch (Exception $exception){
-            echo CJSON::encode(['error' => $exception->getMessage()]);
-        }
-        // otherwise return nothing
     }
 }
