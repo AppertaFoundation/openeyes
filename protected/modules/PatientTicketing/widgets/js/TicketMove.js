@@ -239,6 +239,11 @@
     return 'sratchpad_' + OE_patient_id;
   };
 
+    var setOnBeforeUnload = function (e) {
+        window.onbeforeunload = null;
+    };
+
+    document.addEventListener("DOMContentLoaded", setOnBeforeUnload);
   $(document).ready(function () {
     var ticketMoveController = new TicketMoveController();
     ticketMoveController.loadScratchpadData();
