@@ -86,7 +86,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         onReturn: function (adderDialog, selectedItems) {
                             if (selectedItems.length) {
                                 let eye_side = '<?=$eye_side?>';
-                                var $table = $('.colourvision_table_' + eye_side);
+                                let $table = $('.colourvision_table_' + eye_side);
                                 $table.show();
                                 OphCiExamination_ColourVision_addReading(selectedItems, eye_side, $table);
                                 return true;
@@ -96,8 +96,8 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         },
                         onOpen: function () {
                             $('#<?= $eye_side ?>-add-colour_vision_reading').find('li').each(function () {
-                                var method_id = $(this).data('id');
-                                var already_used = $('.colourvision_table_' + '<?= $eye_side ?>')
+                                let method_id = $(this).data('id');
+                                let already_used = $('.colourvision_table_' + '<?= $eye_side ?>')
                                     .find('input[type="hidden"][name*="method_id"][value="' + method_id + '"]').length > 0;
                                 $(this).toggle(!already_used);
                             });
