@@ -86,7 +86,7 @@ if (!@$comment) {
 
   </div>
   <div class="cols-6">
-      <div class="row divider">
+      <div class="row <?php echo $element->comments ? 'divider' : ''?>">
         <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
       </div>
 
@@ -130,7 +130,12 @@ if (!@$comment) {
           ?>
           <div class="row">
               <p><i class="oe-i child-arrow small pad-right no-click"></i><em class="fade">Reply …</em></p>
-              <?php echo $form->textArea($comment, 'comment_text', array('rows'=> 5, 'nowrapper' => true), false, array('class' => 'cols', 'placeholder' => 'Your mesage ...'), array('field' => 10)) ?>
+              <?php echo $form->textArea($comment, 'comment_text',
+                  array('rows' => 5, 'nowrapper' => true),
+                  false,
+                  array('class' => 'cols', 'placeholder' => 'Your mesage ...'),
+                  array('field' => 10))
+              ?>
                   <div class="flex-layout flex-right">
                   <button class="green hint">Send reply</button>
               </div>
