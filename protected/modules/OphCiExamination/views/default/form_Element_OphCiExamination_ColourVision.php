@@ -36,10 +36,8 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
             <div class="active-form flex-layout" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
 
                 <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
-                <div class="data-group">
-
-                </div>
-                <table class="cols-full standard colourvision_table"<?php if (!$element->right_readings) { ?> style="display: none;" <?php } ?>>
+                <div class="cols-9">
+                <table class="cols-full standard colourvision_table_<?=$eye_side?>"<?php if (!$element->right_readings) { ?> style="display: none;" <?php } ?>>
                     <thead>
                     <tr>
                         <th>Method</th>
@@ -61,7 +59,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                     } ?>
                     </tbody>
                 </table>
-            </div>
+                </div>
             <div class="add-data-actions flex-item-bottom" id="<?= $eye_side ?>-add-colour_vision_reading">
                 <button class="button hint green" id="add-procedure-btn-<?= $eye_side ?>" type="button">
                     <i class="oe-i plus pro-theme"></i>
@@ -69,7 +67,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                 <!-- oe-add-select-search -->
             </div>
         </div>
-
+        </div>
 
         <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
             ?> none <?php } ?>">
@@ -77,7 +75,6 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                 <a href="#">Add <?= $eye_side ?> side <span class="icon-add-side"></span></a>
             </div>
         </div>
-    </div>
     <script type="text/javascript">
         $(function () {
             new OpenEyes.UI.AdderDialog({
@@ -91,6 +88,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                     if (selectedItems.length) {
                         let eye_side = '<?=$eye_side?>';
                         var $table = $('.colourvision_table_' + eye_side);
+                        $table.show();
                         OphCiExamination_ColourVision_addReading(selectedItems, eye_side, $table);
                         return true;
                     } else {
@@ -111,7 +109,6 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
     <?php endforeach; ?>
 </div>
 </div>
-
 <script id="colourvision_reading_template" type="text/html">
     <?php
     $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
