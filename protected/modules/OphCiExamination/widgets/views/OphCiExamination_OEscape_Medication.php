@@ -30,8 +30,17 @@
         text_trace['y'].push(key);
         text_trace['text'].push(key);
         for (i in meds_data[side][key]){
-          var x_values = [new Date(meds_data[side][key][i]['low']), new Date(meds_data[side][key][i]['high'])];
-          var y_values = [key, key];
+          var x_range = meds_data[side][key][i]['high'] - meds_data[side][key][i]['low'];
+          var start_time = meds_data[side][key][i]['low'];
+          var end_time = meds_data[side][key][i]['high'];
+          var x_values = [];
+          var y_values = [];
+          for (var d = start_time; d < end_time; d= d+14*86400*1000){
+            x_values.push(new Date(d));
+            y_values.push(key);
+          }
+          x_values.push(new Date(end_time));
+          y_values.push(key);
           var trace = {
             mode: "lines",
             x: x_values,
@@ -50,9 +59,10 @@
       data.push(text_trace);
       layout_meds['title'] = "Medications, IOP, VA & MD";
       layout_meds['yaxis'] = meds_yaxis;
-      layout_meds['height'] = Math.max(45*Object.keys(meds_data[side]).length+30, 150);
+      layout_meds['height'] = 25*Object.keys(meds_data[side]).length+130;
       layout_meds['showlegend'] = false;
-      layout_meds['xaxis']['showticklabels'] = false;
+      layout_meds['xaxis'] = meds_xaxis;
+      layout_meds['yaxis']['range'] = [Object.keys(meds_data[side]).length-0.5, -1];
 
       Plotly.newPlot('plotly-Meds-'+side, data, layout_meds, options_plotly);
     }

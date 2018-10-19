@@ -88,7 +88,7 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
             }
             uasort($medication_list[$side], function ($item1, $item2){
                 if ($item1[0]['low'] == $item2[0]['low']) return 0;
-                return $item1[0]['low'] > $item2[0]['low'] ? -1 : 1;
+                return $item1[0]['low'] < $item2[0]['low'] ? -1 : 1;
             });
         }
 
