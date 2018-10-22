@@ -55,7 +55,6 @@
         ];
     } ?>
 
-
       <script type="text/javascript">
         $(function () {
           var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_<?= $eye_side ?>_description');
