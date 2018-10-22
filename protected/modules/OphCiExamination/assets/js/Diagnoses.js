@@ -229,6 +229,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         data = {};
         data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+        data.date = OpenEyes.Util.formatTimeToFuzzyDate(new Date($('.js-event-date-input').val()));
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
         data.eye_id = selectedItems.eye_id;
