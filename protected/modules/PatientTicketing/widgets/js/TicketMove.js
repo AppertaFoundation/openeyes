@@ -239,7 +239,7 @@
     return 'sratchpad_' + OE_patient_id;
   };
 
-    var setOnBeforeUnload = function (e) {
+    var setOnBeforeUnload = function () {
         window.onbeforeunload = null;
     };
 
