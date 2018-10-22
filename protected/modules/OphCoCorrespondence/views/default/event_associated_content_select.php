@@ -28,10 +28,10 @@ if (empty($patient)) {
 	new OpenEyes.UI.AdderDialog({
 		openButton: $('#add-attachment-btn'),
 		itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-			array_map(function ($key, $attachments) {
+			array_map(function ($attachments) {
 				return ['label' => $this->getEventSubType($attachments) . ' - ' . Helper::convertDate2NHS($attachments->event_date) ,
 					'id' => $attachments->id];
-			}, array_keys($events), $events)
+			}, $events)
 		) ?>, {'multiSelect': true})],
 		onReturn: function (adderDialog, selectedItems) {
 			OphCoCorrespondence_addAttachments(selectedItems);
@@ -39,4 +39,4 @@ if (empty($patient)) {
 		},
 	});
 </script>
-//TODO: Incorporate this file into event_associated_content.php. No need for two extremely similar files. This file is only rendered when a macro is used.
+<?php //TODO: Incorporate this file into event_associated_content.php. No need for two extremely similar files. This file is only rendered when a macro is used ?>
