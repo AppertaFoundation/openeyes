@@ -3,35 +3,40 @@ if (empty($patient)) {
     $patient = $this->patient;
 }
 ?>
-<div class="data-group">
-    <div  class="cols-2 column">
-        <label>Attachments:</label>
-    </div>
-    <div class="cols-10 data-group column end">
-        <table id="correspondence_attachments_table">
+<header class="element-header"><h3 class="element-title">Attachments</h3></header>
+<div class="data-group element-fields full-width flex-layout">
+        <table id="correspondence_attachments_table" class="cols-10">
             <thead>
             <tr>
                 <th>Attachment type</th>
                 <th>Title</th>
                 <th>Event Date</th>
-                <th>Action</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-                <tr id="correspondence_attachments_table_last_row" data-id="1">
-                    <td colspan="2"><td>
-                    <td>
-                        <?php $events = $this->getAttachableEvents($patient); ?>
-                    <?= CHtml::dropDownList(
-                        'attachment_events',
-                        ' ',
-                        CHtml::listData($events, 'id', function ($events) {
-                            return CHtml::encode($this->getEventSubType($events) . ' - ' . Helper::convertDate2NHS($events->event_date));
-                        }), array('empty' => '- Select -'));
-                    ?>
-                </td>
-            </tr>
             </tbody>
         </table>
-    </div>
+				<div class="add-data-actions flex-item-bottom" id="correspondence-attachment-popup">
+					<button class="button hint green js-add-select-search" id="add-attachment-btn" type="button">
+						<i class="oe-i plus pro-theme"></i>
+					</button>
+				</div>
 </div>
+<script>
+	<?php  $events = $this->getAttachableEvents($patient); ?>
+	new OpenEyes.UI.AdderDialog({
+		openButton: $('#add-attachment-btn'),
+		itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+			array_map(function ($key, $attachments) {
+				return ['label' => $this->getEventSubType($attachments) . ' - ' . Helper::convertDate2NHS($attachments->event_date) ,
+					'id' => $attachments->id];
+			}, array_keys($events), $events)
+		) ?>, {'multiSelect': true})],
+		onReturn: function (adderDialog, selectedItems) {
+			OphCoCorrespondence_addAttachments(selectedItems);
+			return true;
+		},
+	});
+</script>
+//TODO: Incorporate this file into event_associated_content.php. No need for two extremely similar files. This file is only rendered when a macro is used.
