@@ -30,6 +30,28 @@ class CataractComplicationsReport extends Report implements ReportInterface
         ),
     );
 
+    protected $plotlyConfig = array(
+      'type' => 'bar',
+      'title' => '<b>Complication Profile</b><br>Total Complications: ',
+      'showlegend' => false,
+      'xaxis' => array(
+        'title' => 'Percent of cases',
+      ),
+      'yaxis' => array(
+        'title' => 'Complication',
+        'tickvals' => array(),
+        'ticktext' => array(),
+        'autorange' => 'reversed',
+        'tickfont' => array(
+          'family' => 'Roboto,Helvetica,Arial,sans-serif',
+          'size' => '10',
+        ),
+      ),
+      'margin' => array(
+        'l' => 150,
+      ),
+    );
+
     /**
      * @param $surgeon
      * @param $dateFrom
@@ -106,6 +128,46 @@ class CataractComplicationsReport extends Report implements ReportInterface
         return json_encode($this->series);
     }
 
+
+    public function tracesJson(){
+      $data = $this->dataSet();
+      $this->setyAxisCategories();
+
+      $trace1 = array(
+        'name' => 'Complications',
+        'type' => 'bar',
+        'orientation' => 'h',
+        'x' => array_map(function($item){
+          if (isset($item['y'])){
+            return $item['y'];
+          } else {
+            return 0;
+          }
+        },$data),
+        'y' => array_keys($data),
+        'hovertext' => array_map(function($key, $item){
+          if (isset($item['y'])){
+            return '<b>Cataract Complications</b><br><i>Complication</i>:'. $this->plotlyConfig['yaxis']['ticktext'][$key].
+              '<br><i>Percentage</i>: '.number_format($item['y'],2).
+              '%<br>Total Operations: '.$item['total'];
+          } else {
+            return '';
+          }
+        },array_keys($data), $data),
+        'hoverinfo' =>'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => '#7cb5ec',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+      );
+
+      $traces = array($trace1);
+      return json_encode($traces);
+    }
+
     /**
      * @return string
      */
@@ -117,6 +179,11 @@ class CataractComplicationsReport extends Report implements ReportInterface
         $this->graphConfig['subtitle']['text'] .= ' Total Operations: '.$this->getTotalOperations();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    }
+
+    public function plotlyConfig(){
+      $this->setyAxisCategories();
+      return json_encode($this->plotlyConfig);
     }
 
     /**
@@ -145,6 +212,17 @@ class CataractComplicationsReport extends Report implements ReportInterface
         }
     }
 
+    protected function setyAxisCategories(){
+      if (!sizeof($this->plotlyConfig['yaxis']['ticktext'])) {
+        $complications = $this->allComplications();
+        $i = 0;
+        foreach ($complications as $complication) {
+          $this->plotlyConfig['yaxis']['tickvals'][] = $i;
+          $i++;
+          $this->plotlyConfig['yaxis']['ticktext'][] = $complication['name'];
+        }
+      }
+    }
     /**
      * @return int
      */

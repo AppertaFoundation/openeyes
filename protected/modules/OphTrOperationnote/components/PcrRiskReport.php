@@ -65,6 +65,46 @@ class PcrRiskReport extends Report implements ReportInterface
         ))),
     );
 
+    protected $plotlyConfig = array(
+      'type' => 'scatter',
+      'showlegend' => true,
+      'title' => 'PCR Rate (risk adjusted) <br> Total Operations: 0',   // Todo: number should be changed somewhere
+      'xaxis' => array(
+        'title' => 'No. Operations',
+        'titlefont' => array(
+          'size' => 11,
+        ),
+        'showgrid' => false,
+        'dtick' => 100,
+        'tick0' => 0,
+      ),
+      'yaxis' => array(
+        'title' => 'PCR Rate',
+        'dtick' => 10,
+        'tick0' => 0,
+        'range' => [0,50],
+      ),
+      'legend'=> array(
+        'bordercolor' => '#000',
+        'borderwidth' => 1,
+      ),
+      'shapes' => array(
+        array(
+          'type' => 'line',
+        'xref' => 'x',
+        'yref' => 'y',
+        'line' => array(
+          'dash' =>'dot',
+          'width' => 1,
+          ),
+        'x0' => 0,
+        'x1' => 1000,
+        'y0' => 0,
+        'y1' => 0,
+      )
+      ),
+    );
+
     protected $totalOperations = 1000;
     /**
      * @param $surgeon
@@ -181,6 +221,81 @@ class PcrRiskReport extends Report implements ReportInterface
         return json_encode($this->series);
     }
 
+
+    public function tracesJson(){
+      $trace1 = array(
+        'name' => 'Current Surgeon',
+        'type' => 'scatter',
+        'x' => array_map(function($item){
+          return $item['x'];
+        }, $this->dataSet()),
+        'y' => array_map(function($item){
+          return $item['y'];
+        }, $this->dataSet()),
+        'hovertext' => array_map(function($item){
+          return '<b>PCR Risk adjusted</b><br><i>Operations:</i>' . $item['x'] . '<br><i>PCR Avg:</i>' . number_format($item['y'], 2);
+        }, $this->dataSet()),
+        'hoverinfo'=>'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => '#1f77b4',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+      );
+      $trace2 = array(
+        'name' => 'Upper 99.8%',
+        'line' => array(
+          'color' => 'red',
+        ),
+        'x'=> array_map(function ($item){
+          return $item[0];
+        }, $this->upper98()),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $this->upper98()),
+        'hovertext' => array_map(function($item){
+          return '<b>PCR Risk</b><br><i>Operations:</i> ' . $item[0] . '<br><i>PCR Avg:</i>' . number_format($item[1], 2);
+        }, $this->upper98()),
+        'hoverinfo'=>'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => 'red',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+      );
+      $trace3 = array(
+        'name' => 'Upper 95%',
+        'line' => array(
+          'color' => 'green',
+        ),
+        'x'=> array_map(function ($item){
+                    return $item[0];
+              }, $this->upper95()),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $this->upper95()),
+        'hovertext' => array_map(function($item){
+          return "<b>PCR Risk</b><br><i>Operations:</i> " . $item[0] . "<br><i>PCR Avg:</i> " . number_format($item[1], 2);
+        }, $this->upper95()),
+        'hoverinfo'=>'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => 'green',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+      );
+
+      $traces = array($trace1, $trace2, $trace3);
+      return json_encode($traces);
+
+    }
+
     /**
      * @return int
      */
@@ -218,6 +333,14 @@ class PcrRiskReport extends Report implements ReportInterface
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    }
+
+    public function plotlyConfig(){
+      if ($this->mode == 0) {
+        $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
+        $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
+      }
+      return json_encode($this->plotlyConfig);
     }
 
     /**

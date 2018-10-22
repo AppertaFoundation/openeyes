@@ -55,6 +55,21 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         ),
     );
 
+    protected $plotlyConfig = array(
+      'type' => 'bar',
+      'showlegend' => false,
+      'title' => '<b>Refractive Outcome: mean sphere (D)</b><br>Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%',
+      'xaxis' => array(
+        'title' => 'PPOR - POR (Dioptres)',
+        'tickvals' => [],
+        'ticktext' => [],
+        'tickangle' => -45,
+      ),
+      'yaxis' => array(
+        'title' => 'Number of eyes',
+      ),
+    );
+
     /**
      * @param $app
      */
@@ -179,10 +194,59 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $dataSet = array();
         foreach ($count as $category => $total) {
             $rowTotal = array((float) $category, $total);
-            $dataSet[] = $rowTotal;
+            $dataSet[$category] = $rowTotal;
         }
 
         return $dataSet;
+    }
+
+
+    public function plotlyDataset(){
+      $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
+      $count = array();
+
+      $this->padPlotlyCategories();
+
+      // fill up the array with 0, have to send 0 to highcharts if there is no data
+      for ($i = -10; $i <= 10; $i += 0.5) {
+        $count[] = 0;
+      }
+      $bestvalues = array();
+      foreach ($data as $row) {
+        $side = 'right';
+        if ($row['eye_id'] === '1') {
+          $side = 'left';
+        }
+        $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
+
+        $diff = round($diff * 2) / 2;
+        $diff_index = array_search($diff, $this->plotlyConfig['xaxis']['ticktext']);
+
+            if ($diff_index >= 0 && $diff_index <= (count($this->plotlyConfig['xaxis']['tickvals']) - 1)) {
+                if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
+                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                } elseif (abs($this->plotlyConfig['xaxis']['tickvals'][$diff_index]) < abs($this->plotlyConfig['xaxis']['tickvals'][$bestvalues[$row['patient_id'].$side]])) {
+                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                }
+            }
+      }
+
+        foreach ($bestvalues as $key => $diff) {
+            if (!array_key_exists("$diff", $count)) {
+                $count["$diff"] = 0;
+            }
+            ++$count["$diff"];
+        }
+
+        ksort($count, SORT_NUMERIC);
+
+        $dataSet = array();
+        foreach ($count as $category => $total) {
+            $rowTotal = array((float) $category, $total);
+            $dataSet[$category] = $rowTotal;
+        }
+
+      return $dataSet;
     }
 
     /**
@@ -197,6 +261,16 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $this->graphConfig['xAxis']['min'] = 0;
         $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories']) - 1;
     }
+
+  protected function padPlotlyCategories()
+  {
+    for ($i = -10, $j = 0; $i <= 10; $i += 0.5, $j++) {
+      $this->plotlyConfig['xaxis']['ticktext'][] = $i;
+      $this->plotlyConfig['xaxis']['tickvals'][] = $j;
+    }
+
+  }
+
 
     /**
      * @return string
@@ -213,6 +287,35 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
+    public function tracesJson(){
+        $dataset = $this->plotlyDataset();
+        $trace1 = array(
+          'name' => 'Refractive Outcome',
+          'type' => 'bar',
+          'x' => array_map(function($item){
+            return $item[0];
+          }, $dataset),
+          'y'=> array_map(function($item){
+            return $item[1];
+          }, $dataset),
+          'hovertext' => array_map(function($item){
+            return '<b>Refractive Outcome</b><br><i>Diff Post</i>: '
+							.$this->plotlyConfig['xaxis']['ticktext'][$item[0]]
+							.'<br><i>Num Eyes:</i> '.$item[1];
+          }, $dataset),
+          'hoverinfo' => 'text',
+          'hoverlabel' => array(
+            'bgcolor' => '#fff',
+            'bordercolor' => '#7cb5ec',
+            'font' => array(
+              'color' => '#000',
+            ),
+          ),
+        );
+
+        $traces = array($trace1);
+        return json_encode($traces);
+    }
     /**
      * @return string
      */
@@ -260,6 +363,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $this->graphConfig['chart']['renderTo'] = $this->graphId();
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    }
+
+    public function plotlyConfig(){
+      $this->padPlotlyCategories();
+      return json_encode($this->plotlyConfig);
     }
 
     /**

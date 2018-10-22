@@ -93,6 +93,30 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         ),
     );
 
+    protected $plotlyConfig = array(
+      'showlegend' => false,
+      'title' => 'Visual Acuity (Distance) <br> Total Eyes: 0',   // Todo: number should be changed somewhere
+      'xaxis' => array(
+        'title' => 'Visual acuity at surgery (LogMAR)',
+        'titlefont' => array(
+          'size' => 11,
+        ),
+        'showgrid' => false,
+        'range' => [-1,6],
+        'tickvals' => array(0, 1, 2, 3, 4, 5),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'zeroline' => false,
+      ),
+      'yaxis' => array(
+        'title' => 'Visual acuity 4 months after surgery (LogMAR)',
+        'showgrid' => false,
+        'range' => [-1,6],
+        'tickvals' => array(0, 1, 2, 3, 4, 5),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'zeroline' => false,
+      ),
+      'hovermode'=>'closest',
+    );
     /**
      * @param $app
      */
@@ -363,6 +387,52 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         return json_encode($this->series);
     }
 
+    public function tracesJson(){
+      $trace1 = array(
+        'name' => 'Visual Outcome',
+        'mode' => 'markers+text',
+        'x' => array_map(function ($item){
+          return $item[0];
+        }, $this->dataSet()),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $this->dataSet()),
+        'text' => array_map(function ($item){
+          return $item[2];
+        }, $this->dataSet()),
+        'hovertext' => array_map(function ($item){
+          return '<b>Visual Outcome</b><br>Number of eyes: ' . $item[2];
+        }, $this->dataSet()),
+        'hoverinfo' => 'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => '#7cb5ec',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+        'marker' => array(
+          'size' => array_map(function ($item){
+            return $item[2];
+          }, $this->dataSet()),
+          'sizeref' => 0.02,
+          'sizemode' => 'area',
+        ),
+      );
+
+      $trace2 = array(
+        'type' => 'line',
+        'x' => array(-1, 6),
+        'y' => array(-1, 6),
+        'line' => array(
+          'dash' => 'longdash',
+          'color' => 'black',
+        ),
+      );
+
+      $traces = array($trace1, $trace2);
+      return json_encode($traces);
+    }
     /**
      * @return string
      */
@@ -372,6 +442,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $this->graphConfig['subtitle']['text'] = 'Total Eyes: '.$this->totalEyes;
 
         return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    }
+
+    public function plotlyConfig(){
+      return json_encode($this->plotlyConfig);
     }
 
     /**
