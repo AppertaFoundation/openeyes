@@ -468,9 +468,9 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-         * Please note: on the screen the DRAFT background will be still visible but removed from printouts
+				 * Without this, lightning images and event view will not show draft watermark
          */
-        'OphCoCorrespondence_printout_draft_background' => false,
+        'OphCoCorrespondence_printout_draft_background' => true,
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,

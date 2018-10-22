@@ -303,7 +303,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             if ($patient_id) {
                 $short_format = array();
 
-                $event_type = \EventType::model()->find("name = 'Operation Note'");
+                $event_type = \EventType::model()->find("class_name = 'OphTrOperationnote'");
 
                 $criteria = new \CDbCriteria();
 

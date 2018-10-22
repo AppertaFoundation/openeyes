@@ -32,6 +32,7 @@ class ExaminationElementAttributesController extends BaseAdminController
             'label',
             'attribute_elements_id.id',
             'attribute_elements.name',
+            'is_multiselect'
         ));
         $admin->searchAll();
         $admin->setModelDisplayName('Element Attributes');
@@ -67,6 +68,7 @@ class ExaminationElementAttributesController extends BaseAdminController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
+            'is_multiselect' => 'checkbox'
         ));
 
         $admin->editModel();
@@ -86,6 +88,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         $attributeName = $post['name'];
         $attributeLabel = $post['label'];
         $attributeElements = $post['attribute_elements'];
+        $attributeIsMultiSelect = $post['is_multiselect'];
 
         $count = $newOCEA::model()->countByAttributes(array(
             'name' => $attributeName,
@@ -132,6 +135,7 @@ class ExaminationElementAttributesController extends BaseAdminController
                 $attribute = $newOCEA::model()->findByPk($attributeId);
                 $attribute->name = $attributeName;
                 $attribute->label = $attributeLabel;
+                $attribute->is_multiselect = $attributeIsMultiSelect;
 
                 if ($attribute->save()) {
                     $element = $newOCEAE::model()->findByAttributes(array('attribute_id' => $attributeId));

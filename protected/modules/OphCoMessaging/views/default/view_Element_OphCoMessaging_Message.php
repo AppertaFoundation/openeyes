@@ -86,11 +86,10 @@ if (!@$comment) {
 
   </div>
   <div class="cols-6">
-      <div class="row divider">
+      <div class="row <?php echo $element->comments ? 'divider' : ''?>">
         <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
       </div>
 
-    <?= $element->comments ? '<hr />' : '' ?>
     <?php foreach ($element->comments as $comment) { ?>
         <p>
             <i class="oe-i child-arrow small pad-right no-click"></i>
@@ -115,9 +114,9 @@ if (!@$comment) {
             </tr>			</tbody>
         </table>
     <?php } ?>
-  </div>
+
     <?php if ($this->canComment()) { ?>
-      <div class="<?= $this->show_comment_form ? '' : 'hidden' ?>" id="new-comment-form">
+
           <?php
           $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
               'id' => 'comment-form',
@@ -129,21 +128,19 @@ if (!@$comment) {
               ),
           ));
           ?>
-          <?php echo $form->textArea($comment, 'comment_text', array('rows' => 6, 'cols' => 80), false, null, array('label' => 3, 'field' => 6)) ?>
-        <div class="data-group">
-          <div class="cols-2 column">&nbsp;</div>
-          <div class="cols-4 column end">
-            <button class="button small secondary" id="new-comment-cancel">Cancel</button>
-            <button class="button small primary" type="submit">Save</button>
+          <div class="row">
+              <p><i class="oe-i child-arrow small pad-right no-click"></i><em class="fade">Reply …</em></p>
+              <?php echo $form->textArea($comment, 'comment_text',
+                  array('rows' => 5, 'nowrapper' => true),
+                  false,
+                  array('class' => 'cols', 'placeholder' => 'Your mesage ...'),
+                  array('field' => 10))
+              ?>
+                  <div class="flex-layout flex-right">
+                  <button class="green hint">Send reply</button>
+              </div>
           </div>
-        </div>
           <?php $this->endWidget() ?>
-      </div>
-      <div class="data-group <?= $this->show_comment_form ? 'hidden' : '' ?>" id="add-comment-button-container">
-        <div class="cols-2 column">&nbsp;</div>
-        <div class="cols-3 column end">
-          <button class="button small secondary" name="comment" type="submit" id="add-message-comment">Comment</button>
-        </div>
-      </div>
     <?php } ?>
+</div>
 </div>
