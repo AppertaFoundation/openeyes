@@ -747,7 +747,6 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionView()
     {
         $this->moduleStateCssClass = 'view';
-
         $this->initWithEventId(@$_GET['id']);
     }
 
@@ -2311,33 +2310,38 @@ class BaseEventTypeController extends BaseModuleController
 
     public function actionSaveCanvasImages($id)
     {
-        if (!$event = Event::model()->findByPk($id)) {
+        $this->event = Event::model()->findByPk($id);
+        if (!$this->event) {
             throw new Exception("Event not found: $id");
         }
 
-        if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+        if (strtotime($this->event->last_modified_date) != @$_POST['last_modified_date']) {
             echo 'outofdate';
 
             return;
         }
 
-        $event->lock();
+        $this->event->lock();
 
-        if (!file_exists($event->imageDirectory)) {
-            if (!@mkdir($event->imageDirectory, 0755, true)) {
+        if (!file_exists($this->event->imageDirectory)) {
+            if (!@mkdir($this->event->imageDirectory, 0755, true)) {
                 throw new Exception("Unable to create directory: $event->imageDirectory");
             }
         }
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($event->imageDirectory . "/$drawingName.png")) {
-                    if (!@file_put_contents($event->imageDirectory . "/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
-                        throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
+                if (!file_exists($this->event->imageDirectory . "/$drawingName.png")) {
+                    if (!@file_put_contents($this->event->imageDirectory . "/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
+                        throw new Exception("Failed to write to {$this->event->imageDirectory}/$drawingName.png: check permissions.");
                     }
                 }
             }
         }
+
+        // Regenerate the EventImage in the background
+        $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
+        exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
 
         /*
          * TODO: need to check with all events why this was here!!!
