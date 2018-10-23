@@ -355,7 +355,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var rows = this.createRow(selectedItems);
     for(var i in rows){
-      this.$table.find('tbody').append(rows[i]);
+      this.$table.first('tbody').append(rows[i]);
       let $lastRow = this.$table.find('tbody tr:last');
       this.initialiseRow($lastRow);
       this.loadDrugDefaults($lastRow);
