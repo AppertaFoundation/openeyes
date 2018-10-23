@@ -33,7 +33,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
     {
-        this.callFunctionOnController('setRisksSelected' , [risks]);
         this.callFunctionOnController('addRisks', [risks, sourceElementName]);
     };
 
@@ -52,7 +51,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         if (!$.find(core.controllerElSelector).length) {
-            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            var sidebar = $('#episodes-and-events').data('patient-sidebar');
             sidebar.addElementByTypeClass(core.elementTypeClass, undefined, controllerFunction);
         } else {
             controllerFunction();
@@ -317,17 +316,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 // set the risk and comment
                 this.setHasRiskAndComments(rowEntry, risks[idx].comments);
             }
-        }
-    };
-
-    /**
-     * Mark the Risks as selected as the addRisks method looks
-     * for the selected risks and adds them to the table.
-     * This method is used when risks are coming from medications
-     */
-    HistoryRisksController.prototype.setRisksSelected = function(risks){
-        for(let i = 0 ; i < risks.length ; i++){
-            this.$risksOptions.find('li[data-id="' + risks[i].id + '"]').addClass('selected');
         }
     };
 

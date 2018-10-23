@@ -46,7 +46,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                             </tr>
                             </thead>
                             <tbody class="plain" id="colourvision_right">
-                            <?php foreach ($element->right_readings as $reading) {
+                            <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                                 $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
                                     'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
                                     'reading' => $reading,
