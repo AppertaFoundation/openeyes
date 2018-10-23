@@ -217,7 +217,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
-      let drug_id = $row.find("input[name*='[drug_id]']").val();
+      let drug_id = $row.find("input[name*='[drug_id]'] , input[name*='[medication_drug_id]']").val();
+      if(drug_id === ''){
+          drug_id = $row.find("input[name*='[medication_drug_id]']").val();
+      }
       $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
           for (var name in res) {
               var $input = $row.find('[name$="[' + name +']"]');
@@ -335,8 +338,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
       if (selectedItems[i]['type'] == 'md'){
         data['medication_drug_id'] = selectedItems[i]['id'];
-      }
-      else {
+      } else {
         data['drug_id'] = selectedItems[i]['id'];
       }
       data['medication_name'] = selectedItems[i]['label'];
