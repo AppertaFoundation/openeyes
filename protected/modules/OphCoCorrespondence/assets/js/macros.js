@@ -15,7 +15,6 @@
  */
 
 var OpenEyes = OpenEyes || {};
-
 OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
 (function(exports){
