@@ -19,12 +19,58 @@ if (!empty($operation->booking)) {
     ?>
   <div class="data">
 
-      <span style="display:inline-block; width:160px;">Firm:</span><strong><?=\CHtml::encode($session->FirmName); ?></strong><br>
-      <span style="display:inline-block; width:160px;">Location:</span><strong><?=\CHtml::encode($session->TheatreName); ?></strong><br>
-      <span style="display:inline-block; width:160px;">Date of operation:</span><strong><?php echo $session->NHSDate('date'); ?></strong><br>
-      <span style="display:inline-block; width:160px;">Session time:</span><strong><?php echo substr($session->start_time, 0, 5).' - '.substr($session->end_time, 0, 5); ?></strong><br>
-      <span style="display:inline-block; width:160px;">Admission time:</span><strong><?php echo substr($operation->booking->admission_time, 0, 5); ?></strong> <br>
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Firm:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= \CHtml::encode($session->FirmName); ?></strong>
+          </div>
+      </div>
 
-      <span style="display:inline-block; width:160px;">Duration of operation:</span><strong><?php echo $operation->total_duration.' minutes'; ?></strong>
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Location:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= \CHtml::encode($session->TheatreName); ?></strong>
+          </div>
+      </div>
+
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Date of operation:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= $session->NHSDate('date'); ?></strong>
+          </div>
+      </div>
+
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Session time:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= substr($session->start_time, 0, 5) . ' - ' . substr($session->end_time, 0, 5); ?></strong>
+          </div>
+      </div>
+
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Admission time:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= substr($operation->booking->admission_time, 0, 5); ?></strong>
+          </div>
+      </div>
+
+      <div class="flex-layout">
+          <div class="cols-2">
+              <span style="display:inline-block; width:160px;">Duration of operation:</span>
+          </div>
+          <div class="cols-10">
+              <strong><?= $operation->total_duration . ' minutes'; ?></strong>
+          </div>
+      </div>
   </div>
 <?php } ?>
