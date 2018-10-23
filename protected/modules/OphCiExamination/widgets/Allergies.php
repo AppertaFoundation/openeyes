@@ -20,7 +20,7 @@ use OEModule\OphCiExamination\models\AllergyEntry;
 class Allergies extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
-
+    protected $print_view = 'Allergies_event_print';
     /**
      * @return FamilyHistoryElement
      */

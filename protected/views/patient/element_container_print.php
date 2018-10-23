@@ -16,32 +16,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-    <section
-            class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
-            data-element-type-id="<?php echo $element->elementType->id?>"
-            data-element-type-class="<?php echo $element->elementType->class_name?>"
-            data-element-type-name="<?php echo $element->elementType->name?>"
-            data-element-display-order="<?php echo $element->elementType->display_order?>">
-        <div class="details">
-            <!-- Element title -->
-            <?php if (!@$child) {?>
-                <h3 class="element-title"><?php echo $element->elementType->name?></h3>
-            <?php }else{?>
-                <h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
-            <?php }?>
-
-            <?php echo $content;?>
-            <div class="sub-elements">
-                <?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
-            </div>
-        </div>
-    </section>
-<?php }else{ ?>
-    <section class="element-no-display">
-        <?php echo $content;?>
-        <div class="sub-elements">
-            <?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
-        </div>
-    </section>
-<?php } ?>
+<section class=" element
+<?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
+    echo 'full priority eye-divider';
+} elseif ($element->getTileSize($this->action->id) === 1) {
+    echo 'tile';
+} else {
+    echo 'full priority';
+} ?>
+	      <?= CHtml::modelName($element->elementType->class_name) ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
+    <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+      <header class=" element-header">
+        <h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
+      </header>
+    <?php } ?>
+    <?php echo $content; ?>
+</section>
