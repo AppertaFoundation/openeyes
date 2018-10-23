@@ -24,7 +24,6 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         selector: '#'+editor_id,
 				setup : function(ed) {
 					ed.on('keydown', function(e) {
-						console.debug('Key up event: ' + e.keyCode);
 						if (e.keyCode === 9){
 							ed.execCommand('mceInsertContent', false, '&emsp;');
 							e.preventDefault();
