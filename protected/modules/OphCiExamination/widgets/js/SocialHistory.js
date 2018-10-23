@@ -47,20 +47,27 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         .find('.multi-select-remove')
         .click();
 
+      // reset textField input for driving statuses
+      $('#textField_driving_statuses').html('');
+
       for (var i in selectedItems) {
         var item = selectedItems[i];
-        var itemSetId = item['itemSet'].options['id'];
+        var itemSetId = item.itemSet.options.id;
         var $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
         var $textField = this.$tableSelector.find('#textField' + '_' + itemSetId);
+        var field_option = $field.find('option[value='+ item.id +']').text().trim();
 
-        $field.val(item['id']);
+        $field.val(item.id);
         $field.change();
 
         // hide the textField for multiple select driving_statuses
         if (itemSetId === "driving_statuses") {
-          $textField.hide();
+          if ($textField.html() == '')
+            $textField.html(field_option);
+          else
+            $textField.append(', ' + field_option);
         } else if (itemSetId === "alcohol_intake") {
-          $textField.html(item['id']);
+          $textField.html(item.id);
         } else {
           // for the rest of the elements, show the info in the textField
           $textField.html($field.find(":selected").text());
