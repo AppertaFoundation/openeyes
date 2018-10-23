@@ -229,6 +229,7 @@ class BookingController extends OphTrOperationbookingEventController
      */
     public function actionRescheduleLater()
     {
+        $this->show_element_sidebar = false;
         $operation = $this->operation;
 
         if (in_array($operation->status->name, array('Requires scheduling', 'Requires rescheduling', 'Cancelled'))) {

@@ -27,7 +27,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 class HistoryRisks extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
-
+    protected $print_view = 'HistoryRisks_event_print';
     /**
      * @return HistoryRisksElement
      */
