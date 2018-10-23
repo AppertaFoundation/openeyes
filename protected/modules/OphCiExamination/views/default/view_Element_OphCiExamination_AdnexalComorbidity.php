@@ -16,26 +16,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes">
-    <div class="js-element-eye right-eye">
+<div class="element-data element-eyes flex-layout">
+    <div class="js-element-eye right-eye cols-6 data-group">
         <div class="data-value">
-        <span class="large-text">
-          <?php if ($element->hasRight()) {
-              echo Yii::app()->format->Ntext($element->right_description);
-          } else { ?>
-              Not recorded
-          <?php } ?>
-        </span>
+            <span class="large-text">
+              <?php if ($element->hasRight()) {
+                  echo Yii::app()->format->Ntext($element->right_description);
+              } else { ?>
+                  Not recorded
+              <?php } ?>
+            </span>
         </div>
     </div>
-    <div class="js-element-eye left-eye">
+    <div class="js-element-eye left-eye cols-6">
         <div class="data-value">
-      <span class="large-text"><?php if ($element->hasLeft()) {
-              echo Yii::app()->format->Ntext($element->left_description);
-          } else { ?>
-              Not recorded
-          <?php } ?>
-      </span>
+            <span class="large-text"><?php if ($element->hasLeft()) {
+                  echo Yii::app()->format->Ntext($element->left_description);
+              } else { ?>
+                  Not recorded
+              <?php } ?>
+            </span>
         </div>
     </div>
 </div>

@@ -244,9 +244,8 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         }
         $sd->save();
         $this->secondary_diagnosis_id = $sd->id;
-        $this->save();
+        $this->save(false);
         return $sd;
-
     }
 
     /**

@@ -23,6 +23,6 @@
     "load-grunt-tasks": "^3.5.0"
   },
   "dependencies": {
-    "tinymce": "^4.8.2"
+    "tinymce": "~4.8.0"
   }
 }
