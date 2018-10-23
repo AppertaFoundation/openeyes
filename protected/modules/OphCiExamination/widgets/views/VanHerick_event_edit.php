@@ -23,6 +23,7 @@
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
 
 <div class="element-fields element-eyes" id="<?= $model_name ?>_element">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
 
