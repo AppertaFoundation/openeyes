@@ -39,4 +39,3 @@ if (empty($patient)) {
 		},
 	});
 </script>
-<?php //TODO: Incorporate this file into event_associated_content.php. No need for two extremely similar files. This file is only rendered when a macro is used ?>
