@@ -60,10 +60,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $field.val(item.id);
         $field.change();
 
-        // hide the textField for multiple select driving_statuses
         if (itemSetId === "driving_statuses") {
+          // insert first driving status
           if ($textField.html() == '')
             $textField.html(field_option);
+          // append the rest of the driving statuses to the first one
           else
             $textField.append(', ' + field_option);
         } else if (itemSetId === "alcohol_intake") {
