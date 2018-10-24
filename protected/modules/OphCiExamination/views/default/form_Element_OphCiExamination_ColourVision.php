@@ -37,7 +37,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 
                     <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                     <div class="cols-9">
-                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->right_readings) { ?> style="display: none;" <?php } ?>>
+                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
                             <thead>
                             <tr>
                                 <th>Method</th>
