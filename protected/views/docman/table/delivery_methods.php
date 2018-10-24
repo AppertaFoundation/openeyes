@@ -35,11 +35,11 @@
         }
     }
     ?>
-    <?php if($contact_type == 'GP'): ?>
-        
+    <?php if ($contact_type == 'GP'): ?>
         <?php if($can_send_electronically): ?>
-            <label class="electronic-label docman">
-                <?php 
+            <div>
+							<label class="inline highlight electronic-label docman">
+                <?php
                     $is_checked = $is_draft == 1 ? 'checked disabled' : '';
 
                     //now, docman cannot be unchecked when the recipient is GP
@@ -49,7 +49,8 @@
                 <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
                     <?php echo $is_checked; ?>> <?php echo (isset(Yii::app()->params['electronic_sending_method_label']) ? Yii::app()->params['electronic_sending_method_label'] : 'Electronic'); ?>
                 <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
-            </label>
+            	</label>
+						</div>
 
             <?php if($document_output):?>
                 <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
@@ -61,7 +62,8 @@
 
     <?php if($contact_type == 'INTERNALREFERRAL'): ?>
         <?php $label = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label', 'Electronic'); ?>
-        <label class="electronic-label internal-referral">
+        <div>
+					<label class="inline highlight electronic-label internal-referral">
             <?php
 
             //now, WinDip cannot be unchecked
@@ -71,17 +73,19 @@
             <input type="checkbox" value="Internalreferral" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
                 <?php echo $is_checked; ?>> <?php echo $label; ?>
             <input type="hidden" value="Internalreferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
-        </label>
+        	</label>
+				</div>
         <?php if($internalreferral_output):?>
             <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
         <?php endif; ?>
         <?php $pre_output_key++; ?>
     <?php endif; ?>
 
-    <label>
-        <?php 
+   <div>
+		 <label class="inline highlight">
+        <?php
             $is_checked = $print_output || $is_new_record ? 'checked' : '';
-            
+
             $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
             if( $contact_type == 'GP' || $contact_type == 'INTERNALREFERRAL'){
                 $is_checked = $is_post_checked ? 'checked' : ($print_output ? 'checked' : '');
@@ -89,12 +93,13 @@
                 $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : $is_checked;
             }
         ?>
-        <?php 
+        <?php
         if( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint']) && Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint'] ): ?>
-        <input type="checkbox" value="Print" 
+        <input type="checkbox" value="Print"
                name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" <?php echo $is_checked?>>  Print
         <?php endif; ?>
     </label>
+	 </div>
     <?php if($print_output): ?>
         <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id); ?>
     <?php endif; ?>
