@@ -53,7 +53,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                          data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                       </i>
                   </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getDatesDisplay() ?></span></td>
               </tr>
             <?php endforeach; ?>
             </tbody>
@@ -78,7 +78,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($stopped_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                 <td>
                     <?php if ($entry->prescription_item): ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
@@ -121,7 +121,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                     </i>
                     </td>
-                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                  <td><span class="oe-date"><?= $entry->getDatesDisplay() ?></span></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>
