@@ -354,4 +354,40 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
         return $fluidtype_values;
     }
+
+    /**
+     * Set FindingsType to empty string if Dry is set
+     *
+     * @return bool
+     */
+    protected function beforeValidate()
+    {
+        foreach (['left', 'right'] as $eye_side) {
+            if ($this->{$eye_side.'_dry'}) {
+                $this->{$eye_side.'_fluidstatus_id'} = '';
+            }
+        }
+
+        return parent::beforeValidate();
+    }
+
+    /**
+     * Remove the Findings if Dry is set
+     *
+     * @throws \Exception
+     */
+    public function afterSave()
+    {
+        foreach (['left', 'right'] as $eye_side) {
+            if ($this->{$eye_side.'_dry'}) {
+                foreach ($this->fluidtype_assignments as $fluidtype_assignment) {
+                    if (strtolower(\Eye::methodPostFix($fluidtype_assignment->eye_id)) == $eye_side) {
+                        $fluidtype_assignment->delete();
+                    }
+                }
+            }
+        }
+
+        parent::afterSave();
+    }
 }
