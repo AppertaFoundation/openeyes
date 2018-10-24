@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create'),
+                'actions' => array('view', 'create','getImageInfo', 'getImageUrl'),
                 'users' => array('@'),
             ),
             array(
@@ -35,6 +35,52 @@ class EventImageController extends BaseController
                 'users' => array('*'),
             ),
         );
+    }
+
+    public function actionGetImageUrl($event_id, $return_value = false)
+    {
+        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
+        // If the event image doesn't already exist
+        $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
+            array($event_id, $created_image_status_id));
+        $event = Event::model()->findByPk($event_id);
+        if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
+            // Then try to make it
+            $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
+            $runner = new CConsoleCommandRunner();
+            $runner->addCommands($commandPath);
+            $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event->id);
+            $runner->run($args);
+        }
+
+        // Check again to see if it exists (an error might have occurred during generation)
+        if (EventImage::model()->exists('event_id = ? AND status_id = ?',
+            array($event_id, $created_image_status_id))) {
+            // THen return that url
+            $url = $this->createUrl('view', array('id' => $event_id));
+            if ($return_value) {
+                return $url;
+            } else {
+                echo $url;
+            }
+        }
+        // otherwise return nothing
+        return '';
+    }
+
+    public function actionGetImageInfo($event_id)
+    {
+        try {
+            $url = $this->actionGetImageUrl($event_id , true);
+            $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
+            if ($page_count != 0) {
+                $image_info = ['page_count' => $page_count, 'url' => $url];
+                echo CJSON::encode($image_info);
+            }
+        }
+        catch (Exception $exception){
+            echo CJSON::encode(['error' => $exception->getMessage()]);
+        }
     }
 
     /**
