@@ -115,7 +115,7 @@
       </td>
       <td class="flex-layout flex-left">
           <div id="textField_alcohol_intake" class="cols-1">
-              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: '0'?>
+              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
           <?= $form->textField(
               $element,
@@ -290,7 +290,7 @@
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
-                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake == $item];
+                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake === $item];
             }, range(0, 20))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],
