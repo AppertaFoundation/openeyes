@@ -41,29 +41,44 @@
                 <div class="" id="js-listview-allergies-full" style="display: none;">
                     <table class="last-left large">
                         <colgroup>
-                            <col class="cols-4" span="3">
+                            <col class="cols-2">
+                            <col class="cols-5">
+                            <col class="cols-5">
                         </colgroup>
-                        <thead>
-                        <tr>
-                            <th>Present</th>
-                            <th>Not Present</th>
-                        </tr>
-                        </thead>
                         <tbody>
-                        <?php for ($i = 0; $i < $max_iter; $i++) :?>
                             <tr>
-                                <td>
-                                    <?= isset($entries[(string)AllergyEntry::$PRESENT][$i]) ?
-                                        $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy() : '' ?>
-                                </td>
-                                <td>
-                                    <?= isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i]) ?
-                                        $entries[(string)AllergyEntry::$NOT_PRESENT][$i]->getDisplayAllergy() : '' ?>
-                                </td>
+                                <th>Label</th>
+                                <th>Data</th>
+                                <th>Comments</th>
                             </tr>
-                        <?php endfor; ?>
-
+                            <?php for ($i = 0; $i < $max_iter; $i++) :?>
+                                <?php if(isset($entries[(string)AllergyEntry::$PRESENT][$i])){?>
+                                    <tr>
+                                        <th>Present</th>
+                                        <th><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy(); ?></th>
+                                        <th><?= $entries[(string)AllergyEntry::$PRESENT][$i]['comments']; ?></th>
+                                    </tr>
+                                <?php } ?>
+                                <?php if(isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i])){?>
+                                    <tr>
+                                        <th>Not Present</th>
+                                        <th><?= $entries[(string)AllergyEntry::$NOT_PRESENT][$i]->getDisplayAllergy(); ?></th>
+                                        <th><?= $entries[(string)AllergyEntry::$NOT_PRESENT][$i]['comments']; ?></th>
+                                    </tr>
+                                <?php } ?>
+                            <?php endfor; ?>
                         </tbody>
+                    </table>
+                    <hr class="divider">
+                    <table class="last-left large">
+                        <colgroup>
+                            <col class="cols-2">
+                            <col class="cols-10">
+                        </colgroup>
+                        <tr>
+                            <th>Element comments</th>
+                            <td>These are general comments for the Event</td>
+                        </tr>
                     </table>
                 </div>
             <?php endif; ?>
