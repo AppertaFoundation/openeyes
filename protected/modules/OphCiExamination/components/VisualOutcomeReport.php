@@ -95,7 +95,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
     protected $plotlyConfig = array(
       'showlegend' => false,
-      'title' => 'Visual Acuity (Distance) <br> Total Eyes: 0',   // Todo: number should be changed somewhere
+      'title' => '',   // Todo: number should be changed somewhere
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
         'titlefont' => array(
@@ -445,6 +445,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     }
 
     public function plotlyConfig(){
+    	$this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
       return json_encode($this->plotlyConfig);
     }
 

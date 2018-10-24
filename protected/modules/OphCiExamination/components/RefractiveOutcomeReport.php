@@ -58,7 +58,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
-      'title' => '<b>Refractive Outcome: mean sphere (D)</b><br>Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%',
+      'title' => '',
       'xaxis' => array(
         'title' => 'PPOR - POR (Dioptres)',
         'tickvals' => [],
@@ -300,8 +300,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
           }, $dataset),
           'hovertext' => array_map(function($item){
             return '<b>Refractive Outcome</b><br><i>Diff Post</i>: '
-							.$this->plotlyConfig['xaxis']['ticktext'][$item[0]]
-							.'<br><i>Num Eyes:</i> '.$item[1];
+              .$this->plotlyConfig['xaxis']['ticktext'][$item[0]]
+              .'<br><i>Num Eyes:</i> '.$item[1];
           }, $dataset),
           'hoverinfo' => 'text',
           'hoverlabel' => array(
@@ -367,6 +367,39 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
 
     public function plotlyConfig(){
       $this->padPlotlyCategories();
+
+      $data = $this->plotlyDataset();
+      $totalEyes = 0;
+      $plusOrMinusOne = 0;
+      $plusOrMinusHalf = 0;
+      $plusOrMinusHalfPercent = 0;
+      $plusOrMinusOnePercent = 0;
+
+      foreach ($data as $dataRow) {
+        $totalEyes += (int) $dataRow[1];
+
+        // 19 and 21 are the indexes of the -0.5 and +0.5 columns
+        if ($dataRow[0] < 19 || $dataRow[0] > 21) {
+          $plusOrMinusHalf += (int) $dataRow[1];
+        }
+
+        // 18 and 22 are the indexes of the -1 and +1 columns
+        if ($dataRow[0] < 18 || $dataRow[0] > 22) {
+          $plusOrMinusOne += (int) $dataRow[1];
+        }
+      }
+      if ($plusOrMinusOne > 0) {
+        $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
+      }
+
+      if ($plusOrMinusHalf > 0) {
+        $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
+      }
+
+      $this->plotlyConfig['title'] = 'Refractive Outcome: mean sphere (D)<br>'
+        . '<sub>Total eyes: ' . $totalEyes
+        . ', ±0.5D: ' .$plusOrMinusHalfPercent
+        . '%, ±1D: '.$plusOrMinusOnePercent.'%</sub>';
       return json_encode($this->plotlyConfig);
     }
 

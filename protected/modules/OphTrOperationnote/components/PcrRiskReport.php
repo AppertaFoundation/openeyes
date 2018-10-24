@@ -68,7 +68,7 @@ class PcrRiskReport extends Report implements ReportInterface
     protected $plotlyConfig = array(
       'type' => 'scatter',
       'showlegend' => true,
-      'title' => 'PCR Rate (risk adjusted) <br> Total Operations: 0',   // Todo: number should be changed somewhere
+      'title' => '',   // Todo: number should be changed somewhere
       'xaxis' => array(
         'title' => 'No. Operations',
         'titlefont' => array(
@@ -171,7 +171,7 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         // set the graph subtitle here, so we don't have to run this query more than once
-        $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
+//        $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
         if ($total > 1000) {
             $this->totalOperations = $total;
         }
@@ -233,7 +233,9 @@ class PcrRiskReport extends Report implements ReportInterface
           return $item['y'];
         }, $this->dataSet()),
         'hovertext' => array_map(function($item){
-          return '<b>PCR Risk adjusted</b><br><i>Operations:</i>' . $item['x'] . '<br><i>PCR Avg:</i>' . number_format($item['y'], 2);
+          return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+            . $item['x'] . '<br><i>PCR Avg:</i>'
+            . number_format($item['y'], 2);
         }, $this->dataSet()),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
@@ -256,7 +258,9 @@ class PcrRiskReport extends Report implements ReportInterface
           return $item[1];
         }, $this->upper98()),
         'hovertext' => array_map(function($item){
-          return '<b>PCR Risk</b><br><i>Operations:</i> ' . $item[0] . '<br><i>PCR Avg:</i>' . number_format($item[1], 2);
+          return '<b>PCR Risk</b><br><i>Operations:</i> '
+            . $item[0] . '<br><i>PCR Avg:</i>'
+            . number_format($item[1], 2);
         }, $this->upper98()),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
@@ -279,7 +283,9 @@ class PcrRiskReport extends Report implements ReportInterface
           return $item[1];
         }, $this->upper95()),
         'hovertext' => array_map(function($item){
-          return "<b>PCR Risk</b><br><i>Operations:</i> " . $item[0] . "<br><i>PCR Avg:</i> " . number_format($item[1], 2);
+          return "<b>PCR Risk</b><br><i>Operations:</i> "
+            . $item[0] . "<br><i>PCR Avg:</i> "
+            . number_format($item[1], 2);
         }, $this->upper95()),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
@@ -340,6 +346,8 @@ class PcrRiskReport extends Report implements ReportInterface
         $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
         $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
       }
+      $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '
+        .$this->getTotalOperations().'</sub>';
       return json_encode($this->plotlyConfig);
     }
 

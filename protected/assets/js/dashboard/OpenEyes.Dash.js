@@ -116,8 +116,11 @@
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
-                    chart = OpenEyes.Dash.reports[chartId];
-                    chart.series[0].setData(data);
+                    // console.log(data);
+                    // chart = $('#'+chartId)[0];
+                    // console.log(chart.layout);
+                    // console.log(chart.data[0]);
+                    // chart.series[0].setData(data);
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
@@ -198,16 +201,30 @@
 
     Dash.postUpdate = {
         'PcrRiskReport': function(data){
-            var chart = OpenEyes.Dash.reports['PcrRiskReport'];
-            var newTitle = '';
-            if($('#pcr-risk-mode').val() == 0){
-                newTitle = 'PCR Rate (risk adjusted)';
-            }else if($('#pcr-risk-mode').val() == 1){
-                newTitle = 'PCR Rate (risk unadjusted)';
-            }else if($('#pcr-risk-mode').val() == 2){
-                newTitle = 'PCR Rate (risk adjusted & unadjusted)';
-            }
-            chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0]['x']} );
+          var newTitle = '';
+          if($('#pcr-risk-mode').val() == 0){
+            newTitle = 'PCR Rate (risk adjusted)';
+          }else if($('#pcr-risk-mode').val() == 1){
+            newTitle = 'PCR Rate (risk unadjusted)';
+          }else if($('#pcr-risk-mode').val() == 2){
+            newTitle = 'PCR Rate (risk adjusted & unadjusted)';
+          }
+
+            var chart = $('#PcrRiskReport')[0];
+
+            chart.data[0]['x'] = data.map(function (item) {
+              return item['x'];
+            });
+            chart.data[0]['y'] = data.map(function (item) {
+              return item['y'];
+            });
+            chart.data[0]['hovertext'] = data.map(function (item){
+              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2);
+            });
+
+            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+data[0]['x']+'</sub>';
+
+            Plotly.redraw(chart);
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
             var total = 0,
@@ -215,7 +232,7 @@
                 plusOrMinusHalf = 0,
                 plusOrMinusOnePercent = 0,
                 plusOrMinusHalfPercent = 0,
-                chart = OpenEyes.Dash.reports['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
+                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0];
 
             for(var i = 0; i < data.length; i++){
                 total += parseInt(data[i][1], 10);                              
@@ -233,8 +250,22 @@
             
             plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
             plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
-            
-            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + Number(plusOrMinusOnePercent).toFixed(1) + '%, ±1D: ' + Number(plusOrMinusHalfPercent).toFixed(1) + '%'});
+            chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
+							'<sub>Total eyes: ' + total +
+							', ±0.5D: ' + plusOrMinusHalfPercent + '%, ±1D: '+ plusOrMinusOnePercent+'%</sub>';
+            chart.data[0]['x'] = data.map(function (item) {
+							return item[0];
+						});
+            chart.data[0]['y'] = data.map(function (item) {
+							return item[1];
+						});
+            chart.data[0]['hovertext'] = data.map(function (item) {
+							return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
+								chart.layout['xaxis']['ticktext'][item[0]] +
+								'<br><i>Num Eyes:</i> '+ item[1];
+						});
+            Plotly.redraw(chart);
+            // chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + Number(plusOrMinusOnePercent).toFixed(1) + '%, ±1D: ' + Number(plusOrMinusHalfPercent).toFixed(1) + '%'});
         },
         'CataractComplicationsReport': function(data){
             $.ajax({

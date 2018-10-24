@@ -32,7 +32,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
     protected $plotlyConfig = array(
       'type' => 'bar',
-      'title' => '<b>Complication Profile</b><br>Total Complications: ',
+      'title' => '',
       'showlegend' => false,
       'xaxis' => array(
         'title' => 'Percent of cases',
@@ -147,9 +147,10 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'y' => array_keys($data),
         'hovertext' => array_map(function($key, $item){
           if (isset($item['y'])){
-            return '<b>Cataract Complications</b><br><i>Complication</i>:'. $this->plotlyConfig['yaxis']['ticktext'][$key].
-              '<br><i>Percentage</i>: '.number_format($item['y'],2).
-              '%<br>Total Operations: '.$item['total'];
+            return '<b>Cataract Complications</b><br><i>Complication</i>:'
+              . $this->plotlyConfig['yaxis']['ticktext'][$key]
+              . '<br><i>Percentage</i>: '.number_format($item['y'],2)
+              . '%<br>Total Operations: '.$item['total'];
           } else {
             return '';
           }
@@ -183,6 +184,9 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
     public function plotlyConfig(){
       $this->setyAxisCategories();
+      $this->plotlyConfig['title'] = 'Complication Profile<br>'
+        . '<sub>Total Complications: ' .$this->getTotalComplications()
+        . ' Total Operations: '.$this->getTotalOperations().'</sub>';
       return json_encode($this->plotlyConfig);
     }
 
