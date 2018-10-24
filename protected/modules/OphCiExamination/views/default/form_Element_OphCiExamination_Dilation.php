@@ -74,7 +74,7 @@ foreach ($dilation_drugs as $d_drug) {
                   <td>
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options" data-multi="false" data-clickadd="false">
-                          <?php foreach ($element->getUnselectedDilationDrugs($eye_side) as $id => $drug): ?>
+                          <?php foreach ($element->getAllDilationDrugs($eye_side) as $id => $drug): ?>
                             <li data-str="<?= $id ?>"
                                 data-order="<?= $dilation_drugs_order[$id] ?>"><?= $drug ?></li>
                           <?php endforeach; ?>
@@ -122,6 +122,21 @@ foreach ($dilation_drugs as $d_drug) {
             popup.find('.close-icon-btn, .add-icon-btn')
           );
         })
+
+        $(document).ready(function() {
+            var side = $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Dilation\'] ' +
+                '.<?=$eye_side?>-eye');
+            var table = side.find('.dilation_table');
+            var popup = side.find('#add-to-dilation');
+            table.find('tr').each(function (index, tr_elem) {
+                var tr_name = $(this).find('span').html();
+                popup.find('li').each(function () {
+                    if (tr_name === $(this).html()) {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
       </script>
     <?php endforeach; ?>
 </div>
