@@ -33,7 +33,7 @@ if (!isset($values)) {
         <?php
         foreach (['Right', 'Left'] as $eye_side) {
             if ($values['side'] === $eye_side || $values['side'] === 'Both') { ?>
-                <i class="oe-i laterality <?= substr($values['side'][0] , 0 , 1)?> small pad"></i>
+                <i class="oe-i laterality <?= $values['side'][0]?> small pad"></i>
             <?php } else { ?>
                 <i class="oe-i laterality small pad NA"></i>
             <?php }
