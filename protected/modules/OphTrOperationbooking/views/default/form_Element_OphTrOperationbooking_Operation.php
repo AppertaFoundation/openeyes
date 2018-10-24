@@ -18,7 +18,6 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
 ?>
 
 <div class="element-fields full-width">
-    <div class="element-fields full-width">
         <div class="flex-layout">
             <div class="cols-3">
                 <?php
@@ -355,4 +354,3 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
             </tbody>
         </table>
     </div>
-</div>
