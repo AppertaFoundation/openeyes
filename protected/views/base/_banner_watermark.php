@@ -18,14 +18,15 @@
 ?>
 
 <?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
-	<div class="alert-box watermark admin banner">
-		<?=\CHtml::encode(Yii::app()->params['watermark_admin']);?>
-	</div>
+    <div id="oe-admin-notifcation">
+        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short_admin']);?></span>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark_admin']);?></span>
+        <i class="oe-i info pro-theme small no-click pad-left"></i>
+    </div>
 <?php } elseif (Yii::app()->params['watermark']) {?>
-	<div class="alert-box watermark banner">
-		<?=\CHtml::encode(Yii::app()->params['watermark']);?>
-	</div>
-<?php }?>
-<?php if (@$description && Yii::app()->params['watermark_description']) {?>
-	<div class="alert-box watermark description"><p><?=\CHtml::encode(Yii::app()->params['watermark_description']);?></p></div>
+    <div id="oe-admin-notifcation">
+        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <i class="oe-i info pro-theme small no-click pad-left"></i>
+    </div>
 <?php }?>
