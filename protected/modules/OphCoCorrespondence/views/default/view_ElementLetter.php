@@ -114,8 +114,9 @@ if($correspondeceApp === "on") {
     </div>
     <?php } ?>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7"
-         style="background-color: white; color: black; padding: 10px; display:none;">
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
+         style="background-color: white; color: black; padding: 10px; display:block;">
+        <i class="js-correspondence-image-spinner spinner"></i>
             <header>
                 <?php
             $ccString = "";
@@ -171,7 +172,6 @@ if($correspondeceApp === "on") {
             <?php endif; ?>
         </div>
 <div class="js-correspondence-image-overlay">
-    <div class="oe-popup-wrap"><div class="spinner"></div></div>
 </div>
 
 </div>
@@ -189,6 +189,7 @@ if($correspondeceApp === "on") {
                 response = JSON.parse(response);
                 if(response.error){
                     $('#correspondence_out').show();
+                    $('.js-correspondence-image-spinner').hide();
                 } else {
                     if(response.page_count === 1){
                         $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
@@ -197,7 +198,8 @@ if($correspondeceApp === "on") {
                             $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
                         }
                     }
-                    $('#correspondence_image_0').show();
+                     $('#correspondence_out').hide();
+                     $('#correspondence_image_0').show();
                     new OpenEyes.OphCoCorrespondence.DocumentViewerController();
                 }
             }
