@@ -34,19 +34,12 @@ class m180506_111023_medication_drugs_import extends CDbMigration
             $drug_sets = null;
             $command = null;
         }
-
-        /* Set for formulary drugs */
-        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Formulary')")->execute();
-        $formulary_id = $this->dbConnection->getLastInsertID();
-
-        /* Set for medication drugs */
-
-        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Medication Drugs')")->execute();
-        $medication_drugs_id = $this->dbConnection->getLastInsertID();
-
-        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$formulary_id.", 'Drug')")->execute();
-        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$formulary_id.", 'Formulary')")->execute();
-        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$medication_drugs_id.", 'MedicationDrug')")->execute();
+        
+        Yii::app()->db->createCommand("INSERT INTO ref_set(name) values ('Drug Legacy')")->execute();
+        $ref_set_ID = Yii::app()->db->createCommand("SELECT id FROM ref_set WHERE name = 'Drug Legacy' ")->queryRow();
+      
+        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$ref_set_ID['id'].", 'Drug')")->execute();
+        Yii::app()->db->createCommand("INSERT INTO ref_set_rules(ref_set_id, usage_code) values (".$ref_set_ID['id'].", 'MedicationDrug')")->execute();
         
         
         /* 
@@ -119,25 +112,26 @@ class m180506_111023_medication_drugs_import extends CDbMigration
       
         $medication_drug_table = 'medication_drug';
         $medication_drugs = Yii::app()->db
-                ->createCommand("SELECT id AS original_id, CONCAT(id,'_medication_drug') AS id, name FROM ".$medication_drug_table." ORDER BY original_id ASC")
+                ->createCommand("SELECT id AS original_id, `name`, external_code FROM ".$medication_drug_table." ORDER BY original_id ASC")
                 ->queryAll();
         
         if($medication_drugs){
             foreach($medication_drugs as $drug){   
                 $command = Yii::app()->db;
                 $command->createCommand("
-                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code) 
-                        values('LEGACY', '".$medication_drug_table."', :drug_name, :drug_code)
+                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
+                        values('LEGACY', '".$medication_drug_table."', :drug_name, :drug_code, :original_id)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
-                ->bindValue(':drug_code', $drug['id'])
+                ->bindValue(':drug_code', $drug['external_code'])
+                ->bindValue(':original_id', $drug['original_id'])
                 ->execute();
                 
                 $ref_medication_id = $command->getLastInsertID(); 
                 
                 Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id )
-                        values (".$ref_medication_id." , ".$medication_drugs_id." )
+                        values (".$ref_medication_id." , ".$ref_set_ID['id']." )
                 ")->execute();
             }
             
@@ -157,8 +151,6 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         d.id AS original_id, 
                         CONCAT(d.id,'_drug') AS drug_id, 
                         d.name,
-                        d.tallman,
-                        d.aliases,
                         d.form_id,
                         d.dose_unit,
                         d.default_dose,
@@ -166,8 +158,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                         rmf.id  AS ref_form_id,
                         rmf.default_dose_unit_term AS ref_dose_term,
                         rmr.id AS ref_route_id,           
-                        rmfreq.id AS ref_freq_id,
-                        d.default_duration_id
+                        rmfreq.id AS ref_freq_id
                     FROM ".$drugs_table."               AS d
                     LEFT JOIN drug_form                 AS df           ON d.form_id = df.id
                     LEFT JOIN ref_medication_form       AS rmf          ON rmf.default_dose_unit_term = df.name
@@ -186,72 +177,24 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         
                 $command = Yii::app()->db;
                 $command->createCommand("
-                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code) 
-                        values('LEGACY', '".$drugs_table."', :drug_name, :drug_code)
+                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
+                        values('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
-                ->bindValue(':drug_code', $drug['drug_id'])
+                ->bindValue(':source_old_id', $drug['original_id'])
                 ->execute();
-                $ref_medication_id = $command->getLastInsertID();
-
-                $alternative_terms = [$drug['name']];
-
-                $tallman = trim($drug['tallman']);
-
-                if(!is_null($tallman) && $tallman != "" && strcasecmp($tallman, $drug['name']) !== 0) {
-                    $alternative_terms[]=$tallman;
-                }
-
-                foreach (explode(",", $drug['aliases']) as $alias) {
-                    $alias = trim($alias);
-                    if($alias != "" && strcasecmp($alias, $drug['name']) !== 0) {
-                        $alternative_terms[]=$alias;
-                    }
-                }
-
-                foreach ($alternative_terms as $term) {
-                    $this->execute("INSERT INTO ref_medications_search_index (ref_medication_id, alternative_term)
-                                    VALUES
-                                    (:id, :term)
-                                    ", array(":id"=>$ref_medication_id, ":term" => $term));
-                }
-
+                $ref_medication_id = $command->getLastInsertID(); 
+                
                 $drug_form_id = ($drug['ref_form_id'] == null) ? 'NULL' : $drug['ref_form_id'];
                 $drug_route_id = ($drug['ref_route_id'] == null) ? 'NULL' : $drug['ref_route_id'];
                 $drug_freq_id = ($drug['ref_freq_id'] == null) ? 'NULL' : $drug['ref_freq_id'];
                 $default_dose_unit = ($drug['dose_unit'] == null) ? 'NULL' : $drug['dose_unit'];
-                $default_duration_id = ($drug['default_duration_id'] == null) ? 'NULL' : $drug['default_duration_id'];
-
-                /* Add medication to the 'Legacy' set */
+                
+                /* Set ref_medication_set table */
                 Yii::app()->db->createCommand("
                     INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
-                        values (".$ref_medication_id." , ".$formulary_id.", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
+                        values (".$ref_medication_id." , ".$ref_set_ID['id'].", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
                 ")->execute();
-
-                /* Add medication to their respective sets */
-                $drug_sets = Yii::app()->db->createCommand("SELECT id, `name`, subspecialty_id FROM drug_set WHERE id IN (SELECT drug_set_id FROM drug_set_item WHERE drug_id = :drug_id)")->bindValue(":drug_id", $drug['drug_id'])->queryAll();
-                if($drug_sets) {
-                    foreach ($drug_sets as $drug_set) {
-                        Yii::app()->db->createCommand("
-                    INSERT INTO ref_medication_set( ref_medication_id , ref_set_id, default_form, default_route, default_frequency, default_dose_unit_term, default_duration )
-                        values (".$ref_medication_id." ,
-                         
-                         (SELECT id FROM ref_set WHERE `name` = :ref_set_name AND id IN 
-                            (SELECT ref_set_id FROM ref_set_rules WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug') 
-                         ),
-                         
-                         ".$drug_form_id.",
-                         ".$drug_route_id.",
-                         ".$drug_freq_id." ,
-                         '".$default_dose_unit."',
-                          ".$default_duration_id."
-                          )
-                ")
-                            ->bindValue(':ref_set_name', $drug_set['name'])
-                            ->bindValue(':subspecialty_id', $drug_set['subspecialty_id'])
-                            ->execute();
-                    }
-                }
             }
             
             $drugs = null;
