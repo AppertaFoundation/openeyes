@@ -35,9 +35,4 @@ class DefaultController extends \BaseEventTypeController
     {
         Yii::app()->assetManager->registerScriptFile('js/OpenEyes.Lab.Form.js', 'application.modules.OphInLabResults.assets');
     }
-    
-    public function actionPrint($id)
-    {
-        parent::actionPrint($id);
-    }
 }
