@@ -15,8 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="<?php echo $element->elementType->class_name ?>">
-    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+<section class="<?= $element->elementType->class_name ?>">
+    <h3 class="element-title"><?= $element->elementType->name ?></h3>
     <table class="borders">
         <tbody>
             <tr>
@@ -44,14 +44,14 @@
                         ?>
                     </td>
                     <td>
-                        <?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
+                        <?= $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
                     </td>
                     <td>
                         <?php if (!$element->anaesthetic_agents) { ?>
                             None
                         <?php } else { ?>
                             <?php foreach ($element->anaesthetic_agents as $agent) { ?>
-                                <?php echo $agent->name ?><br/>
+                                <?= $agent->name ?><br/>
                             <?php } ?>
                         <?php } ?>
                     </td>
@@ -60,7 +60,7 @@
                             None
                         <?php } else { ?>
                             <?php foreach ($element->anaesthetic_complications as $complication) { ?>
-                                <?php echo $complication->name ?><br/>
+                                <?= $complication->name ?><br/>
                             <?php } ?>
                         <?php } ?>
                     </td>
@@ -72,7 +72,7 @@
         <tbody>
             <tr>
                 <th class="cols-3"><?= \CHtml::encode($element->getAttributeLabel('anaesthetic_comment')) ?></th>
-                <td class="cols-9"><?php echo Yii::app()->format->Ntext($element->anaesthetic_comment) ?></td>
+                <td class="cols-9"><?= Yii::app()->format->Ntext($element->anaesthetic_comment) ?></td>
             </tr>
         </tbody>
     </table>
