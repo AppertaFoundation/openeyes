@@ -16,20 +16,24 @@
  */
 ?>
 
-<section>
-    <h3 class="element-title"><?= \CHtml::encode($element->getAttributeLabel('postop_instructions')) ?></h3>
-    <div class="details">
-        <div class="element-data">
-            <div class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>"><?php echo $element->postop_instructions ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?></div>
+<section class="element full">
+    <header class="element-header">
+        <h3 class="element-title"><?= \CHtml::encode($element->getAttributeLabel('postop_instructions')) ?></h3>
+    </header>
+    <div class="element-data full-width">		
+        <div class="data-value">
+            <span class="large-text"><?php echo $element->postop_instructions ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?></span>
         </div>
     </div>
 </section>
 
-<section>
-    <h3 class="element-title"><?= \CHtml::encode($element->getAttributeLabel('comments')) ?></h3>
-    <div class="details">
-        <div class="element-data">
-            <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>"><?php echo $element->comments ? Yii::app()->format->Ntext($element->comments) : 'None' ?></div>
+<section class="element full">
+    <header class="element-header">
+        <h3 class="element-title"><?= \CHtml::encode($element->getAttributeLabel('comments')) ?></h3>
+    </header>
+    <div class="element-data full-width">		
+        <div class="data-value">
+            <span class="large-text"><?php echo $element->comments ? Yii::app()->format->Ntext($element->comments) : 'None' ?></span>
         </div>
     </div>
 </section>

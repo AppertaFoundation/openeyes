@@ -15,14 +15,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="data-group <?php echo $element->elementType->class_name?>">
-    <h3 class="element-title"><?php echo $element->getElementTypeName() ?></h3>
-    <h4 class="data-title">Comment</h4>
-    <div class="details">
-        <div class="element-data">
-            <div class="data-value">
-                <?php echo Yii::app()->format->Ntext($element->comments)?>
-            </div>
+<section class="element view full <?php echo $element->elementType->class_name ?>">
+    <header class="element-header">
+        <h3 class="element-title"><?php echo $element->getElementTypeName() ?></h3>
+    </header>
+    <div class="element-data full-width">		
+        <div class="data-value">
+            <span class="large-text">Comment: <?php echo Yii::app()->format->Ntext($element->comments) ?></span>
         </div>
     </div>
 </section>

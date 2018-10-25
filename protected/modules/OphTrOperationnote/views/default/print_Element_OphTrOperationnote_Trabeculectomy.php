@@ -16,174 +16,108 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?>">
-	<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	<div class="data-group">
-		<div class="cols-6 column">
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->conjunctival_flap_type->name?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('stay_suture'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?=\CHtml::encode($element->stay_suture ? 'Yes' : 'No')?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('site_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?=\CHtml::encode($element->site->name)?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('size_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->size->name?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('sclerostomy_type_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->sclerostomy_type->name?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_type_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->viscoelastic_type->name?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_removed'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->viscoelastic_removed ? 'Yes' : 'No'?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						<?=\CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id'))?>:
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php echo $element->viscoelastic_flow->name?>
-					</div>
-				</div>
-			</div>
-			<div class="data-group">
-				<h4>Details</h4>
-				<div class="details pronounced">
-					<ul>
-					<?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) {?>
-						<li><?php echo $line?></li>
-					<?php }?>
-					</ul>
-				</div>
-			</div>
+<section class="<?php echo $element->elementType->class_name ?>">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+    <div class="flex-layout">
+        <table class="cols-6">
+            <tbody>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('conjunctival_flap_type_id')) ?>:</th>
+                    <td><?= $element->conjunctival_flap_type->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('stay_suture')) ?>:</th>
+                    <td><?= \CHtml::encode($element->stay_suture ? 'Yes' : 'No') ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('site_id')) ?>:</th>
+                    <td><?= \CHtml::encode($element->site->name) ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('size_id')) ?>:</th>
+                    <td><?= $element->size->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('sclerostomy_type_id')) ?>:</th>
+                    <td><?= $element->sclerostomy_type->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('viscoelastic_type_id')) ?>:</th>
+                    <td><?= $element->viscoelastic_type->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('viscoelastic_flow_id')) ?>:</th>
+                    <td><?= $element->viscoelastic_removed ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('viscoelastic_removed')) ?>:</th>
+                    <td><?= $element->viscoelastic_flow->name ?></td>
+                </tr>
+                <tr>
+                    <th>Details</th>
+                    <td>
+                        <ul>
+                            <?php foreach (explode(chr(10), CHtml::encode($element->report)) as $line) { ?>
+                                <li><?php echo $line ?></li>
+                            <?php } ?>
+                        </ul>
+                    </td>
+                </tr>
 
-			<div class="data-group">
-				<div class="cols-6 column text-right">
-					<div class="data-label">
-						Difficulties
-					</div>
-				</div>
-				<div class="cols-6 column">
-					<div class="data-value">
-						<?php if (!$element->difficulties) {?>
-							None
-						<?php } else {?>
-							<?php foreach ($element->difficulties as $difficulty) {?>
-								<?php if ($difficulty->name == 'Other') {?>
-									<?php echo str_replace("\n", '<br/>', $element->difficulty_other)?>
-								<?php }else{?>
-									<?php echo $difficulty->name?><br>
-								<?php }?>
-							<?php }?>
-						<?php }?>
-					</div>
-				</div>
-			</div>
+                <tr>
+                    <th>Difficulties</th>
+                    <td>
+                        <?php if (!$element->difficulties) { ?>
+                                None
+                        <?php } else { ?>
+                            <?php foreach ($element->difficulties as $difficulty) { ?>
+                                <?php if ($difficulty->name == 'Other') { ?>
+                                    <?php echo str_replace("\n", '<br/>', $element->difficulty_other) ?>
+                                <?php } else { ?>
+                                    <?php echo $difficulty->name ?><br>
+                                <?php } ?>
+                            <?php } ?>
+                        <?php } ?>
+                    </td>
+                </tr>
+                 <tr>
+                    <th>Complications</th>
+                    <td>
+                        <?php if (!$element->complications) { ?>
+                            None
+                        <?php } else { ?>
+                            <ul>
+                                <?php foreach ($element->complications as $complication) { ?>
+                                    <li>
+                                        <?php if ($complication->name == 'Other') { ?>
+                                            <?php echo $element->complication_other ?>
+                                        <?php } else { ?>
+                                            <?php echo $complication->name ?>
+                                        <?php } ?>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        <?php } ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-			<div class="data-group">
-				<h4>Complications</h4>
-				<div class="details">
-					<?php if (!$element->complications) {?>
-						<div class="data-value">None</div>
-					<?php } else {?>
-						<ul>
-						<?php foreach ($element->complications as $complication) {?>
-							<li>
-								<?php if ($complication->name == 'Other') {?>
-									<?php echo $element->complication_other?>
-								<?php }else{?>
-									<?php echo $complication->name?>
-								<?php }?>
-							</li>
-						<?php }?>
-						</ul>
-					<?php }?>
-				</div>
-			</div>
-		</div>
-		<div class="cols-6 column">
-      <div class="details">
-					<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-					    'idSuffix' => 'Trabeculectomy',
-              'side' => $element->eye->getShortName(),
-              'mode' => 'view',
-              'width' => 250,
-              'height' => 250,
-              'scale' => 0.72,
-              'model' => $element,
-              'attribute' => 'eyedraw',
-          ))?>
-				</div>
-		</div>
-	</div>
+        <div class="cols-6">
+            <div class="details">
+                <?php
+                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                    'idSuffix' => 'Trabeculectomy',
+                    'side' => $element->eye->getShortName(),
+                    'mode' => 'view',
+                    'width' => 250,
+                    'height' => 250,
+                    'scale' => 0.72,
+                    'model' => $element,
+                    'attribute' => 'eyedraw',
+                ))
+                ?>
+            </div>
+        </div>
+    </div>
 </section>
