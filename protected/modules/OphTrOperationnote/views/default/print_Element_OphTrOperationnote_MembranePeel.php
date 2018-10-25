@@ -18,65 +18,33 @@
 
 <section class="<?php echo $element->elementType->class_name ?>">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-    <div class="cols-6 column end">
-        <?php if ($element->membrane_blue) { ?>
-            <div class="data-group">
-                <div class="cols-6 column text-right">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('membrane_blue')) ?>:
-                    </div>
-                </div>
-                <div class="cols-6 column">
-                    <div class="data-value">
-                        Yes
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-
-        <?php if ($element->brilliant_blue) { ?>
-            <div class="data-group">
-                <div class="cols-6 column text-right">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('brilliant_blue')) ?>:
-                    </div>
-                </div>
-                <div class="cols-6 column">
-                    <div class="data-value">
-                        Yes
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-
-        <?php if ($element->other_dye) { ?>
-            <div class="data-group">
-                <div class="cols-6 column text-right">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('other_dye')) ?>:
-                    </div>
-                </div>
-                <div class="cols-6 column">
-                    <div class="data-value">
-                        <?= \CHtml::encode($element->other_dye) ?>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-
-        <?php if ($element->comments) { ?>
-            <div class="data-group">
-                <div class="cols-6 column text-right">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('comments')) ?>:
-                    </div>
-                </div>
-                <div class="cols-6 column">
-                    <div class="data-value">
-                        <?= Yii::app()->format->Ntext($element->comments) ?>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-    </div>
+    <table>
+        <tbody>
+            <?php if ($element->membrane_blue) { ?>
+            <tr>
+                <th><?= \CHtml::encode($element->getAttributeLabel('membrane_blue')) ?>:</th>
+                <td>Yes</td>
+            </tr>
+            <?php } ?>
+            <?php if ($element->brilliant_blue) { ?>
+            <tr>
+                <th><?= \CHtml::encode($element->getAttributeLabel('brilliant_blue')) ?>:</th>
+                <td>Yes</td>
+            </tr>
+            <?php } ?>
+            <?php if ($element->other_dye) { ?>
+            <tr>
+                <th><?= \CHtml::encode($element->getAttributeLabel('other_dye')) ?>:</th>
+                <td><?= \CHtml::encode($element->other_dye) ?></td>
+            </tr>
+            <?php } ?>
+            
+            <?php if ($element->comments) { ?>
+            <tr>
+                <th><?= \CHtml::encode($element->getAttributeLabel('comments')) ?>:</th>
+                <td><?= Yii::app()->format->Ntext($element->comments) ?></td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
 </section>

@@ -19,105 +19,44 @@
 <section class="<?php echo $element->elementType->class_name ?>">
     <h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
     <div class="flex-layout">
-        <div class="cols-6 column">
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('plate_position_id')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->plate_position->name ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('plate_limbus')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->plate_limbus ?> mm
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('tube_position_id')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->tube_position->name ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('stent')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->stent ? 'Yes' : 'No'; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('slit')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->slit ? 'Yes' : 'No'; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('visco_in_ac')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->visco_in_ac ? 'Yes' : 'No'; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('flow_tested')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo $element->flow_tested ? 'Yes' : 'No'; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="data-group">
-                <div class="cols-4 column">
-                    <div class="data-label">
-                        <?= \CHtml::encode($element->getAttributeLabel('description')) ?>
-                    </div>
-                </div>
-                <div class="cols-8 column">
-                    <div class="data-value">
-                        <?php echo Yii::app()->format->Ntext($element->description) ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="cols-6 column">
+        <table class="cols-6">
+            <tbody>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('plate_position_id')) ?>:</th>
+                    <td><?= $element->plate_position->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('plate_limbus')) ?>:</th>
+                    <td><?= $element->plate_limbus ?> mm</td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('tube_position_id')) ?>:</th>
+                    <td><?= $element->tube_position->name ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('stent')) ?>:</th>
+                    <td><?= $element->stent ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('slit')) ?>:</th>
+                    <td><?= $element->slit ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('visco_in_ac')) ?>:</th>
+                    <td><?= $element->visco_in_ac ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('flow_tested')) ?>:</th>
+                    <td><?= $element->flow_tested ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
+                    <th><?= \CHtml::encode($element->getAttributeLabel('description')) ?>:</th>
+                    <td><?= Yii::app()->format->Ntext($element->description) ?></td>
+                </tr>
+            </tbody>
+        </table>
+       
+        <div class="cols-6">
             <div class="data-group">
                 <div class="details">
                     <?php
