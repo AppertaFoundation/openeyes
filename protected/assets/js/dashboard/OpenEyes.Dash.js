@@ -116,11 +116,6 @@
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
-                    // console.log(data);
-                    // chart = $('#'+chartId)[0];
-                    // console.log(chart.layout);
-                    // console.log(chart.data[0]);
-                    // chart.series[0].setData(data);
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
@@ -251,33 +246,45 @@
             plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
             plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
             chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
-							'<sub>Total eyes: ' + total +
-							', ±0.5D: ' + plusOrMinusHalfPercent + '%, ±1D: '+ plusOrMinusOnePercent+'%</sub>';
+              '<sub>Total eyes: ' + total +
+              ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
             chart.data[0]['x'] = data.map(function (item) {
-							return item[0];
-						});
+              return item[0];
+            });
             chart.data[0]['y'] = data.map(function (item) {
-							return item[1];
-						});
+              return item[1];
+            });
             chart.data[0]['hovertext'] = data.map(function (item) {
-							return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
-								chart.layout['xaxis']['ticktext'][item[0]] +
-								'<br><i>Num Eyes:</i> '+ item[1];
-						});
+              return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
+                chart.layout['xaxis']['ticktext'][item[0]] +
+                '<br><i>Num Eyes:</i> '+ item[1];
+            });
             Plotly.redraw(chart);
-            // chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + Number(plusOrMinusOnePercent).toFixed(1) + '%, ±1D: ' + Number(plusOrMinusHalfPercent).toFixed(1) + '%'});
         },
         'CataractComplicationsReport': function(data){
+          var chart = $('#CataractComplicationsReport')[0];
+          chart.data[0]['x'] = data.map(function (item) {
+            if (item['y']) {
+              return item['y'];
+            } else {
+              return 0;
+            }
+          });
             $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
-                    var chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
-                    chart.setTitle(null, {text: 'Total Complications: ' + data[0] + " Total Operations: " + data[1]} );
+                    chart.layout['title'] =  'Complication Profile<br>' +
+                      '<sub>Total Complications: '+ data[0] +
+                      ' Total Operations: ' + data[1] + '</sub>';
                 }
             });
+          Plotly.redraw(chart);
+
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
+          var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
+          console.log(chart);
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
@@ -290,9 +297,22 @@
                     total += data[i][2];
                 }
             }
-            
-            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].yAxis[0].setTitle({ text: "Visual acuity " + months + " month" + (months > 1 ? 's' : '') + " after surgery (LogMAR)" });
-            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].setTitle({ text: "Visual Acuity (" + type_text + ")" },{text: "Total Eyes: " + total});
+            chart.layout['title'] = 'Visual Acuity ('+ type_text +')<br><sub>Total Eyes: ' + total +'</sub>';
+            chart.layout['yaxis']['title'] = 'Visual acuity '+months+' months'+ (months > 1 ? 's' : '') +' after surgery (LogMAR)';
+
+            chart.data[0]['x'] = data.map(function (item){
+              return item[0];
+            });
+            chart.data[0]['y'] = data.map(function (item){
+              return item[1];
+            });
+            chart.data[0]['text'] = data.map(function (item){
+              return item[2];
+            });
+            chart.data[0]['hovertext'] = data.map(function (item){
+              return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
+            });
+            Plotly.redraw(chart);
         }
     };
 
