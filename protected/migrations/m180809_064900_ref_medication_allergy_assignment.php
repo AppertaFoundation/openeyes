@@ -18,7 +18,8 @@ class m180809_064900_ref_medication_allergy_assignment extends OEMigration
                         ref_medication.id,
                         allergy_id
                         FROM drug_allergy_assignment AS daa
-                        LEFT JOIN ref_medication ON CONCAT(daa.drug_id, '_drug') = ref_medication.preferred_code 
+                        LEFT JOIN ref_medication ON daa.id = ref_medication.source_old_id
+                         WHERE ref_medication.source_subtype = 'drug' 
                       ");
 	}
 

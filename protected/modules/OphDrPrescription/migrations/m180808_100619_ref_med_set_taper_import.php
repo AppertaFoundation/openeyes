@@ -30,7 +30,7 @@ class m180808_100619_ref_med_set_taper_import extends CDbMigration
                                           ( 
                                            SELECT id FROM ref_medication_set 
                                            WHERE
-                                            ref_medication_id = ( SELECT id FROM ref_medication WHERE preferred_code = CONCAT (:drug_id , '_drug') )
+                                            ref_medication_id = ( SELECT id FROM ref_medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
                                             AND ref_set_id =
                                               ( SELECT id FROM ref_set WHERE `name` LIKE CONCAT('%', :ref_set_name) AND id IN 
                                                 ( SELECT ref_set_id FROM ref_set_rules WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug')

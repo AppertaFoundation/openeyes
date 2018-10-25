@@ -116,7 +116,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
                     LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
                     LEFT JOIN drug_duration                                 AS dd           ON d.default_duration_id = dd.id
-                    LEFT JOIN ref_medication                                                ON ref_medication.preferred_code = CONCAT(ohme.drug_id, '_drug') 
+                    LEFT JOIN ref_medication                                                ON ref_medication.source_old_id = ohme.drug_id 
                     LEFT JOIN ref_medication_form                                           ON ref_medication_form.term = df.name
                     LEFT JOIN ref_medication_route                                          ON ref_medication_route.term = dr.name
                     LEFT JOIN ref_medication_frequency                                      ON ref_medication_frequency.original_id = dfreq.id
@@ -157,8 +157,7 @@ class m180510_093825_import_examination_events_to_medications extends CDbMigrati
                     LEFT JOIN drug_route                                    AS dr           ON ohme.route_id = dr.id
                     LEFT JOIN drug_frequency                                AS dfreq        ON ohme.frequency_id = dfreq.id
                     LEFT JOIN drug_route_option                             AS dro          ON ohme.option_id = dro.id
-
-                    LEFT JOIN ref_medication                                                ON ref_medication.preferred_code = CONCAT(ohme.medication_drug_id, '_medication_drug') 
+                    LEFT JOIN ref_medication                                                ON ref_medication.source_old_id = ohme.medication_drug_id 
                     LEFT JOIN ref_medication_route                                          ON ref_medication_route.term = dr.name
                     LEFT JOIN ref_medication_frequency                                      ON ref_medication_frequency.original_id = dfreq.id
                     LEFT JOIN ref_medication_laterality                                     ON ref_medication_laterality.name = dro.name

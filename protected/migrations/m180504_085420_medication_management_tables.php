@@ -18,6 +18,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'amp_term'          => 'VARCHAR(255) NULL',
             'amp_code'          => 'VARCHAR(255) NULL',
             'deleted_date'      => 'DATE NULL',
+            'source_old_id'     => 'INT NULL'
         ), true);
 
         $this->createOETable('ref_medications_search_index', array(

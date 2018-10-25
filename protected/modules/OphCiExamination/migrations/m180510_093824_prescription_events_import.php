@@ -78,7 +78,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
                     LEFT JOIN drug_frequency                        AS dfreq            ON presc_item.frequency_id = dfreq.id
                     LEFT JOIN drug_duration                         AS dd               ON presc_item.duration_id = dd.id
                     LEFT JOIN drug_route_option                     AS dro              ON presc_item.route_option_id = dro.id
-                    LEFT JOIN ref_medication                                            ON ref_medication.preferred_code = CONCAT(presc_item.drug_id, '_drug')
+                    LEFT JOIN ref_medication                                            ON ref_medication.source_old_id = presc_item.drug_id
                     LEFT JOIN ref_medication_form                                       ON ref_medication_form.term = df.name
                     LEFT JOIN ref_medication_route                                      ON ref_medication_route.term = dr.name
                     LEFT JOIN ref_medication_frequency                                  ON ref_medication_frequency.original_id = dfreq.id

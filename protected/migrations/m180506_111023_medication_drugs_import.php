@@ -119,18 +119,19 @@ class m180506_111023_medication_drugs_import extends CDbMigration
       
         $medication_drug_table = 'medication_drug';
         $medication_drugs = Yii::app()->db
-                ->createCommand("SELECT id AS original_id, CONCAT(id,'_medication_drug') AS id, name FROM ".$medication_drug_table." ORDER BY original_id ASC")
+                ->createCommand("SELECT id AS original_id, `name`, external_code FROM ".$medication_drug_table." ORDER BY original_id ASC")
                 ->queryAll();
         
         if($medication_drugs){
             foreach($medication_drugs as $drug){   
                 $command = Yii::app()->db;
                 $command->createCommand("
-                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code) 
-                        values('LEGACY', '".$medication_drug_table."', :drug_name, :drug_code)
+                         INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
+                        values('LEGACY', '".$medication_drug_table."', :drug_name, :drug_code, :original_id)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
-                ->bindValue(':drug_code', $drug['id'])
+                    ->bindValue(':drug_code', $drug['external_code'])
+                    ->bindValue(':original_id', $drug['original_id'])
                 ->execute();
                 
                 $ref_medication_id = $command->getLastInsertID(); 
@@ -186,11 +187,11 @@ class m180506_111023_medication_drugs_import extends CDbMigration
         
                 $command = Yii::app()->db;
                 $command->createCommand("
-                        INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code) 
-                        values('LEGACY', '".$drugs_table."', :drug_name, :drug_code)
+                          INSERT INTO ref_medication(source_type, source_subtype, preferred_term, preferred_code, source_old_id) 
+                        VALUES ('LEGACY', '".$drugs_table."', :drug_name, '', :source_old_id)
                     ")
                 ->bindValue(':drug_name', $drug['name'])
-                ->bindValue(':drug_code', $drug['drug_id'])
+                ->bindValue(':source_old_id', $drug['original_id'])
                 ->execute();
                 $ref_medication_id = $command->getLastInsertID();
 
