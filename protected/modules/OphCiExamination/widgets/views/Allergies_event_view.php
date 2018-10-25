@@ -38,7 +38,7 @@
                   </ul>
                 <?php } ?>
               </div>
-                <div class="" id="js-listview-allergies-full" style="display: none;">
+                <div class="" id="js-listview-allergies-full" style="display: none;">                	
                     <table class="last-left large">
                         <colgroup>
                             <col class="cols-2">
@@ -47,8 +47,8 @@
                         </colgroup>
                         <tbody>
                             <tr>
-                                <th>Label</th>
-                                <th>Data</th>
+                                <th></th>
+                                <th>Allergy</th>
                                 <th>Comments</th>
                             </tr>
                             <?php for ($i = 0; $i < $max_iter; $i++) :?>
@@ -68,17 +68,6 @@
                                 <?php } ?>
                             <?php endfor; ?>
                         </tbody>
-                    </table>
-                    <hr class="divider">
-                    <table class="last-left large">
-                        <colgroup>
-                            <col class="cols-2">
-                            <col class="cols-10">
-                        </colgroup>
-                        <tr>
-                            <th>Element comments</th>
-                            <td>These are general comments for the Event</td>
-                        </tr>
                     </table>
                 </div>
             <?php endif; ?>

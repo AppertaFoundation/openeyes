@@ -29,8 +29,8 @@
                     </colgroup>
                     <tbody>
                         <tr>
-                            <th>Label</th>
-                            <th>Data</th>
+                            <th></th>
+                            <th>Allergy</th>
                             <th>Comments</th>
                         </tr>
                         <?php for ($i = 0; $i < $max_iter; $i++) :?>
@@ -53,23 +53,6 @@
                 </table>
             </div>
             <?php endif; ?>
-        </div>
-    </div>
-</div>
-<div class="element-data full-width">
-    <div class="flex-layout flex-top">
-        <div class="cols-12">
-            <hr class="divider">
-            <table class="borders cols-12">
-                <colgroup>
-                    <col class="cols-2">
-                    <col class="cols-10">
-                </colgroup>
-                <tr>
-                    <th>Element comments</th>
-                    <th>These are general comments for the Event</th>
-                </tr>
-            </table>
         </div>
     </div>
 </div>
