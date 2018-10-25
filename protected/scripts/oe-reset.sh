@@ -57,7 +57,7 @@ migrateparams="-q"
 nofix=0
 dwservrunning=0
 
-
+PARAMS=()
 while [[ $# -gt 0 ]]
 do
     p="$1"
@@ -105,16 +105,38 @@ do
     	--clean-base) cleanbase=1
     		## Do not import base data (migrate from clean db instead)
     	;;
-    	--ignore-warnings) migrateparams="$migrateparams $i"
+    	--ignore-warnings) migrateparams="$migrateparams $p"
     		# Ignore warnings during migrate
     	;;
-    	*)  # assume anything else will be passed through to the checkout commands
-    		checkoutparams="$checkoutparams $i"
+    	*)  if [ "$p" == "--hard" ]; then
+                echo "Unknown parameter $p $2"
+                exit 1
+            else
+                # Hold for processing later
+                PARAMS+=("$p")
+            fi
 		;;
     esac
     shift # move to next parameter
 done
 
+# If we are checking out new branch,then pass all unprocessed commands to checkout command
+# Else, throw error and list unknown commands
+if  [ ${#PARAMS[@]} -gt 0 ]; then
+    if [ branch == 1 ]; then
+        for i in "${PARAMS[@]}"
+        do
+            $checkoutparams="$checkoutparams $i"
+        done
+    else
+        echo "Unknown Parameter(s):"
+        for i in "${PARAMS[@]}"
+        do
+            echo $i
+        done
+        exit 1;
+    fi
+fi
 
 if [ $showhelp = 1 ]; then
     echo ""

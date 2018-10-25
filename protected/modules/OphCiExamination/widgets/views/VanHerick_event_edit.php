@@ -23,12 +23,13 @@
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
 
 <div class="element-fields element-eyes" id="<?= $model_name ?>_element">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
 
     <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
 
-        <div class="active-form flex-layout">
+        <div class="active-form flex-layout" style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <table class="cols-10">
                 <colgroup>
@@ -51,7 +52,7 @@
             <button class="button hint green js-foster-images-link" type="button"><i class="oe-i plus pro-theme"></i></button>
           </div>
         </div>
-        <div class="inactive-form" style="display: none;">
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
             <div class="add-side">
                 <a href="#">
                     Add <?=$eye_side?> side <span class="icon-add-side"></span>
