@@ -240,8 +240,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return string html table of daignoses and further findings
      *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
-    public function getLetter_string()
-    {
+    public function getLetter_string() {
         $table_vals = array();
         $subspecialty = null;
         if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
@@ -477,10 +476,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getDisplayOrder($action)
     {
-        if ($action === 'view'){
+        if ($action === 'view') {
             return 10;
-        }
-        else{
+        } else {
             return parent::getDisplayOrder($action);
         }
     }
@@ -495,20 +493,20 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
-    public function getParentType($action){
-        if ($action=='view'){
+    public function getParentType($action)
+    {
+        if ($action=='view') {
             return Element_OphCiExamination_History::class;
-        }
-        else{
+        } else {
             return parent::getParentType($action);
         }
     }
 
-    public function isChild($action){
-        if ($action=='view'){
+    public function isChild($action)
+    {
+        if ($action=='view') {
             return true;
-        }
-        else{
+        } else {
             return parent::isChild($action);
         }
     }
