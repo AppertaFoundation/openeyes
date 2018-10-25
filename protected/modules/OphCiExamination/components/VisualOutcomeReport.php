@@ -95,7 +95,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
 
     protected $plotlyConfig = array(
       'showlegend' => false,
-      'title' => '',   // Todo: number should be changed somewhere
+      'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+      ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
         'titlefont' => array(
@@ -388,21 +391,26 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     }
 
     public function tracesJson(){
+      $data = $this->dataSet();
       $trace1 = array(
         'name' => 'Visual Outcome',
         'mode' => 'markers+text',
+        'font' =>  array(
+          'family' => 'Verdana, sans-serif',
+          'size' => 14,
+        ),
         'x' => array_map(function ($item){
           return $item[0];
-        }, $this->dataSet()),
+        }, $data),
         'y' => array_map(function ($item){
           return $item[1];
-        }, $this->dataSet()),
+        }, $data),
         'text' => array_map(function ($item){
-          return $item[2];
-        }, $this->dataSet()),
+          return '<b>' . $item[2] . '</b>';
+        }, $data),
         'hovertext' => array_map(function ($item){
           return '<b>Visual Outcome</b><br>Number of eyes: ' . $item[2];
-        }, $this->dataSet()),
+        }, $data),
         'hoverinfo' => 'text',
         'hoverlabel' => array(
           'bgcolor' => '#fff',
@@ -412,9 +420,10 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
           ),
         ),
         'marker' => array(
+          'color' => '#7cb5ec',
           'size' => array_map(function ($item){
             return $item[2];
-          }, $this->dataSet()),
+          }, $data),
           'sizeref' => 0.02,
           'sizemode' => 'area',
         ),
@@ -445,7 +454,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     }
 
     public function plotlyConfig(){
-    	$this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
+      $this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
       return json_encode($this->plotlyConfig);
     }
 

@@ -68,7 +68,10 @@ class PcrRiskReport extends Report implements ReportInterface
     protected $plotlyConfig = array(
       'type' => 'scatter',
       'showlegend' => true,
-      'title' => '',   // Todo: number should be changed somewhere
+      'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+      ),
       'xaxis' => array(
         'title' => 'No. Operations',
         'titlefont' => array(
@@ -85,8 +88,13 @@ class PcrRiskReport extends Report implements ReportInterface
         'range' => [0,50],
       ),
       'legend'=> array(
+        'x' => 0.8,
+        'y' => 1,
         'bordercolor' => '#000',
         'borderwidth' => 1,
+        'font' => array(
+          'size' => 13
+        )
       ),
       'shapes' => array(
         array(
@@ -171,7 +179,6 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         // set the graph subtitle here, so we don't have to run this query more than once
-//        $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
         if ($total > 1000) {
             $this->totalOperations = $total;
         }

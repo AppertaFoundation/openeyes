@@ -59,6 +59,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       'type' => 'bar',
       'showlegend' => false,
       'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+      ),
       'xaxis' => array(
         'title' => 'PPOR - POR (Dioptres)',
         'tickvals' => [],
@@ -292,6 +295,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
         $trace1 = array(
           'name' => 'Refractive Outcome',
           'type' => 'bar',
+          'marker' => array(
+            'color' => '#7cb5ec',
+          ),
           'x' => array_map(function($item){
             return $item[0];
           }, $dataset),

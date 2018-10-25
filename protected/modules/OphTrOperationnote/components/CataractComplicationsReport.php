@@ -34,17 +34,21 @@ class CataractComplicationsReport extends Report implements ReportInterface
       'type' => 'bar',
       'title' => '',
       'showlegend' => false,
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+      ),
       'xaxis' => array(
         'title' => 'Percent of cases',
+
       ),
       'yaxis' => array(
         'title' => 'Complication',
         'tickvals' => array(),
         'ticktext' => array(),
         'autorange' => 'reversed',
+        'automargin' => 'true',
         'tickfont' => array(
-          'family' => 'Roboto,Helvetica,Arial,sans-serif',
-          'size' => '10',
+          'size' => '9.5',
         ),
       ),
       'margin' => array(
@@ -137,6 +141,9 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'name' => 'Complications',
         'type' => 'bar',
         'orientation' => 'h',
+        'marker' => array(
+          'color' => '#7cb5ec',
+        ),
         'x' => array_map(function($item){
           if (isset($item['y'])){
             return $item['y'];

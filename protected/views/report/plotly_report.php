@@ -11,10 +11,12 @@
   <div id="<?=$report->graphId();?>" class="chart-container"></div>
 </div>
 <script>
-  //console.log(<?//= $report->plotlyConfig();?>//);
   Plotly.newPlot('<?=$report->graphId();?>',
     <?= $report->tracesJson();?>,
     JSON.parse('<?= $report->plotlyConfig();?>'),
-    {displayModeBar: false}
+    {
+      displayModeBar: false,
+      responsive: true
+    }
   );
 </script>
