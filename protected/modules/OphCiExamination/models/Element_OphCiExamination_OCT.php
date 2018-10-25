@@ -118,7 +118,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('method_id', 'crt', 'sft', 'dry', 'fluidstatus_id', 'comments');
+        return array('method_id', 'crt', 'sft', 'dry', 'fluidstatus_id', 'comments', 'fluidtypes');
     }
 
     public function sidedDefaults()
@@ -364,7 +364,7 @@ class Element_OphCiExamination_OCT extends \SplitEventTypeElement
     {
         foreach (['left', 'right'] as $eye_side) {
             if ($this->{$eye_side.'_dry'}) {
-                $this->{$eye_side.'_fluidstatus_id'} = '';
+                $this->{$eye_side.'_fluidstatus_id'} = null;
             }
         }
 
