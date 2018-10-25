@@ -290,7 +290,8 @@
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
-                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake === $item];
+                return ['label' => $item, 'id' => $item,
+                    'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
             }, range(0, 20))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],
