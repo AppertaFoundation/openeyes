@@ -18,7 +18,6 @@ class m180504_085420_medication_management_tables extends OEMigration
             'amp_term'          => 'VARCHAR(255) NULL',
             'amp_code'          => 'VARCHAR(255) NULL',
             'deleted_date'      => 'DATE NULL',
-            'source_old_id'     => 'INT NULL'
         ), true);
 
         $this->createOETable('ref_medications_search_index', array(
@@ -76,8 +75,9 @@ class m180504_085420_medication_management_tables extends OEMigration
             'default_dose'              => 'FLOAT NULL',
             'default_route'             => 'INT NULL',
             'default_frequency'         => 'INT NULL',
-            'default_dose_unit_term'   => 'VARCHAR(255) NULL',
+            'default_dose_unit_term'    => 'VARCHAR(255) NULL',
             'deleted_date'              => 'DATE NULL',
+            'default_duration'          => 'INT NULL'
         ), true);
         
         $this->createIndex('fk_ref_medications_idx', 'ref_medication_set', 'ref_medication_id');
@@ -92,6 +92,7 @@ class m180504_085420_medication_management_tables extends OEMigration
         $this->addForeignKey('fk_default_route', 'ref_medication_set', 'default_route', 'ref_medication_route', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_form', 'ref_medication_set', 'default_form', 'ref_medication_form', 'id', 'NO ACTION' ,'NO ACTION');
         $this->addForeignKey('fk_default_frequency', 'ref_medication_set', 'default_frequency', 'ref_medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_duration', 'ref_medication_set', 'default_duration', 'ref_medication_duration', 'id');
         
         $this->createOETable('ref_medication_dose', array(
             'id'    => 'pk',
@@ -113,7 +114,7 @@ class m180504_085420_medication_management_tables extends OEMigration
             'dose_unit_term'                => 'VARCHAR(255) NULL',
             'route_id'                      => 'INT NULL',
             'frequency_id'                  => 'INT NULL',
-            'duration'                      => 'INT NULL',
+            'duration'                      => 'INT(10) unsigned NULL',
             'dispense_location_id'          => 'INT NULL',
             'dispense_condition_id'         => 'INT NULL',
             'start_date_string_YYYYMMDD'    =>  'VARCHAR(8) NOT NULL',
