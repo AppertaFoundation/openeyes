@@ -187,7 +187,7 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionCreate();
         $this->initActionEdit();
-        if (@$_POST['schedule_now']) {
+        if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
             $this->successUri = 'booking/schedule/';
         }
     }
@@ -203,7 +203,7 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionUpdate();
         $this->initActionEdit();
-        if (@$_POST['schedule_now']) {
+        if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
             $this->successUri = 'booking/schedule/';
         }
     }
