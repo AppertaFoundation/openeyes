@@ -38,22 +38,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @var array
      */
-    protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'column'),
-        'legend' => array('enabled' => false),
-        'title' => array('text' => 'Refractive Outcome: mean sphere (D)'),
-        'subtitle' => array('text' => 'Total eyes: {{eyes}}, ±0.5D: {{0.5}}%, ±1D: {{1}}%'),
-        'xAxis' => array(
-            'title' => array('text' => 'PPOR - POR (Dioptres)'),
-        ),
-        'yAxis' => array(
-            'title' => array('text' => 'Number of eyes'),
-        ),
-        'tooltip' => array(
-            'headerFormat' => '<b>Refractive Outcome</b><br>',
-            'pointFormat' => '<i>Diff Post Op</i>: {point.category} <br /> <i>Num Eyes</i>: {point.y}',
-        ),
-    );
 
     protected $plotlyConfig = array(
       'type' => 'bar',
@@ -152,59 +136,8 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return array
      */
-    public function dataSet()
-    {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
-        $count = array();
 
-        $this->padCategories();
-
-        // fill up the array with 0, have to send 0 to highcharts if there is no data
-        foreach ($this->graphConfig['xAxis']['categories'] as $xCat) {
-            $count[] = 0;
-        }
-        $bestvalues = array();
-
-        foreach ($data as $row) {
-            $side = 'right';
-            if ($row['eye_id'] === '1') {
-                $side = 'left';
-            }
-            $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
-
-            $diff = round($diff * 2) / 2;
-
-            $diff_index = array_search($diff, $this->graphConfig['xAxis']['categories']);
-
-            if ($diff_index >= 0 && $diff_index <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
-                if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                } elseif (abs($this->graphConfig['xAxis']['categories'][$diff_index]) < abs($this->graphConfig['xAxis']['categories'][$bestvalues[$row['patient_id'].$side]])) {
-                    $bestvalues[$row['patient_id'].$side] = $diff_index;
-                }
-            }
-        }
-
-        foreach ($bestvalues as $key => $diff) {
-            if (!array_key_exists("$diff", $count)) {
-                $count["$diff"] = 0;
-            }
-            ++$count["$diff"];
-        }
-
-        ksort($count, SORT_NUMERIC);
-
-        $dataSet = array();
-        foreach ($count as $category => $total) {
-            $rowTotal = array((float) $category, $total);
-            $dataSet[$category] = $rowTotal;
-        }
-
-        return $dataSet;
-    }
-
-
-    public function plotlyDataset(){
+    public function dataset(){
       $data = $this->queryData($this->surgeon, $this->from, $this->to, $this->months, $this->procedures);
       $count = array();
 
@@ -255,15 +188,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      *
      */
-    protected function padCategories()
-    {
-        for ($i = -10; $i <= 10; $i += 0.5) {
-            $this->graphConfig['xAxis']['categories'][] = $i;
-        }
-
-        $this->graphConfig['xAxis']['min'] = 0;
-        $this->graphConfig['xAxis']['max'] = count($this->graphConfig['xAxis']['categories']) - 1;
-    }
 
   protected function padPlotlyCategories()
   {
@@ -291,7 +215,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     }
 
     public function tracesJson(){
-        $dataset = $this->plotlyDataset();
+        $dataset = $this->dataset();
         $trace1 = array(
           'name' => 'Refractive Outcome',
           'type' => 'bar',
@@ -325,56 +249,10 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        if (!isset($this->series[0]['data'])) {
-            $data = $this->dataSet();
-        } else {
-            $data = $this->series[0]['data'];
-        }
-
-        $totalEyes = 0;
-        $plusOrMinusOne = 0;
-        $plusOrMinusHalf = 0;
-        $plusOrMinusHalfPercent = 0;
-        $plusOrMinusOnePercent = 0;
-
-        foreach ($data as $dataRow) {
-            $totalEyes += (int) $dataRow[1];
-
-            // 19 and 21 are the indexes of the -0.5 and +0.5 columns
-            if ($dataRow[0] < 19 || $dataRow[0] > 21) {
-                $plusOrMinusHalf += (int) $dataRow[1];
-            }
-
-            // 18 and 22 are the indexes of the -1 and +1 columns
-            if ($dataRow[0] < 18 || $dataRow[0] > 22) {
-                $plusOrMinusOne += (int) $dataRow[1];
-            }
-        }
-        if ($plusOrMinusOne > 0) {
-            $plusOrMinusOnePercent = number_format((($plusOrMinusOne / $totalEyes) * 100), 1, '.', '');
-        }
-
-        if ($plusOrMinusHalf > 0) {
-            $plusOrMinusHalfPercent = number_format((($plusOrMinusHalf / $totalEyes) * 100), 1, '.', '');
-        }
-
-        $this->graphConfig['subtitle']['text'] = str_replace(
-            array('{{eyes}}', '{{0.5}}', '{{1}}'),
-            array($totalEyes, $plusOrMinusHalfPercent, $plusOrMinusOnePercent),
-            $this->graphConfig['subtitle']['text']
-        );
-
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
-
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
-    }
-
     public function plotlyConfig(){
       $this->padPlotlyCategories();
 
-      $data = $this->plotlyDataset();
+      $data = $this->dataset();
       $totalEyes = 0;
       $plusOrMinusOne = 0;
       $plusOrMinusHalf = 0;

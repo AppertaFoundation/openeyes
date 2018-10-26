@@ -11,24 +11,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
     /**
      * @var array
      */
-    protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'bar'),
-        'legend' => array('enabled' => false),
-        'title' => array('text' => 'Complication Profile'),
-        'subtitle' => array('text' => 'Total Complications: '),
-        'xAxis' => array(
-            'categories' => array(),
-            'title' => array('text' => 'Complication'),
-            'labels' => array('style' => array('fontSize' => '0.5em')),
-        ),
-        'yAxis' => array(
-            'title' => array('text' => 'Percent of cases'),
-        ),
-        'tooltip' => array(
-            'headerFormat' => '<b>Cataract Complications</b><br>',
-            'pointFormat' => '<i>Complication</i>: {point.category} <br /> <i>Percentage </i>: {point.y:.2f}% <br /> Total Operations: {point.total}',
-        ),
-    );
 
     protected $plotlyConfig = array(
       'type' => 'bar',
@@ -97,10 +79,10 @@ class CataractComplicationsReport extends Report implements ReportInterface
     {
         $data = $this->queryData($this->surgeon, $this->from, $this->to);
         $seriesCount = array();
-        $this->setComplicationCategories();
+        $this->setyAxisCategories();
         $total = $this->getTotalComplications();
 
-        foreach ($this->graphConfig['xAxis']['categories'] as $category) {
+        foreach ($this->plotlyConfig['yaxis']['ticktext'] as $category) {
             foreach ($data as $complicationData) {
                 if ($category === $complicationData['name']) {
                     $seriesCount[] = array(
@@ -120,23 +102,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function seriesJson()
-    {
-        $this->series = array(
-            array(
-                'name' => 'Complications',
-                'data' => $this->dataSet(),
-            ),
-        );
-
-        return json_encode($this->series);
-    }
-
-
     public function tracesJson(){
       $data = $this->dataSet();
-      $this->setyAxisCategories();
-
       $trace1 = array(
         'name' => 'Complications',
         'type' => 'bar',
@@ -179,16 +146,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        $this->setComplicationCategories();
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
-        $this->graphConfig['subtitle']['text'] .= $this->getTotalComplications();
-        $this->graphConfig['subtitle']['text'] .= ' Total Operations: '.$this->getTotalOperations();
-
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
-    }
-
     public function plotlyConfig(){
       $this->setyAxisCategories();
       $this->plotlyConfig['title'] = 'Complication Profile<br>'

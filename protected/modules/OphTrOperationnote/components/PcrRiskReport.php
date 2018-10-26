@@ -28,43 +28,6 @@ class PcrRiskReport extends Report implements ReportInterface
         parent::__construct($app);
     }
 
-    protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'spline'),
-        'title' => array('text' => 'PCR Rate (risk adjusted)'),
-        'subtitle' => array('text' => 'Total Operations: 0'),
-        'xAxis' => array(
-            'title' => array('text' => 'No. Operations'),
-        ),
-        'yAxis' => array(
-            'title' => array('text' => 'PCR Rate'),
-            'plotLines' => array(array(
-                'value' => 0,
-                'color' => 'black',
-                'dashStyle' => 'shortdash',
-                'width' => 1,
-                'label' => array('text' => 'Average'),
-            )),
-            'max' => 50,
-        ),
-        'tooltip' => array(
-            'headerFormat' => '<b>PCR Risk </b>',
-            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}',
-        ),
-        'legend' => array(
-            'align' => 'right',
-            'verticalAlign' => 'top',
-            'layout' => 'vertical',
-            'x' => 0,
-            'y' => 50,
-            'floating' => true,
-            'borderWidth' => 1,
-        ),
-        'plotOptions' => array('spline' => array('marker' => array(
-            'enabled' => false,
-            'states' => array('hover' => array('enabled' => false)),
-        ))),
-    );
-
     protected $plotlyConfig = array(
       'type' => 'scatter',
       'showlegend' => true,
@@ -195,39 +158,6 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function seriesJson()
-    {
-        if ($this->mode == 1) {
-            $this->series = array(
-                array(
-                    'name' => 'Current Surgeon',
-                    'type' => 'scatter',
-                    'data' => $this->dataSet(),
-                ),
-            );
-        } else {
-            $this->series = array(
-                array(
-                    'name' => 'Current Surgeon',
-                    'type' => 'scatter',
-                    'data' => $this->dataSet(),
-                ),
-                array(
-                    'name' => 'Upper 99.8%',
-                    'data' => $this->upper98(),
-                    'color' => 'red',
-                ),
-                array(
-                    'name' => 'Upper 95%',
-                    'data' => $this->upper95(),
-                    'color' => 'green',
-                ),
-            );
-        }
-
-        return json_encode($this->series);
-    }
-
 
     public function tracesJson(){
       $trace1 = array(
@@ -338,15 +268,6 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        if ($this->mode == 0) {
-            $this->graphConfig['yAxis']['plotLines'][0]['value'] = $this->average();
-        }
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
-
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
-    }
 
     public function plotlyConfig(){
       if ($this->mode == 0) {
