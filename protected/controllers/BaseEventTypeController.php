@@ -768,6 +768,9 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionDelete()
     {
         $this->initWithEventId(@$_GET['id']);
+
+        //on soft delete we call the afterSoftDelete method
+        $this->event->getEventHandlers('onAfterSoftDelete')->add(array($this, 'afterSoftDelete'));
     }
 
     /**
@@ -2064,6 +2067,17 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->logActivity("printed event (pdf=$pdf)");
         $this->event->audit('event', (strpos($this->pdf_print_suffix, 'all') === 0 ? 'print all' : 'print'), false);
+    }
+
+    /**
+     * Run this function after soft delete happened
+     *
+     * @param $event
+     * @return bool
+     */
+    public function afterSoftDelete($event)
+    {
+        return true;
     }
 
     /**
