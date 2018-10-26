@@ -203,6 +203,9 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         parent::initActionUpdate();
         $this->initActionEdit();
+        if (@$_POST['schedule_now']) {
+            $this->successUri = 'booking/schedule/';
+        }
     }
     /**
      * Make the operation element directly available for templates.
