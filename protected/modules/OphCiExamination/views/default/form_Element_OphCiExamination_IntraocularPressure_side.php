@@ -42,6 +42,7 @@ $comments = $side . '_comments';
     </thead>
     <tbody>
     <?php
+    $instrument_model = OEModule\OphCiExamination\models\OphCiExamination_Instrument::model();
     foreach ($element->{"{$side}_values"} as $index => $value) {
         $this->renderPartial(
             "{$element->form_view}_reading",
@@ -51,6 +52,8 @@ $comments = $side . '_comments';
                 'side' => $side,
                 'index' => $index,
                 'time' => substr($value->reading_time, 0, 5),
+                'instrumentId' => $value->instrument_id,
+                'instrumentName' => $instrument_model->findByPk($value->instrument_id)->name,
                 'value' => $value,
             )
         );
@@ -100,6 +103,8 @@ $comments = $side . '_comments';
             'index' => '{{index}}',
             'time' => '{{time}}',
             'instrument' => '{{instrument}}',
+            'instrumentId' => '{{instrumentId}}',
+            'instrumentName' => '{{instrumentName}}',
             'value' => new models\OphCiExamination_IntraocularPressure_Value(),
         )
     );
@@ -112,13 +117,23 @@ $comments = $side . '_comments';
     new OpenEyes.UI.AdderDialog({
       id: 'add-to-iop',
       openButton: side.find('.js-add-select-search'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($instrument) {
-              return ['label' => $instrument->name, 'id' => $instrument->id];
-          },
-              OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
-      ) ?>)],
-      returnOnSelect: true,
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($instrument) {
+                return ['label' => $instrument->name, 'id' => $instrument->id];
+            },
+                OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+        ) ?>, {'multiSelect': true})],
+        onReturn: function (adderDialog, selectedItems) {
+            for (var i = 0; i < selectedItems.length; i++) {
+                OphCiExamination_IntraocularPressure_addReading(
+                    '<?=$side?>',
+                    selectedItems[i]['id'],
+                    selectedItems[i]['label']);
+                //TODO: get scale_td, index
+                getScaleDropdown(selectedItems[i]['id'], scale_td, index, '<?=$side?>');
+            };
+            return true;
+        },
     });
   });
 </script>
