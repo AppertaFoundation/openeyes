@@ -196,7 +196,7 @@
       });
 
       var position = this.getSavedScratchpadPosition();
-      if (position) {
+      if (position && position.top <= $(window).height() && position.left <= $(window).width()) {
         $(this.options.scratchpadPopupSelector).css({
           top: position.top,
           left: position.left
