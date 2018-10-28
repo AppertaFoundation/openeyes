@@ -63,15 +63,16 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'titlefont' => array(
           'size' => 11,
         ),
-        'showgrid' => false,
+        'showline' => true,
         'range' => [-1,6],
+        'ticks' => 'outside',
         'tickvals' => array(0, 1, 2, 3, 4, 5),
         'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
         'zeroline' => false,
       ),
       'yaxis' => array(
         'title' => 'Visual acuity 4 months after surgery (LogMAR)',
-        'showgrid' => false,
+        'showline' => true,
         'range' => [-1,6],
         'tickvals' => array(0, 1, 2, 3, 4, 5),
         'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),

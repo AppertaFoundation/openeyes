@@ -21,7 +21,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
       ),
       'xaxis' => array(
         'title' => 'Percent of cases',
-
+        'showline' => true,
+        'ticks' => 'outside',
       ),
       'yaxis' => array(
         'title' => 'Complication',
@@ -29,6 +30,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'ticktext' => array(),
         'autorange' => 'reversed',
         'automargin' => 'true',
+        'showline' => true,
         'tickfont' => array(
           'size' => '9.5',
         ),
@@ -112,8 +114,8 @@ class CataractComplicationsReport extends Report implements ReportInterface
           'color' => '#7cb5ec',
         ),
         'x' => array_map(function($item){
-          if (isset($item['y'])){
-            return $item['y'];
+          if (isset($item['total'])){
+            return $item['total'];
           } else {
             return 0;
           }

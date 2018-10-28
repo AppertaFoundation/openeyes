@@ -41,6 +41,7 @@ class PcrRiskReport extends Report implements ReportInterface
           'size' => 11,
         ),
         'showgrid' => false,
+        'ticks' => 'outside',
         'dtick' => 100,
         'tick0' => 0,
       ),

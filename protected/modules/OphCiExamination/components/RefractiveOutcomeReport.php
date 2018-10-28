@@ -48,12 +48,14 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'PPOR - POR (Dioptres)',
+        'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
         'tickangle' => -45,
       ),
       'yaxis' => array(
         'title' => 'Number of eyes',
+        'showline' => true,
       ),
     );
 
