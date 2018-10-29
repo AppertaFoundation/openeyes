@@ -140,6 +140,27 @@ $comments = $side . '_comments';
         },
     });
   });
+
+  function OphCiExamination_IntraocularPressure_addReading(side, instrumentId, instrumentName) {
+      var table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + side);
+      var indices = table.find('tr').map(function () {
+          return $(this).data('index');
+      });
+
+      table.find("tbody").append(
+          Mustache.render(
+              template = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_reading_template_" + side).text(),
+              {
+                  index: indices.length ? Math.max.apply(null, indices) + 1 : 0,
+                  time: (new Date).toTimeString().substr(0, 5),
+                  instrumentId: instrumentId,
+                  instrumentName: instrumentName
+              }
+          )
+      );
+
+      table.show();
+  }
 </script>
 
 
