@@ -54,15 +54,22 @@ class OphCoMessaging_API extends \BaseAPI
         $inbox_messages = $this->getInboxMessages($user);
         $sent_messages = $this->getSentMessages($user);
         $urgent_messages = $this->getInboxMessages($user, true);
+        $query_messages = $this->getInboxMessages($user, false, true);
+        $unread_messages = $this->getInboxMessages($user, false, false, true);
+        $read_messages = $this->getInboxMessages($user, false, false,false, true);
 
         // Generate the dashboard widget HTML.
         $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
                 'inbox' => $inbox_messages['list'],
                 'sent' => $sent_messages['list'],
                 'urgent' => $urgent_messages['list'],
-                'inbox_unread' => $inbox_messages['unread'],
-                'sent_unread' => $sent_messages['unread'],
-                'urgent_unread' => $urgent_messages['unread'],
+                'query' => $query_messages['list'],
+                'number_inbox_unread' => $inbox_messages['number_unread'],
+                'unread' => $unread_messages['list'],
+                'read' => $read_messages['list'],
+                'number_sent_unread' => $sent_messages['number_unread'],
+                'number_urgent_unread' => $urgent_messages['number_unread'],
+                'number_query_unread' => $query_messages['number_unread'],
                 'module_class' => $this->getModuleClass(),
             )
         );
@@ -80,10 +87,13 @@ class OphCoMessaging_API extends \BaseAPI
      * 
      * @param \CWebUser $user
      * @param bool $urgent_only
+		 * @param bool $query_only
+		 * @param bool $unread_only
+		 * @param bool $read_only
      *
      * @return array data provider and total unread messages
      */
-    private function getInboxMessages($user = null, $urgent_only = false)
+    private function getInboxMessages($user = null, $urgent_only = false, $query_only = false, $unread_only = false, $read_only = false)
     {
         if ($user === null) {
             $user = \Yii::app()->user;
@@ -94,6 +104,8 @@ class OphCoMessaging_API extends \BaseAPI
         $sort->attributes = array(
             'priority' => array('asc' => 'urgent asc',
                                 'desc' => 'urgent desc', ),
+						'is_query' => array('asc' => 'is_query asc',
+																'desc' => 'is_query desc', ),
             'event_date' => array('asc' => 't.created_date asc',
                                 'desc' => 't.created_date desc', ),
             'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
@@ -141,6 +153,14 @@ class OphCoMessaging_API extends \BaseAPI
         if ($urgent_only) {
             $criteria->addCondition('t.urgent != 0');
         }
+				if ($query_only) {
+					$criteria->addCondition('t.message_type_id = "2"');
+				}
+				if ($unread_only) {
+					$criteria->addCondition('t.marked_as_read != "1"');
+				} elseif ($read_only){
+					$criteria->addCondition('t.marked_as_read = "1"');
+				}
         $criteria->params = $params;
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
@@ -157,13 +177,19 @@ class OphCoMessaging_API extends \BaseAPI
 
         $unread_criteria = new \CDbCriteria();
         $unread_criteria->addCondition('t.marked_as_read != 1');
-
         $unread_criteria->mergeWith($criteria);
-        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
+        $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
+
+        $read_criteria = new \CDbCriteria();
+				$read_criteria->addCondition('t.marked_as_read = 1');
+				$read_criteria->mergeWith($criteria);
+				$read_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($read_criteria);
+
 
         return array(
             'list' => $dp,
-            'unread' => $unread_messages
+            'number_unread' => $number_unread_messages,
+						'number_read' => $read_messages
         );
     }
 
@@ -243,11 +269,11 @@ class OphCoMessaging_API extends \BaseAPI
         $unread_criteria->addCondition('t.marked_as_read != 1');
 
         $unread_criteria->mergeWith($criteria);
-        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
+        $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
             'list' => $dataProvider,
-            'unread' => $unread_messages
+            'number_unread' => $number_unread_messages
         );
     }
 }

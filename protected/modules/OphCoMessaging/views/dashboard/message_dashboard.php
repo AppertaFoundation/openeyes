@@ -23,18 +23,36 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
     <ul class="filter-messages">
       <li>
         <?=\CHtml::link(
-            $inbox_unread > 0 ? "Inbox ($inbox_unread)" : 'Inbox',
+            $number_inbox_unread > 0 ? "Inbox ($number_inbox_unread)" : 'Inbox',
             '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
       </li>
       <li>
         <?=\CHtml::link(
-            $urgent_unread > 0 ? "Urgent ($urgent_unread)" : 'Urgent',
+            $number_urgent_unread > 0 ? "Urgent ($number_urgent_unread)" : 'Urgent',
             '#',
             array('id' => 'display-urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
+			<li>
+				<?=\CHtml::link(
+					$number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
+					'#',
+					array('id' => 'display-query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
+			</li>
+			<li>
+				<?=\CHtml::link(
+					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
+					'#',
+					array('id' => 'display-unread', 'class' => @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+			</li>
+			<li>
+				<?=\CHtml::link(
+					"Read",
+					'#',
+					array('id' => 'display-read', 'class' => @$_GET['messages'] === 'read' ? 'selected' : '')); ?>
+			</li>
       <li>
         <?=\CHtml::link(
-            $sent_unread > 0 ? "Sent ($sent_unread)" : 'Sent',
+            $number_sent_unread > 0 ? "Sent ($number_sent_unread)" : 'Sent',
             '#', array('id' => 'display-sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
       </li>
     </ul>
@@ -54,6 +72,15 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
       case 'urgent':
           $messages = $urgent;
           break;
+			case 'query':
+					$messages = $query;
+					break;
+			case 'unread':
+					$messages = $unread;
+					break;
+			case 'read':
+					$messages = $read;
+					break;
       case 'sent':
           $messages = $sent;
           break;
@@ -74,21 +101,13 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-
-        $('#display-inbox').click(function(e) {
-            e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'inbox')
-        });
-
-        $('#display-urgent').click(function(e) {
-            e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'urgent')
-        });
-
-        $('#display-sent').click(function(e) {
-            e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'sent')
-        });
+				var filter_options = ['inbox', 'urgent', 'query', 'unread', 'read', 'sent'];
+				for (let option of filter_options) {
+						$('#display-' + option).click(function (e) {
+							e.preventDefault();
+							window.location.href = jQuery.query.set('messages', option)
+						});
+				}
 
         $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
           pickmeup('#' + $(this).attr('id'), {
