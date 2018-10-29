@@ -12,6 +12,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+/* exported OphCiExamination_IntraocularPressure_addReading */
+
 $(document).ready(function () {
   function deleteReading(e) {
     var table = $(this).closest('table');
