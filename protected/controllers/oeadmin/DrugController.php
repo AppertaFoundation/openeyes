@@ -106,8 +106,16 @@ class DrugController extends BaseAdminController
         $request = Yii::app()->getRequest();
 
         if ($request->getIsPostRequest()) {
-            echo "<pre>" . print_r($_POST, true) . "</pre>";
-            die;
+            $drug->attributes = $_POST['Drug'];
+            $drug['tags'] = $_POST['Drug']['tags'];
+            $drug['allergies'] = $_POST['Drug']['allergies'];
+
+            if (!$drug->save()) {
+                throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
+            }
+
+            Audit::add('admin-Drug', 'edit', $drug->id);
+            $this->redirect('/oeadmin/drug/list');
         }
 
         $assetManager = \Yii::app()->getAssetManager();
