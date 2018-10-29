@@ -129,7 +129,11 @@ $comments = $side . '_comments';
                     '<?=$side?>',
                     selectedItems[i]['id'],
                     selectedItems[i]['label']);
-                //TODO: get scale_td, index
+                var table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + '<?=$side?>');
+                var table_row = $(table).find("tr:last");
+                var scale_td = $(table_row).find("td.scale_values");
+                var index = table_row.data('index');
+
                 getScaleDropdown(selectedItems[i]['id'], scale_td, index, '<?=$side?>');
             };
             return true;

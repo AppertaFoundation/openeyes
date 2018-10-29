@@ -39,9 +39,6 @@ $(document).ready(function () {
     var scale_td = $(this).closest('tr').children('td.scale_values');
     var index = $(this).closest('tr').data('index');
     var side = $(this).closest('tr').data('side');
-    // console.log(scale_td); //td element for scale dropdown (if there is any)
-    // console.log(index); // 0,1,2 (index in the table tr)
-    // console.log(side); // left/right
 
     getScaleDropdown(instrument_id, scale_td, index, side);
   });
