@@ -23,7 +23,7 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
 
 ?>
 
-<div id="oe-patient-details" class="oe-patient">
+<div id="oe-patient-details" class="oe-patient <?= $this->patient->isDeceased() ? 'deceased' : ''?>">
   <div class="patient-name">
     <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
     <span class="patient-firstname">
@@ -51,32 +51,40 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
         <?php echo $this->patient->getGenderString() ?>
     </div>
 
+      <?php if($this->patient->isDeceased()){ ?>
+          <div class="patient-died">
+              <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death);?>
+              <em>Aged</em> <?= $this->patient->getAge(); ?>
+          </div>
+     <?php } else { ?>
     <div class="patient-age">
       <em>Age</em>
-        <?php echo $this->patient->getAge(); ?>
+        <?= $this->patient->getAge(); ?>
     </div>
-
+      <?php } ?>
   </div>
 
-    <?php if ($this->patient->allergies || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-      <div class="patient-allergies-risks risk-warning" id="js-allergies-risks-btn">
-          <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
-          <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
-          <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
-      </div>
-    <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-      <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
-        Allergies, Alerts
-      </div>
-    <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-      <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
-        Allergies, Alerts
-      </div>
-    <?php } else { /*either risk or allergy status in unknown*/ ?>
-        <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
-            Allergies, Alerts
-        </div>
-    <?php } ?>
+    <?php if(!$this->patient->isDeceased()) { ?>
+        <?php if ($this->patient->allergies || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+            <div class="patient-allergies-risks risk-warning" id="js-allergies-risks-btn">
+                <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
+                <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
+                <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
+            </div>
+        <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
+            <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+            <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php } else { /*either risk or allergy status in unknown*/ ?>
+            <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+                Allergies, Alerts
+            </div>
+        <?php }
+    }?>
   <div class="patient-demographics" id="js-demographics-btn">
     <svg viewBox="0 0 60 60" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
