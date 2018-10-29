@@ -139,7 +139,6 @@ if (!$read_check) {
         ),
     );
 }
-
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';
 ?>
