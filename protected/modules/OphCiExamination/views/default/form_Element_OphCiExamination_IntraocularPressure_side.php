@@ -61,7 +61,7 @@ $comments = $side . '_comments';
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments"
+  <div id="iop-<?= $side; ?>-comments"
        class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
        style="<?php if (!$element->$comments): ?>display: none;<?php endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">
@@ -78,10 +78,10 @@ $comments = $side . '_comments';
 
 <div class="add-data-actions flex-item-bottom">
   <div class="flex-item-bottom">
-    <button id="iop-<?php echo $side; ?>-comment-button"
+    <button id="iop-<?= $side; ?>-comment-button"
             type="button"
             class="button js-add-comments"
-            data-comment-container="#iop-<?php echo $side; ?>-comments"
+            data-comment-container="#iop-<?= $side; ?>-comments"
             style="<?php if ($element->$comments): ?>visibility: hidden;<?php endif; ?>"
     >
       <i class="oe-i comments small-icon"></i>
@@ -124,17 +124,17 @@ $comments = $side . '_comments';
                 OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
         ) ?>, {'multiSelect': true})],
         onReturn: function (adderDialog, selectedItems) {
-            for (var i = 0; i < selectedItems.length; i++) {
+            for (let i = 0; i < selectedItems.length; i++) {
                 OphCiExamination_IntraocularPressure_addReading(
                     '<?=$side?>',
                     selectedItems[i]['id'],
                     selectedItems[i]['label']);
-                var table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + '<?=$side?>');
-                var table_row = $(table).find("tr:last");
-                var scale_td = $(table_row).find("td.scale_values");
-                var index = table_row.data('index');
+                let $table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + '<?=$side?>');
+                let $table_row = $table.find("tr:last");
+                let $scale_td = $table_row.find("td.scale_values");
+                let index = $table_row.data('index');
 
-                getScaleDropdown(selectedItems[i]['id'], scale_td, index, '<?=$side?>');
+                getScaleDropdown(selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
             };
             return true;
         },

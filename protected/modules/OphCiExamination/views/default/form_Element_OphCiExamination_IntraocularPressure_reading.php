@@ -14,7 +14,7 @@
  */
 $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
-<tr data-index="<?= $index ?>" data-side="<?php echo $side ?>" data-index="<?php echo $index ?>">
+<tr data-index="<?= $index ?>" data-side="<?= $side ?>" data-index="<?= $index ?>">
   <td>
       <?= CHtml::textField(
               "{$base_name}[reading_time]",
