@@ -28,8 +28,6 @@
       <col class="cols-4">
       <col class="cols-2">
       <col class="cols-4">
-      <col class="cols-1">
-      <col class="cols-1">
     </colgroup>
     <tbody>
     <tr>
@@ -89,33 +87,6 @@
               true
           ); ?>
       </td>
-        <td>
-            <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
-        </td>
-        <td>
-            <div id="textField_substance_misuse_id" class="cols-8">
-                <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
-            </div>
-            <?= $form->dropDownList(
-                $element,
-                'substance_misuse_id',
-                CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-            ); ?>
-        </td>
-        <td colspan="2" class="js-comment-container"
-            data-comment-button="#add-social-history-popup .js-add-comments"
-            style="display: <?php if (!$element->comments) {
-                echo 'none';
-            }?>">
-      <textarea id="<?= $model_name ?>_comments"
-                name="<?= $model_name ?>[comments]"
-                class="js-comment-field cols-10"
-                placeholder="Enter comments here"
-                autocomplete="off" rows="1"
-                style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
-            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-        </td>
     </tr>
     <tr>
       <td>
@@ -184,6 +155,35 @@
           );
           ?>
       </td>
+    </tr>
+    <tr>
+        <td>
+            <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
+        </td>
+        <td>
+            <div id="textField_substance_misuse_id" class="cols-8">
+                <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
+            </div>
+            <?= $form->dropDownList(
+                $element,
+                'substance_misuse_id',
+                CHtml::listData($element->substance_misuse_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            ); ?>
+        </td>
+        <td colspan="2" class="js-comment-container"
+            data-comment-button="#add-social-history-popup .js-add-comments"
+            style="display: <?php if (!$element->comments) {
+                echo 'none';
+            }?>">
+           <textarea id="<?= $model_name ?>_comments"
+                     name="<?= $model_name ?>[comments]"
+                     class="js-comment-field cols-10"
+                     placeholder="Enter comments here"
+                     autocomplete="off" rows="1"
+                     style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
+            <i class="oe-i remove-circle small-icon js-remove-add-comments"></i>
+        </td>
     </tr>
     </tbody>
   </table>
