@@ -9,7 +9,7 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 ?>
 <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
-<meta name="viewport" content="width=1230, user-scalable=1" />
+<meta name="viewport" content="width=1230, initial-scale=1" />
 <meta name="format-detection" content="telephone=no">
 
 <?php if (Yii::app()->params['disable_browser_caching']) {?>
@@ -28,4 +28,3 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
 <script type="text/javascript">
 	var baseUrl = '<?php echo Yii::app()->baseUrl?>';
 </script>
-
