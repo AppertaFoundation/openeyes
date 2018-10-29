@@ -33,9 +33,8 @@ if ($this->trial) {
 ?>
 
 <div id="oe-patient-details"
-     class="oe-patient"
+     class="<?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?>"
      data-patient-id="<?= $this->patient->id ?>"
-     style="<?= $this->list_mode ? 'position: unset; background: unset; width: unset; background-color: rgb(20, 30, 43);' : '' ?>"
 
 >
   <div class="patient-name"
@@ -137,11 +136,11 @@ if ($this->trial) {
           </div>
         <?php endif; ?>
         <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
-          <div class="js-trials-btn"
+          <div class="patient-trials js-trials-btn"
                style="<?= $this->list_mode ? 'position: unset;' : 'position: absolute;' ?>right: -30px; bottom: 0; padding: 5px 12px 4px 8px; cursor: pointer;"
           >
             <svg viewBox="0 0 30 30" class="icon"
-                 style="pointer-events: none; width: 15px; height: 15px; display: inline-block; fill: #fff; opacity: 0.8;">
+                 style="pointer-events: none; width: 15px; height: 15px; display: inline-block; opacity: 0.8;">
               <use xlink:href="<?php echo $navIconsUrl; ?>#tasks-icon"></use>
             </svg>
           </div>
@@ -154,13 +153,6 @@ if ($this->trial) {
           echo "<li>{$widget}</li>";
       } ?>
   </ul>
-    <?php if ($this->list_mode) { ?>
-      <style>
-        .patient-widgets .oe-patient-popup {
-          top: unset;
-        }
-      </style>
-    <?php } ?>
 </div>
 <?php
 $assetManager = Yii::app()->getAssetManager();
