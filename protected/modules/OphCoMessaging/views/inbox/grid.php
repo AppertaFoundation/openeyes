@@ -59,25 +59,18 @@ $cols = array(
         'type' => 'raw'
     ),
     array(
-        'name' => 'priority',
+        'name' => 'priority_and_type',
         'header' => '',
         'htmlOptions'=>array('class' => 'nowrap'),
         'value' => function ($data) {
-            return $data->urgent ? '
+        		$urgent_icon = $data->urgent ? '
             <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+        		$query_icon = $data->message_type_id === '2' ? '
+						<svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+            return $urgent_icon . $query_icon;
         },
         'type' => 'raw',
     ),
-		array(
-			'name' => 'is_query',
-			'header' => '',
-			'htmlOptions'=>array('class' => 'nowrap'),
-			'value' => function ($data) {
-				return $data->message_type_id === '2' ? '
-						<svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
-			},
-			'type' => 'raw',
-		),
     array(
         'id' => 'user',
         'header' => '',
