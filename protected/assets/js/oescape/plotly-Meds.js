@@ -11,4 +11,12 @@ var meds_xaxis = {
   showgrid: true,
   gridcolor: '#444',
   gridWidth: 0.25,
+
+  /*spike setting*/
+  showspikes: true,
+  spikecolor: '#3db0fb',
+  spikethickness: 1,
+  spikedash:'dash',
+  spikemode: 'across',
+  spikesnap: 'cursor',
 };

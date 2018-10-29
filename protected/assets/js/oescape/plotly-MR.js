@@ -13,6 +13,7 @@ var va_yaxis = {
   domain: [0.35,1],
   showticklabels: true,
   showgrid: true,
+
 };
 
 var flags_yaxis = {

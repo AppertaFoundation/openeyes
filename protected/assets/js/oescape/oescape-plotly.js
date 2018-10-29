@@ -3,7 +3,8 @@ var marker_line_plotly_options = {
   xref: 'x',
   yref: 'y',
   line: {
-    dash: 'dot',
+    dash: 'dash',
+    width: 0.5,
   }
 };
 
@@ -18,6 +19,8 @@ var marking_annotations = {
   },
   bgcolor: '#141e2b',
   xshift: 10,
+  yshift: 40,
+  yanchor: 'top',
 };
 
 var trace_hoverlabel = {
@@ -50,14 +53,26 @@ var layout_plotly = {
       size: 12,
       color: '#8c8c8c',
     },
-
-
   },
+  hovermode: 'closest',
   xaxis: {
     showgrid: false,
     /*Ticks setting*/
     ticks: 'outside',
     showticklabels: true,
+    showline: true,
+    linecolor: '#fff',
+    tickcolor: '#fff',
+    tickfont: {
+      color: '#fff',
+    },
+    /*spike setting*/
+    showspikes: true,
+    spikecolor: '#3db0fb',
+    spikethickness: 1,
+    spikedash:'dash',
+    spikemode: 'across',
+    spikesnap: 'cursor',
   },
   yaxis:{},
   shapes: [],
