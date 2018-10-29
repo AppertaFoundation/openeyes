@@ -176,6 +176,18 @@ class Element_OphCiExamination_ColourVision extends \SplitEventTypeElement
     }
 
     /**
+     * Get all the colour vision reading methods for this element.
+     *
+     * @return OphCiExamination_ColourVision_Method[]
+     */
+    public function getAllReadingMethods()
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->order = 'display_order asc';
+        return OphCiExamination_ColourVision_Method::model()->findAll($criteria);
+    }
+
+    /**
      * Validate each of the readings.
      */
     protected function afterValidate()

@@ -35,7 +35,7 @@
                 <td>
                     <?php
                     if ($metadata->getSettingName()) {
-                        echo CHtml::htmlButton($metadata->getSettingName(), ['class' => 'oe-filter-btn']);
+                        echo $metadata->getSettingName();
                     }
                     ?>
                 </td>
