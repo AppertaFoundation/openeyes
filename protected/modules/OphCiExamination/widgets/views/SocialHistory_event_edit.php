@@ -67,13 +67,11 @@
       </td>
       <td>
           <div id="textField_driving_statuses" class="cols-8">
-              <?php if (count($element['driving_statuses']) <= 0) {
+              <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
                   echo 'Nothing selected.';
               } else {
-                  echo $element->driving_statuses[0];
-                  for ($i = 1; $i < count($element->driving_statuses); $i++) {
-                      echo ', ' . trim($element->driving_statuses[$i]);
-                  }
+                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  }, $element->driving_statuses);
+                  echo implode(', ', $driving_statuses);
               } ?>
           </div>
           <?= $form->multiSelectList(
