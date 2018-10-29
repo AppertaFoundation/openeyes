@@ -16,22 +16,3 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<section class="element view tile  view-per-operative-comments">
-    <header class="element-header">
-        <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-    </header>
-    <div class="element-data full-width">
-        <div class="data-group">
-            <div class="data-value <?php if (!$element->comments) { ?> none<?php } ?>">
-                <div class="tile-data-overflow">
-                    <?php if (!$element->comments) { ?>
-                        None
-                    <?php } else {
-                        echo $element->comments;
-                    } ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
