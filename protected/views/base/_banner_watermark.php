@@ -17,16 +17,16 @@
  */
 ?>
 
-<?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
+<?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin_short']) {?>
     <div id="oe-admin-notifcation">
         <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_admin_short']);?></span>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark_admin']);?></span>
-        <i class="oe-i info pro-theme small no-click pad-left"></i>
+        <i class="oe-i info pro-theme small pad-left js-has-tooltip" data-tooltip-content="<?=\CHtml::encode(Yii::app()->params['watermark_admin']);?>"></i>
     </div>
-<?php } elseif (Yii::app()->params['watermark']) {?>
+<?php } elseif (Yii::app()->params['watermark_short']) {?>
     <div id="oe-admin-notifcation">
         <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
-        <i class="oe-i info pro-theme small no-click pad-left"></i>
+        <i class="oe-i info pro-theme small pad-left js-has-tooltip" data-tooltip-content="<?=\CHtml::encode(Yii::app()->params['watermark']);?>"></i>
     </div>
 <?php }?>
