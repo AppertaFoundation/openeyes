@@ -84,6 +84,7 @@ abstract class EpisodeSummaryWidget extends CWidget
         return $opnote_marking;
     }
 
+
     public function getLaserEvent() {
         $laser_marking = array('right'=>array(), 'left'=>array());
 
