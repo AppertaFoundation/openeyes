@@ -353,6 +353,11 @@
       ticketController.toggleHistory(ticketInfo);
     });
 
+    $(this).on('click', '.remove-circle', function (e) {
+      var ticketInfo = $(this).closest('tr').prev().data('ticket-info');
+      ticketController.toggleHistory(ticketInfo);
+    });
+
     $(this).on('click', '.undo-last-queue-step', function (e) {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
 
