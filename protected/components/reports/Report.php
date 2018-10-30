@@ -33,7 +33,7 @@ class Report
      *
      * @var string
      */
-    protected $template = '//report/highcharts_report';
+    protected $template = '//report/plotly_report';
 
     /**
      * @var CWebApplication
