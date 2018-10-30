@@ -120,7 +120,6 @@ $cols = array(
         'value' =>
             function ($data) {
             return '
-            <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=" Virtual review request"></i> <!-- does the tooltip text need to be changed? -->
             <a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
         },
         'type' => 'raw'
