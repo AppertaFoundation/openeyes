@@ -19,7 +19,7 @@
 
 <?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
     <div id="oe-admin-notifcation">
-        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short_admin']);?></span>
+        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_admin_short']);?></span>
         <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark_admin']);?></span>
         <i class="oe-i info pro-theme small no-click pad-left"></i>
     </div>
