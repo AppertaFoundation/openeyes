@@ -29,6 +29,10 @@
     pointer-events: none;
 }
 
+.oe-list-patient .oe-i.info.pro-theme {
+    background-image: url("../newblue/svg/in-css/icons/_classic/info.svg");
+}
+
 .oe-list-patient .patient-widgets .oe-patient-popup {
   top: unset;
 }
@@ -114,7 +118,7 @@
 .oe-list-patient .patient-demographics.active .icon,
 .oe-list-patient .patient-management.open .icon,
 .oe-list-patient .patient-management.active .icon {
-    fill: cyan;
+    fill: #286ee0;;
 }
 
 .patient-trials .icon {
@@ -183,7 +187,7 @@
 }
 
 .oe-list-patient .patient-allergies-risks.open, .oe-list-patient .patient-allergies-risks.active {
-    background-color: cyan;
+    background-color: #286ee0;
     background-image: url("../svg/in-css/icons/_classic/triangle.svg");
     color: #141e2b;
 }
@@ -205,7 +209,41 @@
 }
 
 
+
+.oe-list-patient .oe-patient-popup {
+    background: #d7d7d7;
+    border-color: #286ee0;
+}
+
+.oe-list-patient .oe-patient-popup .subtitle {
+    color: inherit;
+}
+
 .oe-patient-popup .nil-recorded {
     font-style: italic;
     color: rgba(255,255,255,0.5);
+}
+
+.oe-list-patient .oe-patient-popup .nil-recorded {
+    color: #0a0a0a;
+    opacity: 0.5;
+}
+
+.oe-list-patient .oe-patient-popup table.patient-demographics tr td,
+.oe-list-patient .oe-patient-popup table.risks td,
+.oe-list-patient table.management-summaries td,
+.oe-list-patient .oe-patient-popup .situational-awareness,
+.oe-list-patient .quicklook-data-groups,
+.oe-list-patient .quicklook-data-groups .group .label,
+.oe-list-patient .quicklook-data-groups table td
+{
+    color: #0a0a0a;
+}
+
+.oe-list-patient table.management-summaries tr {
+    border-top-color: #0a0a0a;
+}
+
+.oe-list-patient .quicklook-data-groups .group {
+    background-color: #f0f0f0;
 }
