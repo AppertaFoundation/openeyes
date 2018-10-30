@@ -94,51 +94,39 @@ $cols = array(
         'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
         'type' => 'raw',
     ),
-    array(
-        'name' => 'message-view',
+		array(
         'header' => '',
-        'value' =>
-            function ($data) {
-            return '<a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
-        },
-        'type' => 'raw'
-    ),
-);
-
-if (!$read_check) {
-    $cols[] = array(
-        'header' => 'Actions',
         'class' => 'CButtonColumn',
-        'template' => '{mark}{reply}',
+        'template' => '{mark}',
         'buttons' => array(
             'mark' => array(
                 'options' => array('title' => 'Mark as read'),
                 'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
                         "id" => $data->event->id,
                         "returnUrl" => \Yii::app()->request->requestUri))',
-                'label' => '<button class="warning small">dismiss</button>',
+                'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read New"></i>',
                 'visible' => function ($row, $data) {
-                    return !$data->message_type->reply_required
+                    return $data->marked_as_read === '0'
+												&& ($data->message_type_id !== '2'
                         || $data->comments
-                        || (\Yii::app()->user->id === $data->created_user_id);
-                },
-
-            ),
-            'reply' => array(
-                'options' => array('title' => 'Add a comment'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/view/", array(
-                                        "id" => $data->event->id,
-                                        "comment" => 1))',
-                'label' => '<button class="secondary small">Reply</button>',
-                'visible' => function ($row, $data) {
-                    return $data->message_type->reply_required
-                        && !$data->comments
-                        && (\Yii::app()->user->id !== $data->created_user_id);
+                        || (\Yii::app()->user->id === $data->created_user_id));
                 },
             ),
         ),
-    );
-}
+    ),
+    array(
+        'name' => 'message-view',
+        'header' => '',
+        'value' =>
+            function ($data) {
+            return '
+            <i class="oe-i info small pad js-has-tooltip" data-tooltip-content=" Virtual review request"></i> <!-- does the tooltip text need to be changed? -->
+            <a href="'.Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id)).'"><i class="oe-i direction-right-circle small pad"></i></a>';
+        },
+        'type' => 'raw'
+    ),
+);
+
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';
 ?>
