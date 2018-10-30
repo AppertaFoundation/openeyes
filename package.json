@@ -23,6 +23,7 @@
     "load-grunt-tasks": "^3.5.0"
   },
   "dependencies": {
-    "tinymce": "~4.8.0"
+    "plotly.js-dist": "^1.41.3",
+    "tinymce": "^4.8.2"
   }
 }
