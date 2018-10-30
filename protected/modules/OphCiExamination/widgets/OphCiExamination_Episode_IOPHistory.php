@@ -129,10 +129,12 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
       $events = $this->event_type->api->getEvents($this->patient, false);
       foreach ($events as $event) {
-        if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
+        $iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure');
+        if ($iop) {
           $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
           foreach (['left', 'right'] as $side) {
-            if ($reading = $iop->getReading($side)){
+            $reading = $iop->getReading($side);
+            if ($reading){
               array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
             }
           }

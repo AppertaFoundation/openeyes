@@ -124,7 +124,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             false
         ) as $va) {
             foreach (['left', 'right'] as $side){
-                if ($reading = $va->getBestReading($side)){
+              $reading = $va->getBestReading($side);
+                if ($reading){
                     $va_value = $this->getAdjustedVA((float)$reading->value);
                     $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
                 }
@@ -145,7 +146,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
       false
     ) as $va) {
       foreach (['left', 'right'] as $side){
-        if ($reading = $va->getBestReading($side)){
+        $reading = $va->getBestReading($side);
+        if ($reading){
           $va_value = $this->getAdjustedVA((float)$reading->value);
           $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>date('Y-m-d', Helper::mysqlDate2JsTimestamp($va->event->event_date)/1000));
         }
