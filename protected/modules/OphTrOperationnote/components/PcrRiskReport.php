@@ -28,41 +28,57 @@ class PcrRiskReport extends Report implements ReportInterface
         parent::__construct($app);
     }
 
-    protected $graphConfig = array(
-        'chart' => array('renderTo' => '', 'type' => 'spline'),
-        'title' => array('text' => 'PCR Rate (risk adjusted)'),
-        'subtitle' => array('text' => 'Total Operations: 0'),
-        'xAxis' => array(
-            'title' => array('text' => 'No. Operations'),
+    protected $plotlyConfig = array(
+      'type' => 'scatter',
+      'showlegend' => true,
+      'paper_bgcolor' => '#141e2b',
+      'plot_bgcolor' => '#141e2b',
+      'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+        'color' => 'rgb(255,255,255)',
+      ),
+      'xaxis' => array(
+        'title' => 'No. Operations',
+        'titlefont' => array(
+          'size' => 11,
         ),
-        'yAxis' => array(
-            'title' => array('text' => 'PCR Rate'),
-            'plotLines' => array(array(
-                'value' => 0,
-                'color' => 'black',
-                'dashStyle' => 'shortdash',
-                'width' => 1,
-                'label' => array('text' => 'Average'),
-            )),
-            'max' => 50,
-        ),
-        'tooltip' => array(
-            'headerFormat' => '<b>PCR Risk </b>',
-            'pointFormat' => '<b>{point.name}</b><br /><i>Operations</i>: {point.x} <br /> <i>PCR Avg</i>: {point.y:.2f}',
-        ),
-        'legend' => array(
-            'align' => 'right',
-            'verticalAlign' => 'top',
-            'layout' => 'vertical',
-            'x' => 0,
-            'y' => 50,
-            'floating' => true,
-            'borderWidth' => 1,
-        ),
-        'plotOptions' => array('spline' => array('marker' => array(
-            'enabled' => false,
-            'states' => array('hover' => array('enabled' => false)),
-        ))),
+        'showgrid' => false,
+        'ticks' => 'outside',
+        'dtick' => 100,
+        'tick0' => 0,
+      ),
+      'yaxis' => array(
+        'title' => 'PCR Rate',
+        'dtick' => 10,
+        'tick0' => 0,
+        'range' => [0,50],
+      ),
+      'legend'=> array(
+        'x' => 0.8,
+        'y' => 1,
+        'bordercolor' => '#fff',
+        'borderwidth' => 1,
+        'font' => array(
+          'size' => 13
+        )
+      ),
+      'shapes' => array(
+        array(
+          'type' => 'line',
+        'xref' => 'x',
+        'yref' => 'y',
+        'line' => array(
+          'dash' =>'dot',
+          'width' => 1,
+          'color' => 'rgb(255,255,255)',
+          ),
+        'x0' => 0,
+        'x1' => 1000,
+        'y0' => 0,
+        'y1' => 0,
+      )
+      ),
     );
 
     protected $totalOperations = 1000;
@@ -131,7 +147,6 @@ class PcrRiskReport extends Report implements ReportInterface
         }
 
         // set the graph subtitle here, so we don't have to run this query more than once
-        $this->graphConfig['subtitle']['text'] = "Total Operations: $total";
         if ($total > 1000) {
             $this->totalOperations = $total;
         }
@@ -148,37 +163,61 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function seriesJson()
-    {
-        if ($this->mode == 1) {
-            $this->series = array(
-                array(
-                    'name' => 'Current Surgeon',
-                    'type' => 'scatter',
-                    'data' => $this->dataSet(),
-                ),
-            );
-        } else {
-            $this->series = array(
-                array(
-                    'name' => 'Current Surgeon',
-                    'type' => 'scatter',
-                    'data' => $this->dataSet(),
-                ),
-                array(
-                    'name' => 'Upper 99.8%',
-                    'data' => $this->upper98(),
-                    'color' => 'red',
-                ),
-                array(
-                    'name' => 'Upper 95%',
-                    'data' => $this->upper95(),
-                    'color' => 'green',
-                ),
-            );
-        }
 
-        return json_encode($this->series);
+    public function tracesJson(){
+      $trace1 = array(
+        'name' => 'Current Surgeon',
+        'type' => 'scatter',
+        'x' => array_map(function($item){
+          return $item['x'];
+        }, $this->dataSet()),
+        'y' => array_map(function($item){
+          return $item['y'];
+        }, $this->dataSet()),
+        'hovertext' => array_map(function($item){
+          return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+            . $item['x'] . '<br><i>PCR Avg:</i>'
+            . number_format($item['y'], 2);
+        }, $this->dataSet()),
+        'hoverinfo'=>'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => '#1f77b4',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+      );
+      $trace2 = array(
+        'name' => 'Upper 99.8%',
+        'line' => array(
+          'color' => 'red',
+        ),
+        'x'=> array_map(function ($item){
+          return $item[0];
+        }, $this->upper98()),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $this->upper98()),
+        'hoverinfo' => 'skip',
+      );
+      $trace3 = array(
+        'name' => 'Upper 95%',
+        'line' => array(
+          'color' => 'green',
+        ),
+        'x'=> array_map(function ($item){
+                    return $item[0];
+              }, $this->upper95()),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $this->upper95()),
+        'hoverinfo' => 'skip',
+      );
+
+      $traces = array($trace1, $trace2, $trace3);
+      return json_encode($traces);
+
     }
 
     /**
@@ -210,14 +249,15 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        if ($this->mode == 0) {
-            $this->graphConfig['yAxis']['plotLines'][0]['value'] = $this->average();
-        }
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
 
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    public function plotlyConfig(){
+      if ($this->mode == 0) {
+        $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
+        $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
+      }
+      $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '
+        .$this->getTotalOperations().'</sub>';
+      return json_encode($this->plotlyConfig);
     }
 
     /**

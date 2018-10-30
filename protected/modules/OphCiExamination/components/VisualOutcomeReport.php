@@ -52,47 +52,37 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     /**
      * @var array
      */
-    protected $graphConfig = array(
-        'chart' => array(
-            'renderTo' => '',
-            'type' => 'bubble',
+    protected $plotlyConfig = array(
+      'showlegend' => false,
+      'paper_bgcolor' => '#141e2b',
+      'plot_bgcolor' => '#141e2b',
+      'title' => '',
+      'font' => array(
+        'family' => 'Roboto,Helvetica,Arial,sans-serif',
+        'color' => 'rgb(255,255,255)',
+      ),
+      'xaxis' => array(
+        'title' => 'Visual acuity at surgery (LogMAR)',
+        'titlefont' => array(
+          'size' => 11,
         ),
-        'tooltip' => array(
-                'useHTML' => true,
-                'headerFormat' => '<b>{series.name}</b><br>',
-                'pointFormat' => 'Number of eyes: {point.z}',
-        ),
-        'legend' => array('enabled' => false),
-        'title' => array('text' => 'Visual Acuity (Distance)'),
-        'subtitle' => array('text' => 'Total Eyes: 0'),
-        'xAxis' => array(
-            'title' => array('text' => 'Visual acuity at surgery (LogMAR)'),
-            'categories' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
-            'min' => 0,
-            'max' => 5,
-        ),
-        'yAxis' => array(
-            'title' => array('text' => 'Visual acuity 4 months after surgery (LogMAR)'),
-            'categories' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
-            'min' => 0,
-            'max' => 5,
-            'gridLineWidth' => 0,
-            'minorGridLineWidth' => 0,
-        ),
-        'plotOptions' => array(
-            'scatter' => array(
-                'tooltip' => array(
-                    'headerFormat' => '<b>Visual Acuity</b><br>',
-                    'pointFormat' => '<i>Before Surgery: {point.x}</i><br /> <i>After surgery:<i/> {point.y}',
-                ),
-            ),
-            'bubble' => array(
-                'minSize' => '3%',
-                'maxSize' => '17%',
-            ),
-        ),
+        'showline' => true,
+        'range' => [-1,6],
+        'ticks' => 'outside',
+        'tickvals' => array(0, 1, 2, 3, 4, 5),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'zeroline' => false,
+      ),
+      'yaxis' => array(
+        'title' => 'Visual acuity 4 months after surgery (LogMAR)',
+        'showline' => true,
+        'range' => [-1,6],
+        'tickvals' => array(0, 1, 2, 3, 4, 5),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'zeroline' => false,
+      ),
+      'hovermode'=>'closest',
     );
-
     /**
      * @param $app
      */
@@ -333,45 +323,67 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
     /**
      * @return string
      */
-    public function seriesJson()
-    {
-        $this->series = array(
-            array(
-                'data' => $this->dataSet(),
-                'name' => 'Visual Outcome',
-                'dataLabels' => array(
-                    'enabled' => true,
-                    'y' => -10, // -10 pixels down from the top
-                    'style' => array(
-                        'fontSize' => '13px',
-                        'fontFamily' => 'Verdana, sans-serif',
-                    ),
-                ),
-            ),
-            array(
-                'type' => 'line',
-                'data' => array(
-                    array(-1, -1),
-                    array(6, 6),
-                ),
-                'dashStyle' => 'longdash',
-                'marker' => array('enabled' => false),
-                'enableMouseTracking' => false,
-            ),
-        );
 
-        return json_encode($this->series);
+    public function tracesJson(){
+      $data = $this->dataSet();
+      $trace1 = array(
+        'name' => 'Visual Outcome',
+        'mode' => 'markers+text',
+        'font' =>  array(
+          'family' => 'Verdana, sans-serif',
+          'size' => 14,
+        ),
+        'x' => array_map(function ($item){
+          return $item[0];
+        }, $data),
+        'y' => array_map(function ($item){
+          return $item[1];
+        }, $data),
+        'text' => array_map(function ($item){
+          return '<b>' . $item[2] . '</b>';
+        }, $data),
+        'hovertext' => array_map(function ($item){
+          return '<b>Visual Outcome</b><br>Number of eyes: ' . $item[2];
+        }, $data),
+        'hoverinfo' => 'text',
+        'hoverlabel' => array(
+          'bgcolor' => '#fff',
+          'bordercolor' => '#7cb5ec',
+          'font' => array(
+            'color' => '#000',
+          ),
+        ),
+        'marker' => array(
+          'color' => '#7cb5ec',
+          'size' => array_map(function ($item){
+            return $item[2];
+          }, $data),
+          'sizeref' => 0.02,
+          'sizemode' => 'area',
+        ),
+      );
+
+      $trace2 = array(
+        'type' => 'line',
+        'x' => array(-1, 6),
+        'y' => array(-1, 6),
+        'line' => array(
+          'dash' => 'longdash',
+          'color' => 'rgb(255,255,255)',
+          'width' => 1,
+        ),
+      );
+
+      $traces = array($trace1, $trace2);
+      return json_encode($traces);
     }
-
     /**
      * @return string
      */
-    public function graphConfig()
-    {
-        $this->graphConfig['chart']['renderTo'] = $this->graphId();
-        $this->graphConfig['subtitle']['text'] = 'Total Eyes: '.$this->totalEyes;
 
-        return json_encode(array_merge_recursive($this->globalGraphConfig, $this->graphConfig));
+    public function plotlyConfig(){
+      $this->plotlyConfig['title'] = 'Visual Acuity (Distance)<br><sub>Total Eyes: '.$this->totalEyes.'</sub>';
+      return json_encode($this->plotlyConfig);
     }
 
     /**
