@@ -225,9 +225,17 @@ class Patient extends BaseActiveRecordVersioned
         $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
 
         $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+        $current_date =  new DateTime("now");
+        $earliest_date =  new DateTime('01-01-1900');
+        $current_date->format('d-m-Y');
 
         if( !$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+        }
+        if( $patient_dob_date > $current_date){
+            $this->addError($attribute, 'Date of Birth should be before current date.');
+        }elseif ($patient_dob_date < $earliest_date){
+            $this->addError($attribute, "Patient's Date of Birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
         }
     }
     public function deathDateFormatValidator($attribute, $params)
