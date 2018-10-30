@@ -49,7 +49,6 @@ class DashboardController extends BaseDashboardController
         $assetManager = Yii::app()->getAssetManager();
         $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');
         $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-        $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         $assetManager->registerScriptFile('js/dashboard/initCataract.js', null, null, AssetManager::OUTPUT_ALL, false);
 
         $this->headerTemplate = '//dashboard/header_cataract';
@@ -180,7 +179,6 @@ class DashboardController extends BaseDashboardController
         $this->headerTemplate = '//dashboard/header_oescape';
 
         $assetManager = Yii::app()->getAssetManager();
-        $assetManager->registerScriptFile('js/dashboard/dash.js', null, null, AssetManager::OUTPUT_ALL, false);
         Yii::app()->clientScript->registerScript('patientId', 'var patientId = '.$id.';', CClientScript::POS_HEAD);
         $assetManager->registerScriptFile('js/dashboard/initOEscape.js', null, null, AssetManager::OUTPUT_ALL, false);
 

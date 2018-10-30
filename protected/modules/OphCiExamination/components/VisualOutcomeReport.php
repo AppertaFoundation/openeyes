@@ -54,9 +54,12 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected $plotlyConfig = array(
       'showlegend' => false,
+      'paper_bgcolor' => '#141e2b',
+      'plot_bgcolor' => '#141e2b',
       'title' => '',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
+        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
@@ -366,7 +369,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'y' => array(-1, 6),
         'line' => array(
           'dash' => 'longdash',
-          'color' => 'black',
+          'color' => 'rgb(255,255,255)',
           'width' => 1,
         ),
       );

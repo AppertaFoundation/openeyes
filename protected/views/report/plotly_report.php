@@ -24,6 +24,7 @@
         'orbitRotation', 'tableRotation', 'toggleSpikelines',
         'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian'],
       responsive: true,
+      displaylogo: false,
     }
   );
 </script>

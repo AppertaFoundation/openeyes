@@ -31,9 +31,12 @@ class PcrRiskReport extends Report implements ReportInterface
     protected $plotlyConfig = array(
       'type' => 'scatter',
       'showlegend' => true,
+      'paper_bgcolor' => '#141e2b',
+      'plot_bgcolor' => '#141e2b',
       'title' => '',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
+        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'No. Operations',
@@ -54,7 +57,7 @@ class PcrRiskReport extends Report implements ReportInterface
       'legend'=> array(
         'x' => 0.8,
         'y' => 1,
-        'bordercolor' => '#000',
+        'bordercolor' => '#fff',
         'borderwidth' => 1,
         'font' => array(
           'size' => 13
@@ -68,6 +71,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'dash' =>'dot',
           'width' => 1,
+          'color' => 'rgb(255,255,255)',
           ),
         'x0' => 0,
         'x1' => 1000,
@@ -195,19 +199,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'y' => array_map(function ($item){
           return $item[1];
         }, $this->upper98()),
-        'hovertext' => array_map(function($item){
-          return '<b>PCR Risk</b><br><i>Operations:</i> '
-            . $item[0] . '<br><i>PCR Avg:</i>'
-            . number_format($item[1], 2);
-        }, $this->upper98()),
-        'hoverinfo'=>'text',
-        'hoverlabel' => array(
-          'bgcolor' => '#fff',
-          'bordercolor' => 'red',
-          'font' => array(
-            'color' => '#000',
-          ),
-        ),
+        'hoverinfo' => 'skip',
       );
       $trace3 = array(
         'name' => 'Upper 95%',
@@ -220,19 +212,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'y' => array_map(function ($item){
           return $item[1];
         }, $this->upper95()),
-        'hovertext' => array_map(function($item){
-          return "<b>PCR Risk</b><br><i>Operations:</i> "
-            . $item[0] . "<br><i>PCR Avg:</i> "
-            . number_format($item[1], 2);
-        }, $this->upper95()),
-        'hoverinfo'=>'text',
-        'hoverlabel' => array(
-          'bgcolor' => '#fff',
-          'bordercolor' => 'green',
-          'font' => array(
-            'color' => '#000',
-          ),
-        ),
+        'hoverinfo' => 'skip',
       );
 
       $traces = array($trace1, $trace2, $trace3);
