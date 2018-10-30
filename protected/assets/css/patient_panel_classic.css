@@ -20,7 +20,7 @@
     left: 200px;
     height: 60px;
     /*width: 545px;*/
-    background: transparent url("../svg/in-css/backgrounds/patient-watermark.svg") top -4px right 10px no-repeat;
+    /*background: transparent url("../svg/in-css/backgrounds/patient-watermark.svg") top -4px right 10px no-repeat;*/
     background-size: 90px 90px;
     font-size: 0.6875rem;
 }
@@ -52,13 +52,26 @@
     right: 0;
 }
 
-.oe-list-patient .hospital-number, .oe-list-patient .nhs-number, .oe-list-patient .patient-gender, .oe-list-patient .patient-age, .oe-list-patient .warning {
+.oe-list-patient .hospital-number,
+.oe-list-patient .nhs-number,
+.oe-list-patient .patient-gender,
+.oe-list-patient .patient-age,
+.oe-list-patient .warning {
     display: inline-block;
     padding: 0 6px 5px 6px;
     border-left: 1px solid #26303d;
 }
 
-.oe-list-patient .hospital-number span, .oe-list-patient .hospital-number em, .oe-list-patient .nhs-number span, .oe-list-patient .nhs-number em, .oe-list-patient .patient-gender span, .oe-list-patient .patient-gender em, .oe-list-patient .patient-age span, .oe-list-patient .patient-age em, .oe-list-patient .warning span, .oe-list-patient .warning em {
+.oe-list-patient .hospital-number span,
+.oe-list-patient .hospital-number em,
+.oe-list-patient .nhs-number span,
+.oe-list-patient .nhs-number em,
+.oe-list-patient .patient-gender span,
+.oe-list-patient .patient-gender em,
+.oe-list-patient .patient-age span,
+.oe-list-patient .patient-age em,
+.oe-list-patient .warning span,
+.oe-list-patient .warning em {
     opacity: 0.5;
 }
 
@@ -185,6 +198,8 @@
     height: 15px;
 }
 
-.oe-list-patient .patient-local-edit .icon:hover, .oe-list-patient .patient-local-edit .icon:focus, .oe-list-patient .patient-local-edit .icon:active {
+.oe-list-patient .patient-local-edit .icon:hover,
+.oe-list-patient .patient-local-edit .icon:focus,
+.oe-list-patient .patient-local-edit .icon:active {
     opacity: 1;
 }
