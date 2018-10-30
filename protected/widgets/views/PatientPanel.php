@@ -33,7 +33,7 @@ if ($this->trial) {
 ?>
 
 <div id="oe-patient-details"
-     class="<?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?>"
+     class="js-oe-patient <?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?>"
      data-patient-id="<?= $this->patient->id ?>"
 
 >
