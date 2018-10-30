@@ -197,3 +197,8 @@
 .oe-list-patient .patient-local-edit .icon:active {
     opacity: 1;
 }
+
+.oe-patient-popup .nil-recorded {
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+}
