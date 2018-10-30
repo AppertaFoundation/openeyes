@@ -49,6 +49,7 @@ function setMRFlags_options(options){
     fillcolor: options['color'],
     line: {
       width: 0
-    }
+    },
+    layer: options['layer'],
   };
 }

@@ -60,10 +60,13 @@
 
     var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
 
-    var va_plotly_ticks = pruneYTicks(va_ticks, 800, 17);
+    var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 17);
 
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
+    var flag_height = 20;
+    var flag_width = 8;
+    var flag_height_perc = 0.8
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
@@ -126,8 +129,8 @@
 
 
       var j = Object.keys(injections_data[side]).length+1;
-      flags_yaxis['range'] = [0, 20*j];
-      flags_yaxis['domain'] = [0, 0.05*j];
+      flags_yaxis['range'] = [0, flag_height*j];
+      flags_yaxis['domain'] = [0, 0.08*j];
       flags_yaxis['ticktext'] = [];
       flags_yaxis['tickvals'] = [];
 
@@ -143,20 +146,21 @@
       };
 
       //Set the flags for injections
+
       for (var key in injections_data[side]){
         flags_yaxis['ticktext'].push(key);
-        flags_yaxis['tickvals'].push(20 * (j - 0.5));
+        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
 
         for (var i in injections_data[side][key]) {
           text['x'].push(new Date(injections_data[side][key][i]['x']));
-          text['y'].push(20 * (j - 0.5));
+          text['y'].push(flag_height * (j - flag_height_perc));
           text['hovertext'].push(key);
 
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
-            y0: 20 * j,
-            x1: new Date(injections_data[side][key][i]['x'] + 86400000 * 10),
-            y1: 20 * (j - 0.5),
+            y0: flag_height * j,
+            x1: new Date(injections_data[side][key][i]['x'] + 86400000 * flag_width),
+            y1: flag_height * (j - flag_height_perc),
             color: (side == 'right') ? '#9fec6d' : '#fe6767',
             yaxis: 'y3',
           };
@@ -167,18 +171,18 @@
 
       //set the flags for letters >5
       flags_yaxis['ticktext'].push('>5');
-      flags_yaxis['tickvals'].push(20 * (j-0.5));
+      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
 
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
-        text['y'].push( 20*(j-0.5));
+        text['y'].push( flag_height*(j- flag_height_perc));
         text['hovertext'].push('>5');
 
         var line_shape = {
           x0: new Date(VA_lines_data[side][i]['x']),
-          y0: 20*j,
-          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * 10),
-          y1: 20*(j - 0.5),
+          y0: flag_height * j,
+          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * flag_width),
+          y1: flag_height * (j - flag_height_perc),
           color: (side == 'right') ? '#9fec6d' : '#fe6767',
           yaxis: 'y3',
         };
@@ -198,6 +202,24 @@
       octImgStack['left'] = new initStack($('#oct-stack'), 'oct_img_', doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
 
       var currentPlot = document.getElementById('plotly-MR-'+side);
+
+      for (var i = Object.keys(injections_data[side]).length+1; i > 0 ; i--){
+        var inj_background = {
+          x0: currentPlot.layout.xaxis.range[0],
+          y0: flag_height * i,
+          x1: currentPlot.layout.xaxis.range[1],
+          y1: flag_height * (i - flag_height_perc),
+          layer: 'below',
+          color: '#242e3a',
+          yaxis: 'y3',
+        };
+        currentPlot.layout.shapes.push(setMRFlags_options(inj_background));
+      }
+
+      Plotly.relayout(currentPlot);
+
+
+      layout_MR['shapes'].push(setMRFlags_options(inj_background));
       currentPlot.on('plotly_hover', function (data) {
         for(var i=0; i < data.points.length; i++){
           var tn = data.points[i].curveNumber;

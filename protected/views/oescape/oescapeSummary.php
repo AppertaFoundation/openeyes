@@ -138,4 +138,5 @@ if (!empty($subspecialty)) { ?>
       }
     }
   });
+
 </script>
