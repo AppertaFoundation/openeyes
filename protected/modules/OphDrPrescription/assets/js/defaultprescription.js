@@ -127,11 +127,7 @@ $('#prescription-select-btn').on('click', function () {
 });
 
 $('#add-prescription-drug-types').delegate('li', 'click', function () {
-  if ($(this).hasClass('selected')) {
-    $(this).removeClass('selected');
-  } else {
-    $(this).addClass('selected');    
-  }
+  $(this).toggleClass('selected'); 
 
   updatePrescriptionResults();
   return false;
