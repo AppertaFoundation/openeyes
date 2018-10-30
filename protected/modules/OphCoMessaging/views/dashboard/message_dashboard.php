@@ -21,10 +21,16 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
+			<li>
+				<?=\CHtml::link(
+					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
+					'#',
+					array('id' => 'display-unread', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+			</li>
       <li>
         <?=\CHtml::link(
-            $number_inbox_unread > 0 ? "Inbox ($number_inbox_unread)" : 'Inbox',
-            '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+            $number_inbox_unread > 0 ? "All Messages ($number_inbox_unread)" : 'All Messages',
+            '#', array('id' => 'display-inbox', 'class' => @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
       </li>
       <li>
         <?=\CHtml::link(
@@ -37,18 +43,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 					$number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
 					'#',
 					array('id' => 'display-query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
-			</li>
-			<li>
-				<?=\CHtml::link(
-					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
-					'#',
-					array('id' => 'display-unread', 'class' => @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
-			</li>
-			<li>
-				<?=\CHtml::link(
-					"Read",
-					'#',
-					array('id' => 'display-read', 'class' => @$_GET['messages'] === 'read' ? 'selected' : '')); ?>
 			</li>
       <li>
         <?=\CHtml::link(
@@ -78,9 +72,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 			case 'unread':
 					$messages = $unread;
 					break;
-			case 'read':
-					$messages = $read;
-					break;
       case 'sent':
           $messages = $sent;
           break;
@@ -101,7 +92,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-				var filter_options = ['inbox', 'urgent', 'query', 'unread', 'read', 'sent'];
+				var filter_options = ['inbox', 'urgent', 'query', 'unread', 'sent'];
 				for (let option of filter_options) {
 						$('#display-' + option).click(function (e) {
 							e.preventDefault();
