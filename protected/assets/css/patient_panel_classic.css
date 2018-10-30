@@ -6,6 +6,13 @@
     fill: #fff;
 }
 
+.oe-patient .patient-trials {
+    padding: 5px 12px 4px 8px;
+    bottom: 0px;
+    right: -30px;
+    position: absolute;
+    cursor: pointer;
+}
 
 .oe-list-patient {
     /*position: absolute;*/
@@ -18,12 +25,15 @@
     font-size: 0.6875rem;
 }
 
+.oe-list-patient svg {
+    pointer-events: none;
+}
+
 .oe-list-patient .patient-widgets .oe-patient-popup {
   top: unset;
 }
 
 .oe-list-patient .patient-name {
-    position: absolute;
     top: 12px;
     left: 0;
     font-size: 1.0625rem;
@@ -31,7 +41,6 @@
 }
 
 .oe-list-patient .patient-details {
-    position: absolute;
     bottom: 0;
     left: 0;
     padding: 0 20px 0 0;
@@ -59,12 +68,12 @@
     font-size: 0.8125rem;
 }
 
+.oe-list-patient .patient-trials,
 .oe-list-patient .patient-quicklook,
 .oe-list-patient .patient-demographics,
 .oe-list-patient .patient-management,
 .oe-list-patient .patient-allergies-risks,
 .oe-list-patient .patient-local-edit {
-    position: absolute;
     padding: 5px 12px 4px 8px;
     cursor: pointer;
 }
@@ -93,6 +102,11 @@
 .oe-list-patient .patient-management.open .icon,
 .oe-list-patient .patient-management.active .icon {
     fill: cyan;
+}
+
+.patient-trials .icon {
+    width: 15px;
+    height: 15px;
 }
 
 .oe-list-patient .patient-quicklook {
