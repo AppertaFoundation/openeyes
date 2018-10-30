@@ -64,9 +64,9 @@ $cols = array(
         'htmlOptions'=>array('class' => 'nowrap'),
         'value' => function ($data) {
         		$urgent_icon = $data->urgent ? '
-            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+            <i class="js-has-tooltip" data-tooltip-content="Urgent"><svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
         		$query_icon = $data->message_type_id === '2' ? '
-						<svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
+						<i class="js-has-tooltip" data-tooltip-content="Query"><svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
             return $urgent_icon . $query_icon;
         },
         'type' => 'raw',
@@ -104,7 +104,7 @@ $cols = array(
                 'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
                         "id" => $data->event->id,
                         "returnUrl" => \Yii::app()->request->requestUri))',
-                'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read New"></i>',
+                'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
                 'visible' => function ($row, $data) {
                     return $data->marked_as_read === '0'
 												&& ($data->message_type_id !== '2'
