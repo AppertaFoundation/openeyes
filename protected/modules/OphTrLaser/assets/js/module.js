@@ -37,6 +37,12 @@ $(document).ready(function() {
 		}
 		return false;
 	});
+        
+        handleButton($('#et_print'),function(e) {
+            printIFrameUrl(OE_print_url, null);
+            enableButtons();
+            e.preventDefault();
+	});
 
 
 	$('select.populate_textarea').unbind('change').change(function() {
