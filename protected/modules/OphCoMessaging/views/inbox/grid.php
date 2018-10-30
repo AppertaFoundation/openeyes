@@ -66,7 +66,7 @@ $cols = array(
         		$urgent_icon = $data->urgent ? '
             <i class="js-has-tooltip" data-tooltip-content="Urgent"><svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
         		$query_icon = $data->message_type_id === '2' ? '
-						<i class="js-has-tooltip" data-tooltip-content="Query"><svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
+						<i class="js-has-tooltip" data-tooltip-content="Reply requested"><svg class="reply-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg></i>' : '';
             return $urgent_icon . $query_icon;
         },
         'type' => 'raw',
