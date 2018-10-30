@@ -338,27 +338,27 @@
   $(document).ready(function () {
     var ticketController = new TicketController();
 
-    $(this).on('click', '.ticket-take', function (e) {
+    $(this).on('click', '.ticket-take', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.takeTicket(ticketInfo);
     });
 
-    $(this).on('click', '.ticket-release', function (e) {
+    $(this).on('click', '.ticket-release', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.releaseTicket(ticketInfo);
     });
 
-    $(this).on('click', '.ticket-history', function (e) {
+    $(this).on('click', '.ticket-history', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.toggleHistory(ticketInfo);
     });
 
-    $(this).on('click', '.remove-circle', function (e) {
+    $(this).on('click', '.remove-circle', function () {
       var ticketInfo = $(this).closest('tr').prev().data('ticket-info');
       ticketController.toggleHistory(ticketInfo);
     });
 
-    $(this).on('click', '.undo-last-queue-step', function (e) {
+    $(this).on('click', '.undo-last-queue-step', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
 
       $.ajax({
@@ -374,7 +374,7 @@
       });
     });
 
-    $(this).on('change', '#subspecialty-id', function (e) {
+    $(this).on('change', '#subspecialty-id', function () {
       var subspecialty_id = $(this).val();
 
       if (subspecialty_id === '') {
