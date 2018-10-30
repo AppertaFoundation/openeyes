@@ -40,8 +40,8 @@ var layout_plotly = {
     t:30,
     pad:4,
   },
-  paper_bgcolor: 'rgba(0,0,0,0)',
-  plot_bgcolor: 'rgba(0,0,0,0)',
+  paper_bgcolor: '#141e2b',
+  plot_bgcolor: '#141e2b',
   /* legend settings */
   showlegend: true,
   legend: {
