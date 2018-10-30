@@ -57,6 +57,7 @@ class BaseLabResultElement extends BaseEventTypeElement
         $criteria->join .= ' LEFT JOIN et_ophinlabresults_details on et_ophinlabresults_details.event_id = event.id ';
         $criteria->addCondition('et_ophinlabresults_details.result_type_id = :type');
         $criteria->addCondition('episode.patient_id = :patientId');
+        $criteria->addCondition('event.deleted = 0');
         $criteria->order = 'event.event_date DESC, event.created_date DESC';
         $criteria->limit = 1;
         $criteria->params = array(

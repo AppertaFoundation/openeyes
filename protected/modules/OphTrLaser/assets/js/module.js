@@ -70,13 +70,14 @@ $(document).ready(function() {
 			$('#laser_select_hint').slideDown('fast');
 		}
 	});
-
-    initSiteSelector();
+    if($('#Element_OphTrLaser_Site_site_id').length) {
+        initSiteSelector();
+    }
 });
 
 function initSiteSelector() {
     // if site contains lasers
-    if (lasers_available) {
+    if (typeof lasers_available !== 'undefined' && lasers_available) {
         var site_selector = $('#Element_OphTrLaser_Site_site_id');
         // set the site
         site_selector.val(site_id);
