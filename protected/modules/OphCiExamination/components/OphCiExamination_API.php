@@ -1066,7 +1066,7 @@ class OphCiExamination_API extends \BaseAPI
         $use_context = false
     )
     {
-        $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
+        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -1084,7 +1084,7 @@ class OphCiExamination_API extends \BaseAPI
         $use_context = false
     )
     {
-        $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
+        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
     }
 
     /**
