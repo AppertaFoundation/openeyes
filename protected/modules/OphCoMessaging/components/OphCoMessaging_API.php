@@ -154,7 +154,13 @@ class OphCoMessaging_API extends \BaseAPI
             $criteria->addCondition('t.urgent != 0');
         }
 				if ($query_only) {
-					$criteria->addCondition('t.message_type_id = "2"');
+                    $message_type_query_id = \Yii::app()->db->createCommand()
+                        ->select('id')
+                        ->from('ophcomessaging_message_message_type')
+                        ->where('name = :name', array(':name' => 'Query'))->queryScalar();
+
+					$criteria->addCondition("t.message_type_id = :message_type_id");
+					$params[':message_type_id'] = $message_type_query_id;
 				}
 				if ($unread_only) {
 					$criteria->addCondition('t.marked_as_read != "1"');

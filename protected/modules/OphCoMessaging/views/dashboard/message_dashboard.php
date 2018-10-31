@@ -24,36 +24,36 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
       <li>
         <?=\CHtml::link(
             $number_inbox_unread > 0 ? "Inbox ($number_inbox_unread)" : 'Inbox',
-            '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
       </li>
       <li>
         <?=\CHtml::link(
             $number_urgent_unread > 0 ? "Urgent ($number_urgent_unread)" : 'Urgent',
             '#',
-            array('id' => 'display-urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
+            array('id' => 'display-urgent', 'data-filter' => 'urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
 			<li>
 				<?=\CHtml::link(
 					$number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
 					'#',
-					array('id' => 'display-query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
+					array('id' => 'display-query', 'data-filter' => 'query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
 			</li>
 			<li>
 				<?=\CHtml::link(
 					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
 					'#',
-					array('id' => 'display-unread', 'class' => @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+					array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
 			</li>
 			<li>
 				<?=\CHtml::link(
 					"Read",
 					'#',
-					array('id' => 'display-read', 'class' => @$_GET['messages'] === 'read' ? 'selected' : '')); ?>
+					array('id' => 'display-read', 'data-filter' => 'read', 'class' => @$_GET['messages'] === 'read' ? 'selected' : '')); ?>
 			</li>
       <li>
         <?=\CHtml::link(
             $number_sent_unread > 0 ? "Sent ($number_sent_unread)" : 'Sent',
-            '#', array('id' => 'display-sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
+            '#', array('id' => 'display-sent', 'data-filter' => 'sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
       </li>
     </ul>
     <div class="search-messages">
@@ -101,13 +101,11 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-				var filter_options = ['inbox', 'urgent', 'query', 'unread', 'read', 'sent'];
-				for (let option of filter_options) {
-						$('#display-' + option).click(function (e) {
-							e.preventDefault();
-							window.location.href = jQuery.query.set('messages', option)
-						});
-				}
+
+        $('.filter-messages').on('click', 'a', function (e) {
+            e.preventDefault();
+            window.location.href = jQuery.query.set('messages', $(this).data('filter'));
+        });
 
         $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
           pickmeup('#' + $(this).attr('id'), {
