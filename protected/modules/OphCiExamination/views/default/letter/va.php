@@ -61,13 +61,13 @@ if (empty($LR_readings)) {
   <tbody>
   <?php foreach ($LR_readings as $method => $readings): ?>
     <tr>
-      <td">
+      <td>
           <?= $method ?>
       </td>
-      <td">
+      <td>
           <?= array_key_exists('right', $readings) ? $readings['right'] : ' - ' ?>
       </td>
-      <td">
+      <td>
           <?= array_key_exists('left', $readings) ? $readings['left'] : ' - ' ?>
       </td>
     </tr>
