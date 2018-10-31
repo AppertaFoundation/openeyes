@@ -21,15 +21,15 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
-			<li>
-				<?=\CHtml::link(
-					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
-					'#',
-					array('id' => 'display-unread', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
-			</li>
+        <li>
+            <?=\CHtml::link(
+                $number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
+                '#',
+                array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+        </li>
       <li>
         <?=\CHtml::link(
-            $number_inbox_unread > 0 ? "Inbox ($number_inbox_unread)" : 'Inbox',
+            $number_inbox_unread > 0 ? "All Messages ($number_inbox_unread)" : 'All Messages',
             '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
 
       </li>
@@ -39,24 +39,12 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
             '#',
             array('id' => 'display-urgent', 'data-filter' => 'urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
-			<li>
-				<?=\CHtml::link(
-					$number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
-					'#',
-					array('id' => 'display-query', 'data-filter' => 'query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
-			</li>
-			<li>
-				<?=\CHtml::link(
-					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
-					'#',
-					array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
-			</li>
-			<li>
-				<?=\CHtml::link(
-					"Read",
-					'#',
-					array('id' => 'display-read', 'data-filter' => 'read', 'class' => @$_GET['messages'] === 'read' ? 'selected' : '')); ?>
-			</li>
+        <li>
+            <?=\CHtml::link(
+                $number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
+                '#',
+                array('id' => 'display-query', 'data-filter' => 'query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
+        </li>
       <li>
         <?=\CHtml::link(
             $number_sent_unread > 0 ? "Sent ($number_sent_unread)" : 'Sent',
