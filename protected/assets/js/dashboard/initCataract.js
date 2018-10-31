@@ -22,11 +22,5 @@ $(document).ready(function() {
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome');
     OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome');
 
-    $('#export').on('click', function(){
-        Highcharts.exportCharts(OpenEyes.Dash.reports,{
-            type: 'application/pdf',
-            filename: 'cataract-audit'
-        });
-    });
 });
 
