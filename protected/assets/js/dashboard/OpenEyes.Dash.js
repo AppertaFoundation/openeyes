@@ -284,7 +284,6 @@
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
           var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
-          console.log(chart);
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
@@ -300,16 +299,16 @@
             chart.layout['title'] = 'Visual Acuity ('+ type_text +')<br><sub>Total Eyes: ' + total +'</sub>';
             chart.layout['yaxis']['title'] = 'Visual acuity '+months+' months'+ (months > 1 ? 's' : '') +' after surgery (LogMAR)';
 
-            chart.data[0]['x'] = data.map(function (item){
+            chart.data[1]['x'] = data.map(function (item){
               return item[0];
             });
-            chart.data[0]['y'] = data.map(function (item){
+            chart.data[1]['y'] = data.map(function (item){
               return item[1];
             });
-            chart.data[0]['text'] = data.map(function (item){
+            chart.data[1]['text'] = data.map(function (item){
               return item[2];
             });
-            chart.data[0]['hovertext'] = data.map(function (item){
+            chart.data[1]['hovertext'] = data.map(function (item){
               return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
             });
             Plotly.redraw(chart);

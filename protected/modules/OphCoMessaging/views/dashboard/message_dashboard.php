@@ -21,21 +21,34 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
+        <li>
+            <?=\CHtml::link(
+                $number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
+                '#',
+                array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+        </li>
       <li>
         <?=\CHtml::link(
-            $inbox_unread > 0 ? "Inbox ($inbox_unread)" : 'Inbox',
-            '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+            $number_inbox_unread > 0 ? "All Messages ($number_inbox_unread)" : 'All Messages',
+            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+
       </li>
       <li>
         <?=\CHtml::link(
-            $urgent_unread > 0 ? "Urgent ($urgent_unread)" : 'Urgent',
+            $number_urgent_unread > 0 ? "Urgent ($number_urgent_unread)" : 'Urgent',
             '#',
-            array('id' => 'display-urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
+            array('id' => 'display-urgent', 'data-filter' => 'urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
+        <li>
+            <?=\CHtml::link(
+                $number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
+                '#',
+                array('id' => 'display-query', 'data-filter' => 'query', 'class' => @$_GET['messages'] === 'query' ? 'selected' : '')); ?>
+        </li>
       <li>
         <?=\CHtml::link(
-            $sent_unread > 0 ? "Sent ($sent_unread)" : 'Sent',
-            '#', array('id' => 'display-sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
+            $number_sent_unread > 0 ? "Sent ($number_sent_unread)" : 'Sent',
+            '#', array('id' => 'display-sent', 'data-filter' => 'sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
       </li>
     </ul>
     <div class="search-messages">
@@ -49,11 +62,16 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
     </div>
   </div>
   <?php
-
   switch (@$_GET['messages']) {
       case 'urgent':
           $messages = $urgent;
           break;
+			case 'query':
+					$messages = $query;
+					break;
+			case 'unread':
+					$messages = $unread;
+					break;
       case 'sent':
           $messages = $sent;
           break;
@@ -62,6 +80,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
           $messages = $inbox;
           break;
   }
+	if(!array_key_exists('messages', $_GET)){$messages = $unread;}
 
   echo $this->renderPartial('OphCoMessaging.views.inbox.grid', array(
     'module_class' => 'OphCoMessaging',
@@ -75,19 +94,9 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $('#display-inbox').click(function(e) {
+        $('.filter-messages').on('click', 'a', function (e) {
             e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'inbox')
-        });
-
-        $('#display-urgent').click(function(e) {
-            e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'urgent')
-        });
-
-        $('#display-sent').click(function(e) {
-            e.preventDefault();
-            window.location.href = jQuery.query.set('messages', 'sent')
+            window.location.href = jQuery.query.set('messages', $(this).data('filter'));
         });
 
         $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {

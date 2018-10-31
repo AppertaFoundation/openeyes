@@ -41,7 +41,5 @@
             <?= Yii::app()->format->Ntext($ass->notes) ?>
         </div>
     </td>
-    <td class="actions">
-        <i class="oe-i remove-circle"></i>
-    </td>
+    <td>&nbsp;</td>
 </tr>
