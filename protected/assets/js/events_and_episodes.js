@@ -402,6 +402,10 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
         openButtons.click(function showAdder() {
         		positionFixedPopup(openButtons, adderDiv);
             adderDiv.show();
+
+		  if(adderDiv.offset().top < 0){
+		  	positionFixedPopup(openButtons, adderDiv);
+		  }
         });
     }
 
@@ -457,6 +461,10 @@ function positionFixedPopup($btn, adderDiv = null){
   // set CSS Fixed position
   adderDiv.css(	{	"bottom":bottom,
     "right":right });
+
+  if(adderDiv.offset().top < 0){
+  	adderDiv.css({"bottom":Math.floor(bottom+adderDiv.offset().top)});
+  }
 
   /*
   Close popup on...

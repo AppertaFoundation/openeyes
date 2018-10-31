@@ -68,19 +68,11 @@
       .append($('<i />', {class: 'oe-i remove-circle medium'}));
     content.append($closeButton);
 
-    var $addButton = $('<button />', {
-      class: 'button hint green add-icon-btn',
-      type: 'button'
-    }).append($('<i />', {class: 'oe-i plus pro-theme'}));
+    var $addButton = $('<div />', {
+      class: 'add-icon-btn'
+    }).append($('<i />', {class: 'oe-i plus pad pro-theme selected'}));
+    $addButton.append('Click to add');
 
-    if (this.options.searchOptions) {
-      this.searchWrapper = $('<div />', {class: 'search-options'});
-      this.searchWrapper.appendTo(content);
-      this.generateSearch();
-      if (this.options.itemSets) {
-        this.generateMenu(content);
-      }
-    }
 
     content.append($addButton);
 
@@ -91,7 +83,15 @@
     content.insertAfter(this.options.openButton);
     this.popup = this.options.openButton.siblings('.oe-add-select-search');
     this.generateContent();
-    this.popup.hide();
+
+      if (this.options.searchOptions) {
+          let $td = $('<td />');
+          this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+          $td.appendTo(this.$tr);
+          this.generateSearch();
+      }
+
+      this.popup.hide();
 
     if (this.options.onSelect) {
       this.popup.on('click', 'li', this.options.onSelect);
@@ -126,52 +126,22 @@
   AdderDialog.prototype.generateContent = function () {
     var dialog = this;
     if (this.options.itemSets) {
-      this.selectWrapper = $('<div />', {class: 'select-options'});
+      this.selectWrapper = $('<table />', {class: 'select-options'});
+      let headers = $('<thead />').appendTo(this.selectWrapper);
       this.selectWrapper.appendTo(this.popup);
-      var $headers = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.selectWrapper);
-      var $container = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.popup);
+      var $container = $('<tbody />');
       $container.appendTo(this.selectWrapper);
-      $(this.options.itemSets).each(function (index, itemSet) {
-        $('<div />', {class: 'add-options cols-full'}).text(itemSet.options.header).appendTo($headers);
+        this.$tr = $('<tr />').appendTo($container);
+
+        $(this.options.itemSets).each(function (index, itemSet) {
+        $('<th />').text(itemSet.options.header).appendTo(headers);
+        let $td = $('<td />').appendTo(dialog.$tr);
+        let $listContainer = $('<div />' , {class:'flex-layout flex-top flex-left'}).appendTo($td);
         var $list = dialog.generateItemList(itemSet);
-        $list.appendTo($container);
+        let $listDiv = $('<div />').appendTo($listContainer);
+        $list.appendTo($listDiv);
       });
     }
-  };
-
-  /**
-   * Creates the menu items for the popup, depending on what items are required
-   * @param {object} content The DOM reference to the content of the popup
-   */
-  AdderDialog.prototype.generateMenu = function (content) {
-    var dialog = this;
-
-    var $selectButton = $('<div />', {class: 'select-icon-btn'})
-      .append($('<i />', {class: 'oe-i menu selected'}));
-
-    var $searchButton = $('<div />', {class: 'search-icon-btn'})
-      .append($('<i />', {class: 'oe-i search'}));
-
-    $selectButton.appendTo(content);
-    $searchButton.appendTo(content);
-
-    $selectButton.click(function () {
-      $(this).find('i').addClass('selected');
-      $searchButton.find('i').removeClass('selected');
-
-      dialog.searchWrapper.hide();
-      dialog.selectWrapper.show();
-      dialog.popup.find('li').removeClass('selected');
-    });
-
-    $searchButton.click(function () {
-      $(this).find('i').addClass('selected');
-      $selectButton.find('i').removeClass('selected');
-
-      dialog.searchWrapper.show();
-      dialog.selectWrapper.hide();
-      dialog.popup.find('li').removeClass('selected');
-    });
   };
 
   /**
@@ -186,18 +156,18 @@
       placeholder: 'search',
       type: 'text'
     });
-    $searchInput.appendTo(this.searchWrapper);
+    let $filterDiv = $('<div />' , {class: 'has-filter'}).appendTo(this.searchWrapper);
+    $searchInput.appendTo($filterDiv);
 
     $searchInput.on('keyup', function () {
       dialog.runItemSearch($(this).val());
     });
 
     this.noSearchResultsWrapper = $('<span />').text('No results found');
-    this.noSearchResultsWrapper.appendTo(this.searchWrapper);
+    this.noSearchResultsWrapper.appendTo($filterDiv);
 
-    this.searchResultList = $('<ul />', {class: 'add-options js-search-results', style: 'display: none;'});
-    this.searchResultList.appendTo(this.searchWrapper);
-    this.searchWrapper.hide();
+    this.searchResultList = $('<ul />', {class: 'add-options js-search-results'});
+    this.searchResultList.appendTo($filterDiv);
   };
 
   /**
@@ -218,8 +188,17 @@
    */
   AdderDialog.prototype.generateItemList = function (itemSet) {
     var dialog = this;
+    let additionalClasses = '';
+    if(itemSet.options.multiSelect){
+      additionalClasses += ' multi';
+    } else {
+      additionalClasses += ' single';
+    }
+    if (itemSet.options.number){
+      additionalClasses += ' number';
+    }
     var $list = $('<ul />', {
-      class: 'add-options cols-full',
+      class: 'add-options cols-full' + additionalClasses,
       'data-multiselect': itemSet.options.multiSelect,
       'data-id': itemSet.options.id
     });
