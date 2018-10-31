@@ -14,7 +14,7 @@
  */
 $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
-<tr data-index="<?= $index ?>" data-side="<?php echo $side ?>" data-index="<?php echo $index ?>">
+<tr data-index="<?= $index ?>" data-side="<?= $side ?>" data-index="<?= $index ?>">
   <td>
       <?= CHtml::textField(
               "{$base_name}[reading_time]",
@@ -49,21 +49,11 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
           );
       } ?>
   </td>
-    <?php if ($element->getSetting('show_instruments')): ?>
-      <td class="cols-5 instrument">
-          <?= $form->dropDownList(
-                  $value,
-                  'instrument_id',
-                  CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->
-                    findAllByAttributes(['visible' => 1]), 'id', 'name'),
-                  array(
-                      'nowrapper' => true,
-                      'class' => 'IOPinstrument cols-11',
-                      'name' => "{$base_name}[instrument_id]"
-                  )
-          )?>
+    <td>
+    <input type="hidden" name="<?= $base_name ?>[instrument_id]"
+           id="<?= $base_name ?>[instrument_id]" value="<?= $instrumentId ?>"/>
+    <div><?= $instrumentName ?></div>
       </td>
-    <?php endif ?>
   <td class="cols-2"><?= CHtml::hiddenField("{$base_name}[eye_id]", ($side == 'left') ? Eye::LEFT : Eye::RIGHT) ?><i
         class="oe-i trash"></i></td>
 </tr>

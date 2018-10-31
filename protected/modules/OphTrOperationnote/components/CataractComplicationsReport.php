@@ -142,7 +142,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
           ),
         ),
       );
-
+      $this->plotlyConfig['xaxis']['range'] =[0, max($trace1['x'])];
       $traces = array($trace1);
       return json_encode($traces);
     }

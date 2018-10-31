@@ -50,6 +50,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       ),
       'xaxis' => array(
         'title' => 'PPOR - POR (Dioptres)',
+        'range' => [0,40],
         'ticks' => 'outside',
         'tickvals' => [],
         'ticktext' => [],
@@ -58,6 +59,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       'yaxis' => array(
         'title' => 'Number of eyes',
         'showline' => true,
+        'ticks' => 'outside',
       ),
     );
 
@@ -186,6 +188,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $dataSet[$category] = $rowTotal;
         }
 
+      $this->plotlyConfig['yaxis']['range'] = [0, max(array_map(function($item){
+        return $item[1];
+      }, $dataSet))];
       return $dataSet;
     }
 
@@ -199,7 +204,6 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       $this->plotlyConfig['xaxis']['ticktext'][] = $i;
       $this->plotlyConfig['xaxis']['tickvals'][] = $j;
     }
-
   }
 
 
