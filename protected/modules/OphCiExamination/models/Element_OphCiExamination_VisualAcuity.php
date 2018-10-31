@@ -441,10 +441,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
      */
     public function getLetter_string()
     {
-       $va_unit = OphCiExamination_VisualAcuityUnit::model()->find(
-           "id=?" ,
-           [$this->getSetting('unit_id')]
-       );
+       $va_unit = OphCiExamination_VisualAcuityUnit::model()->findByPk($this->getSetting('unit_id'));
         if (!$unit = OphCiExamination_VisualAcuityUnit::model()->find(
             'name = ?',
             array(Yii::app()->params['ophciexamination_visualacuity_correspondence_unit'])
