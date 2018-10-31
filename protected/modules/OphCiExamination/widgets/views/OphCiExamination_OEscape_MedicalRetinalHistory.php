@@ -64,9 +64,9 @@
 
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
-    var flag_height = 20;
+    var flag_height = 5;
     var flag_width = 8;
-    var flag_height_perc = 0.8
+    var flag_height_perc = 0.8;
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
@@ -130,7 +130,7 @@
 
       var j = Object.keys(injections_data[side]).length+1;
       flags_yaxis['range'] = [0, flag_height*j];
-      flags_yaxis['domain'] = [0, 0.08*j];
+      flags_yaxis['domain'] = [0, 0.04*j];
       flags_yaxis['ticktext'] = [];
       flags_yaxis['tickvals'] = [];
 
