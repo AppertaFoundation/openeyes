@@ -21,10 +21,17 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
     <ul class="filter-messages">
+			<li>
+				<?=\CHtml::link(
+					$number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
+					'#',
+					array('id' => 'display-unread', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'unread' ? 'selected' : '')); ?>
+			</li>
       <li>
         <?=\CHtml::link(
             $number_inbox_unread > 0 ? "Inbox ($number_inbox_unread)" : 'Inbox',
             '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+
       </li>
       <li>
         <?=\CHtml::link(
@@ -67,7 +74,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
     </div>
   </div>
   <?php
-
   switch (@$_GET['messages']) {
       case 'urgent':
           $messages = $urgent;
@@ -78,9 +84,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 			case 'unread':
 					$messages = $unread;
 					break;
-			case 'read':
-					$messages = $read;
-					break;
       case 'sent':
           $messages = $sent;
           break;
@@ -89,6 +92,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
           $messages = $inbox;
           break;
   }
+	if(!array_key_exists('messages', $_GET)){$messages = $unread;}
 
   echo $this->renderPartial('OphCoMessaging.views.inbox.grid', array(
     'module_class' => 'OphCoMessaging',

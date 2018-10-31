@@ -56,7 +56,6 @@ class OphCoMessaging_API extends \BaseAPI
         $urgent_messages = $this->getInboxMessages($user, true);
         $query_messages = $this->getInboxMessages($user, false, true);
         $unread_messages = $this->getInboxMessages($user, false, false, true);
-        $read_messages = $this->getInboxMessages($user, false, false,false, true);
 
         // Generate the dashboard widget HTML.
         $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
@@ -66,7 +65,6 @@ class OphCoMessaging_API extends \BaseAPI
                 'query' => $query_messages['list'],
                 'number_inbox_unread' => $inbox_messages['number_unread'],
                 'unread' => $unread_messages['list'],
-                'read' => $read_messages['list'],
                 'number_sent_unread' => $sent_messages['number_unread'],
                 'number_urgent_unread' => $urgent_messages['number_unread'],
                 'number_query_unread' => $query_messages['number_unread'],
@@ -93,7 +91,7 @@ class OphCoMessaging_API extends \BaseAPI
      *
      * @return array data provider and total unread messages
      */
-    private function getInboxMessages($user = null, $urgent_only = false, $query_only = false, $unread_only = false, $read_only = false)
+    private function getInboxMessages($user = null, $urgent_only = false, $query_only = false, $unread_only = false)
     {
         if ($user === null) {
             $user = \Yii::app()->user;
@@ -164,8 +162,6 @@ class OphCoMessaging_API extends \BaseAPI
 				}
 				if ($unread_only) {
 					$criteria->addCondition('t.marked_as_read != "1"');
-				} elseif ($read_only){
-					$criteria->addCondition('t.marked_as_read = "1"');
 				}
         $criteria->params = $params;
 
@@ -186,16 +182,9 @@ class OphCoMessaging_API extends \BaseAPI
         $unread_criteria->mergeWith($criteria);
         $number_unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
-        $read_criteria = new \CDbCriteria();
-				$read_criteria->addCondition('t.marked_as_read = 1');
-				$read_criteria->mergeWith($criteria);
-				$read_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($read_criteria);
-
-
         return array(
             'list' => $dp,
             'number_unread' => $number_unread_messages,
-						'number_read' => $read_messages
         );
     }
 
