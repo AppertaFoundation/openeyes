@@ -29,13 +29,13 @@
         </thead>
         <tbody>
         <?php
-        foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) { ?>
+        foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) { ?>
             <tr class="clickable" data-uri="admin/editSetting?key=<?=$metadata->key;?>">
                 <td><?php echo $metadata->name ?></td>
                 <td>
                     <?php
                     if ($metadata->getSettingName()) {
-                        echo CHtml::htmlButton($metadata->getSettingName(), ['class' => 'oe-filter-btn']);
+                        echo $metadata->getSettingName();
                     }
                     ?>
                 </td>
