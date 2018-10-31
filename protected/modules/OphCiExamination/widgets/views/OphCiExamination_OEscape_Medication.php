@@ -57,9 +57,10 @@
         }
       }
       data.push(text_trace);
+
       layout_meds['title'] = "Medications, IOP, VA & MD";
       layout_meds['yaxis'] = meds_yaxis;
-      layout_meds['height'] = 25*Object.keys(meds_data[side]).length+130;
+      layout_meds['height'] = 25*Object.keys(meds_data[side]).length+50;
       layout_meds['showlegend'] = false;
       layout_meds['xaxis'] = meds_xaxis;
       layout_meds['yaxis']['range'] = [Object.keys(meds_data[side]).length-0.5, -1];
