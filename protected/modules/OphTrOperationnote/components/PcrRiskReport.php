@@ -50,6 +50,7 @@ class PcrRiskReport extends Report implements ReportInterface
       ),
       'yaxis' => array(
         'title' => 'PCR Rate',
+        'ticks' => 'outside',
         'dtick' => 10,
         'tick0' => 0,
         'range' => [0,50],
