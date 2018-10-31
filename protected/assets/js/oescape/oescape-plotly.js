@@ -38,7 +38,7 @@ var layout_plotly = {
   margin:{
     l:50,
     t:30,
-    b:0,
+    b: 50,
     pad:4,
   },
   paper_bgcolor: '#141e2b',
