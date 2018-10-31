@@ -116,8 +116,6 @@
                 data: $searchForm.serialize() + '&' + $('#search-form').serialize(),
                 dataType: 'json',
                 success: function (data, textStatus, jqXHR) {
-                    chart = OpenEyes.Dash.reports[chartId];
-                    chart.series[0].setData(data);
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
@@ -198,16 +196,30 @@
 
     Dash.postUpdate = {
         'PcrRiskReport': function(data){
-            var chart = OpenEyes.Dash.reports['PcrRiskReport'];
-            var newTitle = '';
-            if($('#pcr-risk-mode').val() == 0){
-                newTitle = 'PCR Rate (risk adjusted)';
-            }else if($('#pcr-risk-mode').val() == 1){
-                newTitle = 'PCR Rate (risk unadjusted)';
-            }else if($('#pcr-risk-mode').val() == 2){
-                newTitle = 'PCR Rate (risk adjusted & unadjusted)';
-            }
-            chart.setTitle({text: newTitle}, {text: 'Total Operations: ' +  data[0]['x']} );
+          var newTitle = '';
+          if($('#pcr-risk-mode').val() == 0){
+            newTitle = 'PCR Rate (risk adjusted)';
+          }else if($('#pcr-risk-mode').val() == 1){
+            newTitle = 'PCR Rate (risk unadjusted)';
+          }else if($('#pcr-risk-mode').val() == 2){
+            newTitle = 'PCR Rate (risk adjusted & unadjusted)';
+          }
+
+            var chart = $('#PcrRiskReport')[0];
+
+            chart.data[0]['x'] = data.map(function (item) {
+              return item['x'];
+            });
+            chart.data[0]['y'] = data.map(function (item) {
+              return item['y'];
+            });
+            chart.data[0]['hovertext'] = data.map(function (item){
+              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2);
+            });
+
+            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+data[0]['x']+'</sub>';
+
+            Plotly.redraw(chart);
         },
         'OEModule_OphCiExamination_components_RefractiveOutcomeReport': function(data){
             var total = 0,
@@ -215,7 +227,7 @@
                 plusOrMinusHalf = 0,
                 plusOrMinusOnePercent = 0,
                 plusOrMinusHalfPercent = 0,
-                chart = OpenEyes.Dash.reports['OEModule_OphCiExamination_components_RefractiveOutcomeReport'];
+                chart = $('#OEModule_OphCiExamination_components_RefractiveOutcomeReport')[0];
 
             for(var i = 0; i < data.length; i++){
                 total += parseInt(data[i][1], 10);                              
@@ -233,20 +245,46 @@
             
             plusOrMinusHalfPercent = plusOrMinusOne > 0 ? ( (plusOrMinusOne / total) * 100 ) : 0;
             plusOrMinusOnePercent = plusOrMinusHalf > 0 ? ( (plusOrMinusHalf / total) * 100 ) : 0;
-            
-            chart.setTitle(null, {text: 'Total eyes: ' + total + ', ±0.5D: ' + Number(plusOrMinusOnePercent).toFixed(1) + '%, ±1D: ' + Number(plusOrMinusHalfPercent).toFixed(1) + '%'});
+            chart.layout['title'] = 'Refractive Outcome: mean sphere (D)<br>' +
+              '<sub>Total eyes: ' + total +
+              ', ±0.5D: ' + plusOrMinusOnePercent.toFixed(1) + '%, ±1D: '+ plusOrMinusHalfPercent.toFixed(1)+'%</sub>';
+            chart.data[0]['x'] = data.map(function (item) {
+              return item[0];
+            });
+            chart.data[0]['y'] = data.map(function (item) {
+              return item[1];
+            });
+            chart.data[0]['hovertext'] = data.map(function (item) {
+              return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
+                chart.layout['xaxis']['ticktext'][item[0]] +
+                '<br><i>Num Eyes:</i> '+ item[1];
+            });
+            Plotly.redraw(chart);
         },
         'CataractComplicationsReport': function(data){
+          var chart = $('#CataractComplicationsReport')[0];
+          chart.data[0]['x'] = data.map(function (item) {
+            if (item['y']) {
+              return item['y'];
+            } else {
+              return 0;
+            }
+          });
             $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
-                    var chart = OpenEyes.Dash.reports['CataractComplicationsReport'];
-                    chart.setTitle(null, {text: 'Total Complications: ' + data[0] + " Total Operations: " + data[1]} );
+                    chart.layout['title'] =  'Complication Profile<br>' +
+                      '<sub>Total Complications: '+ data[0] +
+                      ' Total Operations: ' + data[1] + '</sub>';
                 }
             });
+          Plotly.redraw(chart);
+
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
+          var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
+          console.log(chart);
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
@@ -259,9 +297,22 @@
                     total += data[i][2];
                 }
             }
-            
-            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].yAxis[0].setTitle({ text: "Visual acuity " + months + " month" + (months > 1 ? 's' : '') + " after surgery (LogMAR)" });
-            OpenEyes.Dash.reports['OEModule_OphCiExamination_components_VisualOutcomeReport'].setTitle({ text: "Visual Acuity (" + type_text + ")" },{text: "Total Eyes: " + total});
+            chart.layout['title'] = 'Visual Acuity ('+ type_text +')<br><sub>Total Eyes: ' + total +'</sub>';
+            chart.layout['yaxis']['title'] = 'Visual acuity '+months+' months'+ (months > 1 ? 's' : '') +' after surgery (LogMAR)';
+
+            chart.data[0]['x'] = data.map(function (item){
+              return item[0];
+            });
+            chart.data[0]['y'] = data.map(function (item){
+              return item[1];
+            });
+            chart.data[0]['text'] = data.map(function (item){
+              return item[2];
+            });
+            chart.data[0]['hovertext'] = data.map(function (item){
+              return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
+            });
+            Plotly.redraw(chart);
         }
     };
 
