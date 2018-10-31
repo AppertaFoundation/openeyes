@@ -57,8 +57,8 @@ if ($flash_message) {
   </div>
   <span id="PatientTicketing-queue-assignment" data-queue="<?= $this->ticket->current_queue->id ?>">
       <?php $buttons = '<div class="row flex-layout flex-right">
-                          <button class="green hint js-ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">Next step</button>
-                          <button class="red hint js-cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Exit</button>
+                          <button class="green hint ok" type="button" data-queue="' . $this->ticket->current_queue->id . '">Next step</button>
+                          <button class="red hint cancel" type="button" data-queue="' . $this->ticket->current_queue->queueset->id . '" data-category="' . $this->ticket->current_queue->queueset->category_id . '">Exit</button>
                         </div>';
 
       $buttons_drawn = false;
