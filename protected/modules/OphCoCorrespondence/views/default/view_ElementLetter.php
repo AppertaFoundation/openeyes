@@ -113,10 +113,17 @@ if($correspondeceApp === "on") {
         </table>
     </div>
     <?php } ?>
+    <div class="spinner-overlay">
+        <i class="spinner"></i>
+        <img src="#"
+             width="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>"
+             height="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>"
+             style="background-color: white;"
+        >
+    </div>
     <div id="correspondence_out"
          class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
-         style="background-color: white; color: black; padding: 10px; display:block;">
-        <i class="js-correspondence-image-spinner spinner"></i>
+         style="background-color: white; color: black; padding: 10px; display:none;">
             <header>
                 <?php
             $ccString = "";
@@ -189,7 +196,7 @@ if($correspondeceApp === "on") {
                 response = JSON.parse(response);
                 if(response.error){
                     $('#correspondence_out').show();
-                    $('.js-correspondence-image-spinner').hide();
+                    $('.spinner-overlay').hide();
                 } else {
                     if(response.page_count === 1){
                         $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
@@ -198,11 +205,11 @@ if($correspondeceApp === "on") {
                             $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
                         }
                     }
-                     $('#correspondence_out').hide();
-                     $('#correspondence_image_0').show();
+                        $('.spinner-overlay').hide();
+                        $('#correspondence_image_0').show();
+                    }
                     new OpenEyes.OphCoCorrespondence.DocumentViewerController();
                 }
-            }
-        });
+            });
     });
 </script>
