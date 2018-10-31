@@ -70,7 +70,7 @@
 
     var $addButton = $('<div />', {
       class: 'add-icon-btn'
-    }).append($('<i />', {class: 'oe-i plus pad pro-theme'}));
+    }).append($('<i />', {class: 'oe-i plus pad pro-theme selected'}));
     $addButton.append('Click to add');
 
 
