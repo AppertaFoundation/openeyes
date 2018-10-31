@@ -30,7 +30,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
       <li>
         <?=\CHtml::link(
             $number_inbox_unread > 0 ? "All Messages ($number_inbox_unread)" : 'All Messages',
-            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
+            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => isset($_GET['messages']) && $_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
 
       </li>
       <li>
