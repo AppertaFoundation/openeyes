@@ -349,12 +349,12 @@
     });
 
     $(this).on('click', '.ticket-history', function (e) {
+      if (this.innerHTML === 'History') {
+        this.innerHTML = 'Hide History';
+      } else {
+        this.innerHTML = 'History';
+      }
       var ticketInfo = $(this).closest('tr').data('ticket-info');
-      ticketController.toggleHistory(ticketInfo);
-    });
-
-    $(this).on('click', '.remove-circle', function (e) {
-      var ticketInfo = $(this).closest('tr').prev().data('ticket-info');
       ticketController.toggleHistory(ticketInfo);
     });
 
