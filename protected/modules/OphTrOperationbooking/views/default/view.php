@@ -21,7 +21,7 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
 
-$this->beginContent('//patient/event_container', array('no_face'=>true)); 
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 
 $this->moduleNameCssClass .= ' highlight-fields';
 $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';
@@ -64,11 +64,6 @@ if ($warnings) { ?>
     $this->renderOpenElements($this->action->id);
     $this->renderOptionalElements($this->action->id);
     ?>
-<?php 
+<?php
 $this->renderPartial('//default/delete');
-// Event actions
-if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::printButton();
-}
-?>
-<?php $this->endContent();?>
+$this->endContent(); ?>
