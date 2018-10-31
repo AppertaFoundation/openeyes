@@ -42,12 +42,11 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
     protected $plotlyConfig = array(
       'type' => 'bar',
       'showlegend' => false,
-      'paper_bgcolor' => '#141e2b',
-      'plot_bgcolor' => '#141e2b',
+      'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'title' => '',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
-        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'PPOR - POR (Dioptres)',
