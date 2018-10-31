@@ -85,14 +85,10 @@
     this.generateContent();
 
       if (this.options.searchOptions) {
-
           let $td = $('<td />');
           this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
           $td.appendTo(this.$tr);
           this.generateSearch();
-          if (this.options.itemSets) {
-              this.generateMenu(content);
-          }
       }
 
       this.popup.hide();
@@ -133,7 +129,6 @@
       this.selectWrapper = $('<table />', {class: 'select-options'});
       let headers = $('<thead />').appendTo(this.selectWrapper);
       this.selectWrapper.appendTo(this.popup);
-      // var $headers = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo(this.selectWrapper);
       var $container = $('<tbody />');
       $container.appendTo(this.selectWrapper);
         this.$tr = $('<tr />').appendTo($container);
@@ -147,41 +142,6 @@
         $list.appendTo($listDiv);
       });
     }
-  };
-
-  /**
-   * Creates the menu items for the popup, depending on what items are required
-   * @param {object} content The DOM reference to the content of the popup
-   */
-  AdderDialog.prototype.generateMenu = function (content) {
-    var dialog = this;
-
-    var $selectButton = $('<div />', {class: 'select-icon-btn'})
-      .append($('<i />', {class: 'oe-i menu selected'}));
-
-    var $searchButton = $('<div />', {class: 'search-icon-btn'})
-      .append($('<i />', {class: 'oe-i search'}));
-
-    // $selectButton.appendTo(content);
-    // $searchButton.appendTo(content);
-    //
-    // $selectButton.click(function () {
-    //   $(this).find('i').addClass('selected');
-    //   $searchButton.find('i').removeClass('selected');
-    //
-    //   dialog.searchWrapper.hide();
-    //   dialog.selectWrapper.show();
-    //   dialog.popup.find('li').removeClass('selected');
-    // });
-    //
-    // $searchButton.click(function () {
-    //   $(this).find('i').addClass('selected');
-    //   $selectButton.find('i').removeClass('selected');
-    //
-    //   dialog.searchWrapper.show();
-    //   dialog.selectWrapper.hide();
-    //   dialog.popup.find('li').removeClass('selected');
-    // });
   };
 
   /**
