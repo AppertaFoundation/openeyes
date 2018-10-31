@@ -50,7 +50,7 @@ if (@$htmlOptions['id']) {
         default_date: false,
         max: '<?= @$options['maxDate'] ?>',
           <?php if (array_key_exists('minDate', $options)) { ?>
-        min: <?= $options['minDate'] === 'today' ? 'new Date()' : 'new Date(' . $options['minDate'] . ')' ?>
+        min: <?= $options['minDate'] === 'today' ? 'new Date()' : 'new Date("' . $options['minDate'] . '")' ?>,
           <?php } ?>
       });
       if (pmu && datefield.val()) {

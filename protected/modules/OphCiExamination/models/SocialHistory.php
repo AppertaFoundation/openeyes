@@ -204,7 +204,7 @@ class SocialHistory extends \BaseEventTypeElement
      */
     public function getDisplayAlcoholIntake()
     {
-        if ($this->alcohol_intake) {
+        if (isset($this->alcohol_intake)) {
             return $this->alcohol_intake . ' units/week';
         }
         return '';
