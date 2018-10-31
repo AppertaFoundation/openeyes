@@ -22,7 +22,7 @@ $( document ).ready(function() {
     }
 });
 
-function callbackAddProcedure(procedure_id) {
+async function callbackAddProcedure(procedure_id) {
     var eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
 
     $.ajax({
