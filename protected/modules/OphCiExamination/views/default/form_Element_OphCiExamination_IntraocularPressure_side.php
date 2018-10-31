@@ -42,6 +42,7 @@ $comments = $side . '_comments';
     </thead>
     <tbody>
     <?php
+    $instrument_model = OEModule\OphCiExamination\models\OphCiExamination_Instrument::model();
     foreach ($element->{"{$side}_values"} as $index => $value) {
         $this->renderPartial(
             "{$element->form_view}_reading",
@@ -51,6 +52,8 @@ $comments = $side . '_comments';
                 'side' => $side,
                 'index' => $index,
                 'time' => substr($value->reading_time, 0, 5),
+                'instrumentId' => $value->instrument_id,
+                'instrumentName' => $instrument_model->findByPk($value->instrument_id)->name,
                 'value' => $value,
             )
         );
@@ -58,7 +61,7 @@ $comments = $side . '_comments';
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments"
+  <div id="iop-<?= $side; ?>-comments"
        class="comment-group js-comment-container field-row-pad-top flex-layout flex-left"
        style="<?php if (!$element->$comments): ?>display: none;<?php endif; ?>"
        data-comment-button="#iop-<?= $side ?>-comment-button">
@@ -75,10 +78,10 @@ $comments = $side . '_comments';
 
 <div class="add-data-actions flex-item-bottom">
   <div class="flex-item-bottom">
-    <button id="iop-<?php echo $side; ?>-comment-button"
+    <button id="iop-<?= $side; ?>-comment-button"
             type="button"
             class="button js-add-comments"
-            data-comment-container="#iop-<?php echo $side; ?>-comments"
+            data-comment-container="#iop-<?= $side; ?>-comments"
             style="<?php if ($element->$comments): ?>visibility: hidden;<?php endif; ?>"
     >
       <i class="oe-i comments small-icon"></i>
@@ -100,6 +103,8 @@ $comments = $side . '_comments';
             'index' => '{{index}}',
             'time' => '{{time}}',
             'instrument' => '{{instrument}}',
+            'instrumentId' => '{{instrumentId}}',
+            'instrumentName' => '{{instrumentName}}',
             'value' => new models\OphCiExamination_IntraocularPressure_Value(),
         )
     );
@@ -112,15 +117,50 @@ $comments = $side . '_comments';
     new OpenEyes.UI.AdderDialog({
       id: 'add-to-iop',
       openButton: side.find('.js-add-select-search'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($instrument) {
-              return ['label' => $instrument->name, 'id' => $instrument->id];
-          },
-              OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
-      ) ?>)],
-      returnOnSelect: true,
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($instrument) {
+                return ['label' => $instrument->name, 'id' => $instrument->id];
+            },
+                OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]))
+        ) ?>, {'multiSelect': true})],
+        onReturn: function (adderDialog, selectedItems) {
+            for (let i = 0; i < selectedItems.length; i++) {
+                OphCiExamination_IntraocularPressure_addReading(
+                    '<?=$side?>',
+                    selectedItems[i]['id'],
+                    selectedItems[i]['label']);
+                let $table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + '<?=$side?>');
+                let $table_row = $table.find("tr:last");
+                let $scale_td = $table_row.find("td.scale_values");
+                let index = $table_row.data('index');
+
+                getScaleDropdown(selectedItems[i]['id'], $scale_td, index, '<?=$side?>');
+            };
+            return true;
+        },
     });
   });
+
+  function OphCiExamination_IntraocularPressure_addReading(side, instrumentId, instrumentName) {
+      var table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + side);
+      var indices = table.find('tr').map(function () {
+          return $(this).data('index');
+      });
+
+      table.find("tbody").append(
+          Mustache.render(
+              template = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_reading_template_" + side).text(),
+              {
+                  index: indices.length ? Math.max.apply(null, indices) + 1 : 0,
+                  time: (new Date).toTimeString().substr(0, 5),
+                  instrumentId: instrumentId,
+                  instrumentName: instrumentName
+              }
+          )
+      );
+
+      table.show();
+  }
 </script>
 
 
