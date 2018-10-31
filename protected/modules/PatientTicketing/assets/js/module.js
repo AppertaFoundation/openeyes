@@ -140,8 +140,8 @@
     this.dialog = new OpenEyes.UI.Dialog({
       content: Mustache.render(template, templateVals)
     });
-    this.dialog.content.on('click', '.js-ok', this.submitTicketMove.bind(this));
-    this.dialog.content.on('click', '.js-cancel', this.dialog.close.bind(this.dialog));
+    this.dialog.content.on('click', '.ok', this.submitTicketMove.bind(this));
+    this.dialog.content.on('click', '.cancel', this.dialog.close.bind(this.dialog));
     this.dialog.open();
     if (firstSelect.length) {
       this.dialog.content.find('#to_queue_id').trigger('change');

@@ -276,7 +276,7 @@
 
     initialContentHash = getContentHash();
 
-    $(document).on('click', ticketMoveController.options.formClass + ' .js-ok', function (e) {
+    $(document).on('click', ticketMoveController.options.formClass + ' .ok', function (e) {
       e.preventDefault();
       ticketMoveController.submitForm($(this).closest('form'));
     });
