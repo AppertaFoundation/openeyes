@@ -66,4 +66,9 @@ if ($warnings) { ?>
     ?>
 <?php
 $this->renderPartial('//default/delete');
-$this->endContent(); ?>
+// Event actions
+if ($this->checkPrintAccess()) {
+    $this->event_actions[] = EventAction::printButton();
+}
+?>
+<?php $this->endContent();?>
