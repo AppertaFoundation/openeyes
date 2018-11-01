@@ -35,7 +35,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 ?>
 
 <tr data-key="<?=$row_count?>"
-    style="display: <?= $entry->originallyStopped ? 'none' : 'block'?>"
+    style="display: <?= $entry->originallyStopped ? 'none' : ''?>"
     class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>" >
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
