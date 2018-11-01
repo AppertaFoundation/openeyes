@@ -1756,9 +1756,6 @@ function OphCiExamination_InjectionManagementComplex_loadQuestions(side) {
     $.ajax({
         'type': 'GET',
         'url': OphCiExamination_loadQuestions_url + '?' + $.param(params),
-        'beforeSend': function(){
-            $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions_Parent').slideUp();
-        },
         'success': function(html) {
             // ensure we maintain any answers for questions that still remain after load (e.g. only level 2 has changed)
             let answers = {};
@@ -1770,15 +1767,15 @@ function OphCiExamination_InjectionManagementComplex_loadQuestions(side) {
                 answers[$(this).attr('id')] = $(this).val();
             });
 
+            questions.replaceWith(html);
+
+            // !! to make sure it is a boolean
+            parent.toggle(!!$(html).children().length);
+
             for (var ans in answers) {
                 if (answers.hasOwnProperty(ans)) {
                     $('#'+ans+'[value='+answers[ans]+']').attr('checked', 'checked');
                 }
-            }
-
-            questions.replaceWith(html);
-            if ($(html).children().length) {
-                parent.slideDown();
             }
         }
     });
@@ -1791,6 +1788,7 @@ function OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side) {
     if (el.is(":visible") && el.val()) {
         let l2_el = $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_' + side + '_diagnosis2_id');
         let l2_data = $(el).find('option:selected').data('level2');
+        let l2_selected_val = l2_el.val();
 
         l2_el.find('option').remove();
         l2_el.append( $('<option>').text("- Please Select -") );
@@ -1801,17 +1799,18 @@ function OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side) {
                 l2_el.append($option);
             }
             l2_wrapper.slideDown();
+            l2_el.attr("disabled", false);
 
         } else {
             l2_wrapper.slideUp();
+            l2_el.attr("disabled", true);
         }
+        l2_el.val(l2_selected_val);
         OphCiExamination_InjectionManagementComplex_loadQuestions(side);
     }
     else {
         l2_wrapper.slideUp();
-        $('#Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions_Parent').slideUp(2000, function() {
-            $('#Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions').html('');
-        });
+        $('#Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions').html('');
     }
 }
 
