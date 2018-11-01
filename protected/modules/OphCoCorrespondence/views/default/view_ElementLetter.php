@@ -21,7 +21,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 if($correspondeceApp === "on") {
     ?>
 <div class="element-fields full-width flex-layout flex-top col-gap" style="padding: 10px;">
-    <div class="cols-5 ">
+    <div class="cols-3 ">
         <table class="cols-full">
             <tr>
                 <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
@@ -199,10 +199,10 @@ if($correspondeceApp === "on") {
                     $('.spinner-overlay').hide();
                 } else {
                     if(response.page_count === 1){
-                        $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
+                        $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none; max-width: 800px">');
                     } else {
                         for (let index = 0; index < response.page_count; index++) {
-                            $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
+                            $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none; max-width: 800px">');
                         }
                     }
                         $('.spinner-overlay').hide();

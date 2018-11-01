@@ -523,7 +523,14 @@ return array(
             'blank_image_template' => array(
                 'height' => 800,
                 'width' => 600
-            )
+            ),
+            'event_specific' => array(
+                'Correspondence' => array(
+                    'compression_quality' => 100,
+                    'resolution_multiplier' => 2,
+                    'image_width' => 1000
+                ),
+            ),
         ),
     ),
 );
