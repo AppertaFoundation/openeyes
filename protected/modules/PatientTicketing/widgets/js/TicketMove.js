@@ -281,7 +281,7 @@
       ticketMoveController.submitForm($(this).closest('form'));
     });
 
-    $(document).on('click', ticketMoveController.options.formClass + ' .js-cancel', function () {
+    $(document).on('click', ticketMoveController.options.formClass + ' .cancel', function () {
       var queueset_id = $(this).data('queue');
       var category_id = $(this).data('category');
       delete(window.changedTickets[queueset_id]);
