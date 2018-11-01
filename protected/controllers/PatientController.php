@@ -1328,6 +1328,11 @@ class PatientController extends BaseController
         if ($this->patient) {
             $this->jsVars['OE_patient_id'] = $this->patient->id;
             $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
+            $this->jsVars['OE_patient_firstname'] = $this->patient->first_name;
+            $this->jsVars['OE_patient_lastname'] = $this->patient->last_name;
+            $this->jsVars['OE_patient_dob'] = str_replace("-","",$this->patient->dob);
+            $this->jsVars['OE_patient_address'] = $this->patient->getSummaryAddress("^");
+            $this->jsVars['OE_patient_gender'] = $this->patient->gender;
         }
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;

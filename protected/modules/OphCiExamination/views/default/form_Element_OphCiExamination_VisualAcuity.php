@@ -16,7 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<style>
+    div.fadeFullScreen {
+        background: rgba(0,0,0,0.5);
+        width:      100%;
+        height:     100%;
+        z-index:    10000;
+        top:        0;
+        left:       0;
+        position:   fixed;
+    }
+
+    div.fadeContent{
+        background-color: white;
+        width:      30%;
+        height:     30%;
+        top:        50%;
+        left:       40%;
+        position:   fixed;
+        color:      black;
+        padding:    20px;
+    }
+</style>
 <?php
+if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/lodash.min.js", CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
+}
+
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
 //Reverse the unit values to ensure bigger value display first.
 $values = array_reverse($values, true);
@@ -40,7 +67,17 @@ $key = 0;
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
           <?php }
-      } ?>
+      }
+
+      if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0)
+      {
+      ?>
+          <button class="button blue hint" name="complog" id="et_complog">Measure in COMPLog</button>
+          <iframe id="complog_launcher" src="" width="0" height="0" style="display:none;">
+          </iframe>
+      <?php
+      }
+      ?>
       </div>
 </div>
 
