@@ -161,6 +161,15 @@ $(document).ready(function() {
 		}
 	}
 
+	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', function(){ clearIolSelection('left'); })
+	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', function(){ clearIolSelection('right'); })
+
+	function clearIolSelection(side){
+		$('input[id^=iolrefrad-' + side + ']:checked').prop('checked', false);
+		$('#Element_OphInBiometry_Selection_iol_power_' + side +
+			', #Element_OphInBiometry_Selection_predicted_refraction_' + side).val(null);
+	}
+
 	$('#Element_OphInBiometry_BiometryData_axial_length_left').die('change').live('change',function() {
 		update('left');
 	})
@@ -348,10 +357,8 @@ function updateIolRefRow(side) {
 }
 
 function updateIolRefTable(side) {
-
 	var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
 	var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
-
 	$('table[id^="'+side+'_"]').hide();
 	$('span[id^="emmetropia_'+side+'_"]').hide();
 	$('span[id^="aconstant_'+side+'_"]').hide();
@@ -410,7 +417,6 @@ function closestNew(theArray, closestTo) {
 }
 
 function updateIolData(index,side) {
-
 	var acon = document.getElementById('acon_'+side);
 	var sf = document.getElementById('sf_'+side);
 	var type = document.getElementById('type_'+side);
