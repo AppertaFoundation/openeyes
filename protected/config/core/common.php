@@ -393,8 +393,8 @@ return array(
         'wkhtmltopdf_footer_right' => 'OpenEyes',
         'wkhtmltopdf_top_margin' => '10mm',
         'wkhtmltopdf_bottom_margin' => '25mm',
-        'wkhtmltopdf_left_margin' => '20mm',
-        'wkhtmltopdf_right_margin' => '20mm',
+        'wkhtmltopdf_left_margin' => '5mm',
+        'wkhtmltopdf_right_margin' => '5mm',
         'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
