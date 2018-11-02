@@ -29,7 +29,7 @@ $(document).ready(function () {
     var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
     $('#js-hotlist-panel').hide();
-  } else {
+  } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
     var hotlist = new OpenEyes.UI.NavBtnSidebar.HotList();
   }
