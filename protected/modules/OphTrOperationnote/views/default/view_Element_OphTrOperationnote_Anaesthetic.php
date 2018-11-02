@@ -26,12 +26,12 @@
                 <?php if (count($element->anaesthetic_type) > 1 ||
                     (count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA"))) {
                     echo $this->renderPartial(
-                        'view_Element_OphTrOperationNote_Anaesthetic_full',
+                        'view_Element_OphTrOperationnote_Anaesthetic_full',
                         array('element' => $element)
                     );
                 } else {
                     echo $this->renderPartial(
-                        'view_Element_OphTrOperationNote_Anaesthetic_partial',
+                        'view_Element_OphTrOperationnote_Anaesthetic_partial',
                         array('element' => $element)
                     );
                 } ?>
