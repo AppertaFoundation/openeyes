@@ -392,26 +392,7 @@ $creating = isset($creating) ? $creating : false;
                 From
               </td>
               <td>
-                  <?php
-                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                      'id' => 'OphCoCorrespondence_footerAutoComplete',
-                      'name' => 'OphCoCorrespondence_footerAutoComplete',
-                      'value' => '',
-                      'sourceUrl' => array('default/users/correspondence-footer/true'),
-                      'options' => array(
-                          'minLength' => '3',
-                          'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
-									$('#OphCoCorrespondence_footerAutoComplete').val('');
-									return false;
-								}",
-                      ),
-                      'htmlOptions' => array(
-                          'placeholder' => 'type to search for users',
-                          'class' => 'cols-full search',
-                      ),
-                  ));
-                  ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                   <?php echo $form->textArea($element, 'footer',
                       array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
               </td>
@@ -528,6 +509,13 @@ $creating = isset($creating) ? $creating : false;
         "ElementLetter_body",
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
+
+    OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), baseUrl + 'users/correspondence-footer/true');
+
+    $('.oe-autocomplete').on('click', '.oe-menu-item', function(){
+      AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+    });
   });
 </script>
 

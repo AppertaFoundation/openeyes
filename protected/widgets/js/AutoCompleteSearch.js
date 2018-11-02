@@ -1,0 +1,179 @@
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2016
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+ /**
+ *  HOW TO USE
+	Create the search by adding
+		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
+	to the html. Then call
+		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL);
+	Change URL to suit
+
+  	To have more than 1 search box add
+  		<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
+  	to the html. Then call
+		OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
+	Set NAME to what ever you want. If used correctly you will have 
+		?php $this->widget('application.widgets.AutoCompleteSearch'); ?> and <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
+	on the same page along with
+		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL); and OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
+
+  	To create the search without the auto complete add
+  		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
+  	to the html
+
+  	To define what happens when the user clicks on a search option add
+	  	$('.oe-autocomplete').on('click', '.oe-menu-item', function(){
+	      AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+	      // DESIRED ACTION
+	    });
+	after calling
+		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL);
+ */
+var OpenEyes = OpenEyes || {};
+
+OpenEyes.UI = OpenEyes.UI || {};
+
+(function(exports) {
+
+    'use strict';
+
+    var search_term;
+    var searching = false;
+    var xhr;
+    var response;
+    var current_focus;
+    var item_clicked;
+    var inputbox;
+    
+    function initAutocomplete(input, autocomplete_url) {
+    	input.on('input',function(){
+    		inputbox = input;
+    		inputbox.parent().find('.no-result').addClass('hidden');    		
+    		search_term = this.value.trim();
+
+    		// if input is empty
+    		if (search_term.length < 1){
+    			hideMe();
+    			xhr.abort();
+    			return false;
+    		}
+
+    		// cancel the current search and start a new one
+			if(searching) {xhr.abort()}
+			searching = true;
+
+			xhr = $.getJSON(autocomplete_url, {
+			    term: search_term,
+			    ajax: 'ajax'
+			}, function(data,status){
+				if(status == 'success'){
+					response = data;
+					if(response.length > 0){
+						successResponse(response);
+					} else {
+						inputbox.parent().find('.no-result').removeClass('hidden');
+					}
+					searching = false;
+					current_focus = -1;
+				} else if(status == 'error' || status == 'timeout'){
+					console.warning('Error with AutoCompleteSearch');
+				}
+			});
+    	});
+
+    	$('.oe-autocomplete').on('click', '.oe-menu-item', function(){
+    		item_clicked = response[$(this).index()];
+    		setTimeout(hideMe, 100);
+    	});
+
+    	input.keydown(function(e){
+    		if (e.keyCode == 40) {
+    			// if the arrow down key is pressed
+    			if(current_focus < (response.length - 1)){
+    				current_focus++;
+    			}
+    		} else if (e.keyCode == 38) {
+    			// if the arrow up key is pressed
+    			if(current_focus != 0){
+    				current_focus--;
+    			}
+    		} else if (e.keyCode == 13) {
+    			// if the enter key is pressed
+    			if (current_focus > -1) {
+    				$('.oe-menu-item a:eq('+current_focus+')').trigger('click');
+    			}
+    		}
+
+    		$('.oe-autocomplete a').removeClass('hint');
+    		$('.oe-autocomplete a:eq('+current_focus+')').addClass('hint');
+    	});
+
+    	$(document).click(hideMe);
+    }
+
+    function successResponse(response){
+	    $(".oe-autocomplete").empty();
+	    var search_options = ``;
+
+        $.each(response,function(index, value){       	
+        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1">`;
+        	if(value.fullname != undefined){
+        		search_options += matchSearchTerm(value.fullname);
+        	}
+
+        	if(value.first_name != undefined && value.last_name != undefined){
+        		search_options += matchSearchTerm(value.first_name)+` `
+        		+matchSearchTerm(value.last_name)+`
+        		(`+value.age+`) `+value.gender+`<br>`
+        		+value.nhsnum+`<br><br>Hospital No.: `+matchSearchTerm(value.hos_num)+`
+				<br>Date of birth: `+value.dob;
+        	}
+     		search_options += `</a></li>`;
+        });
+
+        inputbox.parent().find(".oe-autocomplete").append(search_options).css({'position':'absolute', 'top':inputbox.outerHeight()}).removeClass('hidden');
+    }
+
+    function matchSearchTerm(str){
+    	var myRegExp = new RegExp(search_term,'ig');
+    	var matches = str.match(myRegExp);
+    	if(matches && matches.length > 0){
+	    	$.each(matches,function(index, match){
+	    		str = str.replace(match, `<span class="autocomplete-match">`+match+`</span>`);
+	    	});
+    	}
+
+    	return str;
+    }
+
+	function hideMe() {
+		$('.oe-autocomplete').addClass('hidden');
+		return false;
+	}
+
+    exports.AutoCompleteSearch = {
+    	init: function (input, url) {
+    		if(input){
+	    		initAutocomplete(input, url);
+	    		return exports.AutoCompleteSearch;    			
+    		}
+    	},
+        getResponse: function(){
+            return item_clicked;
+        }
+    };
+
+})(OpenEyes.UI);
