@@ -197,12 +197,17 @@
       });
 
       var position = this.getSavedScratchpadPosition();
-      if (position) {
-        $(this.options.scratchpadPopupSelector).css({
-          top: position.top,
-          left: position.left
-        });
+      if (position && position.top <= $(window).height() && position.left <= $(window).width()) {
+        // do nothing as postion top and left are already set
+      } else {
+        position.top = 75;
+        position.left = 250
       }
+
+      $(this.options.scratchpadPopupSelector).css({
+        top: position.top,
+        left: position.left
+      });
     }
   };
 
