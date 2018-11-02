@@ -4,6 +4,7 @@ var crt_yaxis = {
   domain: [0.35, 1],
   showticklabels: true,
   showgrid: false,
+
 };
 
 var va_yaxis = {
@@ -13,7 +14,7 @@ var va_yaxis = {
   domain: [0.35,1],
   showticklabels: true,
   showgrid: true,
-
+	zeroline:false,
 };
 
 var flags_yaxis = {
@@ -22,6 +23,8 @@ var flags_yaxis = {
   showgrid: false,
   showticklabels: true,
   ticks: 'inside',
+	color: '#fff',
+	zeroline: false,
 };
 
 function setYAxis_MR(options){
