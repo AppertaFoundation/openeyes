@@ -49,11 +49,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
-                      <i class="oe-i info small pro-theme js-has-tooltip"
-                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                      </i>
+                      <?php if($entry->getDoseAndFrequency()) {?>
+                          <i class="oe-i info small pro-theme js-has-tooltip"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                          </i>
+                      <?php } ?>
                   </td>
-                <td><span class="oe-date"><?= $entry->getDatesDisplay() ?></span></td>
+                <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
               </tr>
             <?php endforeach; ?>
             </tbody>
@@ -117,11 +119,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       ?>
                   </td>
                     <td>
+                        <?php if($entry->getDoseAndFrequency()) {?>
                     <i class="oe-i info small pro-theme js-has-tooltip"
                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                     </i>
+                        <?php } ?>
                     </td>
-                  <td><span class="oe-date"><?= $entry->getDatesDisplay() ?></span></td>
+                  <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>

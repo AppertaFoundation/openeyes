@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810291333',
+            'time' => '201810311030',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -520,6 +520,10 @@ return array(
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
+            'blank_image_template' => array(
+                'height' => 800,
+                'width' => 600
+            )
         ),
     ),
 );
