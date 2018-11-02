@@ -30,17 +30,6 @@
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.core.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/jquery-ui/ui/jquery.ui.datepicker.js')?>"></script>
         <script src="<?= Yii::app()->assetManager->createUrl('components/material-design-lite/material.min.js')?>"></script>
-        <?php
-        if(Yii::app()->controller->action->id === 'oescape'){ ?>
-            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highstock.js')?>"></script>
-        <?php } else { ?>
-            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
-        <?php } ?>
-
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/exporting.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/offline-exporting.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts-more.js')?>"></script>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/no-data-to-display.js')?>"></script>
 
 
         <meta charset="utf-8">

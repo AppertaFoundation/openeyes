@@ -31,12 +31,11 @@ class PcrRiskReport extends Report implements ReportInterface
     protected $plotlyConfig = array(
       'type' => 'scatter',
       'showlegend' => true,
-      'paper_bgcolor' => '#141e2b',
-      'plot_bgcolor' => '#141e2b',
+      'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'title' => '',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
-        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'No. Operations',
@@ -50,6 +49,7 @@ class PcrRiskReport extends Report implements ReportInterface
       ),
       'yaxis' => array(
         'title' => 'PCR Rate',
+        'ticks' => 'outside',
         'dtick' => 10,
         'tick0' => 0,
         'range' => [0,50],
@@ -71,7 +71,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'line' => array(
           'dash' =>'dot',
           'width' => 1,
-          'color' => 'rgb(255,255,255)',
+          'color' => 'rgb(0,0,0)',
           ),
         'x0' => 0,
         'x1' => 1000,
@@ -165,20 +165,21 @@ class PcrRiskReport extends Report implements ReportInterface
      */
 
     public function tracesJson(){
+      $dataset = $this->dataSet();
       $trace1 = array(
         'name' => 'Current Surgeon',
         'type' => 'scatter',
         'x' => array_map(function($item){
           return $item['x'];
-        }, $this->dataSet()),
+        }, $dataset),
         'y' => array_map(function($item){
           return $item['y'];
-        }, $this->dataSet()),
+        }, $dataset),
         'hovertext' => array_map(function($item){
           return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
             . number_format($item['y'], 2);
-        }, $this->dataSet()),
+        }, $dataset),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
           'bgcolor' => '#fff',

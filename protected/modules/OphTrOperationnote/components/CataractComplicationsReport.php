@@ -16,11 +16,10 @@ class CataractComplicationsReport extends Report implements ReportInterface
       'type' => 'bar',
       'title' => '',
       'showlegend' => false,
-      'paper_bgcolor' => '#141e2b',
-      'plot_bgcolor' => '#141e2b',
+      'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
-        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'Percent of cases',
@@ -143,7 +142,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
           ),
         ),
       );
-
+      $this->plotlyConfig['xaxis']['range'] =[0, max($trace1['x'])];
       $traces = array($trace1);
       return json_encode($traces);
     }
