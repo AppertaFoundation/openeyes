@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810291333',
+            'time' => '201810311030',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -393,8 +393,8 @@ return array(
         'wkhtmltopdf_footer_right' => 'OpenEyes',
         'wkhtmltopdf_top_margin' => '10mm',
         'wkhtmltopdf_bottom_margin' => '25mm',
-        'wkhtmltopdf_left_margin' => '20mm',
-        'wkhtmltopdf_right_margin' => '20mm',
+        'wkhtmltopdf_left_margin' => '5mm',
+        'wkhtmltopdf_right_margin' => '5mm',
         'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
@@ -520,6 +520,10 @@ return array(
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
+            'blank_image_template' => array(
+                'height' => 800,
+                'width' => 600
+            )
         ),
     ),
 );

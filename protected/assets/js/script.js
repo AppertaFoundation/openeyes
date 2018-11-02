@@ -294,6 +294,15 @@ $(document).ready(function () {
     var offset = $(this).offset();
     var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
 
+    // check for the available space for tooltip:
+    if ( ( $( window ).width() - offset.left) < 100 ){
+        leftPos = offset.left - 174 // tooltip is 200px (left offset on the icon)
+        toolCSS = "oe-tooltip offset-left";
+    } else {
+        leftPos = offset.left - 94 // tooltip is 200px (center on the icon)
+        toolCSS = "oe-tooltip";
+    }
+
     // add, calculate height then show (remove 'hidden')
     var tip = $("<div></div>", {
       "class": "oe-tooltip",
