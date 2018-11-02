@@ -65,9 +65,8 @@ $(document).ready(function () {
         }
       }
 
-      if ($('tbody', activeForm).children('tr').length == 0) {
+      if ($('.va_readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
-        $('table', activeForm).hide();
       }
       else {
         // VA can affect DR
