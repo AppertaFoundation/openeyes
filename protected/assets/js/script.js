@@ -350,6 +350,9 @@ $(document).ready(function () {
         }
         // icon toggles Short/ Full Message
         $('#oe-admin-notifcation .oe-i').click(toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseenter' , toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseout' , toggleNotification);
+
 
         function toggleNotification() {
             $('#notification-short').toggle();
