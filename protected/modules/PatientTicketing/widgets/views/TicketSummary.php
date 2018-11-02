@@ -7,20 +7,20 @@ $display_queue = $ticket->getDisplayQueueAssignment();
 ?>
 
 <?php if ($display_queue->report) { ?>
-<div class="row divider js-report">
-    <h3>Clinic Info</h3>
-    <div class="row-divider">
-        <div class="data-value">
-            <?= $display_queue->report ?>
+    <div class="row divider">
+        <?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?>
+    </div>
+    <div class="row divider js-report">
+        <h3>Clinic Info</h3>
+        <div class="row-divider">
+            <div class="data-value">
+                <?= $display_queue->report ?>
+            </div>
         </div>
     </div>
-</div>
 <?php } ?>
 
 <div class="row">
-    <div class="data-label">
-        <?= $ticket->getDisplayQueue()->name . ' (' . Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date) . ')' ?>
-    </div>
     <div class="data-value">
         <textarea class="noresize cols-full" readonly cols="35" rows="5"><?php echo $display_queue->notes; ?></textarea>
     </div>
