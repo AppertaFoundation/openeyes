@@ -29,7 +29,7 @@ $(document).ready(function () {
     var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
     $('#js-hotlist-panel').hide();
-  } else {
+  } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
     var hotlist = new OpenEyes.UI.NavBtnSidebar.HotList();
   }
@@ -344,7 +344,21 @@ $(document).ready(function () {
         }
     })();
 
+    (function notificationBanner() {
+        if ($('#oe-admin-notifcation').length === 0) {
+            return;
+        }
+        // icon toggles Short/ Full Message
+        $('#oe-admin-notifcation .oe-i').click(toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseenter' , toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseout' , toggleNotification);
 
+
+        function toggleNotification() {
+            $('#notification-short').toggle();
+            $('#notification-full').toggle();
+        }
+    }());
 });
 
 function changeState(wb,sp) {
