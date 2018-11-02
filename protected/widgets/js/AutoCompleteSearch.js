@@ -73,7 +73,6 @@ OpenEyes.UI = OpenEyes.UI || {};
     					inputbox.parent().find('.min-chars').removeClass('hidden');
     				}
 	    			hideMe();
-	    			if(xhr){xhr.abort()}
 	    			return false;    				
 	    		}, 1000);
     		} else {

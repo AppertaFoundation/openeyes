@@ -99,10 +99,11 @@ function displayConflictMessage(){
 
 $(document).ready(function(){
     
-    OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), baseUrl + '/patientMergeRequest/search');
-    $('#oe-autocompletesearch').parent().find('.oe-autocomplete').on('click', '.oe-menu-item', function(){
-      AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-        
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + '/patientMergeRequest/search',
+      onSelect: function(){
+        AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
         // if there is a warning about the patient is alredy in the request list than it cannot be selected
 
         if( AutoCompleteResponse.warning.length > 0 ){
@@ -209,6 +210,7 @@ $(document).ready(function(){
 
         $('#patient_merge_search').val("");
         return false;
+      }
     });
     
     $('#swapPatients').on('click', function(){
