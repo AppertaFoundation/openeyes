@@ -7,4 +7,9 @@
 	        No results found. 
 	    </div>
 	</div>
+	<div class="data-group min-chars warning alert-box hidden">
+	    <div class="small-12 column text-center"> 
+	        Minimum of 2 characters
+	    </div>
+	</div>
 </div>

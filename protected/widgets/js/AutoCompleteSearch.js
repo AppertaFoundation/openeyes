@@ -18,29 +18,30 @@
 	Create the search by adding
 		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
 	to the html. Then call
-		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL);
-	Change URL to suit
+		OpenEyes.UI.AutoCompleteSearch.init({
+			input: $('#oe-autocompletesearch'),
+			url: URL,
+			onSelect: function(){
+				AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+				// DESIRED ACTION
+			}
+		});
+	Change URL to suit. To define what happens when the user clicks on a search option, add you code in the onSlect function
+	AutoCompleteResponse will return an object of the option clicked.
 
   	To have more than 1 search box add
   		<?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
   	to the html. Then call
 		OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
 	Set NAME to what ever you want. If used correctly you will have 
-		?php $this->widget('application.widgets.AutoCompleteSearch'); ?> and <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
+		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?> and <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => NAME]); ?>
 	on the same page along with
-		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL); and OpenEyes.UI.AutoCompleteSearch.init($('NAME'), URL);
+		OpenEyes.UI.AutoCompleteSearch.init({input: $('#oe-autocompletesearch'), ...}); and OpenEyes.UI.AutoCompleteSearch.init({input: $('NAME'), ...});
 
   	To create the search without the auto complete add
   		<?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
   	to the html
 
-  	To define what happens when the user clicks on a search option add
-	  	$('.oe-autocomplete').on('click', '.oe-menu-item', function(){
-	      AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-	      // DESIRED ACTION
-	    });
-	after calling
-		OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), URL);
  */
 var OpenEyes = OpenEyes || {};
 
@@ -57,60 +58,68 @@ OpenEyes.UI = OpenEyes.UI || {};
     var current_focus;
     var item_clicked;
     var inputbox;
+    var onSelect;
     
     function initAutocomplete(input, autocomplete_url) {
     	input.on('input',function(){
     		inputbox = input;
-    		inputbox.parent().find('.no-result').addClass('hidden');    		
+    		inputbox.parent().find('.alert-box').addClass('hidden');
     		search_term = this.value.trim();
 
     		// if input is empty
-    		if (search_term.length < 1){
-    			hideMe();
-    			xhr.abort();
-    			return false;
-    		}
+    		if (search_term.length < 2){
+    			setTimeout(function(){
+    				if(search_term.length == 1){
+    					inputbox.parent().find('.min-chars').removeClass('hidden');
+    				}
+	    			hideMe();
+	    			if(xhr){xhr.abort()}
+	    			return false;    				
+	    		}, 1000);
+    		} else {
+	    		// cancel the current search and start a new one
+				if(searching) {xhr.abort()}
+				searching = true;
 
-    		// cancel the current search and start a new one
-			if(searching) {xhr.abort()}
-			searching = true;
-
-			xhr = $.getJSON(autocomplete_url, {
-			    term: search_term,
-			    ajax: 'ajax'
-			}, function(data,status){
-				if(status == 'success'){
-					response = data;
-					if(response.length > 0){
-						successResponse(response);
-					} else {
-						inputbox.parent().find('.no-result').removeClass('hidden');
+				xhr = $.getJSON(autocomplete_url, {
+				    term: search_term,
+				    ajax: 'ajax'
+				}, function(data,status){
+					if(status === 'success'){
+						response = data;
+						if(response.length > 0){
+							successResponse(response);
+						} else {
+							inputbox.parent().find('.no-result').removeClass('hidden');
+						}
+						searching = false;
+						current_focus = -1;
+					} else if(status === 'error' || status === 'timeout'){
+						console.warning('Error with AutoCompleteSearch');
 					}
-					searching = false;
-					current_focus = -1;
-				} else if(status == 'error' || status == 'timeout'){
-					console.warning('Error with AutoCompleteSearch');
-				}
-			});
+				});    			
+    		}
     	});
 
     	$('.oe-autocomplete').on('click', '.oe-menu-item', function(){
     		item_clicked = response[$(this).index()];
-    		setTimeout(hideMe, 100);
+    		onSelect();
+    		inputbox.val('');
+    		hideMe();
     	});
 
     	input.keydown(function(e){
-    		if (e.keyCode == 40) {
+    		if (e.keyCode === 40) {
     			// if the arrow down key is pressed
     			if(current_focus < (response.length - 1)){
     				current_focus++;
     			}
-    		} else if (e.keyCode == 38) {
+    		} else if (e.keyCode === 38) {
     			// if the arrow up key is pressed
-    			if(current_focus != 0){
+    			if(current_focus !== 0){
     				current_focus--;
     			}
-    		} else if (e.keyCode == 13) {
+    		} else if (e.keyCode === 13) {
     			// if the enter key is pressed
     			if (current_focus > -1) {
     				$('.oe-menu-item a:eq('+current_focus+')').trigger('click');
@@ -130,11 +139,11 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $.each(response,function(index, value){       	
         	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1">`;
-        	if(value.fullname != undefined){
+        	if(value.fullname !== undefined){
         		search_options += matchSearchTerm(value.fullname);
         	}
 
-        	if(value.first_name != undefined && value.last_name != undefined){
+        	if(value.first_name !== undefined && value.last_name !== undefined){
         		search_options += matchSearchTerm(value.first_name)+` `
         		+matchSearchTerm(value.last_name)+`
         		(`+value.age+`) `+value.gender+`<br>`
@@ -165,10 +174,11 @@ OpenEyes.UI = OpenEyes.UI || {};
 	}
 
     exports.AutoCompleteSearch = {
-    	init: function (input, url) {
-    		if(input){
-	    		initAutocomplete(input, url);
-	    		return exports.AutoCompleteSearch;    			
+    	init: function (options) {
+    		if(options.input){
+    			onSelect = options.onSelect;
+	    		initAutocomplete(options.input, options.url);
+	    		return exports.AutoCompleteSearch;
     		}
     	},
         getResponse: function(){

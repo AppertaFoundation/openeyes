@@ -510,11 +510,13 @@ $creating = isset($creating) ? $creating : false;
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
 
-    OpenEyes.UI.AutoCompleteSearch.init($('#oe-autocompletesearch'), baseUrl + 'users/correspondence-footer/true');
-
-    $('.oe-autocomplete').on('click', '.oe-menu-item', function(){
-      AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-      $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + 'users/correspondence-footer/true',
+      onSelect: function(){
+        AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+      }
     });
   });
 </script>
