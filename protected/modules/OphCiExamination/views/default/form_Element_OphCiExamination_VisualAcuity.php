@@ -40,6 +40,16 @@
 </style>
 <?php
 if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+    ?>
+    <script type="text/javascript">
+        var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
+        var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
+        var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
+        var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
+        var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
+        var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
+    </script>
+<?php
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/lodash.min.js", CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
 }

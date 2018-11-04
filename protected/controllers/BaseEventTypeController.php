@@ -2197,14 +2197,6 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->patient) {
             $this->jsVars['OE_patient_id'] = $this->patient->id;
             $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
-			$this->jsVars['OE_patient_firstname'] = $this->patient->first_name;
-            $this->jsVars['OE_patient_lastname'] = $this->patient->last_name;
-            $this->jsVars['OE_patient_dob'] = str_replace("-","",$this->patient->dob);
-            $this->jsVars['OE_patient_address'] = $this->patient->getSummaryAddress("^");
-            $this->jsVars['OE_patient_gender'] = $this->patient->gender;
-            if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
-                $this->jsVars['OE_COMPLog_port'] = Yii::app()->params['COMPLog_port'];
-            }
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;
