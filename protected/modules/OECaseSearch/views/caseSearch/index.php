@@ -226,7 +226,7 @@ $this->pageTitle = 'Case Search';
     $(document).on('click', '.js-add-to-trial', function () {
       var addLink = this;
       var $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
-      var patientId = $(this).closest('.oe-patient').data('patient-id');
+      var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
       $.ajax({
         url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
@@ -249,7 +249,7 @@ $this->pageTitle = 'Case Search';
     $(document).on('click', '.js-remove-from-trial', function addPatientToTrial() {
         var removeLink = this;
         var $addLink = $(this).closest('.js-add-remove-participant').find('.js-add-to-trial');
-        var patientId = $(this).closest('.oe-patient').data('patient-id');
+        var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
         $.ajax({
           url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',

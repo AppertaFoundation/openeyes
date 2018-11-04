@@ -218,7 +218,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             if (count($ophthalmic_diagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>
@@ -248,7 +248,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>

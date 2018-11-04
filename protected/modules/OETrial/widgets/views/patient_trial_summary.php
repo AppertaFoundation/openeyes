@@ -8,7 +8,7 @@
       <div class="label"></div>
       <div class="data">
           <?php if (count($this->patient->trials) === 0) { ?>
-            <div style="font-style: italic; color: white; opacity: 0.5;">No trials recorded.</div>
+            <div class="nil-recorded">No trials recorded.</div>
           <?php } else { ?>
             <table>
               <thead>

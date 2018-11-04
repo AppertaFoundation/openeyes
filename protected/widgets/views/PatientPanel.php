@@ -33,13 +33,12 @@ if ($this->trial) {
 ?>
 
 <div id="oe-patient-details"
-     class="oe-patient"
+     class="js-oe-patient <?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?>"
      data-patient-id="<?= $this->patient->id ?>"
-     style="<?= $this->list_mode ? 'position: unset; background: unset; width: unset; background-color: rgb(20, 30, 43);' : '' ?>"
 
 >
   <div class="patient-name"
-       style="<?= $this->list_mode ? 'position: unset' : '' ?>">
+       >
     <a href="<?= (new CoreAPI())->generateEpisodeLink($this->patient); ?>">
       <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
       <span class="patient-firstname">
@@ -50,9 +49,7 @@ if ($this->trial) {
   </div>
 
   <div class="flex-layout">
-    <div class="patient-details"
-         style="<?= $this->list_mode ? 'position: unset' : '' ?>"
-    >
+    <div class="patient-details">
       <div class="hospital-number">
         <span>No. </span>
           <?php echo $this->patient->hos_num ?>
@@ -82,66 +79,55 @@ if ($this->trial) {
     </div>
     <div class="flex-layout flex-left">
         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-          <div class="patient-allergies-risks risk-warning js-allergies-risks-btn"
-               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
+          <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
               <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
               <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
               <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
           </div>
         <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-          <div class="patient-allergies-risks unknown js-allergies-risks-btn"
-               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
+          <div class="patient-allergies-risks unknown js-allergies-risks-btn">
             Allergies, Alerts
           </div>
         <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-          <div class="patient-allergies-risks no-risk js-allergies-risks-btn"
-               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
+          <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
             Allergies, Alerts
           </div>
         <?php } else { /*either risk or allergy status in unknown*/ ?>
-          <div class="patient-allergies-risks unknown js-allergies-risks-btn"
-               style="<?= $this->list_mode ? 'position: unset; padding-right: 24px;' : '' ?>">
+          <div class="patient-allergies-risks unknown js-allergies-risks-btn">
             Allergies, Alerts
           </div>
         <?php } ?>
       <div class="patient-demographics js-demographics-btn"
-           style="<?= $this->list_mode ? 'position: unset;' : '' ?>"
       >
-        <svg viewBox="0 0 60 60" class="icon" style="pointer-events: none">
+        <svg viewBox="0 0 60 60" class="icon">
           <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
         </svg>
       </div>
       <div class="patient-management js-management-btn"
-           style="<?= $this->list_mode ? 'position: unset;' : '' ?>"
       >
-        <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
+        <svg viewBox="0 0 30 30" class="icon">
           <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
         </svg>
       </div>
       <div class="patient-quicklook js-quicklook-btn"
-           style="<?= $this->list_mode ? 'position: unset;' : '' ?>"
       >
-        <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
+        <svg viewBox="0 0 30 30" class="icon">
           <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
         </svg>
       </div>
 
         <?php if ($this->patient->isEditable()): ?>
-          <div class="patient-local-edit js-patient-local-edit-btn"
-               style="<?= $this->list_mode ? 'position: unset;' : '' ?>">
+          <div class="patient-local-edit js-patient-local-edit-btn">
             <a href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>">
-              <svg viewBox="0 0 30 30" class="icon" style="pointer-events: none">
+              <svg viewBox="0 0 30 30" class="icon">
                 <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
               </svg>
             </a>
           </div>
         <?php endif; ?>
         <?php if (Yii::app()->moduleAPI->get('OETrial')) { ?>
-          <div class="js-trials-btn"
-               style="<?= $this->list_mode ? 'position: unset;' : 'position: absolute;' ?>right: -30px; bottom: 0; padding: 5px 12px 4px 8px; cursor: pointer;"
-          >
-            <svg viewBox="0 0 30 30" class="icon"
-                 style="pointer-events: none; width: 15px; height: 15px; display: inline-block; fill: #fff; opacity: 0.8;">
+          <div class="patient-trials js-trials-btn">
+            <svg viewBox="0 0 30 30" class="icon">
               <use xlink:href="<?php echo $navIconsUrl; ?>#tasks-icon"></use>
             </svg>
           </div>
@@ -154,13 +140,6 @@ if ($this->trial) {
           echo "<li>{$widget}</li>";
       } ?>
   </ul>
-    <?php if ($this->list_mode) { ?>
-      <style>
-        .patient-widgets .oe-patient-popup {
-          top: unset;
-        }
-      </style>
-    <?php } ?>
 </div>
 <?php
 $assetManager = Yii::app()->getAssetManager();
