@@ -77,8 +77,3 @@ foreach ($l1_disorders as $disorder) {
     </div>
   <?php endforeach;?>
 </div>
-<script type="text/javascript">
-  $('Document').ready(function(){
-      OphCiExamination_InjectionManagementComplex_init();
-  });
-</script>
