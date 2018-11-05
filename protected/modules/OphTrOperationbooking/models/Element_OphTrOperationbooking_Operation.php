@@ -125,7 +125,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     {
         return array(
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
-            array('site_id, anaesthetist_required, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
+            array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
             array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
 
@@ -332,12 +332,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     protected function beforeSave()
     {
-       foreach($this->anaesthetic_type as $anaesthetic_type){
-           if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
-               $this->anaesthetist_required = true;
-           }
-       }
-
         if (!$this->status_id) {
             $this->status_id = 1; //@TODO: change hardcoded id to a query
         }
@@ -1690,5 +1684,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function getComplexityCaption()
     {
         return array_key_exists($this->complexity, self::$complexity_captions) ? self::$complexity_captions[$this->complexity] : 'N/A';
+    }
+
+    public function getAnaesthetist_required(){
+        $anaesthetist_required = false;
+        foreach($this->anaesthetic_type as $anaesthetic_type){
+            if( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ){
+                $anaesthetist_required = true;
+            }
+        }
+        return $anaesthetist_required;
     }
 }
