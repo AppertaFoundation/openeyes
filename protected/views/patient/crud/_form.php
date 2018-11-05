@@ -139,6 +139,20 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </td>
       </tr>
       <tr>
+        <td class="'required">
+          <?= $form->label($patient, 'patient_source') ?>
+          <br/>
+          <?= $form->error($patient, 'patient_source') ?>
+        </td>
+        <td>
+          <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
+            array(
+              'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
+              'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
+            )); ?>
+        </td>
+      </tr>
+      <tr>
         <td class="required">
             <?= $form->label($patient, 'gender') ?>
           <br/>

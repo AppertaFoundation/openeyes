@@ -1696,10 +1696,11 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient = new Patient('manual');
+        $patient_source = 'referral';
+        $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
-        $address = new Address();
+        $address = new Address($patient_source);
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $this->performAjaxValidation(array($patient, $contact, $address));
@@ -1709,6 +1710,40 @@ class PatientController extends BaseController
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
+          $referral = new PatientReferral();
+          if (isset($_POST['PatientReferral'])) {
+            $referral->attributes = $_POST['PatientReferral'];
+          }
+
+          if (isset($_POST['PatientUserReferral'])) {
+            $patient_user_referral = new PatientUserReferral();
+            if ($_POST['PatientUserReferral']['user_id'] != -1) {
+              $patient_user_referral->attributes = $_POST['PatientUserReferral'];
+            }
+          }
+          switch ($patient->patient_source) {
+            case Patient::PATIENT_SOURCE_OTHER:
+              $contact->setScenario('other_register');
+              $patient->setScenario('other_register');
+              $address->setScenario('other_register');
+              $referral->setScenario('other_register');
+              break;
+            case Patient::PATIENT_SOURCE_REFERRAL:
+              $contact->setScenario('referral');
+              $patient->setScenario('referral');
+              $address->setScenario('referral');
+              $referral->setScenario('referral');
+              break;
+            case Patient::PATIENT_SOURCE_SELF_REGISTER:
+              $contact->setScenario('self_register');
+              $patient->setScenario('self_register');
+              $address->setScenario('self_register');
+              $referral->setScenario('self_register');
+              break;
+            default:
+              $contact->setScenario('manual');
+              break;
+          }
             // not to be sync with PAS
             $patient->is_local = 1;
 
@@ -1722,6 +1757,7 @@ class PatientController extends BaseController
             'patient' => $patient,
             'contact' => $contact,
             'address' => $address,
+            'referral' => isset($referral) ? $referral : new PatientReferral($patient_source),
             'patient_identifiers' => $patient_identifiers,
         ));
    }
@@ -1759,7 +1795,11 @@ class PatientController extends BaseController
     * @param PatientIdentifier[] $patient_identifiers
     * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
     */
-    private function performPatientSave(Contact $contact, Patient $patient, Address $address, $patient_identifiers)
+    private function performPatientSave(
+      Contact $contact,
+      Patient $patient,
+      Address $address,
+      $patient_identifiers)
     {
         $transaction = Yii::app()->db->beginTransaction();
         try {
