@@ -92,10 +92,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td>GP Telephone</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
           </tr>
-          <tr>
-            <td>Optician</td>
-            <td>Mr Pink</td>
-          </tr>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
