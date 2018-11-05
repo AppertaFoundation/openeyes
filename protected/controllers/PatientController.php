@@ -1714,7 +1714,7 @@ class PatientController extends BaseController
             list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
                 $patient_identifiers);
         }
-
+        $patient->hos_num = $patient->autoCompleteHosNum();
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,

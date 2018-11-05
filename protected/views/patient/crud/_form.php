@@ -202,8 +202,13 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
-              <?= $form->textField($patient, 'hos_num',
-                  array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'))) ?>
+            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
+            {
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            } else{
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            }
+            ?>
           </td>
         </tr>
         <tr>

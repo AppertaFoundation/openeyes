@@ -211,6 +211,21 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
+//    Generates an auto incremented Hospital Number
+    public function autoCompleteHosNum(){
+        $query = "SELECT hos_num FROM patient ORDER BY hos_num DESC";
+        $command = Yii::app()->db->createCommand($query);
+        $command->prepare();
+        $result = $command->queryAll();
+        $default_hos_num = $result[0]["hos_num"];
+        if ($default_hos_num <= 17000){
+            $default_hos_num = 17000;
+            return $default_hos_num;
+        } else {
+            return $default_hos_num;
+        }
+    }
+
     /**
      * This validator is added to the Patient object in PatientController create/update action
      *
