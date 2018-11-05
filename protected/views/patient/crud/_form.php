@@ -55,7 +55,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
-            <?= $form->errorSummary(array($contact, $patient, $address)) ?>
+            <?= $form->errorSummary(array($contact, $patient, $address, $referral)) ?>
             <?= $form->errorSummary($patient_identifiers) ?>
         </div>
       <?php } ?>-->
@@ -139,12 +139,13 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </td>
       </tr>
       <tr>
-        <td class="'required">
+        <td class="required">
           <?= $form->label($patient, 'patient_source') ?>
           <br/>
           <?= $form->error($patient, 'patient_source') ?>
         </td>
         <td>
+          <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
           <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
             array(
               'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
@@ -336,6 +337,15 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
           </td>
         </tr>
         <tr>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+            <?= $form->label($referral, 'uploadedFile'); ?>
+            <br/>
+          </td>
+          <td>
+            <?= $form->fileField($referral, 'uploadedFile'); ?>
+          </td>
+        </tr>
+        <tr>
           <td>
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
@@ -357,6 +367,66 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     array('class' => 'hidden_id')); ?>
             </div>
             <div id="no_practice_result" style="display: none;">
+              <div>No result</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <?= $form->label($patientuserreferral, 'Referred to') ?>
+            <br/>
+            <?= $form->error($patientuserreferral, 'user_id') ?>
+          </td>
+          <td>
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+              'name' => 'user_id',
+              'id' => 'autocomplete_user_id',
+              'source' => "js:function(request, response) {
+              $.ajax({
+                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
+                 'type':'GET',
+                  'data':{'term': request.term},
+                  'success':function(data) {
+                      data = $.parseJSON(data);
+                      response(data);
+                  }
+                });
+              }",
+              'options' => array(
+                'select' => "js:function(event, ui) {
+                  removeSelectedReferredto();
+                  addReferredToItem('selected_referred_to_wrapper', ui);
+                  $('#autocomplete_user_id').val('');
+                  return false;
+                 }",
+                'response' => 'js:function(event, ui){
+                    if(ui.content.length === 0){
+                      $("#no_referred_to_result").show();
+                      } else {
+                        $("#no_referred_to_result").hide();
+                      }
+                 }',
+              ),
+              'htmlOptions' => array(
+                'placeholder' => 'search User',
+              ),
+            )); ?>
+
+            <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_practice">
+                <li>
+                  <span class="js-name">
+                      <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
+                  </span>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
+                </li>
+              </ul>
+
+              <?= CHtml::hiddenField('PatientUserReferral[user_id]',  $patientuserreferral->user_id,
+                array('class' => 'hidden_id')); ?>
+            </div>
+            <div id="no_referred_to_result" style="display: none;">
               <div>No result</div>
             </div>
           </td>
