@@ -289,7 +289,7 @@ class RefMedication extends BaseActiveRecordVersioned
         }
 
         usort($return, function($a, $b) {
-            return strcmp($a, $b);
+            return strcmp($a['label'], $b['label']);
         });
 
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
