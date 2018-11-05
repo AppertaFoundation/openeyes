@@ -161,7 +161,7 @@ $(document).ready(function() {
 	function clearIolSelection(side){
 		$('input[id^=iolrefrad-' + side + ']:checked').prop('checked', false);
 		$('#Element_OphInBiometry_Selection_iol_power_' + side).val('');
-        $('#Element_OphInBiometry_Selection_predicted_refraction_' + side).val('0');
+		$('#Element_OphInBiometry_Selection_predicted_refraction_' + side).val('0');
 	}
 
 	$('#Element_OphInBiometry_BiometryData_axial_length_left').die('change').live('change',function() {
