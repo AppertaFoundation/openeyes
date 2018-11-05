@@ -112,28 +112,43 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
           });
 
         $('.js-expand-message').each(function(){
-
-            var message = $(this).parent().parent().find('.message');
-            var expander = new Expander( $(this),
-                message );
+        	let $expandIcon = $(this);
+        	let $message = $expandIcon.closest('tr').find('.message');
+        	let expander = new Expander( $(this), $message );
+					showHideExpandIcon($expandIcon, $message);
         });
-    });
+
+			$(window).resize(function(){
+				$('.js-expand-message').each(function(){
+					showHideExpandIcon($(this));
+				});
+			});
+		});
+
+		function showHideExpandIcon($expandIcon, $message = null) {
+			if ($message === null) {$message = $expandIcon.closest('tr').find('.message');}
+			if ($expandIcon.hasClass('collapse') || isExpandableMessage($message)) {$expandIcon.show();}
+			else {$expandIcon.hide();}
+		}
+
+		function isExpandableMessage($inboxMessage) {
+			let isMultiLine = $inboxMessage[0].scrollHeight > $inboxMessage.innerHeight();
+			let isOverflowing = $inboxMessage[0].scrollWidth > $inboxMessage.innerWidth();
+			return isMultiLine || isOverflowing;
+		}
 
     function Expander( $icon, $message){
-        var expanded = false;
-
+        let expanded = false;
         $icon.click( change );
 
         function change(){
-
             $icon.toggleClass('expand collapse');
-
             if(expanded){
                 $message.removeClass('expand');
             } else {
                 $message.addClass('expand');
             }
-
+            showHideExpandIcon($icon);
             expanded = !expanded;
         }
     }
