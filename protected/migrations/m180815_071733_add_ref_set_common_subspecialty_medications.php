@@ -9,12 +9,11 @@ class m180815_071733_add_ref_set_common_subspecialty_medications extends CDbMigr
         foreach ($q->queryAll() as $ssd) {
             $this->execute("INSERT INTO ref_set (`name`) VALUES ('Common subspecialty medications')");
             $ref_set_id = $this->getDbConnection()->getLastInsertID();
-            $drug_ids = explode(",", $ssd['drug_ids']);
-            $postfixed = array_map(function($e){ return "'".$e."_drug'"; }, $drug_ids);
+            $drug_ids = $ssd['drug_ids'];
             $this->execute("INSERT INTO ref_medication_set (`ref_set_id`, `ref_medication_id`)
                                 SELECT $ref_set_id, ref_medication.id
                                 FROM ref_medication
-                                WHERE preferred_code IN (".implode(',', $postfixed).")
+                                WHERE source_old_id IN (".$drug_ids.")
                                 ");
             $this->execute("INSERT INTO ref_set_rules (ref_set_id, subspecialty_id, site_id, usage_code)
                                 VALUES (

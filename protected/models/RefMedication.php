@@ -265,4 +265,34 @@ class RefMedication extends BaseActiveRecordVersioned
 
         return implode(", ", $terms);
     }
+
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('refSetRules.usage_code',"Common subspecialty medications");
+        $criteria->compare('refSetRules.subspecialty_id', $subspecialty_id);
+        $sets = RefSet::model()->with('refSetRules')->findAll($criteria);
+
+        $return = [];
+
+        /** @var RefSet[] $sets */
+        foreach ($sets as $set) {
+            foreach ($set->refMedications as $medication) {
+                $return[] = array(
+                    'label' => $medication->preferred_term,
+                    'value' => $medication->preferred_term,
+                    'name' => $medication->preferred_term,
+                    'id' => $medication->id,
+                    'tags' => array()
+                );
+            }
+        }
+
+        usort($return, function($a, $b) {
+            return strcmp($a, $b);
+        });
+
+        return $raw ? $return : CHtml::listData($return, 'id', 'label');
+    }
+
 }

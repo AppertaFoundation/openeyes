@@ -12,7 +12,7 @@ class m180828_063658_add_ref_set_common_systemic_medications extends CDbMigratio
 	        $this->execute("INSERT INTO ref_medication_set (ref_set_id, ref_medication_id)
                                 VALUES (
                                   $ref_set_id, 
-                                  (SELECT id FROM ref_medicaiton WHERE preferred_code = '".$med->medication_id."'_medication_drug')
+                                  (SELECT id FROM ref_medicaiton WHERE source_old_id = ".$med->medication_id.")
                                 )");
         }
 	}

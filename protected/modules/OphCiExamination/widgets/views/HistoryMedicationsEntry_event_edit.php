@@ -72,6 +72,26 @@ else {
             </div>
             <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
                 <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />
+                <br/>
+                <?php
+                $select_options = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
+                $html_options = ['empty' => '- Select -'];
+                $hide_search = strlen($entry->getMedicationDisplay()) > 0;
+                if($hide_search){
+                    $html_options['style'] = 'display: none;';
+                }
+
+                foreach($select_options as $select_option){
+                    $html_options['options'][$select_option['id']] = [
+                        'data-tags' => implode(',', $select_option['tags']),
+                        'data-tallmanlabel' => $select_option['name'],
+                    ];
+                }
+
+                if($this->getFirm()){
+                    echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
+                }
+                ?>
             </div>
         </div>
 
