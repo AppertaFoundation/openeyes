@@ -26,10 +26,6 @@
  */
 if ($queue) { ?>
   <table class="cols-full">
-    <colgroup>
-      <col class="cols-4">
-      <col class="cols-2">
-    </colgroup>
       <?php
       foreach ($form_fields as $fld) {
           if (@$fld['type'] === 'widget') {
@@ -42,25 +38,33 @@ if ($queue) { ?>
               ));
           } else { ?>
             <tr>
-              <td>
-                <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
-              </td>
-              <td>
                   <?php if (@$fld['choices']) { ?>
-                      <?= CHtml::dropDownList(
-                          $fld['form_name'],
-                          @$form_data[$fld['form_name']],
-                          $fld['choices'],
-                          array('empty' => ($fld['required']) ? ' - Please Select - ' : 'None')) ?>
-                  <?php } else {
-                      //may need to expand this beyond textarea and select in the future.
-                      $notes = @$form_data[$fld['form_name']];
-                      ?>
-                    <textarea id="<?= $fld['form_name'] ?>"
-                              name="<?= $fld['form_name'] ?>"
-                              cols="35"><?= $notes ?></textarea>
+                <td>
+                    <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
+                </td>
+                      <td>
+                          <?= CHtml::dropDownList(
+                              $fld['form_name'],
+                              @$form_data[$fld['form_name']],
+                              $fld['choices'],
+                              ['empty' => ($fld['required']) ? 'Select' : 'None', 'class'=>'cols-full']
+                          ) ?>
+                      </td>
+                  <?php } else { ?>
+                      <td colspan="2">
+                          <div class="row divider">
+                              <?php
+                              //may need to expand this beyond textarea and select in the future.
+                              $notes = @$form_data[$fld['form_name']]; ?>
+                              <textarea id="<?= $fld['form_name'] ?>"
+                                        name="<?= $fld['form_name'] ?>"
+                                        class="cols-full"
+                                        placeholder="Patient Notes"
+                                        rows="5"><?= trim($notes) ?></textarea>
+                          </div>
+                      </td>
                   <?php } ?>
-              </td>
+
             </tr>
           <?php } ?>
       <?php } ?>
