@@ -1434,7 +1434,6 @@ class Patient extends BaseActiveRecordVersioned
             if (!$sd->save()) {
                 throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(), true));
             }
-
         }
     }
 
