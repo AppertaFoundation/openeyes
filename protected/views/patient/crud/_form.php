@@ -295,6 +295,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->label($patient, 'gp_id') ?>
             <br/>
               <?= $form->error($patient, 'gp_id') ?>
+
+              <a id="js-add-practitioner-btn"
+                        return false;" href="#">Add Referring Practitioner</a>
           </td>
           <td>
               <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -407,4 +410,93 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
   </div>
 </div>
+
+<div class="oe-popup-wrap" id="js-add-practitioner-event" style="display: none; z-index:100">
+    <div class="oe-popup">
+        <div class="title">
+            Add Referring Practitioner
+            <div class="close-icon-btn">
+                <i id="js-cancel-add-practitioner" class="oe-i remove-circle pro-theme"></i>
+            </div>
+        </div>
+        <table class="standard row">
+            <tbody>
+            <tr>
+                <td>Title:</td>
+                <td class="flex-layout">
+                    <input size="30" maxlength="20" name="Contact[title]" id="Contact_title" type="text">
+                    <div class="errorMessage" id="Contact_title_em_" style="display:none"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Contact_first_name" class="required">First name <span class="required">*</span></label>
+                </td>
+                <td>
+                    <input size="30" maxlength="100" name="Contact[first_name]" id="Contact_first_name" type="text">
+                    <div class="errorMessage" id="Contact_first_name_em_" style="display:none">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Contact_last_name" class="required">Last name <span class="required">*</span></label>
+                </td>
+                <td>
+                    <input size="30" maxlength="100" name="Contact[last_name]" id="Contact_last_name" type="text">
+                    <div class="errorMessage" id="Contact_last_name_em_" style="display:none"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Contact_primary_phone">Phone number</label>
+                </td>
+                <td>
+                    <input size="15" maxlength="20" name="Contact[primary_phone]" id="Contact_primary_phone" type="tel">
+                    <div class="errorMessage" id="Contact_primary_phone_em_" style="display:none"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Contact_Role">Role</label>
+                </td>
+                <td>
+                    <div class="errorMessage" id="Contact_contact_label_id_em_" style="display:none"></div>
+                    <input placeholder="Search Roles" id="autocomplete_contact_label_id" type="text"
+                           name="contact_label_id" class="ui-autocomplete-input" autocomplete="off">
+
+                    <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="align-right">
+                    <input class="green hint" type="submit" name="yt0" value="Add">
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
 <?php $this->endWidget(); ?>
+<script>
+    $('#js-cancel-add-practitioner').click(function(event){
+        // event.preventDefault();
+        // $('#errors').text("");
+        $('#js-add-practitioner-event').css('display','none');
+    });
+    //
+    // $('#et_deleteevent').click(function(event) {
+    //     var reasonLength = $('#js-text-area').val().length;
+    //     if(reasonLength > 0){
+    //         return;
+    //     } else {
+    //         $('#errors').text("Please enter the reason for deletion");
+    //         event.preventDefault();
+    //     }
+    // });
+
+    $('#js-add-practitioner-btn').click(function(event){
+        $('#js-add-practitioner-event').css('display','');
+        return false;
+    });
+</script>
