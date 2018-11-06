@@ -396,7 +396,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               'options' => array(
                 'select' => "js:function(event, ui) {
                   removeSelectedReferredto();
-                  addReferredToItem('selected_referred_to_wrapper', ui);
+                  addItem('selected_referred_to_wrapper', ui);
                   $('#autocomplete_user_id').val('');
                   return false;
                  }",
@@ -414,12 +414,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
             )); ?>
 
             <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select js-selected_practice">
+              <ul class="oe-multi-select js-selected_referral_to">
                 <li>
                   <span class="js-name">
                       <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
                   </span>
-                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-referral-to"></i>
                 </li>
               </ul>
 

@@ -6,13 +6,6 @@ function addItem(wrapper_id, ui) {
   $wrapper.find('.hidden_id').val(ui.item.value);
 }
 
-function addReferredToItem(wrapper_id, ui){
-  var $wrapper = $('#' + wrapper_id);
-  $wrapper.find('.js-name').text(ui.item.label);
-  $wrapper.show();
-  $wrapper.find('.hidden_id').val(ui.item.id);
-}
-
 function removeSelectedGP() {
   $('#no_gp_result').hide();
   $('.js-selected_gp .js-name').text('');
@@ -30,7 +23,7 @@ function removeSelectedPractice() {
 
 function removeSelectedReferredto(){
   $('#no_referred_to_result').hide();
-  $('.selected_referred_to span.name').text('');
+  $('.js-selected_referral_to .js-name').text('');
   $('#selected_referred_to_wrapper').hide();
   $('#PatientUserReferral_user_id').val('-1');
 
@@ -70,5 +63,9 @@ $(function () {
   $('#selected_practice_wrapper').on('click', '.js-remove-practice', function () {
     removeSelectedPractice();
   });
+
+	$('#selected_referred_to_wrapper').on('click', '.js-remove-referral-to', function(){
+		removeSelectedReferredto();
+	});
 
 });
