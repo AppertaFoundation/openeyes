@@ -172,7 +172,7 @@ class RefMedication extends BaseActiveRecordVersioned
 
     public function getToBeCopiedIntoMedicationManagement()
     {
-        $med_sets = array_map(function($e){ return $e->ref_set_id; }, \OEModule\OphCiExamination\models\MedicationManagementRefSet::model()->findAll());
+        $med_sets = array_map(function($e){ return $e->id; }, RefSet::model()->with('refSetRules')->findAll("refSetRules.usage_code = 'Management'"));
 
         foreach ($this->refSets as $refSet) {
             if(in_array($refSet->id, $med_sets)) {
