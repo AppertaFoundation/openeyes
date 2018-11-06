@@ -69,7 +69,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     		// if input is empty
     		if (search_term.length < 2){
     			setTimeout(function(){
-    				if(search_term.length == 1){
+    				if(search_term.length === 1){
     					inputbox.parent().find('.min-chars').removeClass('hidden');
     				}
 	    			hideMe();
@@ -77,7 +77,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    		}, 1000);
     		} else {
 	    		// cancel the current search and start a new one
-				if(searching) {xhr.abort()}
+				if(searching) {xhr.abort();}
 				searching = true;
 
 				xhr = $.getJSON(autocomplete_url, {
