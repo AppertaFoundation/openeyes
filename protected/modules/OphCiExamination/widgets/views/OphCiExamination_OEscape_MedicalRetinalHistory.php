@@ -96,6 +96,11 @@
         hoverlabel: trace_hoverlabel,
         yaxis: 'y',
         type: 'scatter',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       };
 
       var trace2 = {
@@ -113,6 +118,11 @@
         hoverinfo: 'text',
         hoverlabel: trace_hoverlabel,
         yaxis: 'y2',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       };
 
 
@@ -215,9 +225,6 @@
         };
         currentPlot.layout.shapes.push(setMRFlags_options(inj_background));
       }
-
-      Plotly.relayout(currentPlot);
-
 
       layout_MR['shapes'].push(setMRFlags_options(inj_background));
       currentPlot.on('plotly_hover', function (data) {
