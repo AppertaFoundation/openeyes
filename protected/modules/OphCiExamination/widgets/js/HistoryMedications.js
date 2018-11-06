@@ -197,6 +197,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
           controller.selectMedication($row,
               {
+                  id: $option.val(),
                   preferred_term: $option.data('preferred_term'),
                   dose_unit_term: $option.data('dose_unit_term'),
                   dose: $option.data('dose'),
