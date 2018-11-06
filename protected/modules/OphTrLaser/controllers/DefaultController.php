@@ -209,8 +209,4 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    public function checkPrintAccess()
-    {
-        return true;
-    }
 }
