@@ -21,7 +21,6 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
- * @property int $will_ccopy
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
@@ -277,12 +276,18 @@ class RefMedication extends BaseActiveRecordVersioned
 
         /** @var RefSet[] $sets */
         foreach ($sets as $set) {
-            foreach ($set->refMedications as $medication) {
+            foreach ($set->items as $item) {
                 $return[] = array(
-                    'label' => $medication->preferred_term,
-                    'value' => $medication->preferred_term,
-                    'name' => $medication->preferred_term,
-                    'id' => $medication->id,
+                    'label' => $item->refMedication->preferred_term,
+                    'value' => $item->refMedication->preferred_term,
+                    'name' => $item->refMedication->preferred_term,
+                    'id' => $item->refMedication->id,
+                    'dose_unit_term' => $item->default_dose_unit_term,
+                    'dose' => $item->default_dose,
+                    'default_form' => $item->default_form,
+                    'frequency_id' => $item->default_frequency,
+                    'route' => $item->default_route,
+                    'will_copy' => $item->refMedication->getToBeCopiedIntoMedicationManagement(),
                     'tags' => array()
                 );
             }

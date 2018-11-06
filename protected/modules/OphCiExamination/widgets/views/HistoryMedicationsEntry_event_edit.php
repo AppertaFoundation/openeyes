@@ -83,8 +83,13 @@ else {
 
                 foreach($select_options as $select_option){
                     $html_options['options'][$select_option['id']] = [
-                        'data-tags' => implode(',', $select_option['tags']),
-                        'data-tallmanlabel' => $select_option['name'],
+                        'data-preferred_term' => $select_option['name'],
+                        'data-dose_unit_term' => $select_option['dose_unit_term'],
+                        'data-dose' => $select_option['dose'],
+                        'data-default_form' => $select_option['default_form'],
+                        'data-frequency_id' => $select_option['frequency_id'],
+                        'data-route' => $select_option['route'],
+                        'data-will_copy' => (int)$select_option['will_copy']
                     ];
                 }
 

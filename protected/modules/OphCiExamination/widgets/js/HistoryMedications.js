@@ -193,15 +193,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.initialiseSearch($row.find('input.search'));
 
       $row.on('change', controller.options.drugSelectSelector, function(e) {
-          var $option = $(this).find('option:selected'),
-              tags = "" + $option.data('tags');
-          controller.selectMedication($(this).parents('td'), {
-              value: $option.val(),
-              label: $option.text(),
-              name: $option.data('tallmanlabel'),
-              type: 'd', // only have pre-selected drugs available at the moment.
-              tags: tags.split(',')
-          });
+          var $option = $(this).find('option:selected');
+
+          controller.selectMedication($row,
+              {
+                  preferred_term: $option.data('preferred_term'),
+                  dose_unit_term: $option.data('dose_unit_term'),
+                  dose: $option.data('dose'),
+                  default_form: $option.data("default_form"),
+                  frequency_id: $option.data('frequency_id'),
+                  route_id: $option.data('route_id'),
+                  will_copy: $option.data('will_copy')
+              },
+              controller);
       });
 
       $row.on('click', '.medication-rename', function(e) {
@@ -320,58 +324,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       $row.find(".js-medication-search-autocomplete").autocomplete({
           minLength: 2,
-          delay: 700,
+          delay: 500,
           source: '/MedicationManagement/findRefMedications',
           select: function(event, ui){
-              $row.find(".medication-name .textual-display").text(ui.item.preferred_term);
-              switch_alternative($(event.target));
-
-              var default_dose_unit_term = null;
-              var default_dose = null;
-
-              if(ui.item.dose_unit_term === null) {
-                    if(ui.item.route_id == '1') {
-                        default_dose_unit_term = 'drop(s)';
-                    }
-              }
-              else {
-                  default_dose_unit_term = ui.item.dose_unit_term;
-              }
-
-              if(ui.item.dose === null && ui.item.route_id == '1') {
-                  default_dose = 1;
-              }
-              else {
-                  default_dose = ui.item.dose;
-              }
-
-              $row.find(".dose-unit-term").text(default_dose_unit_term);
-              $row.find(".dose").val(default_dose);
-              $row.find(".frequency").val(ui.item.frequency_id);
-              $row.find(".route").val(ui.item.route_id);
-              $row.find(".ref_medication_id").val(ui.item.id);
-              $row.find("input.medication-name").val(ui.item.preferred_term);
-
-              if(!ui.item.will_copy) {
-                  $row.addClass("ignore");
-              }
-              else {
-                  $row.removeClass("ignore");
-              }
-
-              if(typeof controller.MMController !== "undefined") {
-                  if(ui.item.will_copy) {
-                      var $new_row = controller.MMController.addEntry(ui.item, false);
-                      controller.bindEntries($row, $new_row);
-                  }
-                  else {
-                      controller.removeBoundEntry($row);
-                  }
-
-              }
-
-              controller.updateRowRouteOptions($row);
-              controller.processRisks(ui.item);
+              controller.selectMedication($row, ui.item, controller);
           }
       });
   };
@@ -592,27 +548,60 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $el.val(this.getItemDisplayValue(ui.item));
   };
 
-  HistoryMedicationsController.prototype.selectMedication = function($container, item)
-  {
-      var displayText = this.getItemDisplayValue(item);
+    HistoryMedicationsController.prototype.selectMedication = function ($row, item, controller) {
 
-      if (item.type == 't') {
-          $container.find(this.options.asTypedFieldSelector).val(item.value);
-      }
-      else if (item.type == 'd') {
-          $container.find(this.options.drugFieldSelector).val(item.value);
-          this.loadDrugDefaults($container.parents('tr'), item);
-      } else {
-          $container.find(this.options.medicationFieldSelector).val(item.value);
-      }
-      $container.find(this.options.medicationNameSelector).text(displayText);
+        $row.find(".medication-name .textual-display").text(item.preferred_term);
+        switch_alternative($row.find(".js-medication-search-autocomplete "));
 
-      $container.find(this.options.medicationDisplaySelector).show();
-      $container.find(this.options.medicationSearchSelector).hide();
-      $container.find(this.options.drugSelectSelector).hide();
+        var default_dose_unit_term = null;
+        var default_dose = null;
 
-      this.processRisks(item);
-  };
+        if(item.dose_unit_term === null) {
+            if(item.route_id == '1') {
+                default_dose_unit_term = 'drop(s)';
+            }
+        }
+        else {
+            default_dose_unit_term = item.dose_unit_term;
+        }
+
+        if(item.dose === null && item.route_id == '1') {
+            default_dose = 1;
+        }
+        else {
+            default_dose = item.dose;
+        }
+
+        $row.find(".dose-unit-term").text(default_dose_unit_term);
+        $row.find(".dose").val(default_dose);
+        $row.find(".frequency").val(item.frequency_id);
+        $row.find(".route").val(item.route_id);
+        $row.find(".ref_medication_id").val(item.id);
+        $row.find("input.medication-name").val(item.preferred_term);
+
+        if(!item.will_copy) {
+            $row.addClass("ignore");
+        }
+        else {
+            $row.removeClass("ignore");
+        }
+
+        if(typeof controller.MMController !== "undefined") {
+            if(item.will_copy) {
+                var $new_row = controller.MMController.addEntry(ui.item, false);
+                controller.bindEntries($row, $new_row);
+            }
+            else {
+                controller.removeBoundEntry($row);
+            }
+
+        }
+
+        controller.updateRowRouteOptions($row);
+        controller.processRisks(item);
+
+    };
+
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
   {
