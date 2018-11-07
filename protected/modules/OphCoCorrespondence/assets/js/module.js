@@ -36,7 +36,7 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-
+        $('.autosize').autosize();
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
