@@ -212,4 +212,11 @@ class RefSet extends BaseActiveRecordVersioned
 
         return implode(" // ", $ret_val);
     }
+
+    public function scopes()
+    {
+        return array(
+            'byName' =>  array('order' => 'name ASC'),
+        );
+    }
 }
