@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2acbdb7a4ee0366d4280612577964264",
+    "content-hash": "26f71732bf34530fa13323952ecddd07",
     "packages": [
         {
             "name": "endroid/qrcode",
@@ -5861,6 +5861,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "<=5.6.38"
+    },
     "platform-dev": []
 }
