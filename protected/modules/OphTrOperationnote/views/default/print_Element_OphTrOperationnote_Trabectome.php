@@ -19,7 +19,7 @@
 <section class="<?php echo $element->elementType->class_name ?>">
     <h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
     <div class="flex-layout">
-        <table>
+        <table class="cols-6">
             <tbody>
                 <tr>
                     <th><?= \CHtml::encode($element->getAttributeLabel('power_id')) ?></th>
@@ -44,22 +44,18 @@
             </tbody>
             
         </table>
-        <div class="cols-6 column">
-            <div class="data-group">
-                <div class="details">
-                    <?php
-                    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'Trabectome',
-                        'mode' => 'view',
-                        'width' => 200,
-                        'height' => 200,
-                        'model' => $element,
-                        'attribute' => 'eyedraw',
-                        'scale' => 0.72,
-                    ));
-                    ?>
-                </div>
-            </div>
+        <div class="cols-6">
+            <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                'idSuffix' => 'Trabectome',
+                'mode' => 'view',
+                'width' => 200,
+                'height' => 200,
+                'model' => $element,
+                'attribute' => 'eyedraw',
+                'scale' => 0.72,
+            ));
+            ?>
         </div>
     </div>
 </section>
