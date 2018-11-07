@@ -37,7 +37,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 
                     <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
                     <div class="cols-9">
-                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->right_readings) { ?> style="display: none;" <?php } ?>>
+                        <table class="cols-full standard colourvision_table_<?= $eye_side ?>"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
                             <thead>
                             <tr>
                                 <th>Method</th>
@@ -46,7 +46,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                             </tr>
                             </thead>
                             <tbody class="plain" id="colourvision_right">
-                            <?php foreach ($element->right_readings as $reading) {
+                            <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                                 $this->renderPartial('form_OphCiExamination_ColourVision_Reading', array(
                                     'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
                                     'reading' => $reading,
@@ -81,7 +81,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
                         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                             array_map(function ($reading) {
                                 return ['label' => $reading->name, 'id' => $reading->id];
-                            }, $element->getUnusedReadingMethods($eye_side))) ?> , {'multiSelect': true}),
+                            }, $element->getAllReadingMethods($eye_side))) ?> , {'multiSelect': true}),
                         ],
                         onReturn: function (adderDialog, selectedItems) {
                             if (selectedItems.length) {

@@ -71,7 +71,7 @@ $this->endWidget(); ?>
   });
 
   $(".oe-btn-list").ready(function () {
-    $("li").click(function (event) {
+    $(".oe-btn-list").on('click' , 'li' , function (event) {
       var $ticketFilter = $('#ticket-filter');
       $ticketFilter.find('input[name="queueset_id"]').val($(this).attr('id'));
       $ticketFilter.submit();

@@ -143,4 +143,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
     {
         return $this->marked_as_read ? 'read' : 'unread';
     }
+    
+    public function getPrint_view() {
+        return 'print_'.$this->getDefaultView();
+    }
 }

@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810091400',
+            'time' => '201810311030',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -381,7 +381,7 @@ return array(
         'event_lock_disable' => false,
         'reports' => array(
         ),
-        'opbooking_disable_both_eyes' => false,
+        'opbooking_disable_both_eyes' => true,
         //'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
@@ -392,9 +392,9 @@ return array(
         'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
         'wkhtmltopdf_footer_right' => 'OpenEyes',
         'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '25mm',
-        'wkhtmltopdf_left_margin' => '20mm',
-        'wkhtmltopdf_right_margin' => '20mm',
+        'wkhtmltopdf_bottom_margin' => '20mm',
+        'wkhtmltopdf_left_margin' => '5mm',
+        'wkhtmltopdf_right_margin' => '5mm',
         'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
@@ -468,9 +468,9 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-         * Please note: on the screen the DRAFT background will be still visible but removed from printouts
+				 * Without this, lightning images and event view will not show draft watermark
          */
-        'OphCoCorrespondence_printout_draft_background' => false,
+        'OphCoCorrespondence_printout_draft_background' => true,
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
@@ -520,6 +520,10 @@ return array(
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
+            'blank_image_template' => array(
+                'height' => 800,
+                'width' => 600
+            )
         ),
     ),
 );

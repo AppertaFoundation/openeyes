@@ -64,7 +64,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		if (isset ( $this->environment [$environment] )) {
 			$homepage = $this->getPage ( 'HomePage' );
 			$homepage->open ();
-			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login' );
+			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login - OE' );
 		} else {
 			throw new \Exception ( "Environment $environment doesn't exist" );
 		}

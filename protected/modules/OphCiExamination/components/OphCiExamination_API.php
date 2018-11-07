@@ -1066,7 +1066,7 @@ class OphCiExamination_API extends \BaseAPI
         $use_context = false
     )
     {
-        $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
+        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'left', $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -1084,7 +1084,7 @@ class OphCiExamination_API extends \BaseAPI
         $use_context = false
     )
     {
-        $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
+        return $this->getLetterVisualAcuityForEpisodeSide($patient, 'right', $include_nr_values, $before_date, $use_context);
     }
 
     /**
@@ -2298,12 +2298,12 @@ class OphCiExamination_API extends \BaseAPI
         if ($iop) {
             $iopVals = $iop->getValues();
             $i = 0;
-            $output = '<table>';
+            $output = '<table class="borders">';
             while (isset($iopVals['right'][$i]) || isset($iopVals['left'][$i])) {
                 if ($i === 0) {
                     $lCCT = $this->getCCTLeftNoUnits($patient);
                     $rCCT = $this->getCCTRightNoUnits($patient);
-                    $output .= '<colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><th>RE [' . $rCCT . ']</th><th>LE [' . $lCCT . ']</th></tr>';
+                    $output .= '<colgroup><col class="cols-6"><col class="cols-6"></colgroup><tr><td>RE [' . $rCCT . ']</td><td>LE [' . $lCCT . ']</td></tr>';
                 }
 
                 $output .= '<tr>';
