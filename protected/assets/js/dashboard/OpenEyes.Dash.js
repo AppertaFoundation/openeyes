@@ -264,12 +264,24 @@
         'CataractComplicationsReport': function(data){
           var chart = $('#CataractComplicationsReport')[0];
           chart.data[0]['x'] = data.map(function (item) {
-            if (item['y']) {
-              return item['y'];
+            if (item['total']) {
+              return item['total'];
             } else {
               return 0;
             }
           });
+
+          chart.data[0]['hovertext'] = data.map((item, index) => {
+            if (item['total']){
+              return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
+                chart.layout['yaxis']['ticktext'][index] +
+                '<br><i>Percentage:</i> '+ item['y'].toFixed(2) +
+                '%<br>Total Operations: '+ item['total'];
+            } else {
+              return '';
+            }
+          });
+
             $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
@@ -277,8 +289,10 @@
                     chart.layout['title'] =  'Complication Profile<br>' +
                       '<sub>Total Complications: '+ data[0] +
                       ' Total Operations: ' + data[1] + '</sub>';
+                  Plotly.redraw(chart);
                 }
             });
+
           Plotly.redraw(chart);
 
         },
