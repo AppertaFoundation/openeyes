@@ -50,6 +50,8 @@ function setDiabeticDisorder(ev, pcrEl) {
 
     if ($('input[name^="diabetic_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
@@ -68,6 +70,8 @@ function setGlaucomaDisorder(ev, pcrEl) {
 
     if ($('input[name^="glaucoma_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
