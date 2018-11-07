@@ -186,13 +186,14 @@ class RefMedicationAdminController extends BaseAdminController
 
         $sheet->setCellValue('A4', 'DM+D ID (preffered code)');
         $sheet->setCellValue('B4', 'Term (preferred term');
-        $sheet->setCellValue('C4', 'Source subtype');
-        $sheet->setCellValue('D4', 'Notes');
-        $sheet->getStyle('A4:D4')->applyFromArray($style_bold);
+        $sheet->setCellValue('C4', 'Source type');
+        $sheet->setCellValue('D4', 'Source subtype');
+        $sheet->setCellValue('E4', 'Notes');
+        $sheet->getStyle('A4:E4')->applyFromArray($style_bold);
 
-        $sheet->setCellValue('D1', 'SET TITLE >>');
-        $sheet->setCellValue('D2', 'SET ID >>');
-        $sheet->setCellValue('D3', 'SET INFO >>');
+        $sheet->setCellValue('E1', 'SET TITLE >>');
+        $sheet->setCellValue('E2', 'SET ID >>');
+        $sheet->setCellValue('E3', 'SET INFO >>');
 
         $cond = new CDbCriteria();
         $cond->addInCondition('id', $ref_set_ids);
@@ -223,7 +224,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         foreach ($medications as $med) {
             $row = [
-                $med->preferred_code, $med->preferred_term, $med->source_subtype, '??'
+                $med->preferred_code, $med->preferred_term, $med->source_type, $med->source_subtype, ''
             ];
 
             foreach ($sets as $set) {
