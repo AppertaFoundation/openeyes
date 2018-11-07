@@ -164,7 +164,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    	});
     	}
 
-    	return str;
+    	return str.trim();
     }
 
 	function hideMe() {

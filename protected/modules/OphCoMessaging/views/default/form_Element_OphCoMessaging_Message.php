@@ -36,6 +36,7 @@
                   <span id="fao-field">
                     <span
                         id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
+                      <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                       <?php
                       $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                           'name' => 'find_user',
