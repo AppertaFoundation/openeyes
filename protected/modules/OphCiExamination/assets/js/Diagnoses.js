@@ -73,7 +73,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$table.on('click', '.button.remove', function (e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
-            $(":input[name^='glaucoma_diagnoses']").trigger('change');
+                console.log('yeye');
+                $(":input[name^='glaucoma_diagnoses']").trigger('change');
+
+
         });
 
         controller.$element.on('click', '#ophthalmic-diagnoses-search-btn', function () {

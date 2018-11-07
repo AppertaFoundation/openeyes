@@ -1064,6 +1064,7 @@ $(document).ready(function() {
         var disorder_id = $(this).attr('rel');
         var new_principal = false;
 
+
         if ($('input[name="principal_diagnosis"]:checked').val() == disorder_id) {
             new_principal = true;
         }
@@ -1081,6 +1082,8 @@ $(document).ready(function() {
         }
 
         OphCiExamination_RefreshCommonOphDiagnoses();
+
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
 
         return false;
     });

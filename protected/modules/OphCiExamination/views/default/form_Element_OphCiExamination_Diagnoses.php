@@ -47,6 +47,7 @@ foreach ($this->patient->episodes as $ep) {
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
     <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="glaucoma_diagnoses[]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
