@@ -42,7 +42,9 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 }
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
+<tr data-key="<?=$row_count?>"
+    style="display: <?= $entry->originallyStopped ? 'none' : ''?>"
+    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
     <td>
       <span class="medication-display">
         <span class="medication-name">

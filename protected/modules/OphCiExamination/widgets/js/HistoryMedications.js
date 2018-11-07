@@ -92,13 +92,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   */
   HistoryMedicationsController.prototype.initialiseFilters = function()
   {
-
     // if there aren't any stopped medications, then the filter is irrelevant
     if (!this.$table.find('tr.originally-stopped').length) {
-      this.$element.find('.show-stopped').hide();
-      this.$element.find('.hide-stopped').hide();
-    } else {
-      this.hideStopped();
+        this.$element.find('.show-stopped').hide();
+        this.$element.find('.hide-stopped').hide();
     }
   };
 
@@ -217,7 +214,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
-      let drug_id = $row.find("input[name*='[drug_id]'] , input[name*='[medication_drug_id]']").val();
+      let drug_id = $row.find("input[name*='[drug_id]']").val();
       if(drug_id === ''){
           drug_id = $row.find("input[name*='[medication_drug_id]']").val();
       }
@@ -355,7 +352,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var rows = this.createRow(selectedItems);
     for(var i in rows){
-      this.$table.first('tbody').append(rows[i]);
+      this.$table.children('tbody').append(rows[i]);
       let $lastRow = this.$table.find('tbody tr:last');
       this.initialiseRow($lastRow);
       this.loadDrugDefaults($lastRow);

@@ -1,4 +1,3 @@
-
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
@@ -28,4 +27,3 @@ $(document).ready(function() {
         $('#add-comment-button-container').toggle();
     });
 });
-
