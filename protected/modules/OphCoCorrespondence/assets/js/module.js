@@ -963,10 +963,10 @@ function OphCoCorrespondence_addAttachments(selectedItems){
 				'data': { 'YII_CSRF_TOKEN': YII_CSRF_TOKEN, id: selectedItems[key].id, 'patient_id': OE_patient_id},
 				'success': function (response) {
 					if (response.success == 1) {
-						$table = $('#attachments_content_container').find('table > tbody');
+						let $table = $('#correspondence_attachments_table').find('tbody');
 
-						$data_id = parseInt($table.children().length);
-						$content = $(response.content);
+						let $data_id = parseInt($table.children().length);
+						let $content = $(response.content);
 
 						$table.append($content);
 						$content.attr('data-id', $data_id);

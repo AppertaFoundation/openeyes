@@ -84,8 +84,6 @@ class SearchController extends BaseController
         $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
         Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
 
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-
         $tests = array();
         $pages = 0;
         $page = 0;
