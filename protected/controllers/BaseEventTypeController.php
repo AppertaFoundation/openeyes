@@ -2502,7 +2502,6 @@ class BaseEventTypeController extends BaseModuleController
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
             $imagick = new Imagick($input_path);
-            $this->scaleImageForThumbnail($imagick);
             $imagick->writeImage($output_path);
 
             $this->saveEventImage('CREATED', ['image_path' => $output_path]);
@@ -2526,8 +2525,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function scaleImageForThumbnail($imagick)
     {
-        $imagick->setImageCompressionQuality($this->compression_quality);
-
         $width = $this->image_width ?: 800;
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
@@ -2658,10 +2655,18 @@ class BaseEventTypeController extends BaseModuleController
     protected function createPdfPreviewImages($pdf_path, $eye = null)
     {
         $pdf_imagick = new Imagick();
-        $new_res = 72 * $this->resolution_multiplier;
-        $pdf_imagick->setResolution($new_res, $new_res);
         $pdf_imagick->readImage($pdf_path);
         $pdf_imagick->setImageFormat('png');
+        $original_width = $pdf_imagick->getImageGeometry()['width'];
+        if ($this->image_width != 0 && $original_width != $this->image_width){
+            $original_res = $pdf_imagick->getImageResolution()['x'];
+            $new_res = $original_res * ($this->image_width / $original_width);
+
+            $pdf_imagick = new Imagick();
+            $pdf_imagick->setResolution($new_res,$new_res);
+            $pdf_imagick->readImage($pdf_path);
+            $pdf_imagick->setImageCompressionQuality($this->compression_quality);
+        }
 
         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
         if (!$pdf_imagick->writeImages($output_path, false)) {
@@ -2693,21 +2698,15 @@ class BaseEventTypeController extends BaseModuleController
     protected function savePdfPreviewAsEventImage($page, $eye)
     {
         $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye]);
-        Yii::log($pagePreviewPath);
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
 
         $imagickPage = new Imagick();
         $imagickPage->readImage($pagePreviewPath);
-        $this->scaleImageForThumbnail($imagickPage);
 
         // Sometimes the PDf has a transparent background, which should be replaced with white
-        if ($imagickPage->getImageAlphaChannel()) {
-            $imagickPage->setImageAlphaChannel(11);
-            $imagickPage->setImageBackgroundColor('white');
-            $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
-        }
+        $this->whiteOutImageImagickBackground($imagickPage);
 
         $imagickPage->writeImage($pagePreviewPath);
         $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
@@ -2717,5 +2716,19 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         return true;
+    }
+
+    /**
+     * Makes transparent imagick images have a white background
+     *
+     * @param $imagick Imagick
+     * @throws Exception
+     */
+    protected function whiteOutImageImagickBackground($imagick){
+        if ($imagick->getImageAlphaChannel()) {
+            $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_FLATTEN);
+            $imagick->setImageBackgroundColor('white');
+            $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+        }
     }
 }
