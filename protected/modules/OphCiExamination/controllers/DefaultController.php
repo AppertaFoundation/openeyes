@@ -244,27 +244,21 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphCiExamination_Diagnoses($element, $action)
     {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $episode = $this->episode;
+        $principal_diagnosis = null;
+        if ($episode->diagnosis) {
+            $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($episode, $episode->diagnosis->id);
+        }
+
         if ($action == 'create') {
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
-            $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-
-            if($this->episode->diagnosis) {
-                $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($this->episode, $this->episode->diagnosis->id);
-                if(!$principal_diagnosis) {
-                    /* In this case the episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
-                }
-
-                $d = new models\OphCiExamination_Diagnosis();
-                $d->disorder_id = $principal_diagnosis ? $principal_diagnosis->disorder_id : $this->episode->diagnosis->id;
-                $d->principal = true;
-                $d->date = $principal_diagnosis ? $principal_diagnosis->date : null;
-                $d->eye_id = $this->episode->eye_id;
-
+            if ($this->episode->diagnosis) {
+                $d = $this->getNewPrincipalDiagnosisModel($episode);
                 $diagnoses[] = $d;
             }
-
 
             foreach ($this->patient->getOphthalmicDiagnoses() as $sd) {
                 $d = new models\OphCiExamination_Diagnosis();
@@ -296,6 +290,39 @@ class DefaultController extends \BaseEventTypeController
             }
             $element->diagnoses = $_diagnoses;
         }
+
+        if ($action == 'update') {
+            if ($episode->diagnosis && !$principal_diagnosis) {
+                /* episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
+                $d = $this->getNewPrincipalDiagnosisModel($episode);
+                $diagnoses = $element->diagnoses;
+                /*
+                    array_unshift to place at the beginning of the array.
+                    However,  $element->diagnoses must contain at least 1 principal - which isn't true in this
+                    IF statement(-->!$principal_diagnosis), meaning Diagnoses element is a new record.
+                    We expect the $element->diagnoses is an empty array.
+                */
+                array_unshift($diagnoses, $d);
+                $element->diagnoses = $diagnoses;
+            }
+        }
+    }
+
+    /**
+     * Creates and returns an OphCiExamination_Diagnosis prepared for principal
+     * @param \OphCiExamination_Diagnosis $principal_diagnosis
+     * @param \Episode $episode
+     * @return models\OphCiExamination_Diagnosis
+     */
+    private function getNewPrincipalDiagnosisModel(\Episode $episode)
+    {
+        $diagnosis = new models\OphCiExamination_Diagnosis();
+        $diagnosis->disorder_id = $episode->diagnosis->id;
+        $diagnosis->principal = true;
+        $diagnosis->date = null;
+        $diagnosis->eye_id = $episode->eye_id;
+
+        return $diagnosis;
     }
 
     /**
