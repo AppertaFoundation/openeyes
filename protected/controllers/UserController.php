@@ -58,7 +58,7 @@ class UserController extends BaseController
 					'id' => $user->id,
 					'label' => $user->getFullNameAndTitle(),
 					'value' => $user->getFullName(),
-					'username' => $user->username
+					'username' => $user->username,
 				);
 			}
 		}
