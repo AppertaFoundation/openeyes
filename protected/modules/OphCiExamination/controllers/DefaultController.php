@@ -246,14 +246,17 @@ class DefaultController extends \BaseEventTypeController
     {
         $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
         $episode = $this->episode;
-        $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($episode, $episode->diagnosis->id);
+        $principal_diagnosis = null;
+        if ($episode->diagnosis) {
+            $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($episode, $episode->diagnosis->id);
+        }
 
         if ($action == 'create') {
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
             if ($this->episode->diagnosis) {
-                $d = $this->getNewPrincipalDiagnosisModel($episode, $principal_diagnosis);
+                $d = $this->getNewPrincipalDiagnosisModel($episode);
                 $diagnoses[] = $d;
             }
 
@@ -289,14 +292,18 @@ class DefaultController extends \BaseEventTypeController
         }
 
         if ($action == 'update') {
-            if ($episode->diagnosis) {
-                if (!$principal_diagnosis) {
-                    /* episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
-                    $d = $this->getNewPrincipalDiagnosisModel($episode);
-
-                    /* At the beginning of the array */
-                    array_unshift($element->diagnoses, $d);
-                }
+            if ($episode->diagnosis && !$principal_diagnosis) {
+                /* episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
+                $d = $this->getNewPrincipalDiagnosisModel($episode);
+                $diagnoses = $element->diagnoses;
+                /*
+                    array_unshift to place at the beginning of the array.
+                    However,  $element->diagnoses must contain at least 1 principal - which isn't true in this
+                    IF statement(-->!$principal_diagnosis), meaning Diagnoses element is a new record.
+                    We expect the $element->diagnoses is an empty array.
+                */
+                array_unshift($diagnoses, $d);
+                $element->diagnoses = $diagnoses;
             }
         }
     }
@@ -307,12 +314,12 @@ class DefaultController extends \BaseEventTypeController
      * @param \Episode $episode
      * @return models\OphCiExamination_Diagnosis
      */
-    private function getNewPrincipalDiagnosisModel(\Episode $episode, $principal_diagnosis = null)
+    private function getNewPrincipalDiagnosisModel(\Episode $episode)
     {
         $diagnosis = new models\OphCiExamination_Diagnosis();
-        $diagnosis->disorder_id = $principal_diagnosis ? $principal_diagnosis->disorder_id : $episode->diagnosis->id;
+        $diagnosis->disorder_id = $episode->diagnosis->id;
         $diagnosis->principal = true;
-        $diagnosis->date = $principal_diagnosis ? $principal_diagnosis->date : null;
+        $diagnosis->date = null;
         $diagnosis->eye_id = $episode->eye_id;
 
         return $diagnosis;
