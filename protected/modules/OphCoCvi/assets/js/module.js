@@ -225,27 +225,39 @@ $(document).ready(function() {
 
     $('.autosize').autosize();
 
-    OpenEyes.UI.AutoCompleteSearch.init({
-        input: $('#createdby_auto_complete'),
-        url: '/user/autocomplete',
-        onSelect: function(){
-            console.log('createdby');
-            AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            addCreatedByToList(AutoCompleteResponse);
-            return false;
-        }
-    });
+    if($('#createdby_auto_complete').length > 0){
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#createdby_auto_complete'),
+            url: '/user/autocomplete',
+            onSelect: function(){
+                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                addCreatedByToList(AutoCompleteResponse);
+                return false;
+            }
+        });
+    }
 
-    OpenEyes.UI.AutoCompleteSearch.init({
-        input: $('#consultant_auto_complete'),
-        url: '/user/autocomplete',
-        onSelect: function(){
-            console.log('consultant');
-            AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-            addConsultantToList(AutoCompleteResponse);
-            return false;
-        }
-    });
+    if($('#consultant_auto_complete').length > 0){
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#consultant_auto_complete'),
+            url: '/user/autocomplete',
+            onSelect: function(){
+                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                addConsultantToList(AutoCompleteResponse);
+                return false;
+            }
+        });
+    }
+    if($('#oe-autocompletesearch').length > 0){
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#oe-autocompletesearch'),
+            url: '/OphCoCvi/localAuthority/autocomplete',
+            onSelect: function(){
+                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                updateLAFields(AutoCompleteResponse);
+            }
+        });
+    }
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
