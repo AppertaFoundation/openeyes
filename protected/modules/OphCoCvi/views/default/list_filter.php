@@ -73,50 +73,8 @@
                         </div>
                     </div>
                     <div class="column cols-1 text-right"><label for="createdby">Created By:</label></div>
-                    <div class="column cols-2"><?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'id' => 'createdby_auto_complete',
-                            'name' => 'createdby_auto_complete',
-                            'value' => '',
-                            'source' => "js:function(request, response) {
-                                    var existing = [];
-                                    $('#createdby_list').children('li').map(function() {
-                                        existing.push(String($(this).data('id')));
-                                    });
-
-                                    $.ajax({
-                                        'url': '".Yii::app()->createUrl('user/autocomplete')."',
-                                        'type':'GET',
-                                        'data':{'term': request.term},
-                                        'success':function(data) {
-                                            data = $.parseJSON(data);
-
-                                            var result = [];
-
-                                            for (var i = 0; i < data.length; i++) {
-                                                var index = $.inArray(data[i].id, existing);
-                                                if (index == -1) {
-                                                    result.push(data[i]);
-                                                }
-                                            }
-
-                                            response(result);
-                                        }
-                                    });
-                                    }",
-                            'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
-                                    addCreatedByToList(ui.item);
-                                    $('#createdby_auto_complete').val('');
-                                    return false;
-                                }",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'type to search for users',
-                            ),
-                        ));
-                        ?>
+                    <div class="column cols-2">
+                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'createdby_auto_complete']); ?>
                         <div><ul id="createdby_list" class="multi-select-search scroll">
                                 <?php $createdby_ids = array_key_exists('createdby_ids', $list_filter) ? $list_filter['createdby_ids'] : '';
                                 if ($createdby_ids) {
@@ -131,50 +89,8 @@
                     </div>
 
                     <div class="column cols-1 text-right"><label for="consultants">Consultant(s):</label></div>
-                    <div class="column cols-2"><?php
-                        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'id' => 'consultant_auto_complete',
-                            'name' => 'consultant_auto_complete',
-                            'value' => '',
-                            'source' => "js:function(request, response) {
-                                    var existing = [];
-                                    $('#consultant_list').children('li').map(function() {
-                                        existing.push(String($(this).data('id')));
-                                    });
-
-                                    $.ajax({
-                                        'url': '".Yii::app()->createUrl('user/autocomplete')."',
-                                        'type':'GET',
-                                        'data':{'term': request.term},
-                                        'success':function(data) {
-                                            data = $.parseJSON(data);
-
-                                            var result = [];
-
-                                            for (var i = 0; i < data.length; i++) {
-                                                var index = $.inArray(data[i].id, existing);
-                                                if (index == -1) {
-                                                    result.push(data[i]);
-                                                }
-                                            }
-
-                                            response(result);
-                                        }
-                                    });
-                                    }",
-                            'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
-                                    addConsultantToList(ui.item);
-                                    $('#consultant_auto_complete').val('');
-                                    return false;
-                                }",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'type to search for users',
-                            ),
-                        ));
-                        ?>
+                    <div class="column cols-2">
+                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'consultant_auto_complete']); ?>
                         <div><ul id="consultant_list" class="multi-select-search scroll">
                                 <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';
                                 if ($consultant_ids) {
