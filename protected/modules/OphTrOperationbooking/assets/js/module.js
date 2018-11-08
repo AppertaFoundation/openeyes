@@ -167,7 +167,6 @@
             }
         });
 
-        //
         OpenEyes.UI.AutoCompleteSearch.init({
             input: $('#oe-autocompletesearch'),
             url: '/user/autoComplete',
