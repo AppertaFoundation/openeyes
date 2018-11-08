@@ -332,13 +332,13 @@ function updateIolRefRow(side) {
 						for (j = 0; j < $(trstr).length; j++) {
 							if (i == j) {
 								//alert('clicked'+ rowstr + j);
-								$(rowstr + j).addClass("highlighted");
+								$(rowstr + j).addClass("selected-row");
 								//$('#iolreftr-left_6_1__' + j).css("background-color", "#FFFFE0");
 								$(rowsrad + j).attr('checked', true);
 							}
 							else
 							{
-								$(rowstr + j).removeClass("highlighted");
+								$(rowstr + j).removeClass("selected-row");
 								$(rowsrad + j).attr('checked', false);
 							}
 						}
