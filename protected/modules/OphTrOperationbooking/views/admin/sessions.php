@@ -84,7 +84,7 @@ $sessions = $sessions['data'];
             <td><?=\CHtml::dropDownList('available', @$_GET['available'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Available -', 'class'=>'cols-full'))?></td>
         </tr>
         </tbody>
-        <tfoot class="pagination-container">
+        <tfoot>
         <tr>
             <td colspan="5">
                 <?php echo CHtml::button(

@@ -76,7 +76,7 @@ $sequences = $sequences['data'];
                 <td><?=\CHtml::dropDownList('general_anaesthetic', @$_GET['general_anaesthetic'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- General anaesthetic -', 'class'=>'cols-full'))?></td>
             </tr>
             </tbody>
-            <tfoot class="pagination-container">
+            <tfoot>
             <tr>
                 <td colspan="5">
                     <?php echo CHtml::button(
