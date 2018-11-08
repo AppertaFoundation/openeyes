@@ -1714,7 +1714,9 @@ class PatientController extends BaseController
             list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
                 $patient_identifiers);
         }
-        $patient->hos_num = $patient->autoCompleteHosNum();
+        if($patient->getIsNewRecord()){
+            $patient->hos_num = $patient->autoCompleteHosNum();
+        }
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -1763,7 +1765,9 @@ class PatientController extends BaseController
 
             if ($contact->save()) {
 //                The hospital number is auto generated once more to ensure the same number isn't generated for two or more simultaneous users
-                $patient->hos_num = $patient->autoCompleteHosNum();
+                if($patient->getIsNewRecord()){
+                    $patient->hos_num = $patient->autoCompleteHosNum();
+                }
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';
