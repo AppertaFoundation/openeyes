@@ -384,7 +384,7 @@ function updateClosest (side) {
 					ref.push(refval);
 				}
 				var oldclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-				$(oldclosest).removeClass("closest");
+				$(oldclosest).find('span').removeClass("highlighter");
 			});
 			var closest = closestNew(ref,tarref );
 			var trstr1 = '#' + side + '_' + l_id + '_' + f_id+ ' tr';
@@ -394,7 +394,7 @@ function updateClosest (side) {
 				if(parseFloat(closest) == parseFloat(refval1) )
 				{
 					var newclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-					$(newclosest).addClass("closest");
+					$(newclosest).find('span').addClass("highlighter");
 				}
 			});
 		}
