@@ -90,7 +90,7 @@ class PatientController extends BaseController
                 'roles' => array('OprnEditSocialHistory'),
             ),
             array('allow',
-                'actions' => array('create', 'update'),
+                'actions' => array('create', 'update', 'findDuplicates'),
                 'roles' => array('TaskAddPatient'),
             )
         );
@@ -204,9 +204,9 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
 
         $patientSearch = new PatientSearch();
-	    $dataProvider = $patientSearch->search($term);
-	    $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
-	    $search_terms = $patientSearch->getSearchTerms();
+      $dataProvider = $patientSearch->search($term);
+      $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
+      $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -1984,6 +1984,32 @@ class PatientController extends BaseController
         echo \CJSON::encode(array('link' => $link));
         $this->getApp()->end();
     }
+
+  public function actionFindDuplicates($firstName, $last_name, $dob, $id = null)
+  {
+    $patients = Patient::findDuplicates($firstName, $last_name, $dob, $id);
+
+    if (isset($patients['error'])) {
+      $this->renderPartial('crud/_conflicts_error', array(
+        'errors' => $patients['error'],
+      ));
+
+    }
+    else {
+      if (count($patients) !== 0) {
+        $this->renderPartial('crud/_conflicts', array(
+          'patients' => $patients,
+          'name' => $firstName . ' ' . $last_name
+        ));
+      }
+      else {
+        $this->renderPartial('crud/_conflicts', array(
+          'name' => $firstName . ' ' . $last_name
+        ));
+      }
+    }
+  }
+
 
     /**
      * Ajax method for viewing previous elements.
