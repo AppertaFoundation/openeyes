@@ -1762,7 +1762,7 @@ class PatientController extends BaseController
         try {
 
             if ($contact->save()) {
-
+                $patient->hos_num = $patient->autoCompleteHosNum();
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';
