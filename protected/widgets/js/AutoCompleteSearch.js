@@ -58,7 +58,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     var current_focus;
     var item_clicked;
     var inputbox;
-    var onSelect;
+    var onSelect = [];
     
     function initAutocomplete(input, autocomplete_url) {
     	input.on('input',function(){
@@ -73,7 +73,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     					inputbox.parent().find('.min-chars').removeClass('hidden');
     				}
 	    			hideMe();
-	    			return false;    				
+	    			return false;
 	    		}, 1000);
     		} else {
 	    		// cancel the current search and start a new one
@@ -100,9 +100,9 @@ OpenEyes.UI = OpenEyes.UI || {};
     		}
     	});
 
-    	$('.oe-autocomplete').on('click', '.oe-menu-item', function(){
+    	input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function(){
     		item_clicked = response[$(this).index()];
-    		onSelect();
+            onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
     		inputbox.val('');
     		hideMe();
     	});
@@ -149,6 +149,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         		+value.nhsnum+`<br><br>Hospital No.: `+matchSearchTerm(value.hos_num)+`
 				<br>Date of birth: `+value.dob;
         	}
+
+            if(value.label !== undefined){
+                search_options += matchSearchTerm(value.label);
+            }
      		search_options += `</a></li>`;
         });
 
@@ -172,10 +176,15 @@ OpenEyes.UI = OpenEyes.UI || {};
 		return false;
 	}
 
+    function set_onSelect(input, f){
+        var input_selector = input.selector.replace(/[^A-z]/, '');
+        onSelect[input_selector] = f;
+    }
+
     exports.AutoCompleteSearch = {
     	init: function (options) {
     		if(options.input){
-    			onSelect = options.onSelect;
+                set_onSelect(options.input, options.onSelect);
 	    		initAutocomplete(options.input, options.url);
 	    		return exports.AutoCompleteSearch;
     		}
