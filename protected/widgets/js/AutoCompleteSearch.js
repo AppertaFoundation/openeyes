@@ -173,7 +173,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
 	function hideMe() {
 		$('.oe-autocomplete').addClass('hidden');
-		return false;
 	}
 
     function set_onSelect(input, f){
