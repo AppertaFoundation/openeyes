@@ -214,17 +214,18 @@ class Patient extends BaseActiveRecordVersioned
 //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum(){
         if(Yii::app()->params['set_auto_increment'] == 'on'){
-            $query = "SELECT hos_num FROM patient ORDER BY hos_num DESC";
+            $query = "SELECT hos_num FROM patient";
             $command = Yii::app()->db->createCommand($query);
             $command->prepare();
-            $result = $command->queryAll();
-            $default_hos_num = $result[0]["hos_num"];
+            $result = $command->queryColumn();
+            $default_hos_num = array_map('intval', $result);
+            rsort($default_hos_num);
 //            Checks the admin setting for the starting number for auto increment
-            if ($default_hos_num <= (Yii::app()->params['hos_num_start'])){
+            if ($default_hos_num < (Yii::app()->params['hos_num_start'])){
                 $default_hos_num = Yii::app()->params['hos_num_start'];
-                return $default_hos_num;
+                return $default_hos_num[0];
             } else {
-                return $default_hos_num;
+                return ($default_hos_num[0] + 1);
             }
         }
     }
