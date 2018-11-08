@@ -1762,6 +1762,7 @@ class PatientController extends BaseController
         try {
 
             if ($contact->save()) {
+//                The hospital number is auto generated once more to ensure the same number isn't generated for two or more simultaneous users
                 $patient->hos_num = $patient->autoCompleteHosNum();
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
