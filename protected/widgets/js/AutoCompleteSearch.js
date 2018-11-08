@@ -96,14 +96,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 					} else if(status === 'error' || status === 'timeout'){
 						console.warning('Error with AutoCompleteSearch');
 					}
-				});    			
+				});
     		}
     	});
 
     	input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function(){
     		item_clicked = response[$(this).index()];
+            inputbox.val('');
             onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
-    		inputbox.val('');
     		hideMe();
     	});
 
@@ -136,7 +136,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    $(".oe-autocomplete").empty();
 	    var search_options = ``;
 
-        $.each(response,function(index, value){       	
+        $.each(response,function(index, value){
         	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1">`;
         	if(value.fullname !== undefined){
         		search_options += matchSearchTerm(value.fullname);
@@ -153,6 +153,11 @@ OpenEyes.UI = OpenEyes.UI || {};
             if(value.label !== undefined){
                 search_options += matchSearchTerm(value.label);
             }
+
+            if(typeof value == 'string'){
+                search_options += matchSearchTerm(value);
+            }
+
      		search_options += `</a></li>`;
         });
 
