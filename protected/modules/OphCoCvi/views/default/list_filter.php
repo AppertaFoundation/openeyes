@@ -112,21 +112,6 @@
                     </div>
                     <?= CHtml::hiddenField('createdby_ids', $this->request->getPost('createdby_ids', ''), array('class' => 'filter-field')); ?>
 
-                    <div class="column cols-1 text-right"><label for="consultants">Consultant(s):</label></div>
-                    <div class="column cols-2">
-                        <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'consultant_auto_complete']); ?>
-                        <div><ul id="consultant_list" class="multi-select-search scroll">
-                                <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';
-                                if ($consultant_ids) {
-                                    foreach(explode(',', $consultant_ids) as $id) {
-                                        if ($user = User::model()->findByPk($id)) { ?>
-                                            <li data-id="<?=$id?>"><?= $user->getReversedFullname() ?><a href="#" class="remove">X</a></li>
-                                        <?php }
-                                    }
-                                }?>
-                            </ul></div>
-                        <?= CHtml::hiddenField('consultant_ids', $this->request->getPost('consultant_ids', ''), array('class' => 'filter-field')); ?>
-
                     <h3>Consultant(s):</h3>
                     <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'consultant_auto_complete']); ?>
                     <div>
