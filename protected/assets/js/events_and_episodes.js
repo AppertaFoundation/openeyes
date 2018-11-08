@@ -162,6 +162,7 @@ $(document).ready(function(){
           });
           dialog.on('ok', function () {
               removeElement($parent);
+              $(document).trigger('element_removed');
           }.bind(this));
           dialog.open();
       } else {
