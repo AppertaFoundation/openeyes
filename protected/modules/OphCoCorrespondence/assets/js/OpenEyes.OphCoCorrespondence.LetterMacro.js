@@ -56,7 +56,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     Layout can NOT be achieved using TABs.
                     */
                     editor.addButton('label-r-l', {
-                        text: 'Label - Right - Left',
+                        text: 'Label - R - L',
                         icon: false,
                         tooltip: "Right Left data",
                         onpostrender: monitorNodeChange,
@@ -71,9 +71,9 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                     note: style="width:100%" sets Tiny to use %!
                     */
                     editor.addButton('datatable', {
-                        text: 'Data table',
+                        text: 'Table',
                         icon: false,
-                        tooltip: "Modify as required",
+                        tooltip: "Insert a table",
                         onpostrender: monitorNodeChange,
                         onclick: function () {
                             editor.insertContent('<table class="borders" style="width:100%"><tbody><tr><td></td><td></td><td></td></tr></tbody></table>');

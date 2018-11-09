@@ -304,7 +304,7 @@ return array(
             'branding' => false,
             'visual' => false,
             'min_height' => 400,
-            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | datatable | code",
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | code",
             'valid_children' => '+body[style]',
             'custom_undo_redo_levels' => 10,
             'object_resizing' => false,
