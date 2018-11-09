@@ -93,6 +93,10 @@
     </table>
     <h4>To be retained in patient's notes</h4>
     <?php for ($i = 0; $i < 2; ++$i) { ?>
+            <?php if($i == 1){ ?>
+                <div class="break"></div>
+            <?php } ?>
+       
             <h3>Name of proposed procedure or course of treatment</h3>
             <?php echo $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective)) ?>
             <h4>Statement of health professional <span class="noth3">(to be filled in by a health professional with appropriate knowledge of the proposed procedure(s), as specified in the consent policy)</span></h4>
@@ -142,7 +146,6 @@
                 <?php echo $this->renderPartial('signature_table3', array('vi' => ($css_class == 'impaired'), 'name' => $elements['Element_OphTrConsent_Other']->interpreter_name)) ?>
                 <div class="spacer"></div>
             <?php } ?>
-            <br/>
 <?php } ?>
         <div class="break"></div>
         <p>Top copy accepted by patient: yes/no (please ring)</p>
