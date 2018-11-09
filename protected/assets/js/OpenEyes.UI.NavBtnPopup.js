@@ -13,8 +13,8 @@
     this.latchable = false;
     this.isLatched = false;
     this.css = {
-      active: 'active', 	// hover
-      open: 'open' 		// clicked
+      active: 'active', 	// hover over button or popup
+      open: 'open', 		// clicked (latched)
     };
     init(); // all are initiated but useWrapperEvents modifies the eventObj then re-initiates
 
@@ -45,6 +45,7 @@
     this.init = init;
     this.hide = hide;
     this.useWrapper = useWrapperEvents;
+    this.enhance = useAdvancedEvents;
     this.fixed = fixed;
     this.inGroup = inGroup;
     this.show = show;
@@ -90,8 +91,8 @@
     }
 
     function hide() {
-      $btn.removeClass(popup.css.open);
-      $content.hide();
+    	$btn.removeClass(popup.css.open);
+    	$content.hide();
     }
 
     /**
@@ -119,6 +120,43 @@
       popup.useMouseEvents = true;
       popup.init(); // re initiate with new eventObj
     }
+
+		/**
+		 Hotlist is structured like Shortcuts but requires a different
+		 behaviour, it requires enhanced behaviour touch to lock it open!
+		 **/
+		function useAdvancedEvents( $wrapper ) {
+			popup.eventObj = $wrapper;
+      //click needs to open/close OR if mouseEvents are working, lock open
+			$btn.click(function( e ){
+				e.stopPropagation();
+				if(!popup.isFixed){
+					if(popup.isLatched){
+						// if open it
+						unlatch();
+						hide();
+					} else {
+						latch();
+					}
+				} else {
+					changeContent();
+				}
+
+			});
+
+			// enhance for Mouse/Track users
+			popup.eventObj
+				.mouseenter(function(){
+					$btn.addClass( popup.css.active );
+					show();
+				})
+				.mouseleave(function(){
+					$btn.removeClass(popup.css.active);
+					if(!popup.isLatched && !popup.isFixed){
+						hide();
+					}
+				});
+		}
 
     /**
      Activity Panel needs to be fixable when the browsers is wide enough
@@ -149,7 +187,6 @@
       }
       popup.isLatched = false;
       popup.hide();
-      $content.on('mouseenter mouseleave');
       $btn.removeClass(popup.css.active);
     }
 
