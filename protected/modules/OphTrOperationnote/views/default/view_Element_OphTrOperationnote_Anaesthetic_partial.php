@@ -15,4 +15,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element))?>
+<div class="col-6" id="js-listview-anaesthetic-full">
+    <table class="last-left large">
+        <colgroup>
+            <col class="cols-fifth" span="5">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th><?=\CHtml::encode($element->getAttributeLabel('anaesthetic_comment'));?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><?= $element->getAnaestheticTypeDisplay() ?></td>
+            <td><?=\CHtml::encode($element->anaesthetic_comment) ? Yii::app()->format->Ntext($element->anaesthetic_comment) : 'None' ?></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1413,7 +1413,7 @@ class Patient extends BaseActiveRecordVersioned
             $type = 'sys';
         }
 
-        if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?', array($this->id, $disorder_id, $eye_id, $date))) {
+        if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?', array($this->id, $disorder_id))) {
             $action = "add-diagnosis-$type";
             $sd = new SecondaryDiagnosis();
             $sd->patient_id = $this->id;
@@ -1428,6 +1428,12 @@ class Patient extends BaseActiveRecordVersioned
             Yii::app()->event->dispatch('patient_add_diagnosis', array('diagnosis' => $sd));
 
             $this->audit('patient', $action);
+        } else if ($sd->eye_id !== $eye_id || $sd->date !== $date) {
+            $sd->eye_id = $eye_id;
+            $sd->date = $date;
+            if (!$sd->save()) {
+                throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(), true));
+            }
         }
     }
 
@@ -1976,7 +1982,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . Helper::convertDate2NHS($ep->start_date);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . Helper::convertDate2NHS($ep->disorder_date);
             }
         }
 

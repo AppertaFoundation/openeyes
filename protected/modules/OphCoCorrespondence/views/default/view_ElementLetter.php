@@ -20,8 +20,8 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 if($correspondeceApp === "on") {
     ?>
-<div class="element-fields full-width flex-layout flex-top col-gap" style="padding: 10px;">
-    <div class="cols-3 ">
+<div class="element-data full-width flex-layout flex-top col-gap">
+    <div class="cols-5 ">
         <table class="cols-full">
             <tr>
                 <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
@@ -123,7 +123,7 @@ if($correspondeceApp === "on") {
     </div>
     <div id="correspondence_out"
          class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
-         style="background-color: white; color: black; padding: 10px; display:none;">
+         style="background-color: white; color: black; display:none;">
             <header>
                 <?php
             $ccString = "";

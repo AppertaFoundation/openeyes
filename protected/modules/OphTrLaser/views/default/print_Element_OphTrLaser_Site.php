@@ -15,4 +15,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $this->renderPartial('print_ElementLetter', array('element' => $element))?>
+
+
+<table>
+    <colgroup>
+        <col class="cols-4">
+        <col class="cols-4">
+        <col class="cols-4">
+    </colgroup>
+    <thead>
+        <tr>
+            <th><?php echo $element->getAttributeLabel('site_id') ?></th>
+            <th><?php echo $element->getAttributeLabel('laser_id') ?></th>
+            <th><?php echo $element->getAttributeLabel('operator_id') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="large-text"><?php echo $element->site ? $element->site->name : 'None' ?></td>
+            <td class="large-text"><?php echo $element->laser ? $element->laser->name : 'None' ?></td>
+            <td class="large-text"><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None' ?></td>
+        </tr>
+    </tbody>
+</table>
+

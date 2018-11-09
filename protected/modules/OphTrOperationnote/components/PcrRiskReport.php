@@ -165,20 +165,21 @@ class PcrRiskReport extends Report implements ReportInterface
      */
 
     public function tracesJson(){
+      $dataset = $this->dataSet();
       $trace1 = array(
         'name' => 'Current Surgeon',
         'type' => 'scatter',
         'x' => array_map(function($item){
           return $item['x'];
-        }, $this->dataSet()),
+        }, $dataset),
         'y' => array_map(function($item){
           return $item['y'];
-        }, $this->dataSet()),
+        }, $dataset),
         'hovertext' => array_map(function($item){
           return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
             . number_format($item['y'], 2);
-        }, $this->dataSet()),
+        }, $dataset),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
           'bgcolor' => '#fff',
