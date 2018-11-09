@@ -112,7 +112,11 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
             .then(
                 function (editors) {
                     controller.editor = editors[0];
-                    controller.postInit();
+
+                    if(typeof OE_patient_id !== "undefined"){
+                        controller.postInit();
+                    }
+
                 }
             );
     }

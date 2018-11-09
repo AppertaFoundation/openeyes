@@ -300,11 +300,11 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'lists table paste',
+            'plugins' => 'lists table paste code',
             'branding' => false,
             'visual' => false,
             'min_height' => 400,
-            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | subtitle | labelitem | label-r-l | datatable |",
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | datatable | code",
             'valid_children' => '+body[style]',
             'custom_undo_redo_levels' => 10,
             'object_resizing' => false,
