@@ -54,12 +54,11 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected $plotlyConfig = array(
       'showlegend' => false,
-      'paper_bgcolor' => '#141e2b',
-      'plot_bgcolor' => '#141e2b',
+      'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
+      'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'title' => '',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
-        'color' => 'rgb(255,255,255)',
       ),
       'xaxis' => array(
         'title' => 'Visual acuity at surgery (LogMAR)',
@@ -69,16 +68,17 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'showline' => true,
         'range' => [-1,6],
         'ticks' => 'outside',
-        'tickvals' => array(0, 1, 2, 3, 4, 5),
-        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'tickvals' => array(0, 1, 2, 3, 4, 5,6),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00',''),
         'zeroline' => false,
       ),
       'yaxis' => array(
         'title' => 'Visual acuity 4 months after surgery (LogMAR)',
         'showline' => true,
         'range' => [-1,6],
-        'tickvals' => array(0, 1, 2, 3, 4, 5),
-        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00'),
+        'ticks' => 'outside',
+        'tickvals' => array(0, 1, 2, 3, 4, 5, 6),
+        'ticktext' => array('>1.20', '>0.90-1.20', '>0.60-0.90', '>0.30-0.60', '>0.00-0.30', '<= 0.00',''),
         'zeroline' => false,
       ),
       'hovermode'=>'closest',
@@ -368,13 +368,14 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'x' => array(-1, 6),
         'y' => array(-1, 6),
         'line' => array(
-          'dash' => 'longdash',
-          'color' => 'rgb(255,255,255)',
+          'dash' => 'dash',
+          'color' => 'rgb(0,0,0)',
           'width' => 1,
         ),
+        'hoverinfo' => 'none',
       );
 
-      $traces = array($trace1, $trace2);
+      $traces = array($trace2, $trace1);
       return json_encode($traces);
     }
     /**

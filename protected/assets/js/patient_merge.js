@@ -267,7 +267,7 @@ $(document).ready(function(){
                     + item.first_name + " "
                     + item.last_name + "</strong>"
                     + " (" + item.age + ")"
-                    + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>"
+                    + "<spanclass='iconicon-alerticon-alert-"+item.gender.toLowerCase()+"_trans'>"+item.gender+"</span>"
                     + "<div class='nhs-number'>" + item.nhsnum +"</div>"
                     + "<br>Hospital No.: " + item.hos_num
                     + "<br>Date of birth: " + item.dob

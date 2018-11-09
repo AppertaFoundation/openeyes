@@ -140,8 +140,8 @@
     this.dialog = new OpenEyes.UI.Dialog({
       content: Mustache.render(template, templateVals)
     });
-    this.dialog.content.on('click', '.js-ok', this.submitTicketMove.bind(this));
-    this.dialog.content.on('click', '.js-cancel', this.dialog.close.bind(this.dialog));
+    this.dialog.content.on('click', '.ok', this.submitTicketMove.bind(this));
+    this.dialog.content.on('click', '.cancel', this.dialog.close.bind(this.dialog));
     this.dialog.open();
     if (firstSelect.length) {
       this.dialog.content.find('#to_queue_id').trigger('change');
@@ -349,12 +349,12 @@
     });
 
     $(this).on('click', '.ticket-history', function () {
+      if (this.innerHTML === 'History') {
+        this.innerHTML = 'Hide History';
+      } else {
+        this.innerHTML = 'History';
+      }
       var ticketInfo = $(this).closest('tr').data('ticket-info');
-      ticketController.toggleHistory(ticketInfo);
-    });
-
-    $(this).on('click', '.remove-circle', function () {
-      var ticketInfo = $(this).closest('tr').prev().data('ticket-info');
       ticketController.toggleHistory(ticketInfo);
     });
 
