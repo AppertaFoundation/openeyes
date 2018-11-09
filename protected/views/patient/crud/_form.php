@@ -39,7 +39,10 @@ $genders = CHtml::listData($gender_models, function ($gender_model) {
     return CHtml::encode($gender_model->name)[0];
 }, 'name');
 
-$ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+$ethnic_groups = CHtml::listData(
+  EthnicGroup::model()->findAllByAttributes(array('tag' => 'CERA')),
+  'id', 'name'
+);
 ?>
 
 <?php $form = $this->beginWidget('CActiveForm', array(
