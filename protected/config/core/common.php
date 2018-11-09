@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810091400',
+            'time' => '201810291333',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -468,9 +468,9 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-         * Please note: on the screen the DRAFT background will be still visible but removed from printouts
+				 * Without this, lightning images and event view will not show draft watermark
          */
-        'OphCoCorrespondence_printout_draft_background' => false,
+        'OphCoCorrespondence_printout_draft_background' => true,
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
@@ -520,6 +520,10 @@ return array(
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
+            'blank_image_template' => array(
+                'height' => 800,
+                'width' => 600
+            )
         ),
 
         /**

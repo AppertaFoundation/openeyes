@@ -30,10 +30,12 @@ if ($this->trial) {
         array('patient' => $this->patient, 'trial' => $this->trial)
     );
 }
+
+$deceased = $this->patient->isDeceased();
 ?>
 
 <div id="oe-patient-details"
-     class="js-oe-patient <?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?>"
+     class="js-oe-patient <?= $this->list_mode ? 'oe-list-patient' : 'oe-patient'?> <?= $deceased ? 'deceased' : ''?>"
      data-patient-id="<?= $this->patient->id ?>"
 
 >
@@ -68,15 +70,13 @@ if ($this->trial) {
           <?php echo $this->patient->getGenderString() ?>
       </div>
 
-      <div class="patient-age">
-        <em>Age</em>
-          <?php echo $this->patient->getAge(); ?>
-      </div>
-        <?php if ($trialContext) {
-            echo $trialContext->renderPatientTrialStatus();
-            echo $trialContext->renderAddToTrial();
-        } ?>
+    <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
+      <?php if($deceased):?>
+        <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death);?>
+      <?php endif;?>
+      <em>Age<?= $deceased ? 'd':'' ?></em><?= $this->patient->getAge(); ?>
     </div>
+    <?php if(!$this->patient->isDeceased()) { ?>
     <div class="flex-layout flex-left">
         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
           <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
@@ -96,7 +96,6 @@ if ($this->trial) {
           <div class="patient-allergies-risks unknown js-allergies-risks-btn">
             Allergies, Alerts
           </div>
-        <?php } ?>
       <div class="patient-demographics js-demographics-btn"
       >
         <svg viewBox="0 0 60 60" class="icon">
@@ -111,6 +110,8 @@ if ($this->trial) {
       </div>
       <div class="patient-quicklook js-quicklook-btn"
       >
+        <?php }
+    }?>
         <svg viewBox="0 0 30 30" class="icon">
           <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
         </svg>

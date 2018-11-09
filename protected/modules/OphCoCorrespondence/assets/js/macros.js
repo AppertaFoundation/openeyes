@@ -15,14 +15,23 @@
  */
 
 var OpenEyes = OpenEyes || {};
-
 OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
 (function(exports){
   function LetterMacroController(editor_id, options){
     var tinymce_options = Object.assign(
       {
-        selector: '#'+editor_id
+        selector: '#'+editor_id,
+				setup : function(ed) {
+					ed.on('keydown', function(e) {
+						if (e.keyCode === 9){
+							ed.execCommand('mceInsertContent', false, '&emsp;');
+							e.preventDefault();
+							e.stopPropagation();
+							return false;
+						}
+					});
+				}
       },
       options
     );

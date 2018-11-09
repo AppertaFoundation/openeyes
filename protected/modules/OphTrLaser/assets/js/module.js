@@ -70,10 +70,20 @@ $(document).ready(function() {
 			$('#laser_select_hint').slideDown('fast');
 		}
 	});
+    if($('#Element_OphTrLaser_Site_site_id').length) {
+        initSiteSelector();
+    }
 });
 
-function OphTrLaser_AnteriorSegment_init() {
-
+function initSiteSelector() {
+    // if site contains lasers
+    if (typeof lasers_available !== 'undefined' && lasers_available) {
+        var site_selector = $('#Element_OphTrLaser_Site_site_id');
+        // set the site
+        site_selector.val(site_id);
+        // trigger change on the site, to populate the lasers selector
+        site_selector.change();
+    }
 }
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

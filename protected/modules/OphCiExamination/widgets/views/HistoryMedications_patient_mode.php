@@ -49,11 +49,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
-                      <i class="oe-i info small pro-theme js-has-tooltip"
-                         data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
-                      </i>
+                      <?php if($entry->getDoseAndFrequency()) {?>
+                          <i class="oe-i info small pro-theme js-has-tooltip"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                          </i>
+                      <?php } ?>
                   </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
               </tr>
             <?php endforeach; ?>
             </tbody>
@@ -78,7 +80,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($stopped_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getEndDateDisplay()) ?></span></td>
+                <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                 <td>
                     <?php if ($entry->prescription_item): ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
@@ -117,11 +119,13 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                       ?>
                   </td>
                     <td>
+                        <?php if($entry->getDoseAndFrequency()) {?>
                     <i class="oe-i info small pro-theme js-has-tooltip"
                        data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
                     </i>
+                        <?php } ?>
                     </td>
-                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
+                  <td><span class="oe-date"><?= $entry->getStartDateDisplay() ?></span></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>

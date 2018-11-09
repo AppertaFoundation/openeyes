@@ -17,7 +17,7 @@
 <div class="cols-7">
 
     <div class="row divider">
-        <h2>Examination Event Logs</h2>
+        <h2>Edit Formulary Drugs</h2>
     </div>
 
     <?php
@@ -94,10 +94,24 @@
         <tr>
             <td>Allergy Warnings</td>
             <td>
-                <ul class="MultiSelectList multi-select-selections" id="alergy_display"></ul>
+                <div class="multi-select multi-select-list" data-options="{&quot;sorted&quot;:false}">
+                <input type="hidden" name="Drug[MultiSelectList_Drug[allergies]]" class="multi-select-list-name">
+                <ul class="MultiSelectList multi-select-selections" id="alergy_display">
+                <?php foreach ($model->allergies as $allergy) : ?>
+                    <li>
+                        <span class="text"> <?=$allergy->name?> </span>
+                        <span data-text="<?=$allergy->name?>" class="multi-select-remove remove-one cols-full">
+                            <i class="oe-i remove-circle small"></i>
+                        </span>
+                        <input type="hidden" name="<?=CHtml::modelName($model)?>[allergies][]" value=<?=$allergy->id?>>
+                    </li>
+
+                <?php endforeach; ?>
+                </ul>
+                </div>
                 <div class="flex-layout flex-right">
                     <button class="button hint green" id="add-prescription-btn" type="button"><i
-                            class="oe-i plus pro-theme"></i></button>
+                                class="oe-i plus pro-theme"></i></button>
                 </div>
             </td>
         </tr>
@@ -107,7 +121,7 @@
             <td>
                 <?php echo $form->multiSelectList(
                     $model,
-                    'tags',
+                    CHtml::modelName($model).'[tags]',
                     'tags',
                     'id',
                     CHtml::listData(Tag::model()->findAll(array('order' => 'name')), 'id', 'name'),
@@ -165,36 +179,53 @@
      * @param allergy_id
      */
     function addAllergy(allergy_name, allergy_id) {
-        console.log(allergy_id);
         $('#alergy_display').append(
+            '<li>' +
+            '<span class="text">' + allergy_name + '</span>' +
+            '<span data-text="' + allergy_name + '" class="multi-select-remove remove-one cols-full">' +
+                '<i class="oe-i remove-circle small"></i>' +
+            '</span>' +
             '<input type="hidden" name="' + '<?= CHtml::modelName($model) ?>' + '[allergies][]" value="' + allergy_id + '">' +
-            '<li><span class="text">' + allergy_name +
-            '</span><span data-text="Vitamin" class="multi-select-remove remove-one cols-full"><i class="oe-i remove-circle small"></i></span><input type="hidden" name="tags[]" value="' +
-            allergy_id + '"></li>');
+            '</li>');
     }
 
     $(document).ready(function () {
-        <?php $allergies = Allergy::model()->active()->findAll(array('order' => 'name')); ?>
+        updateAdderList();
 
-        new OpenEyes.UI.AdderDialog({
-            openButton: $('#add-prescription-btn'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($allergy) {
-                    return [
-                        'label' => $allergy['name'],
-                        'id' => $allergy['id'] ,
-                    ];
-                }, $allergies)
-            ) ?>, {'multiSelect': true})],
-            searchOptions: {
-                searchSource: '/allergy/autocomplete',
-            },
-            onReturn: function (adderDialog, selectedItems) {
-                for (var i = 0; i < selectedItems.length; i++) {
-                    addAllergy(selectedItems[i].label, selectedItems[i].id);
+        function updateAdderList() {
+            <?php $allergies = Allergy::model()->active()->findAll(); ?>
+
+            new OpenEyes.UI.AdderDialog({
+                openButton: $('#add-prescription-btn'),
+                itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($allergy) {
+                        return [
+                            'label' => $allergy['name'],
+                            'id' => $allergy['id'],
+                        ];
+                    }, $allergies)
+                ) ?>, {'multiSelect': true})],
+                searchOptions: {
+                    searchSource: '/allergy/autocomplete',
+                },
+                onReturn: function (adderDialog, selectedItems) {
+                    for (var i = 0; i < selectedItems.length; i++) {
+                        addAllergy(selectedItems[i].label, selectedItems[i].id);
+                    }
+                    return true;
+                },
+                onOpen: function () {
+                    let li_list = $('#alergy_display li input');
+                    let allergy_ids = {};
+                    for (var i = 0; i < li_list.length; i++)
+                        allergy_ids[parseInt($(li_list[i]).val())] = 1;
+
+                    $('.add-options').find('li').each(function () {
+                        var method_id = $(this).data('id');
+                        $(this).toggle(allergy_ids[parseInt(method_id)] == 1 ? false : true);
+                    });
                 }
-                return true;
-            }
-        });
+            });
+        }
     })
 </script>
