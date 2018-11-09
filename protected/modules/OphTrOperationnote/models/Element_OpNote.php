@@ -21,13 +21,6 @@ class Element_OpNote extends BaseEventTypeElement
         return false;
     }
 
-    /*
-    public function getPrint_view()
-    {
-        return 'print_'.$this->getDefaultView();
-    }
-    */
-
     public function getContainer_print_view()
     {
         return false;
