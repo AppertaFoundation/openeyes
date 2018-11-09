@@ -230,7 +230,7 @@ $(document).ready(function() {
             input: $('#createdby_auto_complete'),
             url: '/user/autocomplete',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 addCreatedByToList(AutoCompleteResponse);
                 return false;
             }
@@ -242,7 +242,7 @@ $(document).ready(function() {
             input: $('#consultant_auto_complete'),
             url: '/user/autocomplete',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 addConsultantToList(AutoCompleteResponse);
                 return false;
             }
@@ -253,7 +253,7 @@ $(document).ready(function() {
             input: $('#oe-autocompletesearch'),
             url: '/OphCoCvi/localAuthority/autocomplete',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 updateLAFields(AutoCompleteResponse);
             }
         });

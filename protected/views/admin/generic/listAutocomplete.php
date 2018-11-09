@@ -163,7 +163,7 @@ Yii::app()->assetManager->registerScriptFile('js/oeadmin/listAutocomplete.js', C
             input: $('#<?= $acFieldData['fieldName']; ?>'),
             url: '<?= $acFieldData['jsonURL']; ?>',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 addItem(AutoCompleteResponse.id, '<?= $admin->getCustomSaveURL(); ?>');
                 return false;
             }

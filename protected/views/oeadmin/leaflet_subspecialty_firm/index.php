@@ -207,7 +207,7 @@
             input: $('#oe-autocompletesearch'),
             url: '/oeadmin/LeafletSubspecialtyFirm/search',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 var selectedLeafletId = AutoCompleteResponse.id;
                 var type_id = -1;
                 var type = '';

@@ -514,7 +514,7 @@ $creating = isset($creating) ? $creating : false;
       input: $('#oe-autocompletesearch'),
       url: baseUrl + 'users/correspondence-footer/true',
       onSelect: function(){
-        AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
         $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
       }
     });

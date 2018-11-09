@@ -182,12 +182,12 @@ $(document).ready(function() {
         return false;
     });
 
-    if(OpenEyes.UI.AutoCompleteSearch != undefined){
+    if(OpenEyes.UI.AutoCompleteSearch !== undefined){
         OpenEyes.UI.AutoCompleteSearch.init({
             input: $('#oe-autocompletesearch'),
             url: '/audit/users',
             onSelect: function(){
-                AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 $('#oe-autocompletesearch').val(AutoCompleteResponse);
             }
         });

@@ -148,7 +148,7 @@
         input: $('#study_id'),
         url: '/audit/users',
         onSelect: function(){
-            AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
             $('#study_id').val(AutoCompleteResponse);
         }
     });
@@ -157,7 +157,7 @@
         input: $('#file_name'),
         url: '/audit/users',
         onSelect: function(){
-            AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
             $('#file_name').val(AutoCompleteResponse);
         }
     });

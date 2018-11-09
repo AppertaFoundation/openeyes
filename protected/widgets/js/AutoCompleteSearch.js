@@ -22,7 +22,7 @@
 			input: $('#oe-autocompletesearch'),
 			url: URL,
 			onSelect: function(){
-				AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+				let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
 				// DESIRED ACTION
 			}
 		});
@@ -154,7 +154,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 search_options += matchSearchTerm(value.label);
             }
 
-            if(typeof value == 'string'){
+            if(typeof value === 'string'){
                 search_options += matchSearchTerm(value);
             }
 

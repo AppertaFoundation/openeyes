@@ -137,7 +137,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
           input: $('#right_complication_autocomplete_id'),
           url: 'getPostOpComplicationAutocopleteList',
           onSelect: function(){
-              AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+              let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
               addPostOpComplicationTr(AutoCompleteResponse.label,'right-complication-list', AutoCompleteResponse.value, 0  );
               setPostOpComplicationTableText();
           }
@@ -147,7 +147,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
           input: $('#left_complication_autocomplete_id'),
           url: 'getPostOpComplicationAutocopleteList',
           onSelect: function(){
-              AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+              let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
               addPostOpComplicationTr(AutoCompleteResponse.label,'left-complication-list', AutoCompleteResponse.value, 0  );
               setPostOpComplicationTableText();
           }

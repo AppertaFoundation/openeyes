@@ -103,7 +103,7 @@ $(document).ready(function(){
       input: $('#oe-autocompletesearch'),
       url: baseUrl + '/patientMergeRequest/search',
       onSelect: function(){
-        AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
         // if there is a warning about the patient is alredy in the request list than it cannot be selected
 
         if( AutoCompleteResponse.warning.length > 0 ){

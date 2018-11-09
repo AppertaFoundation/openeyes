@@ -135,7 +135,7 @@ $(document).ready(function() {
 			input: $('#oe-autocompletesearch'),
 			url: 'users',
 			onSelect: function(){
-				AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+				let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
 				$('#Element_OphTrConsent_Other_consultant_id').val(AutoCompleteResponse.id);
 				$('#Consultant').val(AutoCompleteResponse.fullname);
 				return false;
