@@ -29,13 +29,6 @@ class SearchController extends BaseController
             ), );
     }
 
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-
-        return parent::beforeAction($action);
-    }
-
     public function actionDnaSample()
     {
         if (empty($_GET)) {
@@ -124,7 +117,7 @@ class SearchController extends BaseController
 
                 $results[$key]['diagnosis'] = implode(', ', $subquery);
             }
-            
+
         }
 
         $pagination = new CPagination($total_items);

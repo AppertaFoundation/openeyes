@@ -14,7 +14,7 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class DefaultController extends BaseEventTypeController
+class DefaultController extends \BaseEventTypeController
 {
 
     protected $show_element_sidebar = false;
