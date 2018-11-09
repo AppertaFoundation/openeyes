@@ -13,9 +13,9 @@
         'mandatory': false,
         'header': null,
         'id': null,
-        'supportSigns': true,
+        'supportSigns': false,
         'signs':{'minus' : '-' , 'plus' : '+'},
-        'supportDecimalValues' : true,
+        'supportDecimalValues' : false,
         'decimalValues' : ['.00' , '.25' , '.50' , '.75']
     };
 
