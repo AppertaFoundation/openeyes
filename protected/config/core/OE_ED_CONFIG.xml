@@ -726,7 +726,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>RetinalVeinOcclusionPostPole</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Retinal vein occluson</TITLE>
+      <TITLE>Retinal vein occlusion</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -2737,7 +2737,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Macroaneurysm</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Retinal vein occluson</PRIMARY_TERM>
+              <PRIMARY_TERM>Retinal vein occlusion</PRIMARY_TERM>
               <SECONDARY_TERM_LIST>
                 <TERM>Hemipsheric retinal vein occlusion</TERM>
                 <TERM>Central retinal vein occlusion</TERM>
