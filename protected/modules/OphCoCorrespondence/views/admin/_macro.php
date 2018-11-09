@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 /**
  * @var $form BaseEventTypeCActiveForm
  * @var $macro LetterMacro

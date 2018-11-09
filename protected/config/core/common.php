@@ -300,11 +300,17 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'table lists importcss',
+            'plugins' => 'lists table paste',
             'branding' => false,
             'visual' => false,
-            'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
-            'valid_children' => '+body[style]'
+            'min_height' => 400,
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | subtitle | labelitem | label-r-l | datatable |",
+            'valid_children' => '+body[style]',
+            'custom_undo_redo_levels' => 10,
+            'object_resizing' => false,
+            'menubar' => false,
+            'paste_as_text' => true,
+            'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
         ),
         'menu_bar_items' => array(
                 'admin' => array(
