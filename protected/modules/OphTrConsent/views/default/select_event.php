@@ -49,9 +49,15 @@ $this->moduleNameCssClass .= ' edit';
     <div class="cols-8">
       <div class="data-group" style="padding-left: 100px">
         <table class="cols-full last-left">
+            <colgroup>
+                <col class="cols-2">
+                <col class="cols-1">
+                <col class="cols-4">
+            </colgroup>
           <thead>
           <tr>
             <th>Booked Date</th>
+            <th>Consent</th>
             <th>Procedure</th>
             <th>Comments</th>
           </tr>
@@ -59,11 +65,21 @@ $this->moduleNameCssClass .= ' edit';
           <tbody>
           <?php if ($bookings) {
               foreach ($bookings as $operation) { ?>
+                  <?php $has_consent_form = Element_OphTrConsent_Procedure::model()->count('booking_event_id=?', [$operation->event_id]); ?>
                 <tr>
                   <td>
                       <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
                   </td>
+
+                    <td>
+                        <?php if ($has_consent_form) : ?>
+                            <i class="oe-i medium tick"></i>
+                        <?php endif; ?>
+                    </td>
                   <td>
+                      <?php if ($has_consent_form) { ?>
+                          <i class="oe-i small warning js-has-tooltip" data-tooltip-content="Warning: this booking already has a consent form"></i>
+                      <?php } ?>
                     <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
                         <?php foreach ($operation->procedures as $i => $procedure) {
                             if ($i > 0) {
@@ -77,16 +93,12 @@ $this->moduleNameCssClass .= ' edit';
                       <?= $operation->comments; ?>
                   </td>
                 </tr>
-                  <?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',
-                      array($operation->event_id))) { ?>
-                  <div class="alert-box alert with-icon">
-                    Warning: this booking already has a consent form
-                  </div>
-                  <?php } ?>
+
               <?php }
           } ?>
           <tr>
             <td>N/A</td>
+              <td></td>
             <td>
               <a href="#" class="booking-select" data-booking="unbooked"> Unbooked procedures </a>
             </td>
