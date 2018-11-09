@@ -124,31 +124,31 @@
    * @name OpenEyes.UI.AdderDialog#generateContent
    */
   AdderDialog.prototype.generateContent = function () {
-    var dialog = this;
-    if (this.options.itemSets) {
-      this.selectWrapper = $('<table />', {class: 'select-options'});
-      let headers = $('<thead />').appendTo(this.selectWrapper);
-      this.selectWrapper.appendTo(this.popup);
-      var $container = $('<tbody />');
-      $container.appendTo(this.selectWrapper);
-        this.$tr = $('<tr />').appendTo($container);
+      var dialog = this;
+      if (this.options.itemSets) {
+          this.selectWrapper = $('<table />', {class: 'select-options'});
+          let headers = $('<thead />').appendTo(this.selectWrapper);
+          this.selectWrapper.appendTo(this.popup);
+          var $container = $('<tbody />');
+          $container.appendTo(this.selectWrapper);
+          this.$tr = $('<tr />').appendTo($container);
 
-        $(this.options.itemSets).each(function (index, itemSet) {
-          let header = (itemSet.options.header) ? itemSet.options.header : '';
+          $(this.options.itemSets).each(function (index, itemSet) {
+              let header = (itemSet.options.header) ? itemSet.options.header : '';
               $('<th />').text(header).appendTo(headers);
-        let $td = $('<td />').appendTo(dialog.$tr);
-        let $listContainer = $('<div />' , {class:'flex-layout flex-top flex-left'}).appendTo($td);
-        if(itemSet.options.supportSigns){
-          dialog.generateSigns(itemSet).appendTo($listContainer);
-        }
-        var $list = dialog.generateItemList(itemSet);
-        let $listDiv = $('<div />').appendTo($listContainer);
-        $list.appendTo($listDiv);
-        if(itemSet.options.supportDecimalValues){
-          dialog.generateDecimalValues(itemSet).appendTo($listContainer);
-        }
-      });
-    }
+              let $td = $('<td />').appendTo(dialog.$tr);
+              let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+              if (itemSet.options.supportSigns) {
+                  dialog.generateSigns(itemSet).appendTo($listContainer);
+              }
+              var $list = dialog.generateItemList(itemSet);
+              let $listDiv = $('<div />').appendTo($listContainer);
+              $list.appendTo($listDiv);
+              if (itemSet.options.supportDecimalValues) {
+                  dialog.generateDecimalValues(itemSet).appendTo($listContainer);
+              }
+          });
+      }
   };
 
   /**
