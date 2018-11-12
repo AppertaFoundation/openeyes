@@ -101,9 +101,6 @@ $cols = array(
         'buttons' => array(
             'mark' => array(
                 'options' => array('title' => 'Mark as read'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
-                        "id" => $data->event->id,
-                        "returnUrl" => \Yii::app()->request->requestUri))',
                 'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
                 'visible' => function ($row, $data) {
                     return $data->marked_as_read === '0'
@@ -143,3 +140,30 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
 ));
 ?>
 </div>
+<script>
+    /**
+     * mark messages as read
+     */
+    $('i.js-mark-as-read-btn').one('click', function() {
+        let $i = $(this);
+        let $closestTr = $i.closest('tr');
+        let eventId = $i.closest('tr').find('.nowrap a').attr('href').split('/').slice(-1)[0];
+        let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
+
+        $i.addClass('spinner as-icon');
+        $i.removeClass('tick');
+
+        $.ajax({
+            url: url,
+            data: {noRedirect: 1},
+            success: function() {
+                $closestTr.hide();
+            },
+            error: function() {
+                $i.removeClass('spinner as-icon');
+                $i.addClass('triangle medium');
+                $i.data('tooltip-content', 'Could not delete the message. Try refreshing the page.');
+            }
+        });
+    });
+</script>

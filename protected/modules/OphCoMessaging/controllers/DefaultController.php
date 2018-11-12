@@ -133,11 +133,9 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Mark the event message as read.
      *
-     * @param $id
-     *
      * @throws \Exception
      */
-    public function actionMarkRead($id)
+    public function actionMarkRead()
     {
         $el = $this->getMessageElement();
 
@@ -147,7 +145,9 @@ class DefaultController extends \BaseEventTypeController
             $this->markMessageRead($el);
         }
 
-        $this->redirectAfterAction();
+        if (!@$_GET['noRedirect']) {
+            $this->redirectAfterAction();
+        }
     }
 
     /**
