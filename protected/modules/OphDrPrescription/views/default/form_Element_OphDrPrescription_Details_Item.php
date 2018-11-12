@@ -17,6 +17,11 @@
  */
 ?>
 
+<?php
+/** @var Patient $patient */
+/** @var OphDrPrescription_Item $item */
+?>
+
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem
   <?php if ($item->getErrors()): ?>errors<?php endif; ?>">
   <td>
@@ -25,18 +30,18 @@
       </button>
   </td>
   <td>
-      <?php if (isset($patient) && $patient->hasDrugAllergy($item->drug_id)): ?>
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->ref_medication_id)): ?>
       <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
       <?php endif; ?>
-      <?php echo $item->drug->tallmanlabel; ?>
+      <?php echo $item->refMedication->preferred_term; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php
       } ?>
-    <input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id ?>"/>
+    <input type="hidden" name="prescription_item[<?php echo $key ?>][ref_medication_id]" value="<?php echo $item->ref_medication_id ?>"/>
       <?php if($item->comments){ ?>
         <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=\CHtml::encode($item->comments);?>"></i>
        <?php } else { ?>
-        <i class="oe-i comments medium-icon pad js-add-comments"style=""></i>
+        <i class="oe-i comments medium-icon pad js-add-comments" style=""></i>
        <?php } ?>
 
       <div id="comments-<?=$key?>" class="cols-full prescription-comments" style="display:none" data-key="<?php echo $key; ?>">
@@ -55,39 +60,50 @@
 
   </td>
   <td class="prescriptionItemDose">
+
+      <?php
+          $css_class = 'cols-11';
+          if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
+              $css_class = "input-validate numbers-only";
+              if ($item->dose_unit_term === 'mg') {
+                  $css_class .= ' decimal';
+              }
+          }
+      ?>
+
       <?=\CHtml::textField('prescription_item[' . $key . '][dose]', $item->dose,
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
+          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $class)) ?>
   </td>
   <td>
-      <?=\CHtml::dropDownList('prescription_item[' . $key . '][route_id]', $item->route_id,
-          CHtml::listData(DrugRoute::model()->activeOrPk($item->route_id)->findAll(array('order' => 'display_order asc')),
-              'id', 'name'), array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')); ?>
+      <?= \CHtml::dropDownList('prescription_item[' . $key . '][route_id]', $item->route_id,
+          CHtml::listData(RefMedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
+              'id', 'term'), array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')); ?>
   </td>
 
     <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
       <td class='route_option_cell'>
 
-          <?php if ($item->route && $options = $item->route->options) {
-              echo CHtml::dropDownList('prescription_item[' . $key . '][route_option_id]', $item->route_option_id,
+          <?php if ($item->route && $options = $item->route->options /* TODO this is not going to work when we remove route.options */) {
+              echo CHtml::dropDownList('prescription_item[' . $key . '][route_option_id]', $item->laterality,
                   CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
           } else {
               echo '-';
-          } ?>
+          }?>
       </td>
     <?php } ?>
 
   <td class="prescriptionItemFrequencyId">
       <?=\CHtml::dropDownList('prescription_item[' . $key . '][frequency_id]', $item->frequency_id,
-          CHtml::listData(DrugFrequency::model()->activeOrPk($item->frequency_id)->findAll(array('order' => 'display_order asc')),
-              'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
+          CHtml::listData(RefMedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
+          array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
   </td>
-  <td class="prescriptionItemDurationId">
-      <?=\CHtml::dropDownList('prescription_item[' . $key . '][duration_id]', $item->duration_id,
-          CHtml::listData(DrugDuration::model()->activeOrPk($item->duration_id)->findAll(array('order' => 'display_order')),
-              'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
+  <td class="prescriptionItemDuration">
+      <?=\CHtml::dropDownList('prescription_item[' . $key . '][duration]', $item->duration,
+          CHtml::listData(DrugDuration::model()->activeOrPk($item->duration)->findAll(array('order' => 'display_order')), 'id', 'name'),
+          array('empty' => '-- Select --', 'class' => 'cols-11')) ?>
   </td>
   <td>
-      <?=\CHtml::dropDownList('prescription_item[' . $key . '][dispense_condition_id]',
+    <?=\CHtml::dropDownList('prescription_item[' . $key . '][dispense_condition_id]',
           $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
               'condition' => "active or id='" . $item->dispense_condition_id . "'",
               'order' => 'display_order',
@@ -123,8 +139,18 @@ foreach ($item->tapers as $taper): ?>
     </td>
 
     <td>
-        <?=\CHtml::textField('prescription_item[' . $key . '][taper][' . $count . '][dose]', $taper->dose,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
+        <?php
+
+        $css_class = 'cols-11';
+        if($taper->dose === null || is_numeric($taper->dose) || $item->dose === ''){
+            $css_class.= " input-validate numbers-only";
+            if($item->dose_unit_term === 'mg'){
+                $css_class .= ' decimal';
+            }
+        }
+
+        echo \CHtml::textField('prescription_item[' . $key . '][taper][' . $count . '][dose]', $taper->dose,
+            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)) ?>
     </td>
     <td></td>
       <?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
@@ -133,6 +159,7 @@ foreach ($item->tapers as $taper): ?>
     <td>
         <?=\CHtml::dropDownList('prescription_item[' . $key . '][taper][' . $count . '][frequency_id]',
             $taper->frequency_id,
+            /* TODO figure out if this should be replaced by RefMedicationFrequency */
             CHtml::listData(DrugFrequency::model()->activeOrPk($taper->frequency_id)->findAll(array('order' => 'display_order asc')),
                 'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
     </td>
@@ -145,7 +172,7 @@ foreach ($item->tapers as $taper): ?>
     <td></td>
     <td></td>
     <td class="prescription-actions">
-      <i class="oe-i trash removeTaper"></i></td>
+      <i class="oe-i trash removeTaper"></i>
     </td>
   </tr>
     <?php

@@ -17,6 +17,8 @@
 
 ?>
 
+<?php /* TODO Rework this view for new meds mgment */ ?>
+
 <?php
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {

@@ -158,7 +158,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
             $wrapper.siblings(".alternative-display-element").show();
             $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();};
 
-      /*
+
       <?php
        $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
@@ -176,7 +176,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
         searchSource: medicationsController.options.searchSource,
       }
     });
-  */
+
 
   });
 </script>
