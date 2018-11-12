@@ -22,6 +22,9 @@
         case 'OphCoCorrespondence':
             $printHelperClass = 'OphCoCorrespondence large-font';
             break;
+        case 'OphTrConsent':
+            $printHelperClass = 'OphTrConsent normal';
+            break;
     }
 ?>
 <!doctype html>

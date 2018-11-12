@@ -53,14 +53,14 @@ class TagsAdminController extends BaseAdminController
             'active' => 'checkbox',
             'drugs' => array(
                 'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.admin.tag_druglist',
+                'viewName' => 'application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.views.tag_druglist',
                 'viewArguments' => array(
                     'items' => is_null($id) ? array() : Tag::model()->findByPk($id)->drugs
                 )
             ),
             'medication_drugs' => array(
                 'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.admin.tag_medication_druglist',
+                'viewName' => 'application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.views.tag_medication_druglist',
                 'viewArguments' => array(
                     'items' => is_null($id) ? array() : Tag::model()->findByPk($id)->medication_drugs
                 )
