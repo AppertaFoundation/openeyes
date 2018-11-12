@@ -53,14 +53,15 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, drug.tallman, IF(drug.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = '.$tag_id.'),1,0) AS preservative_free,
+                'patient.hos_num, contact.last_name, contact.first_name, patient.dob, address.postcode, d.created_date, ref_medication.preferred_term, 
+                 IF(ref_medication.id IN (SELECT drug_id FROM drug_tag WHERE tag_id = '.$tag_id.'),1,0) AS preservative_free,
                 user.first_name as user_first_name, user.last_name as user_last_name, user.role, event.created_date as event_date'
             )
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
             ->join('et_ophdrprescription_details d', 'event.id = d.event_id')
-            ->join('ophdrprescription_item i', 'd.id = i.prescription_id')
-            ->join('drug', 'i.drug_id = drug.id')
+            ->join('event_medication_uses emu', 'emu.event_id = d.event_id AND emu.usage_type = \'OphDrPrescription\'')
+            ->join('ref_medication', 'emu.ref_medication_id = ref_medication.id')
             ->join('patient', 'episode.patient_id = patient.id')
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('address', 'contact.id = address.contact_id')
@@ -68,7 +69,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->where('1=1');
 
         if ($this->drugs) {
-            $command->andWhere(array('in', 'drug.id', $this->drugs));
+            $command->andWhere(array('in', 'ref_medication.id', $this->drugs));
         }
 
         $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)).' 00:00:00'))
@@ -90,10 +91,9 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     {
         $output = "Patient's no,  Patient's Surname, Patient's First name,  Patient's DOB, Patient's Post code, Date of Prescription, Drug name, Prescribed Clinician's name, Prescribed Clinician's Job-role, Prescription event date, Preservative Free\n";
         foreach ($this->items as $item) {
-            $drug = new Drug();
-            $drug->attributes = $item;
+         
             $output .= $item['hos_num'].', '.$item['last_name'].', '.$item['first_name'].', '.($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown').', '.$item['postcode'].', ';
-            $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$drug->tallmanLabel.', ';
+            $output .= (date('j M Y', strtotime($item['created_date'])).' '.(substr($item['created_date'], 11, 5))).', '.$item['preferred_term'].', ';
             $output .= $item['user_first_name'].' '.$item['user_last_name'].', '.$item['role'].', '.(date('j M Y', strtotime($item['event_date'])).' '.(substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
             $output .= "\n";

@@ -1824,7 +1824,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
             <TERM>Past Surgical History</TERM>
             <TERM>Past Surgery</TERM>
             <TERM>Previous Surgery</TERM>
-            <TERM>Previous Opthalmic Surgery</TERM>
+            <TERM>Previous Ophthalmic Surgery</TERM>
             <TERM>POH</TERM>
             <TERM>PSH</TERM>
           </SECONDARY_TERM_LIST>

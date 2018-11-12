@@ -952,6 +952,17 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
+        if (!empty($data[$model_name]['disorder_id'])) {
+            foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
+                $diagnoses[] = array(
+                    'eye_id' => $diagnosis_eyes[$i],
+                    'disorder_id' => $disorder_id,
+                    'principal' => (@$data['principal_diagnosis'] == $disorder_id),
+                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
+                );
+            }
+        }
+
         $element->updateDiagnoses($diagnoses);
     }
 

@@ -17,13 +17,19 @@
 ?>
 
 <?php
-
+/** @var \OEModule\OphCiExamination\models\HistoryMedications $element */
 $model_name = CHtml::modelName($element);
-$route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
-$frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
+$route_options = CHtml::listData($element->getRouteOptions(), 'id', 'term');
+$frequency_options = array();
+foreach ($element->getFrequencyOptions() as $k=>$v) {
+    $frequency_options[$v->id] = $v->term." (".$v->code.")";
+}
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 $element_errors = $element->getErrors();
+$laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'name');
+
 ?>
+
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
@@ -75,10 +81,15 @@ $element_errors = $element->getErrors();
                         'model_name' => $model_name,
                         'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                         'row_count' => $row_count,
-                        'removable' => true,
+                        'stop_reason_options' => $stop_reason_options,
+                        'laterality_options' => $laterality_options,
                         'route_options' => $route_options,
                         'frequency_options' => $frequency_options,
-                        'stop_reason_options' => $stop_reason_options
+                        'removable' => true,
+                        'direct_edit' => false,
+                        'usage_type' => 'OphCiExamination',
+                        'row_type' => '',
+                        'is_last' => ($row_count == $total_count - 1)
                     )
                 );
             }
@@ -97,7 +108,7 @@ $element_errors = $element->getErrors();
   </div>
     <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_entry_template' ?>">
         <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\HistoryMedicationsEntry();
+        $empty_entry = new EventMedicationUse();
         $this->render(
             'HistoryMedicationsEntry_event_edit',
             array(
@@ -107,30 +118,49 @@ $element_errors = $element->getErrors();
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
                 'removable' => true,
+                'direct_edit' => true,
                 'route_options' => $route_options,
                 'frequency_options' => $frequency_options,
                 'stop_reason_options' => $stop_reason_options,
-                'values' => array(
-                    'id' => '',
-                    'drug_id' => '{{drug_id}}',
-                    'medication_drug_id' => '{{medication_drug_id}}' ,
-                    'medication_name' => '{{medication_name}}',
-                    )
+                'laterality_options' => $laterality_options,
+                'usage_type' => 'OphCiExamination',
+                'row_type' => 'new',
+                'is_last' => false,
+                'is_new' => true
             )
         );
         ?>
     </script>
 </div>
-
-
 <script type="text/javascript">
-  var medicationsController;
-  $(document).ready(function() {
-    medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
-      element: $('#<?=$model_name?>_element')
-    });
+  var medicationsController;$(document).ready(function() {
+    medicationsController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
+      element: $('#<?=$model_name?>_element'),
+    onInit: function(controller) {
+                registerElementController(controller, "HMController", "MMController");
+                /* Don't add automatically
+                if(typeof controller.MMController === "undefined" && $("#OEModule_OphCiExamination_models_MedicationManagement_element").length === 0)  {
+                    var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+                    sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_MedicationManagement');
+                }
+                */
+            }
+        });
 
-    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+        $(document).on("click", ".alt-display-trigger", function(e){
+           e.preventDefault();
+           $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
+        });
+
+        window.switch_alternative = function(anchor) {
+            var $wrapper = $(anchor).closest(".alternative-display-element");
+            $wrapper.hide();
+            $wrapper.siblings(".alternative-display-element").show();
+            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();};
+
+      /*
+      <?php
+       $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
@@ -146,6 +176,7 @@ $element_errors = $element->getErrors();
         searchSource: medicationsController.options.searchSource,
       }
     });
-  });
+  */
 
+  });
 </script>

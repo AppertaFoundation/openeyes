@@ -127,7 +127,7 @@ $('#prescription-select-btn').on('click', function () {
 });
 
 $('#add-prescription-drug-types').delegate('li', 'click', function () {
-  $(this).toggleClass('selected'); 
+  $(this).toggleClass('selected');
 
   updatePrescriptionResults();
   return false;
@@ -200,6 +200,45 @@ function addItem(label, item_id) {
       $('#prescription_items').find('tbody').append(data);
     });
   }
+
+  var option = $('#common_drug_id option[value="' + item_id + '"]');
+  if (option) {
+    option.data('used', true);
+    applyFilter();
+  }
+}
+
+// Mark used common drugs
+function markUsed() {
+  $('#prescription_items input[name$="\[drug_id\]"]').each(function (index) {
+    var option = $('#common_drug_id option[value="' + $(this).val() + '"]');
+    if (option) {
+      option.data('used', true);
+    }
+  });
+}
+
+// Filter drug choices
+function applyFilter() {
+  var filter_type_id = $('#drug_type_id').val();
+  var filter_preservative_free = $('#preservative_free').is(':checked');
+  $('#common_drug_id option').each(function () {
+    var show = true;
+    var drug_id = $(this).val();
+    if (drug_id) {
+      if (filter_type_id && common_drug_metadata[drug_id].ref_set_id.indexOf(filter_type_id) == -1) {
+        show = false;
+      }
+      if (filter_preservative_free && common_drug_metadata[drug_id].preservative_free == 0) {
+        show = false;
+      }
+      if (show) {
+        $(this).removeAttr("disabled");
+      } else {
+        $(this).attr("disabled", "disabled");
+      }
+    }
+  });
 }
 
 // Get next key for adding rows

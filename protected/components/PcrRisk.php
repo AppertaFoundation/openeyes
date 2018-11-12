@@ -68,7 +68,7 @@ class PcrRisk
      * @param $patientId
      * @param $side
      * @param $element
-     * @param array $set_data was introduced to be able to set back POSTed data when there is an error on the page
+     * @param $set_data was introduced to be able to set back POSTed data when there is an error on the page
      *          definitely needs to refactored
      *
      * @return array

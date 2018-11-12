@@ -19,109 +19,175 @@
 
 <?php
 
-if (!isset($values)) {
-    $values = array(
-        'id' => $entry->id,
-        'drug_id' => $entry->drug_id?:'',
-        'medication_drug_id' => $entry->medication_drug_id? :'' ,
-        'medication_name' =>$entry->getMedicationDisplay()? :'',
-    );
+/** @var EventMedicationUse $entry */
+
+if (isset($entry->start_date_string_YYYYMMDD) && !is_null($entry->start_date_string_YYYYMMDD)) {
+    $start_date = $entry->start_date_string_YYYYMMDD;
+}
+else {
+    $start_date = date('Ymd');
 }
 
-if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
-}else {
-    $start_sel_day = $start_sel_month = null;
-    $start_sel_year = date('Y');
-}
-if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
+$start_sel_year = substr($start_date, 0, 4);
+$start_sel_month = substr($start_date, 4, 2);
+$start_sel_day = substr($start_date, 6, 2);
+
+if (isset($entry->end_date) && !is_null($entry->end_date_string_YYYYMMDD)) {
+
+    $end_sel_year = substr($entry->end_date_string_YYYYMMDD, 0, 4);
+    $end_sel_month = substr($entry->end_date_string_YYYYMMDD, 4, 2);
+    $end_sel_day = substr($entry->end_date_string_YYYYMMDD, 6, 2);
+
 } else {
-    $end_sel_day = $end_sel_month = null;
+    $end_sel_day = date('d');
+    $end_sel_month = date('m');
     $end_sel_year = date('Y');
 }
+
+$chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_type == "prescribed");
+$chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
+$is_new = isset($is_new) ? $is_new : false;
+
+if(
+        (is_object($entry->refMedication) && !$entry->refMedication->getToBeCopiedIntoMedicationManagement())
+        ||
+        $row_type == 'closed'
+) {
+    $ignore = " ignore";
+}
+else {
+    $ignore = "";
+}
+
 ?>
 
-<tr data-key="<?=$row_count?>"
-    style="display: <?= $entry->originallyStopped ? 'none' : ''?>"
-    class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
-    <td>
-      <span class="medication-display">
-        <span class="medication-name">
-          <?= $values['medication_name'] ?>
-        </span>
-      </span>
-      <?php if ($entry->originallyStopped) { ?>
-        <i class="oe-i stop small pad"></i>
-      <?php } ?>
-        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $values['drug_id'] ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $values['medication_drug_id'] ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $values['medication_name'] ?>" />
-    </td>
-        <?php
-        $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
-        $html_options = ['empty' => '- Select -'];
-        $hide_search = strlen($entry->getMedicationDisplay()) > 0;
-        if($hide_search){
-            $html_options['style'] = 'display: none;';
-        }
-
-        foreach($select_options as $select_option){
-            $html_options['options'][$select_option['id']] = [
-                'data-tags' => implode(',', $select_option['tags']),
-                'data-tallmanlabel' => $select_option['name'],
-            ];
-        }
-        ?>
+<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $ignore ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
-      <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
-      <input class="cols-2" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class'=>'cols-3')) ?>
-        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'cols-4')) ?>
-        <?= CHtml::dropDownList($field_prefix . '[option_id]',
-                  $entry->option_id,
-                  CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
-                  array('empty' => '-Select-', 'class'=>'cols-2 admin-route-options', 'style'=>$entry->routeOptions()?'':'display:none' ));  ?>
+        <div class="medication-display alternative-display-inline">
+            <div class="medication-name alternative-display-element textual">
+                <span class="textual-display">
+                    <?= $entry->getMedicationDisplay() ?>
+                </span>
+            </div>
+            <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+                <input type="text" class="js-medication-search-autocomplete" id="<?= $field_prefix ?>_medication_autocomplete" placeholder="Type to search" />
+                <br/>
+                <?php
+                $select_options = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
+                $html_options = ['empty' => '- Select -'];
+                $hide_search = strlen($entry->getMedicationDisplay()) > 0;
+                if($hide_search){
+                    $html_options['style'] = 'display: none;';
+                }
 
+                foreach($select_options as $select_option){
+                    $html_options['options'][$select_option['id']] = [
+                        'data-preferred_term' => $select_option['name'],
+                        'data-dose_unit_term' => $select_option['dose_unit_term'],
+                        'data-dose' => $select_option['dose'],
+                        'data-default_form' => $select_option['default_form'],
+                        'data-frequency_id' => $select_option['frequency_id'],
+                        'data-route' => $select_option['route'],
+                        'data-will_copy' => (int)$select_option['will_copy']
+                    ];
+                }
+
+                if($this->getFirm()){
+                    echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
+                }
+                ?>
+            </div>
+        </div>
+
+        <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
+        <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
+        <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
+        <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+    </td>
+    <td class="dose-frequency-route">
+        <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
+            <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
+            <div class="flex-layout">
+                <div class="alternative-display inline">
+                    <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'style="display: none;"'; }?>>
+                        <a class="textual-display-dose textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                            <?= $entry->dose.' '.$entry->dose_unit_term; ?>&nbsp;
+                            <?= $entry->frequency; ?>&nbsp;
+                            <?= ($entry->laterality ? $entry->refMedicationLaterality->name : ''); ?>&nbsp;
+                            <?= (is_null($entry->route_id) ? "" : $entry->route); ?>
+
+                        </a>
+                    </div>
+                    <div class="alternative-display-element" <?php if(!$direct_edit){ echo 'style="display: none;"'; }?>>
+                        <input class="cols-1 dose" style="width: 14%; display: inline-block;" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+                        <span class="dose-unit-term cols-1"><?php echo $entry->dose_unit_term; ?></span>
+                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class' => 'frequency cols-4')) ?>
+                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'route cols-2')) ?>
+                        <?php echo CHtml::dropDownList($field_prefix . '[laterality]',
+                            $entry->laterality,
+                            $laterality_options,
+                            array('empty' => '-Select-', 'class'=>'admin-route-options laterality cols-2', 'style'=>$entry->routeOptions()?'':'display:none' )); ?>
+                    </div>
+                </div>
+                <?php /* if(!$is_new): ?><button type="button" class="alt-display-trigger small">Change</button><?php endif; */ ?>
+            </div>
+        </div>
     </td>
     <td>
-      <fieldset class="data-group fuzzy-date">
-      <?php if (!$entry->start_date||$removable) { ?>
-        <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
-               value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>"
-               style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
-        <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-      <?php } else { ?>
-        <i class="oe-i start small pad"></i>
-          <?=Helper::formatFuzzyDate($entry->start_date) ?>
-        <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual" <?php if($direct_edit){ echo 'hidden'; }?>>
+                <a class="textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                </a>
+            </div>
+            <fieldset class="field-row fuzzy-date alternative-display-element <?php if(!$direct_edit){ echo 'hidden'; }?>">
+                <?php if (!$entry->start_date_string_YYYYMMDD||$removable) { ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $start_date ?>" />
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                <?php } else { ?>
 
-      <?php } ?>
-    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-    <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
-    </fieldset>
+                    <?=Helper::formatFuzzyDate($start_sel_year.'-'.$start_sel_month.'-'.$start_sel_day) ?>
+                    <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date_string_YYYYMMDD ?>" />
+
+                <?php } ?>
+            </fieldset>
+        </div>
     </td>
-  <td>
-    <fieldset class="data-group fuzzy-date">
-        <?php if (!$entry->end_date||$removable) { ?>
-          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
-          <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-        <?php } else { ?>
-          <i class="oe-i start small pad"></i>
-            <?=Helper::formatFuzzyDate($entry->end_date) ?>
-          <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
-        <?php } ?>
-    </fieldset>
+    <td class="end-date-column">
+        <div class="alternative-display inline">
+            <div class="alternative-display-element textual">
+                <a class="textual-display meds-stop-btn" href="javascript:void(0);" onclick="switch_alternative(this);">
+                    <?php if(!is_null($entry->end_date)): ?>
+                        <?=Helper::formatFuzzyDate($end_sel_year.'-'.$end_sel_month.'-'.$end_sel_day) ?>
+                        <?php echo !is_null($entry->stop_reason_id) ?
+                            ' ('.$entry->stopReason->name.')' : ''; ?>
+                    <?php else: ?>
+                        stopped?
+                    <?php endif; ?>
+                </a>
+            </div>
+            <fieldset class="alternative-display-element"  style="display: none;">
+                <input class="end-date" type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+                <span class="fuzzy-date end_date_wrapper" >
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+                </span>
+                <div>
+                    <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-8 stop-reason')) ?>
+                    <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a>
+                </div>
+            </fieldset>
+        </div>
   </td>
-    <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
-    </td>
-    <td>
+
+    <td class="edit-column">
         <?php if ($removable) { ?>
-            <i class="oe-i trash"></i>
-        <?php } else { ?>
-            <i class="oe-i info small-icon"></i>
+            <button class="button small warning remove" type="button">Remove</button>
         <?php } ?>
     </td>
 </tr>
+
+

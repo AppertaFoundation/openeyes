@@ -119,40 +119,41 @@ foreach ($items_data as $group => $items) { ?>
     <tbody>
     <?php
     foreach ($items as $item) {
+        /** @var OphDrPrescription_Item $item */
         ?>
-      <tr
-          class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
-        <td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
-        <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
-        <td><?php echo $item->route->name ?><?php if ($item->route_option) {
-                echo ' (' . $item->route_option->name . ')';
-            } ?></td>
-        <td><?php echo $item->frequency->long_name; ?></td>
-        <td><?php echo $item->duration->name ?></td>
-          <?php if (strpos($group_name, 'Hospital') !== false) { ?>
-            <td><?php echo $item->dispense_location->name ?></td>
-            <td></td>
-            <td></td>
-          <?php } ?>
-      </tr>
-        <?php foreach ($item->tapers as $taper) { ?>
-        <tr class="prescriptionTaper">
-          <td class="prescriptionLabel">then</td>
-          <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
-          <td>-</td>
-          <td><?php if ($data['copy'] == 'patient') {
-                  echo $taper->frequency->long_name;
-              } else {
-                  echo $taper->frequency->name;
-              } ?>
-          </td>
-          <td><?php echo $taper->duration->name ?></td>
-            <?php if (strpos($group_name, "Hospital") !== false) { ?>
-              <td></td>
-              <td>-</td>
-              <td>-</td>
-            <?php } ?>
+        <tr
+                class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->ref_medication_id)) { ?> allergyWarning<?php } ?>">
+            <td class="prescriptionLabel"><?php echo $item->refMedication->preferred_term; ?></td>
+            <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
+            <td><?php echo $item->route->term ?><?php if ($item->laterality) {
+                    echo ' (' . $item->laterality . ')';
+                } ?></td>
+            <td><?php echo $item->frequency->term; ?></td>
+            <td><?php echo $item->drugDuration->name ?></td>
+            <?php if(strpos($group_name,"Hospital") !== false ){?>
+                <td><?php echo $item->dispense_location->name ?></td>
+                <td></td>
+                <td></td>
+            <?php }?>
         </tr>
+        <?php foreach ($item->tapers as $taper) { ?>
+            <tr class="prescriptionTaper">
+                <td class="prescriptionLabel">then</td>
+                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
+                <td>-</td>
+                <td><?php if ($data['copy'] == 'patient') {
+                        echo $taper->frequency->term;
+                    } else {
+                        echo $taper->frequency->code;
+                    } ?>
+                </td>
+                <td><?php echo $taper->duration->name ?></td>
+                <?php if(strpos($group_name,"Hospital") !== false ){?>
+                    <td></td>
+                    <td>-</td>
+                    <td>-</td>
+                <?php }?>
+            </tr>
             <?php
         }
 

@@ -35,20 +35,20 @@
           <?php foreach ($element->items as $key => $item) { ?>
             <tr class="prescription-item">
               <td class="priority-text">
-                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->drug_id)): ?>
+                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->ref_medication_id)): ?>
                       <i class="oe-i warning small pad js-has-tooltip"
-                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->drug_id))?>">
+                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->ref_medication_id))?>">
                       </i>
                   <?php endif; ?>
-                  <?php echo $item->drug->tallmanlabel; ?></td>
-              <td><?php echo $item->dose ?></td>
-              <td><?php echo $item->route->name ?>
-                  <?php if ($item->route_option) {
-                      echo ' (' . $item->route_option->name . ')';
+                  <?php echo $item->refMedication->preferred_term; ?></td>
+              <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
+              <td><?php echo $item->route->term ?>
+                  <?php if ($item->laterality) {
+                      echo ' (' . $item->refMedicationLaterality->name . ')';
                   } ?>
               </td>
-              <td><?php echo $item->frequency->name ?></td>
-              <td><?php echo $item->duration->name ?></td>
+              <td><?php echo $item->frequency->term ?></td>
+              <td><?php echo $item->duration ? $item->drugDuration->name : '' ?></td>
               <td><?php echo $item->dispense_condition->name . " / " . $item->dispense_location->name ?></td>
                 <td class="prescription-label">
                     <?php if(!is_null($item->comments)): ?>
@@ -62,9 +62,9 @@
                   <i class="oe-i child-arrow small no-click pad"></i>
                   <em class="fade">then</em>
                 </td>
-                <td><?php echo $taper->dose ?></td>
+                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->dose_unit_term) : $taper->dose ?></td>
                 <td></td>
-                <td><?php echo $taper->frequency->name ?></td>
+                <td><?php echo $taper->frequency->term ?></td>
                 <td><?php echo $taper->duration->name ?></td>
                 <td></td>
               </tr>

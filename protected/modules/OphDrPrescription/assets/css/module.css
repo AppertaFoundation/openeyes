@@ -83,3 +83,10 @@ table.prescriptions tr.prescription-tapier .prescription-label span {
 .view table.prescriptions {
   margin-top: 0;
 }
+
+td.dispense_condition_location select{
+    height: 24px;
+    margin: 5px 0 5px 5px;
+    display: inline-block;
+    width: 47%;
+}

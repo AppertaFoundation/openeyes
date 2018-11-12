@@ -26,7 +26,7 @@
  *
  * The followings are the available model relations:
  * @property Event $event
- * @property Item[] $items
+ * @property OphDrPrescription_Item[] $items
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
@@ -77,7 +77,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'items' => array(self::HAS_MANY, 'OphDrPrescription_Item', 'prescription_id'),
+            'items' => array(
+                self::HAS_MANY,
+                OphDrPrescription_Item::class,
+                array('event_id' => 'event_id')
+            ),
             'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id')
         );
     }
@@ -140,21 +144,15 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return Drug[]
+     * @return RefMedication[]
      */
     public function commonDrugs()
     {
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
 
-        return Drug::model()->active()->findAll(array(
-                    'condition' => 'ssd.subspecialty_id = :subSpecialtyId AND ssd.site_id = :siteId',
-                    'join' => 'JOIN site_subspecialty_drug ssd ON ssd.drug_id = t.id',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -163,17 +161,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      * @param $site_id
      * @param $subspecialty_id
      *
-     * @return SiteSubspecialtyDrug[]
+     * @return RefMedication[]
      */
     public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id)
     {
-        $params = array(':subSpecialtyId' => $subspecialty_id, ':siteId' => $site_id);
-
-        return SiteSubspecialtyDrug::model()->with('drugs')->findAll(array(
-                    'condition' => 't.subspecialty_id = :subSpecialtyId AND t.site_id = :siteId',
-                    'order' => 'name',
-                    'params' => $params,
-        ));
+        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -181,7 +173,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return DrugSet[]
+     * @return RefSet[]
      */
     public function drugSets()
     {
@@ -189,10 +181,10 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $params = array(':subspecialty_id' => $subspecialty_id);
 
-        return DrugSet::model()->findAll(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND active = 1',
-                    'order' => 'name',
-                    'params' => $params,
+        return RefSet::model()->with("refSetRules")->findAll(array(
+            "condition" => "refSetRules.subspecialty_id = :subspecialty_id AND usage_code = 'Drug' AND refSetRules.deleted_date IS NULL",
+            "order" => "name",
+            "params" => $params
         ));
     }
 
@@ -218,17 +210,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     /**
      * Gets listdata for the drugtypes.
      *
-     * @TODO: Should this be a static method on the DrugType model, rather than here?
-     *
-     * @return DrugType[]
+     * @return array
      */
     public function drugTypes()
     {
-        $drugTypes = DrugType::model()->active()->findAll(array(
-            'order' => 'name',
-        ));
-
-        return $drugTypes;
+        return Chtml::listData(RefSet::model()->with("refSetRules")->findAll(array(
+            "condition" => "usage_code = 'DrugTag' AND refSetRules.deleted_date IS NULL",
+            "order" => "name",
+        )), 'id', 'name');
     }
 
     /**
@@ -295,7 +284,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             $existing_item_ids = array();
             $existing_taper_ids = array();
             // can't rely on relation, as this will have been set already
-            foreach (OphDrPrescription_Item::model()->findAll('prescription_id = :pid', array(':pid' => $this->id)) as $item) {
+            foreach (OphDrPrescription_Item::model()->findAll("event_id = :eid AND usage_type = 'OphDrPrescription'", array(':eid' => $this->event_id)) as $item) {
                 $existing_item_ids[$item->id] = $item->id;
                 foreach ($item->tapers as $taper) {
                     $existing_taper_ids[$taper->id] = $taper->id;
@@ -311,25 +300,14 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 } else {
                     // Item is new
                     $item_model = new OphDrPrescription_Item();
-                    $item_model->prescription_id = $this->id;
-                    $item_model->drug_id = $item['drug_id'];
+                    $item_model->event_id = $this->event_id;
+                    $item_model->ref_medication_id = $item['ref_medication_id'];
                 }
 
                 // Save main item attributes
-                $item_model->dose = $item['dose'];
-                $item_model->route_id = $item['route_id'];
 
-                if (isset($item['route_option_id'])) {
-                    $item_model->route_option_id = $item['route_option_id'];
-                } else {
-                    $item_model->route_option_id = null;
-                }
-                $item_model->frequency_id = $item['frequency_id'];
-                $item_model->duration_id = $item['duration_id'];
-                $item_model->dispense_condition_id = $item['dispense_condition_id'];
-                $item_model->dispense_location_id = $item['dispense_location_id'];
-                $item_model->comments = isset($item['comments']) ? $item['comments'] : null;
-
+                $item_model->setAttributes($item);
+                $item_model->start_date = substr($this->event->event_date, 0, 10);
                 $item_model->save();
 
                 // Tapering
@@ -351,6 +329,16 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
             }
 
+            // Delete existing relations to medication management items
+
+            foreach ($existing_item_ids as $item_id) {
+                $related = EventMedicationUse::model()->findAllByAttributes(['prescription_item_id' => $item_id]);
+                foreach ($related as $record) {
+                    $record->setAttribute('prescription_item_id', null);
+                    $record->save();
+                }
+            }
+
             // Delete remaining (removed) ids
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
@@ -359,7 +347,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+                'ref_medications' => array_map(function($item) {return $item->refMedication; }, $this->items)
             ));
         }
     }

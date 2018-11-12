@@ -37,7 +37,7 @@
 		</form>
 	<?php }
     if ($filters_ready) { ?>
-		<?= CHtml::beginForm() ?>
+		<?php if(!$no_form) { echo CHtml::beginForm(); } ?>
 
 		<table class="standard generic-admin <?= ($display_order) ? 'sortable' : ''?>">
 			<thead>
@@ -97,7 +97,9 @@ if (!$get_row && $filters_ready) {
                         <?php if (!$this->cannot_add) {
                             echo CHtml::submitButton('Add', ['name' => 'admin-add', 'id' => 'et_admin-add', 'class' => 'generic-admin-add button large', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url]);
                         }?>&nbsp;
-                        <?=\CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']); ?>&nbsp;
+                        <?php if (!$this->cannot_save) {
+                            echo \CHtml::submitButton('Save', ['name' => 'admin-save', 'id' => 'et_admin-save', 'class' => 'generic-admin-save button large']);
+                        }?>&nbsp;
                     </td>
                 </tr>
 				</tfoot>
@@ -106,6 +108,6 @@ if (!$get_row && $filters_ready) {
 		<div>
 
 		</div>
-	<?= CHtml::endForm() ?>
+    <?php if(!$no_form) { echo CHtml::endForm(); } ?>
 <?php } ?>
 </div>

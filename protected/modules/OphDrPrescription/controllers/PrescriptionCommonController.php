@@ -40,10 +40,12 @@ class PrescriptionCommonController extends DefaultController
 
         $key = (integer) $key;
 
-        $drug_set_items = DrugSetItem::model()->findAllByAttributes(array('drug_set_id' => $set_id));
-        foreach ($drug_set_items as $drug_set_item) {
-            $this->renderPrescriptionItem($key, $drug_set_item);
-            ++$key;
+        $items = RefSet::model()->findByPk($set_id)->items;
+        if($items) {
+            foreach ($items as $item) {
+                $this->renderPrescriptionItem($key, $item);
+                ++$key;
+            }
         }
     }
 

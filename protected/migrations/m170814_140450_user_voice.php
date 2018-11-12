@@ -11,7 +11,7 @@ class m170814_140450_user_voice extends CDbMigration
 			'key' => 'uservoice_enabled',
 			'name' => 'UserVoice Enabled',
 			'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-			'default_value' => 'on'
+			'default_value' => 'off'
 		));
 		$this->insert('setting_metadata', array(
 			'element_type_id' => null,
@@ -46,7 +46,7 @@ class m170814_140450_user_voice extends CDbMigration
 		));
 		$this->insert('setting_installation', array(
 			'key' => 'uservoice_enabled',
-			'value' => 'on'
+			'value' => 'off'
 		));
 		$this->insert('setting_installation', array(
 			'key' => 'uservoice_override_account_id',

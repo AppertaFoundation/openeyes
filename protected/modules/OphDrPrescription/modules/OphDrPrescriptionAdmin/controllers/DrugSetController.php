@@ -35,7 +35,7 @@ class DrugSetController extends BaseAdminController
      */
     protected function initAdmin($id = false)
     {
-        $admin = new Admin(DrugSet::model(), $this);
+        $admin = new Admin(RefSetRule::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
@@ -43,22 +43,23 @@ class DrugSetController extends BaseAdminController
         $admin->setCustomSaveURL('/OphDrPrescription/admin/drugSet/SaveDrugSet');
         $admin->setCustomCancelURL('/OphDrPrescription/admin/drugSet/list');
 
-        $admin->setEditFields(array(
-            'active' => 'checkbox',
-            'name' => 'text',
-            'subspecialty' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'setItems' => array(
-                'widget' => 'CustomView',
-                'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
-                'viewArguments' => array('element' => $element),
-            ),
-        ));
+        $admin->setEditFields(
+            array(
+                'refSet.name' => 'text',
+                'subspecialty' => array(
+                    'widget' => 'DropDownList',
+                    'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
+                    'htmlOptions' => null,
+                    'hidden' => false,
+                    'layoutColumns' => null,
+                ),
+                'setItems' => array(
+                    'widget' => 'CustomView',
+                    'viewName' => 'application.modules.OphDrPrescription.views.default.form_Element_OphDrPrescription_Details',
+                    'viewArguments' => array('element' => $element),
+                ),
+            )
+        );
 
         return $admin;
     }
@@ -68,35 +69,24 @@ class DrugSetController extends BaseAdminController
      */
     public function actionList()
     {
-        $criteria = new \CDbCriteria();
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '', 'subspecialty_id' => null]);
+        $admin = new Admin(RefSetRule::model(), $this);
+        $admin->setListFields(array(
+            'id',
+            'refSet.name',
+            'subspecialty.name',
+        ));
 
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                if (is_numeric($search['query'])) {
-                    $criteria->addCondition('id = :query');
-                    $criteria->params[':query'] = $search['query'];
-                } else {
-                    $criteria->addSearchCondition('LOWER(name)', strtolower($search['query']));
-                }
-            }
-            if ($search['subspecialty_id']) {
-                $criteria->addCondition('subspecialty_id = :subspecialty_id');
-                $criteria->params[':subspecialty_id'] = $search['subspecialty_id'];
-            }
+        $admin->setModelDisplayName('Drug Sets');
 
-
-            if ($search['active'] == 1) {
-                $criteria->addCondition('active = 1');
-            } elseif ($search['active'] != '') {
-                $criteria->addCondition('active != 1');
-            }
-        }
-
-        $this->render('/drugset/index', [
-            'drug_sets' => DrugSet::model()->findAll($criteria),
-            'search' => $search
-        ]);
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'usage_code=:usage_code AND subspecialty_id IS NOT NULL';
+        $criteria->params = array(
+            ':usage_code' => 'Drug',
+        );
+        $admin->searchAll();
+        $admin->getSearch()->setCriteria($criteria);
+        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->listModel();
     }
 
     /**

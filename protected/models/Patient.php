@@ -603,24 +603,24 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param int $drug_id
+     * @param int $ref_medication_id
      *
      * @return bool Is patient allergic?
      */
-    public function hasDrugAllergy($drug_id = null)
+    public function hasDrugAllergy($ref_medication_id = null)
     {
-        if ($drug_id) {
+        if (!is_null($ref_medication_id)) {
             if ($this->allergies) {
                 $criteria = new CDbCriteria();
                 $criteria->select = 't.id';
                 $criteria->condition = 'paa.patient_id = :patient_id';
                 $join = array();
-                $join[] = 'JOIN drug_allergy_assignment daa ON daa.drug_id = t.id';
+                $join[] = 'JOIN ref_medication_allergy_assignment daa ON daa.ref_medication_id = t.id';
                 $join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = daa.allergy_id';
                 $criteria->join = implode(' ', $join);
                 $criteria->params = array(':patient_id' => $this->id);
 
-                return (bool) Drug::model()->findByPk($drug_id, $criteria);
+                return (bool) RefMedication::model()->findByPk($ref_medication_id, $criteria);
             } else {
                 return false;
             }

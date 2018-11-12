@@ -27,6 +27,8 @@ namespace OEModule\OphCiExamination\models;
  * @property string $name
  * @property int $display_order
  * @property boolean $is_other
+ * @property \RefSet[] $refSets
+ * @property \Tag[] $tags
  */
 class OphCiExaminationRisk extends \BaseActiveRecordVersioned
 {
@@ -79,6 +81,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     {
         return array(
             'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)'),
+            'refSets' => array(self::MANY_MANY, \RefSet::class, 'ophciexamination_risk_tag(risk_id, ref_set_id)'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'episodeStatus' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -116,6 +119,13 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * @param $tag_ids
+     * @return array|\CActiveRecord[]|mixed|null
+     *
+     * @deprecated use findForRefSetIds
+     */
+
     public static function findForTagIds($tag_ids)
     {
         $criteria = new \CDbCriteria();
@@ -125,6 +135,23 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
                 'select' => false,
                 'joinType' => 'INNER JOIN',
             ))
+        )->findAll($criteria);
+    }
+
+    /**
+     * @param array $ref_set_ids
+     * @return static[]
+     */
+
+    public static function findForRefSetIds($ref_set_ids)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addInCondition('refSets.id', $ref_set_ids);
+        return static::model()->with(array(
+                'refSets' => array(
+                    'select' => false,
+                    'joinType' => 'INNER JOIN',
+                ))
         )->findAll($criteria);
     }
 

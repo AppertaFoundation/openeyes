@@ -44,13 +44,24 @@ $assetManager = Yii::app()->getAssetManager();
     }
     ?>
 
-    <table class="standard">
+	<table class="standard">
         <tbody>
-        <?php foreach ($admin->getEditFields() as $field => $type) { ?>
+        <?php foreach ($admin->getEditFields() as $field => $type) {?>
         <tr><td>
             <?php
             if (is_array($type)) {
                 switch ($type['widget']) {
+
+                    case 'GenericAdmin':
+                        echo CHtml::label($type['label'].':', '');
+                        $this->widget('GenericAdmin', $type['options']);
+                        break;
+
+                    case 'RefMedicationLookup':
+                        echo CHtml::label($type['label'].':', '');
+                        $this->widget('RefMedicationLookup', $type['options']);
+                        break;
+
                     case 'TagsInput':
                         $form->TagsInput(
                             $type['label'],
@@ -62,98 +73,101 @@ $assetManager = Yii::app()->getAssetManager();
                             $type['htmlOptions']
                         );
                         break;
-                    case 'MultiSelectList': ?>
-                        <div class="data-group furtherfindings-multi-select">
-                            <?php
-                            $through = array();
-                            $link = '';
-                            if (array_key_exists('through', $type) && is_array($type['through'])) {
-                                $through = $type['through'];
-                            }
-                            if (array_key_exists('link', $type) && $type['link']) {
-                                $link = $type['link'];
-                            }
-                            echo $form->multiSelectList(
-                                $admin->getModel(),
-                                $admin->getModelName() . '[' . $field . ']',
-                                $field,
-                                $type['relation_field_id'],
-                                $type['options'],
-                                array(),
-                                array(
-                                    'empty' => '',
-                                    'label' => $type['label'],
-                                    'searchable' => true,
-                                ),
-                                false,
-                                true,
-                                null,
-                                false,
-                                false,
-                                array(),
-                                $through,
-                                $link
-                            );
-                            ?>
-                        </div>
+
+                case 'MultiSelectList':
+                    ?>
+                    <div class="data-group furtherfindings-multi-select">
                         <?php
-                        break;
-                    case 'DropDownList':
-                        $form->dropDownList(
+                        $through = array();
+                        $link = '';
+                        if(array_key_exists('through', $type) && is_array($type['through'])){
+                            $through = $type['through'];
+                        }
+                        if(array_key_exists('link', $type) && $type['link']){
+                            $link = $type['link'];
+                        }
+                        echo $form->multiSelectList(
                             $admin->getModel(),
+                            $admin->getModelName() . '[' . $field . ']',
                             $field,
+                            $type['relation_field_id'],
                             $type['options'],
-                            $type['htmlOptions'],
-                            $type['hidden'],
-                            $type['layoutColumns']
+                            array(),
+                            array(
+                                'empty' => '',
+                                'label' => $type['label'],
+                                'searchable' => true,
+                            ),
+                            false,
+                            true,
+                            null,
+                            false,
+                            false,
+                            array(),
+                            $through,
+                            $link
                         );
-                        break;
-                    case 'CustomView':
-                        // arguments: (string) viewName, (array) viewArguments
-                        $type['viewArguments'] = is_array($type['viewArguments']) ? $type['viewArguments'] : array();
-                        $type['viewArguments']['form'] = $form;
-                        $this->renderPartial($type['viewName'], $type['viewArguments']);
-                        break;
-                    case 'RelationList':
-                        if (isset($admin->getModel()->id)) {
-                            $assetManager->registerScriptFile('js/oeadmin/list.js');
-                            $subAdmin = $admin->generateAdminForRelationList($type['relation'], $type['listFields']);
-                            if (isset($type['search'])) {
-                                $subAdmin->getSearch()->setSearchItems($type['search']);
-                            }
-                            $this->renderPartial('//admin/generic/list', array(
-                                'admin' => $subAdmin,
-                                'uniqueid' => $type['action'],
-                            ));
-                        }
-                        break;
-                    case 'PatientLookup':
-                        $this->renderPartial('//admin//generic/patientLookup', array(
-                            'model' => $admin->getModel(),
-                            'extras' => array_key_exists('extras', $type) ? $type['extras'] : false,
-                        ));
-                        break;
-                    case 'DisorderLookup':
-                        if (!is_array($admin->getModel()->{$type['relation']})) {
-                            $relations = array($admin->getModel()->{$type['relation']});
-                        } else {
-                            $relations = $admin->getModel()->{$type['relation']};
-                        }
                         ?>
-                        <div class="data-group">
-                            <div class="cols-2 column">&nbsp;</div>
-                            <div class="cols-5 column end">
-                                <hr>
-                            </div>
+                    </div>
+                    <?php
+                    break;
+                case 'DropDownList':
+                    $form->dropDownList(
+                        $admin->getModel(),
+                        $field,
+                        $type['options'],
+                        $type['htmlOptions'],
+                        $type['hidden'],
+                        $type['layoutColumns']
+                    );
+                    break;
+                case 'CustomView':
+                    // arguments: (string) viewName, (array) viewArguments
+                    $type['viewArguments'] = is_array($type['viewArguments']) ? $type['viewArguments'] : array();
+                    $type['viewArguments']['form'] = $form;
+                    $this->renderPartial($type['viewName'], $type['viewArguments']);
+                    break;
+                case 'RelationList':
+                    if (isset($admin->getModel()->id)) {
+                        $assetManager->registerScriptFile('js/oeadmin/list.js');
+                        $subAdmin = $admin->generateAdminForRelationList($type['relation'], $type['listFields']);
+                        if (isset($type['search'])) {
+                            $subAdmin->getSearch()->setSearchItems($type['search']);
+                        }
+                        $this->renderPartial('//admin/generic/list', array(
+                            'admin' => $subAdmin,
+                            'uniqueid' => $type['action'],
+                        ));
+                    }
+                    break;
+                case 'PatientLookup':
+                    $this->renderPartial('//admin//generic/patientLookup', array(
+                        'model' => $admin->getModel(),
+                        'extras' => array_key_exists('extras', $type) ? $type['extras'] : false,
+                    ));
+                    break;
+                case 'DisorderLookup':
+                    if (!is_array($admin->getModel()->{$type['relation']})) {
+                        $relations = array($admin->getModel()->{$type['relation']});
+                    } else {
+                        $relations = $admin->getModel()->{$type['relation']};
+                    }
+                    ?>
+                    <div class="data-group">
+                        <div class="cols-2 column">&nbsp;</div>
+                        <div class="cols-5 column end"><hr></div>
+                    </div>
+                    <div class="data-group">
+                        <div class="cols-2 column">
+                            <label>Diagnosis</label>
                         </div>
-                        <div class="data-group">
-                            <div class="cols-2 column">
-                                <label>Diagnosis</label>
-                            </div>
-                            <div class="cols-5 column end">
-                                <?php $htmlOptions['empty'] = $type['empty_text'];
-                                $htmlOptions['id'] = isset($type['id']) ? $type['id'] : 'disorder_dropdown';
-                                echo CHtml::dropDownList(null, null, $type['options'], $htmlOptions);
+                        <div class="cols-5 column end">
+
+
+                                <?php
+                                    $htmlOptions['empty'] = $type['empty_text'];
+                                    $htmlOptions['id'] = isset($type['id']) ? $type['id'] : 'disorder_dropdown';
+                                    echo CHtml::dropDownList(null,null,$type['options'], $htmlOptions);
                                 ?>
                                 <script>
                                     $('#<?=$htmlOptions['id']?>').on('change', function () {
@@ -240,8 +254,11 @@ $assetManager = Yii::app()->getAssetManager();
                     case 'referer':
                         echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
                         break;
+                    case 'hidden':
+                        echo $form->hiddenInput($admin->getModel(), $field);
+                        break;
                     case 'text':
-                    default:
+                        default:
                         echo $form->textField($admin->getModel(), $field, $autoComplete);
                         break;
                 }

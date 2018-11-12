@@ -997,4 +997,20 @@ class AdminController extends \ModuleAdminController
             'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
     }
 
+    public function actionMedicationManagementSets()
+    {
+        $this->genericAdmin(
+            'Medication Management drug sets',
+            models\MedicationManagementRefSet::class,
+            array(
+                'description' => 'Medications in these sets will be automatically be pulled into the medication management element.',
+                'label_field' => 'ref_set_id',
+                'extra_fields' => array(
+                    array('field' => 'ref_set_id', 'type' => 'lookup',
+                        'model' => \RefSet::class, ),
+                ),
+            )
+        );
+    }
+
 }

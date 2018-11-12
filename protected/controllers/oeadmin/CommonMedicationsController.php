@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class CommonMedicationsController extends BaseAdminController
 {
 
@@ -114,4 +115,6 @@ class CommonMedicationsController extends BaseAdminController
             echo CJSON::encode($return);
         }
     }
+
+
 }
