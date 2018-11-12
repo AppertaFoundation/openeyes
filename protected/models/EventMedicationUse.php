@@ -51,8 +51,6 @@ class EventMedicationUse extends BaseElement
     /** @var bool Tracking variable used when creating/editing entries */
     public $originallyStopped = false;
 
-    // TODO implement correct initialization of these properties
-
     public $prescription_item_deleted = false;
     public $prescription_event_deleted = false;
     public $prescription_not_synced = false;
@@ -343,11 +341,45 @@ class EventMedicationUse extends BaseElement
     public function getStartDateDisplay()
     {
         $res = array();
-        if ($this->start_date) {
-            $res[] = \Helper::formatFuzzyDate($this->start_date);
+        if ($this->start_date_string_YYYYMMDD) {
+            $res[] = \Helper::formatFuzzyDate($this->start_date_string_YYYYMMDD);
         }
         return implode(' ', $res);
     }
+
+    public function getStopDateDisplay()
+    {
+        return '<div class="oe-date">' . \Helper::convertFuzzyDate2HTML($this->end_date_string_YYYYMMDD) . '</div>';
+    }
+
+    public function getEndDateDisplay()
+    {
+        if ($this->end_date) {
+            return \Helper::formatFuzzyDate($this->end_date_string_YYYYMMDD);
+        } else {
+            return '';
+        }
+    }
+
+    public function getDoseAndFrequency()
+    {
+        $result = [];
+
+        if($this->dose){
+            if($this->dose_unit_term) {
+                $result[] = $this->dose . ' ' . $this->dose_unit_term;
+            } else {
+                $result[] = $this->dose;
+            }
+        }
+
+        if($this->frequency){
+            $result[] = $this->frequency;
+        }
+
+        return implode(' , ', $result    );
+    }
+
 
     /**
      * Getter to make this class compatible with HistoryMedicationsEntry
