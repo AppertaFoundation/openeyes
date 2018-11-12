@@ -232,7 +232,6 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
     /**
      * @param $complication_items
-     * @param $complication_items_index
      * @param $eye_id
      * @param $operation_note_id
      * @throws \Exception
