@@ -41,4 +41,9 @@ class Element_OphInLabResults_Inr extends Element_OphInLabResults_ResultTimedNum
 
         return $string;
     }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
 }

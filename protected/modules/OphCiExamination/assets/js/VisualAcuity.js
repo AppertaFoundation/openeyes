@@ -82,10 +82,8 @@ $(document).ready(function () {
       var activeForm = $(this).closest('.active-form');
 
       $(this).closest('tr').remove();
-
-      if ($('tbody', activeForm).children('tr').length == 0) {
+      if ($('.near-va-readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
-        $('table', activeForm).hide();
       }
       else {
         // VA can affect DR

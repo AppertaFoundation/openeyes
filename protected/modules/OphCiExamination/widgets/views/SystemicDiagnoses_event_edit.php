@@ -103,6 +103,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 'id' => '',
                 'disorder_id' => '{{disorder_id}}',
                 'disorder_display' => '{{disorder_display}}',
+                'is_diabetes' => '{{is_diabetes}}',
                 'side_id' => (string)EyeSelector::$NOT_CHECKED,
                 'side_display' => '{{side_display}}',
                 'date' => '{{date}}',
@@ -124,8 +125,8 @@ $required_diagnoses_ids = array_map(function ($r) {
       openButton: $('#add-history-systemic-diagnoses'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           array_map(function ($disorder) {
-              return ['label' => $disorder->term, 'id' => $disorder->id];
-          }, CommonSystemicDisorder::getDisorders())
+              return ['label' => $disorder['term'], 'id' => $disorder['id'] , 'is_diabetes' => $disorder['is_diabetes']];
+          }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
       ) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         systemicDiagnosesController.addEntry(selectedItems);
