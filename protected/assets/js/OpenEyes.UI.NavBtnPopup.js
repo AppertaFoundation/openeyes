@@ -138,10 +138,7 @@
 					} else {
 						latch();
 					}
-				} else {
-					changeContent();
 				}
-
 			});
 
 			// enhance for Mouse/Track users
