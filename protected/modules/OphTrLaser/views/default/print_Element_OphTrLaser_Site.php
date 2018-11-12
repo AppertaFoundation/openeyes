@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2015
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,17 +11,31 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
+ * @copyright Copyright (c) 2018, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$errorMessages = array(
-    'badreferer' => 'ERROR: Bad referer, you are not allowed to open this page directly! Use the administration menu for managing common drugs list.',
-    'recordmissing' => 'ERROR: The requested record is not exists in the database!',
-    'notajaxcall' => 'ERROR: This page cannot be accessed directly, please use the Manage Common Drugs list to add new record!',
-);
 ?>
-<div class="large-12 column">
-	<div class="alert-box with-icon warning" id="flash-prescription_allergy">
-		<?php echo $errorMessages[$errorMessage] ?>
-	</div>
-</div>
+
+
+<table>
+    <colgroup>
+        <col class="cols-4">
+        <col class="cols-4">
+        <col class="cols-4">
+    </colgroup>
+    <thead>
+        <tr>
+            <th><?php echo $element->getAttributeLabel('site_id') ?></th>
+            <th><?php echo $element->getAttributeLabel('laser_id') ?></th>
+            <th><?php echo $element->getAttributeLabel('operator_id') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="large-text"><?php echo $element->site ? $element->site->name : 'None' ?></td>
+            <td class="large-text"><?php echo $element->laser ? $element->laser->name : 'None' ?></td>
+            <td class="large-text"><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None' ?></td>
+        </tr>
+    </tbody>
+</table>
+
