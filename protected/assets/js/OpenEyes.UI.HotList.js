@@ -1,23 +1,15 @@
-(function (exports, Util) {
+(function (exports ) {
 
-  var NavBtnSidebar = exports;
-
-  function HotList(options) {
-    options = $.extend(true, {}, HotList._defaultOptions, options);
+  function HotList() {
     // The date to restrict he closed list to. Default to today
     this.selected_date = new Date();
-
-    NavBtnSidebar.call(this, options);
+    this.create();
   }
 
-  Util.inherits(NavBtnSidebar, HotList);
-
-  HotList._defaultOptions = {};
 
   HotList.prototype.create = function () {
     var hotlist = this;
 
-    HotList._super.prototype.create.call(this);
 
     $('.activity-list').find('textarea').autosize();
 
@@ -213,4 +205,4 @@
 
   exports.HotList = HotList;
 
-}(OpenEyes.UI.NavBtnSidebar, OpenEyes.Util));
+}(OpenEyes.UI));

@@ -32,6 +32,8 @@ $(document).ready(function () {
   } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
     var hotlist = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel')).enhance($('.js-hotlist-panel-wrapper'));
+    //Hotlist's javascript initialisation
+    new OpenEyes.UI.HotList();
   }
 
 	// override the behaviour for showing search results
