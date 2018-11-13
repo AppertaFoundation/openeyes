@@ -280,7 +280,7 @@
     }
     this.positionFixedPopup(this.options.openButton);
     if (this.options.onOpen) {
-      this.options.onOpen();
+      this.options.onOpen(this);
     }
   };
 
