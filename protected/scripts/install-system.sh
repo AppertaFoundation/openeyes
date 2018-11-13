@@ -101,11 +101,12 @@ fi
 [ "$OE_MODE" != "LIVE" ] && bash $SCRIPTDIR/install-dev-tools.sh
 
 
-# wkhtmltox is now bundled in the repository. Original download location is:
-# wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
-## TODO: install this via a package manager if not being done already
-# cd /vagrant/install
-# dpkg -i --force-depends wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+# Download and install wkhtmltopdf/toimage (needed for printing and lightning viewer)
+## TODO: switch to correct version based on OS (trusty/xenial/bionic/etc)
+## TODO: replace with package manager. e.g, https://packagist.org/packages/h4cc/wkhtmltopdf-amd64 and https://packagist.org/packages/h4cc/wkhtmltoimage-amd64
+sudo wget -O wkhtml.deb https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb
+sudo dpkg -i --force-depends wkhtml.deb
+sudo rm wkhtml.deb
 
 if [ ! "$dependonly" = "1" ]; then
 
