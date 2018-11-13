@@ -255,10 +255,4 @@ class GpController extends BaseController
             Yii::app()->end();
         }
     }
-
-    public function actionGetAuditEventLog(  )
-    {
-        $gpcontact = new Contact('manage_gp');
-        echo $this->renderPartial('../gp/_form', array('model' => $gpcontact, 'context' => 'AJAX'));;
-    }
 }
