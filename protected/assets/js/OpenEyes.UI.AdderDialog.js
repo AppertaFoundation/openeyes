@@ -37,20 +37,22 @@
    * @private
    */
   AdderDialog._defaultOptions = {
-    itemSets: [],
-    openButton: null,
-    onOpen: null,
-    onClose: null,
-    onSelect: null,
-    onReturn: null,
-    returnOnSelect: false,
-    deselectOnReturn: true,
-    id: null,
-    popupClass: 'oe-add-select-search auto-width',
-    liClass: 'auto-width',
-    searchOptions: null,
-    width: null,
-    createBlackoutDiv: true,
+      itemSets: [],
+      openButton: null,
+      onOpen: null,
+      onClose: null,
+      onSelect: null,
+      onReturn: null,
+      returnOnSelect: false,
+      deselectOnReturn: true,
+      id: null,
+      popupClass: 'oe-add-select-search auto-width',
+      liClass: 'auto-width',
+      searchOptions: null,
+      width: null,
+      createBlackoutDiv: true,
+      enableCustomSearchEntries: false,
+      searchAsTypedPrefix: 'As typed: '
   };
 
   /**
@@ -368,41 +370,57 @@
     }
   };
 
-  /**
-   * Performs a search using the given text
-   * @param {string} text The term to search with
-   */
-  AdderDialog.prototype.runItemSearch = function (text) {
-    var dialog = this;
+    /**
+     * Performs a search using the given text
+     * @param {string} text The term to search with
+     */
+    AdderDialog.prototype.runItemSearch = function (text) {
+        var dialog = this;
 
-    if (this.searchRequest !== null) {
-      this.searchRequest.abort();
-    }
+        if (this.searchRequest !== null) {
+            this.searchRequest.abort();
+        }
 
-    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
-      term: text,
-      code: this.options.searchOptions.code,
-      ajax: 'ajax'
-    }, function (results) {
-      dialog.searchRequest = null;
-      var no_data = !$(results).length;
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+            term: text,
+            code: this.options.searchOptions.code,
+            ajax: 'ajax'
+        }, function (results) {
+            dialog.searchRequest = null;
+            var no_data = !$(results).length;
 
-      dialog.searchResultList.empty();
-      dialog.searchResultList.toggle(!no_data);
-      dialog.noSearchResultsWrapper.toggle(no_data);
+            dialog.searchResultList.empty();
+            dialog.noSearchResultsWrapper.toggle(no_data);
 
-      if (dialog.options.searchOptions.resultsFilter) {
-        results = dialog.options.searchOptions.resultsFilter(results);
-      }
+            if (dialog.options.searchOptions.resultsFilter) {
+                results = dialog.options.searchOptions.resultsFilter(results);
+            }
 
-      $(results).each(function (index, result) {
-        var dataset = AdderDialog.prototype.constructDataset(result);
-        var item = $("<li />", dataset)
-          .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+            $(results).each(function (index, result) {
+                var dataset = AdderDialog.prototype.constructDataset(result);
+                var item = $("<li />", dataset)
+                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                dialog.searchResultList.append(item);
+            });
+
+            if (dialog.options.enableCustomSearchEntries) {
+                dialog.appendCustomEntryOption(text, dialog);
+            } else {
+                dialog.searchResultList.toggle(!no_data);
+            }
+        });
+    };
+
+    AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
+        let custom_entry = AdderDialog.prototype.constructDataset({
+            label: text,
+            type: 'custom'
+        });
+        let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
+            .append($('<span />', {class: 'auto-width'}).text(text));
+
         dialog.searchResultList.append(item);
-      });
-    });
-  };
+    };
 
   /**
    * Creates a "blackout div", a mask behind the popup that will close teh dialog if the user clicks anywhere else on the screen
