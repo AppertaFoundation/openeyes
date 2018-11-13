@@ -145,6 +145,7 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
      * mark messages as read
      */
     $('i.js-mark-as-read-btn').one('click', function() {
+        let message_type = "<?= $message_type ?>";
         let $i = $(this);
         let $closestTr = $i.closest('tr');
         let eventId = $i.closest('tr').find('.nowrap a').attr('href').split('/').slice(-1)[0];
@@ -157,7 +158,13 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
             url: url,
             data: {noRedirect: 1},
             success: function() {
-                $closestTr.hide();
+                if (message_type === "unread") {
+                    $closestTr.hide();
+                }
+                $i.removeClass('spinner as-icon');
+                //TODO: move JS into dashboard.js
+                //TODO: update message count in folder section
+                //TODO: add class read to the ticked messages
             },
             error: function() {
                 $i.removeClass('spinner as-icon');

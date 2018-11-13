@@ -145,7 +145,7 @@ class DefaultController extends \BaseEventTypeController
             $this->markMessageRead($el);
         }
 
-        if (!@$_GET['noRedirect']) {
+        if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
             $this->redirectAfterAction();
         }
     }
