@@ -114,7 +114,7 @@
 
     var commentUpdateTimeout;
     // When the enter key is pressed when editing a comment
-    $('.activity-list').delegate('.js-hotlist-comment textarea', 'keyup', function (e) {
+    $('.activity-list').delegate('.js-hotlist-comment textarea', 'keyup', function () {
       var comment = $(this).val();
       var itemId = $(this).closest('.js-hotlist-comment').data('id');
       clearTimeout(commentUpdateTimeout);

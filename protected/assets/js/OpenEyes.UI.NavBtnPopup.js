@@ -1,9 +1,5 @@
 (function (exports, Util, EventEmitter) {
     function NavBtnPopup(id, $btn, $content) {
-
-        var popup = this;
-
-        // private
         this.id = id;
         this.eventObj = $btn;
         this.button = $btn;
