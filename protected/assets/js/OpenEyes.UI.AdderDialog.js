@@ -390,6 +390,7 @@
             var no_data = !$(results).length;
 
             dialog.searchResultList.empty();
+            dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
             dialog.noSearchResultsWrapper.toggle(no_data);
 
             if (dialog.options.searchOptions.resultsFilter) {
