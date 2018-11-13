@@ -52,7 +52,6 @@
             }
         });
         popup.hide();
-        console.log(this.options.autoHideWidthPixels);
         if(popup.options.autoHideWidthPixels){
 					popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
 					$(window).resize(function () {
