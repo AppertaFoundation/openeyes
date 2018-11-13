@@ -203,7 +203,7 @@ class Patient extends BaseActiveRecordVersioned
                 $item_count = Patient::model()->count('hos_num = ? AND id != ?',
                     array($hos_num, $this->id ?: -1));
                 if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this hospital number');
+                    $this->addError($attribute, 'A patient already exists with this hospital number. The next available auto generated number is '.$this->autoCompleteHosNum());
                 }
             } elseif (!empty($this->hos_num)) {
                 $this->addError($attribute, 'Not a valid Hospital Number');
