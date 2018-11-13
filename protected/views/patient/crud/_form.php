@@ -41,7 +41,7 @@ $genders = CHtml::listData($gender_models, function ($gender_model) {
 
 $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 ?>
-
+<div class="form">
 <?php $form = $this->beginWidget('CActiveForm', array(
     'id' => 'patient-form',
     // Please note: When you enable ajax validation, make sure the corresponding
@@ -49,6 +49,15 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
+
+    'htmlOptions' => array('enctype' => 'multipart/form-data'),
+    'clientOptions' => array(
+        'afterValidateAttribute' => "js:
+            function(form, attribute, data, hasError) {
+               form.find('#' + attribute.inputID).removeClass('error');
+               form.find('label[for='+attribute.inputID+']').removeClass('error');
+            }",
+    ),
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -295,9 +304,6 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->label($patient, 'gp_id') ?>
             <br/>
               <?= $form->error($patient, 'gp_id') ?>
-
-              <a id="js-add-practitioner-btn"
-                        return false;" href="#">Add Referring Practitioner</a>
           </td>
           <td>
               <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -324,7 +330,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     }',
                   ),
                   'htmlOptions' => array(
-                      'placeholder' => 'search GP',
+                      'placeholder' => 'Search GP',
                   ),
 
               )); ?>
@@ -345,6 +351,16 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <div>No result</div>
             </div>
           </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>  <div >
+                    <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
+                    <p><?php echo CHtml::link('Add Referring Practitioner', '#', array(
+                            'onclick' => '$("#gpdialog").dialog().dialog("open"); 
+                        return false;',
+                        )); ?></p>
+                </div></td>
         </tr>
         <tr>
           <td>
@@ -410,78 +426,22 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     </div>
   </div>
 </div>
+    <?php $this->endWidget(); ?>
+<?php
+$gpcontact = new Contact('manage_gp');
+?>
 
-<div class="oe-popup-wrap" id="js-add-practitioner-event" style="display: none; z-index:100">
-    <div class="oe-popup">
-        <div class="title">
-            Add Referring Practitioner
-            <div class="close-icon-btn">
-                <i id="js-cancel-add-practitioner" class="oe-i remove-circle pro-theme"></i>
-            </div>
-        </div>
-        <table class="standard row">
-            <tbody>
-            <tr>
-                <td>Title:</td>
-                <td class="flex-layout">
-                    <input size="30" maxlength="20" name="Contact[title]" id="Contact_title" type="text">
-                    <div class="errorMessage" id="Contact_title_em_" style="display:none"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Contact_first_name" class="required">First name <span class="required">*</span></label>
-                </td>
-                <td>
-                    <input size="30" maxlength="100" name="Contact[first_name]" id="Contact_first_name" type="text">
-                    <div class="errorMessage" id="Contact_first_name_em_" style="display:none">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Contact_last_name" class="required">Last name <span class="required">*</span></label>
-                </td>
-                <td>
-                    <input size="30" maxlength="100" name="Contact[last_name]" id="Contact_last_name" type="text">
-                    <div class="errorMessage" id="Contact_last_name_em_" style="display:none"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Contact_primary_phone">Phone number</label>
-                </td>
-                <td>
-                    <input size="15" maxlength="20" name="Contact[primary_phone]" id="Contact_primary_phone" type="tel">
-                    <div class="errorMessage" id="Contact_primary_phone_em_" style="display:none"></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Contact_Role">Role</label>
-                </td>
-                <td>
-                    <div class="errorMessage" id="Contact_contact_label_id_em_" style="display:none"></div>
-                    <input placeholder="Search Roles" id="autocomplete_contact_label_id" type="text"
-                           name="contact_label_id" class="ui-autocomplete-input" autocomplete="off">
-
-                    <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="align-right">
-                    <input class="green hint" type="submit" name="yt0" value="Add">
-                </td>
-            </tr>
-
-            </tbody>
-        </table>
-    </div>
 </div>
-<?php $this->endWidget(); ?>
+
 <script>
     $('#js-cancel-add-practitioner').click(function(event){
         // event.preventDefault();
         // $('#errors').text("");
+        $("#js-add-practitioner-event").find('input:text').val('');
+        if($('#selected_contact_label_wrapper').is(':visible')){
+            $('.removeReading').trigger("click");
+        }
+        $("#Contact_contact_label_id").val('');
         $('#js-add-practitioner-event').css('display','none');
     });
     //
@@ -496,7 +456,15 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // });
 
     $('#js-add-practitioner-btn').click(function(event){
-        $('#js-add-practitioner-event').css('display','');
+        console.log(event);
+        new OpenEyes.UI.Dialog({
+            title: 'Event log',
+            content: <?php echo
+                        $this->renderPartial('../gp/_form', array('model' => $gpcontact, 'context' => 'AJAX'))
+                        ?>,
+            dialogClass: 'dialog event',
+            width: "90%",
+        }).open();
         return false;
     });
 </script>
