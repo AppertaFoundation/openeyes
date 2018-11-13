@@ -12,7 +12,7 @@
     HotList.prototype = Object.create(NavBtnPopUp.prototype);
     HotList.prototype.constructor = HotList;
 
-    HotList.prototype.create = function (id, $btn, $content) {
+    HotList.prototype.create = function () {
         var hotlist = this;
         $('.activity-list').find('textarea').autosize();
 
