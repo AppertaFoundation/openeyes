@@ -48,7 +48,7 @@ function setDiabeticDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="diabetic_diagnoses"]').length) {
+    if ($('input[name^="diabetic_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
     }
 
@@ -66,7 +66,7 @@ function setGlaucomaDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="glaucoma_diagnoses"]').length) {
+    if ($('input[name^="glaucoma_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
     }
 

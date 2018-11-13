@@ -233,6 +233,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.disorder_id = selectedItems[i].id;
         data.disorder_display = selectedItems[i].label;
         data.eye_id = selectedItems.eye_id;
+        data.is_glaucoma = selectedItems[i].is_glaucoma;
         row = Mustache.render(template, data);
         newRows.push(row);
       }
@@ -249,6 +250,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
     };
 
     DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr){
