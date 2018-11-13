@@ -290,13 +290,21 @@ class WorklistManager extends CComponent
     /**
      * @return DateTime
      */
-    public function getGenerationTimeLimitDate()
+    public function getGenerationTimeLimitDate(WorklistDefinition $definition = null)
     {
         $limit = $this->getAppParam('worklist_default_generation_limit') ?: self::$DEFAULT_GENERATION_LIMIT;
         $interval = DateInterval::createFromDateString($limit);
 
         $now = new DateTime();
-        return $now->add($interval);
+        $now->add($interval);
+
+        if ($definition) {
+            $active_until = new DateTime($definition->active_until);
+            if ($active_until < $now) {
+                $now = $active_until;
+            }
+        }
+        return $now;
     }
 
     /**
@@ -1085,7 +1093,7 @@ class WorklistManager extends CComponent
     public function generateAutomaticWorklists(WorklistDefinition $definition, $date_limit = null)
     {
         if (is_null($date_limit)) {
-            $date_limit = $this->getGenerationTimeLimitDate();
+            $date_limit = $this->getGenerationTimeLimitDate($definition);
         }
 
         $rrule_str = $this->setDateLimitOnRrule($definition->rrule, $date_limit);
