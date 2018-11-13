@@ -2,10 +2,10 @@
 
     let NavBtnPopUp = exports;
 
-    function HotList(id, $btn, $content) {
+    function HotList(id, $btn, $content, options) {
         // The date to restrict he closed list to. Default to today
         this.selected_date = new Date();
-        NavBtnPopUp.call(this, id, $btn, $content);
+        NavBtnPopUp.call(this, id, $btn, $content, options);
         this.create();
     }
 
@@ -14,9 +14,6 @@
 
     HotList.prototype.create = function (id, $btn, $content) {
         var hotlist = this;
-
-        this.init(id, $btn, $content);
-
         $('.activity-list').find('textarea').autosize();
 
         // activity datepicker using pickmeup.
@@ -70,15 +67,12 @@
                     window.location.href = closedPatient.data('patientHref');
                 }
             });
-
             return false;
         });
 
         // When the close link in an open item is clicked
         $('.activity-list.closed').delegate('.js-open-hotlist-item', 'click', function () {
-
             var itemId = $(this).closest('.js-hotlist-closed-patient').data('id');
-
             $.ajax({
                 type: 'GET',
                 url: '/UserHotlistItem/openHotlistItem',
@@ -87,7 +81,6 @@
                     hotlist.updateOpenList();
                 }
             });
-
             hotlist.removeItem(itemId);
             return false;
         });
@@ -96,7 +89,6 @@
         $('.activity-list.open').delegate('.js-close-hotlist-item', 'click', function () {
 
             var itemId = $(this).closest('.js-hotlist-open-patient').data('id');
-
             $.ajax({
                 type: 'GET',
                 url: '/UserHotlistItem/closeHotlistItem',
@@ -105,11 +97,9 @@
                     hotlist.updateClosedList();
                 }
             });
-
             hotlist.removeItem(itemId);
             return false;
         });
-
 
         var commentUpdateTimeout;
         // When the enter key is pressed when editing a comment
@@ -122,7 +112,7 @@
             }, 500);
         });
 
-        // Wjem the comment button in any item is clicked
+        // When the comment button in any item is clicked
         $('.activity-list').delegate('.js-add-hotlist-comment', 'click', function () {
             var hotlistItem = $(this).closest('.js-hotlist-open-patient, .js-hotlist-closed-patient');
             var itemId = hotlistItem.data('id');
@@ -134,7 +124,6 @@
                 commentRow.show();
                 commentRow.find('textarea').focus();
             }
-
             return false;
         });
     };
@@ -150,7 +139,6 @@
 
     HotList.prototype.updateClosedList = function () {
         var hotlist = this;
-
         $.ajax({
             type: 'GET',
             url: '/UserHotlistItem/renderHotlistItems',
@@ -168,7 +156,6 @@
 
     HotList.prototype.updateOpenList = function () {
         var hotlist = this;
-
         $.ajax({
             type: 'GET',
             url: '/UserHotlistItem/renderHotlistItems',
@@ -197,11 +184,9 @@
         var readonlyComment = hotlistItem.find('.js-hotlist-comment-readonly');
         readonlyComment.text(shortComment);
         readonlyComment.data('tooltip-content', userComment);
-
         var commentIcon = hotlistItem.find('i.js-add-hotlist-comment');
         commentIcon.removeClass('comments comments-added active');
         commentIcon.addClass(userComment.length > 0 ? 'comments-added active' : 'comments');
-
         $.ajax({
             type: 'GET',
             url: '/UserHotlistItem/updateUserComment',

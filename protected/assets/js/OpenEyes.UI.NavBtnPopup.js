@@ -1,22 +1,33 @@
 (function (exports, Util, EventEmitter) {
-    function NavBtnPopup(id, $btn, $content) {
-        this.id = id;
-        this.eventObj = $btn;
-        this.button = $btn;
-        this.content = $content;
-        this.useMouseEvents = false;
-        this.isGrouped = false; 		// e.g. patient popups
-        this.groupController = null;
-        this.isFixed = false;
-        this.latchable = false;
-        this.isLatched = false;
-        this.css = {
-            active: 'active', 	// hover over button or popup
-            open: 'open', 		// clicked (latched)
-        };
+    function NavBtnPopup(id, $btn, $content, options) {
 
-        this.init();
+			this.options = $.extend(true, {}, NavBtnPopup._defaultOptions, options);
+			this.id = id;
+			this.eventObj = $btn;
+			this.button = $btn;
+			this.content = $content;
+			this.useMouseEvents = this.options.useMouseEvents;
+			this.isGrouped = this.options.isGrouped; 		// e.g. patient popups
+			this.groupController = this.options.groupController;
+			this.isFixed = false;
+			this.latchable = this.options.latchable;
+			this.isLatched = false;
+			this.css = this.options.css;
+			this.init();
     }
+
+	NavBtnPopup._defaultOptions = {
+		autoHideWidthPixels: null,
+		useMouseEvents: false,
+		isGrouped: false,
+		groupController: null,
+		latchable: false,
+		css: {
+			active: 'active', 	// hover over button or popup
+			open: 'open'		// clicked (latched)
+		}
+	}
+
 
     Util.inherits(EventEmitter, NavBtnPopup);
 
@@ -40,7 +51,15 @@
                 popup.hide();
             }
         });
-    }
+        popup.hide();
+        console.log(this.options.autoHideWidthPixels);
+        if(popup.options.autoHideWidthPixels){
+					popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
+					$(window).resize(function () {
+						popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
+					});
+			}
+    };
 
     /**
      provide a way for shortcuts to re-assign
@@ -146,22 +165,25 @@
                     popup.hide();
                 }
             });
-    }
+    };
 
     /**
      Activity Panel needs to be fixable when the browsers is wide enough
      (but not in oescape mode)
      **/
-    NavBtnPopup.prototype.fixed = function (b) {
-        let popup = this;
-        popup.isFixed = b;
-        if (b) {
-            this.content.off('mouseenter mouseleave');
-            popup.show();
-        } else {
-            popup.hide();
-        }
-    }
+    NavBtnPopup.prototype.toggleFixed = function(isFixed) {
+		let popup = this;
+		popup.isFixed = isFixed;
+		if (isFixed) {
+			if(popup.isLatched){
+				popup.unlatch();
+			}
+			popup.content.off('mouseenter mouseleave');
+			popup.show();
+		} else if (!popup.isLatched) {
+			popup.hide();
+		}
+	};
 
     NavBtnPopup.prototype.latch = function () {
         let popup = this;
@@ -171,7 +193,7 @@
         popup.isLatched = true;
         popup.show();
         this.content.off('mouseenter mouseleave');
-    }
+    };
 
     NavBtnPopup.prototype.unlatch = function () {
         let popup = this;
@@ -181,7 +203,7 @@
         popup.isLatched = false;
         popup.hide();
         popup.button.removeClass(popup.css.active);
-    }
+    };
 
     /**
      Group popups to stop overlapping
@@ -190,7 +212,7 @@
         let popup = this;
         popup.isGrouped = true;
         popup.groupController = controller;
-    }
+    };
 
   exports.NavBtnPopup = NavBtnPopup;
 }(OpenEyes.UI, OpenEyes.Util, OpenEyes.Util.EventEmitter));
