@@ -54,13 +54,13 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
         ),
         array(
             'id' => 'patient_name',
-            'class' => 'CLinkColumn',
+            'class' => 'CDataColumn',
             'header' => 'Name',
-            'urlExpression' => function ($data) use ($core_api) {
-                return $core_api->generateEpisodeLink($data->patient);
+            'value' => function($data) use ($core_api) {
+                return '<div url="'.$core_api->generateEpisodeLink($data->patient).'">'.$data->patient->getHSCICName().'</div>';
             },
-            'labelExpression' => '$data->patient->getHSCICName()',
             'headerHtmlOptions' => array('colgroup' => 'cols-6'),
+            'type' => 'raw',
         ),
         array(
             'id' => 'gender',
@@ -119,7 +119,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
 <script>
     $(document).ready(function () {
         $(".worklist-row").click(function (event) {
-            window.document.location = $(this).find('a').attr('href');
+            window.document.location = $(this).find('div[url]').attr('url');
         })
     })
 </script>
