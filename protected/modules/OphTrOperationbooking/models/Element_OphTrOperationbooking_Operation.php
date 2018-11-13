@@ -132,7 +132,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return array(
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
-            array('status_id, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
+            array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
             array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
@@ -142,6 +142,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
             array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('cancellation_reason_id', 'required', 'message' => 'Please select a rescheduling reason'),
             array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
@@ -1197,7 +1198,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         if ($reschedule && $this->booking) {
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($cancellation_reason_id)) {
-                return array(array('Please select a rescheduling reason'));
+                $this->addError('cancellation_reason', 'Please select a rescheduling reason');
+                return $this->getErrors();
             }
             $this->booking->cancel($reason, $cancellation_comment, $reschedule);
         }
