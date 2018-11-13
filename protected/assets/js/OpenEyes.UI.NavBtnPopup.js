@@ -3,7 +3,7 @@
         this.id = id;
         this.eventObj = $btn;
         this.button = $btn;
-        this.content = $content
+        this.content = $content;
         this.useMouseEvents = false;
         this.isGrouped = false; 		// e.g. patient popups
         this.groupController = null;
@@ -24,8 +24,6 @@
         let popup = this;
         // Events
         popup.eventObj.click(function (e) {
-            console.log(this);
-            console.log(popup);
             e.stopPropagation();
             // use button class as boolean
             popup.changeContent(popup.button.hasClass(popup.css.open));
