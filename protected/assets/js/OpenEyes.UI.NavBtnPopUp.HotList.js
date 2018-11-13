@@ -211,4 +211,4 @@
 
     exports.HotList = HotList;
 
-}(OpenEyes.UI.NavBtnPopup, OpenEyes.Util));
+}(OpenEyes.UI.NavBtnPopup));
