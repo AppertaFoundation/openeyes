@@ -8,15 +8,6 @@
     opacity: 0.5;
 }
 
-.trial-count.shortlisted {
-}
-
-.trial-count.accepted {
-}
-
-.trial-count.rejected {
-}
-
 .current-status {
     text-align: right;
 }
@@ -25,21 +16,3 @@
     padding-right: 15px
 }
 
-.oe-pager .page a {
-    color: white;
-}
-.oe-pager .next a {
-    color: white;
-}
-.oe-pager .prev a {
-    color: white;
-}
-.oe-pager .page a:visited {
-    color: white;
-}
-.oe-pager .next a:visited {
-    color: white;
-}
-.oe-pager .prev a:visited {
-    color: white;
-}
