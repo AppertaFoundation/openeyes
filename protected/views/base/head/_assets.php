@@ -40,7 +40,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.LightningViewer.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnSidebar.js')?>
-<?php $assetManager->registerScriptFile('js/OpenEyes.UI.HotList.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopUp.HotList.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Alert.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Confirm.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>

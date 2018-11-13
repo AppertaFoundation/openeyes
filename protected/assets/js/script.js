@@ -17,9 +17,9 @@
 
 $(document).ready(function () {
 
-  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapper($('.openeyes-brand'));
+  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
   $('.openeyes-brand').off('mouseenter');
-  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapper($('#js-nav-shortcuts'));
+  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapperEvents($('#js-nav-shortcuts'));
 
   // If the patient ticketing popup exists ...
   var $patientTicketingPopup = $('#patient-alert-patientticketing');
@@ -31,9 +31,7 @@ $(document).ready(function () {
     $('#js-hotlist-panel').hide();
   } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
-    var hotlist = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel')).enhance($('.js-hotlist-panel-wrapper'));
-    //Hotlist's javascript initialisation
-    new OpenEyes.UI.HotList();
+    let hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel')).useAdvancedEvents($('.js-hotlist-panel-wrapper'));
   }
 
 	// override the behaviour for showing search results

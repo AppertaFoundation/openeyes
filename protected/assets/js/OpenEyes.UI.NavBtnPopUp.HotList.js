@@ -1,15 +1,22 @@
-(function (exports ) {
+(function (exports) {
 
-  function HotList() {
+  let NavBtnPopUp = exports;
+
+  function HotList(id, $btn, $content) {
     // The date to restrict he closed list to. Default to today
     this.selected_date = new Date();
+    NavBtnPopUp.call(this ,id, $btn, $content);
     this.create();
   }
 
+    HotList.prototype = Object.create(NavBtnPopUp.prototype);
+    HotList.prototype.constructor = HotList;
 
-  HotList.prototype.create = function () {
+
+  HotList.prototype.create = function (id, $btn, $content) {
     var hotlist = this;
 
+    this.init(id , $btn , $content);
 
     $('.activity-list').find('textarea').autosize();
 
@@ -205,4 +212,4 @@
 
   exports.HotList = HotList;
 
-}(OpenEyes.UI));
+}(OpenEyes.UI.NavBtnPopup , OpenEyes.Util));
