@@ -19,91 +19,99 @@ $from = ($page_num * $items_per_page) + 1;
 $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 ?>
 
-<div class="report-summary row divider">
-  <h2><?= $title; ?></h2>
-  <table class="standard">
-    <thead>
-    <tr>
-        <?php
-        $columns = array(
-            '',
-            'Name',
-            'Gender',
-            'Age',
-            'Ethnicity',
-            'External Reference',
-        );
+<div class="report-summary row divider cols-11">
+    <div class="flex-layout">
+        <h2 class=""><?= $title; ?></h2>
+        <select class="js-trails-sort-selector">
+            <option selected disabled value="" style="display: none;">Sort by</option>
+            <?php
+            $columns = array(
+                'Name',
+                'Gender',
+                'Age',
+                'Ethnicity',
+                'External Reference',
+            );
 
 
-        $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
+            $sortableColumns = array('Name', 'Gender', 'Age', 'Ethnicity', 'External Reference');
 
-        if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
-            $columns[] = 'Treatment Type';
-            $sortableColumns[] = 'Treatment Type';
+            if ($trial->trialType->code === TrialType::INTERVENTION_CODE && !$trial->is_open && $renderTreatmentType) {
+                $columns[] = 'Treatment Type';
+                $sortableColumns[] = 'Treatment Type';
+            }
+
+            foreach ($columns as $field): ?>
+                <?php
+                $new_sort_dir = ($field === $sort_by) ? 1 - $sort_dir : 0;
+                $sort_symbol = '';
+                \Yii::log("sort by: " . $sort_by . ", field: " . $field);
+                if ($field === $sort_by) {
+                    \Yii::log("sort by this field");
+                    $sort_symbol = $sort_dir === 1 ? '&#x25BC;' /* down arrow */ : '&#x25B2;'; /* up arrow */
+                }
+                ?>
+                <option
+                        value="<?=
+                        $this->createUrl('view',
+                            array(
+                                'id' => $trial->id,
+                                'sort_by' => $field,
+                                'sort_dir' => $new_sort_dir,
+                                'page_num' => $page_num,
+                            )) ?>"
+                >
+                    <?= CHtml::link(
+                        $field . $sort_symbol,
+                        $this->createUrl('view',
+                            array(
+                                'id' => $trial->id,
+                                'sort_by' => $field,
+                                'sort_dir' => $new_sort_dir,
+                                'page_num' => $page_num,
+                            ))
+                    ); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <table class="standard">
+        <thead>
+        <tr>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php /* @var Trial $trial */
+        foreach ($dataProvided as $i => $trialPatient) {
+            $this->renderPartial('/trialPatient/_view', array(
+                'data' => $trialPatient,
+                'renderTreatmentType' => $renderTreatmentType,
+                'permission' => $permission,
+            ));
         }
 
-        $columns[] = '';
-
-        foreach ($columns as $i => $field): ?>
-          <th id="patient-grid_c<?= $i; ?>">
-              <?php
-              if (in_array($field, $sortableColumns, true)) {
-                  $new_sort_dir = ($i === $sort_by) ? 1 - $sort_dir : 0;
-                  $sort_symbol = '';
-                  if ($i === $sort_by) {
-                      $sort_symbol = $sort_dir === 1 ? '&#x25BC;' /* down arrow */ : '&#x25B2;'; /* up arrow */
-                  }
-
-                  echo CHtml::link(
-                      $field . $sort_symbol,
-                      $this->createUrl('view',
-                          array(
-                              'id' => $trial->id,
-                              'sort_by' => $i,
-                              'sort_dir' => $new_sort_dir,
-                              'page_num' => $page_num,
-                          ))
-                  );
-              } else {
-                  echo $field;
-              }
-              ?>
-          </th>
-        <?php endforeach; ?>
-    </tr>
-    </thead>
-    <tbody>
-
-    <?php /* @var Trial $trial */
-    foreach ($dataProvided as $i => $trialPatient) {
-        $this->renderPartial('/trialPatient/_view', array(
-            'data' => $trialPatient,
-            'renderTreatmentType' => $renderTreatmentType,
-            'permission' => $permission,
-        ));
-    }
-
-    ?>
-    </tbody>
-    <tfoot class="pagination-container">
-    <tr>
-      <td colspan="9">
-        <div class="pagination">
-            <?php
-            $this->widget('LinkPager', array(
-                'pages' => $dataProvider->getPagination(),
-                'maxButtonCount' => 15,
-                'cssFile' => false,
-                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
-                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
-                'htmlOptions' => array(
-                    'class' => 'pagination',
-                ),
-            ));
-            ?>
-        </div>
-      </td>
-    </tr>
-    </tfoot>
-  </table>
+        ?>
+        </tbody>
+        <tfoot class="pagination-container">
+        <tr>
+            <td colspan="9">
+                <div class="pagination">
+                    <?php
+                    $this->widget('LinkPager', array(
+                        'pages' => $dataProvider->getPagination(),
+                        'maxButtonCount' => 15,
+                        'cssFile' => false,
+                        'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                        'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                        'htmlOptions' => array(
+                            'class' => 'pagination',
+                        ),
+                    ));
+                    ?>
+                </div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 </div>

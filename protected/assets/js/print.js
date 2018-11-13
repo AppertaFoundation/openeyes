@@ -115,7 +115,7 @@ function saveCanvasImagesToPdf( printOptions ){
 
 
 $(document).ready(function() {
-	if ($.cookie('print') == 1) {
+	if ((typeof $.cookie === "function") && $.cookie('print') == 1) {
 		disableButtons();
 
 		$.removeCookie('print');

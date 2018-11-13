@@ -110,36 +110,14 @@ class TrialController extends BaseModuleController
         $report = new OETrial_ReportTrialCohort();
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
-        $sortBy = null;
-
-        switch (Yii::app()->request->getParam('sort_by', -1)) {
-            case 1:
-            default:
-                $sortBy = 'name';
-                break;
-            case 2:
-                $sortBy = 'gender';
-                break;
-            case 3:
-                $sortBy = 'age';
-                break;
-            case 4:
-                $sortBy = 'ethnicity';
-                break;
-            case 5:
-                $sortBy = 'external_reference';
-                break;
-            case 6:
-                $sortBy = 'treatment_type_id';
-                break;
-        }
+        $sortBy = Yii::app()->request->getParam('sort_by', -1);
 
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
             'trial' => $this->model,
             'report' => $report,
             'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
-            'sort_by' => (int)Yii::app()->request->getParam('sort_by', 1),
+            'sort_by' => $sortBy,
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', 0),
         ));
     }
