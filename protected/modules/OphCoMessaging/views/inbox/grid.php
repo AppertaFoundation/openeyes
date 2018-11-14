@@ -140,37 +140,3 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
 ));
 ?>
 </div>
-<script>
-    /**
-     * mark messages as read
-     */
-    $('i.js-mark-as-read-btn').one('click', function() {
-        let message_type = "<?= $message_type ?>";
-        let $i = $(this);
-        let $closestTr = $i.closest('tr');
-        let eventId = $i.closest('tr').find('.nowrap a').attr('href').split('/').slice(-1)[0];
-        let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
-
-        $i.addClass('spinner as-icon');
-        $i.removeClass('tick');
-
-        $.ajax({
-            url: url,
-            data: {noRedirect: 1},
-            success: function() {
-                if (message_type === "unread") {
-                    $closestTr.hide();
-                }
-                $i.removeClass('spinner as-icon');
-                //TODO: move JS into dashboard.js
-                //TODO: update message count in folder section
-                //TODO: add class read to the ticked messages
-            },
-            error: function() {
-                $i.removeClass('spinner as-icon');
-                $i.addClass('triangle medium');
-                $i.data('tooltip-content', 'Could not delete the message. Try refreshing the page.');
-            }
-        });
-    });
-</script>

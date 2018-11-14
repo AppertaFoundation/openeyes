@@ -91,3 +91,53 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 ), true);
   ?>
 </div>
+
+<script>
+    /**
+     * Update side folder with correct number of messages unread
+     */
+    function updateSideFolders(result) {
+        $('#display-unread').text(result['number_inbox_unread'] > 0 ? "Unread (" + result['number_inbox_unread'] + ")" : "Unread");
+        $('#display-inbox').text(result['number_inbox_unread'] > 0 ? "All Messages (" + result['number_inbox_unread'] + ")" : 'All Messages');
+        $('#display-urgent').text(result['number_urgent_unread'] > 0 ? "Urgent (" + result['number_urgent_unread'] + ")" : 'Urgent');
+        $('#display-query').text(result['number_query_unread'] > 0 ? "Query (" + result['number_query_unread'] + ")" : 'Query');
+        $('#display-sent').text(result['number_sent_unread'] > 0 ? "Sent (" + result['number_sent_unread'] + ")" : 'Sent');
+    }
+
+    /**
+     * mark messages as read
+     */
+    $('i.js-mark-as-read-btn').one('click', function() {
+        let message_type = "<?= @$_GET['messages'] ?: 'index' ?>";
+        let $i = $(this);
+        let $closestTr = $i.closest('tr');
+        let eventId = $i.closest('tr').find('.nowrap a').attr('href').split('/').slice(-1)[0];
+        let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
+
+        // change tick icon with a spinner
+        $i.addClass('spinner as-icon');
+        $i.removeClass('tick');
+
+        $.ajax({
+            url: url,
+            data: {noRedirect: 1},
+            success: function(result) {
+                if (message_type === "unread") {
+                    $closestTr.hide();
+                } else {
+                    $closestTr.removeClass('unread');
+                    $closestTr.addClass('read');
+                }
+                $i.remove();
+
+                // update message count in folder section
+                updateSideFolders(JSON.parse(result));
+            },
+            error: function() {
+                $i.removeClass('spinner as-icon');
+                $i.addClass('triangle medium');
+                $i.data('tooltip-content', 'Could not delete the message. Try refreshing the page.');
+            }
+        });
+    });
+</script>

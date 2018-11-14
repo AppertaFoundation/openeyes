@@ -81,6 +81,19 @@ class OphCoMessaging_API extends \BaseAPI
     }
 
     /**
+     * @param null $user
+     * @return array - list with counts of all unread messages for each folder
+     */
+    public function updateMessagesCount($user = null) {
+        return [
+            'number_inbox_unread' => $this->getInboxMessages($user)['number_unread'],
+            'number_urgent_unread' => $this->getInboxMessages($user, true)['number_unread'],
+            'number_query_unread' => $this->getInboxMessages($user, false, true)['number_unread'],
+            'number_sent_unread' => $this->getSentMessages($user)['number_unread']
+            ];
+    }
+
+    /**
      * Get received messages.
      * 
      * @param \CWebUser $user
