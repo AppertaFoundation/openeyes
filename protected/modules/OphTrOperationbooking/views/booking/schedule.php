@@ -18,6 +18,11 @@
 <?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
     <div>
         <?php
+        $this->event_actions[] = EventAction::link('Cancel Scheduling',
+            Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $this->operation->event_id),
+            array(),
+            array('id' => 'cancel_scheduling', 'class' => 'red warning'));
+
         $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
         $warnings = $this->patient->getWarnings($clinical);
