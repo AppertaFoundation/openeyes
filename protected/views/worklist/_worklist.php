@@ -57,7 +57,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'class' => 'CDataColumn',
             'header' => 'Name',
             'value' => function($data) use ($core_api) {
-                return '<div url="'.$core_api->generateEpisodeLink($data->patient).'">'.$data->patient->getHSCICName().'</div>';
+                return '<div class="js-worklist-url" data-url="'.$core_api->generateEpisodeLink($data->patient).'">'.$data->patient->getHSCICName().'</div>';
             },
             'headerHtmlOptions' => array('colgroup' => 'cols-6'),
             'type' => 'raw',
@@ -118,8 +118,8 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
 
 <script>
     $(document).ready(function () {
-        $(".worklist-row").click(function (event) {
-            window.document.location = $(this).find('div[url]').attr('url');
+        $(".worklist-row").click(function () {
+            window.document.location = $(this).find('.js-worklist-url').data('url');
         })
     })
 </script>
