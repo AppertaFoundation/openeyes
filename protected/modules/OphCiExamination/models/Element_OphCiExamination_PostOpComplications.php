@@ -61,22 +61,44 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
         return 'et_ophciexamination_postop_complications';
     }
 
-        /**
-         * @return array validation rules for model attributes.
-         */
-        public function rules()
-        {
-            // NOTE: you should only define rules for those attributes that
-            // will receive user inputs.
-            return array(
-                   // array('left_complication_id', 'side' => 'left'),
-                    //  array('right_complication_id', 'side' => 'right'),
-                    // The following rule is used by search().
-                    // Please remove those attributes that should not be searched.
-                    array('id, event_id, eye_id', 'safe', 'on' => 'search'),
-            );
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('eye_id', 'checkComplicationEyePanels'),
+            // array('left_complication_id', 'side' => 'left'),
+            //  array('right_complication_id', 'side' => 'right'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id, eye_id', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * Validation rule to assign complication to both eyes.
+     *
+     * @param type $attribute
+     * @param type $params
+     */
+    public function checkComplicationEyePanels($attribute, $params)
+    {
+        $elementData = \Yii::app()->request->getParam('OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications', null);
+        $eye_id = isset($elementData['eye_id']) ? $elementData['eye_id'] : null;
+
+        $complication_items = \Yii::app()->request->getParam('complication_items', array());
+
+        if (!isset($complication_items['R']) && ($eye_id == \Eye::BOTH || $eye_id == \Eye::RIGHT)) {
+            $this->addError($attribute, 'Post Op Complication for Right Eye is missing, select complication or close the Right Eye panel');
         }
 
+        if (!isset($complication_items['L']) && ($eye_id == \Eye::BOTH || $eye_id == \Eye::LEFT)) {
+            $this->addError($attribute, 'Post Op Complication for Left Eye is missing, select complication or close the Left Eye panel');
+        }
+    }
 
     /**
      * @return array relational rules.
@@ -217,11 +239,10 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             foreach (['left' => \Eye::LEFT, 'right' => \Eye::RIGHT] as $eye_side => $eye_id) {
                 // L or R is used as an index to sided items
                 $complication_items_index = ucfirst($eye_side[0]);
-                if ($this->hasEye($eye_side)) {
-                    if (!isset($complication_items[$complication_items_index])) {
-                        $complication_items[$complication_items_index][0] = OphCiExamination_PostOpComplications::model()->findByAttributes(array('name' => 'none'))->id;
+                if ($this->hasEye($eye_side) ) {
+                    if(isset($complication_items[$complication_items_index])) {
+                        $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id, $operation_note_id);
                     }
-                    $this->savePostOpComplicationElements($complication_items[$complication_items_index], $eye_id, $operation_note_id);
                 } else {
                     $this->deleteClosedEyeElements($eye_id);
                 }
