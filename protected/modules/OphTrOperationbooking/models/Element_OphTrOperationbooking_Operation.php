@@ -57,6 +57,7 @@
 class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 {
     public $count;
+    public $reschedule;
 
     const LETTER_INVITE = 0;
     const LETTER_REMINDER_1 = 1;
@@ -90,11 +91,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         self::COMPLEXITY_HIGH => 'red'
     );
 
+
+
     const OVERNIGHT_STAY_NOT_REQUIRED_ID = 1;
 
     public $service;
 
     public $anaesthetist_required_ids = array();
+
+
 
     /**
      * Returns the static model of the specified AR class.
@@ -142,7 +147,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('referral_id', 'validateReferral'),
             array('decision_date', 'OEDateValidatorNotFuture'),
             array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
-            array('cancellation_reason_id', 'required', 'message' => 'Please select a rescheduling reason'),
             array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
@@ -228,6 +232,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'overnight_stay_required_id' => 'Overnight stay required',
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
+            'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
         );
     }
 
@@ -1150,8 +1155,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * @return array|bool
      */
     public function schedule($booking, $operation_comments, $session_comments, $operation_comments_rtt,
-            $reschedule = false, $cancellation_data = null, $schedule_op = null)
+            $_reschedule = false, $cancellation_data = null, $schedule_op = null)
     {
+        $this->reschedule = $_reschedule;
         if ($schedule_op == null) {
             throw new Exception('schedule_op argument required for scheduling');
         }
@@ -1186,6 +1192,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             $cancellation_comment = $cancellation_data['comment'];
         }
 
+
         if ($this->booking && !$reschedule) {
             // race condition, two users attempted to book the same operation at the same time
             throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
@@ -1196,9 +1203,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
         }
 
+
         if ($reschedule && $this->booking) {
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($cancellation_reason_id)) {
-                $this->addError('cancellation_reason', 'Please select a rescheduling reason');
+                $this->addError('cancellation_reason_id', 'Please select a rescheduling reason');
                 return $this->getErrors();
             }
             $this->booking->cancel($reason, $cancellation_comment, $reschedule);
