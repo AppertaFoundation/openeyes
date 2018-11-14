@@ -50,7 +50,7 @@
                 popup.show();
             }
         }).mouseleave(function () {
-            if (popup.isLatched) return;
+					if (popup.isLatched) return;
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
                 popup.hide();
@@ -62,7 +62,7 @@
 					$(window).resize(function () {
 						popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
 					});
-			}
+        }
     };
 
     /**
@@ -103,7 +103,7 @@
     };
 
     NavBtnPopup.prototype.hide = function () {
-        let popup = this;
+			let popup = this;
         this.button.removeClass(popup.css.open);
         this.content.hide();
     };
@@ -118,7 +118,6 @@
             $(this).off('mouseenter'); // clean up
             $(this).mouseleave(function () {
                 $(this).off('mouseleave'); // clean up
-                popup.hide();
             });
         });
     };
