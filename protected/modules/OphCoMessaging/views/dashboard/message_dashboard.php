@@ -14,10 +14,10 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-const DEFAULT_FOLDER = 'unread';
+define('DEFAULT_FOLDER',  'unread');
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
-$message_type = array_key_exists('messages', $_GET) && isset($_GET['messages']) && $_GET['messages'] ? $_GET['messages'] : self::DEFAULT_FOLDER;
+$message_type = array_key_exists('messages', $_GET) && isset($_GET['messages']) && $_GET['messages'] ? $_GET['messages'] : DEFAULT_FOLDER;
 ?>
 <div class="home-messages subgrid">
   <div class="message-actions">
