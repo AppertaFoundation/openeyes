@@ -41,6 +41,10 @@
             popup.changeContent(popup.button.hasClass(popup.css.open));
         }).mouseenter(function () {
             if (popup.isLatched) return;
+            if (popup.groupController) {
+            	popup.groupController.closeAll();
+            	popup.groupController.unlockAll();
+            }
             popup.button.addClass(popup.css.active);
             if (popup.useMouseEvents) {
                 popup.show();
@@ -187,9 +191,6 @@
 
     NavBtnPopup.prototype.latch = function () {
         let popup = this;
-        if (popup.groupController) {
-            popup.groupController.lockAll();
-        }
         popup.isLatched = true;
         popup.show();
         this.content.off('mouseenter mouseleave');
@@ -197,9 +198,6 @@
 
     NavBtnPopup.prototype.unlatch = function () {
         let popup = this;
-        if (popup.groupController) {
-            popup.groupController.unlockAll();
-        }
         popup.isLatched = false;
         popup.hide();
         popup.button.removeClass(popup.css.active);
