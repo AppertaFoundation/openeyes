@@ -1091,7 +1091,7 @@ class DefaultController extends BaseEventTypeController
                     'theatre_id',
                     false,
                     CHtml::listData($optionValues, 'id', 'name'),
-                    array('empty' => '-- Please select --', )
+                    array('empty' => 'Select', )
                 );
             }
         }

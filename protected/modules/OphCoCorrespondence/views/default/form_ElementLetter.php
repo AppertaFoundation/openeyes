@@ -95,7 +95,7 @@ $creating = isset($creating) ? $creating : false;
               </td>
               <td>
                   <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <tr>
@@ -114,7 +114,7 @@ $creating = isset($creating) ? $creating : false;
               <td>
                   <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
