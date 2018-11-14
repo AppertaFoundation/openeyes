@@ -1715,7 +1715,9 @@ class PatientController extends BaseController
             list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
                 $patient_identifiers);
         }
-
+        if($patient->getIsNewRecord()){
+            $patient->hos_num = $patient->autoCompleteHosNum();
+        }
         $this->render('crud/create', array(
             'patient' => $patient,
             'contact' => $contact,
@@ -1763,7 +1765,6 @@ class PatientController extends BaseController
         try {
 
             if ($contact->save()) {
-
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';

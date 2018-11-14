@@ -203,10 +203,28 @@ class Patient extends BaseActiveRecordVersioned
                 $item_count = Patient::model()->count('hos_num = ? AND id != ?',
                     array($hos_num, $this->id ?: -1));
                 if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this hospital number');
+                    $this->addError($attribute, 'A patient already exists with this hospital number. The next available auto generated number is '.$this->autoCompleteHosNum());
                 }
             } elseif (!empty($this->hos_num)) {
                 $this->addError($attribute, 'Not a valid Hospital Number');
+            }
+        }
+    }
+
+//    Generates an auto incremented Hospital Number
+    public function autoCompleteHosNum(){
+        if(Yii::app()->params['set_auto_increment'] == 'on'){
+            $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
+            $command = Yii::app()->db->createCommand($query);
+            $command->prepare();
+            $result = $command->queryColumn();
+            $default_hos_num = $result;
+//            Checks the admin setting for the starting number for auto increment
+            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])){
+                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+                return $default_hos_num[0];
+            } else {
+                return ($default_hos_num[0] + 1);
             }
         }
     }
