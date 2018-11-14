@@ -10,6 +10,7 @@
 			this.isGrouped = this.options.isGrouped; 		// e.g. patient popups
 			this.groupController = this.options.groupController;
 			this.isFixed = false;
+			this.isFixable = $btn.data('fixable');
 			this.latchable = this.options.latchable;
 			this.isLatched = false;
 			this.css = this.options.css;
@@ -52,7 +53,7 @@
             }
         });
         popup.hide();
-        if(popup.options.autoHideWidthPixels){
+        if(popup.isFixable && popup.options.autoHideWidthPixels){
 					popup.toggleFixed($(window).width() > popup.options.autoHideWidthPixels);
 					$(window).resize(function () {
 						popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
