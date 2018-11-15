@@ -40,7 +40,9 @@
             // use button class as boolean
             popup.changeContent(popup.button.hasClass(popup.css.open));
         }).mouseenter(function () {
-            if (popup.isLatched) return;
+            if (popup.isLatched) {
+            	return;
+						}
             if (popup.groupController) {
             	popup.groupController.closeAll();
             	popup.groupController.unlockAll();
@@ -50,7 +52,9 @@
                 popup.show();
             }
         }).mouseleave(function () {
-					if (popup.isLatched) return;
+					if (popup.isLatched) {
+						return;
+					}
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
                 popup.hide();
@@ -71,7 +75,9 @@
      **/
     NavBtnPopup.prototype.changeContent = function (isOpen) {
         let popup = this;
-        if (popup.isFixed) return; // if popup is fixed
+        if (popup.isFixed) {
+					return;
+				} // if popup is fixed
 
         if (popup.latchable) {
             if (popup.isLatched) {
@@ -99,7 +105,9 @@
         let popup = this;
         popup.button.addClass(popup.css.open);
         popup.content.show();
-        if (popup.useMouseEvents && !popup.isFixed) popup.addContentEvents();
+        if (popup.useMouseEvents && !popup.isFixed) {
+        	popup.addContentEvents();
+				}
     };
 
     NavBtnPopup.prototype.hide = function () {
