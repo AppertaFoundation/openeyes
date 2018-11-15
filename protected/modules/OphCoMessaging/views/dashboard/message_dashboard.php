@@ -27,30 +27,30 @@ $message_type = array_key_exists('messages', $_GET) && isset($_GET['messages']) 
             <?=\CHtml::link(
                 $number_inbox_unread > 0 ? "Unread ($number_inbox_unread)" : 'Unread',
                 '#',
-                array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => $message_type === 'unread' ? 'selected' : '')); ?>
+                array('id' => 'display-unread', 'data-filter' => 'unread', 'class' => ($message_type === 'unread' ? 'selected ' : '') . 'js-display-counter')); ?>
         </li>
       <li>
         <?=\CHtml::link(
             $number_inbox_unread > 0 ? "All Messages ($number_inbox_unread)" : 'All Messages',
-            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => $message_type === 'inbox' ? 'selected' : '')); ?>
+            '#', array('id' => 'display-inbox', 'data-filter' => 'inbox', 'class' => ($message_type === 'inbox' ? 'selected ' : '') . 'js-display-counter')); ?>
 
       </li>
       <li>
         <?=\CHtml::link(
             $number_urgent_unread > 0 ? "Urgent ($number_urgent_unread)" : 'Urgent',
             '#',
-            array('id' => 'display-urgent', 'data-filter' => 'urgent', 'class' => $message_type === 'urgent' ? 'selected' : '')); ?>
+            array('id' => 'display-urgent', 'data-filter' => 'urgent', 'class' => ($message_type === 'urgent' ? 'selected ' : '') . 'js-display-counter')); ?>
       </li>
         <li>
             <?=\CHtml::link(
                 $number_query_unread > 0 ? "Query ($number_query_unread)" : 'Query',
                 '#',
-                array('id' => 'display-query', 'data-filter' => 'query', 'class' => $message_type === 'query' ? 'selected' : '')); ?>
+                array('id' => 'display-query', 'data-filter' => 'query', 'class' => ($message_type === 'query' ? 'selected ' : '') . 'js-display-counter')); ?>
         </li>
       <li>
         <?=\CHtml::link(
             $number_sent_unread > 0 ? "Sent ($number_sent_unread)" : 'Sent',
-            '#', array('id' => 'display-sent', 'data-filter' => 'sent', 'class' => $message_type === 'sent' ? 'selected' : '')); ?>
+            '#', array('id' => 'display-sent', 'data-filter' => 'sent', 'class' => ($message_type === 'sent' ? 'selected ' : '') . 'js-display-counter')); ?>
       </li>
     </ul>
     <div class="search-messages">
@@ -82,11 +82,20 @@ $message_type = array_key_exists('messages', $_GET) && isset($_GET['messages']) 
      * Update side folder with correct number of messages unread
      */
     function updateSideFolders(newMessageCounts) {
-        $('#display-unread').text(newMessageCounts['number_inbox_unread'] > 0 ? "Unread (" + newMessageCounts['number_inbox_unread'] + ")" : "Unread");
-        $('#display-inbox').text(newMessageCounts['number_inbox_unread'] > 0 ? "All Messages (" + newMessageCounts['number_inbox_unread'] + ")" : 'All Messages');
-        $('#display-urgent').text(newMessageCounts['number_urgent_unread'] > 0 ? "Urgent (" + newMessageCounts['number_urgent_unread'] + ")" : 'Urgent');
-        $('#display-query').text(newMessageCounts['number_query_unread'] > 0 ? "Query (" + newMessageCounts['number_query_unread'] + ")" : 'Query');
-        $('#display-sent').text(newMessageCounts['number_sent_unread'] > 0 ? "Sent (" + newMessageCounts['number_sent_unread'] + ")" : 'Sent');
+        $('.js-display-counter').each(function() {
+            let folder = $(this).data('filter');
+            // capitalize first letter to set the folder name
+            let folderName = folder.charAt(0).toUpperCase() + folder.slice(1);
+
+            if (folder === 'unread') {
+                folder = 'inbox';
+            } else if (folder === 'inbox') {
+                folderName = "All Messages";
+            }
+
+            let folderUnreadCount = newMessageCounts['number_' + folder + '_unread'];
+            $(this).text(folderUnreadCount > 0 ? folderName + " (" + folderUnreadCount + ")" : folderName);
+        });
     }
 
     /**
