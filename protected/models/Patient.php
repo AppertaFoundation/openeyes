@@ -128,11 +128,13 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
-            array('gender, dob', 'required', 'on' => 'manual'),
+            array('gender', 'required', 'on' => 'self_register'),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
             array('deleted', 'safe'),
-            array('dob', 'dateFormatValidator', 'on' => 'manual'),
-            array('date_of_death', 'deathDateFormatValidator', 'on' => 'manual'),
+            array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
+            array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
         );
     }
 
@@ -1990,6 +1992,60 @@ class Patient extends BaseActiveRecordVersioned
 
         return $patient->episodes[0]->id;
     }
+
+
+  public function dateOfBirthRangeValidator($attribute, $params)
+  {
+    if ($this->hasErrors('dob')) {
+      return;
+    }
+
+    $currentDate = new DateTime(date('j M Y'));
+    $date_of_birth = new DateTime($this->dob);
+
+    if ($date_of_birth > $currentDate || $this->getAge() > 100) {
+      $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
+    }
+
+  }
+
+  /**
+   * Find all patients with the same date of birth and similar-sounding names.
+   * @param $firstName string First name.
+   * @param $last_name string Last name.
+   * @param $dob string Date of Birth (DD/MM/YYYY).
+   * @param $id int ID of the current patient record.
+   * @return array The list of patients who have similar names and the same date of birth, or the invalid patient model.
+   */
+  public static function findDuplicates($firstName, $last_name, $dob, $id)
+  {
+    $sql = '
+        SELECT p.*
+        FROM patient p
+        JOIN contact c
+          ON c.id = p.contact_id
+        WHERE p.dob = :dob
+          AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 60)
+          AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 60)
+          AND (:id IS NULL OR p.id != :id)
+        ORDER BY c.first_name, c.last_name
+        ';
+
+    $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
+
+    $validPatient = new Patient('manual');
+    $validContact = new Contact('manual');
+    $validContact->first_name = $firstName;
+    $validContact->last_name = $last_name;
+    $validPatient->dob = $dob;
+
+    if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
+    	Yii::log('validated');
+      return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
+    }
+
+    return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
+  }
 
     /**
      * Returns an array of summarised patient Systemic diagnoses
