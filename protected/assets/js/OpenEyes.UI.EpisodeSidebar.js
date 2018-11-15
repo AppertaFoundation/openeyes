@@ -129,7 +129,7 @@
       e.preventDefault();
     });
 
-      self.element.one('mouseenter', '.event-type', function (e) {
+      self.element.one('mouseenter', '.event-type', function () {
           $('.js-quickview-image').each(function () {
               $(this).load(function () {
                   $(this).attr('data-loaded', true);
