@@ -28,7 +28,7 @@ class GpController extends BaseController
         return array(
             array(
                 'allow',  // allow users with either the TaskViewGp or TaskCreateGp roles to view GP data
-                'actions' => array('index', 'view', '_form'),
+                'actions' => array('index', 'view'),
                 'roles' => array('TaskViewGp', 'TaskCreateGp')
             ),
             array(
@@ -78,7 +78,7 @@ class GpController extends BaseController
 
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
-            $this->performAjaxValidation($contact);
+            $this->performAjaxValidation($contact, $context);
             list($contact, $gp) = $this->performGpSave($contact, $gp, $context === 'AJAX');
         }
 
@@ -249,12 +249,11 @@ class GpController extends BaseController
      *
      * @param CModel $model the model to be validated
      */
-    protected function performAjaxValidation($model)
+    protected function performAjaxValidation($model, $context)
     {
-        Yii::log(CVarDumper::dumpAsString($_POST));
-//        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
-//        }
+        }
     }
 }

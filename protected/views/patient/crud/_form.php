@@ -49,14 +49,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
-    'htmlOptions' => array('enctype' => 'multipart/form-data'),
-    'clientOptions' => array(
-        'afterValidateAttribute' => "js:
-            function(form, attribute, data, hasError) {
-               form.find('#' + attribute.inputID).removeClass('error');
-               form.find('label[for='+attribute.inputID+']').removeClass('error');
-            }",
-    ),
+
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -339,7 +332,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                         <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
                             <ul class="oe-multi-select js-selected_gp">
                                 <li>
-                  <span class="js-name">
+                  <span class="name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
                                     <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
@@ -427,35 +420,14 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
 
 <script>
     $('#js-cancel-add-practitioner').click(function(event){
-        // event.preventDefault();
-        // $('#errors').text("");
-        $("#js-add-practitioner-event").find('input:text').val('');
-        if($('#selected_contact_label_wrapper').is(':visible')){
-            $('.removeReading').trigger("click");
-        }
-        $("#Contact_contact_label_id").val('');
+        event.preventDefault();
+        $("#gp-form")[0].reset();
+        $("#errors").text("");
+        $(".alert-box").css("display","none");
         $('#js-add-practitioner-event').css('display','none');
     });
-    //
-    // $('#et_deleteevent').click(function(event) {
-    //     var reasonLength = $('#js-text-area').val().length;
-    //     if(reasonLength > 0){
-    //         return;
-    //     } else {
-    //         $('#errors').text("Please enter the reason for deletion");
-    //         event.preventDefault();
-    //     }
-    // });
-
     $('#js-add-practitioner-btn').click(function(event){
         $('#js-add-practitioner-event').css('display','');
         return false;
     });
-
-
-
-
-
-
-
 </script>
