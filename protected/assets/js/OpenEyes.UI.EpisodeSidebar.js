@@ -129,6 +129,20 @@
       e.preventDefault();
     });
 
+      self.element.one('mouseenter', '.event-type', function (e) {
+          $('.js-quickview-image').each(function () {
+              $(this).load(function () {
+                  $(this).attr('data-loaded', true);
+                  if ($(this).css('display') !== 'none') {
+                      $('.oe-event-quickview .spinner').hide();
+                  }
+              });
+              if ($(this).data('src')) {
+                  $(this).attr('src', $(this).data('src'));
+              }
+          })
+      });
+
     self.element.on('mouseenter', '.event-type', function (e) {
       var $iconHover = $(e.target);
       var $li = $iconHover.parent().parents('li:first');
@@ -138,10 +152,7 @@
       $screenshots.find('img').hide();
       var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
       var $loader = $('.oe-event-quickview .spinner');
-      if(!$img.attr('src')) {
-          $loader.show();
-      }
-      var $noImage = $('.oe-event-quickview .quickview-no-data-found');
+      var $noImage = $('.oe-event-quickview .quickview-no-data-found').hide();
 
       $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
       $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
@@ -149,41 +160,41 @@
         $(this).show();
       });
 
-      $noImage.hide();
-      if ($li.data('event-image-url')) {
-          $img.load( function(){
-              $loader.hide();
-          });
-          $img.attr('src', $img.data('src'));
-        $img.show();
-      } else {
-        if(self.imageLookupRequest) {
-          self.imageLookupRequest.abort();
-        }
-
-        $img.hide();
-        $loader.show();
-
-        // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
-        // So we'll send an ajax request to try and get the url of the image
-        self.imageLookupRequest =  $.ajax({
-          type: 'GET',
-          url: '/eventImage/getImageUrl',
-          data: {'event_id': $li.data('event-id')},
-        }).success(function (response) {
-          if (response) {
-            // if that URL exists, then set up the image
-            $li.data('event-image-url', response);
-            $img.attr('src', response);
+        if ($li.data('event-image-url')) {
+            if (!$img.data('loaded')) {
+                $loader.show();
+            } else {
+                $loader.hide();
+            }
             $img.show();
-          } else {
-            // Otherwise display a message in place of the image
-            $noImage.show();
-          }
-        }).complete(function () {
-          $loader.hide();
-        });
-      }
+        } else {
+            if (self.imageLookupRequest) {
+                self.imageLookupRequest.abort();
+            }
+
+            $img.hide();
+            $loader.show();
+
+            // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
+            // So we'll send an ajax request to try and get the url of the image
+            self.imageLookupRequest = $.ajax({
+                type: 'GET',
+                url: '/eventImage/getImageUrl',
+                data: {'event_id': $li.data('event-id')},
+            }).success(function (response) {
+                if (response) {
+                    // if that URL exists, then set up the image
+                    $li.data('event-image-url', response);
+                    $img.attr('src', response);
+                    $img.show();
+                } else {
+                    // Otherwise display a message in place of the image
+                    $noImage.show();
+                }
+            }).complete(function () {
+                $loader.hide();
+            });
+        }
     });
 
     self.element.on('mouseleave', '.event-type', function (e) {
