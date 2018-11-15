@@ -138,6 +138,9 @@
       $screenshots.find('img').hide();
       var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
       var $loader = $('.oe-event-quickview .spinner');
+      if(!$img.attr('src')) {
+          $loader.show();
+      }
       var $noImage = $('.oe-event-quickview .quickview-no-data-found');
 
       $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
@@ -147,8 +150,11 @@
       });
 
       $noImage.hide();
-      $loader.hide();
       if ($li.data('event-image-url')) {
+          $img.load( function(){
+              $loader.hide();
+          });
+          $img.attr('src', $img.data('src'));
         $img.show();
       } else {
         if(self.imageLookupRequest) {
@@ -195,12 +201,12 @@
         return
       }
 
-      var $img = $('<img />', {
-        class: 'js-quickview-image',
-        src: $(this).data('event-image-url'),
-        style: 'display: none;',
-        'data-event-id': $(this).data('event-id'),
-      });
+        var $img = $('<img />', {
+            class: 'js-quickview-image',
+            style: 'display: none;',
+            'data-event-id': $(this).data('event-id'),
+            'data-src': $(this).data('event-image-url'),
+        });
 
       $img.appendTo($container);
     });
