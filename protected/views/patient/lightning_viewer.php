@@ -103,9 +103,6 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
       </div>
     </div>
     <div class="oe-lightning-quick-view js-lightning-view-image-container">
-      <div class="js-lightning-view-overlay"
-           style="min-height: 512px; height: 100%; position: absolute;"></div>
-
       <i class="js-preview-image-loader spinner" style="display: none;"></i>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
