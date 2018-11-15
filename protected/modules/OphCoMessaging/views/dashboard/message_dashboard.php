@@ -17,7 +17,7 @@
 define('DEFAULT_FOLDER',  'unread');
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
-$message_type = array_key_exists('messages', $_GET) && isset($_GET['messages']) && $_GET['messages'] ? $_GET['messages'] : DEFAULT_FOLDER;
+$message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : DEFAULT_FOLDER;
 ?>
 <div class="home-messages subgrid">
   <div class="message-actions">
