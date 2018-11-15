@@ -249,7 +249,7 @@ class GpController extends BaseController
      *
      * @param CModel $model the model to be validated
      */
-    protected function performAjaxValidation($model, $context)
+    protected function performAjaxValidation($model)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);

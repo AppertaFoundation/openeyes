@@ -16,16 +16,6 @@
         'enableAjaxValidation' => true,
     )); ?>
     <?php echo $form->errorSummary($model); ?>
-    <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-    <div class="title">
-        Add Referring Practitioner
-        <div class="close-icon-btn">
-            <i class="oe-i remove-circle pro-theme"
-               onclick='$("#gpdialog").dialog().dialog("close");
-                        return false;'></i>
-        </div>
-    </div>
-    <p class="small-text align-right">Fields with <span class="required">*</span> are required.</p>
 
     <?php echo $form->errorSummary($model); ?>
 
