@@ -58,7 +58,7 @@
       }
     });
 
-    $(document).on('mousemove', '.js-lightning-image-preview', function (e) {
+    $(document).on('mousemove', '.js-lightning-view-overlay', function (e) {
       var parentOffset = $(this).parent().offset();
       var relX = e.pageX - parentOffset.left;
       var relY = e.pageY - parentOffset.top;
