@@ -53,7 +53,7 @@ class EthnicGroup extends BaseActiveRecordVersioned
     {
         return array(
             array('name, code, display_order', 'required'),
-            array('id, name, code, display_order, tag', 'safe', 'on' => 'search'),
+            array('id, name, code, display_order', 'safe', 'on' => 'search'),
         );
     }
 
