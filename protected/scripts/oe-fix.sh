@@ -120,11 +120,11 @@ if [ "$composer" == "1" ]; then
     echo "DEPENDENCIES BEING EVALUATED... $composerexta $npmextra"
 
 	echo "Installing/updating composer dependencies"
-	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
+	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
 	rm $WROOT/package-lock.json &> /dev/null
-	sudo npm update --no-save --prefix $WROOT $npmextra
+	sudo -E npm update --no-save --prefix $WROOT $npmextra
 
 	# If we've switched from dev to live, remove dev dependencies
 	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production

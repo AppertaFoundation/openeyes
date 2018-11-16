@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201811051630',
+            'time' => '201811131318',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -529,7 +529,13 @@ return array(
             'blank_image_template' => array(
                 'height' => 800,
                 'width' => 600
-            )
+            ),
+            'event_specific' => array(
+                'Correspondence' => array(
+                    'resolution_multiplier' => 2,
+                    'image_width' => 1000
+                ),
+            ),
         ),
     ),
 );
