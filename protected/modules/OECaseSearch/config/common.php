@@ -25,7 +25,8 @@ return array(
                     'PatientAllergy',
                     'FamilyHistory',
                     'PatientName',
-                    'PatientNumber'
+                    'PatientNumber',
+                    'PreviousProcedures',
                 ),
             ),
             'fixedParameters' => array(
