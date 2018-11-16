@@ -71,7 +71,6 @@ class GpController extends BaseController
      */
     public function actionCreate($context = null)
     {
-
         Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
         $gp = new Gp();
         $contact = new Contact('manage_gp');
@@ -89,7 +88,7 @@ class GpController extends BaseController
                 'id'    => $gp->getPrimaryKey(),
             ));
         } else {
-            $this->renderpartial('_form', array(
+            $this->render('create', array(
                 'model' => $contact,
                 'context' => null
             ));

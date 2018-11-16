@@ -3,7 +3,6 @@
 /* @var $model Contact */
 /* @var $form CActiveForm */
 ?>
-
 <div class="form">
     <?php
     \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
@@ -16,9 +15,6 @@
         'enableAjaxValidation' => true,
     )); ?>
     <?php echo $form->errorSummary($model); ?>
-
-    <?php echo $form->errorSummary($model); ?>
-
     <table class="standard row">
         <tbody>
         <tr>
