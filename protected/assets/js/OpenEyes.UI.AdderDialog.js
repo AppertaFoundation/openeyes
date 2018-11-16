@@ -85,7 +85,22 @@
     this.generateContent();
 
     if (this.options.searchOptions) {
+      let $td = $('<td />');
+      this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+      $td.appendTo(this.$tr);
       this.generateSearch();
+    }
+
+    /* Render FilterOptions*/
+    if(typeof this.options.filterOptions === 'function'){
+        let $filterOptions = this.options.filterOptions();
+        $filterOptions.change(function() {
+            $(dialog.searchWrapper).find('input').keyup();
+        });
+        let $footer = $('<tfoot>').append($filterOptions);
+
+        //$filterOptions.appendTo($footer);
+        $footer.appendTo(this.selectWrapper);
     }
 
     this.popup.hide();
@@ -376,16 +391,23 @@
    */
   AdderDialog.prototype.runItemSearch = function (text) {
     let dialog = this;
-
     if (this.searchRequest !== null) {
       this.searchRequest.abort();
     }
 
-    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
-      term: text,
-      code: this.options.searchOptions.code,
-      ajax: 'ajax'
-    }, function (results) {
+      let data = this.popup.find('tfoot :input').serialize();
+      let params = $.param({
+          term: text,
+          code: this.options.searchOptions.code,
+          ajax: 'ajax'
+      });
+      data += '&';
+      if ($.isEmptyObject(data)) {
+          data = "";
+      }
+
+      this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + data + params,
+        function (results) {
       dialog.searchRequest = null;
       let no_data = !$(results).length;
 

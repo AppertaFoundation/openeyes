@@ -101,12 +101,21 @@
     this.popup.find('#common-drugs-label').text(doSearch ? 'Drugs' : 'Common Drugs');
 
     if (doSearch) {
-      this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
-        term: text,
-        preservative_free: 1,
-        type_id: this.popup.find('.js-drug-types li.selected').data('id'),
-        ajax: 'ajax'
-      }, function (results) {
+        let data = this.popup.find('tfoot :input').serialize();
+
+        let params = $.param({
+            term: text,
+            code: this.options.searchOptions.code,
+            type_id: this.popup.find('.js-drug-types li.selected').data('id'),
+            ajax: 'ajax'
+        });
+
+        data += '&';
+        if ($.isEmptyObject(data)) {
+            data = "";
+        }
+
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + data + params, function (results) {
         dialog.searchRequest = null;
         var no_data = !$(results).length;
 

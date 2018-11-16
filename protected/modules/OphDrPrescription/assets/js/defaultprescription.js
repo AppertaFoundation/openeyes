@@ -180,6 +180,19 @@ $(function () {
       searchSource: searchListUrl,
       searchFilter: prescriptionElementDrugTypes,
     },
+    filterOptions: function () {
+      //this will be rendered into <tfoot>
+      let $tr = $("<tr>");
+      let $td = $("<td>").append(
+          $('<label>', {'class': 'inline highlight'}).text("No preservative ").append(
+              $("<input>", {
+                  "type": "checkbox",
+                  "class": "drugFilter", "name": "preservative_free", "id": "preservative_free"
+              }).val(1)
+          )
+      );
+      return $tr.append($td);
+    },
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
