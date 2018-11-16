@@ -259,6 +259,10 @@
       right: right
     });
 
+    if (this.popup.offset().top < 0) {
+      this.popup.css({"bottom": Math.floor(bottom + this.popup.offset().top)});
+    }
+
     /*
     Close popup on...
     as scroll event fires on assignment.
