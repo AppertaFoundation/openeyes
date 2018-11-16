@@ -82,7 +82,9 @@
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
-            <td><?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+            <td>
+                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
