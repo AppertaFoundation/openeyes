@@ -26,7 +26,7 @@ return array(
                     'FamilyHistory',
                     'PatientName',
                     'PatientNumber',
-                    'PreviousProcedures',
+//                    'PreviousProcedures',
                 ),
             ),
             'fixedParameters' => array(
