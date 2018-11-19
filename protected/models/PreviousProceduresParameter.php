@@ -106,8 +106,10 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             FROM patient pa
             JOIN episode ep ON ep.patient_id = pa.id
             JOIN event ev ON ep.id = ev.episode_id
-            JOIN et_ophtroperationnote_procedurelist eop on ev.id = eop.booking_event_id
-            JOIN ophtroperationnote_procedurelist_procedure_assignment op on eop.id = op.procedurelist_id
+            JOIN et_ophtroperationnote_procedurelist eop ON ev.id = eop.booking_event_id
+            JOIN et_ophtroperationbooking_operation o ON ev.id = o.event_id
+              AND o.status_id = (SELECT id FROM ophtroperationbooking_operation_status WHERE name = 'Completed')
+            JOIN ophtroperationnote_procedurelist_procedure_assignment op ON eop.id = op.procedurelist_id
             JOIN proc ON op.proc_id = proc.id
             AND proc.term = :p_p_value_$this->id";
 
