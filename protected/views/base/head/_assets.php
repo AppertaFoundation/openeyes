@@ -37,10 +37,11 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.LightningViewer.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnSidebar.js')?>
-<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnSidebar.HotList.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopUp.HotList.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Alert.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Confirm.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>
@@ -57,3 +58,4 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('../../node_modules/tinymce/tinymce.js');?>
+<?php $assetManager->registerScriptFile('../../node_modules/plotly.js-dist/plotly.js');?>

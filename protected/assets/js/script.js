@@ -17,9 +17,9 @@
 
 $(document).ready(function () {
 
-  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapper($('.openeyes-brand'));
+  var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
   $('.openeyes-brand').off('mouseenter');
-  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapper($('#js-nav-shortcuts'));
+  var shortcuts = new OpenEyes.UI.NavBtnPopup('shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav')).useWrapperEvents($('#js-nav-shortcuts'));
 
   // If the patient ticketing popup exists ...
   var $patientTicketingPopup = $('#patient-alert-patientticketing');
@@ -29,9 +29,10 @@ $(document).ready(function () {
     var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
     $('#js-hotlist-panel').hide();
-  } else {
+  } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
-    var hotlist = new OpenEyes.UI.NavBtnSidebar.HotList();
+    var hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel'), {autoHideWidthPixels: 1800});
+    hotlist.useAdvancedEvents($('.js-hotlist-panel-wrapper'));
   }
 
 	// override the behaviour for showing search results
@@ -294,6 +295,15 @@ $(document).ready(function () {
     var offset = $(this).offset();
     var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
 
+    // check for the available space for tooltip:
+    if ( ( $( window ).width() - offset.left) < 100 ){
+        leftPos = offset.left - 174 // tooltip is 200px (left offset on the icon)
+        toolCSS = "oe-tooltip offset-left";
+    } else {
+        leftPos = offset.left - 94 // tooltip is 200px (center on the icon)
+        toolCSS = "oe-tooltip";
+    }
+
     // add, calculate height then show (remove 'hidden')
     var tip = $("<div></div>", {
       "class": "oe-tooltip",
@@ -335,7 +345,21 @@ $(document).ready(function () {
         }
     })();
 
+    (function notificationBanner() {
+        if ($('#oe-admin-notifcation').length === 0) {
+            return;
+        }
+        // icon toggles Short/ Full Message
+        $('#oe-admin-notifcation .oe-i').click(toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseenter' , toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseout' , toggleNotification);
 
+
+        function toggleNotification() {
+            $('#notification-short').toggle();
+            $('#notification-full').toggle();
+        }
+    }());
 });
 
 function changeState(wb,sp) {

@@ -131,7 +131,7 @@ class Element_OphTrOperationbooking_Diagnosis extends BaseEventTypeElement
     protected function afterSave()
     {
         if (!$this->event->episode->eye && !$this->event->episode->disorder_id) {
-            $this->event->episode->setPrincipalDiagnosis($this->disorder_id, $this->eye_id);
+            $this->event->episode->setPrincipalDiagnosis($this->disorder_id, $this->eye_id , (isset($this->date) ? $this->date : false));
 
             if ($sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id = ?', array($this->event->episode->patient_id, $this->disorder_id, 3))) {
                 $this->event->episode->patient->removeDiagnosis($sd->id);

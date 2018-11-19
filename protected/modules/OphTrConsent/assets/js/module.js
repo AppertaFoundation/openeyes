@@ -129,6 +129,20 @@ $(document).ready(function() {
 	else if ($('#OphTrConsent_print').val() == 2) {
 		setTimeout(OphTrConsent_do_print.bind(null, true), 1000);
 	}
+
+	if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+		OpenEyes.UI.AutoCompleteSearch.init({
+			input: $('#oe-autocompletesearch'),
+			url: 'users',
+			onSelect: function(){
+				let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+				$('#Element_OphTrConsent_Other_consultant_id').val(AutoCompleteResponse.id);
+				$('#Consultant').val(AutoCompleteResponse.fullname);
+				return false;
+			}
+		});
+	}
+
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

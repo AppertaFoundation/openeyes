@@ -28,12 +28,6 @@ $firm = Firm::model()->with(array(
 
 $current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
 
-$other_episode_ids = array_map(function ($episodes) {
-    return $episodes->id;
-}, $this->patient->episodes);
-
-unset($other_episode_ids[$current_episode->id]);
-
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
     $diagnosis = $ep->diagnosis; // Disorder model
@@ -124,6 +118,7 @@ foreach ($this->patient->episodes as $ep) {
                     'disorder_display' => '{{disorder_display}}',
                     'eye_id' => '{{eye_id}}',
                     'event_date' => '{{event_date}}',
+                    'is_glaucoma' => '{{is_glaucoma}}',
                     'date' => '{{date}}',
                     'date_display' => '{{date_display}}',
                     'row_count' => '{{row_count}}',
@@ -157,6 +152,7 @@ foreach ($this->patient->episodes as $ep) {
                 return [
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
+                    'is_glaucoma' => $disorder_item['is_glaucoma'],
                     'secondary' => json_encode($disorder_item['secondary'])
                 ];
             }, $disorder_list)

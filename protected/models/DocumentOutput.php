@@ -62,15 +62,6 @@ class DocumentOutput extends BaseActiveRecord
         );
     }
 
-
-    public function getLongListForCurrentInstitution()
-    {
-        $institution = Institution::model()->getCurrent();
-        $site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
-        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-    }
-
-
     public function createSet($eventId)
     {
         $ds = new DocumentSet;
@@ -78,5 +69,15 @@ class DocumentOutput extends BaseActiveRecord
         $ds->save();
 
         return ($ds->id);
+    }
+
+    /**
+     * Returns the Correspondence Event
+     * @return CActiveRecord|null
+     */
+    public function getEvent()
+    {
+        $event_id = isset($this->document_target->document_instance) ? $this->document_target->document_instance->correspondence_event_id : null;
+        return $event_id ? Event::model()->disableDefaultScope()->findByPk($event_id) : null;
     }
 }

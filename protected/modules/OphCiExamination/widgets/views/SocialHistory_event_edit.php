@@ -66,7 +66,15 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('driving_statuses')) ?>
       </td>
       <td>
-          <div id="textField_driving_statuses" class="cols-8" <?=(count($element['driving_statuses']) > 0) ? 'hidden' : '' ?>>Nothing selected.</div>
+          <div id="textField_driving_statuses" class="cols-8">
+              <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
+                  echo 'Nothing selected.';
+              } else {
+                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
+                      is_array($element->driving_statuses) ? $element->driving_statuses : []);
+                  echo implode(', ', $driving_statuses);
+              } ?>
+          </div>
           <?= $form->multiSelectList(
               $element,
               CHtml::modelName($element) . '[driving_statuses]',
@@ -74,7 +82,8 @@
               'id',
               CHtml::listData($element->driving_statuses_options, 'id', 'name'),
               array(),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+              ['empty' => '- Select -'],
+              true
           ); ?>
       </td>
     </tr>
@@ -115,7 +124,7 @@
       </td>
       <td class="flex-layout flex-left">
           <div id="textField_alcohol_intake" class="cols-1">
-              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: '0'?>
+              <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
           <?= $form->textField(
               $element,
@@ -147,33 +156,33 @@
       </td>
     </tr>
     <tr>
-      <td>
-          <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
-      </td>
-      <td>
-          <div id="textField_substance_misuse_id" class="cols-8">
-              <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
-          </div>
-          <?= $form->dropDownList(
-              $element,
-              'substance_misuse_id',
-              CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-              ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
-          ); ?>
-      </td>
-      <td colspan="2" class="js-comment-container"
-          data-comment-button="#add-social-history-popup .js-add-comments"
-          style="display: <?php if (!$element->comments) {
-              echo 'none';
-          } ?>">
-          <textarea id="<?= $model_name ?>_comments"
-                    name="<?= $model_name ?>[comments]"
-                    class="js-comment-field cols-10"
-                    placeholder="Enter comments here"
-                    autocomplete="off" rows="1"
-                    style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
-        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-      </td>
+        <td>
+            <?= $form->labelEx($element, $element->getAttributeLabel('substance_misuse_id')) ?>
+        </td>
+        <td>
+            <div id="textField_substance_misuse_id" class="cols-8">
+                <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
+            </div>
+            <?= $form->dropDownList(
+                $element,
+                'substance_misuse_id',
+                CHtml::listData($element->substance_misuse_options, 'id', 'name'),
+                ['empty' => '- Select -', 'nowrapper' => true, 'hidden' => true]
+            ); ?>
+        </td>
+        <td colspan="2" class="js-comment-container"
+            data-comment-button="#add-social-history-popup .js-add-comments"
+            style="display: <?php if (!$element->comments) {
+                echo 'none';
+            }?>">
+           <textarea id="<?= $model_name ?>_comments"
+                     name="<?= $model_name ?>[comments]"
+                     class="js-comment-field cols-10"
+                     placeholder="Enter comments here"
+                     autocomplete="off" rows="1"
+                     style="overflow: hidden; word-wrap: break-word; height: 24px;"><?= CHtml::encode($element->comments) ?></textarea>
+            <i class="oe-i remove-circle small-icon js-remove-add-comments"></i>
+        </td>
     </tr>
     </tbody>
   </table>
@@ -290,7 +299,8 @@
 
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) use ($element) {
-                return ['label' => $item, 'id' => $item, 'selected' => $element->alcohol_intake == $item];
+                return ['label' => $item, 'id' => $item,
+                    'selected' => isset($element->alcohol_intake) && $element->alcohol_intake == $item];
             }, range(0, 20))
         ) ?>, {'header': 'Alcohol units', 'id': 'alcohol_intake', 'mandatory': true})
       ],

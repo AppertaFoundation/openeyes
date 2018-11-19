@@ -1,4 +1,3 @@
-
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
@@ -27,5 +26,16 @@ $(document).ready(function() {
         $('#new-comment-form').toggle();
         $('#add-comment-button-container').toggle();
     });
+
+	OpenEyes.UI.AutoCompleteSearch.init({
+		input: $('#oe-autocompletesearch'),
+		url: '/user/autocomplete',
+		onSelect: function(){
+			let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+			$('#fao_user_display').html(AutoCompleteResponse.label);
+			$('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(AutoCompleteResponse.id);
+			return false;
+		}
+	});    
 });
 

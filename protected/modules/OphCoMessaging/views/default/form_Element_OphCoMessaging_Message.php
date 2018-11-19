@@ -36,37 +36,7 @@
                   <span id="fao-field">
                     <span
                         id="fao_user_display"><?php echo $element->for_the_attention_of_user ? $element->for_the_attention_of_user->getFullnameAndTitle() : ''; ?></span>
-                      <?php
-                      $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                          'name' => 'find_user',
-                          'id' => 'find-user',
-                          'value' => '',
-                          'source' => "js:function(request, response) {
-                             $.ajax({
-                                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
-                                 'type':'GET',
-                                 'data':{'term': request.term},
-                                  'success':function(data) {
-                                   data = $.parseJSON(data);
-                                    response(data);
-                                   }
-                                  });
-                              }",
-                          'options' => array(
-                              'minLength' => '3',
-                              'select' => "js:function(event, ui) {
-                                 $('#fao_user_display').html(ui.item.label);
-                                 $('#OEModule_OphCoMessaging_models_Element_OphCoMessaging_Message_for_the_attention_of_user_id').val(ui.item.id);
-                                  $('#find-user').val('');
-                                     return false;
-                                  }",
-                          ),
-                          'htmlOptions' => array(
-                              'placeholder' => 'search by name or username',
-                              'class' => 'cols-12',
-                          ),
-                      ));
-                      ?>
+                      <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                     </span>
                 </div>
               <?php } else { ?>
@@ -115,7 +85,7 @@
           <td>
               <?php echo $form->textArea($element, 'message_text',
                   array('rows' => 4, 'cols' => 500, 'no_label' => true), false,
-                  array('placeholder' => 'Your Message...'), array('label' => 2, 'field' => 12)) ?>
+                  array('placeholder' => 'Your Message...', 'class' => 'autosize'), array('label' => 2, 'field' => 12)) ?>
           </td>
         </tr>
         </tbody>
