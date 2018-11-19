@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="print-form-div <?php echo $css_class ?>">
+<main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 3<br/>
@@ -87,4 +87,4 @@
     </p>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant, 'mask_consultant' => true)) ?>
     <h3>Top copy accepted by patient: yes/no <span class="noth3">(please ring)</span></h3>
-</div>
+</main>
