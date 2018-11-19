@@ -58,6 +58,11 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 
     public $service;
 
+    /** Side view was introduced and the earlier data is not using it
+    * This variable is used to identify if the side view should be rendered
+    */
+    public $has_side_view = false;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -252,4 +257,24 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         parent::afterSave();
     }
 
+    public function afterFind()
+    {
+        if(!$this->isNewRecord && $this->eye_id != \Eye::BOTH) {
+            $eye_id = $this->eye_id == \Eye::LEFT ? \Eye::RIGHT : \Eye::LEFT;
+            $patient = $this->event->episode->patient;
+            $processor = new \EDProcessor();
+            $processor->loadElementEyedrawDoodles($patient, $this, $eye_id, strtolower(\Eye::methodPostFix($eye_id)) . '_eyedraw');
+        }
+
+        if($this->right_eyedraw2 || $this->left_eyedraw2){
+            $this->has_side_view = true;
+        }
+        parent::afterFind();
+    }
+
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
+    
 }

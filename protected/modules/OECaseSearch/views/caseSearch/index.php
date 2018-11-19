@@ -62,13 +62,13 @@ $this->pageTitle = 'Case Search';
                                 'Add Parameter: ',
                                 null,
                                 $paramList,
-                                array('empty' => '- Add a parameter -', 'id' => 'param'));
+                                array('empty' => '- Add a parameter -', 'id' => 'js-add-param'));
                             ?>
                         </div>
                     </div>
                     <div class="search-actions flex-layout flex-left">
                         <div class="column">
-                            <?php echo CHtml::submitButton('Search'); ?>
+                            <?php echo CHtml::submitButton('Search', array('class' => 'js-search-btn')); ?>
                         </div>
                         <div class="column end" style="padding-left: 5px">
                             <?php echo CHtml::button('Clear',
@@ -95,17 +95,26 @@ $this->pageTitle = 'Case Search';
                                 )
                             )
                         );
-                    $searchResults->pagerCssClass = 'oe-pager';
-                    $searchResults->renderPager();
+                    $pager = $this->createWidget('LinkPager',
+                        array(
+                            'pages' => $patients->getPagination(),
+                            'maxButtonCount' => 15,
+                            'cssFile' => false,
+                            'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                            'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                            'htmlOptions' => array(
+                                'class' => 'pagination',
+                            ),
+                        )
+                    );
                     ?>
                     <table id="case-search-results" class="cols-10">
                         <tbody class=" cols-full">
                         <?= $searchResults->renderItems(); ?>
                         </tbody>
+                        <tfoot><tr><th class="flex-right flex-layout"><?php $pager->run()?></th></tr></tfoot>
                     </table>
-                    <?php $searchResults->renderPager();
-                endif;
-                ?>
+                <?php endif; ?>
 
                 </div>
         </div>
@@ -180,7 +189,7 @@ $this->pageTitle = 'Case Search';
     $(document).ready(function () {
         //null coallese the id of the last parameter
         var parameter_id_counter = $('.parameter').last().attr('id') || -1;
-        $('#param').on('change', function () {
+        $('#js-add-param').on('change', function () {
             var dropDown = this;
             if (!dropDown.value) {
                 return;
@@ -216,7 +225,7 @@ $this->pageTitle = 'Case Search';
     $(document).on('click', '.js-add-to-trial', function () {
       var addLink = this;
       var $removeLink = $(this).closest('.js-add-remove-participant').find('.js-remove-from-trial');
-      var patientId = $(this).closest('.oe-patient').data('patient-id');
+      var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
       $.ajax({
         url: '<?php echo Yii::app()->createUrl('/OETrial/trial/addPatient'); ?>',
@@ -239,7 +248,7 @@ $this->pageTitle = 'Case Search';
     $(document).on('click', '.js-remove-from-trial', function addPatientToTrial() {
         var removeLink = this;
         var $addLink = $(this).closest('.js-add-remove-participant').find('.js-add-to-trial');
-        var patientId = $(this).closest('.oe-patient').data('patient-id');
+        var patientId = $(this).closest('.js-oe-patient').data('patient-id');
 
         $.ajax({
           url: '<?php echo Yii::app()->createUrl('/OETrial/trial/removePatient'); ?>',

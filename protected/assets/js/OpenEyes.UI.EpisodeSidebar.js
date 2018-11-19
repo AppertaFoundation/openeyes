@@ -131,11 +131,78 @@
 
     self.element.on('mouseenter', '.event-type', function (e) {
       var $iconHover = $(e.target);
-      $iconHover.parent().parents('li:first').find('.quicklook').fadeIn('fast');
+      var $li = $iconHover.parent().parents('li:first');
+      $li.find('.quicklook').show();
+
+      var $screenshots = $('.oe-event-quickview .quickview-screenshots');
+      $screenshots.find('img').hide();
+      var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
+      var $loader = $('.oe-event-quickview .spinner');
+      var $noImage = $('.oe-event-quickview .quickview-no-data-found');
+
+      $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
+      $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
+      $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
+        $(this).show();
+      });
+
+      $noImage.hide();
+      $loader.hide();
+      if ($li.data('event-image-url')) {
+        $img.show();
+      } else {
+        if(self.imageLookupRequest) {
+          self.imageLookupRequest.abort();
+        }
+
+        $img.hide();
+        $loader.show();
+
+        // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
+        // So we'll send an ajax request to try and get the url of the image
+        self.imageLookupRequest =  $.ajax({
+          type: 'GET',
+          url: '/eventImage/getImageUrl',
+          data: {'event_id': $li.data('event-id')},
+        }).success(function (response) {
+          if (response) {
+            // if that URL exists, then set up the image
+            $li.data('event-image-url', response);
+            $img.attr('src', response);
+            $img.show();
+          } else {
+            // Otherwise display a message in place of the image
+            $noImage.show();
+          }
+        }).complete(function () {
+          $loader.hide();
+        });
+      }
     });
+
     self.element.on('mouseleave', '.event-type', function (e) {
       var $iconHover = $(e.target);
       $iconHover.parents('li:first').find('.quicklook').hide();
+      $('.oe-event-quickview').stop().fadeTo(150, 0, function () {
+        $(this).hide();
+      });
+    });
+
+    // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
+    this.element.find(this.options.event_list_selector).each(function () {
+      var $container = $('.oe-event-quickview .quickview-screenshots');
+      if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
+        return
+      }
+
+      var $img = $('<img />', {
+        class: 'js-quickview-image',
+        src: $(this).data('event-image-url'),
+        style: 'display: none;',
+        'data-event-id': $(this).data('event-id'),
+      });
+
+      $img.appendTo($container);
     });
   };
 

@@ -74,7 +74,7 @@
 
 
       // find and set up all collapse-groups
-      $('.collapse-group').each(function() {
+        this.$element.find('.collapse-group').each(function() {
         var group = new CollapseGroup($(this).find('.collapse-group-icon .oe-i'),
           $(this).find('.collapse-group-header'),
           $(this).find('.collapse-group-content'),
@@ -82,11 +82,6 @@
       });
 
       self.$elementContainer = $(document).find(self.options.element_container_selector);
-
-      // couple of hooks to keep the menu in sync with the elements on the page.
-      self.$elementContainer.on('click', '.js-remove-element', function(e) {
-        self.removeElement(e.target);
-      });
 
       self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
         self.removeElement(e.target);
@@ -330,6 +325,15 @@
       } else {
         var itemClass = 'collapse-group';
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
+        // Check if element has a child option which is selected
+        if(!open){
+          $.each(itemData.children, function (i, child) {
+            if ($.inArray(child.class_name, self.patient_open_elements)!== -1){
+              open = true;
+              return false;
+            }
+          });
+        }
 
         item = $("<div>")
           .data('element-type-class', itemData.class_name)

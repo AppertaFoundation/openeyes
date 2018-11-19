@@ -77,7 +77,7 @@ class User extends BaseActiveRecordVersioned
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
             array(
-                'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon,
+                'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
                 'safe',
             ),
@@ -245,9 +245,9 @@ class User extends BaseActiveRecordVersioned
             'password_confirm' => 'Confirm password',
             'global_firm_rights' => 'Global firm rights',
             'is_consultant' => 'Consultant',
-            'is_clinical' => 'Clinically trained',
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
+            'role' => 'Position'
         );
     }
 

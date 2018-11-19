@@ -119,7 +119,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         return array(
             'title_surname' => 'Title and Surname',
             'date_of_birth' => 'Date of Birth',
-            'nhs_number' => 'NHS Number',
+            'nhs_number' => Yii::app()->params['nhs_num_label'].' Number',
             'address' => 'Address (incl. Post Code)',
             'postcode' => 'Post Code (1st half)',
             'email' => 'Email',
@@ -317,5 +317,10 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $data['demographicSummaryTable'] = $this->generateStructuredSummaryTable();
 
         return $data;
+    }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form_no_bin';
     }
 }

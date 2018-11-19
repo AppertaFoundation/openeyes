@@ -23,7 +23,7 @@
 		</h4>
 	</div>
 	<div class="dropdown-row">
-		<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
+		<?=\CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
 	</div>
 	<div class="autocomplete-row">
 		<?php

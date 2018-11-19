@@ -82,17 +82,23 @@ class HistoryMedications extends \BaseEventTypeElement
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
                 'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
-            'currentOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date > NOW() OR end_date is NULL)',
-                'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
-            'stoppedOrderedEntries' => array(self::HAS_MANY,
-                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
-                'element_id',
-                'on' => '(end_date < NOW() AND end_date is NOT NULL)',
-                'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
         );
+    }
+
+    public function getStoppedOrderedEntries()
+    {
+        $stoppedEntries = array_filter($this->orderedEntries, function ($entry) {
+            return $entry->end_date && $entry->end_date <= date('Y-m-d' , strtotime($this->event->event_date));
+        });
+        return $stoppedEntries;
+    }
+
+    public function getCurrentOrderedEntries()
+    {
+        $currentEntries = array_filter($this->orderedEntries, function ($entry) {
+            return !$entry->end_date || $entry->end_date > date('Y-m-d' , strtotime($this->event->event_date));
+        });
+        return $currentEntries;
     }
 
     protected function errorAttributeException($attribute, $message)
@@ -202,12 +208,7 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return $action === 'view' ? 2 : null;
-    }
-
-    public function isIndividual($action)
-    {
-        return $action !=='view';
+        return $action === 'view' || $action === 'createImage' ? 2 : null;
     }
 
     public function getDisplayOrder($action)

@@ -15,26 +15,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>false));
+$form_id = 'clinical-create';
+$this->beginContent('//patient/event_container', array('no_face' => false , 'form_id' => $form_id));
+// Event actions
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 ?>
-	<?php
-        // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
-    ?>
 
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'clinical-create',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 4,
-            'field' => 8,
-        ),
-    ));
-    ?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form)?>
-		<?php //$this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors, true)?>
+<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => $form_id,
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 4,
+        'field' => 8,
+    ),
+));
+?>
+<?php $this->displayErrors($errors) ?>
+<?php $this->renderOpenElements($this->action->id, $form) ?>
+<?php //$this->renderOptionalElements($this->action->id, $form)?>
+<?php $this->displayErrors($errors, true) ?>
 
-	<?php $this->endWidget()?>
-<?php $this->endContent();?>
+<?php $this->endWidget() ?>
+<?php $this->endContent(); ?>

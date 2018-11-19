@@ -1,13 +1,14 @@
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
-
 <?php
+$form_id = 'lab-results-create';
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-    'id' => 'lab-results-create',
+    'id' => $form_id,
     'enableAjaxValidation' => false,
 ));
 
 // Event actions
-$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'lab-results-create'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
 
 $this->displayErrors($errors)?>
 

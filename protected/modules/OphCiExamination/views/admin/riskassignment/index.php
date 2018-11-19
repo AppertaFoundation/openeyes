@@ -19,17 +19,19 @@
  */
 ?>
 
-<div class="box admin">
-    <h2>Required Risk Set</h2>
+<div class="cols-5">
 
-<?php
-
+    <?php
     $columns = array(
         'checkboxes' => array(
             'header' => '',
             'type' => 'raw',
-            'value' => function($data, $row){
-                return CHtml::checkBox("OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]",false, ['value' => $data->id]);
+            'value' => function ($data, $row) {
+                return CHtml::checkBox(
+                    "OEModule_OphCiExamination_models_OphCiExaminationRiskSet[][id]",
+                    false,
+                    ['value' => $data->id]
+                );
             },
             'cssClassExpression' => '"checkbox"',
         ),
@@ -38,7 +40,7 @@
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
         ),
@@ -46,7 +48,7 @@
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
-            'value' => function($data, $row){
+            'value' => function ($data, $row) {
                 return $data->firm ? $data->firm->name : null;
             }
         ),
@@ -54,80 +56,51 @@
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
+    ?>
 
-    ?><form id="generic-admin-form"><?php
-    $this->widget('zii.widgets.grid.CGridView', array(
-        'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin grid',
-        //'template' => '{items}',
-        "emptyTagName" => 'span',
-        'summaryText' => false,
-        'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
-        'enableSorting' => false,
-        'enablePagination' => false,
-        'columns' => $columns,
-        'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-        'rowCssClass' => array('clickable'),
-
-    ));
-?>
+    <form id="generic-admin-form"><?php
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard',
+            //'template' => '{items}',
+            "emptyTagName" => 'span',
+            'summaryText' => false,
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'enableSorting' => false,
+            'enablePagination' => false,
+            'columns' => $columns,
+            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
+            'rowCssClass' => array('clickable'),
+        ));
+        ?>
     </form>
 
-    <button class="small primary event-action" name="add" type="submit" id="et_add">Add</button>
-    <button data-object="OphCiExaminationRisk" data-uri="/OphCiExamination/oeadmin/RisksAssignment/delete" class="small primary event-action" name="delete" type="submit" id="et_delete">Delete</button>
+    <?=\CHtml::submitButton(
+        'Add',
+        [
+            'class' => 'button large',
+            'name' => 'add',
+            'data-uri' => '/OphCiExamination/oeadmin/RisksAssignment/create/',
+            'id' => 'et_add'
+        ]
+    ); ?>
 
+    <?=\CHtml::submitButton(
+        'Delete',
+        [
+            'class' => 'button large',
+            'name' => 'delete',
+            'data-uri' => '/OphCiExamination/oeadmin/RisksAssignment/delete',
+            'id' => 'et_delete'
+        ]
+    ); ?>
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function(){
+    $(document).ready(function () {
+        $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
             window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/update/' + id;
         });
-
-        $('#et_add').click(function(){
-            window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/create/';
-        });
-
-       /* $('#et_delete').click(function(e){
-            e.preventDefault();
-
-            var confirmDialog = new OpenEyes.UI.Dialog.Confirm({
-                title: "Remove Patient Signature",
-                'content': 'Are you sure you want to delete the selected sets ?',
-                'okButton': 'Remove'
-            });
-            confirmDialog.open();
-
-            confirmDialog.content.off('click', '.ok');
-            // manage form submission and response
-            confirmDialog.content.on('click', '.ok', function() {
-                $.ajax({
-                    'type': 'POST',
-                    'url': '/OphCiExamination/oeadmin/RisksAssignment/delete',
-                    'data': $('#profile_sites').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-                    'success': function(html) {
-                        if (html === "success") {
-                            window.location.reload();
-                        } else {
-                            new OpenEyes.UI.Dialog.Alert({
-                                content: "There was an unexpected error deleting the sites, please try again or contact support for assistance."
-                            }).open();
-                        }
-                    },
-                    'error': function() {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: "Sorry, There was an unexpected error deleting the sites, please try again or contact support for assistance."
-                        }).open();
-                    }
-                });
-            });
-
-
-
-
-
-        });*/
-
     });
 </script>

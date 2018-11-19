@@ -1,5 +1,5 @@
 <div class="data-group">
-    <table class="cols-11 large-text">
+    <table class="cols-11 large-text borders">
         <colgroup>
             <col class="cols-3">
             <col class="cols-2">
@@ -11,7 +11,7 @@
                 AL:
             </td>
             <td>
-                <?php echo CHtml::encode($element->{'axial_length_' . $side}) ?>&nbsp;mm
+                <?=\CHtml::encode($element->{'axial_length_' . $side}) ?>&nbsp;mm
             </td>
             <td colspan="2"></td>
             <td>
@@ -30,7 +30,7 @@
                     <?php if ($this->isAutoBiometryEvent($this->event->id) && $this->getAutoBiometryEventData($this->event->id)[0]->is700()): ?>
                         N/A
                     <?php else: ?>
-                        <?php echo CHtml::encode($element->{'snr_' . $side}) ?>
+                        <?=\CHtml::encode($element->{'snr_' . $side}) ?>
                     <?php endif; ?>
                 </td>
                 <?php
@@ -46,7 +46,7 @@
         <tr>
             <td>K1:</td>
             <td>
-                <?php echo CHtml::encode($element->{'k1_' . $side}) ?>&nbsp;D
+                <?=\CHtml::encode($element->{'k1_' . $side}) ?>&nbsp;D
             </td>
             <td>
                 <?php
@@ -61,7 +61,7 @@
                 <?php
                 if (!$element->{"k_modified_$side"}) {
                     ?>
-                    <?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;
+                    <?=\CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;
                 <?php } else {
                     echo '&nbsp;';
                 } ?>
@@ -95,7 +95,7 @@
                 <?php
                 if (!$element->{"k_modified_$side"}) {
                     ?>
-                    <?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;
+                    <?=\CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;
                 <?php } else {
                     echo '&nbsp;';
                 } ?>
@@ -110,7 +110,7 @@
                 K2:
             </td>
             <td>
-                <?php echo CHtml::encode($element->{'k2_' . $side}) ?>&nbsp;D
+                <?=\CHtml::encode($element->{'k2_' . $side}) ?>&nbsp;D
             </td>
             <td>
                 <?php
@@ -126,7 +126,7 @@
                 if (!$element->{"k_modified_$side"}) {
                     ?>
                     <div class="field-info" id="k2_axis_<?php echo $side ?>">
-                        <?php echo CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
+                        <?=\CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
                     </div>
                 <?php } else {
                     echo '&nbsp;';
@@ -141,7 +141,7 @@
                 ACD:
             </td>
             <td>
-                <?php echo CHtml::encode($element->{'acd_' . $side}) ?>&nbsp;mm
+                <?=\CHtml::encode($element->{'acd_' . $side}) ?>&nbsp;mm
             </td>
             <td colspan="2"></td>
             <td>

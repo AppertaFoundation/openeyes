@@ -24,12 +24,33 @@
  * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
  */
 
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+    <?php if (count($this->patient->identifiers) > 0) { ?>
+      <div class="patient-numbers flex-layout">
+        <div class="local-numbers">
+            <?php foreach ($this->patient->identifiers as $identifier) { ?>
+                <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
+                <div class="num">
+                    <?= $identifier->getLabel() ?>
+                  <label class="inline highlight">
+                      <?= $identifier->value ?>
+                  </label>
+                </div>
+                <?php } ?>
+            <?php } ?>
+        </div>
+        <div class="nhs-number">
+            <?= Yii::app()->params['nhs_num_label'] ?>
+            <?= $this->patient->nhsnum ?>
+        </div>
+      </div>
+    <?php } ?>
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -61,7 +82,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
           </tr>
           <tr>
             <td>Email</td>
-            <td><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown' ?></td>
+            <td><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown' ?></td>
           </tr>
           <tr>
             <td>Next of kin</td>
@@ -92,10 +113,6 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
           </tr>
-          <tr>
-            <td>Optician</td>
-            <td>Mr Pink</td>
-          </tr>
           </tbody>
         </table>
       </div><!-- .popup-overflow -->
@@ -104,7 +121,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
 <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
+<div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
   <div class="situational-awareness flex-layout flex-left flex-top">
       <?php
       $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
@@ -182,7 +199,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     <div class="group">
         <?php if ($this->cviStatus[0] !== 'Unknown') { ?>
           <span class="data">CVI Status: <?= $this->cviStatus[0]; ?></span>
-          <span class="oe-date"> <?= \Helper::convertMySQL2NHS($this->cviStatus[1] )?></span>
+          <span class="oe-date"> <?= $this->cviStatus[1] && $this->cviStatus[1] !== '0000-00-00' ? \Helper::convertDate2HTML($this->cviStatus[1]) : 'N/A' ?></span>
         <?php } else { ?>
           <span class="data">CVI Status: NA</span>
         <?php } ?>
@@ -201,7 +218,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             if (count($ophthalmic_diagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>
@@ -231,7 +248,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>
@@ -256,7 +273,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       <div class="group">
         <div class="label">Surgical History</div>
         <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class , array(
+            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
                 'patient' => $this->patient,
                 'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
@@ -293,32 +310,40 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- .flex-layout -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
+<div class="oe-patient-popup patient-popup-management" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
         <div class="subtitle">Management Summaries</div>
-        <ul class="management-summaries">
-            <?php $summaries = $exam_api->getManagementSummaries($patient);
-            foreach ($summaries as $service => $comments) {
-                if (strlen($comments) > 0) {
-                    ?>
-                  <li>
-                    <h6><?= $service ?></h6>
-                    <p><?= $comments ?></p>
-                  </li>
-                <?php } else { ?>
-                  <li></li>
-                <?php }
-            } ?>
-        </ul>
+          <table class="management-summaries">
+              <tbody>
+              <?php $summaries = $exam_api->getManagementSummaries($patient);
+              if (sizeof($summaries) != 0) {
+                  foreach ($summaries as $summary) { ?>
+                      <tr>
+                          <td><?= $summary->service ?></td>
+                          <td class="fade">
+                                <span class="oe-date">
+                                    <span class="day"><?= $summary->date[0] ?></span>
+                                    <span class="month"><?= $summary->date[1] ?></span>
+                                    <span class="year"><?= $summary->date[2] ?></span>
+                                </span>
+                          </td>
+                          <td><?= $summary->comments ?></td>
+                          <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                 data-tooltip-content="<?= $summary->user ?>"></i></td>
+                      </tr>
+                  <?php }
+              } ?>
+              </tbody>
+          </table>
       </div><!-- .popup-overflow -->
     </div><!-- left -->
 
   </div><!-- flex -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
@@ -353,3 +378,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     </div><!-- .col-right -->
   </div><!-- .flex -->
 </div>
+
+<?php if(Yii::app()->getModule('OETrial')) { ?>
+<div class="oe-patient-popup patient-popup-trials" style="display: none;">
+  <div class="flex-layout flex-top">
+      <?php
+      $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(
+          'patient' => $this->patient,
+      ));
+      ?>
+  </div>
+</div>
+<?php } ?>

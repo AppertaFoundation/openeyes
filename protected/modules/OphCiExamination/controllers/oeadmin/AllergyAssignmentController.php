@@ -24,6 +24,8 @@ use OEModule\OphCiExamination\models;
 
 class AllergyAssignmentController extends \ModuleAdminController
 {
+    public $group = 'Examination';
+
     public function accessRules()
     {
         return array(
@@ -36,12 +38,12 @@ class AllergyAssignmentController extends \ModuleAdminController
      */
     public function actionIndex()
     {
-        $model= new models\OphCiExaminationAllergySet();
+        $model = new models\OphCiExaminationAllergySet();
         $model->unsetAttributes();
-        if(isset($_GET['OphCiExaminationAllergy']))
-            $model->attributes=$_GET['OphCiExaminationAllergy'];
+        if (isset($_GET['OphCiExaminationAllergy']))
+            $model->attributes = $_GET['OphCiExaminationAllergy'];
 
-        $this->render('/admin/allergyassignment/index',array(
+        $this->render('/admin/allergyassignment/index', array(
             'model' => $model,
         ));
     }
@@ -54,19 +56,18 @@ class AllergyAssignmentController extends \ModuleAdminController
     {
         $allergy_set = new models\OphCiExaminationAllergySet;
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet']))
-        {
-            $allergy_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
+        if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'])) {
+            $allergy_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
 
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
 
-                if($allergy_set->save()){
+                if ($allergy_set->save()) {
 
                     $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
 
-                    foreach($allergies as $allergy){
+                    foreach ($allergies as $allergy) {
                         $allergy_model = new models\OphCiExaminationAllergySetEntry;
 
                         $allergy_model->gender = $allergy['gender'] === "" ? null : $allergy['gender'];
@@ -74,7 +75,7 @@ class AllergyAssignmentController extends \ModuleAdminController
                         $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
-                        if($allergy_model->save()){
+                        if ($allergy_model->save()) {
                             $this->saveAssignment($allergy_set, $allergy_model);
                         }
                     }
@@ -90,8 +91,9 @@ class AllergyAssignmentController extends \ModuleAdminController
 
         }
 
-        $this->render('/admin/allergyassignment/create',array(
-            'model' => $allergy_set
+        $this->render('/admin/allergyassignment/edit', array(
+            'model' => $allergy_set,
+            'title' => 'Create required allergy set',
         ));
     }
 
@@ -105,27 +107,24 @@ class AllergyAssignmentController extends \ModuleAdminController
     {
         $allergy_set = $this->loadModel($id);
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet']))
-        {
-            $allergy_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
+        if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'])) {
+            $allergy_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
+
             $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
 
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
-
                 $posted_entry_ids = array();
-                foreach($allergies as $allergy){
-                    if(isset($allergy['id'])){
+                foreach ($allergies as $allergy) {
+                    if (isset($allergy['id'])) {
                         $posted_entry_ids[] = $allergy['id'];
                     }
                 }
 
-                if($allergy_set->save()){
-
-                    foreach($allergies as $allergy){
-
-                        if(isset($allergy['id'])){
+                if ($allergy_set->save()) {
+                    foreach ($allergies as $allergy) {
+                        if (isset($allergy['id'])) {
                             $allergy_model = models\OphCiExaminationAllergySetEntry::model()->findByPk($allergy['id']);
                         } else {
                             $allergy_model = new models\OphCiExaminationAllergySetEntry;
@@ -136,8 +135,8 @@ class AllergyAssignmentController extends \ModuleAdminController
                         $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
-                        if($allergy_model->save()){
-                           $this->saveAssignment($allergy_set, $allergy_model);
+                        if ($allergy_model->save()) {
+                            $this->saveAssignment($allergy_set, $allergy_model);
                             $posted_entry_ids[] = $allergy_model->id;
                         }
                     }
@@ -147,14 +146,14 @@ class AllergyAssignmentController extends \ModuleAdminController
                     $criteria->addCondition('allergy_set_id =:allergy_set_id');
                     $criteria->addNotInCondition('ophciexamination_allergy_entry_id', $posted_entry_ids);
                     $criteria->params[':allergy_set_id'] = $allergy_set->id;
-                    
+
                     $assignments = models\OphCiExaminationAllergySetAssignment::model()->findAll($criteria);
-                    foreach($assignments as $assignment){
+                    foreach ($assignments as $assignment) {
                         $entry_id = $assignment->ophciexamination_allergy_entry_id;
 
-                         if($assignment->delete()){
-                             models\OphCiExaminationAllergySetEntry::model()->findByPk($entry_id)->delete();
-                         }
+                        if ($assignment->delete()) {
+                            models\OphCiExaminationAllergySetEntry::model()->findByPk($entry_id)->delete();
+                        }
                     }
                 }
 
@@ -169,8 +168,9 @@ class AllergyAssignmentController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/allergyassignment/update',array(
+        $this->render('/admin/allergyassignment/edit', array(
             'model' => $allergy_set,
+            'title' => 'Edit required allergy set',
         ));
     }
 
@@ -184,12 +184,12 @@ class AllergyAssignmentController extends \ModuleAdminController
 
         $assignment = models\OphCiExaminationAllergySetAssignment::model()->find($criteria);
 
-        if(!$assignment){
+        if (!$assignment) {
             $assignment = new models\OphCiExaminationAllergySetAssignment;
             $assignment->ophciexamination_allergy_entry_id = $allergy_model->id;
             $assignment->allergy_set_id = $allergy_set->id;
 
-            if(!$assignment->save()){
+            if (!$assignment->save()) {
                 throw new \Exception('OphCiExaminationAllergy assignment cannot be saved.');
             }
         }
@@ -204,10 +204,10 @@ class AllergyAssignmentController extends \ModuleAdminController
     {
         $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySet', array());
 
-        foreach($model_ids as $model_id){
+        foreach ($model_ids as $model_id) {
 
             $model = $this->loadModel($model_id);
-            if(!$model->allergy_set_entries){
+            if (!$model->allergy_set_entries) {
                 $model->delete();
             } else {
                 echo "0";
@@ -230,8 +230,8 @@ class AllergyAssignmentController extends \ModuleAdminController
     public function loadModel($id)
     {
         $model = models\OphCiExaminationAllergySet::model()->findByPk($id);
-        if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+        if ($model === null)
+            throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }
 }

@@ -26,22 +26,12 @@ $(document).ready(function () {
   var $hotlistNavButton = $('#js-nav-hotlist-btn');
   if ($patientTicketingPopup.length > 0) {
     // ... then set it up to use the hotlist nav button
-    var vc_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $patientTicketingPopup);
+    var vc_nav = new OpenEyes.UI.NavBtnSidebar({'panel_selector': '#patient-alert-patientticketing'});
     $hotlistNavButton.find('svg').get(0).classList.add('vc');
-    checkBrowserSize();
-    $(window).resize(checkBrowserSize);
-
-    function checkBrowserSize() {
-      if ($(window).width() > 1800) { // min width for ticketing panel
-        vc_nav.fixed(true);
-      } else {
-        vc_nav.fixed(false);
-      }
-    }
-  } else {
+    $('#js-hotlist-panel').hide();
+  } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
-    var hotlist_nav = new OpenEyes.UI.NavBtnPopup('hotlist', $hotlistNavButton, $('#js-hotlist-panel'));
-    var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
+    var hotlist = new OpenEyes.UI.NavBtnSidebar.HotList();
   }
 
 	// override the behaviour for showing search results
@@ -304,6 +294,15 @@ $(document).ready(function () {
     var offset = $(this).offset();
     var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
 
+    // check for the available space for tooltip:
+    if ( ( $( window ).width() - offset.left) < 100 ){
+        leftPos = offset.left - 174 // tooltip is 200px (left offset on the icon)
+        toolCSS = "oe-tooltip offset-left";
+    } else {
+        leftPos = offset.left - 94 // tooltip is 200px (center on the icon)
+        toolCSS = "oe-tooltip";
+    }
+
     // add, calculate height then show (remove 'hidden')
     var tip = $("<div></div>", {
       "class": "oe-tooltip",
@@ -319,6 +318,47 @@ $(document).ready(function () {
 
   });
 
+    (function elementSubgroup() {
+        let $viewstate_btns = $('.js-element-subgroup-viewstate-btn');
+        if( $viewstate_btns.length === 0 ) {
+            return;
+        }
+        $viewstate_btns.each( function(){
+            new Viewstate( $(this) );
+        });
+
+        function Viewstate( $icon ){
+            let view_state = this;
+            let $content = $('#' + $icon.data('subgroup') );
+
+            $icon.click( function( e ){
+                e.preventDefault();
+                view_state.changeState();
+            });
+
+            this.changeState = function(){
+                $content.toggle();
+                $icon.toggleClass('collapse expand');
+            }
+
+        }
+    })();
+
+    (function notificationBanner() {
+        if ($('#oe-admin-notifcation').length === 0) {
+            return;
+        }
+        // icon toggles Short/ Full Message
+        $('#oe-admin-notifcation .oe-i').click(toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseenter' , toggleNotification);
+		$('#oe-admin-notifcation .oe-i').on('mouseout' , toggleNotification);
+
+
+        function toggleNotification() {
+            $('#notification-short').toggle();
+            $('#notification-full').toggle();
+        }
+    }());
 });
 
 function changeState(wb,sp) {

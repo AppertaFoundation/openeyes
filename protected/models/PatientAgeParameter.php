@@ -111,22 +111,26 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
             <p><?= $this->getLabel() ?></p>
         </div>
         <div class="parameter-option">
-            <?php echo CHtml::activeDropDownList($this, "[$id]operation", $ops,
-                array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...')); ?>
+            <?php echo CHtml::activeDropDownList(
+                    $this,
+                    "[$id]operation",
+                    $ops,
+                    array('onchange' => 'refreshValues(this)', 'prompt' => 'Select One...', 'class' => 'js-age-operation')
+            ); ?>
             <?php echo CHtml::error($this, "[$id]operation"); ?>
         </div>
         <div class="dual-value parameter-option"
              style="<?php echo $this->operation === 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>"
         >
-              <?php echo CHtml::activeTextField($this, "[$id]minValue", array('placeholder' => 'min')); ?>
+              <?php echo CHtml::activeTextField($this, "[$id]minValue", array('placeholder' => 'min', 'class' => 'js-age-min')); ?>
               <?php echo CHtml::error($this, "[$id]minValue"); ?>
-              <?php echo CHtml::activeTextField($this, "[$id]maxValue", array('placeholder' => 'max')); ?>
+              <?php echo CHtml::activeTextField($this, "[$id]maxValue", array('placeholder' => 'max', 'class' => 'js-age-max')); ?>
               <?php echo CHtml::error($this, "[$id]maxValue"); ?>
         </div>
         <div class="single-value parameter-option"
              style="<?php echo $this->operation !== 'BETWEEN' ? 'display: inline-block;' : 'display: none;' ?>"
         >
-            <?php echo CHtml::activeTextField($this, "[$id]textValue"); ?>
+            <?php echo CHtml::activeTextField($this, "[$id]textValue", array('class' => 'js-age-value')); ?>
             <?php echo CHtml::error($this, "[$id]textValue"); ?>
         </div>
         <div class="parameter-option">

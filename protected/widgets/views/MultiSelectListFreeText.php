@@ -64,10 +64,10 @@ $widgetOptionsJson = json_encode(array(
     <div class="multi-select-free-text<?php if (!$inline) {
         echo ' multi-select-free-text-list';
     } ?>" data-options='<?php echo $widgetOptionsJson; ?>'>
-      <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectFreeTextList_<?php echo $field ?>]"
+      <input type="hidden" name="<?=\CHtml::modelName($element) ?>[MultiSelectFreeTextList_<?php echo $field ?>]"
              class="multi-select-free-text-list-name"/>
       <div class="multi-select-free-text-dropdown-container">
-        <select id="<?php echo CHtml::getIdByName($field) ?>"
+        <select id="<?=\CHtml::getIdByName($field) ?>"
                 class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
                 name=""<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
           <option value=""><?php echo $htmlOptions['empty'] ?></option>
@@ -133,7 +133,7 @@ $widgetOptionsJson = json_encode(array(
                   </div>
                   <div class="cols-4">
                     <div class="data-value">
-                        <?php echo CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
+                        <?=\CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
                     </div>
                   </div>
                 </div>

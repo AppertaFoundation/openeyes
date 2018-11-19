@@ -23,12 +23,13 @@
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('VanHerick.js')?>"></script>
 
 <div class="element-fields element-eyes" id="<?= $model_name ?>_element">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
 
     <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?> <?=(!$element->hasEye($eye_side))? "inactive":""?>" data-side="<?=$eye_side?>">
 
-        <div class="active-form flex-layout">
+        <div class="active-form flex-layout" style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <table class="cols-10">
                 <colgroup>
@@ -43,7 +44,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td><?php echo CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
+                    <td><?=\CHtml::activeDropDownList($element, "{$eye_side}_van_herick_id", $this->getVanHerickValues(), array('class' => 'inline')); ?></td>
                 </tr>
                 </tbody>
             </table>
@@ -51,7 +52,7 @@
             <button class="button hint green js-foster-images-link" type="button"><i class="oe-i plus pro-theme"></i></button>
           </div>
         </div>
-        <div class="inactive-form" style="display: none;">
+        <div class="inactive-form" style="<?= $element->hasEye($eye_side)? 'display: none;': ''?> ">
             <div class="add-side">
                 <a href="#">
                     Add <?=$eye_side?> side <span class="icon-add-side"></span>
@@ -88,10 +89,10 @@
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
 
                 <div class="van_herick field-row">
-                    <label for="<?php echo CHtml::modelName($element).'_right_van_herick_id';?>">
+                    <label for="<?=\CHtml::modelName($element).'_right_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('right_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
-                         <?php echo CHtml::activeDropDownList($element, 'right_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
+                        (<?=\CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                         <?=\CHtml::activeDropDownList($element, 'right_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
                 </div>
             </div>
@@ -108,10 +109,10 @@
             <div class="active-form">
                 <a href="#" class="icon-remove-side remove-side">Remove side</a>
                 <div class="van_herick field-row">
-                    <label for="<?php echo CHtml::modelName($element).'_left_van_herick_id';?>">
+                    <label for="<?=\CHtml::modelName($element).'_left_van_herick_id';?>">
                         <?php echo $element->getAttributeLabel('left_van_herick_id'); ?>
-                        (<?php echo CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
-                        <?php echo CHtml::activeDropDownList($element, 'left_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
+                        (<?=\CHtml::link('images', 'javascript:void(0)', array('class' => 'js-foster_images_link')); ?>):
+                        <?=\CHtml::activeDropDownList($element, 'left_van_herick_id', $this->getVanHerickValues(), array('class' => 'inline')); ?>
                     </label>
                 </div>
             </div>

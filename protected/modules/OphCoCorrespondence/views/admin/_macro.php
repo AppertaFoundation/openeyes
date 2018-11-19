@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 /**
  * @var $form BaseEventTypeCActiveForm
  * @var $macro LetterMacro
@@ -24,133 +24,226 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", 
  */
 ?>
 
-<div class="box admin">
-  <h2>Edit macro</h2>
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
-    <?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'adminform',
-            'enableAjaxValidation' => false,
-            'focus' => '#username',
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 4,
-            ),
-        ));
+<h2>Edit macro</h2>
+<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'adminform',
+    'enableAjaxValidation' => false,
+    'focus' => '#username',
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 4,
+    ),
+));
 
-        $recipients_data = \CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name');
-        $none_option = [0 => 'None'];
-        $label_options = [];
+$recipients_data = \CHtml::listData(LetterRecipient::model()->findAll(array('order' => 'display_order asc')), 'id', 'name');
+$none_option = [0 => 'None'];
+$label_options = [];
 
-        if(isset($macro->letter_type) && $macro->letter_type->name === 'Internal Referral'){
-            $none_option[0] = 'Internal Referral';
+if (isset($macro->letter_type) && $macro->letter_type->name === 'Internal Referral') {
+    $none_option[0] = 'Internal Referral';
 
-            $letter_type_gp_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'GP'))->queryScalar();
-            $letter_type_patient_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'Patient'))->queryScalar();
+    $letter_type_gp_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'GP'))->queryScalar();
+    $letter_type_patient_id = \Yii::app()->db->createCommand()->select('id')->from('ophcocorrespondence_letter_recipient')->where('name=:name', array(':name' => 'Patient'))->queryScalar();
 
-            $label_options = [
-                $letter_type_gp_id => 'display:none',
-                $letter_type_patient_id => 'display:none',
-            ];
-        }
+    $label_options = [
+        $letter_type_gp_id => 'display:none',
+        $letter_type_patient_id => 'display:none',
+    ];
+}
 
-        $recipients_data = $recipients_data + $none_option;
-    ?>
-    <?php echo $form->dropDownList($macro, 'type',
-        array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()),
-        array('empty' => '- Type -')) ?>
-    <?php echo $form->dropDownList($macro, 'letter_type_id',
-        CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-        array('empty' => '- Letter type -')) ?>
-    <?php echo $form->dropDownList($macro, 'site_id', Site::model()->getListForCurrentInstitution(),
-        array('empty' => '- Site -', 'div-class' => 'typeSite'), $macro->type != 'site') ?>
-    <?php echo $form->dropDownList($macro, 'subspecialty_id',
-        CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-        array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty') ?>
-    <?php echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true),
-        array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm'), $macro->type != 'firm') ?>
-    <?php echo $form->textField($macro, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->radioButtons(
-        $macro,
-        'recipient_id',
-        $recipients_data + $none_option,
-        (!$macro->recipient_id ? '0' : null),
-        false,
-        false,
-        false,
-        false,
-        array('empty' => 'None', 'labelOptions' => $label_options, 'empty-after' => true)
-    );?>
-    <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right')) ?>
-    <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right')) ?>
-    <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right')) ?>
-    <?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right')) ?>
-    <?php echo $form->dropDownList($macro, 'episode_status_id',
-        CHtml::listData(EpisodeStatus::model()->findAll(array('order' => 'id asc')), 'id', 'name'),
-        array('empty' => '- None -')) ?>
-    <?php echo $form->textArea($macro, 'body', array(), false, array(), array('field' => 6)) ?>
+$recipients_data = $recipients_data + $none_option;
+?>
 
-  <div class="cols-10 large-offset-2 column shortCodeDescription">&nbsp;</div>
-  <div class="cols-8 large-offset-2 column">
-    <div class="data-group">
-      <div class="cols-3 column">
-        <label for="shortcode">
-          Add shortcode:
-        </label>
-      </div>
-      <div class="cols-6 column end">
-          <?php echo CHtml::dropDownList('shortcode', '', CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')), 'code',
-                  'description'), array('empty' => '- Select -'))?>
-      </div>
-    </div>
-  </div>
+<div class="cols-10 column">
+    <table class="standard" id="to_location_sites_grid">
+        <colgroup>
+            <col class="cols-1">
+            <col class="cols-2">
+            <col class="cols-1">
+            <col class="cols-1">
+        </colgroup>
 
-    <?php
-    $model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
-    $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
-    ?>
+        <tbody>
+        <tr>
+            <td>Type</td>
+            <td>
+                <?php echo $form->dropDownList(
+                    $macro,
+                    'type',
+                    array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()),
+                    array('empty' => '- Type -', 'class' => 'cols-full', 'nowrapper' => true,)
+                ) ?>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Letter Type</td>
+            <td>
+                <?php echo $form->dropDownList(
+                    $macro,
+                    'letter_type_id',
+                    CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
+                    array('empty' => '- Letter type -', 'class' => 'cols-full', 'nowrapper' => true,)
+                ) ?>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td id="LetterMacro_type_dropdown"></td>
+            <td>
+                <?=\CHtml::activeDropDownList(
+                    $macro,
+                    'site_id',
+                    Site::model()->getListForCurrentInstitution(),
+                    array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'hidden' => true),
+                    $macro->type != 'site'
+                ) ?>
+                <?=\CHtml::activeDropDownList(
+                    $macro,
+                    'subspecialty_id',
+                    CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                    array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'hidden' => true),
+                    $macro->type != 'subspecialty'
+                ) ?>
+                <?=\CHtml::activeDropDownList(
+                    $macro,
+                    'firm_id',
+                    Firm::model()->getListWithSpecialties(true),
+                    array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm', 'class' => 'cols-full', 'hidden' => true),
+                    $macro->type != 'firm'
+                ) ?>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td colspan="2">
+                <?php echo $form->textField(
+                    $macro,
+                    'name',
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full', 'nowrapper' => true,)
+                ) ?>
+            </td>
 
-  <div class="data-group">
+            <td></td>
+        </tr>
+        <tr>
+            <td>Default recipient</td>
+            <td colspan="3">
+                <?php echo $form->radioButtons(
+                    $macro,
+                    'recipient_id',
+                    $recipients_data + $none_option,
+                    (!$macro->recipient_id ? '0' : null),
+                    false,
+                    false,
+                    false,
+                    false,
+                    array('empty' => 'None', 'labelOptions' => $label_options, 'empty-after' => true, 'class' => 'cols-full', 'nowrapper' => true,)
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right', 'nowrapper' => true)) ?>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Episode status</td>
+            <td>
+                <?php echo $form->dropDownList(
+                    $macro,
+                    'episode_status_id',
+                    CHtml::listData(EpisodeStatus::model()->findAll(array('order' => 'id asc')), 'id', 'name'),
+                    array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true,)
+                ) ?>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <?=$macro->getAttributeLabel('body')?><br /><br />
+                <?=\CHtml::activeTextField($macro, 'body', ['class' => 'cols-full']);?>
+            </td>
+
+        </tr>
+        <tr>
+            <td>Add shortcode</td>
+            <td colspan="2">
+                <?=\CHtml::dropDownList(
+                    'shortcode',
+                    '',
+                    CHtml::listData(
+                        PatientShortcode::model()->findAll(['order' => 'description asc']),
+                        'code',
+                        'description'
+                    ),
+                    array('empty' => '- Select -', 'class' => 'cols-full', 'nowrapper' => true,)
+                ) ?>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<?php
+$model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
+$model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
+?>
+
+<div class="cols-8">
     <p>Attachments</p>
     <table class="standard" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
-      <thead>
-      <tr>
-        <td>Hidden</td>
-        <td>Print appended</td>
-        <td>Event</td>
-        <td>Title</td>
-        <td>Action</td>
-      </tr>
-      </thead>
-      <tbody class="sortable ui-sortable">
-      <?php
-          $row_count = 0;
-          if (isset($associated_content)) {
-              foreach ($associated_content as $content) {
-                  $this->renderPartial(
-                      'init_method_row',
-                      array(
-                          'form' => $form,
-                          'init_method_model_name' => $model_init_method,
-                          'associated_model_name' => $model_associated_content,
-                          'model_associated_content' => $content,
-                          'prefix_init_method' => $model_init_method . '[' . ($row_count) . ']',
-                          'prefix_associated' => $model_associated_content . '[' . ($row_count) . ']',
-                          'row_count' => $row_count,
-                      )
-                  );
-                  $row_count++;
-              }
-          }
-      ?>
-      </tbody>
-      <tfoot>
-      <td class="text-right" colspan="6">
-        <button class="button small primary event-action" name="save" type="button"
-                id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_add">Add
-        </button>
-      </td>
-      </tfoot>
+        <thead>
+        <tr>
+            <td>Hidden</td>
+            <td>Print appended</td>
+            <td>Event</td>
+            <td>Title</td>
+            <td>Action</td>
+        </tr>
+        </thead>
+        <tbody class="sortable ui-sortable">
+        <?php
+        $row_count = 0;
+        if (isset($associated_content)) {
+            foreach ($associated_content as $content) {
+                $this->renderPartial(
+                    'init_method_row',
+                    array(
+                        'form' => $form,
+                        'init_method_model_name' => $model_init_method,
+                        'associated_model_name' => $model_associated_content,
+                        'model_associated_content' => $content,
+                        'prefix_init_method' => $model_init_method . '[' . ($row_count) . ']',
+                        'prefix_associated' => $model_associated_content . '[' . ($row_count) . ']',
+                        'row_count' => $row_count,
+                    )
+                );
+                $row_count++;
+            }
+        }
+        ?>
+        </tbody>
+        <tfoot>
+        <td class="text-right" colspan="6">
+            <button class="button large primary event-action" name="save" type="button"
+                    id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_add">Add
+            </button>
+        </td>
+        </tfoot>
     </table>
 
     <script type="text/template" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_template"
@@ -179,26 +272,24 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", 
         );
         ?>
     </script>
-  </div>
-
-  <div class="cols-10 large-offset-2 column">
-    <button class="button small primary event-action" name="save" type="submit" id="et_save">Save</button>
-    <button class="warning button small primary cancelEditMacro" name="cancel" type="submit">Cancel</button>
-  </div>
-    <?php $this->endWidget() ?>
 </div>
 
+<div class="cols-10 large-offset-2 column">
+    <button class="button large primary event-action" name="save" type="submit" id="et_save">Save</button>
+    <button class="warning button large primary cancelEditMacro" name="cancel" type="submit">Cancel</button>
+</div>
+<?php $this->endWidget() ?>
+
 <script type="text/javascript">
-  $(document).ready(function () {
-    new OpenEyes.OphCoCorrespondence.InitMethodController();
-    $(".sortable").sortable();
-    $(".sortable").disableSelection();
+    $(document).ready(function () {
+        new OpenEyes.OphCoCorrespondence.InitMethodController();
+        $(".sortable").sortable();
+        $(".sortable").disableSelection();
 
-    var macroController = new OpenEyes.OphCoCorrespondence.LetterMacroController(
-      "LetterMacro_body",
-        <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
-    );
-    macroController.connectDropdown($("select#shortcode"));
-  });
-
+        var macroController = new OpenEyes.OphCoCorrespondence.LetterMacroController(
+            "LetterMacro_body",
+            <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
+        );
+        macroController.connectDropdown($("select#shortcode"));
+    });
 </script>

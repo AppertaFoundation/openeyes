@@ -126,7 +126,7 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
-        return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
+        return $patient->getUniqueOphthalmicDiagnosesTable();
     }
 
     /*

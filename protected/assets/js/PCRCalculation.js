@@ -10,10 +10,10 @@ function getPcrContainer(ev) {
     //for future debugging
     if(!side){
         console.log(ev);
+        console.error('.js-element-eye or it\'s data attribute not found');
     }
 
-    $container = $('.js-pcr-' + side.toLowerCase()).parent();
-    return $container;
+    return $('.js-pcr-' + side.toLowerCase()).parent();
 }
 
 /**
@@ -48,7 +48,7 @@ function setDiabeticDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="diabetic_diagnoses"]').length) {
+    if ($('input[name^="diabetic_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
     }
 
@@ -66,7 +66,7 @@ function setGlaucomaDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="glaucoma_diagnoses"]').length) {
+    if ($('input[name^="glaucoma_diagnoses"][value=true]').length) {
         $(pcrEl).val('Y');
     }
 
@@ -192,7 +192,6 @@ function setPcrPupil(ev, pcrEl) {
     }
 
     var $container = getPcrContainer(ev);
-    console.log($container);
     $container.find(pcrEl).val($(ev.target).val());
 
     $(pcrEl).trigger('change');

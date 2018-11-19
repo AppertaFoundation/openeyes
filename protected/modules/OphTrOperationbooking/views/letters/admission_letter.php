@@ -56,7 +56,7 @@
 			</tr>
 			<tr>
 				<th>Location:</th>
-				<td><?php echo CHtml::encode($site->name)?></td>
+				<td><?=\CHtml::encode($site->name)?></td>
 			</tr>
 			<tr>
 				<th>Consultant:</th>

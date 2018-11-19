@@ -149,7 +149,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
+                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('site_id')) ?></div>
                         </td>
                         <td>
                             <div class="data-value"><?php echo $element->site->name ?></div>
@@ -191,7 +191,7 @@
                         </td>
                         <td>
                             <div class="data-value">
-                                <?php echo CHtml::encode($element->total_duration) ?>
+                                <?=\CHtml::encode($element->total_duration) ?>
                             </div>
                         </td>
                     </tr>
@@ -216,7 +216,6 @@
                         <td><div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div></td>
                         <td>
                             <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
-
                         </td>
                     </tr>
                     <?php endif; ?>
@@ -286,7 +285,7 @@
                     <td></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($element->is_golden_patient  && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
+            <?php if (!$this->module->isTheatreDiaryDisabled() && !$this->module->isGoldenPatientDisabled()): ?>
                 <tr>
                     <td>
                         <h3 class="data-title">
@@ -399,7 +398,7 @@
                     <li>
                         Cancelled on <?php echo $booking->NHSDate('booking_cancellation_date'); ?>
                         by <strong><?php echo $booking->usercancelled->FullName; ?></strong>
-                        due to <?php echo CHtml::encode($booking->cancellationReasonWithComment) ?>
+                        due to <?=\CHtml::encode($booking->cancellationReasonWithComment) ?>
                         <?php if ($booking->erod) { ?>
                             <br/><span class="erod">EROD was <?= $booking->erod->getDescription() ?></span>
                         <?php } ?>
@@ -426,7 +425,7 @@
         <section class="element element-data flex-layout">
             <h3 class="data-title cols-2">Cancellation comments</h3>
             <div class="data-value panel comments cols-10">
-                <?php echo CHtml::encode($element->cancellation_comment) ?>
+                <?=\CHtml::encode($element->cancellation_comment) ?>
             </div>
         </section>
     <?php } ?>
@@ -460,7 +459,6 @@ if ($element->isEditable()) {
             if ($element->letterType === 'Invitation') {
                 $this->event_actions[] = EventAction::button('Print Admission form', 'print_admission_form', null, array('class' => 'small button'));
             }
-            $this->event_actions[] = EventAction::printButton();
         }
         if ($this->checkScheduleAccess() && !$td_disabled) {
             $this->event_actions[] = EventAction::link('Schedule now',

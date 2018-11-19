@@ -29,7 +29,7 @@ $key = 0;
   <div>
       <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-          <?php echo CHtml::dropDownList(
+          <?=\CHtml::dropDownList(
               'nearvisualacuity_unit_change',
               @$element->unit_id,
               CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
@@ -59,8 +59,7 @@ $key = 0;
       >
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-9">
-          <table class="cols-full blank near-va-readings"
-                 style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ? 'display: none; ': '' ?> ">
+          <table class="cols-full blank near-va-readings">
             <tbody>
             <?php foreach ($element->{$eye_side.'_readings'} as $reading) {
                 // Adjust currently element readings to match unit steps
@@ -79,8 +78,7 @@ $key = 0;
             }?>
             </tbody>
           </table>
-          <div class="data-group noReadings"
-               style=" <?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'})) ?  '': 'display: none; ' ?>" >
+          <div class="data-group noReadings">
             <div class="cols-8 column">
                 <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
                 <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>

@@ -1,12 +1,12 @@
 <?php if (!$element || !$element->id) { ?>
-  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+  <div class="nil-recorded">Nil recorded</div>
 <?php } else { ?>
     <table class="plain patient-data">
         <tbody>
         <?php if ($element->occupation) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('occupation_id')) ?></td>
-                <td><?php echo CHtml::encode($element->getDisplayOccupation())?></td>
+                <td><?=\CHtml::encode($element->getDisplayOccupation())?></td>
             </tr>
         <?php }
          if ($element->driving_statuses) { ?>
@@ -22,37 +22,37 @@
         if ($element->smoking_status) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('smoking_status_id')) ?></td>
-                <td><?php echo CHtml::encode($element->smoking_status->name)?></td>
+                <td><?=\CHtml::encode($element->smoking_status->name)?></td>
             </tr>
         <?php }
         if ($element->accommodation) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('accommodation_id')) ?></td>
-                <td><?php echo CHtml::encode($element->accommodation->name)?></td>
+                <td><?=\CHtml::encode($element->accommodation->name)?></td>
             </tr>
         <?php }
         if ($element->comments) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('comments')) ?></td>
-                <td><?php echo CHtml::encode($element->comments)?></td>
+                <td><?=\CHtml::encode($element->comments)?></td>
             </tr>
         <?php }
         if (isset($element->carer)) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('carer_id')) ?></td>
-                <td><?php echo CHtml::encode($element->carer->name)?></td>
+                <td><?=\CHtml::encode($element->carer->name)?></td>
             </tr>
         <?php }
         if (isset($element->alcohol_intake)) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('alcohol_intake')) ?></td>
-                <td><?php echo CHtml::encode($element->alcohol_intake)?> units/week</td>
+                <td><?=\CHtml::encode($element->alcohol_intake)?> units/week</td>
             </tr>
         <?php }
         if (isset($element->substance_misuse)) { ?>
             <tr>
                 <td><?= CHtml::encode($element->getAttributeLabel('substance_misuse')) ?></td>
-                <td><?php echo CHtml::encode($element->substance_misuse->name)?></td>
+                <td><?=\CHtml::encode($element->substance_misuse->name)?></td>
             </tr>
         <?php } ?>
         </tbody>

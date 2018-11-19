@@ -15,32 +15,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<br>
-<div class="element-data row clearfix">
-    <div class="data-group">
-        <div class="cols-2 column">
-            <label>Current:</label>
-        </div>
-        <div class="cols-10 column end">
-            <?php foreach ($element->currentOrderedEntries as $entry): ?>
-              <div class="cols-12 column">
-                <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
-              </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <br>
-    <div class="data-group">
-        <div class="cols-2 column">
-            <label>Stopped:</label>
-        </div>
-        <div class="cols-10 column end">
-            <?php foreach ($element->stoppedOrderedEntries as $entry): ?>
-              <div class="cols-12 column">
-                <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
-              </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</div>
+<h4>Current:</h4>
+<table class="borders">
+    <tbody>
+        <?php foreach ($element->currentOrderedEntries as $entry){ ?>
+        <tr>
+            <td><?= $entry->getMedicationDisplay() ?></td>
+            <th><?= $entry->getAdministrationDisplay() ? $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+<h4>Stopped:</h4>
+<table class="borders">
+    <tbody>
+        <?php foreach ($element->stoppedOrderedEntries as $entry){ ?>
+        <tr>
+            <td><?= $entry->getMedicationDisplay() ?></td>
+            <th><?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></th>
+        </tr>
+        <?php } ?>
+    </tbody>
+</table>
 

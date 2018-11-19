@@ -47,7 +47,13 @@ if (!@$no_header) {?>
 	<?php echo $element->renderIntroduction()?>
 </p>
 <p class="accessible"><strong><?php if ($element->re) {?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/", "<br />\nDOB:", CHtml::encode($element->re))?>
-<?php } else {?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, NHS No: <?php echo $element->event->episode->patient->nhsnum?> <?php }?></strong></p>
+<?php } else {
+                if (Yii::app()->params['nhs_num_private'] == true) {
+                    ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?><?php
+                    } else {
+                        ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, <?php echo Yii::app()->params['nhs_num_label']?> No: <?php echo $element->event->episode->patient->nhsnum?> <?php
+                            }
+                }?></strong></p>
 
 <p class="accessible">
 <?php echo $element->renderBody() ?>

@@ -19,7 +19,7 @@
 <?php
 $cross_section_ed = null;
 
-if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
+if ($element->isNewRecord || $element->{$side . '_eyedraw2'} || $element->has_side_view) {
     // only display the cross section eyedraw for elements created after it was introduced
     // legacy records will not have the the eyedraw2 property
     // Having checked it though, we set the value to null, so that it's contents are driven
@@ -28,7 +28,7 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
 
     $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'listenerArray' => array('anteriorSegmentListener'),
-        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
+        'idSuffix' => $side . '_' . $element->elementType->id . '_side',
         'side' => ($side == 'right') ? 'R' : 'L',
         'mode' => 'edit',
         'width' => 198,

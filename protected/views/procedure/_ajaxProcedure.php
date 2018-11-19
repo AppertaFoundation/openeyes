@@ -18,7 +18,7 @@
 ?>
 <tr class="item">
   <td class="procedure">
-    <span class="field"><?php echo CHtml::hiddenField('Procedures_' . $identifier . '[]', $proc->id); ?></span>
+    <span class="field"><?=\CHtml::hiddenField('Procedures_' . $identifier . '[]', $proc->id); ?></span>
     <span class="value"><?php echo $proc->term; ?></span>
   </td>
     <?php if ($durations) { ?>
@@ -28,7 +28,7 @@
     <?php } ?>
   <td>
     <span class="removeProcedure">
-      <i class="oe-i remove-circle small"></i>
+      <i class="oe-i trash"></i>
     </span>
   </td>
 </tr>

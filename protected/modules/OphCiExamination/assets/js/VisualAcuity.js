@@ -22,6 +22,12 @@ $(document).ready(function () {
 
   }
 
+  ($('.va_readings,.near-va-readings').each(function(){
+    if($(this).find('tbody tr').length){
+        $(this).siblings('.noReadings').hide();
+    }
+  }));
+
   $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
@@ -59,10 +65,8 @@ $(document).ready(function () {
         }
       }
 
-      
-      if ($('tbody', activeForm).children('tr').length == 0) {
+      if ($('.va_readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
-        $('table', activeForm).hide();
       }
       else {
         // VA can affect DR
@@ -78,10 +82,8 @@ $(document).ready(function () {
       var activeForm = $(this).closest('.active-form');
 
       $(this).closest('tr').remove();
-
-      if ($('tbody', activeForm).children('tr').length == 0) {
+      if ($('.near-va-readings tbody', activeForm).children('tr').length === 0) {
         $('.noReadings', activeForm).show();
-        $('table', activeForm).hide();
       }
       else {
         // VA can affect DR
@@ -258,13 +260,9 @@ function OphCiExamination_VisualAcuity_addReading(side, selected_data, template,
   }
 
   table.show();
-  var nextMethodId = OphCiExamination_VisualAcuity_getNextMethodId(side, suffix);
-
   $('tbody', table).append(form);
-  $('.method_id', table).last().val(nextMethodId);
 
   OphCiExamination_VisualAcuity_ReadingTooltip(table.find('tr').last());
-
 }
 
 /**

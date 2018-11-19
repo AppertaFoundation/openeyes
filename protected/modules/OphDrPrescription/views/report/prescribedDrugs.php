@@ -114,7 +114,7 @@
       <td>User</td>
       <td>
           <?php if (Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)): ?>
-              <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+              <?=\CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
                   CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---')) ?>
           <?php else: ?>
               <?php

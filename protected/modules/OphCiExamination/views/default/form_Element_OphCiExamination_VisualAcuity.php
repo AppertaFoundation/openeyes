@@ -25,20 +25,21 @@ $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::m
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-	'id', 'name');
+  'id', 'name');
 $key = 0;
 ?>
 <div class="element-both-eyes">
   <div>
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-            <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+            <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+                model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
           if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-              <?php }
+          <?php }
       } ?>
       </div>
 </div>
@@ -65,8 +66,7 @@ if ($cvi_api) {
         >
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full blank va_readings"
-                   style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? 'display: none;': '' ?>" >
+            <table class="cols-full blank va_readings">
               <tbody>
               <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                   // Adjust currently element readings to match unit steps
@@ -85,8 +85,7 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div class="data-group noReadings"
-                style="<?= ($element->isNewRecord || !sizeof($element->{$eye_side .'_readings'}))? '':'display: none;' ?>">
+            <div class="data-group noReadings">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
                       array('text-align' => 'right', 'nowrapper' => true)) ?>
