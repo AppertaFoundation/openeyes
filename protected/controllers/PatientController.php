@@ -1702,6 +1702,11 @@ class PatientController extends BaseController
         $address = new Address();
         $patient_identifiers = $this->getPatientIdentifiers($patient);
 
+        $gpcontact = new Contact();
+        $practicecontact = new Contact();
+        $practiceaddress = new Address();
+        $practice = new Practice();
+
         $this->performAjaxValidation(array($patient, $contact, $address));
 
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
@@ -1723,6 +1728,10 @@ class PatientController extends BaseController
             'contact' => $contact,
             'address' => $address,
             'patient_identifiers' => $patient_identifiers,
+            'gpcontact' => $gpcontact,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice
         ));
    }
 
@@ -1871,6 +1880,10 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
+        $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
+        $practice = isset($patient->practice) ? $patient->practice : new Practice();
+        $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
+        $practiceaddress = isset($practicecontact) && isset($practicecontact->address) ? $practicecontact->address : new Address();
 
         //only local patient can be edited
         if ($patient->is_local == 0) {
@@ -1903,6 +1916,9 @@ class PatientController extends BaseController
             'contact' => $contact,
             'address' => $address,
             'patient_identifiers' => $patient_identifiers,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice
         ));
     }
 
