@@ -220,7 +220,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
       if(drug_id !== '') {
           $.getJSON('/medication/drugdefaults', {drug_id: drug_id}, function (res) {
-              for (var name in res) {
+              for (let name in res) {
                   var $input = $row.find('[name$="[' + name + ']"]');
                   if (name === 'dose') {
                       $input.attr('placeholder', res['dose_unit']);
