@@ -18,15 +18,4 @@ class m181116_163210_remove_city_road_and_satellite_options_admin extends CDbMig
             'default_value' => 'off',
         ));
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
