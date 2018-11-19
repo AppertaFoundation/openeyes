@@ -309,12 +309,13 @@ class Trial extends BaseActiveRecordVersioned
     public static function getTrialList($type)
     {
         if (!$type) {
-            return array();
+            return CHtml::listData(Trial::model()->findAll(), 'id', 'name');
         }
 
-        $trialModels = Trial::model()->findAll('trial_type=:type', array(':trial_type_id' => $type->id));
-
-        return CHtml::listData($trialModels, 'id', 'name');
+        return CHtml::listData(Trial::model()->findAll('trial_type_id=:type', array(':type' => $type)),
+            'id',
+            'name'
+        );
     }
 
     /**
