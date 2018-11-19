@@ -526,8 +526,8 @@ return array(
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
-                'height' => 800,
-                'width' => 600
+                'height' => 912,
+                'width' => 800
             ),
             'event_specific' => array(
                 'Correspondence' => array(
