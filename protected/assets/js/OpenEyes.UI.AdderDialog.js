@@ -392,7 +392,7 @@
       let no_data = !$(results).length;
 
       dialog.searchResultList.empty();
-      dialog.searchResultList.toggle(!no_data);
+      dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
       dialog.noSearchResultsWrapper.toggle(no_data);
 
       if (dialog.options.searchOptions.resultsFilter) {
@@ -423,8 +423,6 @@
             .append($('<span />', {class: 'auto-width'}).text(text));
 
         dialog.searchResultList.append(item);
-      });
-    });
   };
 
   /**
