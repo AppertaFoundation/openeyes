@@ -62,10 +62,11 @@ class PracticeController extends BaseController
      */
     public function actionCreate($context = null)
     {
-                    Yii::log(CVarDumper::dumpAsString($_POST));
+
         $contact = new Contact('manage_practice');
         $address = new Address('manage_practice');
         $practice = new Practice('manage_practice');
+        Yii::log(CVarDumper::dumpAsString($_POST));
         $this->performAjaxValidation(array($practice, $contact, $address));
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
@@ -244,9 +245,10 @@ class PracticeController extends BaseController
      */
     protected function performAjaxValidation($model)
     {
+        Yii::log('Perform Ajax Validation');
 //        Yii::log(CVarDumper::dumpAsString($model));
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
-            Yii::log(CVarDumper::dumpAsString( CActiveForm::validate($model)));
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'practice-form') {
+            Yii::log(CVarDumper::dumpAsString("Here"));
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
