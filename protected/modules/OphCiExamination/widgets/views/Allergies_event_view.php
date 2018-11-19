@@ -1,4 +1,4 @@
-<?php use OEModule\OphCiExamination\models\AllergyEntry; ?>
+<?php use OEModule\OphCiExamination\models\AllergyEntry; use OEModule\OphCiExamination\models\OphCiExaminationAllergy; ?>
 
 <div class="element-data full-width">
     <div class="flex-layout flex-top">
@@ -20,102 +20,155 @@
                     count($entries[(string)AllergyEntry::$PRESENT])
                 );
                 ?>
-              <div id="js-listview-allergies-pro">
-                <?php if(count($entries[(string)AllergyEntry::$PRESENT]) > 0) {?>
-                  <ul class="dot-list large">
-                    <li>Present:</li>
-                      <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
-                        <li><?= $entry->getDisplayAllergy(); ?></li>
-                      <?php endforeach; ?>
-                  </ul>
-                <?php } ?>
-                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>
-                  <ul class="dot-list large">
-                    <li>Not Present:</li>
-                      <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
-                        <li><?= $entry->getDisplayAllergy(); ?></li>
-                      <?php endforeach; ?>
-                  </ul>
-                <?php } ?>
-              </div>
-                <div class="" id="js-listview-allergies-full" style="display: none;">
-                    <table class="last-left large">
+              <div id="js-listview-allergies-pro" class="cols-full listview-pro">
+                    <table class="last-left">
                         <tbody>
-                            <tr class="divider">
-                                <td>Present</td>
+                            <tr>
+                                <td class="nowrap fade">Present</td>
                                 <td>
-                                    <table>
-                                        <colgroup>
-                                            <col class="cols-6">
-                                            <col class="cols-6">
-                                        </colgroup>
-                                        <tbody>
-                                            <?php if(count($entries[(string)AllergyEntry::$PRESENT]) >0){ ?>
-                                                <?php for ($i = 0; $i < $max_iter; $i++) :?>
-                                                    <?php if(isset($entries[(string)AllergyEntry::$PRESENT][$i])){?>
-                                                        <tr>
-                                                            <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy(); ?></td>
-                                                            <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]['comments']; ?></td>
-                                                        </tr>
+                                    <?php if(count($entries[(string)AllergyEntry::$PRESENT]) > 0) {?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
+                                                <li>
+                                                    <?= $entry->getDisplayAllergy(); ?>
+                                                    <?php if($entry['comments'] != ""){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments']; ?>" pro"="" list="" mode"=""></i>
                                                     <?php } ?>
-                                                <?php endfor; ?>
-                                            <?php } else { ?>
-                                                <tr>
-                                                    <td>None</td>
-                                                    <td>None</td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr class="divider">
-                                <td>Unchecked</td>
-                                <td>
-                                    <table>
-                                        <colgroup>
-                                            <col class="cols-6">
-                                            <col class="cols-6">
-                                        </colgroup>
-                                        <tbody>
-                                            <tr>
-                                                <td>None</td>
-                                                <td>None</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Absent</td>
+                                <td class="nowrap fade">Unchecked</td>
                                 <td>
-                                    <table>
-                                        <colgroup>
-                                            <col class="cols-6">
-                                            <col class="cols-6">
-                                        </colgroup>
-                                        <tbody>
-                                            <?php if(count($entries[(string)AllergyEntry::$NOT_PRESENT]) >0){ ?>
-                                                <?php for ($i = 0; $i < $max_iter; $i++) :?>
-                                                    <?php if(isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i])){?>
-                                                        <tr>
-                                                            <td><?= $entries[(string)AllergyEntry::$NOT_PRESENT][$i]->getDisplayAllergy(); ?></td>
-                                                            <td><?= $entries[(string)AllergyEntry::$NOT_PRESENT][$i]['comments']; ?></td>
-                                                        </tr>
+                                    <?php if(count(OphCiExaminationAllergy::unchecked($element->entries[0]['element_id'])) > 0) {?>
+                                        <ul class="dot-list">
+                                            <?php foreach (OphCiExaminationAllergy::unchecked($element->entries[0]['element_id']) as $entry) : ?>
+                                                <li>
+                                                    <?= $entry->name; ?>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="nowrap fade">Absent</td>
+                                <td>
+                                    <?php if(count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0) {?>
+                                        <ul class="dot-list">
+                                            <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
+                                                <li>
+                                                    <?= $entry->getDisplayAllergy(); ?>
+                                                    <?php if($entry['comments'] !== ""){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments']; ?>" pro"="" list="" mode"=""></i>
                                                     <?php } ?>
-                                                <?php endfor; ?>
-                                            <?php } else { ?>
-                                                <tr>
-                                                    <td>None</td>
-                                                    <td>None</td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php } else { ?>
+                                        <span class="none">None</span>
+                                    <?php } ?>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div id="js-listview-allergies-full" class="cols-full listview-full" style="display: none;">
+                    
+                    <div class="flex-layout">
+                    
+                        <div class="cols-2">Present</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody>
+                            <?php if(count($entries[(string)AllergyEntry::$PRESENT]) >0){ ?>
+                                <?php for ($i = 0; $i < $max_iter; $i++) :?>
+                                    <?php if(isset($entries[(string)AllergyEntry::$PRESENT][$i])){?>
+                                        <tr>
+                                            <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy(); ?></td>
+                                            <td><?= ($entries[(string)AllergyEntry::$PRESENT][$i]['comments'] !== "" ? $entries[(string)AllergyEntry::$PRESENT][$i]['comments'] : '<span class="none">None</span>'); ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php endfor; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                    
+                    <hr class="divider">
+                    
+                    
+                     <div class="flex-layout">
+                    
+                        <div class="cols-2">Unchecked</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody>
+                            <?php if(count(OphCiExaminationAllergy::unchecked($element->entries[0]['element_id'])) >0){ ?>
+                                <?php foreach (OphCiExaminationAllergy::unchecked($element->entries[0]['element_id']) as $entry) : ?>
+                                    <tr>
+                                        <td><?= $entry->name; ?></td>
+                                        <td><span class="none">None</span></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?> 
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                    
+                    <hr class="divider">
+                    
+                    <div class="flex-layout">
+                    
+                        <div class="cols-2">Absent</div>
+                    
+                        <table class="last-left">
+                          <colgroup>
+                            <col class="cols-4">
+                          </colgroup>
+                        <tbody> 
+                            <?php if(count($entries[(string)AllergyEntry::$NOT_PRESENT]) >0){ ?>
+                                <?php for ($i = 0; $i < $max_iter; $i++) :?>
+                                    <?php if(isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i])){?>
+                                        <tr>
+                                            <td><?= $entries[(string)AllergyEntry::$NOT_PRESENT][$i]->getDisplayAllergy(); ?></td>
+                                            <td><?= ($entries[(string)AllergyEntry::$NOT_PRESENT][$i]['comments'] !== "" ? $entries[(string)AllergyEntry::$NOT_PRESENT][$i]['comments'] : '<span class="none">None</span>'); ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php endfor; ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td>None</td>
+                                    <td><span class="none">None</span></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                      </table>
+                    </div><!-- .flex-layout -->
+                              
                 </div>
             <?php endif; ?>
         </div>
