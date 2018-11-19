@@ -35,11 +35,11 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $element_errors = $element->getErrors();
 ?>
 
-<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('MedicationManagement.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
     <div class="field-row flex-layout">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="cols-full entries" id="<?= $model_name ?>_entry_table">
+        <table class="cols-full entries js-entry-table" id="<?= $model_name ?>_entry_table">
             <colgroup>
                 <col class="cols-2">
                 <col class="cols-4">
@@ -94,9 +94,9 @@ $element_errors = $element->getErrors();
 
     </div>
     <div class="flex-layout flex-right">
-        <div class="flex-item-bottom">
-            <button class="button hint small primary js-add-select-search pull-right" type="button" id="MedicationManagemenet_open_btn">
-                Add
+        <div class="add-data-actions flex-item-bottom" id="medication-history-popup">
+            <button class="button hint green js-add-select-search" id="mm-add-medication-btn" type="button">
+                <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
     </div>
@@ -129,74 +129,31 @@ $element_errors = $element->getErrors();
     </script>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
 
-        $(".OEModule_OphCiExamination_models_MedicationManagement .js-remove-element").click(function(){
-            // History Medications now should save entries
-            window.HMController.setDoNotSaveEntries(false);
-            // When element is removed, unbind connections to History Meds
-            unregisterElementController(window.MMController, "MMController", "HMController");
-        });
-
-        window.MMController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
+    $(document).ready(function() {
+        window.MMController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
             element: $('#<?=$model_name?>_element'),
-            modelName: "<?=$model_name?>",
+            modelName: '<?=$model_name?>',
+
             onInit: function(controller) {
                 registerElementController(controller, "MMController", "HMController");
-            },
-            onControllerBinded: function(controller, name) {
-                if(name === "HMController") {
-                    this.initRowsFromHistoryElement();
-                }
-            },
-            initRowsFromHistoryElement: function() {
-                <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
-                $.each(window.HMController.$table.find("tbody").find("tr").not(".ignore-for-real"), function(i, e){
-                    var $row = $(e);
-                    var data = window.HMController.getRowData($row);
-
-                    var hidden = $row.hasClass("ignore");
-                    data.hidden = hidden ? 1 : 0;
-
-                    data.is_new = 0;
-                    var newrow = window.MMController.createRow(data);
-                    var $newrow = $(newrow);
-
-                    $newrow.removeClass("new");
-
-                    if(hidden) {
-                        $newrow.addClass("hidden");
-                    }
-
-                    $newrow.find(".trash").remove();
-                    $newrow.appendTo(window.MMController.$table.find("tbody"));
-                    window.HMController.bindEntries($row, $newrow);
-
-                    window.MMController.setRowData($newrow, data);
-
-                    $newrow.find(".rgroup").val("inherited");
-                    window.MMController.initialiseRow($newrow);
-                    window.MMController.switchRowToTextualDisplay($newrow);
-                });
-                <?php endif; ?>
-                window.HMController.setDoNotSaveEntries(true);
-                //this.onAddedEntry();
-            },
-            onAddedEntry: function($row, controller) {
-                /*
-                if(typeof controller.HMController !== "undefined") {
-                    $new_row = controller.HMController.addEntry($row.data("medication_data"), false);
-                    controller.bindEntries($row, $new_row);
-                }
-                */
-            },
-            onRemovedEntry: function($row, controller) {
-                /*
-                $tbody = window.MMController.$table.find("tbody");
-                $tbody.find("tr.divide").removeClass("divider");
-                $tbody.find("tr.new").last().addClass("divider");
-                */
             }
         });
+
+        <?php
+        $medications = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#mm-add-medication-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
+            onReturn: function (adderDialog, selectedItems) {
+                window.MMController.addEntry(selectedItems);
+                return true;
+            },
+            searchOptions: {
+                searchSource:  window.MMController.options.searchSource,
+            }
+        });
+
+
     });
 </script>

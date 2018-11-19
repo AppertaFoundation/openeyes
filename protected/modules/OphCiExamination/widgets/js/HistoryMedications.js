@@ -22,7 +22,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   function HistoryMedicationsController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
-    this.$table = this.$element.find('#OEModule_OphCiExamination_models_HistoryMedications_entry_table');
+    this.$table = this.$element.find('.js-entry-table');
     this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
@@ -71,7 +71,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   };
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
-    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
     this.constructDatepicker('#datepicker_1_'+row_count);
     this.constructDatepicker('#datepicker_2_'+row_count);
   };
@@ -342,7 +342,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.createRow = function(selectedItems)
   {
-    console.log(selectedItems);
     var newRows = [];
     var template = this.templateText;
     var element = this.$element;
