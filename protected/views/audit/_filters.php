@@ -49,21 +49,7 @@
     <h4>Event Types</h4>
     <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
     <h4>User</h4>
-    <?php
-    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-        'id' => 'user',
-        'name' => 'user',
-        'value' => '',
-        'sourceUrl' => array('audit/users'),
-        'options' => array(
-            'minLength' => '3',
-        ),
-        'htmlOptions' => array(
-            'placeholder' => 'Type to search for users...',
-            'class' => 'search cols-full'
-        ),
-    ));
-    ?>
+    <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
     <h4>Hospital Number</h4>
     <?=\CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Hospital Number'))?>
     <h3>Filter by Date</h3>
