@@ -2511,7 +2511,7 @@ class BaseEventTypeController extends BaseModuleController
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
+                array('width' => Yii::app()->params['lightning_viewer']['image_width']));
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
