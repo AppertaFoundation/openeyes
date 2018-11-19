@@ -111,7 +111,15 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
               AND o.status_id = (SELECT id FROM ophtroperationbooking_operation_status WHERE name = 'Completed')
             JOIN ophtroperationnote_procedurelist_procedure_assignment op ON eop.id = op.procedurelist_id
             JOIN proc ON op.proc_id = proc.id
-            AND proc.term = :p_p_value_$this->id";
+            AND proc.term = :p_p_value_$this->id
+            UNION
+            SELECT pa.id
+            FROM patient pa
+            JOIN episode ep ON ep.patient_id = pa.id
+            JOIN event e on ep.id = e.episode_id
+            JOIN et_ophciexamination_pastsurgery eop2 on e.id = eop2.event_id
+            JOIN ophciexamination_pastsurgery_op o3 on eop2.id = o3.element_id
+               AND o3.operation = :p_p_value_$this->id";
 
         if ($this->operation === 'HAS_NOT_HAD'){
             $query = "
