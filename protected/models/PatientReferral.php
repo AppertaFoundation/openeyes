@@ -81,14 +81,15 @@ class PatientReferral extends BaseActiveRecord
    * Populate the model with the main attributes from $FILE.
    * @return bool The beforeSave event.
    */
-  public function beforeSave()
+  protected function beforeSave()
   {
-    if ($file = CUploadedFile::getInstance($this, 'uploadedFile')) {
+    if ($file = CUploadedFile::getInstances($this, 'uploadedFile')) {
       $this->file_size = $file->size;
       $this->file_name = $file->name;
       $this->file_content = file_get_contents($file->tempName);
       $this->file_type = $file->type;
     }
+
     return parent::beforeSave();
   }
 
@@ -102,4 +103,5 @@ class PatientReferral extends BaseActiveRecord
   {
     return parent::model($className);
   }
+
 }

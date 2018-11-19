@@ -49,6 +49,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
+    'htmlOptions' => array('enctype' => 'multipart/form-data'),
+
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -437,7 +439,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
     <div class="row flex-layout flex-right">
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint')); ?>
+            array('class' => 'button green hint', 'id' => 'patient-form-submit-button')); ?>
     </div>
   </div>
 </div>
@@ -463,8 +465,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   });
 </script>
 
-<script>
-
+<script type="text/javascript">
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();
     var last_name = $('#Contact_last_name').val();
@@ -483,4 +484,18 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     }
   }
 
+  var submitted = false;
+  $(document).ready(function () {
+    $("#patient-form").on('submit', function (e) {
+        if (!submitted) {
+          $('#patient-form-submit-button').attr('disabled', true);
+          $('#patient-form-submit-button').addClass('disabled');
+          $('#form-submit-loader').show();
+          submitted = true;
+        } else {
+          e.preventDefault();
+        }
+      }
+    );
+  });
 </script>

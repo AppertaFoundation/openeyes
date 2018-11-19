@@ -1743,13 +1743,23 @@ class PatientController extends BaseController
               $referral->setScenario('self_register');
               break;
             default:
+              $contact->setScenario('manual');
               break;
           }
             // not to be sync with PAS
             $patient->is_local = 1;
 
+
+          // Don't save if the user just changed the "Patient Source"
+          if ($_POST["changePatientSource"] == 0) {
             list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
               $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+          } else {
+            // Return the same page to the user without saving
+            // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
+            $patient->beforeValidate();
+            $patient->beforeSave();
+          }
         }
         if($patient->getIsNewRecord()){
             $patient->hos_num = $patient->autoCompleteHosNum();
@@ -1904,6 +1914,9 @@ class PatientController extends BaseController
                 $patient->validate();
                 $address->validate();
 
+              if (isset($referral)) {
+                $referral->validate();
+              }
                 // remove contact_id validation error
                 $patient->clearErrors('contact_id');
                 $address->clearErrors('contact_id');
