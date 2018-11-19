@@ -38,7 +38,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     addButtonSelector: '.js-add-select-search',
     popup:'#add-to-medication',
     removeButtonSelector: 'i.js-remove',
-    searchSource: '/medication/finddrug',
+    searchSource: '/medicationManagement/findRefMedications',
     routeOptionSource: '/medication/retrieveDrugRouteOptions',
     searchAsTypedPrefix: 'As typed: ',
     drugFieldSelector: 'input[name$="[drug_id]"]',
