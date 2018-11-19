@@ -72,7 +72,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
         $to_prescription = array();
 
         if (array_key_exists('entries', $data)) {
-            foreach ($data['entries'] as $entry_data) {
+            foreach ($data['entries'] as $i => $entry_data) {
                 $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
 
                 if($id && array_key_exists($id, $entries_by_id)) {
@@ -90,6 +90,8 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     $class = $element::$entry_class;
                     $entry = new $class;
                 }
+
+                /** @var \EventMedicationUse $entry */
 
                 foreach (array_merge(
                              $entry->attributeNames(),
@@ -126,16 +128,18 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     $entry->setScenario("to_be_prescribed");
                 }
 
+                $entry->originallyStopped = !array_key_exists("originallyStopped", $entry_data) ? false : (bool)$entry_data['originallyStopped'];
+
                 $entries[] = $entry;
 
             }
 
             $element->entries = $entries;
-
         }
         else {
             $element->entries = array();
         }
+
     }
 
     /**

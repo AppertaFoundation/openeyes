@@ -17,8 +17,6 @@
 
 ?>
 
-<?php /* TODO Rework this view for new meds mgment */ ?>
-
 <?php
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
@@ -34,6 +32,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 	$end_sel_day = $end_sel_month = null;
 	$end_sel_year = date('Y');
 }
+
+/** @var EventMedicationUse $entry */
 ?>
 
 <tr data-key="<?=$row_count?>"
@@ -42,13 +42,14 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= (int)$entry->originallyStopped ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?=$entry->usage_type ?>" />
       <span class="medication-display">
         <span class="medication-name">
           <?= $entry->getMedicationDisplay() ?>
         </span>
       </span>
-		<input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>"/>
+		<input type="hidden" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>"/>
 		<?php if ($entry->originallyStopped) { ?>
 			<i class="oe-i stop small pad"></i>
 		<?php } ?>
@@ -58,7 +59,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 			<input type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>"/>
 			<input type="hidden" name="<?= $field_prefix ?>[frequency_id]" value="<?= $entry->frequency_id ?>"/>
 			<input type="hidden" name="<?= $field_prefix ?>[route_id]" value="<?= $entry->route_id ?>"/>
-			<input type="hidden" name="<?= $field_prefix ?>[option_id]" value="<?= $entry->option_id ?>"/>
+			<input type="hidden" name="<?= $field_prefix ?>[laterality]" value="<?= $entry->laterality ?>"/>
 			<?= $entry->getAdministrationDisplay() ?>
 		</div>
 	</td>

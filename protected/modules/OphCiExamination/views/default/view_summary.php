@@ -42,10 +42,10 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
       <div class="element-data">
           <?php
           $filterEyeMedication = function ($med) {
-              return $med->option !== null;
+              return $med->laterality !== null;
           };
-          $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
-          $stoppedEyeMedications = array_filter($medicationsElement->stoppedOrderedEntries, $filterEyeMedication);
+          $currentEyeMedications = array_filter($medicationsElement->current_entries, $filterEyeMedication);
+          $stoppedEyeMedications = array_filter($medicationsElement->closed_entries, $filterEyeMedication);
           ?>
           <?php if (!$currentEyeMedications && !$stoppedEyeMedications) { ?>
               <div class="data-value not-recorded">
@@ -169,13 +169,13 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
         <?php
 
         $filterSystemicMedication = function ($med) {
-            return $med->option === null;
+            return $med->laterality === null;
         };
 
         $currentSystemicMedications = $medicationsElement ?
-            array_filter($medicationsElement->currentOrderedEntries, $filterSystemicMedication) : [];
+            array_filter($medicationsElement->current_entries, $filterSystemicMedication) : [];
         $stoppedSystemicMedications = $medicationsElement ?
-            array_filter($medicationsElement->stoppedOrderedEntries, $filterSystemicMedication) : [];
+            array_filter($medicationsElement->closed_entries, $filterSystemicMedication) : [];
         ?>
         <?php if (!$currentSystemicMedications && !$stoppedSystemicMedications) { ?>
             <div class="data-value not-recorded">

@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\BaseMedicationWidget;
 
 /**
  * Class HistoryMedicationsEntry - Supports linking to prescription items as shadow records

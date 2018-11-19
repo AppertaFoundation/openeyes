@@ -273,10 +273,14 @@ class RefMedication extends BaseActiveRecordVersioned
         $sets = RefSet::model()->with('refSetRules')->findAll($criteria);
 
         $return = [];
+        $ids = [];
 
         /** @var RefSet[] $sets */
         foreach ($sets as $set) {
             foreach ($set->items as $item) {
+                if(in_array($item->refMedication->id, $ids)) {
+                    continue;
+                }
                 $return[] = array(
                     'label' => $item->refMedication->preferred_term,
                     'value' => $item->refMedication->preferred_term,
@@ -290,6 +294,7 @@ class RefMedication extends BaseActiveRecordVersioned
                     'will_copy' => $item->refMedication->getToBeCopiedIntoMedicationManagement(),
                     'tags' => array()
                 );
+                $ids[] = $item->refMedication->id;
             }
         }
 

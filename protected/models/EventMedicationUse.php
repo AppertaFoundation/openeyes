@@ -24,6 +24,8 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property integer $dispense_condition_id
  * @property string $start_date_string_YYYYMMDD
  * @property string $end_date_string_YYYYMMDD
+ * @property string $start_date
+ * @property string $end_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -61,6 +63,11 @@ class EventMedicationUse extends BaseElement
     public $group;
     public $chk_prescribe;
     public $chk_stop;
+
+    public function getOriginalAttributes()
+    {
+        return $this->originalAttributes;
+    }
 
     public static function getUsageType()
     {
@@ -251,7 +258,7 @@ class EventMedicationUse extends BaseElement
 
     public function getMedicationDisplay($short = false)
     {
-        return $this->ref_medication_id ? ($short ? $this->refMedication->short_term : $this->refMedication->preferred_term) : '';
+        return isset($this->refMedication) ? ($short ? $this->refMedication->short_term : $this->refMedication->preferred_term) : '';
     }
 
     public function routeOptions()
@@ -451,6 +458,15 @@ class EventMedicationUse extends BaseElement
         */
     }
 
+    /**
+     * @inheritdoc
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        $this->updateStateProperties();
+    }
+
     public function loadFromPrescriptionItem($item)
     {
         $this->prescription_item_id = $item->id;
@@ -522,7 +538,4 @@ class EventMedicationUse extends BaseElement
             }
         }
     }
-
-
-
 }

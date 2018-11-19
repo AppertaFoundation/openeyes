@@ -51,7 +51,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                   <td>
                       <?php if($entry->getDoseAndFrequency()) {?>
                           <i class="oe-i info small pro-theme js-has-tooltip"
-                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                             data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                           </i>
                       <?php } ?>
                   </td>
@@ -121,7 +121,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <td>
                         <?php if($entry->getDoseAndFrequency()) {?>
                     <i class="oe-i info small pro-theme js-has-tooltip"
-                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>"
+                       data-tooltip-content="<?= $entry->getDoseAndFrequency() ?>">
                     </i>
                         <?php } ?>
                     </td>

@@ -37,7 +37,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     element: undefined,
     addButtonSelector: '.js-add-select-search',
     popup:'#add-to-medication',
-    removeButtonSelector: 'i.trash',
+    removeButtonSelector: 'i.js-remove',
     searchSource: '/medication/finddrug',
     routeOptionSource: '/medication/retrieveDrugRouteOptions',
     searchAsTypedPrefix: 'As typed: ',
@@ -63,7 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * Setup datepicker
    */
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
-    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
     for (var i=0; i < row_count; i++){
       this.constructDatepicker('#datepicker_1_'+i);
       this.constructDatepicker('#datepicker_2_'+i);
@@ -180,6 +180,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
           $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
+
+      $row.on("click", ".js-meds-stop-btn", function(){
+        var $btn = $(this);
+        var $cell = $btn.closest("td");
+        var $datepicker_wrapper = $cell.find(".js-datepicker-wrapper");
+        var $stop_reason_select = $row.find(".js-stop-reason");
+        $btn.hide();
+        $datepicker_wrapper.show();
+        $stop_reason_select.show();
+      });
+
       controller.setDatepicker();
   };
 
@@ -211,8 +222,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   };
 
+    HistoryMedicationsController.prototype.loadDrugDefaults = function($row, medication)
+    {
+        $row.find(".js-dose").val(medication.dose);
+        $row.find(".js-dose-unit-term").text(medication.dose_unit_term);
+        $row.find(".js-route").val(medication.route);
+    };
 
-  HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
+ /* _HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
       let drug_id = $row.find("input[name*='[drug_id]']").val();
       if(drug_id === ''){
@@ -238,7 +255,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           }
       });
   };
-
+*/
   /**
    * From the tags on the given item, retrieve the associated risks and update the core
    * register accordingly.
@@ -325,19 +342,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.createRow = function(selectedItems)
   {
-
+    console.log(selectedItems);
     var newRows = [];
     var template = this.templateText;
     var element = this.$element;
+    var data;
 
     for (var i in selectedItems) {
       data = {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      if (selectedItems[i]['type'] == 'md'){
-        data['medication_drug_id'] = selectedItems[i]['id'];
-      } else {
-        data['drug_id'] = selectedItems[i]['id'];
-      }
+      data['ref_medication_id'] = selectedItems[i]['id'];
       data['medication_name'] = selectedItems[i]['label'];
       this.processRisks(selectedItems[i]['tags'], selectedItems[i]['label']);
       newRows.push( Mustache.render(
@@ -351,11 +365,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.addEntry = function(selectedItems)
   {
     var rows = this.createRow(selectedItems);
+    var $newrow;
     for(var i in rows){
-      this.$table.children('tbody').append(rows[i]);
+        $newrow = $(rows[i]);
+        $newrow.data("medication", selectedItems[i]);
+        $newrow.appendTo(this.$table.children('tbody'));
       let $lastRow = this.$table.find('tbody tr:last');
       this.initialiseRow($lastRow);
-      this.loadDrugDefaults($lastRow);
+      let medication = $lastRow.data("medication");
+      this.loadDrugDefaults($lastRow, medication);
     }
 
     $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');

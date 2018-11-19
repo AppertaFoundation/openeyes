@@ -59,6 +59,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
         <tbody>
         <?php
         $row_count = 0;
+        $total_count = count($element->entries);
         foreach ($element->entries as $entry) {
             if ($entry->prescription_item_id) {
                 $this->render(
@@ -69,7 +70,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                         'model_name' => $model_name,
                         'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                         'row_count' => $row_count,
-                        'stop_reason_options' => $stop_reason_options
+                        'stop_reason_options' => $stop_reason_options,
+                        'usage_type' => 'OphCiExamination',
                     )
                 );
             } else {
@@ -89,7 +91,8 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                         'direct_edit' => false,
                         'usage_type' => 'OphCiExamination',
                         'row_type' => '',
-                        'is_last' => ($row_count == $total_count - 1)
+                        'is_last' => ($row_count == $total_count - 1),
+                        'is_new' => $entry->getIsNewRecord()
                     )
                 );
             }
@@ -160,14 +163,10 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 
 
       <?php
-       $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+       $medications = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($key, $medication) {
-              return ['label' => $medication['value'], 'id' => $medication['id'] , 'tags' => $medication['tags']];
-          },array_keys($medications),  $medications)
-      ) ?>, {'multiSelect': true})],
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
         return true;
