@@ -113,7 +113,7 @@ $(document).ready(function(){
 
             if(Object.keys(patientMerge.patients.secondary).length === 0){
                 // check if the secondary and primary patient ids are the same
-                if ( patientMerge.patients.primary.id != AutoCompleteResponse.id ){
+                if ( patientMerge.patients.primary.id !== AutoCompleteResponse.id ){
                     patientMerge.patients.secondary = AutoCompleteResponse;
                     patientMerge.updateDOM('secondary');
                     if ( patientMerge.patients.primary.id){
@@ -129,7 +129,7 @@ $(document).ready(function(){
                                       
             } else if (Object.keys(patientMerge.patients.primary).length === 0){
 
-                if ( (patientMerge.patients.secondary.id != AutoCompleteResponse.id) && !(patientMerge.patients.secondary.is_local == 0 && AutoCompleteResponse.is_local == 1) ){
+                if ( (patientMerge.patients.secondary.id !== AutoCompleteResponse.id) && !(patientMerge.patients.secondary.is_local === 0 && AutoCompleteResponse.is_local === 1) ){
                     patientMerge.patients.primary = AutoCompleteResponse;
                     patientMerge.updateDOM('primary');
 
@@ -137,11 +137,11 @@ $(document).ready(function(){
                         patientMerge.validatePatientsData(null, displayConflictMessage);
                     }
 
-                } else if (patientMerge.patients.secondary.id == AutoCompleteResponse.id) {
+                } else if (patientMerge.patients.secondary.id === AutoCompleteResponse.id) {
                     new OpenEyes.UI.Dialog.Alert({
                         content: "Primary and Secondary patient cannot be the same record."
                   }).open();
-                } else if (patientMerge.patients.secondary.is_local == 0 && AutoCompleteResponse.is_local == 1) {
+                } else if (patientMerge.patients.secondary.is_local === 0 && AutoCompleteResponse.is_local === 1) {
                     new OpenEyes.UI.Dialog.Alert({
                         content: "Non local patient cannot be merged into local patient."
                   }).open();
@@ -159,20 +159,20 @@ $(document).ready(function(){
                                 var ui = $(this).data('ui');
 
                                 // cannot be the same patient and the primary patient is not local than we can merge local and non-local patient into primary
-                                if ( (patientMerge.patients.primary.id != AutoCompleteResponse.id && patientMerge.patients.primary.is_local == 0) ||
+                                if ( (patientMerge.patients.primary.id !== AutoCompleteResponse.id && patientMerge.patients.primary.is_local === 0) ||
                                         // if primary patient is local we only merge local pation into it
-                                     (AutoCompleteResponse.is_local == patientMerge.patients.primary.is_local) ){
+                                     (AutoCompleteResponse.is_local === patientMerge.patients.primary.is_local) ){
                                     patientMerge.patients.secondary = AutoCompleteResponse;
                                     patientMerge.updateDOM('secondary');
                                     patientMerge.validatePatientsData(null, displayConflictMessage);
                                     $( this ).dialog( "close" );
 
-                                }else if (patientMerge.patients.primary.id == AutoCompleteResponse.id){
+                                }else if (patientMerge.patients.primary.id === AutoCompleteResponse.id){
                                     $( this ).dialog( "close" );
                                     new OpenEyes.UI.Dialog.Alert({
                                         content: "Primary and Secondary patient cannot be the same record."
                                     }).open();
-                                } else if(AutoCompleteResponse.is_local != patientMerge.patients.primary.is_local){
+                                } else if(AutoCompleteResponse.is_local !== patientMerge.patients.primary.is_local){
                                     //if primary is local then we can only merge local patient into it
                                     new OpenEyes.UI.Dialog.Alert({
                                         content: "Non local patient cannot be merged into local patient."
@@ -187,8 +187,8 @@ $(document).ready(function(){
                             text: 'Primary',
                             click: function(){
                                 var ui = $(this).data('ui');
-                                if ( (patientMerge.patients.secondary.id != AutoCompleteResponse.id && patientMerge.patients.secondary.is_local == 1) ||
-                                     (patientMerge.patients.secondary.is_local == 0 && patientMerge.patients.primary.is_local == 0) ){
+                                if ( (patientMerge.patients.secondary.id !== AutoCompleteResponse.id && patientMerge.patients.secondary.is_local === 1) ||
+                                     (patientMerge.patients.secondary.is_local === 0 && patientMerge.patients.primary.is_local === 0) ){
                                     patientMerge.patients.primary = AutoCompleteResponse;
                                     patientMerge.updateDOM('primary');
                                     patientMerge.validatePatientsData(null, displayConflictMessage);
@@ -216,7 +216,7 @@ $(document).ready(function(){
     
 
     $('#swapPatients').on('click', function(){
-        if( (patientMerge.patients.secondary.is_local == patientMerge.patients.primary.is_local) || patientMerge.patients.secondary.is_local == 0){
+        if( (patientMerge.patients.secondary.is_local === patientMerge.patients.primary.is_local) || patientMerge.patients.secondary.is_local === 0){
             patientMerge.swapPatients();
             patientMerge.updateDOM('primary');
             patientMerge.updateDOM('secondary');
@@ -238,7 +238,7 @@ $(document).ready(function(){
             new OpenEyes.UI.Dialog.Alert({
                 content: "Both Primary and Secondary patients have to be selected."
               }).open();
-        } else if( primary_id == secondary_id ){
+        } else if( primary_id === secondary_id ){
             new OpenEyes.UI.Dialog.Alert({
                 content: "Primary and Secondary patient cannot be the same record."
               }).open();
