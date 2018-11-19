@@ -20,7 +20,7 @@ class AutoCompleteController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('commonDiagnoses', 'commonMedicines', 'commonAllergies'),
+                'actions' => array('commonDiagnoses', 'commonMedicines', 'commonAllergies', 'commonProcedures'),
                 'users' => array('@'),
             ),
         );
@@ -73,6 +73,16 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
         sort($values);
 
         echo CJSON::encode($values);
+    }
+
+    public function actionCommonProcedures($term)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->limit = 30;
+        $criteria->compare('term', $term, true);
+        $procedures = Procedure::model()->findAll($criteria);
+
+        echo CHtml::listData($procedures, 'id', 'term');
     }
 
     /**
