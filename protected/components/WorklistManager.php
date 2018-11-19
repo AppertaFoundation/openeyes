@@ -620,7 +620,10 @@ class WorklistManager extends CComponent
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
-                $worklists[] = $worklist;
+                $worklist_patients = $this->getPatientsForWorklist($worklist);
+                if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
+                    $worklists[] = $worklist;
+                }
             }
         }
 
