@@ -191,6 +191,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $stop_reason_select.show();
       });
 
+      $row.on("click", ".js-btn-prescribe", function () {
+        var $btn = $(this);
+        var $input = $btn.find("input");
+        var $icon = $btn.find("i");
+
+        if($input.val() == "1") {
+            $input.val(0);
+            $icon.css("opacity", "");
+        }
+        else {
+            $input.val(1);
+            $icon.css("opacity", 1);
+        }
+      });
+
       controller.setDatepicker();
   };
 

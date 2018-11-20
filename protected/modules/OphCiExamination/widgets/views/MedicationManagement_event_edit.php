@@ -37,9 +37,9 @@ $element_errors = $element->getErrors();
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('MedicationManagement.js') ?>"></script>
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
-    <div class="field-row flex-layout">
+    <div class="field-row flex-layout cols-10">
         <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
-        <table class="cols-full entries js-entry-table" id="<?= $model_name ?>_entry_table">
+        <table class="cols-full entries js-entry-table" id="<?= $model_name ?>_entry_table cols-full">
             <colgroup>
                 <col class="cols-2">
                 <col class="cols-4">
@@ -53,9 +53,9 @@ $element_errors = $element->getErrors();
             <tr>
                 <th>Drug</th>
                 <th>Dose/frequency/route</th>
-                <th>Started<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
-                <th>Stopped<span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"  data-tooltip-content="Day, Month and Year fields are optional."></span></th>
-                <th>Rx</th>
+                <th>Started</th>
+                <th>Stopped (Optional)</th>
+                <th>Reason</th>
                 <th></th>
             </tr>
             </thead>

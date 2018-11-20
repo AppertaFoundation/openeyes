@@ -347,11 +347,12 @@ class EventMedicationUse extends BaseElement
 
     public function getStartDateDisplay()
     {
-        $res = array();
         if ($this->start_date_string_YYYYMMDD) {
-            $res[] = \Helper::formatFuzzyDate($this->start_date_string_YYYYMMDD);
+            return \Helper::formatFuzzyDate($this->start_date);
         }
-        return implode(' ', $res);
+        else {
+            return "";
+        }
     }
 
     public function getStopDateDisplay()
@@ -362,7 +363,7 @@ class EventMedicationUse extends BaseElement
     public function getEndDateDisplay()
     {
         if ($this->end_date) {
-            return \Helper::formatFuzzyDate($this->end_date_string_YYYYMMDD);
+            return \Helper::formatFuzzyDate($this->end_date);
         } else {
             return '';
         }

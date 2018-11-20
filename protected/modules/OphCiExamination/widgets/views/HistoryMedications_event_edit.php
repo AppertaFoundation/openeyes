@@ -51,7 +51,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
             </th>
             <th></th>
             <th>Start</th>
-            <th>Stopped(Optional)</th>
+            <th>Stopped (Optional)</th>
             <th>Reason</th>
             <th></th>
         </tr>

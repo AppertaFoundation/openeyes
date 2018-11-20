@@ -18,59 +18,39 @@
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
 
-<div class="element-data" id="<?=$el_id?>">
-    <div class="row continued-kind">
-        <div class="large-2 column">
-            <label style="white-space: nowrap;">Continued:</label>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value current">
-                <?php if (!empty($entries = $element->getContinuedEntries())) { ?>
-                    <ul class="comma-list">
-                        <?php foreach ($entries as $entry) { ?>
-                            <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                        <?php } ?>
-                    </ul>
-                <?php } else { ?>
-                    No continued medications.
-                <?php } ?>
+<section class="element view-Eye-Medications tile "
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Medication Management"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+    <?php foreach (array("Continued", "Stopped", "Prescribed") as $section): ?>
+        <?php $method = "get{$section}Entries"; ?>
+        <?php if (!empty($entries = $element->$method())): ?>
+            <div class="element-data">
+                <div class="data-value">
+                    <div class="tile-data overflow">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col width="55px">
+                                <col width="85px">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th><?php echo $section; ?></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($entries as $entry): ?>
+                                <?php echo $this->render('MedicationManagementEntry_event_view', ['entry' => $entry]); ?>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row stopped-kind">
-        <div class="large-2 column">
-            <label style="white-space: nowrap;">Stopped:</label>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value stopped">
-                <?php if (!empty($entries = $element->getStoppedEntries())) { ?>
-                    <ul class="comma-list">
-                        <?php foreach ($entries as $entry) { ?>
-                            <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                        <?php } ?>
-                    </ul>
-                <?php } else { ?>
-                    No stopped medications.
-                <?php } ?>
-            </div>
-        </div>
-    </div>
-    <div class="row prescribed-kind">
-        <div class="large-2 column">
-            <label style="white-space: nowrap;">Prescribed:</label>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value prescribed">
-                <?php if (!empty($entries = $element->getPrescribedEntries())) { ?>
-                    <ul class="comma-list">
-                        <?php foreach ($entries as $entry) { ?>
-                            <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                        <?php } ?>
-                    </ul>
-                <?php } else { ?>
-                    No prescribed medications.
-                <?php } ?>
-            </div>
-        </div>
-    </div>
-</div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</section>
