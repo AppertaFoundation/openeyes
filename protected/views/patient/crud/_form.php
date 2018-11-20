@@ -390,9 +390,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                              style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
                             <ul class="oe-multi-select js-selected_practice">
                                 <li>
-                  <span class="js-name">
-                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
-                  </span>
+                                  <span class="name">
+                                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
+                                  </span>
                                     <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                                 </li>
                             </ul>
@@ -422,8 +422,9 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 $practicecontact = new Contact('manage_practice');
 $practiceaddress = new Address('manage_practice');
 $practice = new Practice('manage_practice');
-
-$this->renderPartial('../practice/create_new_practice', array('model' => $practicecontact, 'practice'=> $practice, 'practiceaddress'=>$practiceaddress ,'context' => 'AJAX'), false);
+$this->renderPartial('../practice/create_practice_form',
+    array('model'=>$practice, 'address'=>$practiceaddress, 'contact'=>$practicecontact, 'context'=>'AJAX')
+);
 
 ?>
 <script>

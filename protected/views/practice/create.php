@@ -3,12 +3,14 @@
 /* @var $model Practice */
 $this->pageTitle = 'Create Practice';
 ?>
-<h1 class="badge">Practice</h1>
-<div class="box content admin-content">
-  <div class="large-10 column content admin large-centered">
-    <div class="box admin">
-      <h1 class="text-center">Create Practice</h1>
+<div>
+    <div class="oe-full-header flex-layout">
+        <div class="title wordcaps">
+            Add <b>Practice</b>
+        </div>
+    </div>
+    <div class="oe-full-content oe-new-patient flex-layout flex-top">
         <?php $this->renderPartial('_form', array('model' => $model, 'address' => $address,'contact' => $contact)); ?>
     </div>
-  </div>
 </div>
+
