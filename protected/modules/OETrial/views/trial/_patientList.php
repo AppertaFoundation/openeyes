@@ -23,7 +23,9 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
     <div class="flex-layout">
         <h2 class=""><?= $title; ?></h2>
         <select class="js-trails-sort-selector">
-            <option selected disabled value="" style="display: none;">Sort by</option>
+            <option selected disabled value="" style="display: none;">
+                Sorting by <?= $sort_by?> <?= $sort_dir ? 'ascending' : 'descending'?>&nbsp;
+            </option>
             <?php
             $columns = array(
                 'Name',
@@ -45,9 +47,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <?php
                 $new_sort_dir = ($field === $sort_by) ? 1 - $sort_dir : 0;
                 $sort_symbol = '';
-                \Yii::log("sort by: " . $sort_by . ", field: " . $field);
                 if ($field === $sort_by) {
-                    \Yii::log("sort by this field");
                     $sort_symbol = $sort_dir === 1 ? '&#x25BC;' /* down arrow */ : '&#x25B2;'; /* up arrow */
                 }
                 ?>
