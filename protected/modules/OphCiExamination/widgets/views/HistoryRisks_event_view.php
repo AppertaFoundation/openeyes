@@ -36,14 +36,14 @@
                 <?php
                     $anticoagulants = false;
                     $alphablockers = false;
-                    if (in_array("Anticoagulants",$element->getEntriesDisplay('present')) or in_array("Anticoagulants", $element->getEntriesDisplay('not_present')) ) {
+                    if (in_array("Anticoagulants",$element->getEntriesDisplay('present')) || in_array("Anticoagulants", $element->getEntriesDisplay('not_present')) ) {
                         $anticoagulants= true;
                     }
-                    if (in_array("Alpha blockers", $element->getEntriesDisplay('present')) or in_array("Alpha blockers", $element->getEntriesDisplay('not_present')) ) {
+                    if (in_array("Alpha blockers", $element->getEntriesDisplay('present')) || in_array("Alpha blockers", $element->getEntriesDisplay('not_present')) ) {
                         $alphablockers = true;
                     }
 
-                if ($anticoagulants == false and $alphablockers == false) {
+                if ($anticoagulants == false && $alphablockers == false) {
                     $not_checked_required_risks[] = 'Anticoagulants';
                     $not_checked_required_risks[] = 'Anti Blockers';
                 } elseif ($anticoagulants == false) {
