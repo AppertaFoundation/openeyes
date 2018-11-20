@@ -100,7 +100,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
             throw new CHttpException(400, 'Invalid operator specified.');
         }
 
-        \Yii::log("got this far");
         $query = "
             SELECT pa.id
             FROM patient pa
@@ -130,7 +129,6 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
                 )";
         }
 
-        \Yii::log($query);
         return $query;
     }
 
