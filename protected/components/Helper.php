@@ -111,14 +111,8 @@ class Helper
     public static function convertDate2HTML($value, $empty_string = '-')
     {
         $time = strtotime($value);
-        $full_date = strlen($value) > 4;
-
-        $day = $full_date ? '<span class="day">'.date('j', $time).'</span>' : '';
-        $month = $full_date ? '<span class="mth">'.date('M', $time).'</span>' : '';
-        $year = '<span class="yr">'.date('Y', $time).'</span>';
-
         if ($time !== false) {
-            return $day . $month . $year;
+            return '<span class="day">'.date('j', $time).'</span><span class="mth">'.date('M', $time).'</span><span class="yr">'.date('Y', $time).'</span>';
         } else {
             return $empty_string;
         }
