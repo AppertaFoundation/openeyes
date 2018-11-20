@@ -36,12 +36,21 @@
                 <?php
                     $anticoagulants = false;
                     $alphablockers = false;
-                    if (in_array("Anticoagulants - Present", $element->present) or in_array("Anticoagulants - Not present", $element->not_present) ) {
+                    if (in_array("Anticoagulants",$element->getEntriesDisplay('present')) or in_array("Anticoagulants", $element->getEntriesDisplay('not_present')) ) {
                         $anticoagulants= true;
                     }
-                    if (in_array("Alpha blockers - Present", $element->present) or in_array("Alpha blockers - Not present", $element->not_present) ) {
+                    if (in_array("Alpha blockers", $element->getEntriesDisplay('present')) or in_array("Alpha blockers", $element->getEntriesDisplay('not_present')) ) {
                         $alphablockers = true;
                     }
+
+                if ($anticoagulants == false and $alphablockers == false) {
+                    $not_checked_required_risks[] = 'Anticoagulants';
+                    $not_checked_required_risks[] = 'Anti Blockers';
+                } elseif ($anticoagulants == false) {
+                    $not_checked_required_risks[] = 'Anticoagulants';
+                } elseif ($alphablockers == false) {
+                    $not_checked_required_risks[] = 'Alpha blockers';
+                }
                 ?>
                 <ul class="dot-list large">
                     <?php if ($element->present) {?>
@@ -49,22 +58,6 @@
                         <?php foreach ($element->getEntriesDisplay('present') as $entry){ ?>
                         <li><?= $entry ?></li>
                      <?php }; } ?>
-                </ul>
-              <ul class="dot-list large">
-                  <?php if ($element->not_checked) { ?>
-                    <li>Not Checked:</li>
-                    <?php foreach ($element->getEntriesDisplay('not_checked') as $entry){ ?>
-                        <li><?= $entry ?></li>
-                      <?php };
-                  } else {
-                      if ($anticoagulants == false and $alphablockers == false) {
-                          echo 'Anticoagulants, Anti Blockers : Not Checked';
-                      } elseif ($anticoagulants == false) {
-                          echo 'Anticoagulants : Not Checked';
-                      } elseif ($alphablockers == false) {
-                          echo 'Alpha blockers : Not Checked';
-                      }
-                  } ?>
                 </ul>
               <ul class="dot-list large">
                   <?php if ($element->not_present) { ?>
@@ -96,7 +89,10 @@
                     <?php } ?></td>
                 <td><?php if ($element->not_checked) { ?>
                     <span class="large-text"><?= implode('<br>', $element->getEntriesDisplay('not_checked')) ?></span>
-                    <?php } ?></td>
+                    <?php } else if (isset($not_checked_required_risks) && is_array($not_checked_required_risks)){ ?>
+                    <span class="large-text"><?= implode('<br>', $not_checked_required_risks) ?></span>
+                    <?php } ?>
+                </td>
                 <td> <?php if ($element->not_present) { ?>
                     <span class="large-text"><?= implode('<br>',$element->getEntriesDisplay('not_present'))?></span>
                     <?php } ?></td>
