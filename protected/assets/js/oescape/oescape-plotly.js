@@ -36,14 +36,16 @@ var layout_plotly = {
   autosize: false,
   height: 800,
   margin:{
-    l:50,
+    l:70,
     t:30,
+    b: 50,
     pad:4,
   },
   paper_bgcolor: '#141e2b',
   plot_bgcolor: '#141e2b',
   /* legend settings */
   showlegend: true,
+  hoverdistance: -1,
   legend: {
     x: 0 ,
     y: 1.1,
@@ -55,6 +57,7 @@ var layout_plotly = {
     },
   },
   hovermode: 'closest',
+  spikedistance: -1,
   xaxis: {
     showgrid: false,
     /*Ticks setting*/

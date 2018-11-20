@@ -264,12 +264,24 @@
         'CataractComplicationsReport': function(data){
           var chart = $('#CataractComplicationsReport')[0];
           chart.data[0]['x'] = data.map(function (item) {
-            if (item['y']) {
-              return item['y'];
+            if (item['total']) {
+              return item['total'];
             } else {
               return 0;
             }
           });
+
+          chart.data[0]['hovertext'] = data.map((item, index) => {
+            if (item['total']){
+              return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
+                chart.layout['yaxis']['ticktext'][index] +
+                '<br><i>Percentage:</i> '+ item['y'].toFixed(2) +
+                '%<br>Total Operations: '+ item['total'];
+            } else {
+              return '';
+            }
+          });
+
             $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
@@ -277,14 +289,15 @@
                     chart.layout['title'] =  'Complication Profile<br>' +
                       '<sub>Total Complications: '+ data[0] +
                       ' Total Operations: ' + data[1] + '</sub>';
+                  Plotly.redraw(chart);
                 }
             });
+
           Plotly.redraw(chart);
 
         },
         'OEModule_OphCiExamination_components_VisualOutcomeReport':function(data){
           var chart = $('#OEModule_OphCiExamination_components_VisualOutcomeReport')[0];
-          console.log(chart);
             var months = $('#visual-acuity-months').val();
             var type = $('input[name="type"]:checked').val();
             var type_text = type.charAt(0).toUpperCase() + type.slice(1);
@@ -300,16 +313,16 @@
             chart.layout['title'] = 'Visual Acuity ('+ type_text +')<br><sub>Total Eyes: ' + total +'</sub>';
             chart.layout['yaxis']['title'] = 'Visual acuity '+months+' months'+ (months > 1 ? 's' : '') +' after surgery (LogMAR)';
 
-            chart.data[0]['x'] = data.map(function (item){
+            chart.data[1]['x'] = data.map(function (item){
               return item[0];
             });
-            chart.data[0]['y'] = data.map(function (item){
+            chart.data[1]['y'] = data.map(function (item){
               return item[1];
             });
-            chart.data[0]['text'] = data.map(function (item){
+            chart.data[1]['text'] = data.map(function (item){
               return item[2];
             });
-            chart.data[0]['hovertext'] = data.map(function (item){
+            chart.data[1]['hovertext'] = data.map(function (item){
               return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
             });
             Plotly.redraw(chart);

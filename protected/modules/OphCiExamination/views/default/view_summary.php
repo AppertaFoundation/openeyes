@@ -47,7 +47,7 @@ $socialHistoryElement = $this->event->getElementByClass(models\SocialHistory::cl
           $currentEyeMedications = array_filter($medicationsElement->currentOrderedEntries, $filterEyeMedication);
           $stoppedEyeMedications = array_filter($medicationsElement->stoppedOrderedEntries, $filterEyeMedication);
           ?>
-          <?php if (!$currentEyeMedications) { ?>
+          <?php if (!$currentEyeMedications && !$stoppedEyeMedications) { ?>
               <div class="data-value not-recorded">
                   No medications recorded during this encounter
               </div>

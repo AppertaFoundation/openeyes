@@ -50,6 +50,7 @@ if (!isset($values)) {
             <?=$values['disorder_display'];?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
             <input type="hidden" name="<?= $field_prefix ?>[disorder_id]" value="<?=$values['disorder_id'] ?>" />
+            <input type="hidden" name="diabetic_diagnoses[]" value="<?= isset($values['is_diabetes']) ? $values['is_diabetes'] : 'false'?>" />
         </td>
 
         <td id="<?="{$model_name}_{$row_count}_checked_status"?>">

@@ -19,7 +19,7 @@
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
@@ -392,26 +392,7 @@ $creating = isset($creating) ? $creating : false;
                 From
               </td>
               <td>
-                  <?php
-                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                      'id' => 'OphCoCorrespondence_footerAutoComplete',
-                      'name' => 'OphCoCorrespondence_footerAutoComplete',
-                      'value' => '',
-                      'sourceUrl' => array('default/users/correspondence-footer/true'),
-                      'options' => array(
-                          'minLength' => '3',
-                          'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
-									$('#OphCoCorrespondence_footerAutoComplete').val('');
-									return false;
-								}",
-                      ),
-                      'htmlOptions' => array(
-                          'placeholder' => 'type to search for users',
-                          'class' => 'cols-full search',
-                      ),
-                  ));
-                  ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                   <?php echo $form->textArea($element, 'footer',
                       array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
               </td>
@@ -528,6 +509,15 @@ $creating = isset($creating) ? $creating : false;
         "ElementLetter_body",
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + 'users/correspondence-footer/true',
+      onSelect: function(){
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+      }
+    });
   });
 </script>
 

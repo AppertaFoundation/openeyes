@@ -101,8 +101,9 @@ $el_model_name = CHtml::modelName($element);
       </td>
     </tr>
     <tr>
-      <td class="<?=(!array_key_exists($element->{$eye . '_diagnosis1_id'}, $l2_disorders))?'hidden':''?> flex-layout flex-top"
-          id="<?php echo $eye ?>_diagnosis2_wrapper" style="height: auto"
+      <td class="flex-layout flex-top"
+          id="<?php echo $eye ?>_diagnosis2_wrapper"
+          style="height: auto; <?=(!array_key_exists($element->{$eye . '_diagnosis1_id'}, $l2_disorders))?' display:none;':''?>"
       >
         <div>
           <label>Associated with:</label>

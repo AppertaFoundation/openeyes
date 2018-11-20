@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 /**
  * @var $form BaseEventTypeCActiveForm
  * @var $macro LetterMacro
@@ -56,20 +56,19 @@ if (isset($macro->letter_type) && $macro->letter_type->name === 'Internal Referr
 $recipients_data = $recipients_data + $none_option;
 ?>
 
-<div class="cols-8 column">
+<div class="cols-10 column">
     <table class="standard" id="to_location_sites_grid">
-        <thead>
         <colgroup>
             <col class="cols-1">
-            <col class="cols-1">
+            <col class="cols-2">
             <col class="cols-1">
             <col class="cols-1">
         </colgroup>
-        </thead>
+
         <tbody>
         <tr>
             <td>Type</td>
-            <td colspan="3">
+            <td>
                 <?php echo $form->dropDownList(
                     $macro,
                     'type',
@@ -77,10 +76,12 @@ $recipients_data = $recipients_data + $none_option;
                     array('empty' => '- Type -', 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>Letter Type</td>
-            <td colspan="3">
+            <td>
                 <?php echo $form->dropDownList(
                     $macro,
                     'letter_type_id',
@@ -88,10 +89,12 @@ $recipients_data = $recipients_data + $none_option;
                     array('empty' => '- Letter type -', 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td id="LetterMacro_type_dropdown"></td>
-            <td colspan="3">
+            <td>
                 <?=\CHtml::activeDropDownList(
                     $macro,
                     'site_id',
@@ -114,16 +117,20 @@ $recipients_data = $recipients_data + $none_option;
                     $macro->type != 'firm'
                 ) ?>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>Name</td>
-            <td colspan="3">
+            <td colspan="2">
                 <?php echo $form->textField(
                     $macro,
                     'name',
                     array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
+
+            <td></td>
         </tr>
         <tr>
             <td>Default recipient</td>
@@ -142,14 +149,18 @@ $recipients_data = $recipients_data + $none_option;
             </td>
         </tr>
         <tr>
-            <td><?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right')) ?></td>
-            <td><?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right')) ?></td>
-            <td><?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right')) ?></td>
-            <td><?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right')) ?></td>
+            <td></td>
+            <td colspan="2">
+                <?php echo $form->checkBox($macro, 'cc_patient', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'cc_doctor', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'cc_drss', array('text-align' => 'right', 'nowrapper' => true)) ?>
+                <?php echo $form->checkBox($macro, 'use_nickname', array('text-align' => 'right', 'nowrapper' => true)) ?>
+            </td>
+            <td></td>
         </tr>
         <tr>
             <td>Episode status</td>
-            <td colspan="3">
+            <td>
                 <?php echo $form->dropDownList(
                     $macro,
                     'episode_status_id',
@@ -157,22 +168,19 @@ $recipients_data = $recipients_data + $none_option;
                     array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td colspan="4">
-                <?php echo $form->textArea(
-                    $macro,
-                    'body',
-                    array(),
-                    false,
-                    array(),
-                    array('field' => 10, 'class' => 'cols-full', 'nowrapper' => true,)
-                ) ?>
+                <?=$macro->getAttributeLabel('body')?><br /><br />
+                <?=\CHtml::activeTextField($macro, 'body', ['class' => 'cols-full']);?>
             </td>
+
         </tr>
         <tr>
             <td>Add shortcode</td>
-            <td colspan="3">
+            <td colspan="2">
                 <?=\CHtml::dropDownList(
                     'shortcode',
                     '',
@@ -184,6 +192,7 @@ $recipients_data = $recipients_data + $none_option;
                     array('empty' => '- Select -', 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
+            <td></td>
         </tr>
         </tbody>
     </table>

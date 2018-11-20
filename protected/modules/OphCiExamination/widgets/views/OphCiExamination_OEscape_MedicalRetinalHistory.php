@@ -64,15 +64,14 @@
 
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
-    var flag_height = 20;
+    var flag_height = 5;
     var flag_width = 8;
-    var flag_height_perc = 0.8
+    var flag_height_perc = 0.8;
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
       layout_MR['shapes'] = [];
       layout_MR['annotations'] = [];
-      layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
       layout_MR['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
       layout_MR['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
       layout_MR['xaxis']['rangeslider'] = {};
@@ -96,6 +95,11 @@
         hoverlabel: trace_hoverlabel,
         yaxis: 'y',
         type: 'scatter',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       };
 
       var trace2 = {
@@ -113,6 +117,11 @@
         hoverinfo: 'text',
         hoverlabel: trace_hoverlabel,
         yaxis: 'y2',
+        mode: 'lines+markers',
+        marker: {
+          symbol: 'circle',
+          size: 10,
+        },
       };
 
 
@@ -125,15 +134,17 @@
       }
       crt_yaxis['dtick'] = Math.round((crt_yaxis['range'][1]-crt_yaxis['range'][0])/10);
       crt_yaxis['overlaying'] = 'y';
-      layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
 
 
       var j = Object.keys(injections_data[side]).length+1;
       flags_yaxis['range'] = [0, flag_height*j];
-      flags_yaxis['domain'] = [0, 0.08*j];
+      flags_yaxis['domain'] = [0, 0.04*j];
       flags_yaxis['ticktext'] = [];
       flags_yaxis['tickvals'] = [];
 
+
+      va_yaxis['domain'] = [0.04*j+0.1, 1];
+      crt_yaxis['domain'] = [0.04*j+0.1, 1];
       var text = {
         showlegend: false,
         x:[],
@@ -149,7 +160,7 @@
 
       for (var key in injections_data[side]){
         flags_yaxis['ticktext'].push(key);
-        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
+        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
         for (var i in injections_data[side][key]) {
           text['x'].push(new Date(injections_data[side][key][i]['x']));
@@ -170,8 +181,8 @@
       }
 
       //set the flags for letters >5
-      flags_yaxis['ticktext'].push('>5');
-      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
+      flags_yaxis['ticktext'].push('>5 lines lost');
+      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
@@ -189,6 +200,8 @@
         layout_MR['shapes'].push(setMRFlags_options(line_shape));
       }
       layout_MR['yaxis3'] = setYAxis_MR(flags_yaxis);
+      layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
+      layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
 
       var data =[trace1, trace2, text];
 
@@ -215,9 +228,6 @@
         };
         currentPlot.layout.shapes.push(setMRFlags_options(inj_background));
       }
-
-      Plotly.relayout(currentPlot);
-
 
       layout_MR['shapes'].push(setMRFlags_options(inj_background));
       currentPlot.on('plotly_hover', function (data) {

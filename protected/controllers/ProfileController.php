@@ -33,7 +33,6 @@ class ProfileController extends BaseController
         if (!Yii::app()->params['profile_user_can_edit']) {
             $this->redirect('/');
         }
-        Yii::app()->assetManager->registerCssFile('css/admin.css');
         Yii::app()->assetManager->registerScriptFile('js/profile.js');
         $this->jsVars['items_per_page'] = $this->items_per_page;
 
