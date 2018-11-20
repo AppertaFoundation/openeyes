@@ -111,6 +111,10 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
         $btn.addClass('spinner as-icon');
         $btn.removeClass('tick');
 
+        // remove tooltip
+        $btn.mouseout();
+        $btn.removeClass('js-has-tooltip');
+
         $.ajax({
             url: url,
             data: {noRedirect: 1},
@@ -120,7 +124,7 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
                 } else {
                     $closestTr.removeClass('unread').addClass('read');
                 }
-                $btn.remove();
+                $btn.parent().remove();
 
                 // update message count in folder section
                 updateSideFolders(JSON.parse(result));
