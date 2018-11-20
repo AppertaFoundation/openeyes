@@ -129,96 +129,96 @@
       e.preventDefault();
     });
 
-        function getFirstImageToLoadIndex(index, imageCount) {
-            let halfImageCount = imageCount / 2;
-            if (halfImageCount >= index) {
-                return 1;
-            } else {
-                return index - halfImageCount;
-            }
-        }
+      function getFirstImageToLoadIndex(index, imageCount) {
+          let halfImageCount = imageCount / 2;
+          if (halfImageCount >= index) {
+              return 1;
+          } else {
+              return index - halfImageCount;
+          }
+      }
 
-        function loadClosestImages(index, numberOfImagesToLoad) {
-            let startingIndex = getFirstImageToLoadIndex(index, numberOfImagesToLoad);
-            let lastImageIndex = startingIndex + numberOfImagesToLoad;
-            let $screenshots = $('.oe-event-quickview .quickview-screenshots');
-            let $loader = $('.oe-event-quickview .spinner');
+      function loadClosestImages(index, numberOfImagesToLoad) {
+          let startingIndex = getFirstImageToLoadIndex(index, numberOfImagesToLoad);
+          let lastImageIndex = startingIndex + numberOfImagesToLoad;
+          let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+          let $loader = $('.oe-event-quickview .spinner');
 
-            for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
-                let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
-                if ($image && $image.data('src')) {
-                    $image.load(function () {
-                        $image.attr('data-loaded', true);
-                        if ($image.css('display') !== 'none') {
-                            $loader.hide();
-                        }
-                    });
-                    $image.attr('src', $image.data('src'));
-                }
-            }
-        }
+          for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
+              let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
+              if ($image && $image.data('src')) {
+                  $image.load(function () {
+                      $image.data('loaded', true);
+                      if ($image.css('display') !== 'none') {
+                          $loader.hide();
+                      }
+                  });
+                  $image.attr('src', $image.data('src'));
+              }
+          }
+      }
 
-        self.element.on('mouseenter', '.event-type', function (e) {
-      var $iconHover = $(e.target);
-      var $li = $iconHover.parent().parents('li:first');
-      $li.find('.quicklook').show();
+      self.element.on('mouseenter', '.event-type', function (e) {
+          var $iconHover = $(e.target);
+          var $li = $iconHover.parent().parents('li:first');
+          $li.find('.quicklook').show();
 
-      var $screenshots = $('.oe-event-quickview .quickview-screenshots');
-      $screenshots.find('img').hide();
-      var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
-      var $loader = $('.oe-event-quickview .spinner');
-      var $noImage = $('.oe-event-quickview .quickview-no-data-found').hide();
+          var $screenshots = $('.oe-event-quickview .quickview-screenshots');
+          $screenshots.find('img').hide();
+          var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
+          var $loader = $('.oe-event-quickview .spinner');
+          var $noImage = $('.oe-event-quickview .quickview-no-data-found').hide();
 
-      $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
-      $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
-      $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
-        $(this).show();
+          $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
+          $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
+          $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
+              $(this).show();
+          });
+
+          if ($li.data('event-image-url')) {
+              if (!$img.data('loaded')) {
+                  $loader.show();
+              } else {
+                  $loader.hide();
+              }
+              $img.load(function () {
+                  $img.data('loaded', true);
+                  if ($img.css('display') !== 'none') {
+                      $loader.hide();
+                  }
+              });
+              $img.attr('src', $img.data('src'));
+              $img.show();
+          } else {
+              if (self.imageLookupRequest) {
+                  self.imageLookupRequest.abort();
+              }
+
+              $img.hide();
+              $loader.show();
+
+              // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
+              // So we'll send an ajax request to try and get the url of the image
+              self.imageLookupRequest = $.ajax({
+                  type: 'GET',
+                  url: '/eventImage/getImageUrl',
+                  data: {'event_id': $li.data('event-id')},
+              }).success(function (response) {
+                  if (response) {
+                      // if that URL exists, then set up the image
+                      $li.data('event-image-url', response);
+                      $img.attr('src', response);
+                      $img.show();
+                  } else {
+                      // Otherwise display a message in place of the image
+                      $noImage.show();
+                  }
+              }).complete(function () {
+                  $loader.hide();
+              });
+          }
+          loadClosestImages($img.data('index'), 10);
       });
-
-        if ($li.data('event-image-url')) {
-            if (!$img.data('loaded')) {
-                $loader.show();
-            } else {
-                $loader.hide();
-            }
-            $img.load(function () {
-                $img.attr('data-loaded', true);
-                if ($img.css('display') !== 'none') {
-                    $loader.hide();
-                }
-            });
-            $img.attr('src', $img.data('src'));
-            $img.show();
-        } else {
-            if (self.imageLookupRequest) {
-                self.imageLookupRequest.abort();
-            }
-
-            $img.hide();
-            $loader.show();
-
-            // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
-            // So we'll send an ajax request to try and get the url of the image
-            self.imageLookupRequest = $.ajax({
-                type: 'GET',
-                url: '/eventImage/getImageUrl',
-                data: {'event_id': $li.data('event-id')},
-            }).success(function (response) {
-                if (response) {
-                    // if that URL exists, then set up the image
-                    $li.data('event-image-url', response);
-                    $img.attr('src', response);
-                    $img.show();
-                } else {
-                    // Otherwise display a message in place of the image
-                    $noImage.show();
-                }
-            }).complete(function () {
-                $loader.hide();
-            });
-        }
-        loadClosestImages($img.data('index') , 10);
-    });
 
     self.element.on('mouseleave', '.event-type', function (e) {
       var $iconHover = $(e.target);
