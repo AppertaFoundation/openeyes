@@ -142,7 +142,6 @@
           let startingIndex = getFirstImageToLoadIndex(index, numberOfImagesToLoad);
           let lastImageIndex = startingIndex + numberOfImagesToLoad;
           let $screenshots = $('.oe-event-quickview .quickview-screenshots');
-          let $loader = $('.oe-event-quickview .spinner');
 
           for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
               let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
@@ -156,7 +155,6 @@
           let $screenshots = $('.oe-event-quickview .quickview-screenshots');
           let $loader = $('.oe-event-quickview .spinner');
           $screenshots.find('img').each(function () {
-              console.log('byba');
               $(this).load(function () {
                   $(this).data('loaded', true);
                   if ($(this).css('display') !== 'none') {
