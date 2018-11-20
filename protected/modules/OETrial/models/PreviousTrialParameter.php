@@ -123,21 +123,6 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 <p class="parameter-option">treatment</p>
             </span>
         </div>
-        <div class="row field-row treatment-type-container"
-           <?php if ($this->trialType && $this->trialType->code === TrialType::NON_INTERVENTION_CODE): ?>style="display:none;" <?php endif; ?>>
-            <div class="large-2 column">&nbsp;</div>
-            <div class="large-2 column">
-                <p style="float: right; margin: 5px">with</p>
-            </div>
-            <div class="large-3 column">
-                <?php echo CHtml::activeDropDownList($this, "[$id]treatmentType", TreatmentType::getOptions(),
-                    array('empty' => 'Any')); ?>
-            </div>
-            <div class="large-3 column end">
-                <p style="margin: 5px">treatment</p>
-            </div>
-        </div>
-
 
         <script type="text/javascript">
             function getTrialList(target, parameter_id) {

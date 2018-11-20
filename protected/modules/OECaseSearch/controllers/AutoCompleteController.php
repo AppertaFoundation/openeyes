@@ -75,14 +75,34 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
         echo CJSON::encode($values);
     }
 
-    public function actionCommonProcedures($term)
+    /***
+     * Returns a list of procedures given a search term
+     *
+     * @param $term String to be compared against to find matching procedures
+     */
+    public function actionCommonProcedures($term = '')
     {
         $criteria = new CDbCriteria();
-        $criteria->limit = 30;
+        $criteria->limit = 15;
         $criteria->compare('term', $term, true);
         $procedures = Procedure::model()->findAll($criteria);
 
-        echo CHtml::listData($procedures, 'id', 'term');
+        $options = array();
+        foreach ($procedures as $procedure){
+            $options[] = $procedure->term;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('operation', $term, true);
+        $criteria->addNotInCondition('operation', $options);
+        $past_ops = \OEModule\OphCiExamination\models\PastSurgery_Operation::model()->findAll($criteria);
+
+        foreach ($past_ops as $op){
+            $options[] = $op->operation;
+        }
+
+        echo CJSON::encode($options);
     }
 
     /**
