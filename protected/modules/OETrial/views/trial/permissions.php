@@ -153,7 +153,7 @@
               <div class="alert-box info with-icon" id="no-user-result" style="display: none;">
                 Can't find the user you're looking for? They might not have the permission to view trials.
                 <br/>
-                Please contact an administrator and ask them to give that user the "View Trial" role.
+                Please contact an administrator and ask them to give that user the "Create Trial" or "Trial User" role.
               </div>
             </div>
           <?php endif; ?>
