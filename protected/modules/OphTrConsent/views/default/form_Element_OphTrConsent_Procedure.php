@@ -57,15 +57,17 @@
   <tr>
     <td>Procedures</td>
     <td>
-        <?php $form->widget('application.widgets.ProcedureSelection', array(
-            'element' => $element,
-            'durations' => false,
-            'identifier' => 'procedures',
-            'read_only' => !@$_GET['unbooked'],
-            'restrict' => 'unbooked',
-            'restrict_common' => 'unbooked',
-            'label' =>''
-        ))?>
+        <?php $form->widget('application.widgets.ProcedureSelection',
+            array(
+                'element' => $element,
+                'durations' => false,
+                'identifier' => 'procedures',
+                'read_only' => !($element->booking_event_id == null || $element->booking_event_id == ''),
+                'restrict' => 'unbooked',
+                'restrict_common' => 'unbooked',
+                'label' => ''
+            )
+        ) ?>
     </td>
   </tr>
   <tr>
