@@ -22,7 +22,7 @@
     )); ?>
 
   <main class="oe-full-main">
-    <section class="element edit full">
+    <section class="element edit cols-11">
       <div class="element-fields">
 
           <?php if ($trial->trialType->code === TrialType::INTERVENTION_CODE): ?>
@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <div class="row divider">
+    <div class="row divider cols-11">
 
       <table class="standard cols-full">
         <colgroup>
@@ -120,6 +120,10 @@
     ?>
 </div>
 <script type="application/javascript">
+
+    $('.js-trails-sort-selector').change(function(e){
+        window.location = e.target.value;
+    });
 
   function changePatientStatus(object, trial_patient_id, new_status) {
 

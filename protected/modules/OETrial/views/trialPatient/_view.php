@@ -25,20 +25,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
 ?>
 <tr class="js-trial-patient" data-trial-patient-id="<?= $data->id ?>">
-  <td> <!-- Warnings -->
-      <?php if (count($warnings) > 0): ?>
-        <span class="warning">
-          <span class="icon icon-alert icon-alert-warning"></span>
-          <span class="quicklook warning">
-            <ul>
-              <li>
-                <?= implode('</li><li>', $warnings) ?>
-              </li>
-            </ul>
-          </span>
-        </span>
-      <?php endif; ?>
-  </td>
 
   <td colspan="4">
       <?php

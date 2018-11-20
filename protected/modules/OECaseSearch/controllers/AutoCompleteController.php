@@ -20,7 +20,7 @@ class AutoCompleteController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('commonDiagnoses', 'commonMedicines', 'commonAllergies'),
+                'actions' => array('commonDiagnoses', 'commonMedicines', 'commonAllergies', 'commonProcedures'),
                 'users' => array('@'),
             ),
         );
@@ -73,6 +73,36 @@ WHERE LOWER(md.name) LIKE LOWER(:term) ORDER BY md.name LIMIT ' . _AUTOCOMPLETE_
         sort($values);
 
         echo CJSON::encode($values);
+    }
+
+    /***
+     * Returns a list of procedures given a search term
+     *
+     * @param $term String to be compared against to find matching procedures
+     */
+    public function actionCommonProcedures($term = '')
+    {
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('term', $term, true);
+        $procedures = Procedure::model()->findAll($criteria);
+
+        $options = array();
+        foreach ($procedures as $procedure){
+            $options[] = $procedure->term;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->limit = 15;
+        $criteria->compare('operation', $term, true);
+        $criteria->addNotInCondition('operation', $options);
+        $past_ops = \OEModule\OphCiExamination\models\PastSurgery_Operation::model()->findAll($criteria);
+
+        foreach ($past_ops as $op){
+            $options[] = $op->operation;
+        }
+
+        echo CJSON::encode($options);
     }
 
     /**
