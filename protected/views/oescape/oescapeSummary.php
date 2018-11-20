@@ -118,7 +118,6 @@ if (!empty($subspecialty)) { ?>
           for (var i = 0; i < data.points.length; i++) {
             pn = data.points[i].pointNumber;
             tn = data.points[i].curveNumber;
-            size = data.points[i].data.marker.size;
           }
           var sizes = new Array(plots[index].data[tn].x.length).fill(10);
           sizes[pn] = 15;
