@@ -47,6 +47,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?=$values['disorder_display'];?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[row_key]" value="<?=$row_count?>" />
+        <input type="hidden" name="glaucoma_diagnoses[]" value="<?=isset($values['is_glaucoma']) ? $values['is_glaucoma'] : 'false'?>" />
 
         <input type="hidden"
                class="savedDiagnosis"

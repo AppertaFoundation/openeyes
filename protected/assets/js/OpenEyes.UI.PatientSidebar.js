@@ -325,6 +325,15 @@
       } else {
         var itemClass = 'collapse-group';
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
+        // Check if element has a child option which is selected
+        if(!open){
+          $.each(itemData.children, function (i, child) {
+            if ($.inArray(child.class_name, self.patient_open_elements)!== -1){
+              open = true;
+              return false;
+            }
+          });
+        }
 
         item = $("<div>")
           .data('element-type-class', itemData.class_name)

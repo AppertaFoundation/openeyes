@@ -21,12 +21,10 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
     <table class="cols-11" id="editDiagnosis">
         <colgroup>
             <col class="cols-1">
+            <col class="cols-1">
         </colgroup>
         <tbody>
         <tr>
-            <td>
-                Eyes:
-            </td>
             <td>
                 <span class="oe-eye-lat-icons">
                     <?php echo $form->radioButtons($element, 'eye_id',
@@ -38,18 +36,37 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                         )) ?>
                 </span>
             </td>
-        </tr>
-        <tr>
-            <?php $form->widget('application.widgets.DiagnosisSelection', array(
-                'field' => 'disorder_id',
-                'element' => $element,
-                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-                'layoutColumns' => array(
-                    'label' => $form->layoutColumns['label'],
-                    'field' => 4,
-                ),
-            ));
-            ?>
+            <td></td>
+            <td class="large-text">
+                <div class="panel diagnosis hide" id="enteredDiagnosisText">
+                    <?= isset($element->disorder) ? $element->disorder->term : 'Please use the + button to add a listing diagnosis'?>
+                </div>
+                <?php $form->hiddenInput($element , 'disorder_id');?>
+            </td>
+            <td>
         </tr>
         </tbody>
     </table>
+    <div class="add-data-actions flex-item-bottom" id="operation-booking-diagnoses-popup">
+        <button class="button hint green js-add-select-search" type="button" id="add-operation-booking-diagnosis">
+            <i class="oe-i plus pro-theme"></i>
+        </button>
+    </div>
+    <?php $diagnoses = CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)); ?>
+    <script type="text/javascript">
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-operation-booking-diagnosis'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($id , $label) {
+                    return ['label' => $label, 'id' => $id];
+                },array_keys($diagnoses), $diagnoses)
+            ) ?>)],
+            onReturn: function (adderDialog, selectedItems) {
+                $('#enteredDiagnosisText').html(selectedItems[0].label);
+                $('[id$="disorder_id"]').val(selectedItems[0].id);
+            },
+            searchOptions: {
+                searchSource: '/disorder/autocomplete'
+            }
+        });
+    </script>

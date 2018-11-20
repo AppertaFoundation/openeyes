@@ -18,6 +18,7 @@
 ?>
 <div class="container content event">
 	<?php $this->renderOpenElements('print');?>
+    <div class="spacer"></div>
 	<?php $this->renderPartial('//print/event_metadata', array(
         'hide_modified' => @$hide_modified,
     ));?>

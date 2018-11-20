@@ -16,60 +16,70 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->renderPartial('//base/_messages')?>
+
+<?php $this->renderPartial('//base/_messages') ?>
+
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
+    <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'clinical-create',
-            'enableAjaxValidation' => false,
-            'action' => Yii::app()->createURL($this->module->getName().'/admin/addEmailRecipient'),
+        'id' => 'clinical-create',
+        'enableAjaxValidation' => false,
+        'action' => Yii::app()->createURL($this->module->getName() . '/admin/addEmailRecipient'),
     ));
 
     $this->endWidget();
     ?>
 </div>
-<div class="box admin">
-	<h2><?php echo $title ?></h2>
-	<form id="admin_workflowrules">
-		<table class="standard">
-			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>Subspecialty</th>
-					<th><?php echo Firm::contextLabel() ?></th>
-					<th>Episode status</th>
-					<th>Workflow</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($model_list as $i => $model) {
-    ?>
-					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCiExamination/admin/editWorkflowRule/<?php echo $model->id?>">
-						<td><input type="checkbox" name="workflowrules[]" value="<?php echo $model->id?>" /></td>
-						<td>
-							<?php echo $model->subspecialty ? $model->subspecialty->name : 'All'?>
-						</td>
-						<td>
-							<?php echo $model->firm ? $model->firm->name : 'All'?>
-						</td>
-						<td>
-							<?php echo $model->episode_status ? $model->episode_status->name : 'All'?>
-						</td>
-						<td>
-							<?php echo $model->workflow->name?>
-						</td>
-					</tr>
-				<?php
-}?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="5">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/addWorkflowRule'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCiExamination/admin/deleteWorkflowRules', 'data-object' => 'workflowrules'))->toHtml()?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+
+<div class="cols-5">
+    <form id="admin_workflowrules">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Subspecialty</th>
+                <th><?php echo Firm::contextLabel() ?></th>
+                <th>Episode status</th>
+                <th>Workflow</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($model_list as $i => $model) { ?>
+                <tr class="clickable" data-id="<?php echo $model->id ?>"
+                    data-uri="OphCiExamination/admin/editWorkflowRule/<?php echo $model->id ?>">
+                    <td><input type="checkbox" name="workflowrules[]" value="<?php echo $model->id ?>"/></td>
+                    <td><?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?></td>
+                    <td><?php echo $model->firm ? $model->firm->name : 'All' ?></td>
+                    <td><?php echo $model->episode_status ? $model->episode_status->name : 'All' ?></td>
+                    <td><?php echo $model->workflow->name ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="5">
+                    <?= \CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'id' => 'et_add',
+                            'name' => 'add',
+                            'data-uri' => '/OphCiExamination/admin/addWorkflowRule',
+                        ]
+                    ); ?>
+                    <?= \CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'workflowrules',
+                            'id' => 'et_delete',
+                            'data-uri' => '/OphCiExamination/admin/deleteWorkflowRules',
+                        ]
+                    ); ?>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
 </div>

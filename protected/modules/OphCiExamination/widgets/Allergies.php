@@ -20,7 +20,7 @@ use OEModule\OphCiExamination\models\AllergyEntry;
 class Allergies extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
-
+    protected $print_view = 'Allergies_event_print';
     /**
      * @return FamilyHistoryElement
      */
@@ -126,5 +126,9 @@ class Allergies extends \BaseEventElementWidget
     {
         return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries.$row.has_allergy", $_POST)
             == AllergyEntry::$NOT_CHECKED;
+    }
+
+    public function renderAllergies(){
+        $this->render('Allergies_patient_mode', $this->getViewData());
     }
 }

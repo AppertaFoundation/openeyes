@@ -139,6 +139,21 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     }
 
     /**
+     * Get the list with all dilation drugs.
+     *
+     * @param $side
+     *
+     * @return array
+     */
+    public function getAllDilationDrugs($side)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->order = 'display_order asc';
+        return \CHtml::listData(OphCiExamination_Dilation_Drugs::model()->findAll($criteria), 'id', 'name');
+    }
+
+
+    /**
      * Validate each of the dilation treatments.
      */
     protected function afterValidate()
@@ -246,5 +261,10 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
     public function canViewPrevious()
     {
         return true;
+    }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
     }
 }

@@ -659,7 +659,6 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionView()
     {
         $this->moduleStateCssClass = 'view';
-
         $this->initWithEventId(@$_GET['id']);
     }
 
@@ -781,6 +780,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionCreate()
     {
+        $this->event->firm_id = $this->selectedFirmId;
         if (!empty($_POST)) {
             // form has been submitted
             if (isset($_POST['cancel'])) {
@@ -2191,20 +2191,21 @@ class BaseEventTypeController extends BaseModuleController
 
     public function actionSaveCanvasImages($id)
     {
-        if (!$event = Event::model()->findByPk($id)) {
+        $this->event = Event::model()->findByPk($id);
+        if (!$this->event) {
             throw new Exception("Event not found: $id");
         }
 
-        if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+        if (strtotime($this->event->last_modified_date) != @$_POST['last_modified_date']) {
             echo 'outofdate';
 
             return;
         }
 
-        $event->lock();
+        $this->event->lock();
 
-        if (!file_exists($event->imageDirectory)) {
-            if (!@mkdir($event->imageDirectory, 0755, true)) {
+        if (!file_exists($this->event->imageDirectory)) {
+            if (!@mkdir($this->event->imageDirectory, 0755, true)) {
                 throw new Exception("Unable to create directory: $event->imageDirectory");
             }
         }
@@ -2219,6 +2220,10 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
+
+        // Regenerate the EventImage in the background
+        $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
+        exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
 
         /*
          * TODO: need to check with all events why this was here!!!

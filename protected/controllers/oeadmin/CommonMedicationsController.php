@@ -42,6 +42,7 @@ class CommonMedicationsController extends BaseAdminController
                 'placeholder' => 'search for medication drug',
             )
         );
+        $admin->div_wrapper_class = 'cols-5';
         $admin->listModel();
     }
 

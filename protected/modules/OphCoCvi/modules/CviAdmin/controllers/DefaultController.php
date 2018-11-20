@@ -43,7 +43,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'comments_label',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-7',
             )
         );
     }
@@ -53,11 +54,13 @@ class DefaultController extends \ModuleAdminController
      */
     public function actionClinicalDisorders()
     {
+
+
         $this->genericAdmin(
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
             array(
-                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/newClinicalDisorderRow'),
+                'new_row_url' => Yii::app()->createUrl('/OphCoCvi/admin/default/newClinicalDisorderRow'),
                 'extra_fields' => array(
                     array(
                         'field' => 'code',
@@ -73,7 +76,8 @@ class DefaultController extends \ModuleAdminController
                         'type' => 'search_lookup',
                         'model' => '\Disorder',
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-9',
             )
         );
     }
@@ -84,6 +88,8 @@ class DefaultController extends \ModuleAdminController
      */
     public function actionNewClinicalDisorderRow($key)
     {
+        Yii::app()->clientScript->reset();
+
         $this->genericAdmin(
             'Clinical Disorders',
             'OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder',
@@ -133,7 +139,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'comments_label',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-9',
             )
         );
     }
@@ -158,7 +165,8 @@ class DefaultController extends \ModuleAdminController
                         'type' => 'lookup',
                         'model' => 'OEModule\OphCiExamination\models\SocialHistoryOccupation',
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -179,7 +187,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -200,7 +209,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -221,7 +231,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'code',
                         'type' => 'text'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -246,7 +257,8 @@ class DefaultController extends \ModuleAdminController
                         'field' => 'require_email',
                         'type' => 'boolean'
                     )
-                )
+                ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }

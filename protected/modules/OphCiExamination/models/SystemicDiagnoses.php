@@ -103,6 +103,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'diagnoses' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis', 'element_id'),
+            'required_diagnoses_check' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SystemicDiagnoses_RequiredDiagnosisCheck', 'element_id'),
             'orderedDiagnoses' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
                 'element_id',
@@ -157,7 +158,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
@@ -166,10 +166,17 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                 foreach ($patient->getSystemicDiagnoses($present) as $sd) {
                     $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
                     $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
-                    $diagnoses[] = $diagnosis;
+                    $duplicate_diagnosis = false;
+                    foreach($diagnoses as $current_diagnosis){
+                        if($diagnosis->disorder_id === $current_diagnosis->disorder_id){
+                            $duplicate_diagnosis = true;
+                        }
+                    }
+                    if(!$duplicate_diagnosis){
+                        $diagnoses[] = $diagnosis;
+                    }
                 }
             }
-
             $this->diagnoses = $diagnoses;
         }
     }

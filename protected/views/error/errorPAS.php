@@ -24,5 +24,5 @@ $this->layout = '//layouts/error';
 </div>
 <p class="panel">Please contact OpenEyes support for assistance:</p>
 <?php echo $this->renderPartial('//error/support') ?>
-<p class="panel"><?php echo CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl . '/') ?></p>
+<p class="panel"><?=\CHtml::link('Click here to go back to the search page', Yii::app()->baseUrl . '/') ?></p>
 <p class="date"><?php echo date('r'); ?></p>

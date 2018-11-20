@@ -57,9 +57,9 @@ class AdminController extends ModuleAdminController
             }
         }
 
-        $this->render('create', array(
+        $this->render('edit', array(
             'model' => $model,
-            'title' => 'Laser',
+            'title' => 'Add Laser',
             'cancel_uri' => '/OphTrLaser/admin/manageLasers',
         ));
     }
@@ -86,7 +86,7 @@ class AdminController extends ModuleAdminController
 
         $this->render('edit', array(
             'model' => $model,
-            'title' => 'Laser',
+            'title' => 'Edit Laser',
             'cancel_uri' => '/OphTrLaser/admin/manageLasers',
         ));
     }

@@ -14,6 +14,7 @@
  */
 ?>
 
+<div class="cols-7">
     <div class="alert-box info">
         <b>Info</b> Settings added here will be overridden by any settings in local config files. eg common or
         core.php
@@ -28,13 +29,13 @@
         </thead>
         <tbody>
         <?php
-        foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) { ?>
+        foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) { ?>
             <tr class="clickable" data-uri="admin/editSetting?key=<?=$metadata->key;?>">
                 <td><?php echo $metadata->name ?></td>
                 <td>
                     <?php
                     if ($metadata->getSettingName()) {
-                        echo CHtml::htmlButton($metadata->getSettingName(), ['class' => 'oe-filter-btn']);
+                        echo $metadata->getSettingName();
                     }
                     ?>
                 </td>
@@ -42,3 +43,4 @@
         <?php } ?>
         </tbody>
     </table>
+</div>

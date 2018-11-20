@@ -65,11 +65,27 @@ $model_name = CHtml::modelName($element);
                         'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
                         'removable' => true,
+                        'read_only' => true,
                         //hack here: removable set to true as we need to edit the fields,
                         // 'required' introduced as we need to hide the remove btn.
                         'required' => $op['required'],
                         'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                     )
+                );
+                $row_count++;
+            }
+            $api = $this->getApp()->moduleAPI->get('OphTrOperationnote');
+
+            foreach($api->getOperationsSummaryData($this->patient) as $operation){
+                $this->render(
+                        'PastSurgery_OperationNote_event_edit',
+                        array(
+                                'op' => $operation['operation'],
+                                'side' => $operation['side'],
+                                'date' => $operation['date'],
+                                'row_count' => ($row_count),
+                                'model_name' => CHtml::modelName($element)
+                        )
                 );
                 $row_count++;
             }

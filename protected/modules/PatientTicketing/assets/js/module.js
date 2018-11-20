@@ -140,8 +140,8 @@
     this.dialog = new OpenEyes.UI.Dialog({
       content: Mustache.render(template, templateVals)
     });
-    this.dialog.content.on('click', '.js-ok', this.submitTicketMove.bind(this));
-    this.dialog.content.on('click', '.js-cancel', this.dialog.close.bind(this.dialog));
+    this.dialog.content.on('click', '.ok', this.submitTicketMove.bind(this));
+    this.dialog.content.on('click', '.cancel', this.dialog.close.bind(this.dialog));
     this.dialog.open();
     if (firstSelect.length) {
       this.dialog.content.find('#to_queue_id').trigger('change');
@@ -338,22 +338,27 @@
   $(document).ready(function () {
     var ticketController = new TicketController();
 
-    $(this).on('click', '.ticket-take', function (e) {
+    $(this).on('click', '.ticket-take', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.takeTicket(ticketInfo);
     });
 
-    $(this).on('click', '.ticket-release', function (e) {
+    $(this).on('click', '.ticket-release', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.releaseTicket(ticketInfo);
     });
 
-    $(this).on('click', '.ticket-history', function (e) {
+    $(this).on('click', '.ticket-history', function () {
+      if (this.innerHTML === 'History') {
+        this.innerHTML = 'Hide History';
+      } else {
+        this.innerHTML = 'History';
+      }
       var ticketInfo = $(this).closest('tr').data('ticket-info');
       ticketController.toggleHistory(ticketInfo);
     });
 
-    $(this).on('click', '.undo-last-queue-step', function (e) {
+    $(this).on('click', '.undo-last-queue-step', function () {
       var ticketInfo = $(this).closest('tr').data('ticket-info');
 
       $.ajax({
@@ -369,7 +374,7 @@
       });
     });
 
-    $(this).on('change', '#subspecialty-id', function (e) {
+    $(this).on('change', '#subspecialty-id', function () {
       var subspecialty_id = $(this).val();
 
       if (subspecialty_id === '') {

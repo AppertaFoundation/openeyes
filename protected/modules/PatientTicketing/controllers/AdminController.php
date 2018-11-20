@@ -69,8 +69,9 @@ class AdminController extends \ModuleAdminController
     public function actionQueueSetCategories()
     {
         $this->genericAdmin(
-                'Edit Queue Set Categories',
-                'OEModule\PatientTicketing\models\QueueSetCategory'
+            'Edit Queue Set Categories',
+            'OEModule\PatientTicketing\models\QueueSetCategory',
+            ['div_wrapper_class' => 'cols-5']
         );
     }
 
@@ -91,6 +92,7 @@ class AdminController extends \ModuleAdminController
                         'type' => 'boolean',
                     ),
                 ),
+                'div_wrapper_class' => 'cols-5',
             )
         );
     }
@@ -481,6 +483,10 @@ class AdminController extends \ModuleAdminController
 
     public function actionClinicLocations()
     {
-        $this->genericAdmin('Clinic locations', 'OEModule\PatientTicketing\models\ClinicLocation');
+        $this->genericAdmin(
+            'Clinic locations',
+            'OEModule\PatientTicketing\models\ClinicLocation',
+            ['div_wrapper_class' => 'cols-5']
+        );
     }
 }

@@ -88,7 +88,7 @@
                     <?php 
                     if (!empty($headerLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$headerLogo; ?>"  />
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'header_logo' => $headerLogo), 'confirm' => 'Are you sure to delete header logo?', 'csrf' => true)); ?><?php echo '<br/><br/><br/>';
                     } ?>
                     <?php echo $form->fileField($model, 'header_logo'); ?>
                 </td>
@@ -98,7 +98,7 @@
                 <td><?php 
                     if (!empty($secondaryLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
-                        <?php echo CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
+                        <?=\CHtml::link('Remove', '#', array('submit' => array('admin/deleteLogo/', 'secondary_logo' => $secondaryLogo), 'confirm' => 'Are you sure to delete secondary logo?', 'csrf' => true)); ?>
                         <?php echo '<br/><br/><br/>';
                     } ?> 
                     <?php echo $form->fileField($model, 'secondary_logo'); ?>

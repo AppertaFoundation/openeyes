@@ -20,7 +20,7 @@
 <section class="<?php echo $type; ?> box patient-info js-toggle-container element">
 	<h3 class="box-title">Personal Details:</h3>
 	
-        <?php echo CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
+        <?=\CHtml::activeHiddenField($model, "{$type}_id", array('class' => 'id-input')); ?>
         
 	<div class="js-toggle-body">
         <table class="cols-12">
@@ -34,7 +34,7 @@
                         <div style="line-height:1.3">
                             <div class="hospital-number">
                                 <span class="data-value hos_num"><?php echo $model->isNewRecord ? '' : $model->{"{$type}_hos_num"}; ?></span>
-                                <?php echo CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
+                                <?=\CHtml::activeHiddenField($model, "{$type}_hos_num", array('class' => 'hos_num-input')); ?>
                             </div>
                         </div>
                     </div>
@@ -47,10 +47,10 @@
                             <!-- NHS number -->
                             <div class="nhs-number">
                                 <span class="hide-text print-only">
-                                    NHS number:
+                                    <?php echo Yii::app()->params['nhs_num_label']?> number:
                                 </span>
                                 <span data-default="000 000 0000" class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
-                                <?php echo CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
+                                <?=\CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="large-8 column">
                         <div class="data-value dob"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->NHSDate('dob'); ?></div>
-                        <?php echo CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
+                        <?=\CHtml::activeHiddenField($model, "{$type}_dob", array('class' => 'dob-input')); ?>
                     </div>
                 </td>
             </tr>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="large-8 column">
                         <div class="data-value gender"><?php echo $model->isNewRecord ? '' : $model->{"{$type}Patient"}->getGenderString(); ?></div>
-                        <?php echo CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
+                        <?=\CHtml::activeHiddenField($model, "{$type}_gender", array('class' => 'genderletter-input')); ?>
                     </div>
                 </td>
             </tr>

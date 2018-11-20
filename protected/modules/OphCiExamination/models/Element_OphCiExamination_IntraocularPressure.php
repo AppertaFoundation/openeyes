@@ -226,4 +226,16 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
     {
         return array('right' => $this->right_values, 'left' => $this->left_values);
     }
+
+    public function afterFind()
+    {
+        foreach (array('left', 'right') as $eye_side) {
+            if (!$this->hasEye($eye_side)) {
+                foreach ($this->{$eye_side .'_values'} as $value) {
+                    $value->delete();
+                }
+            }
+        }
+        return parent::afterFind();
+    }
 }

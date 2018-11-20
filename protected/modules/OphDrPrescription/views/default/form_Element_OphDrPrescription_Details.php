@@ -162,7 +162,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           </div>
           <label class="inline highlight">
             No preservative
-              <?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter')) ?>
+              <?=\CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter')) ?>
           </label>
         </div>
       </div>

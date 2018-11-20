@@ -27,7 +27,7 @@ $worklist_patients->pagination->pageVar = 'page' . $worklist->id;
 // Get data so that pagination  works
 $worklist_patients->getData();
 ?>
-<div class="worklist-group" id="js-worklist-<?= strtolower(str_replace(' ','-',$worklist->name))?>">
+<div class="worklist-group" id="js-worklist-<?=$worklist->id?>">
 <div class="worklist-summary flex-layout">
   <h2 id="worklist_<?= $worklist->id ?>"><?= $worklist->name ?></h2>
   <div class="summary">

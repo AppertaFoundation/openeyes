@@ -17,15 +17,23 @@
  */
 ?>
 
-<?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
-	<div class="alert-box watermark admin banner">
-		<?php echo CHtml::encode(Yii::app()->params['watermark_admin']);?>
-	</div>
-<?php } elseif (Yii::app()->params['watermark']) {?>
-	<div class="alert-box watermark banner">
-		<?php echo CHtml::encode(Yii::app()->params['watermark']);?>
-	</div>
-<?php }?>
-<?php if (@$description && Yii::app()->params['watermark_description']) {?>
-	<div class="alert-box watermark description"><p><?php echo CHtml::encode(Yii::app()->params['watermark_description']);?></p></div>
+<?php if (Yii::app()->user->checkAccess('admin') && ( Yii::app()->params['watermark_admin_short'] || Yii::app()->params['watermark_admin'] )) {?>
+    <div id="oe-admin-notifcation">
+        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_admin_short']);?></span>
+        <?php if ( Yii::app()->params['watermark_admin'] ) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <i class="oe-i info pro-theme small pad-left"></i>
+		<?php } elseif (Yii::app()->params['watermark']) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <i class="oe-i info pro-theme small pad-left"></i>
+		<?php } ?>
+    </div>
+<?php } elseif (Yii::app()->params['watermark_short'] || Yii::app()->params['watermark'] ) {?>
+    <div id="oe-admin-notifcation">
+        <span id="notification-short"><?=\CHtml::encode(Yii::app()->params['watermark_short']);?></span>
+		<?php if (Yii::app()->params['watermark']) { ?>
+        <span id="notification-full" class="hidden"><?=\CHtml::encode(Yii::app()->params['watermark']);?></span>
+        <i class="oe-i info pro-theme small pad-left "></i>
+		<?php } ?>
+    </div>
 <?php }?>

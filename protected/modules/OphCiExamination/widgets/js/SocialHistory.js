@@ -30,7 +30,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
       });
 
-      var select_lists = ['occupation', 'alcohol', 'smoking_status', 'accommodation'];
+      let select_lists = ['occupation', 'alcohol', 'smoking_status', 'accommodation'];
       for (i in select_lists){
         $('#add-to-social-history ul.'+select_lists[i]+' li').on('click', function (e) {
           $(this).siblings('.selected').removeClass('selected');
@@ -47,12 +47,32 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         .find('.multi-select-remove')
         .click();
 
-      for (var i in selectedItems) {
-        var item = selectedItems[i];
-        var itemSetId = item['itemSet'].options['id'];
-        var $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
-        $field.val(item['id']);
+      // reset textField input for driving statuses
+      $('#textField_driving_statuses').html('');
+
+      for (let i in selectedItems) {
+        let item = selectedItems[i];
+        let itemSetId = item.itemSet.options.id;
+        let $field = this.$tableSelector.find('#' + this.options.modelName + '_' + itemSetId);
+        let $textField = this.$tableSelector.find('#textField' + '_' + itemSetId);
+        let field_option = $field.find('option[value='+ item.id +']').text().trim();
+
+        $field.val(item.id);
         $field.change();
+
+        if (itemSetId === "driving_statuses") {
+          // insert first driving status
+          if ($textField.html() === '')
+            $textField.html(field_option);
+          // append the rest of the driving statuses to the first one
+          else
+            $textField.append(', ' + field_option);
+        } else if (itemSetId === "alcohol_intake") {
+          $textField.html(item.id);
+        } else {
+          // for the rest of the elements, show the info in the textField
+          $textField.html($field.find(":selected").text());
+        }
       }
 
       this.$popupSelector.find('.selected').removeClass('selected');

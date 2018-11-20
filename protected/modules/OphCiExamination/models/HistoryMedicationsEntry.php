@@ -108,7 +108,9 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null) {
+        if ($this->end_date !== null
+            && $this->end_date <= date('Y-m-d' , strtotime($this->element->event->event_date)))
+        {
             $this->originallyStopped = true;
         }
         if ($this->prescription_item_id) {
@@ -152,7 +154,7 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->dose = $item->dose;
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
-        $this->start_date = $item->prescription->event->event_date;
+        $this->start_date = date('Y-m-d',strtotime($item->prescription->event->event_date));
         if (!$this->end_date) {
             $end_date = $item->stopDateFromDuration();
 
@@ -347,6 +349,15 @@ class HistoryMedicationsEntry extends \BaseElement
             $res[] = "({$this->stop_reason})";
         }
         return implode(' ', $res);
+    }
+
+    public function getEndDateDisplay()
+    {
+        if ($this->end_date) {
+            return \Helper::formatFuzzyDate($this->end_date);
+        } else {
+            return '';
+        }
     }
 
     public function getStartDateDisplay()

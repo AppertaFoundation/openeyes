@@ -240,8 +240,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return string html table of daignoses and further findings
      *  if either the diagnosis or the finding has a letter macro text, it will replace the usual term
      */
-    public function getLetter_string()
-    {
+    public function getLetter_string() {
         $table_vals = array();
         $subspecialty = null;
         if (isset(\Yii::app()->session['selected_firm_id']) && \Yii::app()->session['selected_firm_id'] !== null) {
