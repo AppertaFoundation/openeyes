@@ -95,7 +95,6 @@ $this->pageTitle = 'Case Search';
                                 )
                             )
                         );
-                    $searchResults->pagerCssClass = 'oe-pager';
                     $pager = $this->createWidget('LinkPager',
                         array(
                             'pages' => $patients->getPagination(),

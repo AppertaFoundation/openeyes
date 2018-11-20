@@ -59,7 +59,7 @@ foreach ($ethnic_list as $key=>$item){
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
-  <div class="patient-inputs-column">
+  <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
             <?= $form->errorSummary(array($contact, $patient, $address)) ?>
@@ -87,7 +87,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'first_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'First name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'First name')) ?>
         </td>
       </tr>
       <tr>
@@ -98,7 +99,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
         <td>
             <?= $form->textField($contact, 'last_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Last name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'Last name')) ?>
         </td>
       </tr>
       <tr>
@@ -112,7 +114,7 @@ foreach ($ethnic_list as $key=>$item){
                 array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
         </td>
       </tr>
-      <tr>
+      <tr class="patient-duplicate-check">
         <td class="required">
             <?= $form->label($patient, 'dob') ?>
           <br/>
@@ -127,8 +129,8 @@ foreach ($ethnic_list as $key=>$item){
                 $patient->dob = str_replace('-', '/', $patient->dob);
             }
             ?>
-            <?= $form->textField($patient, 'dob', array('placeholder' => 'dd/mm/yyyy', 'class' => 'date
-            ')) ?>
+            <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicates($patient->id);",
+              'placeholder' => 'dd/mm/yyyy', 'class' => 'date')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
@@ -209,8 +211,13 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
-              <?= $form->textField($patient, 'hos_num',
-                  array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'))) ?>
+            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
+            {
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            } else{
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            }
+            ?>
           </td>
         </tr>
         <tr>
@@ -415,3 +422,25 @@ foreach ($ethnic_list as $key=>$item){
   </div>
 </div>
 <?php $this->endWidget(); ?>
+
+<script>
+
+  function findDuplicates(id) {
+    var first_name = $('#Contact_first_name').val();
+    var last_name = $('#Contact_last_name').val();
+    var date_of_birth = $('#Patient_dob').val();
+    if (first_name && last_name && date_of_birth) {
+      $.ajax({
+          url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
+          data: {firstName: first_name, last_name: last_name, dob: date_of_birth, id: id},
+          type: 'GET',
+          success: function (response) {
+            $('#conflicts').remove();
+            $('.patient-duplicate-check').after(response);
+          }
+        }
+      );
+    }
+  }
+
+</script>

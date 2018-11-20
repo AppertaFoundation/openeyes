@@ -19,7 +19,7 @@
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);

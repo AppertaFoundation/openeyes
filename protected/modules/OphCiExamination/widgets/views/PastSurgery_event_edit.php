@@ -74,6 +74,21 @@ $model_name = CHtml::modelName($element);
                 );
                 $row_count++;
             }
+            $api = $this->getApp()->moduleAPI->get('OphTrOperationnote');
+
+            foreach($api->getOperationsSummaryData($this->patient) as $operation){
+                $this->render(
+                        'PastSurgery_OperationNote_event_edit',
+                        array(
+                                'op' => $operation['operation'],
+                                'side' => $operation['side'],
+                                'date' => $operation['date'],
+                                'row_count' => ($row_count),
+                                'model_name' => CHtml::modelName($element)
+                        )
+                );
+                $row_count++;
+            }
             ?>
             </tbody>
         </table>

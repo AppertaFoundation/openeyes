@@ -24,9 +24,9 @@ interface ReportInterface
 {
     public function dataSet();
 
-    public function seriesJson();
+    public function tracesJson();
 
-    public function graphConfig();
+    public function plotlyConfig();
 
     public function graphId();
 }

@@ -33,6 +33,11 @@ $widget = $this;
                                 $operation) ? $operation['object']->operation : $operation['operation']; ?>
                         </td>
                         <td>
+                            <?php if (array_key_exists('link', $operation)) { ?>
+                                <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle pro-theme small pad"></i></a>
+                            <?php } ?>
+                        </td>
+                        <td>
                             <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
                             <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>

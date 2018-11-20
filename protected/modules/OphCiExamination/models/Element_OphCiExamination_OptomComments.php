@@ -16,4 +16,14 @@ class Element_OphCiExamination_OptomComments extends \BaseEventTypeElement
     {
         return 'et_ophciexamination_optom_comments';
     }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+        );
+    }
 }

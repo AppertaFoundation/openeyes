@@ -109,6 +109,9 @@ $('#prescription-search-btn').on('click', function () {
 
   $('.prescription-search-options').show();
   $('.common-drug-options').hide();
+
+  // Resize box to fit in screen
+  positionFixedPopup($('#add-prescription-btn'), $('#add-to-prescription-popup'));
 });
 
 $('#prescription-select-btn').on('click', function () {
@@ -124,7 +127,8 @@ $('#prescription-select-btn').on('click', function () {
 });
 
 $('#add-prescription-drug-types').delegate('li', 'click', function () {
-  $(this).addClass('selected');
+  $(this).toggleClass('selected'); 
+
   updatePrescriptionResults();
   return false;
 });

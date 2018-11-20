@@ -94,25 +94,26 @@
           $btn.addClass(popup.css.open);
           $content.show();
           if (popup.useMouseEvents && !popup.isFixed) {
-            addContentEvents()
+            addContentEvents();
           }
 
           //handle popups extending off screen
 
           if ($content.closest('#oe-patient-details').length > 0) {
-            var $main_event = $('main');
+            var $main_event = $('.open-eyes');
             var mainBox = $main_event[0].getBoundingClientRect();
             var contentBox = $content[0].getBoundingClientRect();
             var parentBox = $content[0].closest('#oe-patient-details').getBoundingClientRect();
             var boundTo = 'bottom';
 
             //moved the popup to above rather than below it's parent if it will go beyond the bottom of the main div
-            if (mainBox.bottom < parentBox.bottom + contentBox.height) {
+            if (parentBox.bottom > mainBox.bottom / 2) {
               $content[0].style.top = (parentBox.top - contentBox.height) + "px";
               boundTo = 'top';
             } else {
               $content[0].style.top = parentBox.bottom + "px";
             }
+            $content[0].style.left = parentBox.left + "px";
 
             $main_event.unbind("scroll");
 
