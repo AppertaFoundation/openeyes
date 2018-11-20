@@ -22,7 +22,6 @@ var flags_yaxis = {
   domain: [0, 0.3],
   showgrid: false,
   showticklabels: true,
-  ticks: 'inside',
   color: '#fff',
   zeroline: false,
   ticks: '',

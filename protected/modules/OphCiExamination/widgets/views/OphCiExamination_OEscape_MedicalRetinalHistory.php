@@ -160,7 +160,7 @@
 
       for (var key in injections_data[side]){
         flags_yaxis['ticktext'].push(key);
-        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
+        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
         for (var i in injections_data[side][key]) {
           text['x'].push(new Date(injections_data[side][key][i]['x']));
@@ -182,7 +182,7 @@
 
       //set the flags for letters >5
       flags_yaxis['ticktext'].push('>5 lines lost');
-      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
+      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
