@@ -147,16 +147,24 @@
           for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
               let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
               if ($image && $image.data('src')) {
-                  $image.load(function () {
-                      $image.data('loaded', true);
-                      if ($image.css('display') !== 'none') {
-                          $loader.hide();
-                      }
-                  });
                   $image.attr('src', $image.data('src'));
               }
           }
       }
+
+      self.element.one('mouseenter', '.event-type' , function(){
+          let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+          let $loader = $('.oe-event-quickview .spinner');
+          $screenshots.find('img').each(function () {
+              console.log('byba');
+              $(this).load(function () {
+                  $(this).data('loaded', true);
+                  if ($(this).css('display') !== 'none') {
+                      $loader.hide();
+                  }
+              });
+          });
+      });
 
       self.element.on('mouseenter', '.event-type', function (e) {
           var $iconHover = $(e.target);
@@ -181,12 +189,6 @@
               } else {
                   $loader.hide();
               }
-              $img.load(function () {
-                  $img.data('loaded', true);
-                  if ($img.css('display') !== 'none') {
-                      $loader.hide();
-                  }
-              });
               $img.attr('src', $img.data('src'));
               $img.show();
           } else {
