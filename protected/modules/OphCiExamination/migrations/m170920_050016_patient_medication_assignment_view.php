@@ -31,26 +31,26 @@ EOSQL
         );
         $this->createView('patient_medication_assignment', <<<EOSQL
 select
-  aa.id,
+  meds_entry.id,
   latest.patient_id as patient_id,
-  aa.drug_id,
-  aa.medication_drug_id,
-  aa.medication_name,
-  aa.dose,
-  aa.units,
-  aa.route_id,
-  aa.option_id,
-  aa.frequency_id,
-  aa.start_date,
-  aa.end_date,
-  aa.stop_reason_id,
-  aa.prescription_item_id,
-  aa.last_modified_user_id,
-  aa.last_modified_date,
-  aa.created_user_id,
-  aa.created_date
-from ophciexamination_history_medications_entry as aa 
-  join et_ophciexamination_history_medications element on aa.element_id = element.id
+  meds_entry.drug_id,
+  meds_entry.medication_drug_id,
+  meds_entry.medication_name,
+  meds_entry.dose,
+  meds_entry.units,
+  meds_entry.route_id,
+  meds_entry.option_id,
+  meds_entry.frequency_id,
+  meds_entry.start_date,
+  meds_entry.end_date,
+  meds_entry.stop_reason_id,
+  meds_entry.prescription_item_id,
+  meds_entry.last_modified_user_id,
+  meds_entry.last_modified_date,
+  meds_entry.created_user_id,
+  meds_entry.created_date
+from ophciexamination_history_medications_entry as meds_entry 
+  join et_ophciexamination_history_medications element on meds_entry.element_id = element.id
   join latest_medication_examination_events latest on element.event_id = latest.event_id
 EOSQL
         );
