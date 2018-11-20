@@ -129,21 +129,36 @@
       e.preventDefault();
     });
 
-      self.element.one('mouseenter', '.event-type', function () {
-          $('.js-quickview-image').each(function () {
-              $(this).load(function () {
-                  $(this).attr('data-loaded', true);
-                  if ($(this).css('display') !== 'none') {
-                      $('.oe-event-quickview .spinner').hide();
-                  }
-              });
-              if ($(this).data('src')) {
-                  $(this).attr('src', $(this).data('src'));
-              }
-          })
-      });
+        function getFirstImageToLoadIndex(index, imageCount) {
+            let halfImageCount = imageCount / 2;
+            if (halfImageCount >= index) {
+                return 1;
+            } else {
+                return index - halfImageCount;
+            }
+        }
 
-    self.element.on('mouseenter', '.event-type', function (e) {
+        function loadClosestImages(index, numberOfImagesToLoad) {
+            let startingIndex = getFirstImageToLoadIndex(index, numberOfImagesToLoad);
+            let lastImageIndex = startingIndex + numberOfImagesToLoad;
+            let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            let $loader = $('.oe-event-quickview .spinner');
+
+            for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
+                let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
+                if ($image && $image.data('src')) {
+                    $image.load(function () {
+                        $image.attr('data-loaded', true);
+                        if ($image.css('display') !== 'none') {
+                            $loader.hide();
+                        }
+                    });
+                    $image.attr('src', $image.data('src'));
+                }
+            }
+        }
+
+        self.element.on('mouseenter', '.event-type', function (e) {
       var $iconHover = $(e.target);
       var $li = $iconHover.parent().parents('li:first');
       $li.find('.quicklook').show();
@@ -166,6 +181,13 @@
             } else {
                 $loader.hide();
             }
+            $img.load(function () {
+                $img.attr('data-loaded', true);
+                if ($img.css('display') !== 'none') {
+                    $loader.hide();
+                }
+            });
+            $img.attr('src', $img.data('src'));
             $img.show();
         } else {
             if (self.imageLookupRequest) {
@@ -195,6 +217,7 @@
                 $loader.hide();
             });
         }
+        loadClosestImages($img.data('index') , 10);
     });
 
     self.element.on('mouseleave', '.event-type', function (e) {
@@ -206,10 +229,11 @@
     });
 
     // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
+        let counter = 1;
     this.element.find(this.options.event_list_selector).each(function () {
       var $container = $('.oe-event-quickview .quickview-screenshots');
       if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
-        return
+        return;
       }
 
         var $img = $('<img />', {
@@ -217,8 +241,10 @@
             style: 'display: none;',
             'data-event-id': $(this).data('event-id'),
             'data-src': $(this).data('event-image-url'),
+            'data-index': counter ,
         });
 
+      counter++;
       $img.appendTo($container);
     });
   };
