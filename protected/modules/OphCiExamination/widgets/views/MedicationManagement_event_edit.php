@@ -137,7 +137,53 @@ $element_errors = $element->getErrors();
 
             onInit: function(controller) {
                 registerElementController(controller, "MMController", "HMController");
-            }
+            },
+            onControllerBound: function(controller, name) {
+                if(name === "HMController") {
+                    this.initRowsFromHistoryElement();
+                }
+            },
+            initRowsFromHistoryElement: function() {
+                <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
+
+                $.each(window.HMController.$table.children("tbody").children("tr"), function(i, e){
+                    var $newrow = window.HMController.copyRow($(e), window.MMController.$table.find("tbody"));
+                    $newrow.find(".js-remove").remove();
+                    window.HMController.bindEntries($(e), $newrow);
+
+                    var hidden = ($(e).find(".js-to-be-copied").val() == 0);
+                    if(hidden) {
+                        $newrow.addClass("hidden");
+                        $newrow.find("js-hidden").val(1);
+                    }
+                });
+
+                /*
+                $.each(window.HMController.$table.find("tbody").find("tr"), function(i, e){
+                    var $row = $(e);
+                    var data = window.HMController.getRowData($row);
+                    var hidden = $row.hasClass("ignore");
+                    data.hidden = hidden ? 1 : 0;
+                    data.is_new = 0;
+                    var newrow = window.MMController.createRow(data);
+                    var $newrow = $(newrow);
+                    $newrow.removeClass("new");
+                    if(hidden) {
+                        $newrow.addClass("hidden");
+                    }
+                    $newrow.find(".trash").remove();
+                    $newrow.appendTo(window.MMController.$table.find("tbody"));
+
+                    window.MMController.setRowData($newrow, data);
+                    $newrow.find(".rgroup").val("inherited");
+                    window.MMController.initialiseRow($newrow);
+                    window.MMController.switchRowToTextualDisplay($newrow);
+                });
+                */
+                <?php endif; ?>
+                window.HMController.setDoNotSaveEntries(true);
+                //this.onAddedEntry();
+            },
         });
 
         <?php

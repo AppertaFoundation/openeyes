@@ -27,9 +27,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
     this.medicationSearchRequest = null;
+      this.fields = [
+          'medication_name',
+          'ref_medication_id',
+          'dose',
+          'dose_unit_term',
+          'frequency_id',
+          'route_id',
+          'laterality',
+          'start_date',
+          'end_date',
+          'stop_reason_id',
+          'usage_type',
+          'group',
+          'hidden',
+          'prescription_item_id',
+          'to_be_copied'
+      ];
+
     this.initialiseFilters();
     this.initialiseTriggers();
     this.initialiseDatepicker();
+
+      this.$element.data("controller_instance", this);
+      this.options.onInit(this);
   }
 
   HistoryMedicationsController._defaultOptions = {
@@ -49,36 +70,45 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     medicationSearchInput: '#history-medication-search-field',
     medicationSearchResult: '#history-medication-search-results',
     medicationNameSelector: '.medication-name',
-    medicationDisplaySelector: '.medication-display',
+    medicationDisplaySelector: '.js-medication-display',
     startDateButtonSelector: '.start-medication.enable',
     cancelStartDateButtonSelector: '.start-medication.cancel',
     stopDateFieldSelector: 'input[name$="[stop_date]"]',
     stopDateButtonSelector: '.stop-medication.enable',
     cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
-    routeOptionWrapperSelector: '.admin-route-options'
+    routeOptionWrapperSelector: '.admin-route-options',
+
+      // Customizable callbacks
+
+      onInit: function(){},
+      onControllerBound: function (controller, name){},
+      onAddedEntry: function($row, controller){},
+      onRemovedEntry: function ($row, controller) {}
   };
 
   /**
    * Setup datepicker
    */
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
+      var modelName = this.options['modelName'];
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
     for (var i=0; i < row_count; i++){
-      this.constructDatepicker('#datepicker_1_'+i);
-      this.constructDatepicker('#datepicker_2_'+i);
+      this.constructDatepicker('#'+modelName+'_datepicker_2_'+i);
+      this.constructDatepicker('#'+modelName+'_datepicker_3_'+i);
     }
   };
 
   HistoryMedicationsController.prototype.setDatepicker = function () {
+      var modelName = this.options['modelName'];
     var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-    this.constructDatepicker('#datepicker_1_'+row_count);
-    this.constructDatepicker('#datepicker_2_'+row_count);
+    this.constructDatepicker('#'+modelName+'_datepicker_2_'+row_count);
+    this.constructDatepicker('#'+modelName+'_datepicker_3_'+row_count);
   };
 
   HistoryMedicationsController.prototype.constructDatepicker = function (name) {
     var datepicker= $(this.$table).find(name);
-    if (datepicker.length!=0){
+    if (datepicker.length > 0){
       pickmeup(name, {
         format: 'Y-m-d',
         hide_on_select: true,
@@ -244,34 +274,122 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.find(".js-route").val(medication.route);
     };
 
- /* _HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
-  {
-      let drug_id = $row.find("input[name*='[drug_id]']").val();
-      if(drug_id === ''){
-          drug_id = $row.find("input[name*='[medication_drug_id]']").val();
-      }
-      $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
-          for (var name in res) {
-              var $input = $row.find('[name$="[' + name +']"]');
-              if (name === 'dose') {
-                  $input.attr('placeholder', res['dose_unit']);
-                  $input.addClass('numbers-only');
-                  if(res['dose_unit'] === 'mg'){
-                      $input.addClass('decimal');
-                  } else if(!res['dose_unit']){
-                      $input.removeClass('numbers-only decimal');
-                  }
+    HistoryMedicationsController.prototype.getRowsData = function () {
+        var data = [];
+        var self = this;
+        $.each(this.$table.find("tbody").find("tr"), function (i, e) {
+            data.push(self.getRowData($(e)));
+        });
+        return data;
+    };
 
-                  $input.val('');
-                  $row.find('[name$="[units]"]').val(res['dose_unit']);
-              } else {
-                  $input.val(res[name]).change();
-              }
-          }
-      });
-  };
-*/
-  /**
+    /**
+     * Extract data from row
+     * @param $row
+     * @param old_values If set to true, data is extracted from the controls' previous values (if available)
+     * @returns {{}}
+     */
+
+    HistoryMedicationsController.prototype.getRowData = function($row, old_values)
+    {
+        var rc = $row.attr("data-key");
+        var obj = {};
+        $.each(this.fields, function(i, field){
+            var $element = $row.find("[name$='[entries]["+rc+"]["+field+"]']");
+            if(typeof old_values !== "undefined" && old_values) {
+                var oldval = $element.attr("data-oldvalue");
+                obj[field] = typeof oldval !== "undefined" ? oldval : $element.val();
+            }
+            else {
+                obj[field] =  $element.val();
+            }
+        });
+
+        return obj;
+    };
+
+    HistoryMedicationsController.prototype.setRowData = function ($row, data, excl_fields)
+    {
+        var self = this;
+        var rc = $row.attr("data-key");
+        $.each(this.fields, function(i, field){
+            if(typeof excl_fields === 'undefined' || excl_fields.indexOf(field) === -1) {
+                if(typeof data[field] !== "undefined") {
+                    var $input = $("[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
+                    //console.log ("Data is: "+data[field]+", input is: "+ "[name='"+self.options.modelName+"[entries]["+rc+"]["+field+"]']");
+                    $input.val(data[field]);
+                }
+            }
+        });
+
+        // Make copied row point to parent and vice versa
+        if(typeof data.bound_entry !== "undefined") {
+            self.bindEntries($row, data.bound_entry);
+        }
+
+        $row.find(".rgroup").val($row.closest("tbody").attr("data-group"));
+        $row.find(".js-medication-display").text(data.medication_name);
+        $row.find(".js-dose-unit-term").text(data.dose_unit_term);
+
+    };
+
+    HistoryMedicationsController.prototype.bindController = function(controller, name) {
+        this[name] = controller;
+        this.boundController = controller;
+        this.options.onControllerBound(controller, name);
+    };
+
+
+    HistoryMedicationsController.prototype.copyRow = function($origin, $target, old_values)
+    {
+        var $row = $(this.boundController.createRow());
+        $row.appendTo($target);
+        var data = this.getRowData($origin, old_values);
+        data.usage_type = $target.attr("data-usage-type");
+        this.boundController.setRowData($row, data);
+        this.boundController.initialiseRow($row);
+
+        return $row;
+    };
+
+    HistoryMedicationsController.prototype.bindEntries = function($row1, $row2)
+    {
+        $row1.data("bound_entry", $row2);
+    };
+
+    HistoryMedicationsController.prototype.updateBoundEntry = function ($row, callback)
+    {
+        var $bound_entry = $row.data("bound_entry");
+        if(typeof $bound_entry === "undefined") {
+            return;
+        }
+        var data = this.getRowData($row);
+        var controller = $bound_entry.closest(".element-fields").data("controller_instance");
+        controller.setRowData($bound_entry, data);
+
+        if(callback !== undefined) {
+            callback($bound_entry, controller);
+        }
+    };
+
+    HistoryMedicationsController.prototype.removeBoundEntry = function($row)
+    {
+        var $bound_entry = $row.data("bound_entry");
+        if(typeof $bound_entry === "undefined") {
+            return;
+        }
+
+        $bound_entry.remove();
+    };
+
+
+    HistoryMedicationsController.prototype.setDoNotSaveEntries = function(v)
+    {
+        this.$element.find(".js-do-not-save-entries").val(v ? "1" : "0");
+    };
+
+
+    /**
    * From the tags on the given item, retrieve the associated risks and update the core
    * register accordingly.
    *
@@ -357,10 +475,18 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   HistoryMedicationsController.prototype.createRow = function(selectedItems)
   {
-    var newRows = [];
-    var template = this.templateText;
-    var element = this.$element;
-    var data;
+      var newRows = [];
+      var template = this.templateText;
+      var element = this.$element;
+      var data = {};
+
+      if(typeof selectedItems === "undefined") {
+          data.row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+          return Mustache.render(
+              this.templateText,
+              data
+          );
+      }
 
     for (var i in selectedItems) {
       data = {};

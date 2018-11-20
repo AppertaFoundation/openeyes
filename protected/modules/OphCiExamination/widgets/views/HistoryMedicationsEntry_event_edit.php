@@ -48,22 +48,13 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
-if(
-        (is_object($entry->refMedication) && !$entry->refMedication->getToBeCopiedIntoMedicationManagement())
-        ||
-        $row_type == 'closed'
-) {
-    $ignore = " ignore";
-}
-else {
-    $ignore = "";
-}
+$to_be_copied = !$is_new && !$entry->originallyStopped && $entry->refMedication->getToBeCopiedIntoMedicationManagement();
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
 ?>
 
-<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?><?= $ignore ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
+<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
         <div class="medication-display">
@@ -77,6 +68,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
     </td>
     <td class="dose-frequency-route">
         <div id="<?= $model_name."_entries_".$row_count."_dfrl_error" ?>">
@@ -113,7 +105,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                    value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Ymd') ?>"/>
             <i class="oe-i start small pad"></i>
             <?php if($is_new): ?>
-                <input id="datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"
+                <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"
@@ -137,7 +129,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                 </a>
             </div>
             <fieldset style="display: none;" class="js-datepicker-wrapper">
-                <input id="datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
+                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"

@@ -57,7 +57,7 @@ $is_new = isset($is_new) ? $is_new : false;
 >
 
     <td>
-      <div class="medication-display">
+      <div class="js-medication-display">
           <?= is_null($entry->ref_medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
       </div>
       <?php /* if ($entry->originallyStopped) { ?>
@@ -70,7 +70,7 @@ $is_new = isset($is_new) ? $is_new : false;
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-        <input type="hidden" name="<?= $field_prefix ?>[hidden]" value="<?=$entry->hidden ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[hidden]" class="js-hidden" value="<?=$entry->hidden ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
     </td>
     <td class="dose-frequency-route">
@@ -105,7 +105,7 @@ $is_new = isset($is_new) ? $is_new : false;
                    value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Ymd') ?>"/>
             <i class="oe-i start small pad"></i>
             <?php if($is_new): ?>
-                <input id="datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"
+                <input id="<?= $model_name ?>_datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"
@@ -129,7 +129,7 @@ $is_new = isset($is_new) ? $is_new : false;
                 </a>
             </div>
             <fieldset style="display: none;" class="js-datepicker-wrapper">
-                <input id="datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
+                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"

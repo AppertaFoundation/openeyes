@@ -33,6 +33,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 	$end_sel_year = date('Y');
 }
 
+$to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopiedIntoMedicationManagement();
+
 /** @var EventMedicationUse $entry */
 ?>
 
@@ -44,6 +46,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[prescription_item_id]" value="<?=$entry->prescription_item_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?= (int)$entry->originallyStopped ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?=$entry->usage_type ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
       <span class="medication-display">
         <span class="medication-name">
           <?= $entry->getMedicationDisplay() ?>
@@ -60,6 +63,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 			<input type="hidden" name="<?= $field_prefix ?>[frequency_id]" value="<?= $entry->frequency_id ?>"/>
 			<input type="hidden" name="<?= $field_prefix ?>[route_id]" value="<?= $entry->route_id ?>"/>
 			<input type="hidden" name="<?= $field_prefix ?>[laterality]" value="<?= $entry->laterality ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>"  />
+            <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" />
 			<?= $entry->getAdministrationDisplay() ?>
 		</div>
 	</td>
@@ -75,7 +80,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 		<fieldset class="fuzzy-date">
 			<div class="cols-11 js-stop-date">
 				<div id="js-stop-date-toolkit-<?= $row_count ?>" style="display:<?= $entry->end_date ? "none" : "block" ?>">
-					<input id="datepicker_2_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+					<input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
 							 style="width:80px" placeholder="yyyy-mm-dd"
 							 autocomplete="off">
 				<i class="js-has-tooltip oe-i info small pad right"
@@ -86,9 +91,9 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 						<tbody>
 						<tr class="js-end-date-display">
 							<td>
-						<button class="js-change-end-date">
-							<i class="oe-i start small pad "></i>
-						</button>
+                                <button class="js-change-end-date">
+                                    <i class="oe-i start small pad "></i>
+                                </button>
 							</td>
 							<td>
 								<span class="js-end-date-display">
