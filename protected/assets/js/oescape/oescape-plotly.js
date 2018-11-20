@@ -36,7 +36,7 @@ var layout_plotly = {
   autosize: false,
   height: 800,
   margin:{
-    l:50,
+    l:70,
     t:30,
     b: 50,
     pad:4,

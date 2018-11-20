@@ -97,7 +97,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                         'condition' => 'is_consultant = 1 and is_surgeon=1',
                                         'order' => 'last_name, first_name',
                                     )),
-                                    'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 3)); ?>
+                                    'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 5)); ?>
                         </td>
                     </tr>
                     <tr>
@@ -329,26 +329,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                     </span>
                 </td>
                 <td>
-                    <?php
-                    $this->widget(
-                        'zii.widgets.jui.CJuiAutoComplete',
-                        array(
-                            'id' => 'organising_admission_user_autocomplete',
-                            'name' => 'organising_admission_user_autocomplete',
-                            'value' => '',
-                            'source' => $this->createUrl('/user/autoComplete'),
-                            'htmlOptions' => array('placeholder' => 'Search for doctors', 'class' => 'search'),
-                            'options' => array(
-                                'select' => "js:function(e, ui) {
-								$('#Element_OphTrOperationbooking_Operation_organising_admission_user_id').val(ui.item.id);
-								$('.organising_admission_user').html(ui.item.value + ' (<a href=\"#\" class=\"remove_organising_admission_user\">remove</a>)');
-								$('#organising_admission_user_autocomplete').val('');
-								return false;
-							}",
-                            ),
-                        )
-                    );
-                    ?>
+                    <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                 </td>
             </tr>
             </tbody>

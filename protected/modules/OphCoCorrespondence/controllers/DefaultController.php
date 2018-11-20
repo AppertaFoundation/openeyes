@@ -972,4 +972,16 @@ class DefaultController extends BaseEventTypeController
             throw $ex;
         }
     }
+
+    /**
+     * After the event was soft deleted, we need to set the output_status' to DELETED
+     * @param $yii_event
+     * @return bool
+     * @throws Exception
+     */
+    public function afterSoftDelete($yii_event)
+    {
+        $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
+        return $letter->markDocumentRelationTreeDeleted();
+    }
 }
