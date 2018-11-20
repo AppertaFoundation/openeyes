@@ -107,7 +107,7 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                 }
 
                 if(is_a($entry, MedicationManagementEntry::class)) {
-                    $entry->prescribe = isset($entry_data['prescribe']) && $entry_data['prescribe'] == 'on' ? 1 : 0;
+                    $entry->prescribe = $entry_data['prescribe'];
                 }
 
                 if ($entry_data['start_date'] !== ''){

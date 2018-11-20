@@ -143,7 +143,9 @@ $is_new = isset($is_new) ? $is_new : false;
     </td>
     <td>
         <span class="icon-switch js-btn-prescribe">
-            <?php if($prescribe_access): ?><i  class="oe-i drug-rx js-prescribe js-has-tooltip" data-tooltip-content="Prescribe"></i><?php endif; ?>
+            <?php if($prescribe_access): ?>
+                <i  class="oe-i drug-rx js-prescribe js-has-tooltip" data-tooltip-content="Prescribe" <?php if($entry->prescribe){ echo 'style="opactiy: 1"'; } ?>></i>
+            <?php endif; ?>
             <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
         </span>
         <?php if ($removable) { ?>

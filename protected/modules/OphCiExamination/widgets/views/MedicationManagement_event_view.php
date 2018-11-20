@@ -18,11 +18,6 @@
 <?php /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */ ?>
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
 
-<section class="element view-Eye-Medications tile "
-         data-element-type-id="<?php echo $element->elementType->id ?>"
-         data-element-type-class="<?php echo $element->elementType->class_name ?>"
-         data-element-type-name="Medication Management"
-         data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <?php foreach (array("Continued", "Stopped", "Prescribed") as $section): ?>
         <?php $method = "get{$section}Entries"; ?>
         <?php if (!empty($entries = $element->$method())): ?>
@@ -53,4 +48,3 @@
             </div>
         <?php endif; ?>
     <?php endforeach; ?>
-</section>
