@@ -133,7 +133,10 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
                 var treatmentTypeContainer = parameterNode.find('.js-treatment-type-container');
 
                 // Only show the treatment type if the trial type is set to "Any" or "Intervention"
-                treatmentTypeContainer.toggle(!trialType || trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>');
+                treatmentTypeContainer.toggle(
+                    !trialType ||
+                    trialType === '<?= TrialType::model()->find('code = "INTERVENTION"')->id ?>'
+                );
 
                 if (!trialType) {
                     trialList.empty();
