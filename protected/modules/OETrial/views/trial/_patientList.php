@@ -24,7 +24,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
         <h2 class=""><?= $title; ?></h2>
         <select class="js-trails-sort-selector">
             <option selected disabled value="" style="display: none;">
-                Sorting by <?= $sort_by?> <?= $sort_dir ? 'ascending' : 'descending'?>&nbsp;
+                Sorting by <?= $sort_by?> <?= $sort_dir ? 'descending' : 'ascending'?>&nbsp;
             </option>
             <?php
             $columns = array(

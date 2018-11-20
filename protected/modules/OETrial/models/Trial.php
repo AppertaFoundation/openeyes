@@ -265,7 +265,7 @@ class Trial extends BaseActiveRecordVersioned
             case 'Gender':
                 $sortBySql = 'p.gender';
                 break;
-            case 'Page':
+            case 'Age':
                 $sortBySql = 'NOW() - p.dob';
                 break;
             case 'Ethnicity':
