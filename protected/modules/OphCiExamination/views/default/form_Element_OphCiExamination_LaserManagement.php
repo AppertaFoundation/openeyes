@@ -47,7 +47,7 @@ foreach ($lasertypes as $lt) {
           class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= (!$element->{'has' . ucfirst($eye)}()) ? 'inactive' : '' ?>"
           data-side="<?= $eye ?>"
       >
-        <div class="active-form" style="<?= (!$element->{'has' . ucfirst($eye)}()) ? 'display: none' : '' ?>">
+        <div class="active-form" style="<?= (!$element->{'has' . ucfirst($eye)}()) ? 'display: none;' : '' ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <?php
             $this->renderPartial(
