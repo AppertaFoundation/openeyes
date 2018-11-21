@@ -60,9 +60,9 @@ $is_new = isset($is_new) ? $is_new : false;
       <div class="js-medication-display">
           <?= is_null($entry->ref_medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
       </div>
-      <?php /* if ($entry->originallyStopped) { ?>
+      <?php if ($entry->originallyStopped) { ?>
         <i class="oe-i stop small pad"></i>
-      <?php } */ ?>
+      <?php } ?>
 
         <?php /* <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" /> */ ?>
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />

@@ -35,7 +35,9 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 <div class="element-fields full-width" id="<?= $model_name ?>_element">
   <div class="data-group flex-layout cols-10">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_entry_table" class="js-entry-table cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
+      <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+      <input type="hidden" name="<?= $model_name ?>[do_not_save_entries]" class="js-do-not-save-entries" value="<?php echo (int)$element->do_not_save_entries; ?>"/>
+      <table id="<?= $model_name ?>_entry_table" class="js-entry-table cols-full <?php echo $element_errors ? 'highlighted-error error' : '' ?>">
       <colgroup>
         <col class="cols-2">
         <col class="cols-4">

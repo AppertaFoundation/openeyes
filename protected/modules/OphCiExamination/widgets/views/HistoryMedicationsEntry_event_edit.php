@@ -63,7 +63,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
-        <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $is_new ? "{{ref_medication_id}}" : $entry->ref_medication_id ?>" />
+        <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= !isset($entry->ref_medication_id) ? "{{ref_medication_id}}" : $entry->ref_medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />

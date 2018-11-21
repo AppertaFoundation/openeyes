@@ -154,7 +154,7 @@ $element_errors = $element->getErrors();
                     var hidden = ($(e).find(".js-to-be-copied").val() == 0);
                     if(hidden) {
                         $newrow.addClass("hidden");
-                        $newrow.find("js-hidden").val(1);
+                        $newrow.find(".js-hidden").val("1");
                     }
                 });
 
