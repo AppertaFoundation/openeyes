@@ -18,11 +18,15 @@
 
     let $header = this.popup.find('.select-options thead');
     $('<th>Filter</th>').appendTo($header);
+    $('<th>Preservative</th>').appendTo($header);
     $('<th id="common-drugs-label">Common Drugs</th>').appendTo($header);
 
     this.popup.on('click', '.js-drug-types li', function () {
       dialog.popup.find('li.selected').not(this).removeClass('selected');
       dialog.runItemSearch(dialog.popup.find('input.search').text());
+    });
+    this.popup.on('click', '.js-no-preservative li', function () {
+        dialog.runItemSearch(dialog.popup.find('input.search').val());
     });
   };
 
@@ -46,9 +50,24 @@
 
       $(this.options.itemSets).each(function (index, itemSet) {
         let $td = $('<td />').appendTo(dialog.$tr);
-        let $listContainer = $('<div />', {class: 'js-drug-list flex-layout flex-top flex-left'}).appendTo($td);
+        let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
         let $list = dialog.generateItemList(itemSet);
+        $list.addClass(itemSet.options.class);
         let $listDiv = $('<div />').appendTo($listContainer);
+
+        // add the search field only to the common_drugs section
+        if (itemSet.options.class !== null && itemSet.options.class === "js-drug-list") {
+            let $searchInput = $('<input />', {
+                class: 'search cols-full js-search-autocomplete',
+                placeholder: 'Search...',
+                type: 'text'
+            });
+            $searchInput.appendTo($listDiv);
+            $searchInput.on('keyup', function () {
+                dialog.runItemSearch($(this).val());
+            });
+        }
+
         $list.appendTo($listDiv);
       });
     }
@@ -61,17 +80,7 @@
     this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
     $td.prependTo(this.$tr);
 
-    let $searchInput = $('<input />', {
-      class: 'search cols-full js-search-autocomplete',
-      placeholder: 'Search...',
-      type: 'text'
-    });
     let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
-    $searchInput.appendTo($filterDiv);
-
-    $searchInput.on('keyup', function () {
-      dialog.runItemSearch($(this).val());
-    });
 
     this.noSearchResultsWrapper = $('<span />').text('No results found').hide();
     this.noSearchResultsWrapper.insertAfter(this.popup.find('.js-drug-list'));
@@ -101,21 +110,15 @@
     this.popup.find('#common-drugs-label').text(doSearch ? 'Drugs' : 'Common Drugs');
 
     if (doSearch) {
-        let data = this.popup.find('tfoot :input').serialize();
-
         let params = $.param({
             term: text,
             code: this.options.searchOptions.code,
             type_id: this.popup.find('.js-drug-types li.selected').data('id'),
+            preservative_free: this.popup.find('.js-no-preservative li.selected').data('id'),
             ajax: 'ajax'
         });
 
-        data += '&';
-        if ($.isEmptyObject(data)) {
-            data = "";
-        }
-
-        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + data + params, function (results) {
+        this.searchRequest = $.getJSON(this.options.searchOptions.searchSource + '?' + params, function (results) {
         dialog.searchRequest = null;
         var no_data = !$(results).length;
 
@@ -129,6 +132,8 @@
             .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
           dialog.searchResultList.append(item);
         });
+
+            dialog.positionFixedPopup(dialog.options.openButton);
       });
     } else {
       dialog.noSearchResultsWrapper.hide();
