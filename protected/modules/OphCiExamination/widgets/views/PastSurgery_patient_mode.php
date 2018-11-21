@@ -37,8 +37,9 @@
           </td>
           <td>
             <span class="oe-date">
-              <?= Helper::convertDate2HTML(array_key_exists('object',
-                  $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date'])); ?>
+              <?= array_key_exists('object', $operation) ?
+                  $operation['object']->getDisplayDate() :
+                  Helper::formatFuzzyDate($operation['date']); ?>
           </span>
           </td>
         </tr>

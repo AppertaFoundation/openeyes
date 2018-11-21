@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810091400',
+            'time' => '201811051630',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -300,11 +300,17 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'table lists importcss',
+            'plugins' => 'lists table paste code',
             'branding' => false,
             'visual' => false,
-            'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
-            'valid_children' => '+body[style]'
+            'min_height' => 400,
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | code",
+            'valid_children' => '+body[style]',
+            'custom_undo_redo_levels' => 10,
+            'object_resizing' => false,
+            'menubar' => false,
+            'paste_as_text' => true,
+            'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -387,7 +393,7 @@ return array(
         'event_lock_disable' => false,
         'reports' => array(
         ),
-        'opbooking_disable_both_eyes' => false,
+        'opbooking_disable_both_eyes' => true,
         //'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
@@ -398,9 +404,9 @@ return array(
         'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
         'wkhtmltopdf_footer_right' => 'OpenEyes',
         'wkhtmltopdf_top_margin' => '10mm',
-        'wkhtmltopdf_bottom_margin' => '25mm',
-        'wkhtmltopdf_left_margin' => '20mm',
-        'wkhtmltopdf_right_margin' => '20mm',
+        'wkhtmltopdf_bottom_margin' => '20mm',
+        'wkhtmltopdf_left_margin' => '5mm',
+        'wkhtmltopdf_right_margin' => '5mm',
         'wkhtmltopdf_nice_level' => false,
         'curl_proxy' => null,
         'hscic' => array(
@@ -474,9 +480,9 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-         * Please note: on the screen the DRAFT background will be still visible but removed from printouts
+				 * Without this, lightning images and event view will not show draft watermark
          */
-        'OphCoCorrespondence_printout_draft_background' => false,
+        'OphCoCorrespondence_printout_draft_background' => true,
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
@@ -526,6 +532,10 @@ return array(
             'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
+            'blank_image_template' => array(
+                'height' => 800,
+                'width' => 600
+            )
         ),
 
         /**

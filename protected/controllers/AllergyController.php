@@ -32,14 +32,11 @@ class AllergyController extends BaseController
             $params = array();
             if (isset($_GET['term']) && $name = $_GET['term']) {
                 $criteria->addCondition('LOWER(name) LIKE :name COLLATE utf8_general_ci');
-                $params[':name'] = '%'.strtolower(strtr($name, array('%' => '\%'))).'%';
+                $params[':name'] = '%' . strtolower(strtr($name, array('%' => '\%'))) . '%';
             }
             $criteria->order = 'name';
-
             // Limit results
             $criteria->limit = '200';
-
-
             $criteria->params = $params;
 
             $allergies = Allergy::model()->active()->findAll($criteria);

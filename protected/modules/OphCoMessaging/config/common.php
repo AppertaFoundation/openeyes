@@ -24,6 +24,7 @@ return array(
                 'actions' => array(
                     'getMessages',
                  ),
+                'js' => 'dashboard.js', // assets/js
                 'position' => 5,
             ),
         ),

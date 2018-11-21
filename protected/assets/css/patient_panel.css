@@ -8,8 +8,8 @@
 
 .oe-patient .patient-trials {
     padding: 5px 12px 4px 8px;
-    bottom: 0px;
-    right: -30px;
+    bottom: 30px;
+    right: 30px;
     position: absolute;
     cursor: pointer;
 }

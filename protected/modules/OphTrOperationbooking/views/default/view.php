@@ -20,15 +20,13 @@
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
-?>
 
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 
-	<?php
-    $this->moduleNameCssClass .= ' highlight-fields';
-    $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')'?>
+$this->moduleNameCssClass .= ' highlight-fields';
+$this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')';
 
-<?php if ($warnings) { ?>
+if ($warnings) { ?>
 		<div class="cols-12">
 			<div class="alert-box patient with-icon">
 				<?php foreach ($warnings as $warn) {?>
@@ -66,5 +64,11 @@ $warnings = $this->patient->getWarnings($clinical);
     $this->renderOpenElements($this->action->id);
     $this->renderOptionalElements($this->action->id);
     ?>
-<?php $this->renderPartial('//default/delete');?>
+<?php
+$this->renderPartial('//default/delete');
+// Event actions
+if ($this->checkPrintAccess()) {
+    $this->event_actions[] = EventAction::printButton();
+}
+?>
 <?php $this->endContent();?>

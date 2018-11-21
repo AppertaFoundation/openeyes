@@ -53,77 +53,79 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
-    <div class="patient-inputs-column">
-        <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
+
+  <div class="patient-inputs-column" >
+    <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
             <?= $form->errorSummary(array($contact, $patient, $address)) ?>
             <?= $form->errorSummary($patient_identifiers) ?>
         </div>
       <?php } ?>-->
-
-        <table class="standard highlight-rows">
-            <tbody>
-            <tr>
-                <td>
-                    <?= $form->label($contact, 'title') ?>
-                    <br/>
-                    <?= $form->error($contact, 'title') ?>
-                </td>
-                <td>
-                    <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="required">
-                    <?= $form->label($contact, 'first_name') ?>
-                    <br/>
-                    <?= $form->error($contact, 'first_name') ?>
-                </td>
-                <td>
-                    <?= $form->textField($contact, 'first_name',
-                        array('size' => 40, 'maxlength' => 40, 'placeholder' => 'First name')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="required">
-                    <?= $form->label($contact, 'last_name') ?>
-                    <br/>
-                    <?= $form->error($contact, 'last_name') ?>
-                </td>
-                <td>
-                    <?= $form->textField($contact, 'last_name',
-                        array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Last name')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?= $form->label($contact, 'maiden_name') ?>
-                    <br/>
-                    <?= $form->error($contact, 'maiden_name') ?>
-                </td>
-                <td>
-                    <?= $form->textField($contact, 'maiden_name',
-                        array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="required">
-                    <?= $form->label($patient, 'dob') ?>
-                    <br/>
-                    <?= $form->error($patient, 'dob') ?>
-                </td>
-                <td style="text-align: left;">
-                    <?php
-                    if ((bool)strtotime($patient->dob)) {
-                        $dob = new DateTime($patient->dob);
-                        $patient->dob = $dob->format('d/m/Y');
-                    } else {
-                        $patient->dob = str_replace('-', '/', $patient->dob);
-                    }
-                    ?>
-                    <?= $form->textField($patient, 'dob', array('placeholder' => 'dd/mm/yyyy', 'class' => 'date
-            ')) ?>
-                    <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+    <table class="standard highlight-rows">
+      <tbody>
+      <tr>
+        <td>
+            <?= $form->label($contact, 'title') ?>
+          <br/>
+            <?= $form->error($contact, 'title') ?>
+        </td>
+        <td>
+            <?= $form->textField($contact, 'title', array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Title')) ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">
+            <?= $form->label($contact, 'first_name') ?>
+          <br/>
+            <?= $form->error($contact, 'first_name') ?>
+        </td>
+        <td>
+            <?= $form->textField($contact, 'first_name',
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'First name')) ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">
+            <?= $form->label($contact, 'last_name') ?>
+          <br/>
+            <?= $form->error($contact, 'last_name') ?>
+        </td>
+        <td>
+            <?= $form->textField($contact, 'last_name',
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'Last name')) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->label($contact, 'maiden_name') ?>
+          <br/>
+            <?= $form->error($contact, 'maiden_name') ?>
+        </td>
+        <td>
+            <?= $form->textField($contact, 'maiden_name',
+                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
+        </td>
+      </tr>
+      <tr class="patient-duplicate-check">
+        <td class="required">
+            <?= $form->label($patient, 'dob') ?>
+          <br/>
+            <?= $form->error($patient, 'dob') ?>
+        </td>
+        <td style="text-align: left;">
+            <?php
+            if ((bool)strtotime($patient->dob)) {
+                $dob = new DateTime($patient->dob);
+                $patient->dob = $dob->format('d/m/Y');
+            } else {
+                $patient->dob = str_replace('-', '/', $patient->dob);
+            }
+            ?>
+            <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicates($patient->id);",
+              'placeholder' => 'dd/mm/yyyy', 'class' => 'date')) ?>
+            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
                 'options' => array(
@@ -135,61 +137,117 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'class' => 'small fixed-width',
                 ),
             ))*/ ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="required">
-                    <?= $form->label($patient, 'gender') ?>
-                    <br/>
-                    <?= $form->error($patient, 'gender') ?>
-                </td>
-                <td>
-                    <?= $form->dropDownList($patient, 'gender', $genders, array('empty' => '-- select --')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?= $form->label($patient, 'ethnic_group_id') ?>
-                    <br/>
-                    <?= $form->error($patient, 'ethnic_group_id') ?>
-                </td>
-                <td>
-                    <?= $form->dropDownList($patient, 'ethnic_group_id', $ethnic_groups,
-                        array('empty' => '-- select --')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?php $this->renderPartial('_form_address', array(
-                        'form' => $form,
-                        'address' => $address,
-                        'countries' => $countries,
-                        'address_type_ids' => $address_type_ids,
-                    )); ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?= $form->label($contact, 'primary_phone') ?>
-                    <br/>
-                    <?= $form->error($contact, 'primary_phone') ?>
-                </td>
-                <td>
-                    <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)) ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <?= $form->label($address, 'email') ?>
-                    <br/>
-                    <?= $form->error($address, 'email') ?>
-                </td>
-                <td>
-                    <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255)) ?>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">
+            <?= $form->label($patient, 'gender') ?>
+          <br/>
+            <?= $form->error($patient, 'gender') ?>
+        </td>
+        <td>
+            <?= $form->dropDownList($patient, 'gender', $genders, array('empty' => '-- select --')) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->label($patient, 'ethnic_group_id') ?>
+          <br/>
+            <?= $form->error($patient, 'ethnic_group_id') ?>
+        </td>
+        <td>
+            <?= $form->dropDownList($patient, 'ethnic_group_id', $ethnic_groups,
+                array('empty' => '-- select --')); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?php $this->renderPartial('_form_address', array(
+                'form' => $form,
+                'address' => $address,
+                'countries' => $countries,
+                'address_type_ids' => $address_type_ids,
+            )); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->label($contact, 'primary_phone') ?>
+          <br/>
+            <?= $form->error($contact, 'primary_phone') ?>
+        </td>
+        <td>
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15, 'maxlength' => 20)) ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <?= $form->label($address, 'email') ?>
+          <br/>
+            <?= $form->error($address, 'email') ?>
+        </td>
+        <td>
+            <?= $form->emailField($address, 'email', array('size' => 15, 'maxlength' => 255)) ?>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="patient-inputs-column">
+    <div class="row divider">
+      <table class="standard highlight-rows">
+        <tbody>
+        <tr>
+          <td>
+              <?= $form->label($patient, 'hos_num') ?>
+            <br/>
+              <?= $form->error($patient, 'hos_num') ?>
+          </td>
+          <td>
+            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
+            {
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            } else{
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            }
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <?= Yii::app()->params['nhs_num_label']?> Number
+          </td>
+          <td>
+              <?= $form->textField($patient, 'nhs_num',
+                  array(
+                      'size' => 40,
+                      'maxlength' => 40,
+                      'data-child_row' => '.nhs-num-status',
+                      'placeholder' => $patient->getAttributeLabel('nhs_num'),
+                  )); ?>
+              <?= $form->error($patient, 'nhs_num') ?>
+          </td>
+        </tr>
+        <tr style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
+          <td>
+              <?= $form->label($patient, 'nhs_num_status_id') ?>
+            <br/>
+              <?= $form->error($patient, 'nhs_num_status_id') ?>
+          </td>
+          <td>
+              <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
+                  array('empty' => '-- select --')); ?>
+          </td>
+        </tr>
+        <?= $this->renderPartial('crud/_patient_identifiers', array(
+                'form' => $form,
+                'patient_identifiers' => $patient_identifiers,
+                'patient' => $patient,
+            )
+        ) ?>
+        </tbody>
+      </table>
     </div>
 
     <div class="patient-inputs-column">
@@ -430,4 +488,24 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
         $('#js-add-practitioner-event').css('display','');
         return false;
     });
+
+
+  function findDuplicates(id) {
+    var first_name = $('#Contact_first_name').val();
+    var last_name = $('#Contact_last_name').val();
+    var date_of_birth = $('#Patient_dob').val();
+    if (first_name && last_name && date_of_birth) {
+      $.ajax({
+          url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
+          data: {firstName: first_name, last_name: last_name, dob: date_of_birth, id: id},
+          type: 'GET',
+          success: function (response) {
+            $('#conflicts').remove();
+            $('.patient-duplicate-check').after(response);
+          }
+        }
+      );
+    }
+  }
+
 </script>

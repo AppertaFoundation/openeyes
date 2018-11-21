@@ -16,8 +16,5 @@
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
             <i class="material-icons right">send</i>
         </button>
-        <span>
-        <i class="material-icons" id="export">print</i>
-        </span>
     </form>
 </div>
