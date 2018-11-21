@@ -258,23 +258,23 @@ class Trial extends BaseActiveRecordVersioned
         // Get the column to sort by ('t' => trial_patient, p => patient, e => ethnic_group, c => contact))
         $sortBySql = null;
         switch ($sort_by) {
-            case 'name':
+            case 'Name':
             default:
                 $sortBySql = "c.last_name $sort_dir, c.first_name";
                 break;
-            case 'gender':
+            case 'Gender':
                 $sortBySql = 'p.gender';
                 break;
-            case 'age':
+            case 'Age':
                 $sortBySql = 'NOW() - p.dob';
                 break;
-            case 'ethnicity':
+            case 'Ethnicity':
                 $sortBySql = 'IFNULL(e.name, "Unknown")';
                 break;
-            case 'external_reference':
+            case 'External Reference':
                 $sortBySql = 'ISNULL(t.external_trial_identifier), t.external_trial_identifier';
                 break;
-            case 'treatment_type':
+            case 'Treatment Type':
                 $sortBySql = 'ISNULL(treatment_type_id), t.treatment_type_id';
                 break;
         }

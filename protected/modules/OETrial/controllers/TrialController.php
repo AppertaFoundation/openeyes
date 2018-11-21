@@ -88,18 +88,6 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * @param CAction $action The action being called
-     * @return bool Whether the action is
-     */
-    public function beforeAction($action)
-    {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OETrial.assets'));
-        Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
-
-        return parent::beforeAction($action);
-    }
-
-    /**
      * Displays a particular model.
      * @param int $id the ID of the model to be displayed
      * @throws CException Thrown if an error occurs when loading the data providers
@@ -110,36 +98,14 @@ class TrialController extends BaseModuleController
         $report = new OETrial_ReportTrialCohort();
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
-        $sortBy = null;
-
-        switch (Yii::app()->request->getParam('sort_by', -1)) {
-            case 1:
-            default:
-                $sortBy = 'name';
-                break;
-            case 2:
-                $sortBy = 'gender';
-                break;
-            case 3:
-                $sortBy = 'age';
-                break;
-            case 4:
-                $sortBy = 'ethnicity';
-                break;
-            case 5:
-                $sortBy = 'external_reference';
-                break;
-            case 6:
-                $sortBy = 'treatment_type_id';
-                break;
-        }
+        $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
 
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
             'trial' => $this->model,
             'report' => $report,
             'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
-            'sort_by' => (int)Yii::app()->request->getParam('sort_by', 1),
+            'sort_by' => $sortBy,
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', 0),
         ));
     }
