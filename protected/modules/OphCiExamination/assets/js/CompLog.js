@@ -9,7 +9,6 @@ function checkCompLogWSStatus()
         contentType: 'application/json; charset=utf-8',
         crossDomain: true,
         success: function(response) {
-            //console.log(response);
             status = true;
         }
     });
@@ -20,7 +19,6 @@ function checkCompLogWSStatus()
 function COMPLogPresetTest()
 {
     addMessageToFadeContent("Waiting for COMPLog results...");
-    console.log("Preset test");
     var requestData = {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||ZPT^ZTP^ZPT_ZTP|MSG100|P|2.4\nEVN|ZTP|20050110045502|||||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC\nZTP|COMPlogThresholding"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -31,7 +29,6 @@ function COMPLogPresetTest()
         crossDomain: true,
         async: false,
         success: function (data) {
-            //console.log(data);
         },
         error: function (x, y, z) {
             alert(x.responseText +"  " +x.status);
@@ -53,7 +50,6 @@ function COMPLogCheckTestResults()
         crossDomain: true,
         async: false,
         success: function (data) {
-            //console.log(data);
         },
         error: function (x, y, z) {
             alert(x.responseText +"  " +x.status);
@@ -73,7 +69,6 @@ function COMPLogDischargePatient() {
         crossDomain: true,
         async: false,
         success: function (data) {
-            //console.log(data);
         },
         error: function (x, y, z) {
             alert(x.responseText +"  " +x.status);
@@ -94,7 +89,6 @@ function COMPLogGetTestResults()
         crossDomain: true,
         async: false,
         success: function (data) {
-            //console.log(data);
 
             var hl7 = data.Message;
 
@@ -111,12 +105,10 @@ function COMPLogGetTestResults()
             var measurements = parse(hl7);
             var results = [];
 
-            //console.log(measurements);
             var today = new Date().toJSON().slice(0,10).replace(/-/g,'');
 
             for(i=0;i<measurements[0].length;i++){
                 if(measurements[0][i] == "\rZR1") {
-                    //console.log(measurements[0][i+2].substring(0,8)+ " :: "+today);
                     if(measurements[0][i+2].substring(0,8) == today){
                         measurement = {side: "", method: "", logmar: "", snellen: "", base: ""};
                         measurement.side = measurements[0][i+4].toLowerCase();
@@ -157,7 +149,6 @@ function OphCiExamination_VisualAcuity_getClosestValue(mvalue)
                 previousvalue.label = $(this).data("label");
                 previousvalue.tooltip = $(this).data("tooltip");
             }
-            //console.log($(this).data("id") + ' ' + $(this).data("label") + ' ' + mvalue + ' ' + diff + ' ' + lastdiff + ' ' + previousvalue);
         });
 
     });
@@ -199,7 +190,6 @@ function loadCOMPLogResults(results)
         selected_data.method_id = method_data.id;
         selected_data.method_display = method_data.label;
 
-        //console.log(selected_data);
         OphCiExamination_VisualAcuity_addReading(element.side, selected_data);
 
     });
@@ -278,29 +268,31 @@ $(document).on("click", "#et_complog", function(event){
     });
     // try to connect to the WS
     var queue = new Queue;
-    if(checkCompLogWSStatus()){
-        console.log("COMPlog is running");
-
-    }else {
+    if(!checkCompLogWSStatus()){
         queue.add_function(function(){
-            console.log("Starting complog");
-            //oelauncher('complog');
+            // having to use open in new tab, as oelauncher() method doesn't work where
+            // Will mean pop-ups must be enabled on site
             openInNewTab("oeLauncher:complog");
-            sleep(100000);
-            //$("#complog_launcher").attr("src", "oeLauncher:complog");
-        });
-        queue.add_function(function(){
-            var maxRetry = 10;
-            var retry = 0;
-            while(!checkCompLogWSStatus() || retry >= maxRetry) {
-                sleep(100000);
-                retry++;
-            }
+            sleep(100);
         });
     }
+
     queue.add_function(function(){
-        COMPLogPresetTest();
+        setTimeout(function() {
+            var maxRetry = 30;
+            var retry = 0;
+            while((!checkCompLogWSStatus()) && (retry < maxRetry)) {
+                sleep(1000);
+                retry++;
+            };
+            sleep(5000);
+            queue.add_function(function(){
+                COMPLogPresetTest();
+            });
+        }, 10);
     });
+
+
     queue.add_function(function(){
         addMessageToFadeContent('<button class="large green hint" id="et_pull_complog_results">Pull results from COMPLog</button>');
 
@@ -311,4 +303,3 @@ $(document).on("click", "#et_complog", function(event){
     });
 
 });
-
