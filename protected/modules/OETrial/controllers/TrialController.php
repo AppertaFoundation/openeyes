@@ -31,7 +31,7 @@ class TrialController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('getTrialList', 'permissions'),
+                'actions' => array('getTrialList', 'permissions',),
                 'users' => array('@'),
             ),
             array(
@@ -68,6 +68,7 @@ class TrialController extends BaseModuleController
                     'reopen',
                     'changePi',
                     'changeCoordinator',
+                    'changeTrialUserPosition'
                 ),
                 'expression' => function ($user) {
                     return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_manage;
@@ -83,7 +84,6 @@ class TrialController extends BaseModuleController
     public static function getCurrentUserPermission()
     {
         $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
-
         return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
     }
 
@@ -449,6 +449,19 @@ class TrialController extends BaseModuleController
         }
     }
 
+    public function actionChangeTrialUserPosition(){
+
+      $user_id = $_POST['user_id'];
+      $trial_id = $_POST['id'];
+      $isTrue = $_POST['isTrue'];
+      $column_name = $_POST['column_name'];
+      $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
+      $userPermission->$column_name = $isTrue;
+
+      if (!$userPermission->save()) {
+        throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
+      }
+    }
 
     /**
      * Changes the coordinator_user_id to the new value in POST

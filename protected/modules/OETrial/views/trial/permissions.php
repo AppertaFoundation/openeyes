@@ -184,6 +184,34 @@
         removeSelectedUser();
       });
 
+      $('.is_principal_investigator, .is_coordinator').change(function () {
+        var user_id = $(this).data('user');
+        var trial_id = $(this).data('trial');
+        var loader = $('#pi-change-loader-' + user_id);
+        var checked = $(this).prop('checked')?'1':'0';
+        loader.show();
+        $.ajax({
+          'type': 'POST',
+          'url': '<?= $this->createUrl('trial/changeTrialUserPosition'); ?>',
+          'data': {
+            id: trial_id,
+            user_id: user_id,
+            isTrue: checked,
+            column_name: $(this).hasClass('is_principal_investigator') ? 'is_principal_investigator': 'is_study_coordinator',
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
+          },
+          complete: function (response) {
+            loader.hide();
+          },
+          error: function (error) {
+            new OpenEyes.UI.Dialog.Alert({
+              content: "Sorry, an internal error occurred and we were unable to change the principal investigator.\n\nPlease contact support for assistance."
+            }).open();
+          },
+        });
+      });
+
+
       $('.trial-permission-pi-selector').change(function () {
         var user_id = $(this).closest('tr').find('.user_id').val();
         var loader = $('#pi-change-loader-' + user_id);
@@ -206,6 +234,7 @@
           },
         });
       });
+
 
       $('.trial-permission-coordinator-selector').change(function () {
         var user_id = $(this).closest('tr').find('.user_id').val();
