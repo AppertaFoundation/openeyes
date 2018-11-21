@@ -70,7 +70,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopi
 	</td>
 	<td>
 		<fieldset class="data-group fuzzy-date">
-			<input type="hidden" name="<?= $field_prefix ?>[start_date]"
+			<input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
 						 value="<?= $entry->start_date ? $entry->start_date : date('Y-m-d') ?>"/>
 			<i class="oe-i start small pad"></i>
 			<?= Helper::convertMySQL2NHS($entry->start_date) ?>
@@ -80,7 +80,8 @@ $to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopi
 		<fieldset class="fuzzy-date">
 			<div class="cols-11 js-stop-date">
 				<div id="js-stop-date-toolkit-<?= $row_count ?>" style="display:<?= $entry->end_date ? "none" : "block" ?>">
-					<input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
+					<input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
+                           name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>"
 							 style="width:80px" placeholder="yyyy-mm-dd"
 							 autocomplete="off">
 				<i class="js-has-tooltip oe-i info small pad right"

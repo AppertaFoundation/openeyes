@@ -205,20 +205,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.updateRowRouteOptions($row);
       });
 
-      $row.on('change', '.fuzzy-date select', function(e) {
-          var $fuzzyFieldset = $(this).closest('fieldset');
-          var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
-          $fuzzyFieldset.find('input[type="hidden"]').val(date);
-      });
-
       $row.on("click", ".js-meds-stop-btn", function(){
-        var $btn = $(this);
-        var $cell = $btn.closest("td");
-        var $datepicker_wrapper = $cell.find(".js-datepicker-wrapper");
-        var $stop_reason_select = $row.find(".js-stop-reason");
-        $btn.hide();
-        $datepicker_wrapper.show();
-        $stop_reason_select.show();
+          controller.showStopControls($row);
       });
 
       $row.on("click", ".js-btn-prescribe", function () {
@@ -236,8 +224,42 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
       });
 
+      var controls_onchange = function (e) {
+          controller.updateBoundEntry($row);
+          if($(e.target).hasClass("route") && typeof $row.data('bound_entry') !== 'undefined') {
+              controller.updateRowRouteOptions($row.data('bound_entry'));
+          }
+      };
+
       controller.setDatepicker();
+
+      $row.on("change", ".js-dose, .js-frequency, .js-route, .js-laterality, .js-stop-reason", controls_onchange);
+      var $end_date_ctrl = $row.find(".js-end-date");
+      var $start_date_ctrl = $row.find(".js-start-date");
+
+      if($end_date_ctrl.length > 0) {
+          $end_date_ctrl[0].addEventListener('pickmeup-change', controls_onchange);
+      }
+
+      if($start_date_ctrl.length > 0) {
+          $start_date_ctrl[0].addEventListener('pickmeup-change', controls_onchange);
+      }
+
+      controller.updateRowRouteOptions($row);
   };
+
+    HistoryMedicationsController.prototype.showStopControls = function($row)
+    {
+        var $datepicker_wrapper = $row.find(".js-end-date-wrapper");
+        var $stop_reason_select = $row.find(".js-stop-reason");
+        $row.find(".js-meds-stop-btn").hide();
+        $datepicker_wrapper.show();
+        $stop_reason_select.show();
+
+        if(typeof $row.data("bound_entry") !== "undefined") {
+            this.boundController.showStopControls($row.data("bound_entry"));
+        }
+    };
 
   HistoryMedicationsController.prototype.popupSearch = function()
   {
@@ -272,6 +294,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $row.find(".js-dose").val(medication.dose);
         $row.find(".js-dose-unit-term").text(medication.dose_unit_term);
         $row.find(".js-route").val(medication.route);
+        this.updateRowRouteOptions($row);
     };
 
     HistoryMedicationsController.prototype.getRowsData = function () {
@@ -527,22 +550,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             return item.label.replace(this.options.searchAsTypedPrefix, '');
         }
         return item.label;
-    };
-
-    /**
-     * @TODO: should be common function across history elements
-     * @param fieldset
-     * @returns {*}
-     */
-    HistoryMedicationsController.prototype.dateFromFuzzyFieldSet = function(fieldset)
-    {
-        res = fieldset.find('select.fuzzy_year').val();
-        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
-        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
-        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
-
-        return res;
     };
 
     HistoryMedicationsController.prototype.showStopped = function()

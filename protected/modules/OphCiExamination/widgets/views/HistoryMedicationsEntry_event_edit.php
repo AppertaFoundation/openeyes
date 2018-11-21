@@ -101,7 +101,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
     </td>
     <td>
         <fieldset>
-            <input type="hidden" name="<?= $field_prefix ?>[start_date]"
+            <input type="hidden" name="<?= $field_prefix ?>[start_date]" class="js-start-date"
                    value="<?= $entry->start_date_string_YYYYMMDD ? $entry->start_date_string_YYYYMMDD : date('Ymd') ?>"/>
             <i class="oe-i start small pad"></i>
             <?php if($is_new): ?>
@@ -128,8 +128,9 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset style="display: none;" class="js-datepicker-wrapper">
-                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
+            <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
+                <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" class="js-end-date"
+                       name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
                 <i class="js-has-tooltip oe-i info small pad right"

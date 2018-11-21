@@ -128,7 +128,7 @@ $is_new = isset($is_new) ? $is_new : false;
                     <?php endif; ?>
                 </a>
             </div>
-            <fieldset style="display: none;" class="js-datepicker-wrapper">
+            <fieldset style="display: none;" class="js-datepicker-wrapper js-end-date-wrapper">
                 <input id="<?= $model_name ?>_datepicker_3_<?= $row_count ?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?=date('Y-m-d') ?>"
                        style="width:80px" placeholder="yyyy-mm-dd"
                        autocomplete="off">
