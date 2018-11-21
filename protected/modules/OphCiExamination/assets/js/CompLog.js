@@ -31,7 +31,7 @@ function COMPLogPresetTest()
         success: function (data) {
         },
         error: function (x, y, z) {
-            alert(x.responseText +"  " +x.status);
+            //alert(x.responseText +"  " +x.status);
         }
     });
 
@@ -52,7 +52,7 @@ function COMPLogCheckTestResults()
         success: function (data) {
         },
         error: function (x, y, z) {
-            alert(x.responseText +"  " +x.status);
+            //alert(x.responseText +"  " +x.status);
         }
     });
 
@@ -71,7 +71,7 @@ function COMPLogDischargePatient() {
         success: function (data) {
         },
         error: function (x, y, z) {
-            alert(x.responseText +"  " +x.status);
+            //alert(x.responseText +"  " +x.status);
         }
     });
 }
@@ -127,7 +127,7 @@ function COMPLogGetTestResults()
             //$('.visualAcuityReading ').append(data.Message);
         },
         error: function (x, y, z) {
-            alert(x.responseText +"  " +x.status);
+            //alert(x.responseText +"  " +x.status);
         }
     });
 }
@@ -248,6 +248,10 @@ var Queue = (function(){
 
 })();
 
+function openInIframe(url){
+    $('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
+}
+
 function openInNewTab(url) {
     var win = window.open(url, '_blank');
     win.close();
@@ -265,6 +269,7 @@ $(document).on("click", "#et_complog", function(event){
     addMessageToFadeContent('<button class="large red hint" id="et_cancel_complog">Cancel</button>');
     $(document).on("click", "#et_cancel_complog", function(event){
         $(".fadeFullScreen").remove();
+        $("#complog_iframe").remove();
     });
     // try to connect to the WS
     var queue = new Queue;
@@ -272,7 +277,8 @@ $(document).on("click", "#et_complog", function(event){
         queue.add_function(function(){
             // having to use open in new tab, as oelauncher() method doesn't work where
             // Will mean pop-ups must be enabled on site
-            openInNewTab("oeLauncher:complog");
+            //openInNewTab("oeLauncher:complog");
+            openInIframe("oeLauncher:complog");
             sleep(100);
         });
     }
@@ -299,6 +305,7 @@ $(document).on("click", "#et_complog", function(event){
         $(document).on("click", "#et_pull_complog_results", function(event){
             COMPLogGetTestResults();
             $(".fadeFullScreen").remove();
+            $("#complog_iframe").remove();
         });
     });
 
