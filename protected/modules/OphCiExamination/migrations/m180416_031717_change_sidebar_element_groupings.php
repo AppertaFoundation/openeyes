@@ -6,7 +6,7 @@ class m180416_031717_change_sidebar_element_groupings extends OEMigration
         [
             'class_name' => 'Element_OphCiExamination_Refraction',
             'old_parent' => null,
-            'new_parent' => 'Anterio Segment',
+            'new_parent' => 'Anterior Segment',
         ],
         [
             'class_name' => 'Element_OphCiExamination_CXL_History',

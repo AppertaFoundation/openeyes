@@ -53,7 +53,7 @@ class m180626_061532_remove_element_parenting extends OEMigration
                 ->where('id = :id', array(':id' => $event_type_id))
                 ->queryScalar();
 
-            $parent_elements = $this->dbConnection->createCOmmand()
+            $parent_elements = $this->dbConnection->createCommand()
                 ->select('*')
                 ->from('element_type')
                 ->where('parent_element_type_id IS NULL AND event_type_id = :event_type_id',
@@ -101,6 +101,7 @@ class m180626_061532_remove_element_parenting extends OEMigration
 
         // Group tiles are now located in the element_group table, and the column can now bw removed
         $this->dropColumn('element_type', 'group_title');
+        $this->dropColumn('element_type_version', 'group_title');
 
         $this->dropForeignKey('element_type_parent_et_fk', 'element_type');
 
