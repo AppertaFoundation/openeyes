@@ -465,10 +465,8 @@ class Patient extends BaseActiveRecordVersioned
             $this->is_deceased = 1;
         }
 
-        if( $this->scenario == 'manual'){
-            $this->dob = str_replace('/', '-', $this->dob);
-            $this->date_of_death = str_replace('/', '-', $this->date_of_death);
-        }
+        $this->dob = str_replace('/', '-', $this->dob);
+        $this->date_of_death = str_replace('/', '-', $this->date_of_death);
 
         return true;
     }
