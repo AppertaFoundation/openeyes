@@ -136,7 +136,6 @@
                         Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                         array(
                             'type' => 'POST',
-                            'data' => Yii::app()->request->csrfToken,
                             'error' => 'js:function(error){
                             console.log("asdfsadf",error);
                  new OpenEyes.UI.Dialog.Alert({

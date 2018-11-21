@@ -28,7 +28,7 @@ class GpController extends BaseController
         return array(
             array(
                 'allow',  // allow users with either the TaskViewGp or TaskCreateGp roles to view GP data
-                'actions' => array('index', 'view'),
+                'actions' => array('index', 'view', '_form'),
                 'roles' => array('TaskViewGp', 'TaskCreateGp')
             ),
             array(
@@ -89,7 +89,7 @@ class GpController extends BaseController
                 'id'    => $gp->getPrimaryKey(),
             ));
         } else {
-            $this->render('create', array(
+            $this->renderpartial('_form', array(
                 'model' => $contact,
                 'context' => null
             ));
@@ -225,6 +225,8 @@ class GpController extends BaseController
         ));
     }
 
+
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -250,9 +252,9 @@ class GpController extends BaseController
     protected function performAjaxValidation($model)
     {
         Yii::log(CVarDumper::dumpAsString($_POST));
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
+//        if (isset($_POST['ajax']) && $_POST['ajax'] === 'gp-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
-        }
+//        }
     }
 }

@@ -3,6 +3,7 @@
         <div class="form">
         <?php
         \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
+
         $form = $this->beginWidget('CActiveForm', array(
             'id' => 'gp-form',
             // Please note: When you enable ajax validation, make sure the corresponding
@@ -10,14 +11,6 @@
             // There is a call to performAjaxValidation() commented in generated controller code.
             // See class documentation of CActiveForm for details on this.
             'enableAjaxValidation' => true,
-            'htmlOptions' => array('enctype' => 'multipart/form-data'),
-            'clientOptions' => array(
-                'afterValidateAttribute' => "js:
-            function(form, attribute, data, hasError) {
-               form.find('#' + attribute.inputID).removeClass('error');
-               form.find('label[for='+attribute.inputID+']').removeClass('error');
-            }",
-            ),
         ));
 
 
@@ -135,7 +128,7 @@
                             Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
                             array(
                                 'type' => 'POST',
-                                'error' => 'js:function(){
+                                'error' => 'js:function(    ){
                                      new OpenEyes.UI.Dialog.Alert({
                                      content: "First name and Last name cannot be blank."
                                     }).open();
@@ -147,12 +140,12 @@
                                      $("#gpdialog").closest(".ui-dialog-content").dialog("close");
                                   }',
                                 'complete' => 'js:function(){
-                                           $("#js-add-practitioner-event").find(\'input:text\').val(\'\');
-                                            if($(\'#selected_contact_label_wrapper\').is(\':visible\')){
-                                                $(\'.removeReading\').trigger("click");
+                                           $("#js-add-practitioner-event").find("input:text").val("");
+                                            if($("#selected_contact_label_wrapper").is(":visible")){
+                                                $(".removeReading").trigger("click");
                                             }
-                                            $("#Contact_contact_label_id").val(\'\');
-                                            $(\'#js-add-practitioner-event\').css(\'display\',\'none\');
+                                            $("#Contact_contact_label_id").val("");
+                                            $("#js-add-practitioner-event").css("display","none");
                                 }',
                             )
                         );
@@ -168,4 +161,25 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        console.log("document", this);
+        $(this).delegate('#autocomplete_contact_label_id', 'keydown', function (e) {
+           console.log(e.target.value);
 
+
+            $.getJSON("/gp/contactLabelList",{
+                term: e.target.value
+            } ,function(result){
+                removeSelectedContactLabel();
+                addItem('selected_contact_label_wrapper', ui);
+                $('#autocomplete_contact_label_id').val('');
+                return false;
+            });
+
+
+
+
+        });
+    });
+</script>
