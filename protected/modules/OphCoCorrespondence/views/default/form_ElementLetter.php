@@ -331,7 +331,7 @@ $creating = isset($creating) ? $creating : false;
                       'defaults' => array(
                           'To' => array(
                               'contact_id' => $contact_id,
-                              'contact_type' => 'GP',
+                              'contact_type' => \Yii::app()->params['gp_label'],
                               'contact_name' => $contact_name,
                               'address' => $address,
                           ),

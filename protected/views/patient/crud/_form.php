@@ -328,7 +328,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     }',
                   ),
                   'htmlOptions' => array(
-                      'placeholder' => 'search GP',
+                      'placeholder' => 'Search '.Yii::app()->params['gp_label'],
                   ),
 
               )); ?>

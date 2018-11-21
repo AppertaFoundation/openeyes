@@ -347,7 +347,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
         }
@@ -393,7 +393,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['cc'][$k]['contact_type'] = 'GP';
+            $data['cc'][$k]['contact_type'] = Yii::app()->params['gp_label'];
             $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
             $data['cc'][$k]['contact_id'] = $cc_contact->contact->id;
             $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
@@ -472,7 +472,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['sel_address_target'] = get_class($contact) . $contact->id;
         }
 

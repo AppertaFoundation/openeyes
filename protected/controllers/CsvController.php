@@ -349,7 +349,7 @@ class CsvController extends BaseController
                     $gp_contact->last_name = $patient['gp_last_name'];
                     $gp_contact->contact_label_id = $gp_label->id;
                     if (!$gp_contact->save()) {
-                        $errors[] = 'Could not save new GP contact';
+                        $errors[] = 'Could not save new '.Yii::app()->params['gp_label'].' contact';
                         array_unshift($errors, $gp_contact->getErrors());
                         return $errors;
                     }
@@ -372,7 +372,7 @@ class CsvController extends BaseController
                     return $errors;
                 }
             } else {
-                $errors[] = 'Both names are required to import GP';
+                $errors[] = 'Both names are required to import '.Yii::app()->params['gp_label'];
                 return $errors;
             }
         }

@@ -289,7 +289,7 @@ class Patient extends BaseActiveRecordVersioned
             'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
-            'gp_id' => 'General Practitioner',
+            'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient ?'
         );
