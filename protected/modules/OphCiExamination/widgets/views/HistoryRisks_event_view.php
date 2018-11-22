@@ -34,38 +34,54 @@
             <div class="cols-11" id="js-listview-risks-pro" style>
 <!--                Anticoagulants and alpha blockers being mandatory risk items to be displayed, we check if $element contains these in either yes, or no and if it doesn't in either, we display it as unchecked forcefully-->
                 <?php
-                    $anticoagulants = false;
-                    $alphablockers = false;
-                    if (in_array("Anticoagulants",$element->getEntriesDisplay('present')) || in_array("Anticoagulants", $element->getEntriesDisplay('not_present')) ) {
-                        $anticoagulants= true;
-                    }
-                    if (in_array("Alpha blockers", $element->getEntriesDisplay('present')) || in_array("Alpha blockers", $element->getEntriesDisplay('not_present')) ) {
-                        $alphablockers = true;
+                $anticoagulants = false;
+                $alphablockers = false;
+                $entries = array_merge($element->getEntriesDisplay('present') , $element->getEntriesDisplay('not_present'));
+
+                foreach ($entries as $entry) {
+                    if (strpos($entry . ' ', 'Anticoagulants') !== false) {
+                        $anticoagulants = true;
                     }
 
-                if ($anticoagulants == false && $alphablockers == false) {
-                    $not_checked_required_risks[] = 'Anticoagulants';
-                    $not_checked_required_risks[] = 'Anti Blockers';
-                } elseif ($anticoagulants == false) {
-                    $not_checked_required_risks[] = 'Anticoagulants';
-                } elseif ($alphablockers == false) {
-                    $not_checked_required_risks[] = 'Alpha blockers';
+                    if (strpos($entry, 'Alpha blockers') !== false) {
+                        $alphablockers = true;
+                    }
                 }
-                ?>
+
+                if ($anticoagulants == false) {
+                    $not_checked_required_risks[] = 'Anticoagulants';
+                }
+                if ($alphablockers == false) {
+                    $not_checked_required_risks[] = 'Alpha blockers';
+                } ?>
                 <ul class="dot-list large">
-                    <?php if ($element->present) {?>
-                      <li>Present:</li>
-                        <?php foreach ($element->getEntriesDisplay('present') as $entry){ ?>
-                        <li><?= $entry ?></li>
-                     <?php }; } ?>
+                    <?php if ($element->present) { ?>
+                        <li>Present:</li>
+                        <?php foreach ($element->getEntriesDisplay('present') as $entry) { ?>
+                            <li><?= $entry ?></li>
+                        <?php };
+                    } ?>
                 </ul>
-              <ul class="dot-list large">
-                  <?php if ($element->not_present) { ?>
-                    <li>Not Present:</li>
-                      <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
-                      <li><?= $entry ?></li>
-                      <?php }
-                  }?>
+                <ul class="dot-list large">
+                    <?php if ($element->not_checked) { ?>
+                        <li>Not Checked:</li>
+                        <?php foreach ($element->getEntriesDisplay('not_checked') as $entry) { ?>
+                            <li><?= $entry ?></li>
+                        <?php }
+                    } else if (isset($not_checked_required_risks)) { ?>
+                        <li>Not Checked:</li>
+                        <?php foreach ($not_checked_required_risks as $entry) { ?>
+                            <li><?= $entry ?></li>
+                        <?php } ?>
+                    <?php } ?>
+                </ul>
+                <ul class="dot-list large">
+                    <?php if ($element->not_present) { ?>
+                        <li>Not Present:</li>
+                        <?php foreach ($element->getEntriesDisplay('not_present') as $entry) { ?>
+                            <li><?= $entry ?></li>
+                        <?php }
+                    } ?>
                 </ul>
             </div>
             <div class="col-6" id="js-listview-risks-full" style="display: none;">
