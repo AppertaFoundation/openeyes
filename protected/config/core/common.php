@@ -141,7 +141,7 @@ return array(
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
-            'errorAction' => 'site/error',
+            'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
@@ -150,8 +150,8 @@ return array(
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
-            'class' => 'FlushableLogRouter',
-            'autoFlush' => 1,
+            'class' => 'CLogRouter',
+            // 'autoFlush' => 1,
             'routes' => array(
                 // Normal logging
                 'application' => array(
