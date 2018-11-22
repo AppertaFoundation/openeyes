@@ -38,7 +38,7 @@ $logoHelper = new LogoHelper();
         <tr>
             <th>Date of Birth</th>
             <td><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</td>
-            <th>NHS Number</th>
+            <th><?php echo Yii::app()->params['nhs_num_label']?> Number</th>
             <td><?php echo $this->patient->nhsnum ?></td>
         </tr>
         <tr>
