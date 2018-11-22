@@ -140,27 +140,7 @@
                                     $minLength = 1;
                                     $triggerSearch = '';
                                 }
-                                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                    'name' => $acFieldData['fieldName'],
-                                    'id' => 'autocomplete_'.$acFieldData['fieldName'],
-                                    'source' => "js:function(request, response) {
-										$.getJSON('".$acFieldData['jsonURL']."', {
-											term : request.term
-										}, response);
-									}",
-                                    'options' => array(
-                                        'select' => "js:function(event, ui) {
-											addItem(ui.item.id, '".$admin->getCustomSaveURL()."');
-											$(this).val('');
-											return false;
-										}",
-                                        'minLength' => $minLength,
-                                    ),
-                                    'htmlOptions' => array(
-                                        'placeholder' => $acFieldData['placeholder'],
-                                        'onFocus' => $triggerSearch,
-                                    ),
-                                ));
+                                $this->widget('application.widgets.AutoCompleteSearch',['field_name' => $acFieldData['fieldName']]);
                             }
                             ?>
                             <b>Select from list to add new</b>
@@ -177,3 +157,16 @@
 <?php
 Yii::app()->assetManager->registerScriptFile('js/oeadmin/listAutocomplete.js', CClientScript::POS_HEAD);
 ?>
+<script>
+    $(document).ready(function(){
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#<?= $acFieldData['fieldName']; ?>'),
+            url: '<?= $acFieldData['jsonURL']; ?>',
+            onSelect: function(){
+                let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                addItem(AutoCompleteResponse.id, '<?= $admin->getCustomSaveURL(); ?>');
+                return false;
+            }
+        });
+    });
+</script>
