@@ -214,5 +214,5 @@
         popup.groupController = controller;
     };
 
-  exports.NavBtnPopup = NavBtnPopup;
+    exports.NavBtnPopup = NavBtnPopup;
 }(OpenEyes.UI, OpenEyes.Util, OpenEyes.Util.EventEmitter));
