@@ -31,8 +31,8 @@
             <th>User</th>
             <th>User Role</th>
             <th>Permission</th>
-            <th><?= Trial::model()->getAttributeLabel('principle_investigator_user_id') ?></th>
-            <th><?= Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
+            <th>Principal Investigator</th>
+            <th>Study Coordinator</th>
               <?php if ($permission && $permission->can_manage): ?>
                 <th></th>
               <?php endif; ?>

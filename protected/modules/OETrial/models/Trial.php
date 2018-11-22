@@ -8,8 +8,6 @@
  * @property string $name
  * @property string $description
  * @property int $owner_user_id
- * @property int $principle_investigator_user_id
- * @property int $coordinator_user_id
  * @property bool $is_open
  * @property int $trial_type_id
  * @property string $started_date
@@ -75,12 +73,12 @@ class Trial extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, owner_user_id, principle_investigator_user_id, trial_type_id', 'required'),
+            array('name, owner_user_id, trial_type_id', 'required'),
             array('name', 'length', 'max' => 200),
             array('name', 'unique', 'caseSensitive' => false),
             array('external_data_link', 'url', 'defaultScheme' => 'http'),
             array(
-                'trial_type_id, owner_user_id, principle_investigator_user_id, coordinator_user_id, last_modified_user_id, created_user_id',
+                'trial_type_id, owner_user_id, last_modified_user_id, created_user_id',
                 'length',
                 'max' => 10,
             ),
@@ -127,8 +125,6 @@ class Trial extends BaseActiveRecordVersioned
         return array(
             'trialType' => array(self::BELONGS_TO, 'TrialType', 'trial_type_id'),
             'ownerUser' => array(self::BELONGS_TO, 'User', 'owner_user_id'),
-            'principalUser' => array(self::BELONGS_TO, 'User', 'principle_investigator_user_id'),
-            'coordinatorUser' => array(self::BELONGS_TO, 'User', 'coordinator_user_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'trialPatients' => array(self::HAS_MANY, 'TrialPatient', 'trial_id'),
@@ -146,8 +142,6 @@ class Trial extends BaseActiveRecordVersioned
             'name' => 'Name',
             'description' => 'Description',
             'owner_user_id' => 'Owner User',
-            'principle_investigator_user_id' => 'Principal Investigator',
-            'coordinator_user_id' => 'Study Coordinator',
             'trial_type_id' => 'Trial Type',
             'started_date' => 'Start',
             'closed_date' => 'End',
@@ -447,24 +441,6 @@ class Trial extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->principle_investigator_user_id === $assignment->user_id) {
-            $this->principle_investigator_user_id = $this->owner_user_id;
-
-            if (!$this->save()) {
-                throw new Exception('Unable to remove ' . $this->getAttributeLabel('principle_investigator_user_id') . ': ' . print_r($this->errors,
-                        true));
-            }
-            $logMessage .= 'Principal Investigator removed. ';
-        }
-
-        if ($this->principle_investigator_user_id === $assignment->user_id) {
-            $this->coordinator_user_id = $this->owner_user_id;
-
-            if (!$this->save()) {
-                throw new Exception('Unable to remove ' . $this->getAttributeLabel('coordinator_user_id'));
-            }
-            $logMessage .= 'Coordinator removed. ';
-        }
 
 
         if (!$assignment->delete()) {
@@ -561,4 +537,15 @@ class Trial extends BaseActiveRecordVersioned
 
         return true;
     }
+
+
+	public function getTrialPrincipalInvestigators(){
+		$principal_investigators = UserTrialAssignment::model()->findAll('trial_id=? and is_principal_investigator = 1', array($this->id));
+		return $principal_investigators;
+	}
+
+	public function getTrialStudyCoordinators(){
+		$study_coordinators = UserTrialAssignment::model()->findAll('trial_id=? and is_study_coordinator = 1', array($this->id));
+		return $study_coordinators;
+	}
 }

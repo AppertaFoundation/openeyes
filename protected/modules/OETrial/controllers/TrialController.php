@@ -139,7 +139,6 @@ class TrialController extends BaseModuleController
         $this->model->is_open = 1;
         $this->model->trial_type_id = TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id;
         $this->model->owner_user_id = Yii::app()->user->id;
-        $this->model->principle_investigator_user_id = Yii::app()->user->id;
         $this->model->started_date = date('d M Y');
 
         $this->performAjaxValidation($this->model);
@@ -434,20 +433,10 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * Change the principle_investigator_user_id to the new value in POST
+     * Change user pisition to the new value in POST
      *
      * @throws CHttpException Thrown if the change cannot be saved
      */
-    public function actionChangePi()
-    {
-        $trial = $this->loadModel($_POST['id']);
-        $trial->principle_investigator_user_id = $_POST['user_id'];
-
-        if (!$trial->save()) {
-            throw new CHttpException(500,
-                'Unable to change.' . Trial::model()->getAttributeLabel('principle_investigator_user_id'));
-        }
-    }
 
     public function actionChangeTrialUserPosition(){
 
@@ -461,21 +450,5 @@ class TrialController extends BaseModuleController
       if (!$userPermission->save()) {
         throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
       }
-    }
-
-    /**
-     * Changes the coordinator_user_id to the new value in POST
-     *
-     * @throws CHttpException Thrown if an error occurs when saving the change
-     */
-    public function actionChangeCoordinator()
-    {
-        $trial = $this->loadModel($_POST['id']);
-        $trial->coordinator_user_id = $_POST['user_id'];
-
-        if (!$trial->save()) {
-            throw new CHttpException(500,
-                'Unable to change ' . Trial::model()->getAttributeLabel('coordinator_user_id'));
-        }
     }
 }

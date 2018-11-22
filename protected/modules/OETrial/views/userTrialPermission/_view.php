@@ -22,9 +22,6 @@ $permission = TrialController::getCurrentUserPermission();
       <?= $data->trialPermission->name ?>
   </td>
   <td>
-      <?= CHtml::radioButton('principle_investigator_user_id',
-          $data->trial->principle_investigator_user_id === $data->user_id,
-          array('class' => 'trial-permission-pi-selector', 'disabled' => !$permission || !$permission->can_manage)); ?>
       <?= CHtml::checkBox('principal_investigator', $data->is_principal_investigator,
         array(
           'class' => 'is_principal_investigator',
@@ -36,8 +33,6 @@ $permission = TrialController::getCurrentUserPermission();
     </span>
   </td>
   <td>
-      <?= CHtml::radioButton('coordinator_user_id', $data->trial->coordinator_user_id === $data->user_id,
-          array('class' => 'trial-permission-coordinator-selector', 'disabled' => !$permission || !$permission->can_manage)); ?>
     <?= CHtml::checkBox('principal_investigator', $data->is_study_coordinator,
       array(
         'class'=>'is_coordinator',
