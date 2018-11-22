@@ -16,55 +16,46 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php
-$event = $this->event;
-$event_type = $event->eventType->name;
-$logoHelper = new LogoHelper();
 
-?>
 
-<header class="header">
-	<div class="title">
-	<?php echo $logoHelper->render('//base/_logo_seal'); ?>
-	<h1><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
-	</div>
-    <table class="borders prescription_header">
-        <tbody><tr>
-            <th>Patient Name</th>
-            <td><?php echo $this->patient->contact->fullName?></td>
-            <th>Hospital Number</th>
-            <td><?php echo $this->patient->hos_num ?></td>
-        </tr>
-        <tr>
-            <th>Date of Birth</th>
-            <td><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</td>
-            <th><?php echo Yii::app()->params['nhs_num_label']?> Number</th>
-            <td><?php echo $this->patient->nhsnum ?></td>
-        </tr>
-        <tr>
-            <th>Consultant</th>
-            <td>
-                <?php if ($consultant = $this->event->episode->firm->consultant) {?>
-                    <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
-                <?php }?>
-            </td>
-            <th>Service</th>
-            <td><?php echo $this->event->episode->firm->getSubspecialtyText() ?></td>
-        </tr>
-        <tr>
-            <th>Event Date</th>
-            <td>
-                <?php echo Helper::convertDate2NHS($this->event->event_date) ?>
-            </td>
-            <th>Printed</th>
-            <td><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></td>
-        </tr>
-        <tr>
-            <th>Patient's address</th>
-            <td colspan="3"><?php echo $this->patient->getLetterAddress(array(
-                    'delimiter' => '<br/>',
-                ))?></td>
-        </tr>
-        </tbody>
-    </table>
-</header>
+
+<table class="borders prescription_header">
+    <tbody><tr>
+        <th>Patient Name</th>
+        <td><?php echo $this->patient->contact->fullName?></td>
+        <th>Hospital Number</th>
+        <td><?php echo $this->patient->hos_num ?></td>
+    </tr>
+    <tr>
+        <th>Date of Birth</th>
+        <td><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</td>
+        <th><?php echo Yii::app()->params['nhs_num_label']?> Number</th>
+        <td><?php echo $this->patient->nhsnum ?></td>
+    </tr>
+    <tr>
+        <th>Consultant</th>
+        <td>
+            <?php if ($consultant = $this->event->episode->firm->consultant) {?>
+                <p><strong><?php echo $consultant->contact->getFullName() ?></strong></p>
+            <?php }?>
+        </td>
+        <th>Service</th>
+        <td><?php echo $this->event->episode->firm->getSubspecialtyText() ?></td>
+    </tr>
+    <tr>
+        <th>Event Date</th>
+        <td>
+            <?php echo Helper::convertDate2NHS($this->event->event_date) ?>
+        </td>
+        <th>Printed</th>
+        <td><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></td>
+    </tr>
+    <tr>
+        <th>Patient's address</th>
+        <td colspan="3"><?php echo $this->patient->getLetterAddress(array(
+                'delimiter' => '<br/>',
+            ))?></td>
+    </tr>
+    </tbody>
+</table>
+
