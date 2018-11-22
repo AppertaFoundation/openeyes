@@ -82,7 +82,8 @@ case $i in
     --help) showhelp=1
     ;;
 	*)  if [ ! -z "$i" ]; then
-			echo "Unknown command line: $i. Try --help"
+			# pass anything else on to oe-fix script
+			fixparams="$fixparams $i"
 		fi
     ;;
 esac

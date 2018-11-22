@@ -35,7 +35,7 @@
               </table>
             <?php else: ?>
             <div class="data-value not-recorded">
-              Not recorded
+                Not assessed in this examination
             </div>
             <?php endif; ?>
         </div>
