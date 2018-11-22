@@ -955,6 +955,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+        // mimic print request so that the print style sheet is applied
+        $assetManager = Yii::app()->assetManager;
+        $assetManager->isPrintRequest  =true;
         try {
             $this->initActionView();
             $this->removeEventImages();
