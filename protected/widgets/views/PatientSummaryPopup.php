@@ -24,12 +24,33 @@
  * @var \OEModule\OphCoCvi\components\OphCoCvi_API $co_cvi_api
  */
 
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $correspondence_api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+    <?php if (count($this->patient->identifiers) > 0) { ?>
+      <div class="patient-numbers flex-layout">
+        <div class="local-numbers">
+            <?php foreach ($this->patient->identifiers as $identifier) { ?>
+                <?php if ($identifier->hasValue() || $identifier->displayIfEmpty()) { ?>
+                <div class="num">
+                    <?= $identifier->getLabel() ?>
+                  <label class="inline highlight">
+                      <?= $identifier->value ?>
+                  </label>
+                </div>
+                <?php } ?>
+            <?php } ?>
+        </div>
+        <div class="nhs-number">
+            <?= Yii::app()->params['nhs_num_label'] ?>
+            <?= $this->patient->nhsnum ?>
+        </div>
+      </div>
+    <?php } ?>
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -100,7 +121,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 </div>
 
 <!-- Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none;">
+<div class="oe-patient-popup patient-summary-quicklook" style="display:none;">
   <div class="situational-awareness flex-layout flex-left flex-top">
       <?php
       $visualAcuityRight = $exam_api->getLetterVisualAcuityRight($patient);
@@ -197,7 +218,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             if (count($ophthalmic_diagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>
@@ -227,7 +248,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
             <?php if (count($this->patient->systemicDiagnoses) === 0) { ?>
               <tr>
                 <td>
-                  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+                  <div class="nil-recorded">Nil recorded</div>
                 </td>
               </tr>
             <?php } ?>
@@ -252,7 +273,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
       <div class="group">
         <div class="label">Surgical History</div>
         <div class="data">
-            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class , array(
+            <?php $this->widget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
                 'patient' => $this->patient,
                 'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
             )); ?>
@@ -289,7 +310,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- .flex-layout -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
+<div class="oe-patient-popup patient-popup-management" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -322,7 +343,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
   </div><!-- flex -->
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
@@ -357,3 +378,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     </div><!-- .col-right -->
   </div><!-- .flex -->
 </div>
+
+<?php if(Yii::app()->getModule('OETrial')) { ?>
+<div class="oe-patient-popup patient-popup-trials" style="display: none;">
+  <div class="flex-layout flex-top">
+      <?php
+      $this->widget('application.modules.OETrial.widgets.PatientTrialSummary', array(
+          'patient' => $this->patient,
+      ));
+      ?>
+  </div>
+</div>
+<?php } ?>
