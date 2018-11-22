@@ -523,16 +523,14 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
-            'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
-                'height' => 800,
-                'width' => 600
+                'height' => 912,
+                'width' => 800
             ),
             'event_specific' => array(
                 'Correspondence' => array(
-                    'resolution_multiplier' => 2,
                     'image_width' => 1000
                 ),
             ),
