@@ -477,4 +477,34 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+    /**
+     * @return ElementType[] Array of element types in the same group minus self
+     */
+    private function getSiblingTypes(){
+        $element_type = $this->getElementType();
+        return ElementType::model()->findAll(
+            'element_group_id = :group_id AND id != :this_id',
+            array(':group_id' => $element_type->element_group_id,
+                ':this_id' => $element_type->id
+            )
+        );
+    }
+
+    /**
+     * @return BaseEventTypeElement[] sibling elements in the same group
+     */
+    protected function getSiblings()
+    {
+        $siblings = array();
+
+        foreach ($this->getSiblingTypes() as $siblingType){
+            if ($this->event_id){
+                if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))){
+                    $siblings[] = $element;
+                }
+            }
+        }
+
+        return $siblings;
+    }
 }
