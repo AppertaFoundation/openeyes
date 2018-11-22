@@ -70,7 +70,8 @@
               <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
                   echo 'Nothing selected.';
               } else {
-                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  }, $element->driving_statuses);
+                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
+                      is_array($element->driving_statuses) ? $element->driving_statuses : []);
                   echo implode(', ', $driving_statuses);
               } ?>
           </div>
