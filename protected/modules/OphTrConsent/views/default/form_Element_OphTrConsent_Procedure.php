@@ -62,7 +62,7 @@
                 'element' => $element,
                 'durations' => false,
                 'identifier' => 'procedures',
-                'read_only' => !($element->booking_event_id == null || $element->booking_event_id == ''),
+                'read_only' => !$element->booking_event_id ,
                 'restrict' => 'unbooked',
                 'restrict_common' => 'unbooked',
                 'label' => ''
