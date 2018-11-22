@@ -40,9 +40,8 @@ class PatientUserReferral extends BaseActiveRecord
       array('patient_id, user_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
       array('last_modified_date, created_date', 'safe'),
       // The following rule is used by search().
-      // @todo Please remove those attributes that should not be searched.
       array(
-        'id, patient_id, user_id, last_modified_user_id, last_modified_date, created_user_id, created_date',
+        'id, patient_id, user_id',
         'safe',
         'on' => 'search',
       ),
@@ -94,32 +93,15 @@ class PatientUserReferral extends BaseActiveRecord
    */
   public function search()
   {
-    // @todo Please modify the following code to remove attributes that should not be searched.
-
     $criteria = new CDbCriteria;
 
     $criteria->compare('id', $this->id);
     $criteria->compare('patient_id', $this->patient_id, true);
     $criteria->compare('user_id', $this->user_id, true);
-    $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
-    $criteria->compare('last_modified_date', $this->last_modified_date, true);
-    $criteria->compare('created_user_id', $this->created_user_id, true);
-    $criteria->compare('created_date', $this->created_date, true);
 
     return new CActiveDataProvider($this, array(
       'criteria' => $criteria,
     ));
-  }
-
-  /**
-   * Returns the static model of the specified AR class.
-   * Please note that you should have this exact method in all your CActiveRecord descendants!
-   * @param string $className active record class name.
-   * @return PatientUserReferral the static model class
-   */
-  public static function model($className = __CLASS__)
-  {
-    return parent::model($className);
   }
 
   public function getUserName()

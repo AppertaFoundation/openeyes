@@ -298,7 +298,7 @@ class Patient extends BaseActiveRecordVersioned
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
             'gp_id' => 'General Practitioner',
             'practice_id' => 'Practice',
-            'is_local' => 'Is local patient ?',
+            'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
         );
     }
@@ -2085,7 +2085,6 @@ class Patient extends BaseActiveRecordVersioned
     $validPatient->dob = $dob;
 
     if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
-      Yii::log('validated');
       return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
     }
 

@@ -49,6 +49,21 @@ $(function () {
     $(selector).toggle($(this).val().length > 0);
   });
 
+  var submitted = false;
+  $(document).ready(function () {
+    $("#patient-form").on('submit', function (e) {
+        if (!submitted) {
+          $('#patient-form-submit-button').attr('disabled', true);
+          $('#patient-form-submit-button').addClass('disabled');
+          $('#form-submit-loader').show();
+          submitted = true;
+        } else {
+          e.preventDefault();
+        }
+      }
+    );
+  });
+
   $('#Patient_is_deceased').on('change', function () {
     var selector = $(this).data('child_row');
 
@@ -64,8 +79,8 @@ $(function () {
     removeSelectedPractice();
   });
 
-	$('#selected_referred_to_wrapper').on('click', '.js-remove-referral-to', function(){
-		removeSelectedReferredto();
-	});
+  $('#selected_referred_to_wrapper').on('click', '.js-remove-referral-to', function(){
+    removeSelectedReferredto();
+  });
 
 });

@@ -83,7 +83,8 @@ class PatientReferral extends BaseActiveRecord
    */
   protected function beforeSave()
   {
-    if ($file = CUploadedFile::getInstances($this, 'uploadedFile')) {
+    $file = CUploadedFile::getInstances($this, 'uploadedFile');
+    if ($file) {
       $this->file_size = $file->size;
       $this->file_name = $file->name;
       $this->file_content = file_get_contents($file->tempName);
@@ -93,15 +94,5 @@ class PatientReferral extends BaseActiveRecord
     return parent::beforeSave();
   }
 
-  /**
-   * Returns the static model of the specified AR class.
-   * Please note that you should have this exact method in all your CActiveRecord descendants!
-   * @param string $className active record class name.
-   * @return PatientReferral the static model class
-   */
-  public static function model($className = __CLASS__)
-  {
-    return parent::model($className);
-  }
 
 }

@@ -484,18 +484,4 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     }
   }
 
-  var submitted = false;
-  $(document).ready(function () {
-    $("#patient-form").on('submit', function (e) {
-        if (!submitted) {
-          $('#patient-form-submit-button').attr('disabled', true);
-          $('#patient-form-submit-button').addClass('disabled');
-          $('#form-submit-loader').show();
-          submitted = true;
-        } else {
-          e.preventDefault();
-        }
-      }
-    );
-  });
 </script>
