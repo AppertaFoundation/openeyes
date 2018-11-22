@@ -15,8 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
-    <div class="family-history-status-unknown"
-         style="font-style: italic; color: rgba(255,255,255,0.5);">
+    <div class="nil-recorded">
         Patient family history is unknown
     </div>
 <?php } else {
@@ -30,11 +29,8 @@ if (empty($element->entries) && empty($element->no_family_history_date)) { ?>
         'layoutColumns' => array(
         ),
     ))?>
-    <div class="family-history-status-none"
-         style="
-            font-style: italic;
-            color: rgba(255,255,255,0.5);
-            display: <?php if (empty($element->no_family_history_date) &&  !empty($element->entries)) {echo 'none';} ?>"
+    <div class="nil-recorded"
+         style="<?= empty($element->no_family_history_date) &&  !empty($element->entries) ? 'display: none;':'' ?>"
     >
         Patient has no family history
     </div>
