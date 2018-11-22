@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="print-form-div <?php echo $css_class ?>">
+<main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 4<br/>
@@ -44,7 +44,7 @@
             <td><?php echo $this->patient->hos_num ?></td>
         </tr>
         <tr>
-            <th>NHS number</th>
+            <th><?php echo Yii::app()->params['nhs_num_label']?> number</th>
             <td><?php echo $this->patient->nhs_num ?></td>
         </tr>
         <tr>
@@ -244,4 +244,4 @@
         <strong>Second opinions and court involvement<br/>
             Where treatment is complex and/or people close to the patient express doubts about the proposed treatment, a second opinion should be sought, unless the urgency of the patient’s condition prevents this. Donation of regenerative tissue such as bone marrow, sterilisation for contraceptive purposes and withdrawal of artificial nutrition or hydration from a patient in PVS must never be undertaken without prior High Court approval. High Court approval can also be sought where there are doubts about the patient’s capacity or best interests.</strong>
     </p>
-</div>
+</main>
