@@ -101,7 +101,6 @@
         });
         let $footer = $('<tfoot>').append($filterOptions);
 
-        //$filterOptions.appendTo($footer);
         $footer.appendTo(this.selectWrapper);
     }
 

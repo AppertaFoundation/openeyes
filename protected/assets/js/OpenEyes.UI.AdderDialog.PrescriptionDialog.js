@@ -74,8 +74,6 @@
   };
 
   PrescriptionDialog.prototype.generateSearch = function () {
-    let dialog = this;
-
     let $td = $('<td />');
     this.searchWrapper = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
     $td.prependTo(this.$tr);
