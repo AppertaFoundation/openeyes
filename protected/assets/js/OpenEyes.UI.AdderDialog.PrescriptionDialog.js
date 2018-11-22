@@ -22,8 +22,8 @@
     $('<th id="common-drugs-label">Common Drugs</th>').appendTo($header);
 
     this.popup.on('click', '.js-drug-types li', function () {
-      dialog.popup.find('li.selected').not(this).removeClass('selected');
-      dialog.runItemSearch(dialog.popup.find('input.search').text());
+      dialog.popup.find('.js-drug-types li.selected').not(this).removeClass('selected');
+      dialog.runItemSearch(dialog.popup.find('input.search').val());
     });
     this.popup.on('click', '.js-no-preservative li', function () {
         dialog.runItemSearch(dialog.popup.find('input.search').val());
@@ -96,13 +96,14 @@
 
   PrescriptionDialog.prototype.runItemSearch = function (text) {
     let dialog = this;
-
     if (this.searchRequest !== null) {
       this.searchRequest.abort();
     }
 
-    // Only run the search if the user has entered text into the search field or has a drug type selected
-    let doSearch = text.length !== 0 || this.popup.find('.js-drug-types li.selected').length > 0;
+    // Only run the search if the no_preservative button is pressed, the user has entered text into the search field or has a drug type selected
+    let doSearch = dialog.popup.find('.js-no-preservative').find('.selected').length === 1 ||
+        text.length !== 0 ||
+        this.popup.find('.js-drug-types li.selected').length > 0;
     // Otherwise just show the default drug list
     this.popup.find('.js-drug-list').toggle(!doSearch);
     this.popup.find('#common-drugs-label').text(doSearch ? 'Drugs' : 'Common Drugs');
@@ -131,7 +132,7 @@
           dialog.searchResultList.append(item);
         });
 
-            dialog.positionFixedPopup(dialog.options.openButton);
+        dialog.positionFixedPopup(dialog.options.openButton);
       });
     } else {
       dialog.noSearchResultsWrapper.hide();
