@@ -31,7 +31,7 @@ class TrialController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('getTrialList', 'permissions',),
+                'actions' => array('getTrialList', 'permissions'),
                 'users' => array('@'),
             ),
             array(

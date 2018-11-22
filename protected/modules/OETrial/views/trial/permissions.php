@@ -211,7 +211,6 @@
         });
       });
 
-
       $('.trial-permission-pi-selector').change(function () {
         var user_id = $(this).closest('tr').find('.user_id').val();
         var loader = $('#pi-change-loader-' + user_id);
@@ -234,7 +233,6 @@
           },
         });
       });
-
 
       $('.trial-permission-coordinator-selector').change(function () {
         var user_id = $(this).closest('tr').find('.user_id').val();

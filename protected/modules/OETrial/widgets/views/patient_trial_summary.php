@@ -39,7 +39,6 @@
                   <td>
                       <?php
                       $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
-                      Yii::log(var_export($coordinators, true));
                       if (sizeof($coordinators)) {
                         foreach ($coordinators as $item){
                           echo $item->user->getFullName().'<br>';
