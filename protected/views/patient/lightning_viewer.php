@@ -145,5 +145,10 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 <script>
   $(function () {
     var lightningViewer = new OpenEyes.UI.LightningViewer();
+
+    if($(window).width() < 1280){
+      $('header.oe-header').css('position','fixed');
+      $('#oe-patient-details').css('background','#141e2b');
+    }
   });
 </script>
