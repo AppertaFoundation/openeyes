@@ -64,7 +64,7 @@ class OeDateFormat extends CActiveRecordBehavior
 
         // check date format
         if (!strtotime($date)) {
-            return $this->Owner->{$this->fuzzy_date_filed};
+            return '';
         }
 
         // get month and day
