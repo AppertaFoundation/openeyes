@@ -104,7 +104,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
     </div>
       <div class="oe-lightning-quick-view js-lightning-view-image-container">
           <div class="js-lightning-view-overlay"
-               style="width: <?= $previewWidth ?>px; min-height: 512px; height: calc(100% - 134px); position: absolute;"></div>
+               style="width: <?= $previewWidth ?>px; min-height: 512px; position: absolute;"></div>
           <i class="js-preview-image-loader spinner" style="display: none;"></i>
         <?php foreach ($previewsByYear as $year => $events) {
             foreach ($events as $event) {
@@ -145,10 +145,9 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 <script>
   $(function () {
     var lightningViewer = new OpenEyes.UI.LightningViewer();
+    var oe_header_height = $('.oe-header').outerHeight();
+    var lightning_timeline_height = $('.lightning-timeline').outerHeight();
 
-    if($(window).width() < 1280){
-      $('header.oe-header').css('position','fixed');
-      $('#oe-patient-details').css('background','#141e2b');
-    }
+    $('.js-lightning-view-overlay').css('height','calc(100% - '+(oe_header_height + lightning_timeline_height)+'px)');
   });
 </script>
