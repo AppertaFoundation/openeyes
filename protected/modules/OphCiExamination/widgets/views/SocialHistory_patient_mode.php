@@ -1,5 +1,5 @@
 <?php if (!$element || !$element->id) { ?>
-  <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
+  <div class="nil-recorded">Nil recorded</div>
 <?php } else { ?>
     <table class="plain patient-data">
         <tbody>
