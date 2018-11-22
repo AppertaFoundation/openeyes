@@ -535,5 +535,32 @@ return array(
                 ),
             ),
         ),
+
+        /**
+         * Patient Identifiers
+         * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
+         *
+         * 'label' is the text that will be used to label this identifier (defaults to a human friendly version of the code if not set)
+         * 'placeholder' is what appears as the placeholder in the text field (defaults to the label if not set)
+         * 'required' is whether the field needs to be entered or not (defaults to false)
+         * If 'validate_pattern' is set, then the value must match that regex (unless the value is empty and required is false)
+         * 'validate_msg' is the message displayed if the regex match fails (defaults to 'Invalid format')
+         * If 'auto_increment' is true, then a blank value will be replaced with the 1 plus the highest value of other patients
+         * If 'unique' is true, then the identifier must be unique for that patient
+         * If 'display_if_empty' is true, then identifier will be shown in the patient summary panel even if it is null
+         */
+        /*'patient_identifiers' => array(
+            'SOME_NUMBER' => array(
+                'label' => 'Some Number',
+                // 'placeholder' => 'Some number placeholder',
+                // 'required' => true,
+                // 'validate_pattern' => '/^\d{8,}$/',
+                // 'validate_msg' => ',
+                // 'editable' => true,
+                // 'auto_increment' => false,
+                // 'unique' => false,
+                // 'display_if_empty' => false,
+            ),
+        ),*/
     ),
 );
