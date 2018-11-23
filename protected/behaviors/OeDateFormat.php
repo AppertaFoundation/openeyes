@@ -78,7 +78,7 @@ class OeDateFormat extends CActiveRecordBehavior
 
         return ($day   !== '00' ? '<span class="day">'.$day.'</span>'   : '') .
                ($month !== '00' ? '<span class="mth">'.date("M", mktime(0, 0, 0, $month, 1)).'</span>' : '') .
-               ($year  !== '00' ? '<span class="yr">'.$year.'</span>' : '');
+               ($year  !== '0000' ? '<span class="yr">'.$year.'</span>' : '');
 
     }
 }

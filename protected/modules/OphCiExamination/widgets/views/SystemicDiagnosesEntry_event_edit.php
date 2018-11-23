@@ -33,7 +33,7 @@ if (!isset($values)) {
 }
 
     if (!isset($values['date']) || !strtotime($values['date'])) {
-        $values['date'] = date('Y'); // default to the year displayed in the select dropdowns
+        $values['date'] = null; // default to the year displayed in the select dropdowns
     }
 
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
