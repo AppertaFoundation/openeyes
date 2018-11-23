@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="print-form-div <?php echo $css_class ?>">
+<main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 2<br/>
@@ -226,4 +226,4 @@
         <div class="dotted-write"></div>
         </p>
     <?php } ?>
-</div>
+</main>

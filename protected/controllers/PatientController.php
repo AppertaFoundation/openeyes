@@ -551,7 +551,7 @@ class PatientController extends BaseController
             $eventTypeMap[$eventType->name] = array();
             $api = $eventType->getApi();
             if ($api) {
-                $eventTypeMap[$eventType->name] += $eventType->getApi()->getEvents($this->patient);
+                $eventTypeMap[$eventType->name] += $eventType->getApi()->getVisibleEvents($this->patient);
             }
         }
 

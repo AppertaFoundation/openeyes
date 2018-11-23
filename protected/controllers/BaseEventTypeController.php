@@ -119,6 +119,17 @@ class BaseEventTypeController extends BaseModuleController
     public $attachment_print_title = null;
 
     /**
+     * Values to change per event
+     *
+     * @var float $resolution_multiplier how much to 'zoom in' on the pdf when changing to png
+     * @var int $image_width width of preview image in pixels
+     * @var int $compression_quality from 1 (lowest) to 100 (highest)
+     */
+    public $resolution_multiplier = 1;
+    public $image_width = 800;
+    public $compression_quality = 50;
+
+    /**
      * @var int $element_tiles_wide The number of tiles that can be rendered in a single row
      */
     protected $element_tiles_wide = 3;
@@ -658,6 +669,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function initActionView()
     {
+        $this->readInEventImageSettings();
         $this->moduleStateCssClass = 'view';
         $this->initWithEventId(@$_GET['id']);
     }
@@ -680,6 +692,9 @@ class BaseEventTypeController extends BaseModuleController
     protected function initActionDelete()
     {
         $this->initWithEventId(@$_GET['id']);
+
+        //on soft delete we call the afterSoftDelete method
+        $this->event->getEventHandlers('onAfterSoftDelete')->add(array($this, 'afterSoftDelete'));
     }
 
     /**
@@ -1943,6 +1958,17 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Run this function after soft delete happened
+     *
+     * @param $event
+     * @return bool
+     */
+    public function afterSoftDelete($event)
+    {
+        return true;
+    }
+
+    /**
      * Delete the event given by $id. Performs the soft delete action if it's been confirmed by $_POST.
      *
      * @param $id
@@ -2212,10 +2238,13 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($event->imageDirectory . "/$drawingName.png")) {
-                    if (!@file_put_contents($event->imageDirectory . "/$drawingName.png",
-                        base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob)))) {
-                        throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
+                if (!file_exists($this->event->imageDirectory . "/$drawingName.png")) {
+                    if (!@file_put_contents(
+                            $this->event->imageDirectory . "/$drawingName.png",
+                            base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
+                        )
+                    ){
+                        throw new Exception("Failed to write to {$this->event->imageDirectory}/$drawingName.png: check permissions.");
                     }
                 }
             }
@@ -2248,6 +2277,26 @@ class BaseEventTypeController extends BaseModuleController
         */
 
         echo 'ok';
+    }
+
+    public function readInEventImageSettings(){
+        $this->event = Event::model()->findByPk($_GET['id']);
+        if (!isset($this->event) || !isset($this->event->eventType)){return;}
+
+        $event_params = array();
+        if (array_key_exists('event_specific', Yii::app()->params['lightning_viewer']))
+        {
+            $lightning_params = Yii::app()->params['lightning_viewer']['event_specific'];
+            if (array_key_exists($this->event->eventType->name, $lightning_params)){
+                $event_params = $lightning_params[$this->event->eventType->name];
+            }
+        }
+
+        if (!isset($event_params)){return;};
+
+        foreach ($event_params as $key => $value){
+            $this->{$key} = $value;
+        }
     }
 
     public function actionEventImage()
@@ -2336,18 +2385,18 @@ class BaseEventTypeController extends BaseModuleController
         // Stub an EventImage record so other threads don't try to create the same image
         $eventImage = $this->saveEventImage('GENERATING');
 
+        $this->readInEventImageSettings();
         try {
             $content = $this->getEventAsHtml();
 
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => Yii::app()->params['lightning_viewer']['pdf_render_width']));
+                array('width' => Yii::app()->params['lightning_viewer']['image_width']));
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
             $imagick = new Imagick($input_path);
-            $this->scaleImageForThumbnail($imagick);
             $imagick->writeImage($output_path);
 
             $this->saveEventImage('CREATED', ['image_path' => $output_path]);
@@ -2371,9 +2420,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function scaleImageForThumbnail($imagick)
     {
-        $imagick->setImageCompressionQuality(Yii::app()->params['lightning_viewer']['compression_quality']);
-
-        $width = Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
+        $width = $this->image_width ?: 800;
         if ($width < $imagick->getImageWidth()) {
             $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
             $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
@@ -2505,6 +2552,16 @@ class BaseEventTypeController extends BaseModuleController
         $pdf_imagick = new Imagick();
         $pdf_imagick->readImage($pdf_path);
         $pdf_imagick->setImageFormat('png');
+        $original_width = $pdf_imagick->getImageGeometry()['width'];
+        if ($this->image_width != 0 && $original_width != $this->image_width){
+            $original_res = $pdf_imagick->getImageResolution()['x'];
+            $new_res = $original_res * ($this->image_width / $original_width);
+
+            $pdf_imagick = new Imagick();
+            $pdf_imagick->setResolution($new_res,$new_res);
+            $pdf_imagick->readImage($pdf_path);
+            $pdf_imagick->setImageCompressionQuality($this->compression_quality);
+        }
 
         $output_path = $this->getPreviewImagePath(['eye' => $eye]);
         if (!$pdf_imagick->writeImages($output_path, false)) {
@@ -2536,21 +2593,15 @@ class BaseEventTypeController extends BaseModuleController
     protected function savePdfPreviewAsEventImage($page, $eye)
     {
         $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye]);
-        Yii::log($pagePreviewPath);
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
 
         $imagickPage = new Imagick();
         $imagickPage->readImage($pagePreviewPath);
-        $this->scaleImageForThumbnail($imagickPage);
 
         // Sometimes the PDf has a transparent background, which should be replaced with white
-        if ($imagickPage->getImageAlphaChannel()) {
-            $imagickPage->setImageAlphaChannel(11);
-            $imagickPage->setImageBackgroundColor('white');
-            $imagickPage->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
-        }
+        $this->whiteOutImageImagickBackground($imagickPage);
 
         $imagickPage->writeImage($pagePreviewPath);
         $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye' => $eye]);
@@ -2560,5 +2611,19 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         return true;
+    }
+
+    /**
+     * Makes transparent imagick images have a white background
+     *
+     * @param $imagick Imagick
+     * @throws Exception
+     */
+    protected function whiteOutImageImagickBackground($imagick){
+        if ($imagick->getImageAlphaChannel()) {
+            $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_FLATTEN);
+            $imagick->setImageBackgroundColor('white');
+            $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
+        }
     }
 }

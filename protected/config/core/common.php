@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201811051630',
+            'time' => '201811131318',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -141,7 +141,7 @@ return array(
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
-            'errorAction' => 'site/error',
+            'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
@@ -150,8 +150,8 @@ return array(
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
-            'class' => 'FlushableLogRouter',
-            'autoFlush' => 1,
+            'class' => 'CLogRouter',
+            // 'autoFlush' => 1,
             'routes' => array(
                 // Normal logging
                 'application' => array(
@@ -523,13 +523,17 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
-            'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
-                'height' => 800,
-                'width' => 600
-            )
+                'height' => 912,
+                'width' => 800
+            ),
+            'event_specific' => array(
+                'Correspondence' => array(
+                    'image_width' => 1000
+                ),
+            ),
         ),
 
         /**
