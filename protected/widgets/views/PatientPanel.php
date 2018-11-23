@@ -58,8 +58,7 @@ $deceased = $this->patient->isDeceased();
                 <span><?php echo Yii::app()->params['nhs_num_label'] ?></span>
                 <?php echo $this->patient->nhsnum ?>
                 <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()): ?>
-                    <i class="oe-i asterisk small" aria-hidden="true"></i><span
-                            class="messages"><?= $this->patient->nhsNumberStatus->description; ?></span>
+                    <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="<?=$this->patient->nhsNumberStatus->description; ?>"></i>
                 <?php endif; ?>
             </div>
 
