@@ -189,6 +189,7 @@
         var trial_id = $(this).data('trial');
         var loader = $('#pi-change-loader-' + user_id);
         var checked = $(this).prop('checked')?'1':'0';
+        var checkbox = $(this);
         loader.show();
         $.ajax({
           'type': 'POST',
@@ -201,6 +202,13 @@
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
           },
           complete: function (response) {
+            var res_obj = response.responseText? JSON.parse(response.responseText): {};
+            if (res_obj.Error){
+              new OpenEyes.UI.Dialog.Alert({
+                content: res_obj.Error
+              }).open();
+              checkbox.prop('checked', true);
+            }
             loader.hide();
           },
           error: function (error) {

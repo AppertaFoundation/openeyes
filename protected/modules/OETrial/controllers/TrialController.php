@@ -444,8 +444,18 @@ class TrialController extends BaseModuleController
       $trial_id = $_POST['id'];
       $isTrue = $_POST['isTrue'];
       $column_name = $_POST['column_name'];
+
+      $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
+      if (sizeof($existing)===1&&$existing[0]->user_id===$user_id){
+        $res = array(
+          'Error' => 'At least one user should be selected.'
+        );
+        echo CJSON::encode($res);
+        Yii::app()->end();
+      }
       $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
       $userPermission->$column_name = $isTrue;
+
 
       if (!$userPermission->save()) {
         throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));

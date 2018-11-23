@@ -10,6 +10,9 @@ class m181120_044227_update_trial_user_assignment extends OEMigration
     $this->dropForeignKey('trial_coordinator_user_id_fk', 'trial');
     $this->dropColumn('trial', 'coordinator_user_id');
 
+    $this->dropColumn('trial_version', 'principle_investigator_user_id');
+    $this->dropColumn('trial_version', 'coordinator_user_id');
+
     $this->addColumn('user_trial_assignment', 'is_principal_investigator', 'boolean NOT NULL default false');
     $this->addColumn('user_trial_assignment', 'is_study_coordinator', 'boolean NOT NULL default false');
 
@@ -24,6 +27,9 @@ class m181120_044227_update_trial_user_assignment extends OEMigration
     $this->addColumn('trial','coordinator_user_id', 'int(10) unsigned NOT NULL default 1');
     $this->addForeignKey('trial_coordinator_user_id_fk', 'trial', 'coordinator_user_id', 'user','id');
 
+
+    $this->addColumn('trial_version','principle_investigator_user_id', 'int(10) unsigned NOT NULL default 1');
+    $this->addColumn('trial_version','coordinator_user_id', 'int(10) unsigned NOT NULL default 1');
 
     $this->dropColumn('user_trial_assignment','is_principal_investigator');
     $this->dropColumn('user_trial_assignment','is_study_coordinator');
