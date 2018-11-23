@@ -147,7 +147,7 @@ $element_errors = $element->getErrors();
 
                 <?php if(!$this->isPostedEntries() && $this->element->getIsNewRecord()): ?>
                     $.each(window.HMController.$table.children("tbody").children("tr"), function(i, e){
-                        var $newrow = window.HMController.copyRow($(e), window.MMController.$table.find("tbody"));
+                        var $newrow = window.HMController.copyRow($(e), window.MMController.$table.children("tbody"));
                         $newrow.find(".js-remove").remove();
                         window.HMController.bindEntries($(e), $newrow);
 

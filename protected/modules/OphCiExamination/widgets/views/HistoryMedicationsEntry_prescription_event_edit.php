@@ -109,7 +109,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopi
 		</fieldset>
 	</td>
 	<td>
-		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full')) ?>
+		<?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class' => 'cols-full js-stop-reason')) ?>
 	</td>
 
 	<td class="text-center">
