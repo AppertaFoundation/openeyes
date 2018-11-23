@@ -39,7 +39,7 @@
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
               array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
               false,
-              array('label' => 0, 'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
       <td>
@@ -49,7 +49,7 @@
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
               array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
               false,
-              array('label' => 0, 'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
       <td>
@@ -59,7 +59,7 @@
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
               array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
               false,
-              array('label' => 0,'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
     </tr>
