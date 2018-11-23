@@ -542,6 +542,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var medication = [];
 
         $.each(selectedItems, function (i, e) {
+
+            console.log(selectedItems[i]);
+
             medication[i] = {
                 ref_medication_id: selectedItems[i].id,
                 default_form: selectedItems[i].default_form,

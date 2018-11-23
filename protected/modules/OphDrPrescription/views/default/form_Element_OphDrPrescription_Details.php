@@ -115,8 +115,8 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
               <td>
                 <ul class="add-options">
                     <?php foreach ($element->commonDrugs() as $commonDrug): ?>
-                      <li data-item-id="<?= $commonDrug->id ?>" data-label="<?= $commonDrug->name ?>">
-                        <span class="auto-width"><?= $commonDrug->name ?></span>
+                      <li data-item-id="<?= $commonDrug->id ?>" data-label="<?= $commonDrug->preferred_term ?>">
+                        <span class="auto-width"><?= $commonDrug->preferred_term ?></span>
                       </li>
                     <?php endforeach; ?>
                 </ul>
@@ -143,11 +143,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
                 <td>
                   <div id="add-prescription-drug-types" class="flex-layout flex-top flex-left">
                     <ul class="add-options" style="width: 100%">
-                        <?php foreach ($element->drugTypes() as $drug_type): ?>
-                          <li data-drug-type="<?= $drug_type->id ?>">
-                            <span class="auto-width"><?= $drug_type->name ?></span>
-                          </li>
-                        <?php endforeach; ?>
+                        <?php echo CHtml::dropDownList('drug_type_id', null, $element->drugTypes(), array('class' => 'inline drugFilter', 'empty' => '-- Select --')); ?>
                     </ul>
                   </div>
                 </td>
