@@ -162,10 +162,17 @@
         flags_yaxis['ticktext'].push(key);
         flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
+        var count = 1;
         for (var i in injections_data[side][key]) {
+          if (i==0){
+            text['hovertext'].push(key+'<br>Count: '+count);
+          } else {
+            var gap = Math.round((injections_data[side][key][i]['x'] - injections_data[side][key][i-1]['x'])/86400000);
+            text['hovertext'].push(key+'<br>Count: '+count+'<br>Previous injection: '+gap+' days ago');
+          }
           text['x'].push(new Date(injections_data[side][key][i]['x']));
           text['y'].push(flag_height * (j - flag_height_perc));
-          text['hovertext'].push(key);
+          count++;
 
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
@@ -183,11 +190,12 @@
       //set the flags for letters >5
       flags_yaxis['ticktext'].push('>5 lines lost');
       flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
-
+      count = 1;
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
         text['y'].push( flag_height*(j- flag_height_perc));
-        text['hovertext'].push('>5');
+        text['hovertext'].push('>5'+'<br>Count: '+count);
+        count++;
 
         var line_shape = {
           x0: new Date(VA_lines_data[side][i]['x']),
