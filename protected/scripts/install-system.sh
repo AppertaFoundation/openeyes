@@ -80,7 +80,7 @@ sudo apt-get update -y
 
   echo Performing package updates
   # ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
-  if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` -lt "16.04" ]]; then
+  if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` == "14.04" ]]; then
       sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
       sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
   fi
@@ -97,6 +97,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 # if we are in dev mode, or need to include mysqlserver inside the image, then add additional packages
 extrapackages=$OE_INSTALL_EXTRA_PACKAGES
+[ "$OE_INSTALL_LOCAL_DB" == "" ] && OE_INSTALL_LOCAL_DB="TRUE" # default to local db unless otherwise specified in env
 [ "$OE_INSTALL_LOCAL_DB" == "TRUE" ] && extrapackages="mariadb-server mariadb-client $extrapackages"
 
 # Install required packages + any extras - or if in build mode, intstall minimal build packages only
