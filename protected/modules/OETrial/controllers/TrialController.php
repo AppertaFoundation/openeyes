@@ -446,9 +446,9 @@ class TrialController extends BaseModuleController
       $column_name = $_POST['column_name'];
 
       $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
-      if (sizeof($existing)===1&&$existing[0]->user_id===$user_id){
+      if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id){
         $res = array(
-          'Error' => 'At least one user should be selected.'
+          'Error' => 'At least one principal investigator should be selected.'
         );
         echo CJSON::encode($res);
         Yii::app()->end();
