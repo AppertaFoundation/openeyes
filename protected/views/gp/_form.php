@@ -123,7 +123,6 @@
                         array(
                             'type' => 'POST',
                             'error' => 'js:function(error){
-                            console.log("asdfsadf",error);
                  new OpenEyes.UI.Dialog.Alert({
                  content: "First name and Last name cannot be blank."
                 }).open();
