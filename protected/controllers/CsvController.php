@@ -126,7 +126,6 @@ class CsvController extends BaseController
         $new_trial->started_date = !empty($trial['started_date']) ? $trial['started_date'] : null;
         $new_trial->closed_date = !empty($trial['closed_date']) ? $trial['closed_date'] : null;
         $new_trial->external_data_link = !empty($trial['external_data_link']) ? $trial['external_data_link'] : null;
-        $new_trial->principle_investigator_user_id = Yii::app()->user->id;
 
         if (!$new_trial->save()) {
             $errors = $new_trial->getErrors();
