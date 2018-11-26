@@ -53,11 +53,16 @@ class OeDateFormat extends CActiveRecordBehavior
         }
     }
 
+    public function getHTMLformatedDate()
+    {
+        return $this->formatFuzzyDateToHtml();
+    }
+
     /**
      * Converts ISO 9075 dates to an html.
      * @return string
      */
-    public function formatDateFuzzyHTML()
+    private function formatFuzzyDateToHtml()
     {
         // get date from model
         $date = $this->Owner->{$this->fuzzy_date_field};
