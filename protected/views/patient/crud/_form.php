@@ -442,6 +442,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                         <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
                             <ul class="oe-multi-select js-selected_practice">
                                 <li>
+
                   <span class="js-name">
                       <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
                   </span>
@@ -469,6 +470,26 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 </div>
 
 <?php $this->endWidget(); ?>
+<script>
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_gp_id'),
+    url: '/patient/gpList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedGP();
+      addItem('selected_gp_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_practice_id'),
+    url: '/patient/practiceList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedPractice();
+      addItem('selected_practice_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+</script>
 
 <?php
 $gpcontact = new Contact('manage_gp');
