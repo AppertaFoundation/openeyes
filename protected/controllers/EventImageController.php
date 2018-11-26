@@ -116,12 +116,13 @@ class EventImageController extends BaseController
             // Client's cache IS current, so we just respond '304 Not Modified'.
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
         } else {
+            $image_data = $model->image_data;
             // Image not cached or cache outdated, we respond '200 OK' and output the image.
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
 
             header('Content-transfer-encoding: binary');
-            header('Content-length: ' . strlen($model->image_data));
-            echo $model->image_data;
+            header('Content-length: ' . strlen($image_data));
+            echo $image_data;
         }
     }
 

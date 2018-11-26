@@ -79,14 +79,20 @@ if (!empty($subspecialty)) { ?>
           var chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
           return new Date(chart_max) > max ? new Date(chart_max) : max;
         }, limits[eye_side]['min']);
-
-        for(var key in charts){
+        var min_date = limits[eye_side]['min'];
+        var max_date = limits[eye_side]['max'];
+        if (min_date.getFullYear() !== max_date.getFullYear()
+          || min_date.getMonth() !== max_date.getMonth()
+          || min_date.getDate() !== max_date.getDate()){
+          for(var key in charts){
             Plotly.relayout(charts[key][eye_side], 'xaxis.range', [limits[eye_side].min, limits[eye_side].max]);
-          if (key==='IOP'){
-            var index = charts[key][eye_side].layout.shapes.length-1;
-            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+            if (key==='IOP'){
+              //set the iop target line
+              var index = charts[key][eye_side].layout.shapes.length-1;
+              Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+              Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+              Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+            }
           }
         }
 
@@ -112,7 +118,6 @@ if (!empty($subspecialty)) { ?>
           for (var i = 0; i < data.points.length; i++) {
             pn = data.points[i].pointNumber;
             tn = data.points[i].curveNumber;
-            size = data.points[i].data.marker.size;
           }
           var sizes = new Array(plots[index].data[tn].x.length).fill(10);
           sizes[pn] = 15;
