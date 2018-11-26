@@ -83,7 +83,7 @@ class PatientReferral extends BaseActiveRecord
    */
   protected function beforeSave()
   {
-    $file = CUploadedFile::getInstances($this, 'uploadedFile');
+    $file = CUploadedFile::getInstance($this, 'uploadedFile');
     if ($file) {
       $this->file_size = $file->size;
       $this->file_name = $file->name;
