@@ -55,7 +55,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
                 </div>
             </div>
 
-            <table class="activity-list closed" style="table-layout: fixed;">
+            <table class="activity-list closed">
                 <tbody>
                 <?php foreach ($closedHotlistItems as $hotlistItem): ?>
                     <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>

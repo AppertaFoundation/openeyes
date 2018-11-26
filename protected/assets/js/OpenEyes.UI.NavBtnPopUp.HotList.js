@@ -51,29 +51,37 @@
 
         // When the "Today" date link is clicked
         $('#js-hotlist-closed-today').click(function () {
-            pmu.set_date(new Date);
-            hotlist.setSelectedDate(new Date, 'Today');
+            pmu.set_date(new Date());
+            hotlist.setSelectedDate(new Date(), 'Today');
             hotlist.updateClosedList();
         });
 
         // When a patient record is clicked
-         $('.activity-list').on('click', 'tr', function () {
-            let $tr = $(this);
-            let id = $tr.data('id');
-            let is_open = $tr.closest('.activity-list').hasClass('open') ? true : false;
+        $('.activity-list').delegate('.js-hotlist-closed-patient', 'click', function () {
+            var closedPatient = $(this);
             $.ajax({
                 type: 'GET',
                 url: '/UserHotlistItem/openHotlistItem',
-                data: {hotlist_item_id: id},
+                data: {hotlist_item_id: closedPatient.data('id')},
                 success: function () {
-                    if(is_open){
-                        hotlist.updateOpenList();
-                    } else {
-                        window.location.href = $tr.data('patient-href');
-                    }
-
+                    window.location.href = closedPatient.data('patient-href');
                 }
             });
+            return false;
+        });
+
+        // When the close link in an open item is clicked
+        $('.activity-list.closed').delegate('.js-open-hotlist-item', 'click', function () {
+            var itemId = $(this).closest('.js-hotlist-closed-patient').data('id');
+            $.ajax({
+                type: 'GET',
+                url: '/UserHotlistItem/openHotlistItem',
+                data: {hotlist_item_id: itemId},
+                success: function () {
+                    hotlist.updateOpenList();
+                }
+            });
+            hotlist.removeItem(itemId);
             return false;
         });
 
@@ -119,23 +127,24 @@
             return false;
         });
 
-        // When hover over the comment icon
-        $('.oe-hotlist-panel .js-patient-comments').hover(
-            function(){ hotlist.commentsQuickLook(true, $(this) ); },
-            function(){ hotlist.commentsQuickLook(false); }
-        );
+        $(".js-hotlist-panel-wrapper").on({
+            mouseenter: function () {
+                hotlist.commentsQuickLook(true, $(this));
+            },
+            mouseleave: function () {
+                hotlist.commentsQuickLook(false);
+            }
+        }, '.js-patient-comments');
     };
 
-    HotList.prototype.commentsQuickLook = function(show, $icon){
+    HotList.prototype.commentsQuickLook = function (show, $icon) {
         let $quick = $('#hotlist-quicklook');
         let text = $icon ? $icon.closest('tr').next().find('textarea').val() : null;
-
-        if(!show){
+        if (!show) {
             $quick.hide();
             return;
         }
-
-        if(text !== "") {
+        if (text !== "") {
             $quick.text(text).show().css('top',($icon.position().top + 19));
         }
     };

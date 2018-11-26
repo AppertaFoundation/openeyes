@@ -48,7 +48,7 @@ $core_api = new CoreAPI();
 </tr>
 <tr class="hotlist-comment js-hotlist-comment"
     data-id="<?= $hotlistItem->id ?>"
->
+    style="display: none;">
     <td colspan="4">
         <?= CHtml::activeTextArea($hotlistItem, 'user_comment', [
                 'placeholder' => 'Comments', 'class' => 'cols-full autosize']); ?>
