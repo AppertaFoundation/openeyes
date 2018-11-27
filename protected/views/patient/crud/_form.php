@@ -311,36 +311,7 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'gp_id') ?>
           </td>
           <td>
-              <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                  'name' => 'gp_id',
-                  'id' => 'autocomplete_gp_id',
-                  'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/gpList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                  'options' => array(
-                      'select' => "js:function(event, ui) {
-                                    removeSelectedGP();
-                                    addItem('selected_gp_wrapper', ui);
-                                    $('#autocomplete_gp_id').val('');
-                                    return false;
-                    }",
-                      'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_gp_result").show();
-                        } else {
-                            $("#no_gp_result").hide();
-                        }
-                    }',
-                  ),
-                  'htmlOptions' => array(
-                      'placeholder' => 'search GP',
-                  ),
-
-              )); ?>
-
-
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
             <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_gp">
                 <li>
@@ -364,35 +335,7 @@ foreach ($ethnic_list as $key=>$item){
               <?= $form->error($patient, 'practice_id') ?>
           </td>
           <td>
-              <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                  'name' => 'practice_id',
-                  'id' => 'autocomplete_practice_id',
-                  'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/practiceList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                  'options' => array(
-                      'select' => "js:function(event, ui) {
-                                    removeSelectedPractice();
-                                    addItem('selected_practice_wrapper', ui);
-                                    $('#autocomplete_practice_id').val('');
-                                    return false;
-                    }",
-                      'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_practice_result").show();
-                        } else {
-                            $("#no_practice_result").hide();
-                        }
-                    }',
-                  ),
-                  'htmlOptions' => array(
-                      'placeholder' => 'search Practice',
-                  ),
-
-              )); ?>
-
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
             <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_practice">
                 <li>
@@ -422,6 +365,26 @@ foreach ($ethnic_list as $key=>$item){
   </div>
 </div>
 <?php $this->endWidget(); ?>
+<script>
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_gp_id'),
+    url: '/patient/gpList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedGP();
+      addItem('selected_gp_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_practice_id'),
+    url: '/patient/practiceList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedPractice();
+      addItem('selected_practice_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+</script>
 
 <script>
 

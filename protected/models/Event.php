@@ -347,6 +347,7 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
      *
+     * @param bool $reason
      * @throws Exception
      */
     public function softDelete($reason = false)
@@ -374,7 +375,7 @@ class Event extends BaseActiveRecordVersioned
                 $transaction->commit();
             }
 
-            $this->afterSoftDelete();
+            $this->onAfterSoftDelete(new CEvent($this));
 
         } catch (Exception $e) {
             if ($transaction) {
@@ -385,18 +386,13 @@ class Event extends BaseActiveRecordVersioned
     }
 
     /**
-     * AfterSoftDelete event
-     * Checks if the event type's API has a handler for this event
-     * if so, calls it
+     * Raising the afterSoftDelete event
+     * @param $yii_event
+     * @throws CException
      */
-
-    protected function afterSoftDelete()
+    public function onAfterSoftDelete($yii_event)
     {
-        if($api = $this->eventType->getApi()) {
-            if(method_exists($api, 'afterSoftDeleteEvent')) {
-                $api->afterSoftDeleteEvent($this);
-            }
-        }
+        $this->raiseEvent('onAfterSoftDelete', $yii_event);
     }
 
     /**

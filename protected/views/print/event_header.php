@@ -52,15 +52,11 @@ $logoHelper = new LogoHelper();
             <td><?php echo $this->event->episode->firm->getSubspecialtyText() ?></td>
         </tr>
         <tr>
-            <th>
-                Created
-            </th>
+            <th>Event Date</th>
             <td>
-                <?php echo Helper::convertDate2NHS($this->event->created_date) ?>
+                <?php echo Helper::convertDate2NHS($this->event->event_date) ?>
             </td>
-            <th>
-                Printed
-            </th>
+            <th>Printed</th>
             <td><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></td>
         </tr>
         <tr>
