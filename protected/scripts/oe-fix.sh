@@ -51,7 +51,7 @@ do
 	    ;;
         -r|--restart) restart=1
             ;;
-	    *)  echo "Unknown command line: $i"
+	    *)  echo "Unknown command line: $p"
         ;;
     esac
 
