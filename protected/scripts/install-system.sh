@@ -71,7 +71,10 @@ echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 
 export DEBIAN_FRONTEND=noninteractive
 
-sudo apt-get update -y
+echo "DEBUG: update apt"
+sudo apt-get update
+echo "DEBUG: workaround grub bug and update"
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
 sudo apt-get install -y software-properties-common
 
