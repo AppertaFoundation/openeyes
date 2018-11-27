@@ -130,14 +130,15 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
+            array('gender', 'required', 'on' => array('self_register')),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
 
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
-            array('gender, dob', 'required', 'on' => array('manual', 'self_register')),
             array('deleted', 'safe'),
-            array('gp_id, practice_id', 'required', 'on' => 'referral'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),

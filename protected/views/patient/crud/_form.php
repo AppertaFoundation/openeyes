@@ -163,7 +163,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -204,8 +204,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -310,56 +310,28 @@ foreach ($ethnic_list as $key=>$item){
                     'class' => 'small fixed-width',
                 ),
             ))*/ ?>
-                        </div>
-                        <br/>
-                        <?= $form->error($patient, 'date_of_death') ?>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="row divider">
-            <table class="standard highlight-rows">
-                <tbody>
-                <tr>
-                    <td>
-                        <?= $form->label($patient, 'gp_id') ?>
-                        <br/>
-                        <?= $form->error($patient, 'gp_id') ?>
-                    </td>
-                    <td>
-                        <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'gp_id',
-                            'id' => 'autocomplete_gp_id',
-                            'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/gpList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                            'options' => array(
-                                'select' => "js:function(event, ui) {
-                                    removeSelectedGP();
-                                    addItem('selected_gp_wrapper', ui);
-                                    $('#autocomplete_gp_id').val('');
-                                    return false;
-                    }",
-                                'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_gp_result").show();
-                        } else {
-                            $("#no_gp_result").hide();
-                        }
-                    }',
-                  ),
-                  'htmlOptions' => array(
-                      'placeholder' => 'Search '.Yii::app()->params['gp_label'],
-                  ),
-                        )); ?>
-
-
-                        <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
-                            <ul class="oe-multi-select js-selected_gp">
-                                <li>
+            </div>
+            <br/>
+              <?= $form->error($patient, 'date_of_death') ?>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row divider">
+      <table class="standard highlight-rows">
+        <tbody>
+        <tr>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+              <?= $form->label($patient, 'gp_id') ?>
+            <br/>
+              <?= $form->error($patient, 'gp_id') ?>
+          </td>
+          <td>
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
+            <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_gp">
+                <li>
                   <span class="js-name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
@@ -384,7 +356,7 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
               <?= $form->error($patient, 'practice_id') ?>
