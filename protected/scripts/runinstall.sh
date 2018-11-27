@@ -16,6 +16,14 @@ if [ "$DIR" != "/tmp" ]; then
     exit 1
 fi
 
+function found_error() {
+	echo "******************************************"
+	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
+	echo "******************************************"
+	exit 1
+}
+
+trap 'found_error' ERR
 
 SCRIPTROOT="" # will be passed in from install-oe.sh
 WROOT="" # will be passed in from install-oe.sh
@@ -115,13 +123,8 @@ if [ $showhelp = 1 ]; then
 fi
 
 
-echo "
+echo -e "\n\n\nInstalling openeyes as user: $USER...\n\n\n"
 
-Installing openeyes...
-"
-
-# Terminate if any command fails
-set -e
 
 # Show disclaimer
 echo "
@@ -175,6 +178,7 @@ sudo chown -R "$USER":www-data .
 
 sudo chmod -R 774 $WROOT
 sudo chmod -R g+s $WROOT
+sudo chmod -R 777 $SCRIPTDIR/*.sh
 
 # if this isn't a live install, then add the sample DB
 if [ "$OE_MODE" != "LIVE" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
