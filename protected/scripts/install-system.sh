@@ -69,21 +69,21 @@ trap 'found_error' ERR
 
 echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 
+export DEBIAN_FRONTEND=noninteractive
+
 sudo apt-get update -y
 
-  sudo apt-get install -y software-properties-common
+sudo apt-get install -y software-properties-common
 
-  #add repos for PHP5.6 and Java7
-  sudo add-apt-repository ppa:ondrej/php -y
+#add repos for PHP5.6 and Java7
+sudo add-apt-repository ppa:ondrej/php -y
 
-
-
-  echo Performing package updates
-  # ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
-  if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` == "14.04" ]]; then
-      sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
-      sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
-  fi
+echo "Performing package updates"
+# ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
+if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` == "14.04" ]]; then
+		sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
+		sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
+fi
 
 # Don't worry about upgrading everything for build mode
 if [ "$OE_MODE" != "BUILD" ]; then
@@ -93,7 +93,6 @@ fi
 
 
 echo Installing required system packages
-export DEBIAN_FRONTEND=noninteractive
 
 # if we are in dev mode, or need to include mysqlserver inside the image, then add additional packages
 extrapackages=$OE_INSTALL_EXTRA_PACKAGES
