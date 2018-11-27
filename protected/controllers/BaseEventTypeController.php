@@ -2238,13 +2238,14 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($this->event->imageDirectory . "/$drawingName.png")) {
-                    if (!@file_put_contents(
-                            $this->event->imageDirectory . "/$drawingName.png",
+                $full_path = $this->event->imageDirectory . "/$drawingName.png";
+                if (!file_exists($full_path)) {
+                    if (false === file_put_contents(
+                            $full_path,
                             base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
                         )
                     ){
-                        throw new Exception("Failed to write to {$this->event->imageDirectory}/$drawingName.png: check permissions.");
+                        throw new Exception("Failed to write to $full_path.");
                     }
                 }
             }
