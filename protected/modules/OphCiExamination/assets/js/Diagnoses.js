@@ -435,16 +435,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 alreadyInList = true;
                 // only want to alter sides for disorders that have been added from external source
                 // at this point
-                if (side === 3) {
-                    $(this).find('.js-left-eye').prop('checked', true);
-                    $(this).find('.js-right-eye').prop('checked', true);
-                } else if (side === 1) {
-                    $(this).find('.js-left-eye').prop('checked', true);
-                    $(this).find('.js-right-eye').prop('checked', false);
-                } else if (side === 2) {
-                    $(this).find('.js-left-eye').prop('checked', false);
-                    $(this).find('.js-right-eye').prop('checked', true);
-                }
+                $(this).find('.js-left-eye').prop('checked', side === 3 || side === 1);
+                $(this).find('.js-right-eye').prop('checked', side === 3 || side === 2);
 
                 listSide = $(this).find('input[type="radio"]:checked').val();
                 if (listSide !== side) {
