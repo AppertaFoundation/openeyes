@@ -30,48 +30,13 @@ return array(
         )
     ),
     'params' => array(
-        'admin_menu' => array(
-            'Element Attributes' => array('OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'),
-            'Workflows' => '/OphCiExamination/admin/viewWorkflows',
-            'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
-            'Allergies' => '/OphCiExamination/admin/Allergies',
-            'Required Allergy Assignment' => '/OphCiExamination/oeadmin/AllergyAssignment',
-            'Risks' => '/OphCiExamination/admin/Risks',
-            'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
-            'Required Systemic Diagnoses Assignment' => '/OphCiExamination/oeadmin/systemicDiagAssignment',
-            'Required Surgical History Assignment' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment',
-            'Surgical History' => array('OphCiExamination' => '/admin/editpreviousoperation'),
-            'Social History' => '/OphCiExamination/admin/SocialHistory',
-            'Family History' => '/OphCiExamination/admin/FamilyHistory',
-            'Comorbidities' => '/OphCiExamination/admin/manageComorbidities',
-            'IOP Instruments' => '/OphCiExamination/admin/EditIOPInstruments',
-            'Drop-related Problems' => '/OphCiExamination/admin/manageDropRelProbs',
-            'Drops Options' => '/OphCiExamination/admin/manageDrops',
-            'Surgery Management Options' => '/OphCiExamination/admin/manageManagementSurgery',
-            'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
-            'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
-            'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
-            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
-            'Overall Periods' => '/OphCiExamination/admin/manageOverallPeriods',
-            'Visit Intervals' => '/OphCiExamination/admin/manageVisitIntervals',
-            'Glaucoma Statuses' => '/OphCiExamination/admin/manageGlaucomaStatuses',
-            'Target IOP Values' => '/OphCiExamination/admin/manageTargetIOPs',
-            'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
-            'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
-            'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
-        ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
-        'menu_bar_items' => array(
-            'ofm' => array(
-                'title' => 'Optom Invoice Manager',
-                'position' => 9,
-                'uri' => '/OphCiExamination/OptomFeedback/list',
-                'restricted' => array(array('Optom co-ordinator', 'user_id')),
-            )
-        ),
+
         'reports' => array(
             'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
         ),
-    )
+    ),
+
+    'modules' => array('ExaminationAdmin'),
 );
