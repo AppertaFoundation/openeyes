@@ -43,22 +43,22 @@ foreach ($lasertypes as $lt) {
 >
 	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
-	<div
-      class="js-element-eye <?=$eye?>-eye column <?=$side?> <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
-      data-side="<?=$eye?>"
-  >
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php
-      $this->renderPartial(
-			    $element->form_view.'_fields',
-          array(
-              'eye' => $eye, 'element' => $element, 'form' => $form,
-              'statuses' => $statuses, 'status_options' => $status_options,
-              'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
-              'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options,
-          )
-      ); ?>
+      <div
+          class="js-element-eye <?= $eye ?>-eye column <?= $side ?> <?= (!$element->{'has' . ucfirst($eye)}()) ? 'inactive' : '' ?>"
+          data-side="<?= $eye ?>"
+      >
+        <div class="active-form" style="<?= (!$element->{'has' . ucfirst($eye)}()) ? 'display: none;' : '' ?>">
+            <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+            <?php
+            $this->renderPartial(
+                $element->form_view . '_fields',
+                array(
+                    'eye' => $eye, 'element' => $element, 'form' => $form,
+                    'statuses' => $statuses, 'status_options' => $status_options,
+                    'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
+                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options,
+                )
+            ); ?>
 		</div>
 		<div class="inactive-form" style="<?=($element->{'has'.ucfirst($eye)}()) ? 'display: none': ''?>">
 			<div class="add-side">
