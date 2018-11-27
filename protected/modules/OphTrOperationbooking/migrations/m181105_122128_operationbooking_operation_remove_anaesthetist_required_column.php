@@ -1,6 +1,6 @@
 <?php
 
-class m181105_124209_operationbooking_operation_remove_anaesthetist_required_column extends CDbMigration
+class m181105_122128_operationbooking_operation_remove_anaesthetist_required_column extends CDbMigration
 {
     public function up()
     {
