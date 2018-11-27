@@ -226,7 +226,7 @@ fi
 $SCRIPTDIR/oe-fix.sh $fixparams
 
 # unless we are in build mode, configure apache and cron
-if [ $OE_MODE != "BUILD" ]; then
+if [ "$OE_MODE" != "BUILD" ]; then
     echo Configuring Apache
 
     echo "
