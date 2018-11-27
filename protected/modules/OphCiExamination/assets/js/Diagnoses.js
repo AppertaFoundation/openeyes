@@ -432,23 +432,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         // iterate over table rows.
         $('#OphCiExamination_diagnoses').children('tr').each(function() {
             if ($(this).find('input[type=hidden][name*=\\[disorder_id\\]]').val() === id) {
-
                 alreadyInList = true;
-                if ($(this).hasClass('js-external')) {
-                    // only want to alter sides for disorders that have been added from external source
-                    // at this point
-                    if(side === 1 || side === 3){
-                        $(this).find('.js-left-eye').prop('checked', true);
-                    }
+                // only want to alter sides for disorders that have been added from external source
+                // at this point
+                if (side === 3) {
+                    $(this).find('.js-left-eye').prop('checked', true);
+                    $(this).find('.js-right-eye').prop('checked', true);
+                } else if (side === 1) {
+                    $(this).find('.js-left-eye').prop('checked', true);
+                    $(this).find('.js-right-eye').prop('checked', false);
+                } else if (side === 2) {
+                    $(this).find('.js-left-eye').prop('checked', false);
+                    $(this).find('.js-right-eye').prop('checked', true);
+                }
 
-                    if(side === 2 || side === 3){
-                        $(this).find('.js-right-eye').prop('checked', true);
-                    }
-
-                    listSide = $(this).find('input[type="radio"]:checked').val();
-                    if (listSide !== side) {
-                        $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
-                    }
+                listSide = $(this).find('input[type="radio"]:checked').val();
+                if (listSide !== side) {
+                    $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
                 }
                 // stop iterating
                 return false;
