@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models\OphCiExaminationAllergySet;
 
-class AllergyAssignmentController extends \ExaminationAdminController
+class AllergyAssignmentController extends AssignmentBaseController
 {
     public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry';

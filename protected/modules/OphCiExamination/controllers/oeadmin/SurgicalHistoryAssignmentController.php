@@ -23,7 +23,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models\SurgicalHistorySet;
 
-class SurgicalHistoryAssignmentController extends \ExaminationAdminController
+class SurgicalHistoryAssignmentController extends AssignmentBaseController
 {
     public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\SurgicalHistorySetEntry';

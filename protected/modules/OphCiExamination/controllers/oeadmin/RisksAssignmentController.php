@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
-class RisksAssignmentController extends \ExaminationAdminController
+class RisksAssignmentController extends AssignmentBaseController
 {
     public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry';

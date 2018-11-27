@@ -15,7 +15,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class ExaminationAdminController extends \ModuleAdminController
+namespace OEModule\OphCiExamination\controllers;
+
+class AssignmentBaseController extends \ModuleAdminController
 {
     public function populateAndSaveModel($model)
     {

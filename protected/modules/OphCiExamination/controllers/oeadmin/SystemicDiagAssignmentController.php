@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet;
 
-class SystemicDiagAssignmentController extends \ExaminationAdminController
+class SystemicDiagAssignmentController extends AssignmentBaseController
 {
     public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry';
