@@ -64,6 +64,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name', 'length', 'max'=>255),
+            array('name', 'required'),
             array('firm_id, subspecialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('firm_id, subspecialty_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
@@ -83,10 +84,8 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'ophciexaminationRisk' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry', 'ophciexamination_risk_entry_id'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'ophciexamination_risk_set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment', 'risk_set_id'),
-            'ophciexamination_risks_entry' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry', 'ophciexamination_risk_entry_id', 'through' => 'ophciexamination_risk_set_assignments'),
+            'entries' => array(self::HAS_MANY, OphCiExaminationRiskSetEntry::class, 'set_id')
         );
     }
 

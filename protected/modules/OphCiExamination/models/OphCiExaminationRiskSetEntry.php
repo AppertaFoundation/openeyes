@@ -59,7 +59,7 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('ophciexamination_risk_id', 'numerical', 'integerOnly'=>true),
+			array('ophciexamination_risk_id' , 'required'),
 			array('gender', 'length', 'max'=>1),
 			array('age_min, age_max', 'length', 'max'=>3),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -78,7 +78,6 @@ class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'ophciexamination_riskSet_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment', 'ophciexamination_risk_entry_id'),
 			'ophciexamination_risk' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationRisk', 'ophciexamination_risk_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),

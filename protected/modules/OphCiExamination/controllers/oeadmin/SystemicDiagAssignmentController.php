@@ -20,11 +20,13 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet;
 
-class SystemicDiagAssignmentController extends \ModuleAdminController
+class SystemicDiagAssignmentController extends \ExaminationAdminController
 {
     public $group = 'Examination';
+    public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry';
+    public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet';
 
     public function accessRules()
     {
@@ -39,7 +41,7 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
     public function actionIndex()
     {
 
-        $diagnoses_set = new models\OphCiExaminationSystemicDiagnosesSet();
+        $diagnoses_set = new OphCiExaminationSystemicDiagnosesSet();
         $diagnoses_set->unsetAttributes();
         if(isset($_GET['OphCiExaminationSystemicDiagnoses']))
             $diagnoses_set->attributes=$_GET['OphCiExaminationSystemicDiagnoses'];
@@ -55,45 +57,19 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
      */
     public function actionCreate()
     {
-        $diagnoses_set = new models\OphCiExaminationSystemicDiagnosesSet;
+        $errors = false;
+        $model = new OphCiExaminationSystemicDiagnosesSet();
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet']))
-        {
-            $diagnoses_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet'];
-
-            $transaction = \Yii::app()->db->beginTransaction();
-
-            try {
-                if($diagnoses_set->save()){
-
-                    $entries_array = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry', array());
-                    foreach($entries_array as $entry_array){
-                        $entry = new models\OphCiExaminationSystemicDiagnosesSetEntry;
-
-                        $entry->gender = $entry_array['gender'];
-                        $entry->age_min = $entry_array['age_min'];
-                        $entry->age_max = $entry_array['age_max'];
-                        $entry->disorder_id = $entry_array['disorder_id'];
-
-                        if($entry->save()){
-                            $this->saveAssignment($diagnoses_set, $entry);
-                        }
-                    }
-
-                    $transaction->commit();
-
-                    $this->redirect(array('index'));
-                }
-            } catch (\Exception $e) {
-                \OELog::log($e->getMessage());
-                $transaction->rollback();
-            }
+        if(\Yii::app()->request->isPostRequest) {
+            $errors = $this->populateAndSaveModel($model);
         }
 
         $this->render('/admin/systemicdiagnosesassignment/edit',array(
-            'model' => $diagnoses_set,
-            'title' => 'Create required Systemic Diagnoses set',
+            'model' => $model,
+            'errors' => $errors,
+            'title' => 'Create required risk set',
         ));
+
     }
 
     /**
@@ -104,96 +80,18 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
      */
     public function actionUpdate($id)
     {
-        $diagnoses_set = $this->loadModel($id);
+        $errors = false;
+        $model = $this->loadModel($id);
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet']))
-        {
-            $diagnoses_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet'];
-            $entries = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry', array());
-
-            $transaction = \Yii::app()->db->beginTransaction();
-
-            try {
-                $posted_entry_ids = array();
-                foreach($entries as $entry){
-                    if(isset($entry['id'])){
-                        $posted_entry_ids[] = $entry['id'];
-                    }
-                }
-
-                if($diagnoses_set->save()){
-
-                    foreach($entries as $entry){
-
-                        if(isset($entry['id']) && $entry['id']){
-                            $entry_model = models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($entry['id']);
-                        } else {
-                            $entry_model = new models\OphCiExaminationSystemicDiagnosesSetEntry;
-                        }
-
-                        $entry_model->gender = $entry['gender'];
-                        $entry_model->age_min = $entry['age_min'];
-                        $entry_model->age_max = $entry['age_max'];
-                        $entry_model->disorder_id = $entry['disorder_id'];
-
-                        if($entry_model->save()){
-                           $this->saveAssignment($diagnoses_set, $entry_model);
-                            $posted_entry_ids[] = $entry_model->id;
-                        }
-                    }
-
-                    // Removed items
-                    $criteria = new \CDbCriteria();
-                    $criteria->addCondition('systemic_diagnoses_set_id =:diagnoses_set');
-                    $criteria->addNotInCondition('systemic_diagnoses_set_entry_id', $posted_entry_ids);
-                    $criteria->params[':diagnoses_set'] = $diagnoses_set->id;
-                    
-                    $assignments = models\OphCiExaminationSystemicDiagnosesSetAssignment::model()->findAll($criteria);
-                    foreach($assignments as $assignment){
-                        $entry_id = $assignment->systemic_diagnoses_set_entry_id;
-
-                         if($assignment->delete()){
-                             models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($entry_id)->delete();
-                         }
-                    }
-                }
-
-                $transaction->commit();
-                \Yii::app()->user->setFlash('success', 'Set updated.');
-                $this->redirect(array('index'));
-
-            } catch (\Exception $e) {
-                \OELog::log($e->getMessage());
-                $transaction->rollback();
-                \Yii::app()->user->setFlash('error', 'Something went wrong. Set did not updated.');
-            }
+        if(\Yii::app()->request->isPostRequest) {
+            $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/systemicdiagnosesassignment/edit',array(
-            'model' => $diagnoses_set,
-            'title' => 'Edit required Systemic Diagnoses set',
+        $this->render('/admin/systemicdiagnosesassignment/edit', array(
+            'errors' => isset($errors) ? $errors : '',
+            'model' => $model,
+            'title' => 'Edit required risk set',
         ));
-    }
-
-    private function saveAssignment($set, $entry)
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('systemic_diagnoses_set_id = :set_id');
-        $criteria->addCondition('systemic_diagnoses_set_entry_id = :entry_id');
-        $criteria->params[':set_id'] = $set->id;
-        $criteria->params[':entry_id'] = $entry->id;
-
-        $assignment = models\OphCiExaminationSystemicDiagnosesSetAssignment::model()->find($criteria);
-
-        if(!$assignment){
-            $assignment = new models\OphCiExaminationSystemicDiagnosesSetAssignment;
-            $assignment->systemic_diagnoses_set_entry_id = $entry->id;
-            $assignment->systemic_diagnoses_set_id = $set->id;
-
-            if(!$assignment->save()){
-                throw new \Exception('OphCiExaminationSystemicDiagnosesSetAssignment cannot be saved.');
-            }
-        }
     }
 
     /**
@@ -231,10 +129,9 @@ class SystemicDiagAssignmentController extends \ModuleAdminController
      */
     public function loadModel($id)
     {
-        $model = models\OphCiExaminationSystemicDiagnosesSet::model()->findByPk($id);
+        $model = OphCiExaminationSystemicDiagnosesSet::model()->findByPk($id);
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }
-
 }

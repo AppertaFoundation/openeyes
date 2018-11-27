@@ -2643,7 +2643,9 @@ class OphCiExamination_API extends \BaseAPI
             if($set->ophciexamination_risks_entry){
                 foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
                     $risk = $ophciexamination_risks->ophciexamination_risk;
-                    $required[$risk->id] = $risk;
+                    if(isset($risk) && isset($risk->id)) {
+                        $required[$risk->id] = $risk;
+                    }
                 }
             }
         }
@@ -2667,7 +2669,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'allergy_set_entries' => array(
+            'entries' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -2684,10 +2686,13 @@ class OphCiExamination_API extends \BaseAPI
 
         $required = array();
         foreach($sets as $set){
-            if($set->allergy_set_entries){
-                foreach($set->allergy_set_entries as $allergy_entry){
+            if($set->entries){
+                foreach($set->entries as $allergy_entry){
                     $allergy = $allergy_entry->ophciexaminationAllergy;
-                    $required[$allergy->id] = $allergy;
+                    if(isset($allergy) && isset($allergy->id)) {
+                        $required[$allergy->id] = $allergy;
+                    }
+
                 }
             }
         }
@@ -2732,7 +2737,9 @@ class OphCiExamination_API extends \BaseAPI
             if($set->entries){
                 foreach($set->entries as $entry){
                     $disorder = $entry->disorder;
-                    $required[$disorder->id] = $disorder;
+                    if(isset($disorder) && isset($disorder->id)) {
+                        $required[$disorder->id] = $disorder;
+                    }
                 }
             }
         }
@@ -2772,7 +2779,9 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->operation;
+                    if(isset($entry) && isset($entry->operation)) {
+                        $required[] = $entry->operation;
+                    }
                 }
             }
         }

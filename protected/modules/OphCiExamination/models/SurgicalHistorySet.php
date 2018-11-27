@@ -94,7 +94,7 @@ class SurgicalHistorySet extends \BaseActiveRecordVersioned
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'last_modified_user' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'entries' => array(self::HAS_MANY, SurgicalHistorySetEntry::class, 'surgical_history_set_id'),
+            'entries' => array(self::HAS_MANY, SurgicalHistorySetEntry::class, 'set_id'),
         );
     }
 

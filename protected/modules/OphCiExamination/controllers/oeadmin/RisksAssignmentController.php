@@ -20,11 +20,13 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
-class RisksAssignmentController extends \ModuleAdminController
+class RisksAssignmentController extends \ExaminationAdminController
 {
     public $group = 'Examination';
+    public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry';
+    public $set_model_name = 'OEModule_OphCiExamination_models_OphCiExaminationRiskSet';
 
     public function accessRules()
     {
@@ -39,7 +41,7 @@ class RisksAssignmentController extends \ModuleAdminController
     public function actionIndex()
     {
 
-        $model= new models\OphCiExaminationRiskSet();
+        $model= new OphCiExaminationRiskSet();
         $model->unsetAttributes();
         if(isset($_GET['OphCiExaminationRisk']))
             $model->attributes=$_GET['OphCiExaminationRisk'];
@@ -55,42 +57,19 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionCreate()
     {
-        $risk_set = new models\OphCiExaminationRiskSet;
+        $errors = false;
+        $model = new OphCiExaminationRiskSet();
 
-        if (isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'])) {
-            $risk_set->attributes = $_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
-            $transaction = \Yii::app()->db->beginTransaction();
-            try {
-                if ($risk_set->save()) {
-                    $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
-                    foreach ($risks as $risk) {
-                        $risk_model = new models\OphCiExaminationRiskSetEntry;
-
-                        $risk_model->gender = $risk['gender'];
-                        $risk_model->age_min = $risk['age_min'];
-                        $risk_model->age_max = $risk['age_max'];
-                        $risk_model->ophciexamination_risk_id = $risk['ophciexamination_risk_id'];
-
-                        if ($risk_model->save()) {
-                            $this->saveAssignment($risk_set, $risk_model);
-                        }
-                    }
-
-                    $transaction->commit();
-
-                    $this->redirect(array('index'));
-                }
-            } catch (\Exception $e) {
-                \OELog::log($e->getMessage());
-                $transaction->rollback();
-            }
-
+        if(\Yii::app()->request->isPostRequest) {
+            $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/riskassignment/edit', array(
-            'model' => $risk_set,
+        $this->render('/admin/riskassignment/edit',array(
+            'model' => $model,
+            'errors' => $errors,
             'title' => 'Create required risk set',
         ));
+
     }
 
     /**
@@ -101,98 +80,18 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionUpdate($id)
     {
-        $risk_set = $this->loadModel($id);
+        $errors = false;
+        $model = $this->loadModel($id);
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
-        {
-
-            $risk_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
-            $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
-
-            $transaction = \Yii::app()->db->beginTransaction();
-
-            try {
-
-                $posted_entry_ids = array();
-                foreach($risks as $risk){
-                    if(isset($risk['id'])){
-                        $posted_entry_ids[] = $risk['id'];
-                    }
-                }
-
-                if($risk_set->save()){
-
-                    foreach($risks as $risk){
-
-                        if(isset($risk['id'])){
-                            $risk_model = models\OphCiExaminationRiskSetEntry::model()->findByPk($risk['id']);
-                        } else {
-                            $risk_model = new models\OphCiExaminationRiskSetEntry;
-                        }
-
-                        $risk_model->gender = $risk['gender'];
-                        $risk_model->age_min = $risk['age_min'];
-                        $risk_model->age_max = $risk['age_max'];
-                        $risk_model->ophciexamination_risk_id = $risk['ophciexamination_risk_id'];
-
-                        if($risk_model->save()){
-                           $this->saveAssignment($risk_set, $risk_model);
-                            $posted_entry_ids[] = $risk_model->id;
-                        }
-                    }
-
-                    // Removed items
-                    $criteria = new \CDbCriteria();
-                    $criteria->addCondition('risk_set_id =:risk_set_id');
-                    $criteria->addNotInCondition('ophciexamination_risk_entry_id', $posted_entry_ids);
-                    $criteria->params[':risk_set_id'] = $risk_set->id;
-                    
-                    $assignments = models\OphCiExaminationRiskSetAssignment::model()->findAll($criteria);
-                    foreach($assignments as $assignment){
-                        $entry_id = $assignment->ophciexamination_risk_entry_id;
-
-                         if($assignment->delete()){
-                             models\OphCiExaminationRiskSetEntry::model()->findByPk($entry_id)->delete();
-                         }
-                    }
-                }
-
-                $transaction->commit();
-                \Yii::app()->user->setFlash('success', 'Set updated.');
-                $this->redirect(array('index'));
-
-            } catch (\Exception $e) {
-                \OELog::log($e->getMessage());
-                $transaction->rollback();
-                \Yii::app()->user->setFlash('error', 'Something went wrong. Set did not updated.');
-            }
+        if(\Yii::app()->request->isPostRequest) {
+            $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/riskassignment/edit',array(
-            'model' => $risk_set,
+        $this->render('/admin/riskassignment/edit', array(
+            'errors' => isset($errors) ? $errors : '',
+            'model' => $model,
             'title' => 'Edit required risk set',
         ));
-    }
-
-    private function saveAssignment($risk_set, $risk_model)
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition('risk_set_id = :set_id');
-        $criteria->addCondition('ophciexamination_risk_entry_id = :ophciexamination_risk_entry_id');
-        $criteria->params[':set_id'] = $risk_set->id;
-        $criteria->params[':ophciexamination_risk_entry_id'] = $risk_model->id;
-
-        $assignment = models\OphCiExaminationRiskSetAssignment::model()->find($criteria);
-
-        if(!$assignment){
-            $assignment = new models\OphCiExaminationRiskSetAssignment;
-            $assignment->ophciexamination_risk_entry_id = $risk_model->id;
-            $assignment->risk_set_id = $risk_set->id;
-
-            if(!$assignment->save()){
-                throw new \Exception('OphCiExaminationRisk assignment cannot be saved.');
-            }
-        }
     }
 
     /**
@@ -207,7 +106,7 @@ class RisksAssignmentController extends \ModuleAdminController
         foreach($model_ids as $model_id){
 
             $model = $this->loadModel($model_id);
-            if(!$model->ophciexamination_risks_entry){
+            if(!$model->entries){
                 $model->delete();
             } else {
                 echo "0";
@@ -229,7 +128,7 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function loadModel($id)
     {
-        $model = models\OphCiExaminationRiskSet::model()->findByPk($id);
+        $model = OphCiExaminationRiskSet::model()->findByPk($id);
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
@@ -246,5 +145,4 @@ class RisksAssignmentController extends \ModuleAdminController
 
         \Yii::app()->end();
     }
-
 }

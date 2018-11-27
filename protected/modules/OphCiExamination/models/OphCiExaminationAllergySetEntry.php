@@ -59,7 +59,8 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('ophciexamination_allergy_id', 'numerical', 'integerOnly'=>true),
+			array('ophciexamination_allergy_id', 'required'),
+            array('ophciexamination_allergy_id', 'numerical', 'integerOnly'=>true),
 			array('gender', 'length', 'max'=>1),
 			array('age_min, age_max', 'length', 'max'=>3),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),

@@ -60,6 +60,7 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
 		// will receive user inputs.
 		return array(
 			array('disorder_id', 'length', 'max'=>20),
+			array('disorder_id' , 'required'),
 			array('gender', 'length', 'max'=>1),
 			array('age_min, age_max', 'length', 'max'=>3),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -78,7 +79,7 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'set_assignments' => array(self::HAS_MANY, 'OphciexaminationSystemicDiagnosesSetAssignment', 'systemic_diagnoses_set_entry_id'),
+            'set' => array(self::BELONGS_TO, OphCiExaminationSystemicDiagnosesSet::class, 'set_id'),
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'last_modified_user' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),

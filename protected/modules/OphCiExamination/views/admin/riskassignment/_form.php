@@ -18,6 +18,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?=\CHtml::errorSummary(
+    array_merge(array($model), $model->entries),
+    null,
+    null,
+    array("class" => "alert-box alert with-icon")
+); ?>
 
 <div class="cols-5">
     <table class="standard cols-full">
@@ -103,7 +109,7 @@
 
         );
         $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry');
-        $dataProvider->setData($model->ophciexamination_risks_entry);
+        $dataProvider->setData($model->entries);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',

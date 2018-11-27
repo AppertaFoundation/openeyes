@@ -26,9 +26,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
 $this->renderPartial(
     '/admin/allergyassignment/_form',
-    ['form' => $form, 'model' => $model, 'title' => $title]
-); ?>
-
-<?php
+    ['form' => $form, 'model' => $model, 'title' => $title,]
+);
 $this->endWidget();
-?>

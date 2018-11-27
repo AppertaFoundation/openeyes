@@ -19,6 +19,13 @@
  */
 ?>
 
+<?=\CHtml::errorSummary(
+    array_merge(array($model), $model->entries),
+    null,
+    null,
+    array("class" => "alert-box alert with-icon")
+); ?>
+
 <div class="cols-5">
     <table class="standard cols-full">
         <h2><?php echo $title ?></h2>
@@ -127,7 +134,7 @@
 
         );
         $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry');
-        $dataProvider->setData($model->allergy_set_entries);
+        $dataProvider->setData($model->entries);
 
         ?>
         <?php $this->widget('zii.widgets.grid.CGridView', array(
