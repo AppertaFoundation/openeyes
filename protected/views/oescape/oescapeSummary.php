@@ -72,12 +72,12 @@ if (!empty($subspecialty)) { ?>
         limits[eye_side]['min'] = Object.keys(charts).reduce(function(min, chart_key) {
           var chart = charts[chart_key];
           var chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
-          return new Date(chart_min) < min ? new Date(chart_min) : min;
+          return isNaN(chart_min) && new Date(chart_min) < min ? new Date(chart_min) : min;
         }, new Date());
         limits[eye_side]['max'] = Object.keys(charts).reduce(function(max, chart_key) {
           var chart = charts[chart_key];
           var chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
-          return new Date(chart_max) > max ? new Date(chart_max) : max;
+          return isNaN(chart_max) && new Date(chart_max) > max ? new Date(chart_max) : max;
         }, limits[eye_side]['min']);
         var min_date = limits[eye_side]['min'];
         var max_date = limits[eye_side]['max'];
