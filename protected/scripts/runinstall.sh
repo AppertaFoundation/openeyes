@@ -251,7 +251,7 @@ sudo chmod 0644 /etc/cron.d/eventimage
 fi
 
 echo ""
-bash $SCRIPDIR/oe-which.sh
+bash $SCRIPTDIR/oe-which.sh
 
 echo --------------------------------------------------
 echo OPENEYES SOFTWARE INSTALLED
