@@ -49,22 +49,22 @@ class ProcedureController extends BaseAdminController
         $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
 
         if (Yii::app()->request->isPostRequest) {
+            $query = trim($search['query']);
             if ($search['query']) {
-                $criteria->params[':query'] = $search['query'];
+                $criteria->params[':query'] = $query;
 
                 $criteria->with = array(
                     'opcsCodes' => array(
                         'select' => false,
-                        'joinType' => 'INNER JOIN',
                     )
                 );
                 $criteria->together = true;
 
-                $criteria->addSearchCondition('term', $search['query'], true, 'OR');
-                $criteria->addSearchCondition('snomed_code', $search['query'], true, 'OR');
-                $criteria->addSearchCondition('opcsCodes.name', $search['query'], true, 'OR');
-                $criteria->addCondition('default_duration = :query', 'OR');
-                $criteria->addSearchCondition('aliases', $search['query'], true, 'OR');
+                $criteria->addSearchCondition('term', $query, true, 'OR');
+                $criteria->addSearchCondition('snomed_code', $query, true, 'OR');
+                $criteria->addSearchCondition('opcsCodes.name', $query, true, 'OR');
+                $criteria->addCondition('default_duration != 0 AND default_duration  = :query', 'OR');
+                $criteria->addSearchCondition('aliases', $query, true, 'OR');
             }
 
             if ($search['active'] == 1) {
@@ -73,7 +73,6 @@ class ProcedureController extends BaseAdminController
                 $criteria->addCondition('t.active != 1');
             }
         }
-
         $procedure = Procedure::model();
 
         $this->render('/oeadmin/procedure/index', [
