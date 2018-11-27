@@ -474,7 +474,7 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-				 * Without this, lightning images and event view will not show draft watermark
+         * Without this, lightning images and event view will not show draft watermark
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
@@ -562,5 +562,11 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
+
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
     ),
 );
