@@ -50,7 +50,9 @@ do
 	    -fc|--reset-config) resetconfig=1
 	    ;;
         -r|--restart) restart=1
-            ;;
+        ;;
+		--no-compile) #reserved for future use
+		;;
 	    *)  echo "Unknown command line: $p"
         ;;
     esac

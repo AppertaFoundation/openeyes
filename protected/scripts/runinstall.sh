@@ -96,7 +96,7 @@ if [ $showhelp = 1 ]; then
     echo "DESCRIPTION:"
     echo "Installs the openeyes application"
     echo ""
-    echo "usage: $0 <branch> [--help] [--force | -f] [--no-migrate | -n] [--kill-modules | -ff ] [--no-compile] [-r <remote>] [--no-summary] [--develop | -d] [-u<username>]  [-p<password>]"
+    echo "usage: $0 <branch> [--help] [--force | -f] [--no-migrate | -n] [--kill-modules | -ff ] [-r <remote>] [--no-summary] [--develop | -d] [-u<username>]  [-p<password>]"
     echo ""
     echo "COMMAND OPTIONS:"
     echo "  --help         : Display this help text"
@@ -203,7 +203,7 @@ sudo chmod 777 $WROOT/protected/runtime/cache
 grep -q -e "umask 001" /etc/apache2/envvars || sudo -u root bash -c 'echo "umask 001" >> /etc/apache2/envvars'
 
 # Copy sample configuration and fix some file permissions
-$SCRIPTDIR/oe-fix.sh --no-compile --no-restart --no-clear --no-assets --no-migrate --no-dependencies --no-eyedraw
+$SCRIPTDIR/oe-fix.sh --no-compile --no-clear --no-assets --no-migrate --no-dependencies --no-eyedraw
 
 # unless the preservedb switch is set add/reset the sample database
 if [ $preservedb = 0 ]; then
