@@ -47,7 +47,7 @@
                             <!-- NHS number -->
                             <div class="nhs-number">
                                 <span class="hide-text print-only">
-                                    NHS number:
+                                    <?php echo Yii::app()->params['nhs_num_label']?> number:
                                 </span>
                                 <span data-default="000 000 0000" class="data-value nhsnum"><?php echo $model->isNewRecord ? '000 000 0000' : $model->{"{$type}_nhsnum"}; ?></span>
                                 <?=\CHtml::activeHiddenField($model, "{$type}_nhsnum", array('class' => 'nhsnum-input')); ?>
