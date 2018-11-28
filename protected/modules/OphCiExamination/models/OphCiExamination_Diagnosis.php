@@ -80,6 +80,18 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         );
     }
 
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date',
+            ),
+        );
+    }
+
+
     /**
      * @param \BaseEventTypeElement $element
      *
