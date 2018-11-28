@@ -22,56 +22,56 @@
 <div class="cols-5">
 
     <?php
-    $columns = array(
-        'checkboxes' => array(
+    $columns = [
+        'checkboxes' => [
             'header' => '',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::checkBox(
-                    "OEModule_OphCiExamination_models_OphCiExaminationAllergySet[][id]",
+                    "OEModule_OphCiExamination_models_OphCiExaminationRiskSet[]",
                     false,
                     ['value' => $data->id]
                 );
             },
             'cssClassExpression' => '"checkbox"',
-        ),
+        ],
         'name',
-        array(
+        [
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
-        ),
-        array(
+        ],
+        [
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                return $data->firm_id ? $data->getFirm()->name : null;
+                return $data->firm ? $data->firm->name : null;
             }
-        ),
-    );
+        ],
+    ];
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
     ?>
 
     <form id="generic-admin-form"><?php
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-            'rowCssClass' => array('clickable'),
-        ));
+            'rowHtmlOptionsExpression' => '["data-id" => $data->id]',
+            'rowCssClass' => ['clickable'],
+        ]);
         ?>
     </form>
 
@@ -80,7 +80,7 @@
         [
             'class' => 'button large',
             'name' => 'add',
-            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/create/',
+            'data-uri' => '/OphCiExamination/admin/RisksAssignment/create/',
             'id' => 'et_add'
         ]
     ); ?>
@@ -90,18 +90,17 @@
         [
             'class' => 'button large',
             'name' => 'delete',
-            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/delete',
+            'data-uri' => '/OphCiExamination/admin/RisksAssignment/delete',
             'id' => 'et_delete'
         ]
     ); ?>
-
 </div>
 
 <script>
     $(document).ready(function () {
         $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
-            window.location.href = '/OphCiExamination/oeadmin/AllergyAssignment/update/' + id;
+            window.location.href = '/OphCiExamination/admin/RisksAssignment/update/' + id;
         });
     });
 </script>

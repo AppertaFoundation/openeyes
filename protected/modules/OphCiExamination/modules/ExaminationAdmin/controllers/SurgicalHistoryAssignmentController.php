@@ -19,13 +19,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\controllers;
-
 use OEModule\OphCiExamination\models\SurgicalHistorySet;
+use OEModule\OphCiExamination\modules\ExaminationAdmin\controllers\BaseAssignmentController;
 
-class SurgicalHistoryAssignmentController extends AssignmentBaseController
+class SurgicalHistoryAssignmentController extends BaseAssignmentController
 {
-    public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\SurgicalHistorySetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\SurgicalHistorySet';
 
@@ -34,18 +32,18 @@ class SurgicalHistoryAssignmentController extends AssignmentBaseController
      */
     public function accessRules()
     {
-        return array(
-            array('allow', 'users' => array('@')),
-        );
+        return [
+            ['allow', 'users' => ['@']],
+        ];
     }
 
     public function actionIndex()
     {
         $model = new SurgicalHistorySet();
         $model->unsetAttributes();
-        $this->render('/admin/surgicalhistoryassignment/index', array(
+        $this->render('/surgicalhistoryassignment/index', [
             'model' => $model,
-        ));
+        ]);
     }
 
     public function actionCreate()
@@ -57,11 +55,11 @@ class SurgicalHistoryAssignmentController extends AssignmentBaseController
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/surgicalhistoryassignment/edit', array(
+        $this->render('/surgicalhistoryassignment/edit', [
             'model' => $model,
             'errors' => $errors,
             'title' => 'Create Required Surgical History Set',
-        ));
+        ]);
     }
 
     public function actionUpdate($id)
@@ -73,25 +71,11 @@ class SurgicalHistoryAssignmentController extends AssignmentBaseController
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/surgicalhistoryassignment/edit', array(
+        $this->render('/surgicalhistoryassignment/edit', [
             'model' => $model,
             'errors' => $errors,
             'title' => 'Edit Required Surgical History Set',
-        ));
-    }
-
-    public function actionDelete()
-    {
-        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySet', array());
-
-        foreach ($model_ids as $model_id) {
-            $model = $this->loadModel($model_id);
-            $model->delete();
-        }
-
-        //handleButton.js's handleButton($('#et_delete') function needs this return
-        echo "1";
-        \Yii::app()->end();
+        ]);
     }
 
     /**

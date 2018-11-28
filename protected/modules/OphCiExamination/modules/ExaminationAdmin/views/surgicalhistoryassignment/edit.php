@@ -15,22 +15,18 @@
 ?>
 
 <?php
-$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+$form = $this->beginWidget('BaseEventTypeCActiveForm', [
     'id' => 'OphCiExamination_adminform',
     'enableAjaxValidation' => false,
-    'layoutColumns' => array(
+    'layoutColumns' => [
         'label' => 2,
         'field' => 5,
-    ),
-));
+    ],
+]);
 
 $this->renderPartial(
-    '/admin/riskassignment/_form',
+    '/surgicalhistoryassignment/_form',
     ['form' => $form, 'model' => $model, 'title' => $title]
-); ?>
+);
 
-<?php
 $this->endWidget();
-?>
-
-

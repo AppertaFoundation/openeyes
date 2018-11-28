@@ -20,16 +20,16 @@
 ?>
 
 <?=\CHtml::errorSummary(
-    array_merge(array($model), $model->entries),
+    array_merge([$model], $model->entries),
     null,
     null,
-    array("class" => "alert-box alert with-icon")
+    ["class" => "alert-box alert with-icon"]
 ); ?>
 
 <div class="cols-5">
 
     <div class="row divider">
-        <h2><?php echo $title ?></h2>
+        <h2><?=$title ?></h2>
     </div>
 
     <table class="standard cols-full">
@@ -65,8 +65,8 @@
 
     <div id="risks" class="field-row">
         <?php
-        $columns = array(
-            array(
+        $columns = [
+            [
                 'header' => 'Operation',
                 'name' => 'Operation',
                 'type' => 'raw',
@@ -75,62 +75,61 @@
                         '<div>' .
                         CHtml::dropDownList(null, '',
                             CHtml::listData(CommonPreviousOperation::model()->findAll(
-                                array('order' => 'display_order asc')), 'id', 'name'),
-                            array('empty' => '- Select -', 'class' => 'common_prev_op_select')) . '<br />' .
-                        CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][operation]", $data->operation, array(
+                                ['order' => 'display_order asc']), 'id', 'name'),
+                            ['empty' => '- Select -', 'class' => 'common_prev_op_select']) . '<br />' .
+                        CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][operation]", $data->operation, [
                             'placeholder' => 'Select from above or type',
                             'autocomplete' => Yii::app()->params['html_autocomplete'],
                             'class' => 'common-operation',
-                        )) .
+                        ]) .
                         '</div>';
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($gender_options) {
-                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
+                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][gender]", $data->gender, $gender_options, ['empty' => '-- select --']);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => '',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::link('remove', '#', array('class' => 'remove_shs_entry'));
+                    return CHtml::link('remove', '#', ['class' => 'remove_shs_entry']);
                 }
-            ),
+            ],
 
-        );
+        ];
         $dataProvider = new \CActiveDataProvider(\OEModule\OphCiExamination\models\SurgicalHistorySetEntry::class);
         $dataProvider->setData($model->entries);
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
-            //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-        ));
+        ]);
         ?>
     </div>
 
@@ -158,7 +157,8 @@
             'class' => 'button large',
             'type' => 'button',
             'name' => 'cancel',
-            'id' => 'et_cancel'
+            'id' => 'et_cancel',
+            'data-uri' => '/OphCiExamination/admin/SurgicalHistoryAssignment/index'
         ]
     ); ?>
 </div>
@@ -168,21 +168,24 @@
         <td>
             <div>
                 <?php
-                echo CHtml::dropDownList(null, '',
-                        CHtml::listData(CommonPreviousOperation::model()->findAll(
-                            array('order' => 'display_order asc')), 'id', 'name'),
-                        array('empty' => '- Select -', 'class' => 'common_prev_op_select')) . '<br />' .
-                    CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][operation]", '', array(
+                $list_data = CHtml::listData(
+                    CommonPreviousOperation::model()->findAll(['order' => 'display_order asc']),
+                    'id',
+                    'name'
+                );
+                echo CHtml::dropDownList(null, '', $list_data, ['empty' => '- Select -', 'class' => 'common_prev_op_select']);
+                echo '<br />' .
+                CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][operation]", '', [
                         'placeholder' => 'Select from above or type',
                         'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'class' => 'common-operation',
-                    ));
+                    ]);
                 ?>
             </div>
         </td>
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+                echo CHtml::dropDownList("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][gender]", null, $gender_options, ['empty' => '-- select --']);
             ?>
         </td>
         <td>
@@ -201,21 +204,21 @@
     </tr>
 </script>
 
-<script type="text/javascript">
+<script>
 
     $(document).ready(function () {
 
         var $table = $('table.generic-admin');
 
         $(document).on("change", ".common_prev_op_select", function (e) {
-            var textVal = $(e.target).find("option:selected").text();
-            var $textInput = $(e.target).parent('div').find('.common-operation');
+            let textVal = $(e.target).find("option:selected").text();
+            let $textInput = $(e.target).parent('div').find('.common-operation');
             $textInput.val(textVal);
             $(e.target).val('');
         });
 
         $('#add_new_entry').on('click', function (e) {
-            var data = {}, $row;
+            let data = {}, $row;
             $table = $('table.generic-admin');
 
             data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
@@ -236,12 +239,4 @@
         });
     });
 
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#et_cancel').click(function () {
-            window.location.href = '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/';
-        });
-    });
 </script>

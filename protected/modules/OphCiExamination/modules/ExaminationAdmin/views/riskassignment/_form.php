@@ -19,15 +19,15 @@
  */
 ?>
 <?=\CHtml::errorSummary(
-    array_merge(array($model), $model->entries),
+    array_merge([$model], $model->entries),
     null,
     null,
-    array("class" => "alert-box alert with-icon")
+    ["class" => "alert-box alert with-icon"]
 ); ?>
 
 <div class="cols-5">
     <table class="standard cols-full">
-        <h2><?php echo $title ?></h2>
+        <h2><?=$title ?></h2>
         <hr class="divider">
         <colgroup>
             <col class="cols-3">
@@ -64,64 +64,64 @@
 
     <div id="risks" class="data-group">
         <?php
-        $columns = array(
-            array(
+        $columns = [
+            [
                 'header' => 'Risk Name',
                 'name' => 'Risk Name',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($examination_risk_listdata) {
                     return
                         CHtml::hiddenField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][id]", $data->id) .
-                        CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][ophciexamination_risk_id]", $data->ophciexamination_risk_id, $examination_risk_listdata, array('empty' => '- select --'));
+                        CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][ophciexamination_risk_id]", $data->ophciexamination_risk_id, $examination_risk_listdata, ['empty' => '- select --']);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($gender_options) {
-                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
+                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][gender]", $data->gender, $gender_options, ['empty' => '-- select --']);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => '',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::link('remove', '#', array('class' => 'remove_risk_entry'));
+                    return CHtml::link('remove', '#', ['class' => 'remove_risk_entry']);
                 }
-            ),
+            ],
 
-        );
+        ];
         $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry');
         $dataProvider->setData($model->entries);
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowHtmlOptionsExpression' => 'array("data-row" => $row)',
-        ));
+            'rowHtmlOptionsExpression' => '["data-row" => $row]',
+        ]);
         ?>
     </div>
 
@@ -149,7 +149,8 @@
             'class' => 'button large',
             'type' => 'button',
             'name' => 'cancel',
-            'id' => 'et_cancel'
+            'id' => 'et_cancel',
+            'data-uri' => '/OphCiExamination/admin/RisksAssignment/index',
         ]
     ); ?>
 </div>
@@ -160,12 +161,12 @@
         <td>
             <?php
             echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
-                null, $examination_risk_listdata, array("empty" => '-- select --'));
+                null, $examination_risk_listdata, ["empty" => '-- select --']);
             ?>
         </td>
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, ['empty' => '-- select --']);
             ?>
         </td>
         <td>
@@ -185,13 +186,11 @@
 </script>
 
 <script>
-
     $(document).ready(function () {
-
         var $table = $('table.generic-admin');
 
         $('#add_new_risk').on('click', function (e) {
-            var data = {}, $row
+            var data = {}, $row;
             $table = $('table.generic-admin');
 
             data['row'] = OpenEyes.Util.getNextDataKey($table.find('tbody tr'), 'row');
@@ -210,14 +209,6 @@
             }
         });
     });
-
 </script>
 
-<script>
-    $(document).ready(function () {
-        $('#et_cancel').click(function () {
-            window.location.href = '/OphCiExamination/oeadmin/RisksAssignment/';
-        });
-    });
-</script>
 

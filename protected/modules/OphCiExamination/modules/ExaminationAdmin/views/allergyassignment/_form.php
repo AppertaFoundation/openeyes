@@ -18,17 +18,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
 <?=\CHtml::errorSummary(
-    array_merge(array($model), $model->entries),
+    array_merge([$model], $model->entries),
     null,
     null,
-    array("class" => "alert-box alert with-icon")
+    ["class" => "alert-box alert with-icon"]
 ); ?>
 
 <div class="cols-5">
     <table class="standard cols-full">
-        <h2><?php echo $title ?></h2>
+        <h2><?=$title ?></h2>
         <hr class="divider">
         <colgroup>
             <col class="cols-3">
@@ -68,8 +67,8 @@
 
     <div id="allergy" class="data-group">
         <?php
-        $columns = array(
-            array(
+        $columns = [
+            [
                 'header' => 'Allergy Name',
                 'name' => 'Allergy Name',
                 'type' => 'raw',
@@ -83,11 +82,11 @@
                             "OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][ophciexamination_allergy_id]",
                             $data->ophciexamination_allergy_id,
                             $examination_allergy_listdata,
-                            array('empty' => '- select --')
+                            ['empty' => '- select --']
                         );
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
@@ -96,11 +95,11 @@
                         "OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][gender]",
                         $data->gender,
                         $gender_options,
-                        array('empty' => '-- select --')
+                        ['empty' => '-- select --']
                     );
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
@@ -108,11 +107,11 @@
                     return CHtml::numberField(
                         "OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][age_min]",
                         $data->age_min,
-                        array("style" => "width:55px;")
+                        ["style" => "width:55px;"]
                     );
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
@@ -120,35 +119,34 @@
                     return CHtml::numberField(
                         "OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][age_max]",
                         $data->age_max,
-                        array("style" => "width:55px;")
+                        ["style" => "width:55px;"]
                     );
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => '',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::link('remove', '#', array('class' => 'remove_allergy_entry'));
+                    return CHtml::link('remove', '#', ['class' => 'remove_allergy_entry']);
                 }
-            ),
-
-        );
+            ],
+        ];
         $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry');
         $dataProvider->setData($model->entries);
 
         ?>
-        <?php $this->widget('zii.widgets.grid.CGridView', array(
+        <?php $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowHtmlOptionsExpression' => 'array("data-row" => $row)',
-        )); ?>
+            'rowHtmlOptionsExpression' => '["data-row" => $row]',
+        ]); ?>
     </div>
     <?=\CHtml::button(
         'Add Allergy',
@@ -174,7 +172,8 @@
             'class' => 'button large',
             'type' => 'button',
             'name' => 'cancel',
-            'id' => 'et_cancel'
+            'id' => 'et_cancel',
+            'data-uri' => '/OphCiExamination/admin/AllergyAssignment/index',
         ]
     ); ?>
 </div>
@@ -185,12 +184,12 @@
         <td>
             <?php
             echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][ophciexamination_allergy_id]",
-                null, $examination_allergy_listdata, array("empty" => '-- select --'));
+                null, $examination_allergy_listdata, ["empty" => '-- select --']);
             ?>
         </td>
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][gender]", null, $gender_options, ['empty' => '-- select --']);
             ?>
         </td>
         <td>
@@ -253,12 +252,4 @@
         });
     });
 
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#et_cancel').click(function () {
-            window.location.href = '/OphCiExamination/oeadmin/AllergyAssignment/';
-        });
-    });
 </script>

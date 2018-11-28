@@ -15,46 +15,44 @@
 
 $config = [
     'params' => [
-        'admin_menu' => array(
-            'Element Attributes' => array('OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'),
-            'Workflows' => '/OphCiExamination/admin/viewWorkflows',
-            'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
+        'admin_menu' => [
             'Allergies' => '/OphCiExamination/admin/Allergies',
-
-            'Risks' => '/OphCiExamination/admin/Risks',
-            'Surgical History' => array('OphCiExamination' => '/admin/editpreviousoperation'),
-            'Social History' => '/OphCiExamination/admin/SocialHistory',
-            'Family History' => '/OphCiExamination/admin/FamilyHistory',
-            'Comorbidities' => '/OphCiExamination/admin/manageComorbidities',
-            'IOP Instruments' => '/OphCiExamination/admin/EditIOPInstruments',
-            'Drop-related Problems' => '/OphCiExamination/admin/manageDropRelProbs',
-            'Drops Options' => '/OphCiExamination/admin/manageDrops',
-            'Surgery Management Options' => '/OphCiExamination/admin/manageManagementSurgery',
-            'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
-            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
-            'Overall Periods' => '/OphCiExamination/admin/manageOverallPeriods',
-            'Visit Intervals' => '/OphCiExamination/admin/manageVisitIntervals',
+            'Comorbidities' => '/OphCiExamination/admin/manageComorbidities',
+            'Drop-related Problems' => '/OphCiExamination/admin/manageDropRelProbs',
+            'Drops Options' => '/OphCiExamination/admin/manageDrops',
+            'Element Attributes' => ['OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'],
+            'Family History' => '/OphCiExamination/admin/FamilyHistory',
+            'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
             'Glaucoma Statuses' => '/OphCiExamination/admin/manageGlaucomaStatuses',
-            'Target IOP Values' => '/OphCiExamination/admin/manageTargetIOPs',
-            'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
+            'IOP Instruments' => '/OphCiExamination/admin/EditIOPInstruments',
             'Inject. Mgmt - Diagnosis Questions' => '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
+            'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
+            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
             'Optom Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
-
-            'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
-            'Required Systemic Diagnoses Assignment' => '/OphCiExamination/oeadmin/systemicDiagAssignment',
-            'Required Surgical History Assignment' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment',
-            'Required Allergy Assignment' => '/OphCiExamination/oeadmin/AllergyAssignment',
-        ),
-        'menu_bar_items' => array(
-            'ofm' => array(
+            'Overall Periods' => '/OphCiExamination/admin/manageOverallPeriods',
+            'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
+            'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',
+            'Required Surgical History Assignment' => '/OphCiExamination/admin/SurgicalHistoryAssignment/index',
+            'Required Systemic Diagnoses Assignment' => '/OphCiExamination/admin/systemicDiagAssignment/index',
+            'Risks' => '/OphCiExamination/admin/Risks',
+            'Social History' => '/OphCiExamination/admin/SocialHistory',
+            'Surgery Management Options' => '/OphCiExamination/admin/manageManagementSurgery',
+            'Surgical History' => ['OphCiExamination' => '/admin/editpreviousoperation'],
+            'Target IOP Values' => '/OphCiExamination/admin/manageTargetIOPs',
+            'Visit Intervals' => '/OphCiExamination/admin/manageVisitIntervals',
+            'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
+            'Workflows' => '/OphCiExamination/admin/viewWorkflows',
+        ],
+        'menu_bar_items' => [
+            'ofm' => [
                 'title' => 'Optom Invoice Manager',
                 'position' => 9,
                 'uri' => '/OphCiExamination/OptomFeedback/list',
-                'restricted' => array(array('Optom co-ordinator', 'user_id')),
-            )
-        ),
+                'restricted' => [ ['Optom co-ordinator', 'user_id'] ],
+            ]
+        ],
     ],
 
     'components' => [

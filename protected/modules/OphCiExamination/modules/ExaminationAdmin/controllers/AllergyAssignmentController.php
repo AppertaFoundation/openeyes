@@ -18,21 +18,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\controllers;
-
 use OEModule\OphCiExamination\models\OphCiExaminationAllergySet;
+use OEModule\OphCiExamination\modules\ExaminationAdmin\controllers\BaseAssignmentController;
 
-class AllergyAssignmentController extends AssignmentBaseController
+class AllergyAssignmentController extends BaseAssignmentController
 {
-    public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationAllergySet';
 
     public function accessRules()
     {
-        return array(
-            array('allow', 'users' => array('@')),
-        );
+        return [
+            ['allow', 'users' => ['@']],
+        ];
     }
 
     /**
@@ -42,12 +40,13 @@ class AllergyAssignmentController extends AssignmentBaseController
     {
         $model = new OphCiExaminationAllergySet();
         $model->unsetAttributes();
-        if (isset($_GET['OphCiExaminationAllergy']))
+        if (isset($_GET['OphCiExaminationAllergy'])) {
             $model->attributes = $_GET['OphCiExaminationAllergy'];
+        }
 
-        $this->render('/admin/allergyassignment/index', array(
+        $this->render('/allergyassignment/index', [
             'model' => $model,
-        ));
+        ]);
     }
 
     /**
@@ -59,16 +58,15 @@ class AllergyAssignmentController extends AssignmentBaseController
         $errors = false;
         $model = new OphCiExaminationAllergySet();
 
-        if(\Yii::app()->request->isPostRequest) {
+        if (\Yii::app()->request->isPostRequest) {
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/allergyassignment/edit',array(
+        $this->render('/allergyassignment/edit', [
             'model' => $model,
             'errors' => $errors,
             'title' => 'Create required allergy set',
-        ));
-
+        ]);
     }
 
     /**
@@ -82,40 +80,15 @@ class AllergyAssignmentController extends AssignmentBaseController
         $errors = false;
         $model = $this->loadModel($id);
 
-        if(\Yii::app()->request->isPostRequest) {
+        if (\Yii::app()->request->isPostRequest) {
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/allergyassignment/edit', array(
+        $this->render('/allergyassignment/edit', [
             'errors' => isset($errors) ? $errors : '',
             'model' => $model,
             'title' => 'Edit required allergy set',
-        ));
-    }
-
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
-    public function actionDelete()
-    {
-        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySet', array());
-
-        foreach ($model_ids as $model_id) {
-
-            $model = $this->loadModel($model_id);
-            if (!$model->entries) {
-                $model->delete();
-            } else {
-                echo "0";
-                \Yii::app()->end();
-            }
-        }
-
-        //handleButton.js's handleButton($('#et_delete') function needs this return
-        echo "1";
-        \Yii::app()->end();
+        ]);
     }
 
     /**
@@ -128,8 +101,10 @@ class AllergyAssignmentController extends AssignmentBaseController
     public function loadModel($id)
     {
         $model = OphCiExaminationAllergySet::model()->findByPk($id);
-        if ($model === null)
+        if ($model === null) {
             throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
         return $model;
     }
 }

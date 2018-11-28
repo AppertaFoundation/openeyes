@@ -15,14 +15,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\controllers;
+namespace OEModule\OphCiExamination\modules\ExaminationAdmin\controllers;
 
-class AssignmentBaseController extends \ModuleAdminController
+class BaseAssignmentController extends \ModuleAdminController
 {
+    public $group = 'Examination';
+
     public function populateAndSaveModel($model)
     {
-        $errors = false;
-        $new_entries = array();
+        $new_entries = [];
 
         $model->setAttributes($this->getSetPostData(), false);
 
@@ -36,11 +37,7 @@ class AssignmentBaseController extends \ModuleAdminController
         }
 
         try {
-
-            if (!$model->validate()) {
-                $errors = true;
-            }
-
+            $errors = !$model->validate();
 
             $entries = $this->getSetEntryPostData();
             if (empty($entries)) {
@@ -52,10 +49,7 @@ class AssignmentBaseController extends \ModuleAdminController
                     $e->setAttributes($entry);
 
                     $new_entries[] = $e;
-
-                    if (!$e->validate()) {
-                        $errors = true;
-                    }
+                    $errors = !$e->validate();
                 }
 
                 $model->entries = $new_entries;
@@ -64,11 +58,12 @@ class AssignmentBaseController extends \ModuleAdminController
             if (!$errors && $model->save()) {
                 foreach ($new_entries as $entry) {
                     $entry->set_id = $model->id;
-                    $entry->save();
+                    //false: already validated, no need to do it again
+                    $entry->save(false);
                 }
 
                 $transaction->commit();
-                $this->redirect(array('index'));
+                $this->redirect(['index']);
 
             } else {
                 $transaction->rollback();
@@ -81,6 +76,45 @@ class AssignmentBaseController extends \ModuleAdminController
 
         return $errors;
     }
+
+    /**
+     * Deletes a particular model.
+     * If deletion is successful, the browser will be redirected to the 'admin' page.
+     * @throws CDbException
+     * @throws CHttpException
+     */
+    public function actionDelete()
+    {
+        $set_ids = \Yii::app()->request->getPost(str_replace('\\', '_', $this->set_model_name), []);
+
+        $transaction = \Yii::app()->db->beginTransaction();
+        try {
+            foreach ($set_ids as $set_id) {
+                $valid = true;
+
+                $set = $this->loadModel($set_id);
+                foreach ($set->entries as $entry) {
+                    $valid = $valid && $entry->delete();
+                }
+                $valid = $valid && $set->delete();
+            }
+
+            if ($valid) {
+                $transaction->commit();
+                echo "1";
+            } else {
+                $transaction->rollback();
+                echo "0";
+            }
+        } catch (\Exception $e) {
+            \OELog::log($e->getMessage());
+            echo "0";
+        }
+
+        //handleButton.js's handleButton($('#et_delete') function needs echo "1" or "0"
+        \Yii::app()->end();
+    }
+
 
     public function getSetPostData()
     {

@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2018
+ * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -19,65 +19,59 @@
  */
 ?>
 
-
-
 <div class="cols-5">
 
-    <div class="row divider">
-        <h2>Required Surgical History Sets</h2>
-    </div>
-
     <?php
-    $columns = array(
-        'checkboxes' => array(
+    $columns = [
+        'checkboxes' => [
             'header' => '',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::checkBox(
-                    "OEModule_OphCiExamination_models_SurgicalHistorySet[][id]",
+                    "OEModule_OphCiExamination_models_OphCiExaminationAllergySet[]",
                     false,
                     ['value' => $data->id]
                 );
             },
             'cssClassExpression' => '"checkbox"',
-        ),
+        ],
         'name',
-        array(
+        [
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
-        ),
-        array(
+        ],
+        [
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                return $data->firm ? $data->firm->name : null;
+                return $data->firm_id ? $data->getFirm()->name : null;
             }
-        ),
-    );
+        ],
+    ];
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
-
     ?>
 
     <form id="generic-admin-form"><?php
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
             //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row, "data-id" => $data->id)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowCssClass' => array('clickable'),
-        ));
+            'rowHtmlOptionsExpression' => '["data-id" => $data->id]',
+            'rowCssClass' => ['clickable'],
+        ]);
         ?>
     </form>
 
@@ -86,7 +80,7 @@
         [
             'class' => 'button large',
             'name' => 'add',
-            'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/create',
+            'data-uri' => '/OphCiExamination/admin/AllergyAssignment/create/',
             'id' => 'et_add'
         ]
     ); ?>
@@ -96,7 +90,7 @@
         [
             'class' => 'button large',
             'name' => 'delete',
-            'data-uri' => '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/delete',
+            'data-uri' => '/OphCiExamination/admin/AllergyAssignment/delete',
             'id' => 'et_delete'
         ]
     ); ?>
@@ -107,7 +101,7 @@
     $(document).ready(function () {
         $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
-            window.location.href = '/OphCiExamination/oeadmin/SurgicalHistoryAssignment/update/' + id;
+            window.location.href = '/OphCiExamination/admin/AllergyAssignment/update/' + id;
         });
     });
 </script>

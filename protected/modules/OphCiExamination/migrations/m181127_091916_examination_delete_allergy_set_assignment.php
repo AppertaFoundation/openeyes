@@ -6,18 +6,22 @@ class m181127_091916_examination_delete_allergy_set_assignment extends \OEMigrat
     {
         $this->addColumn('ophciexamination_allergy_set_entry_version', 'set_id', 'int(11)');
         $this->addColumn('ophciexamination_allergy_set_entry', 'set_id', 'int(11)');
-        $this->addForeignKey('allergy_set_entry_allergy_set',
+        $this->addForeignKey(
+            'allergy_set_entry_allergy_set',
             'ophciexamination_allergy_set_entry',
             'set_id',
             'ophciexamination_allergy_set',
-            'id');
+            'id'
+        );
 
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationAllergySetAssignment');
-        $iterator = new CDataProviderIterator($dataProvider);
+        $assignments = Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('ophciexamination_allergy_set_assignment')
+            ->queryAll();
 
-        foreach ($iterator as $assignment) {
-            $allergy_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry::model()->findByPk($assignment->ophciexamination_allergy_entry_id);
-            $allergy_set_entry->set_id = $assignment->allergy_set_id;
+        foreach ($assignments as $assignment) {
+            $allergy_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry::model()->findByPk($assignment['ophciexamination_allergy_entry_id']);
+            $allergy_set_entry->set_id = $assignment['allergy_set_id'];
             $allergy_set_entry->save();
         }
 
@@ -46,10 +50,13 @@ class m181127_091916_examination_delete_allergy_set_assignment extends \OEMigrat
         $iterator = new CDataProviderIterator($dataProvider);
 
         foreach ($iterator as $allergy_entry) {
-            $allergy_set_assignment = new \OEModule\OphCiExamination\models\OphCiExaminationAllergySetAssignment();
-            $allergy_set_assignment->ophciexamination_allergy_entry_id = $allergy_entry->id;
-            $allergy_set_assignment->allergy_set_id = $allergy_entry->allergy_set_id;
-            $allergy_set_assignment->save();
+            $sql = "insert into ophciexamination_allergy_set_assignment (ophciexamination_allergy_entry_id, allergy_set_id)
+            values (:ophciexamination_allergy_entry_id, :allergy_set_id)";
+            $parameters = [
+                ":ophciexamination_systemic_diagnoses_entry_id"=>$allergy_entry->id,
+                ':systemic_diagnoses_set_id' => $allergy_entry->set_id
+            ];
+            Yii::app()->db->createCommand($sql)->execute($parameters);
         }
 
         $this->dropColumn('ophciexamination_allergy_set_entry_version', '_set_id');

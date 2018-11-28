@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -18,21 +18,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\controllers;
-
 use OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet;
+use OEModule\OphCiExamination\modules\ExaminationAdmin\controllers\BaseAssignmentController;
 
-class SystemicDiagAssignmentController extends AssignmentBaseController
+class SystemicDiagAssignmentController extends BaseAssignmentController
 {
-    public $group = 'Examination';
     public $entry_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry';
     public $set_model_name = 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSet';
 
     public function accessRules()
     {
-        return array(
-            array('allow', 'users' => array('@')),
-        );
+        return [
+            ['allow', 'users' => ['@']],
+        ];
     }
 
     /**
@@ -40,15 +38,15 @@ class SystemicDiagAssignmentController extends AssignmentBaseController
      */
     public function actionIndex()
     {
-
         $diagnoses_set = new OphCiExaminationSystemicDiagnosesSet();
         $diagnoses_set->unsetAttributes();
-        if(isset($_GET['OphCiExaminationSystemicDiagnoses']))
+        if (isset($_GET['OphCiExaminationSystemicDiagnoses'])) {
             $diagnoses_set->attributes=$_GET['OphCiExaminationSystemicDiagnoses'];
+        }
 
-        $this->render('/admin/systemicdiagnosesassignment/index',array(
+        $this->render('/systemicdiagnosesassignment/index', [
             'model' => $diagnoses_set,
-        ));
+        ]);
     }
 
     /**
@@ -60,16 +58,15 @@ class SystemicDiagAssignmentController extends AssignmentBaseController
         $errors = false;
         $model = new OphCiExaminationSystemicDiagnosesSet();
 
-        if(\Yii::app()->request->isPostRequest) {
+        if (\Yii::app()->request->isPostRequest) {
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/systemicdiagnosesassignment/edit',array(
+        $this->render('/systemicdiagnosesassignment/edit', [
             'model' => $model,
             'errors' => $errors,
             'title' => 'Create required risk set',
-        ));
-
+        ]);
     }
 
     /**
@@ -83,41 +80,15 @@ class SystemicDiagAssignmentController extends AssignmentBaseController
         $errors = false;
         $model = $this->loadModel($id);
 
-        if(\Yii::app()->request->isPostRequest) {
+        if (\Yii::app()->request->isPostRequest) {
             $errors = $this->populateAndSaveModel($model);
         }
 
-        $this->render('/admin/systemicdiagnosesassignment/edit', array(
+        $this->render('/systemicdiagnosesassignment/edit', [
             'errors' => isset($errors) ? $errors : '',
             'model' => $model,
             'title' => 'Edit required risk set',
-        ));
-    }
-
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     * @throws CHttpException
-     */
-    public function actionDelete()
-    {
-        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet', array());
-
-        foreach($model_ids as $model_id){
-
-            $model = $this->loadModel($model_id);
-            if(!$model->entries){
-                $model->delete();
-            } else {
-                echo "0";
-                \Yii::app()->end();
-            }
-        }
-
-        //handleButton.js's handleButton($('#et_delete') function needs this return
-        echo "1";
-        \Yii::app()->end();
+        ]);
     }
 
     /**
@@ -130,8 +101,10 @@ class SystemicDiagAssignmentController extends AssignmentBaseController
     public function loadModel($id)
     {
         $model = OphCiExaminationSystemicDiagnosesSet::model()->findByPk($id);
-        if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+        if ($model === null) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
         return $model;
     }
 }
