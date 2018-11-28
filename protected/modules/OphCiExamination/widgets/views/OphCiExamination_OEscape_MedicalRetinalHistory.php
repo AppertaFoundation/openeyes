@@ -67,6 +67,7 @@
     var flag_height = 5;
     var flag_width = 8;
     var flag_height_perc = 0.8;
+    var oneday_time = 86400000;
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
@@ -167,7 +168,7 @@
           if (i==0){
             text['hovertext'].push(key+'<br>Count: '+count);
           } else {
-            var gap = Math.round((injections_data[side][key][i]['x'] - injections_data[side][key][i-1]['x'])/86400000);
+            var gap = Math.round((injections_data[side][key][i]['x'] - injections_data[side][key][i-1]['x'])/oneday_time);
             text['hovertext'].push(key+'<br>Count: '+count+'<br>Previous injection: '+gap+' days ago');
           }
           text['x'].push(new Date(injections_data[side][key][i]['x']));
@@ -177,7 +178,7 @@
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
             y0: flag_height * j,
-            x1: new Date(injections_data[side][key][i]['x'] + 86400000 * flag_width),
+            x1: new Date(injections_data[side][key][i]['x'] + oneday_time * flag_width),
             y1: flag_height * (j - flag_height_perc),
             color: (side == 'right') ? '#9fec6d' : '#fe6767',
             yaxis: 'y3',
@@ -200,7 +201,7 @@
         var line_shape = {
           x0: new Date(VA_lines_data[side][i]['x']),
           y0: flag_height * j,
-          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * flag_width),
+          x1: new Date(VA_lines_data[side][i]['x'] + oneday_time * flag_width),
           y1: flag_height * (j - flag_height_perc),
           color: (side == 'right') ? '#9fec6d' : '#fe6767',
           yaxis: 'y3',
