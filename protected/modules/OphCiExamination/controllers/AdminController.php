@@ -330,7 +330,7 @@ class AdminController extends \ModuleAdminController
                 Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
                 Yii::app()->user->setFlash('success', 'Workflow added');
 
-                $this->redirect(array('viewWorkflowRules'));
+                $this->redirect(array('editWorkflow', 'id' => $model->getPrimaryKey()));
             }
         }
 
