@@ -301,6 +301,7 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function save($runValidation = true, $attributes = null, $allow_overriding = false)
     {
+
         // Saving the model only if it is dirty / turn on/off with $this->save_only_if_dirty
         if ($this->save_only_if_dirty === true && $this->isModelDirty() === false) {
             return false;
@@ -329,7 +330,6 @@ class BaseActiveRecord extends CActiveRecord
         }
 
         $res = parent::save($runValidation, $attributes);
-
         if ($res) {
             $this->originalAttributes = $this->getAttributes();
         }
