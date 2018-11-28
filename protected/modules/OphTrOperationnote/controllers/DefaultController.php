@@ -1215,24 +1215,25 @@ class DefaultController extends BaseEventTypeController
         return $errors;
     }
 
-    public function hasExtraTitleInfo()
-    {
-        return $this->getAction()->id === 'view';
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function getExtraTitleInfo()
     {
-        /* @var Element_OphTrOperationnote_SiteTheatre */
-        $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
+        if ($this->getAction()->id === 'view'){
+            /* @var Element_OphTrOperationnote_SiteTheatre */
+            $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
 
-        if (!$element) {
-            return null;
+            if (!$element) {
+                return null;
+            }
+
+            return '<span class="extra-info">' .
+                '<span class="fade">Site: </span>' .
+                $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
+                '</span>' .
+                '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
         }
-
-        return '<span class="extra-info">' .
-            '<span class="fade">Site: </span>' .
-            $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
-            '</span>' .
-            '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
+        return null;
     }
 }
