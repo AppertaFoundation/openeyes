@@ -33,7 +33,7 @@
                     $selectedValue[$params['dropDownName']] = $params['defaultValue'];
                 }
                 if (!isset($params['emptyLabel'])) {
-                    $params['emptyLabel'] = '-- Please select --';
+                    $params['emptyLabel'] = 'Select';
                 }
                 if (isset($params['dependsOnFilterName'])) {
                     $filterQuery = array(

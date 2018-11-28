@@ -439,7 +439,7 @@ function showHideIOLFields(_drawing, resetPosition) {
         $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').show();
         if (resetPosition && $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
-                if ($(this).text() == '- Please select -') {
+                if ($(this).text() == 'Select') {
                     $(this).attr('selected', true);
                 } else {
                     $(this).attr('selected', false);
