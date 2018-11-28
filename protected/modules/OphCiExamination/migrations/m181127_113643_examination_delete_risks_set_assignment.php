@@ -12,12 +12,14 @@ class m181127_113643_examination_delete_risks_set_assignment extends \OEMigratio
             'ophciexamination_risk_set',
             'id');
 
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment');
-        $iterator = new CDataProviderIterator($dataProvider);
+        $assignments = Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('ophciexamination_risk_set_assignment')
+            ->queryAll();
 
-        foreach ($iterator as $assignment) {
-            $risk_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry::model()->findByPk($assignment->ophciexamination_risk_entry_id);
-            $risk_set_entry->set_id = $assignment->risk_set_id;
+        foreach ($assignments as $assignment) {
+            $risk_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry::model()->findByPk($assignment['ophciexamination_risk_entry_id']);
+            $risk_set_entry->set_id = $assignment['risk_set_id'];
             $risk_set_entry->save();
         }
 
@@ -46,10 +48,13 @@ class m181127_113643_examination_delete_risks_set_assignment extends \OEMigratio
         $iterator = new CDataProviderIterator($dataProvider);
 
         foreach ($iterator as $risk_entry) {
-            $risk_set_assignment = new \OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment();
-            $risk_set_assignment->ophciexamination_risk_entry_id = $risk_entry->id;
-            $risk_set_assignment->risk_set_id = $risk_entry->risk_set_id;
-            $risk_set_assignment->save();
+            $sql = "insert into ophciexamination_risk_set_assignment (ophciexamination_risk_entry_id, risk_set_id)
+            values (:ophciexamination_risk_entry_id, :risk_set_id)";
+            $parameters = [
+                ":ophciexamination_risk_entry_id"=>$risk_entry->id,
+                ':risk_set_id' => $risk_entry->set_id
+            ];
+            Yii::app()->db->createCommand($sql)->execute($parameters);
         }
 
         $this->dropColumn('ophciexamination_risk_set_entry_version', 'set_id');

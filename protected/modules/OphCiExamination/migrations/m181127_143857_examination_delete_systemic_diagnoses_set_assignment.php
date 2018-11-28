@@ -12,12 +12,14 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             'ophciexamination_systemic_diagnoses_set',
             'id');
 
-        $dataProvider = new CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetAssignment');
-        $iterator = new CDataProviderIterator($dataProvider);
+        $assignments = Yii::app()->db->createCommand()
+            ->select()
+            ->from('ophciexamination_systemic_diagnoses_set_assignment')
+            ->queryAll();
 
-        foreach ($iterator as $assignment) {
-            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment->ophciexamination_systemic_diagnoses_entry_id);
-            $systemic_diagnoses_set_entry->set_id = $assignment->systemic_diagnoses_set_id;
+        foreach ($assignments as $assignment) {
+            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['ophciexamination_systemic_diagnoses_entry_id']);
+            $systemic_diagnoses_set_entry->set_id = $assignment['systemic_diagnoses_set_id'];
             $systemic_diagnoses_set_entry->save();
         }
 
@@ -45,10 +47,14 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
         $iterator = new CDataProviderIterator($dataProvider);
 
         foreach ($iterator as $systemic_diagnoses_entry) {
-            $systemic_diagnoses_set_assignment = new \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetAssignment();
-            $systemic_diagnoses_set_assignment->ophciexamination_systemic_diagnoses_entry_id = $systemic_diagnoses_entry->id;
-            $systemic_diagnoses_set_assignment->systemic_diagnoses_set_id = $systemic_diagnoses_entry->systemic_diagnoses_set_id;
-            $systemic_diagnoses_set_assignment->save();
+            $sql = "insert into ophciexamination_systemic_diagnoses_set_assignment (ophciexamination_systemic_diagnoses_entry_id, systemic_diagnoses_set_id)
+            values (:ophciexamination_systemic_diagnoses_entry_id, :systemic_diagnoses_set_id)";
+            $parameters = [
+                ":ophciexamination_systemic_diagnoses_entry_id"=>$systemic_diagnoses_entry->id,
+                ':systemic_diagnoses_set_id' => $systemic_diagnoses_entry->set_id
+            ];
+            Yii::app()->db->createCommand($sql)->execute($parameters);
+//
         }
 
         $this->dropColumn('ophciexamination_systemic_diagnoses_set_entry_version', 'set_id');
