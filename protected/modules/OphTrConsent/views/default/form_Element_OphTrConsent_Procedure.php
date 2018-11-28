@@ -43,7 +43,10 @@
         <?php echo $form->checkBoxes(
             $element,
             'AnaestheticType',
-            'anaesthetic_type',
+            array_map(function($element){
+                return $element['id'];
+              }, $element->anaesthetic_type
+            ),
             'Anaesthetic Type',
             false, false, false, false,
             array(

@@ -39,4 +39,20 @@ class OEWebUser extends CWebUser
             return false;
         }
     }
+
+    /*Get the roles of current user*/
+    public function getRole($id){
+        $roles = array();
+        $query = "SELECT itemname FROM authassignment
+                  WHERE userid = $id;";
+        $command = Yii::app()->db->createCommand($query);
+        $command->prepare();
+        $result = $command->queryAll();
+        foreach ($result as $item=>$value)
+        {
+            array_push($roles, $value['itemname']);
+        }
+        return $roles;
+    }
+
 }

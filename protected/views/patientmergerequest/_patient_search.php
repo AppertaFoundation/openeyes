@@ -15,7 +15,7 @@
         <div class="search-examples">
             Find a patient by
             <strong>Hospital Number</strong>,
-            <strong>NHS Number</strong>,
+            <strong><?php echo Yii::app()->params['nhs_num_label']?> Number</strong>,
             <strong>Firstname Surname</strong> or
             <strong>Surname, Firstname</strong>.
         </div>

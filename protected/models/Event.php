@@ -123,6 +123,7 @@ class Event extends BaseActiveRecordVersioned
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
+            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
         );
     }
 
