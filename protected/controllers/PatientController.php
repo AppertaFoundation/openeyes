@@ -1835,6 +1835,7 @@ class PatientController extends BaseController
                       $referral->patient_id = $patient->id;
                     }
                     if ($referral->save()) {
+                        $this->actionPerformReferralDoc($patient,$referral, $_FILES);
                       if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
                         if (!isset($patient_user_referral->patient_id)) {
                           $patient_user_referral->patient_id = $patient->id;
@@ -2228,7 +2229,7 @@ class PatientController extends BaseController
     }
 
 
-    public function actionPerformReferralDoc($patient, $referral)
+    public function actionPerformReferralDoc($patient, $referral, $_Files)
     {
         if (isset($_POST['PatientReferral'])) {
             $episode = new Episode();
@@ -2243,13 +2244,27 @@ class PatientController extends BaseController
                 $event->event_type_id = EventType::model()->findByAttributes(array(
                     'name' => 'Document'
                 ))->id;
-
                 if ($event->save(true, null, true)) {
-                    $document = new Element_OphCoDocument_Document();
-                    $document->event = $event;
-                    $document->patientId = $patient->id;
-                    $document->single_document = $referral;
-                    $document->save(true, null, true);
+                    foreach ($_FILES as $file) {
+                        $tmp_name = $file["tmp_name"]["uploadedFile"];
+                        $p_file = ProtectedFile::createFromFile($tmp_name);
+                        $p_file->name = $file["name"]["uploadedFile"];
+                        if ($p_file->save()) {
+                            unlink($tmp_name);
+                            $document = new Element_OphCoDocument_Document();
+                            $document->patientId = $patient->id;
+                            $document->event_id = $event->id;
+                            $document->event = $event;
+                            $document->single_document_id = $p_file->id;
+                            $document->event_sub_type = 3;
+                            $document->single_document = $p_file;
+                            if ($document->save()) {
+                                return;
+                            }
+                        } else {
+                            unlink($tmp_name);
+                        }
+                    }
                 }
             }
         }
