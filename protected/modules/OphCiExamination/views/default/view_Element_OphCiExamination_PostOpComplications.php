@@ -16,7 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$operationNoteList = $element->getOperationNoteList();
+$operation_note_id = \Yii::app()->request->getParam('OphCiExamination_postop_complication_operation_note_id',
+    (is_array($operationNoteList) ? key($operationNoteList) : null));
+?>
+
 <div class="element-data element-eyes">
+    <div>
+        <?= $operationNoteList[$operation_note_id] ?>
+    </div>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column">
         <div class="data-group">
