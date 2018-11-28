@@ -192,10 +192,8 @@ $(function () {
   new OpenEyes.UI.AdderDialog({
     openButton: $('#add-standard-set-btn'),
     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionDrugSets)],
-    returnOnSelect: true,
     onReturn: function (adderDialog, selectedItems) {
-      console.log(selectedItems);
-      for (var i = 0; i < selectedItems.length; ++i) {
+      for (let i = 0; i < selectedItems.length; ++i) {
         addSet(selectedItems[i].id);
       }
     }

@@ -392,8 +392,10 @@ class ElementLetter extends BaseEventTypeElement
                 $re .= ', '.$patient->contact->address->{$field};
             }
         }
-
-        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+        if (Yii::app()->params['nhs_num_private'] == true) {
+            return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num;
+        }
+        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
     }
 
     /**
@@ -424,7 +426,11 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
 
-            $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+            if (Yii::app()->params['nhs_num_private'] == true) {
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', Hosps No: ' . $patient->hos_num;
+            } else {
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
+            }
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
