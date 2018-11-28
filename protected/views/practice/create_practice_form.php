@@ -87,7 +87,6 @@ $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name
                             [
                                 'type' => 'POST',
                                 'error' => 'js:function(error){
-                                event.preventDefault();
                                 $("#errors").text("Please input the mandatory fields.");
                                 $(".alert-box").css("display","");
                           }',

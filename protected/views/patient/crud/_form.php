@@ -404,7 +404,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                         <div id="no_practice_result" style="display: none;">
                             <div>No result</div>
                         </div>
-                        <a id="js-add-practice-btn" href="#">Add Referring Practitioner</a>
+                        <a id="js-add-practice-btn" href="#">Add Practice</a>
                     </td>
                 </tr>
                 </tbody>
