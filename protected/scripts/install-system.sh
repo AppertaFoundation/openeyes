@@ -49,32 +49,44 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-# Terminate if any command fails
-set -e
-
 # Verify we are running as root
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
 
+
+function found_error() {
+	echo "******************************************"
+	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
+	echo "******************************************"
+	exit 1
+}
+
+trap 'found_error' ERR
+
+
+
 echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 
-sudo apt-get update -y
+export DEBIAN_FRONTEND=noninteractive
 
-  sudo apt-get install -y software-properties-common
+echo "DEBUG: update apt"
+sudo apt-get update
+echo "DEBUG: workaround grub bug and update"
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-  #add repos for PHP5.6 and Java7
-  sudo add-apt-repository ppa:ondrej/php -y
+sudo apt-get install -y software-properties-common
 
+#add repos for PHP5.6 and Java7
+sudo add-apt-repository ppa:ondrej/php -y
 
-
-  echo Performing package updates
-  # ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
-  if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` -lt "16.04" ]]; then
-      sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
-      sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
-  fi
+echo "Performing package updates"
+# ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
+if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` == "14.04" ]]; then
+		sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
+		sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
+fi
 
 # Don't worry about upgrading everything for build mode
 if [ "$OE_MODE" != "BUILD" ]; then
@@ -84,10 +96,10 @@ fi
 
 
 echo Installing required system packages
-export DEBIAN_FRONTEND=noninteractive
 
 # if we are in dev mode, or need to include mysqlserver inside the image, then add additional packages
 extrapackages=$OE_INSTALL_EXTRA_PACKAGES
+[ "$OE_INSTALL_LOCAL_DB" == "" ] && OE_INSTALL_LOCAL_DB="TRUE" # default to local db unless otherwise specified in env
 [ "$OE_INSTALL_LOCAL_DB" == "TRUE" ] && extrapackages="mariadb-server mariadb-client $extrapackages"
 
 # Install required packages + any extras - or if in build mode, intstall minimal build packages only
@@ -134,7 +146,7 @@ if [ ! "$dependonly" = "1" ]; then
 	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
 	sed -i "s|^;date.timezone =|date.timezone = \"${TZ:-'Europe/London'}\"|" /etc/php/5.6/cli/php.ini
 
-	if [[ ! sudo timedatectl set-timezone ${TZ:-'Europe/London'} ]]; then
+	if [ ! "sudo timedatectl set-timezone ${TZ:-'Europe/London'}" ]; then
 		 ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
 	fi
 
@@ -159,7 +171,7 @@ fi
 
 
 # Install php composer if we are not in live mode (not needed in production environments)
-if [ "$OE_MODE" != "LIVE"]; then
+if [ "$OE_MODE" != "LIVE" ]; then
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     php composer-setup.php
     php -r "unlink('composer-setup.php');"
@@ -170,11 +182,14 @@ fi
 sudo phpenmod mcrypt
 sudo phpenmod imagick
 
-#  update ImageMagick policy to allow PDFs
-sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
-sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
+echo "updating imagick to read/write PDFs"
 
-echo --------------------------------------------------
-echo SYSTEM SOFTWARE INSTALLED
-echo Please check previous messages for any errors
-echo --------------------------------------------------
+#  update ImageMagick policy to allow PDFs
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null || :
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null || :
+
+echo "--------------------------------------------------"
+echo "SYSTEM SOFTWARE INSTALLED"
+echo "Please check previous messages for any errors"
+echo "--------------------------------------------------"
+
