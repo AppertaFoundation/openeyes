@@ -99,6 +99,7 @@ class WKHtmlToPDF extends WKHtmlToX
         $footer = str_replace('{{PAGE}}', '<span class="page"></span>', $footer);
         $footer = str_replace('{{PAGES}}', '<span class="topage"></span>', $footer);
         $footer = str_replace('{{CUSTOM_TAGS}}', CJavaScript::encode($this->custom_tags), $footer);
+        $footer = str_replace('{{NHS No}}', Yii::app()->params['nhs_num_label'].' Number', $footer);
 
         return $footer;
     }
