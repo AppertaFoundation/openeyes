@@ -370,6 +370,12 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'gps' => array(
+                    'title' => 'Practitioners',
+                    'uri' => 'gp/index',
+                    'position' => 10,
+                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+                ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',

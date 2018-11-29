@@ -310,29 +310,58 @@ foreach ($ethnic_list as $key=>$item){
                     'class' => 'small fixed-width',
                 ),
             ))*/ ?>
-            </div>
-            <br/>
-              <?= $form->error($patient, 'date_of_death') ?>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="row divider">
-      <table class="standard highlight-rows">
-        <tbody>
-        <tr>
-          <td>
-              <?= $form->label($patient, 'gp_id') ?>
-            <br/>
-              <?= $form->error($patient, 'gp_id') ?>
-          </td>
-          <td>
-              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
-            <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select js-selected_gp">
-                <li>
-                  <span class="js-name">
+                        </div>
+                        <br/>
+                        <?= $form->error($patient, 'date_of_death') ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row divider">
+            <table class="standard highlight-rows">
+                <tbody>
+                <tr>
+                    <td>
+                        <?= $form->label($patient, 'gp_id') ?>
+                        <br/>
+                        <?= $form->error($patient, 'gp_id') ?>
+                    </td>
+                    <td>
+                        <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                            'name' => 'gp_id',
+                            'id' => 'autocomplete_gp_id',
+                            'source' => "js:function(request, response) {
+                                    $.getJSON('/patient/gpList', {
+                                            term : request.term
+                                    }, response);
+                            }",
+                            'options' => array(
+                                'select' => "js:function(event, ui) {
+                                    removeSelectedGP();
+                                    addItem('selected_gp_wrapper', ui);
+                                    $('#autocomplete_gp_id').val('');
+                                    return false;
+                    }",
+                                'response' => 'js:function(event, ui){
+                        if(ui.content.length === 0){
+                            $("#no_gp_result").show();
+                        } else {
+                            $("#no_gp_result").hide();
+                        }
+                    }',
+                            ),
+                            'htmlOptions' => array(
+                                'placeholder' => 'Search GP',
+                            ),
+
+                        )); ?>
+
+
+                        <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
+                            <ul class="oe-multi-select js-selected_gp">
+                                <li>
+                  <span class="name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
@@ -340,6 +369,7 @@ foreach ($ethnic_list as $key=>$item){
               </ul>
                 <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
             </div>
+                        <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
             <div id="no_gp_result" style="display: none;">
               <div>No result</div>
             </div>
@@ -446,7 +476,7 @@ foreach ($ethnic_list as $key=>$item){
 
     <div class="row flex-layout flex-right">
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint', 'id' => 'patient-form-submit-button')); ?>
+            array('class' => 'button green hint')); ?>
     </div>
   </div>
 </div>
@@ -472,7 +502,26 @@ foreach ($ethnic_list as $key=>$item){
   });
 </script>
 
-<script type="text/javascript">
+<?php
+$gpcontact = new Contact('manage_gp');
+$this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
+?>
+
+
+<script>
+    $('#js-cancel-add-practitioner').click(function(event){
+        event.preventDefault();
+        $("#gp-form")[0].reset();
+        $("#errors").text("");
+        $(".alert-box").css("display","none");
+        $('#js-add-practitioner-event').css('display','none');
+    });
+    $('#js-add-practitioner-btn').click(function(event){
+        $('#js-add-practitioner-event').css('display','');
+        return false;
+    });
+
+
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();
     var last_name = $('#Contact_last_name').val();
