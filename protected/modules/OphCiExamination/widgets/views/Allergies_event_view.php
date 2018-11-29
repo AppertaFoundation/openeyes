@@ -29,7 +29,7 @@
                       <?php endforeach; ?>
                   </ul>
                 <?php } ?>
-                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>}
+                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>
                   <ul class="dot-list large">
                     <li>Not Present:</li>
                       <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
