@@ -18,7 +18,6 @@
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
-
 <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-5 ">
         <table class="cols-full">
@@ -113,7 +112,6 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
             </tr>
         </table>
     </div>
-
     <div class="spinner-overlay">
         <i class="spinner"></i>
         <img src="#"
