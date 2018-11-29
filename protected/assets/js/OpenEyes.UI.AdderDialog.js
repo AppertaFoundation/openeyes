@@ -300,7 +300,7 @@
     }
 
     if (this.options.onClose) {
-      this.popup.onClose();
+      this.options.onClose(this);
     }
   };
 
