@@ -67,7 +67,7 @@
       content.css('width', this.options.width);
     }
     let $closeButton = $('<div />', {class: 'close-icon-btn'})
-      .append($('<i />', {class: 'oe-i remove-circle medium'}));
+      .append($('<i />', {class: 'oe-i remove-circle medium pro-theme selected'}));
     content.append($closeButton);
 
     let $addButton = $('<div />', {
