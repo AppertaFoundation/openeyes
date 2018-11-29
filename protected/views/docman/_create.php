@@ -96,7 +96,7 @@
                     );
                 ?>
         <?php endif; ?>
-        <?php $row_index++; ?>cd ass
+        <?php $row_index++; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
