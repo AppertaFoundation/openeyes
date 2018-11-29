@@ -37,20 +37,22 @@
    * @private
    */
   AdderDialog._defaultOptions = {
-    itemSets: [],
-    openButton: null,
-    onOpen: null,
-    onClose: null,
-    onSelect: null,
-    onReturn: null,
-    returnOnSelect: false,
-    deselectOnReturn: true,
-    id: null,
-    popupClass: 'oe-add-select-search auto-width',
-    liClass: 'auto-width',
-    searchOptions: null,
-    width: null,
-    createBlackoutDiv: true,
+      itemSets: [],
+      openButton: null,
+      onOpen: null,
+      onClose: null,
+      onSelect: null,
+      onReturn: null,
+      returnOnSelect: false,
+      deselectOnReturn: true,
+      id: null,
+      popupClass: 'oe-add-select-search auto-width',
+      liClass: 'auto-width',
+      searchOptions: null,
+      width: null,
+      createBlackoutDiv: true,
+      enableCustomSearchEntries: false,
+      searchAsTypedPrefix: 'As typed: '
   };
 
   /**
@@ -377,9 +379,9 @@
   AdderDialog.prototype.runItemSearch = function (text) {
     let dialog = this;
 
-    if (this.searchRequest !== null) {
-      this.searchRequest.abort();
-    }
+        if (this.searchRequest !== null) {
+            this.searchRequest.abort();
+        }
 
     this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
       term: text,
@@ -390,20 +392,37 @@
       let no_data = !$(results).length;
 
       dialog.searchResultList.empty();
-      dialog.searchResultList.toggle(!no_data);
+      dialog.noSearchResultsWrapper.text('No results: "' + text + '"');
       dialog.noSearchResultsWrapper.toggle(no_data);
 
       if (dialog.options.searchOptions.resultsFilter) {
         results = dialog.options.searchOptions.resultsFilter(results);
       }
 
-      $(results).each(function (index, result) {
-        let dataset = AdderDialog.prototype.constructDataset(result);
-        let item = $("<li />", dataset)
-          .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+            $(results).each(function (index, result) {
+                var dataset = AdderDialog.prototype.constructDataset(result);
+                var item = $("<li />", dataset)
+                    .append($('<span />', {class: 'auto-width'}).text(dataset['data-label']));
+                dialog.searchResultList.append(item);
+            });
+
+            if (dialog.options.enableCustomSearchEntries) {
+                dialog.appendCustomEntryOption(text, dialog);
+            } else {
+                dialog.searchResultList.toggle(!no_data);
+            }
+        });
+    };
+
+    AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
+        let custom_entry = AdderDialog.prototype.constructDataset({
+            label: text,
+            type: 'custom'
+        });
+        let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
+            .append($('<span />', {class: 'auto-width'}).text(text));
+
         dialog.searchResultList.append(item);
-      });
-    });
   };
 
   /**

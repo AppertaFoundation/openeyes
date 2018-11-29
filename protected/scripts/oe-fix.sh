@@ -24,7 +24,7 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
-norestart=0
+restart=0
 
 while [[ $# -gt 0 ]]
 do
@@ -49,9 +49,11 @@ do
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
-            -nr|--no-restart) norestart=1
-            ;;
-	    *)  echo "Unknown command line: $i"
+        -r|--restart) restart=1
+        ;;
+		--no-compile) #reserved for future use
+		;;
+	    *)  echo "Unknown command line: $p"
         ;;
     esac
 
@@ -75,6 +77,7 @@ if [ $showhelp = 1 ]; then
 	echo "  --no-dependencies  : Do not update composer or npm dependencies"
 	echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
 	echo "  --no-permissions : Do not reset file permissions"
+	echo "  --restart      : restart apache"
 	echo ""
     exit 1
 fi
@@ -198,7 +201,7 @@ git config core.fileMode false 2>/dev/null
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 
 # restart apache
-if [ "$norestart" == "0" ]; then
+if [ "$restart" == "1" ]; then
     echo -e "\nrestarting apache..\n"
     sudo service apache2 restart &> /dev/null
 fi
