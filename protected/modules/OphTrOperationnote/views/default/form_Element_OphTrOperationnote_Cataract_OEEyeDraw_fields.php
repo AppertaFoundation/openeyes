@@ -33,7 +33,7 @@
                         'incision_site_id',
                         'OphTrOperationnote_IncisionSite',
                         array(
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'textAttribute' => 'data-value',
                             'nolabel' => true,
                             'style' => 'width: 100%;'
@@ -75,7 +75,7 @@
                         'incision_type_id',
                         'OphTrOperationnote_IncisionType',
                         array(
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'textAttribute' => 'data-value',
                             'nolabel' => true,
                             'style' => 'width: 100%;'
@@ -118,7 +118,7 @@
                                 'id',
                                 'display_name'
                             ),
-                            array('empty' => '- Please select -', 'nolabel' => true),
+                            array('empty' => 'Select', 'nolabel' => true),
                             $element->iol_hidden,
                             array('field' => 12)
                         ); ?>
@@ -139,7 +139,7 @@
                                     'order' => 'display_order',
                                 )), 'id', 'name'),
                             ),
-                            array('empty' => '- Please select -', 'divided' => true, 'nolabel' => true), $element->iol_hidden,
+                            array('empty' => 'Select', 'divided' => true, 'nolabel' => true), $element->iol_hidden,
                             array('field' => 12)) ?>
                     <?php endif; ?>
                     <style>
@@ -176,7 +176,7 @@
                 <div class="cols-6">
                     <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
                         array(
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'options' => array(
                                 8 => array('disabled' => 'disabled'),
                             ),

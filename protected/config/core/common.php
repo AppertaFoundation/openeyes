@@ -376,6 +376,12 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'gps' => array(
+                    'title' => 'Practitioners',
+                    'uri' => 'gp/index',
+                    'position' => 10,
+                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+                ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',
@@ -480,7 +486,7 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-				 * Without this, lightning images and event view will not show draft watermark
+         * Without this, lightning images and event view will not show draft watermark
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
@@ -568,5 +574,11 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
+
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
     ),
 );
