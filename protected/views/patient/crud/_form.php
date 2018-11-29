@@ -385,30 +385,61 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
         <tr>
-          <td>
-              <?= $form->label($patient, 'practice_id') ?>
-            <br/>
-              <?= $form->error($patient, 'practice_id') ?>
-          </td>
-          <td>
-              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
-            <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-              <ul class="oe-multi-select js-selected_practice">
-                <li>
-                  <span class="js-name">
-                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
-                  </span>
-                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
-                </li>
-              </ul>
+            <td>
+                <?= $form->label($patient, 'practice_id') ?>
+                <br/>
+                <?= $form->error($patient, 'practice_id') ?>
+            </td>
+            <td>
+                <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                    'name' => 'practice_id',
+                    'id' => 'autocomplete_practice_id',
+                    'source' => "js:function(request, response) {
+                            $.getJSON('/patient/practiceList', {
+                                    term : request.term
+                            }, response);
+                    }",
+                    'options' => array(
+                        'select' => "js:function(event, ui) {
+                            removeSelectedPractice();
+                            addItem('selected_practice_wrapper', ui);
+                            $('#autocomplete_practice_id').val('');
+                            return false;
+                    }",
+                                'response' => 'js:function(event, ui){
+                        if(ui.content.length === 0){
+                            $("#no_practice_result").show();
+                        } else {
+                            $("#no_practice_result").hide();
+                        }
+                    }',
+                    ),
+                    'htmlOptions' => array(
+                        'placeholder' => 'search Practice',
+                    ),
 
-                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                    array('class' => 'hidden_id')); ?>
-            </div>
-            <div id="no_practice_result" style="display: none;">
-              <div>No result</div>
-            </div>
-          </td>
+                )); ?>
+
+                <div id="selected_practice_wrapper"
+                     style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
+                    <ul class="oe-multi-select js-selected_practice">
+                        <li>
+                          <span class="name">
+                              <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
+                          </span>
+                            <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
+                        </li>
+                    </ul>
+
+
+                    <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
+                        array('class' => 'hidden_id')); ?>
+                </div>
+                <div id="no_practice_result" style="display: none;">
+                    <div>No result</div>
+                </div>
+                <a id="js-add-practice-btn" href="#">Add Practice</a>
+            </td>
         </tr>
         <tr>
           <td>
