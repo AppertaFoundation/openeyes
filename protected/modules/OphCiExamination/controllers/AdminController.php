@@ -749,7 +749,7 @@ class AdminController extends \ModuleAdminController
                                 'type' => 'multilookup',
                                 'noSelectionsMessage' => 'All Subspecialties',
                                 'htmlOptions' => array(
-                                        'empty' => '- Please Select -',
+                                        'empty' => 'Select',
                                         'nowrapper' => true,
                                 ),
                                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -773,7 +773,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'All Subspecialties',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -925,7 +925,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'No Tags',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')

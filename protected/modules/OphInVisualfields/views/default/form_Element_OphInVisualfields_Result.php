@@ -26,7 +26,7 @@
             'id', 'name'),
         $element->ophinvisualfields_result_assessment_defaults,
         array(
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'class' => 'linked-fields',
             'data-linked-fields' => 'other',
             'data-linked-values' => 'Other',

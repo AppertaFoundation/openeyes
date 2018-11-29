@@ -33,7 +33,7 @@
                         @$_POST['subspecialty-id'],
                         Subspecialty::model()->getList(),
                         [
-                            'empty' => '- Please select -',
+                            'empty' => 'Select',
                             'class' => 'cols-full',
                             'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : ''),
                         ]
