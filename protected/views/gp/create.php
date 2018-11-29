@@ -4,7 +4,7 @@
 /* @var $context String */
 $this->pageTitle = 'Create Practitioner';
 ?>
-<div>
+<div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
             Add <b>Practitioner</b>

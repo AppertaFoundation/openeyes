@@ -5,7 +5,7 @@
 $this->pageTitle = 'Update Practitioner';
 ?>
 
-<div>
+<div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
             <b>Practitioner</b>

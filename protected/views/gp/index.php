@@ -9,7 +9,7 @@ $page_num = $dataProvider->getPagination()->getCurrentPage();
 $from = ($page_num * $items_per_page) + 1;
 $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 ?>
-<div>
+<div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
             <b>Practitioner</b>
