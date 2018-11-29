@@ -70,7 +70,6 @@
                             'name' => 'contact_label_id',
                             'id' => 'autocomplete_contact_label_id',
                             'source' => "js:function(request, response) {
-                                     console.log(request.term);
                                 $.getJSON('/gp/contactLabelList', {
                                    term : request.term
                                 }, response);
