@@ -29,7 +29,7 @@
     </a>
 <?php } ?>
 
-<?php if (($this->action->id === 'create' || $this->action->id === 'update') && $this->show_index_search) : ?>
+<?php if (in_array($this->action->id, ['create', 'update', 'step']) && $this->show_index_search) : ?>
     <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
         <i class="oe-i search"></i>
     </button>
