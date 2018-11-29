@@ -39,7 +39,14 @@ $genders = CHtml::listData($gender_models, function ($gender_model) {
     return CHtml::encode($gender_model->name)[0];
 }, 'name');
 
-$ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+$ethnic_list =  CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+$ethnic_groups = array();
+$ethnic_filters = Yii::app()->params['ethnic_group_filters'];
+foreach ($ethnic_list as $key=>$item){
+	if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
+		$ethnic_groups[] = $item;
+	}
+}
 ?>
 
 <?php $form = $this->beginWidget('CActiveForm', array(
@@ -49,18 +56,19 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
+    'htmlOptions' => array('enctype' => 'multipart/form-data'),
 
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
-
   <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
-            <?= $form->errorSummary(array($contact, $patient, $address)) ?>
+            <?= $form->errorSummary(array($contact, $patient, $address, $referral)) ?>
             <?= $form->errorSummary($patient_identifiers) ?>
         </div>
       <?php } ?>-->
+
     <table class="standard highlight-rows">
       <tbody>
       <tr>
@@ -137,6 +145,21 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'class' => 'small fixed-width',
                 ),
             ))*/ ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="required">
+          <?= $form->label($patient, 'patient_source') ?>
+          <br/>
+          <?= $form->error($patient, 'patient_source') ?>
+        </td>
+        <td>
+          <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
+          <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
+            array(
+              'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
+              'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
+            )); ?>
         </td>
       </tr>
       <tr>
@@ -249,84 +272,33 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </tbody>
       </table>
     </div>
+    <div class="row divider">
+      <table class="standard highlight-rows">
+        <tbody>
+        <tr>
+          <td>
+            <label class="inline highlight ">
+                <?= $form->checkBox($patient, 'is_deceased', array('data-child_row' => '.date_of_death')) ?>
+              is deceased
+            </label>
+            <br/>
+              <?= $form->error($patient, 'is_deceased') ?>
+          </td>
+          <td>
+            <div class="flex-layout date_of_death" style="<?= $patient->is_deceased == 0 ? 'display: none;' : '' ?>">
+              <span><?= $form->label($patient, 'date_of_death') ?></span>
+                <?php
+                if ((bool)strtotime($patient->date_of_death)) {
+                    $date_of_death = new DateTime($patient->date_of_death);
+                    $patient->date_of_death = $date_of_death->format('d/m/Y');
+                } else {
+                    $patient->date_of_death = str_replace('-', '/', $patient->date_of_death);
+                }
+                ?>
 
-    <div class="patient-inputs-column">
-        <div class="row divider">
-            <table class="standard highlight-rows">
-                <tbody>
-                <tr>
-                    <td>
-                        <?= $form->label($patient, 'hos_num') ?>
-                        <br/>
-                        <?= $form->error($patient, 'hos_num') ?>
-                    </td>
-                    <td>
-                        <?= $form->textField($patient, 'hos_num',
-                            array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'))) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?= Yii::app()->params['nhs_num_label']?> Number
-                    </td>
-                    <td>
-                        <?= $form->textField($patient, 'nhs_num',
-                            array(
-                                'size' => 40,
-                                'maxlength' => 40,
-                                'data-child_row' => '.nhs-num-status',
-                                'placeholder' => $patient->getAttributeLabel('nhs_num'),
-                            )); ?>
-                        <?= $form->error($patient, 'nhs_num') ?>
-                    </td>
-                </tr>
-                <tr style="<?= !$patient->nhs_num ? 'display: none;' : '' ?>">
-                    <td>
-                        <?= $form->label($patient, 'nhs_num_status_id') ?>
-                        <br/>
-                        <?= $form->error($patient, 'nhs_num_status_id') ?>
-                    </td>
-                    <td>
-                        <?= $form->dropDownList($patient, 'nhs_num_status_id', $nhs_num_statuses,
-                            array('empty' => '-- select --')); ?>
-                    </td>
-                </tr>
-                <?= $this->renderPartial('crud/_patient_identifiers', array(
-                        'form' => $form,
-                        'patient_identifiers' => $patient_identifiers,
-                        'patient' => $patient,
-                    )
-                ) ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="row divider">
-            <table class="standard highlight-rows">
-                <tbody>
-                <tr>
-                    <td>
-                        <label class="inline highlight ">
-                            <?= $form->checkBox($patient, 'is_deceased', array('data-child_row' => '.date_of_death')) ?>
-                            is deceased
-                        </label>
-                        <br/>
-                        <?= $form->error($patient, 'is_deceased') ?>
-                    </td>
-                    <td>
-                        <div class="flex-layout date_of_death" style="<?= $patient->is_deceased == 0 ? 'display: none;' : '' ?>">
-                            <span><?= $form->label($patient, 'date_of_death') ?></span>
-                            <?php
-                            if ((bool)strtotime($patient->date_of_death)) {
-                                $date_of_death = new DateTime($patient->date_of_death);
-                                $patient->date_of_death = $date_of_death->format('d/m/Y');
-                            } else {
-                                $patient->date_of_death = str_replace('-', '/', $patient->date_of_death);
-                            }
-                            ?>
+                <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy', 'class' => 'date')) ?>
 
-                            <?= $form->textField($patient, 'date_of_death', array('placeholder' => 'dd/mm/yyy', 'class' => 'date')) ?>
-
-                            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[date_of_death]',
                 'id' => 'date_to',
                 'options' => array(
@@ -393,82 +365,121 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                   <span class="name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
-                                    <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
-                                </li>
-                            </ul>
-                            <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
-                        </div>
-                        <div id="no_gp_result" style="display: none;">
-                            <div>No result</div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?= $form->label($patient, 'practice_id') ?>
-                        <br/>
-                        <?= $form->error($patient, 'practice_id') ?>
-                    </td>
-                    <td>
-                        <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => 'practice_id',
-                            'id' => 'autocomplete_practice_id',
-                            'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/practiceList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                            'options' => array(
-                                'select' => "js:function(event, ui) {
-                                    removeSelectedPractice();
-                                    addItem('selected_practice_wrapper', ui);
-                                    $('#autocomplete_practice_id').val('');
-                                    return false;
-                    }",
-                                'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_practice_result").show();
-                        } else {
-                            $("#no_practice_result").hide();
-                        }
-                    }',
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'search Practice',
-                            ),
-
-                        )); ?>
-
-                        <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-                            <ul class="oe-multi-select js-selected_practice">
-                                <li>
-
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
+                </li>
+              </ul>
+                <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
+            </div>
+            <div id="no_gp_result" style="display: none;">
+              <div>No result</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+            <?= $form->label($referral, 'uploadedFile'); ?>
+            <br/>
+          </td>
+          <td>
+            <?= $form->fileField($referral, 'uploadedFile'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <?= $form->label($patient, 'practice_id') ?>
+            <br/>
+              <?= $form->error($patient, 'practice_id') ?>
+          </td>
+          <td>
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
+            <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_practice">
+                <li>
                   <span class="js-name">
                       <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
                   </span>
-                                    <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
-                                </li>
-                            </ul>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
+                </li>
+              </ul>
 
-                            <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                                array('class' => 'hidden_id')); ?>
-                        </div>
-                        <div id="no_practice_result" style="display: none;">
-                            <div>No result</div>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
+                    array('class' => 'hidden_id')); ?>
+            </div>
+            <div id="no_practice_result" style="display: none;">
+              <div>No result</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <?= $form->label($patientuserreferral, 'Referred to') ?>
+            <br/>
+            <?= $form->error($patientuserreferral, 'user_id') ?>
+          </td>
+          <td>
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+              'name' => 'user_id',
+              'id' => 'autocomplete_user_id',
+              'source' => "js:function(request, response) {
+              $.ajax({
+                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
+                 'type':'GET',
+                  'data':{'term': request.term},
+                  'success':function(data) {
+                      data = $.parseJSON(data);
+                      response(data);
+                  }
+                });
+              }",
+              'options' => array(
+                'select' => "js:function(event, ui) {
+                  removeSelectedReferredto();
+                  addItem('selected_referred_to_wrapper', ui);
+                  $('#autocomplete_user_id').val('');
+                  return false;
+                 }",
+                'response' => 'js:function(event, ui){
+                    if(ui.content.length === 0){
+                      $("#no_referred_to_result").show();
+                      } else {
+                        $("#no_referred_to_result").hide();
+                      }
+                 }',
+              ),
+              'htmlOptions' => array(
+                'placeholder' => 'search User',
+              ),
+            )); ?>
 
-        <div class="row flex-layout flex-right">
-            <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
-                array('class' => 'button green hint')); ?>
-        </div>
+            <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_referral_to">
+                <li>
+                  <span class="js-name">
+                      <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
+                  </span>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-referral-to"></i>
+                </li>
+              </ul>
+
+              <?= CHtml::hiddenField('PatientUserReferral[user_id]',  $patientuserreferral->user_id,
+                array('class' => 'hidden_id')); ?>
+            </div>
+            <div id="no_referred_to_result" style="display: none;">
+              <div>No result</div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-</div>
 
+    <div class="row flex-layout flex-right">
+        <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
+            array('class' => 'button green hint')); ?>
+    </div>
+  </div>
+</div>
 <?php $this->endWidget(); ?>
 <script>
   OpenEyes.UI.AutoCompleteSearch.init({

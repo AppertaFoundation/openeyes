@@ -21,6 +21,14 @@ function removeSelectedPractice() {
 
 }
 
+function removeSelectedReferredto(){
+  $('#no_referred_to_result').hide();
+  $('.js-selected_referral_to .js-name').text('');
+  $('#selected_referred_to_wrapper').hide();
+  $('#PatientUserReferral_user_id').val('-1');
+
+}
+
 $(function () {
 
   pickmeup("#Patient_dob", {
@@ -41,6 +49,21 @@ $(function () {
     $(selector).toggle($(this).val().length > 0);
   });
 
+  var submitted = false;
+  $(document).ready(function () {
+    $("#patient-form").on('submit', function (e) {
+        if (!submitted) {
+          $('#patient-form-submit-button').attr('disabled', true);
+          $('#patient-form-submit-button').addClass('disabled');
+          $('#form-submit-loader').show();
+          submitted = true;
+        } else {
+          e.preventDefault();
+        }
+      }
+    );
+  });
+
   $('#Patient_is_deceased').on('change', function () {
     var selector = $(this).data('child_row');
 
@@ -54,6 +77,10 @@ $(function () {
 
   $('#selected_practice_wrapper').on('click', '.js-remove-practice', function () {
     removeSelectedPractice();
+  });
+
+  $('#selected_referred_to_wrapper').on('click', '.js-remove-referral-to', function(){
+    removeSelectedReferredto();
   });
 
 });
