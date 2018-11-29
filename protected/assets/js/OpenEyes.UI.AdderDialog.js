@@ -236,8 +236,8 @@
     let right = (w - btnPos.right);
     let bottom = (h - btnPos.bottom);
 
-    if (h - bottom < 240) {
-      bottom = h - 245;
+    if (h - bottom < 310) {
+      bottom = h - 335;
     }
 
     // set CSS Fixed position
