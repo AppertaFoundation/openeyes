@@ -133,9 +133,9 @@ sudo rm wkhtml.deb
 
 if [ ! "$dependonly" = "1" ]; then
 
-    # Enable display_errors and error logging for PHP, plus configure timezone
-    mkdir /var/log/php 2>/dev/null || :
-    chown www-data /var/log/php
+  # Enable display_errors and error logging for PHP, plus configure timezone
+  mkdir /var/log/php 2>/dev/null || :
+  chown www-data /var/log/php
 	chown www-data /var/log/php
 	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/apache2/php.ini
 	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/apache2/php.ini
@@ -144,9 +144,9 @@ if [ ! "$dependonly" = "1" ]; then
 	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/cli/php.ini
 	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/cli/php.ini
 	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
-	sed -i "s|^;date.timezone =|date.timezone = \"${TZ:-'Europe/London'}\"|" /etc/php/5.6/cli/php.ini
+	sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/cli/php.ini
 
-	if [ ! "sudo timedatectl set-timezone ${TZ:-'Europe/London'}" ]; then
+	if [ ! sudo timedatectl set-timezone ${TZ:-'Europe/London'} ]; then
 		 ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
 	fi
 
@@ -192,4 +192,3 @@ echo "--------------------------------------------------"
 echo "SYSTEM SOFTWARE INSTALLED"
 echo "Please check previous messages for any errors"
 echo "--------------------------------------------------"
-
