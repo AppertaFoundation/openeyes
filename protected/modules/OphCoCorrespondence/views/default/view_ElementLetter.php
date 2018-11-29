@@ -17,12 +17,11 @@
  */
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
-$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-if($correspondeceApp === "on") {
-    ?>
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 <div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-5 ">
         <table class="cols-full">
+            <?php if($correspondeceApp === "on") { ?>
             <tr>
                 <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                 <td>
@@ -39,6 +38,7 @@ if($correspondeceApp === "on") {
                     </div>
                 </td>
             </tr>
+            <?php } ?>
             <tr>
                 <td class="data-label">
                     From
@@ -112,7 +112,6 @@ if($correspondeceApp === "on") {
             </tr>
         </table>
     </div>
-    <?php } ?>
     <div class="spinner-overlay">
         <i class="spinner"></i>
         <img src="#"
