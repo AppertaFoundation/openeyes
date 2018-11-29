@@ -64,7 +64,7 @@
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
     const flag_height = 5;
-    const flag_width = 8;
+    const flag_width = 5;
     const flag_height_perc = 0.8;
     const oneday_time = 86400000;
 
@@ -251,6 +251,22 @@
             }
           }
         }
+      });
+
+
+      //resize the injection bars after xaxis rangeslider changed
+      $('.rangeslider-container').on('mouseenter mouseover', function (e) {
+        var chart_MR = $(this).parents('.plotly-MR')[0];
+        var date_range  = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime())/oneday_time;
+        var shapes = chart_MR.layout.shapes;
+        var new_width = oneday_time*flag_width/600*date_range;
+        for (var i in shapes){
+          if(shapes[i].layer!=="below"){
+            shapes[i].x1 = new Date(shapes[i].x0).getTime()+new_width;
+          }
+        }
+
+        Plotly.redraw(chart_MR);
       });
     }
   });
