@@ -73,9 +73,9 @@ export DEBIAN_FRONTEND=noninteractive
 
 echo "DEBUG: update apt"
 sudo apt-get update
-echo "DEBUG: workaround grub bug and update"
-DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
-
+# workaround grub-pc upgrade not working in noninteractive mode
+sudo apt-mark hold grub-pc
+sudo apt-get upgrade -y
 sudo apt-get install -y software-properties-common
 
 #add repos for PHP5.6 and Java7
