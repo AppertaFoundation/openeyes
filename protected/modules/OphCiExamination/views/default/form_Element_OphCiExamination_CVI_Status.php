@@ -3,7 +3,7 @@
   list($latest_cvi_status, $last_cvi_date) = $this->patient->getCviSummary();
   $latest_cvi_status_id = PatientOphInfoCviStatus::model()->findByAttributes(array('name' =>$latest_cvi_status))->id;
   if (!is_string($last_cvi_date)) {
-    $last_cvi_date = date('d M Y');
+    $last_cvi_date = null;
   }
   else {
     $last_cvi_date = Helper::formatFuzzyDate($last_cvi_date);
