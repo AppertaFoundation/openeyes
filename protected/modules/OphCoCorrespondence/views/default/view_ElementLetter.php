@@ -182,7 +182,13 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
 
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
+
+        function showCorrespondenceErrorView() {
+            $('#correspondence_out').show();
+            $('.spinner-overlay').hide();
+        }
+
         //Get all the images for the page and set them
         $.ajax({
             type: 'GET',
@@ -193,22 +199,26 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
             $image_container.html('');
             if (response) {
                 response = JSON.parse(response);
-                if(response.error){
-                    $('#correspondence_out').show();
-                    $('.spinner-overlay').hide();
+                if (response.error) {
+                    showCorrespondenceErrorView();
                 } else {
-                    if(response.page_count === 1){
+                    if (response.page_count === 1) {
                         $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none; max-width: 800px">');
                     } else {
                         for (let index = 0; index < response.page_count; index++) {
                             $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none; max-width: 800px">');
                         }
                     }
-                        $('.spinner-overlay').hide();
-                        $('#correspondence_image_0').show();
-                    }
-                    new OpenEyes.OphCoCorrespondence.DocumentViewerController();
+                    $('.spinner-overlay').hide();
+                    $('#correspondence_image_0').show();
                 }
+                new OpenEyes.OphCoCorrespondence.DocumentViewerController();
+            } else {
+                showCorrespondenceErrorView();
+            }
+        })
+            .error(function () {
+                showCorrespondenceErrorView();
             });
     });
 </script>
