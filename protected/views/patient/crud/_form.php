@@ -326,7 +326,6 @@ foreach ($ethnic_list as $key=>$item){
                         <?= $form->label($patient, 'gp_id') ?>
                         <br/>
                         <?= $form->error($patient, 'gp_id') ?>
-                        <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
                     </td>
                     <td>
                         <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -370,6 +369,7 @@ foreach ($ethnic_list as $key=>$item){
               </ul>
                 <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
             </div>
+                        <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
             <div id="no_gp_result" style="display: none;">
               <div>No result</div>
             </div>
