@@ -64,10 +64,10 @@
 
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
-    var flag_height = 5;
-    var flag_width = 8;
-    var flag_height_perc = 0.8;
-    var oneday_time = 86400000;
+    const flag_height = 5;
+    const flag_width = 8;
+    const flag_height_perc = 0.8;
+    const oneday_time = 86400000;
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
