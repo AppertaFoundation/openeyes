@@ -3,7 +3,7 @@
 /* @var $model Practice */
 $this->pageTitle = 'Create Practice';
 ?>
-<div>
+<div class="oe-home">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
             Add <b>Practice</b>

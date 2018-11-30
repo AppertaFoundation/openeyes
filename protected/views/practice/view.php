@@ -4,7 +4,7 @@
 
 $this->pageTitle = 'View Practice';
 ?>
-<div>
+<div class="oe-home">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
             Practice <b>Summary</b>
