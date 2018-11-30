@@ -40,7 +40,7 @@ class OEFuzzyDateValidator extends CValidator
     {
         $dt = $object->$attribute;
         list($this->year, $this->month, $this->day) = array_pad(explode('-', explode(' ', $dt)[0]), 3,0);
-        if ($dt !== "" && (!is_numeric($this->year) || !is_numeric($this->month) || !is_numeric($this->day))) {
+        if (isset($dt) && $dt !== ""  && (!is_numeric($this->year) || !is_numeric($this->month) || !is_numeric($this->day))) {
             $this->addError($object, $attribute, 'Date must be numerical');
         }
 
