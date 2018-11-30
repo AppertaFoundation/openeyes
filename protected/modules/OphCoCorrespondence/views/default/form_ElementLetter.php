@@ -43,10 +43,6 @@ $creating = isset($creating) ? $creating : false;
   <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 <?php endif; ?>
 <div class="element-fields full-width flex-layout flex-top col-gap">
-    <?php
-    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-    if ($correspondeceApp === "on") {
-        ?>
       <div class="cols-3">
         <div class="data-group">
           <table class="cols-full">
@@ -64,6 +60,9 @@ $creating = isset($creating) ? $creating : false;
                       array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
               </td>
             </tr>
+            <?php
+            $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+            if ($correspondeceApp === "on") { ?>
             <tr>
               <td>
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -79,6 +78,7 @@ $creating = isset($creating) ? $creating : false;
                   ); ?>
               </td>
             </tr>
+            <?php } ?>
             </tbody>
           </table>
         </div>
@@ -476,7 +476,6 @@ $creating = isset($creating) ? $creating : false;
           </table>
         </div>
       </div>
-    <?php } ?>
 </div>
 </section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
 <section class="element edit full edit-xxx">
