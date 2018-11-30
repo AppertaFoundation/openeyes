@@ -311,6 +311,7 @@ return array(
             'menubar' => false,
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+            'browser_spellcheck' => true,
         ),
         'menu_bar_items' => array(
                 'admin' => array(
