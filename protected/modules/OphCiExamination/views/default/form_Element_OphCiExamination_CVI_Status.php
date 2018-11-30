@@ -29,10 +29,10 @@
           </span>
         </td>
         <td>
-          <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>";
+          <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>"
                  placeholder="dd Mmm yyyy"
                  name="<?= CHtml::modelName($element) . '[element_date]' ?>"
-                 value="<?= isset($element->element_date) ? Helper::formatFuzzyDate($element->element_date) : $last_cvi_date ?>"
+                 value="<?= isset($element->element_date) ? $element->getFormatedDate() : $last_cvi_date ?>"
                  autocomplete="off"/>
         </td>
       </tr>

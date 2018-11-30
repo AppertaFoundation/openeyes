@@ -80,4 +80,15 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
         );
     }
 
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'element_date',
+            ),
+        );
+    }
+
 }
