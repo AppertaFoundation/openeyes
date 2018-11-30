@@ -61,7 +61,6 @@
     var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
 
     var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 17);
-
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
     const flag_height = 5;
@@ -73,8 +72,8 @@
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
       layout_MR['shapes'] = [];
       layout_MR['annotations'] = [];
-      layout_MR['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
-      layout_MR['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      va_yaxis['tickvals'] = va_plotly_ticks['tick_position'];
+      va_yaxis['ticktext'] = va_plotly_ticks['tick_labels'];
       layout_MR['xaxis']['rangeslider'] = {};
 
       setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
