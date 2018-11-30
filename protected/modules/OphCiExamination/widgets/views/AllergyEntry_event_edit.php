@@ -45,6 +45,8 @@ if (!isset($values)) {
             <?= $values['allergy_display'];?>
         </span>
 			<input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
+			</td>
+	<td>
         <?php if ($removable) {
             if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
                 <label class="inline highlight">
