@@ -182,10 +182,6 @@
         local anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS') ? 'checked' : '' ?>"></span> sedation
     </div>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <p>
-        Contact details (if child/parent wishes to discuss options later)
-    <div class="dotted-write"></div>
-    </p>
     <br/>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
         <h3>Statement of interpreter</h3>
