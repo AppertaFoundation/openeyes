@@ -32,8 +32,8 @@ $required_allergy_ids = array_map(function ($r) {
         <colgroup>
             <col class="cols-3">
             <col class="cols-4">
-            <col class="cols-4">
-            <col class="cols-1">
+            <col class="cols-3">
+            <col class="cols-2">
         </colgroup>
         <tbody>
         <?php if(count($missing_req_allergies) == 0){?>
