@@ -70,8 +70,9 @@ class OeDateFormat extends CActiveRecordBehavior
     private function formatFuzzyDateToHtml()
     {
         list($day, $month, $year) = $this->formatFuzzyDateSplit();
-        if ($year === '')
+        if ($year === '') {
             return '-';
+        }
         return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .
                ($month !== '' ? '<span class="mth">'.$month.'</span>' : '') .
                ($year  !== '' ? '<span class="yr">'.$year.'</span>' : '');
