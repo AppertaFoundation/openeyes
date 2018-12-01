@@ -6,19 +6,19 @@ class m180720_083346_add_default_tags_to_meds_mgment extends CDbMigration
 	{
         $transaction=$this->getDbConnection()->beginTransaction();
         try {
-            $this->execute("INSERT INTO ref_set (`name`) VALUES ('Antibiotic')");
+            $this->execute("INSERT INTO medication_set (`name`) VALUES ('Antibiotic')");
             $ref_set_id1 = Yii::app()->db->getLastInsertID();
-            $this->execute("INSERT INTO ref_set (`name`) VALUES ('Ophthalmic')");
+            $this->execute("INSERT INTO medication_set (`name`) VALUES ('Ophthalmic')");
             $ref_set_id2 = Yii::app()->db->getLastInsertID();
-            $this->execute("INSERT INTO ref_medication_set (ref_medication_id, ref_set_id, default_form, default_dose, default_route, default_frequency, default_dose_unit_term)
-                            SELECT ref_medication_id, 
+            $this->execute("INSERT INTO medication_medication_set (medication_id, medication_set_id, default_form, default_dose, default_route, default_frequency, default_dose_unit_term)
+                            SELECT medication_id, 
                             $ref_set_id2, 
                             default_form, default_dose, default_route, default_frequency, default_dose_unit_term
-                            FROM ref_medication_set WHERE default_route IN (SELECT id FROM ref_medication_route WHERE term IN ('Eye', 'Ocular', 'Interocular'));
+                            FROM medication_medication_set WHERE default_route IN (SELECT id FROM medication_route WHERE term IN ('Eye', 'Ocular', 'Interocular'));
                             ");
 
-            $this->execute("INSERT INTO ref_set_rules (ref_set_id, usage_code) 
-                            SELECT id, 'Management' FROM ref_set WHERE `name` IN ('Cytotoxic', 'Antiviral', 'Tear Film Substitute', 'Glaucoma', 'Antibiotic', 'Ophthalmic')");
+            $this->execute("INSERT INTO medication_set_rule (medication_set_id, usage_code) 
+                            SELECT id, 'Management' FROM medication_set WHERE `name` IN ('Cytotoxic', 'Antiviral', 'Tear Film Substitute', 'Glaucoma', 'Antibiotic', 'Ophthalmic')");
 
             $transaction->commit();
         }
@@ -33,8 +33,8 @@ class m180720_083346_add_default_tags_to_meds_mgment extends CDbMigration
 
 	public function down()
 	{
-        $this->execute("DELETE FROM ref_set WHERE `name` IN ('Antibiotic', 'Ophtalmic')");
-        $this->execute("DELETE FROM ref_set_rules WHERE usage_code = 'Management';");
+        $this->execute("DELETE FROM medication_set WHERE `name` IN ('Antibiotic', 'Ophtalmic')");
+        $this->execute("DELETE FROM medication_set_rule WHERE usage_code = 'Management';");
 
 	}
 

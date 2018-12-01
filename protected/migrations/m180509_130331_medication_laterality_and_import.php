@@ -1,11 +1,11 @@
 <?php
 
-class m180509_130331_ref_medication_laterality_and_import extends OEMigration
+class m180509_130331_medication_laterality_and_import extends OEMigration
 {
 	public function up()
 	{
         
-        $this->createOETable('ref_medication_laterality', array(
+        $this->createOETable('medication_laterality', array(
             'id'                    => 'pk',
             'name'                  => 'VARCHAR(40) NOT NULL',
             'deleted_date'          => 'DATE NULL',
@@ -19,7 +19,7 @@ class m180509_130331_ref_medication_laterality_and_import extends OEMigration
             foreach($drug_route_options as $option){
                 $command = Yii::app()->db
                 ->createCommand("
-                    INSERT INTO ref_medication_laterality( name) 
+                    INSERT INTO medication_laterality( name) 
                     values('".$option['name']."' )
                 ");
                 $command->execute();
@@ -30,7 +30,7 @@ class m180509_130331_ref_medication_laterality_and_import extends OEMigration
 
 	public function down()
 	{
-		$this->dropOETable('ref_medication_laterality', true);
+		$this->dropOETable('medication_laterality', true);
 	}
 
 }

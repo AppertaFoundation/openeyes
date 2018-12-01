@@ -1,4 +1,4 @@
-INSERT INTO openeyes.ref_medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code)
+INSERT INTO openeyes.medication (source_type,source_subtype,preferred_term,preferred_code,vtm_term,vtm_code,vmp_term,vmp_code)
   SELECT
     'DM+D' AS source_type,
     'VMP' AS source_subtype,

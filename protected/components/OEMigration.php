@@ -274,9 +274,9 @@ class OEMigration extends CDbMigration
      * @param array  $columns
      * @param bool   $versioned
      */
-    protected function createOETable($name, array $columns, $versioned = false)
+    protected function createOETable($name, array $columns, $versioned = false, $fk_prefix = null)
     {
-        $fk_prefix = substr($name, 0, 56);
+        $fk_prefix = is_null($fk_prefix) ? substr($name, 0, 56) : $fk_prefix;
 
         $columns = array_merge(
             $columns,

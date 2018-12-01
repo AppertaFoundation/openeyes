@@ -1,10 +1,10 @@
 <?php
 
-class m180504_085000_ref_medication_duration_table_and_import extends OEMigration
+class m180504_085000_medication_duration_table_and_import extends OEMigration
 {
 	public function up()
 	{
-        $this->createOETable('ref_medication_duration', array(
+        $this->createOETable('medication_duration', array(
             'id'                    => 'pk',
             'name'                  => 'VARCHAR(40) NOT NULL',
             'display_order'         => 'INT NULL',
@@ -18,7 +18,7 @@ class m180504_085000_ref_medication_duration_table_and_import extends OEMigratio
             foreach($drug_durations as $duration){
                 $command = Yii::app()->db
                 ->createCommand("
-                    INSERT INTO ref_medication_duration( name, display_order) 
+                    INSERT INTO medication_duration( name, display_order) 
                     values('".$duration['name']."' , ".$duration['display_order']." )
                 ");
                 $command->execute();
@@ -29,7 +29,7 @@ class m180504_085000_ref_medication_duration_table_and_import extends OEMigratio
 
 	public function down()
 	{
-        $this->dropOETable('ref_medication_duration', true);
+        $this->dropOETable('medication_duration', true);
 	}
 
 }

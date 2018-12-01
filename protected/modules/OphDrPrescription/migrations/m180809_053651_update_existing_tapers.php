@@ -10,12 +10,12 @@ class m180809_053651_update_existing_tapers extends CDbMigration
             $this->dropForeignKey('ophdrprescription_item_taper_frequency_id_fk', 'ophdrprescription_item_taper');
             $this->execute("ALTER TABLE ophdrprescription_item_taper MODIFY frequency_id INT(11) NOT NULL");
             $this->execute("UPDATE ophdrprescription_item_taper 
-                                LEFT JOIN  ref_medication_frequency ON ref_medication_frequency.id = ophdrprescription_item_taper.frequency_id  
-                                SET ophdrprescription_item_taper.frequency_id = ref_medication_frequency.original_id
+                                LEFT JOIN medication_frequency ON medication_frequency.id = ophdrprescription_item_taper.frequency_id  
+                                SET ophdrprescription_item_taper.frequency_id = medication_frequency.original_id
                                 ");
             $this->addForeignKey('ophdrprescription_item_taper_frequency_id_fk',
                 'ophdrprescription_item_taper',
-                'frequency_id','ref_medication_frequency', 'id');
+                'frequency_id','medication_frequency', 'id');
 
         }
         catch(Exception $e) {
@@ -37,8 +37,8 @@ class m180809_053651_update_existing_tapers extends CDbMigration
             $this->dropForeignKey('ophdrprescription_item_taper_frequency_id_fk', 'ophdrprescription_item_taper');
             $this->execute("ALTER TABLE ophdrprescription_item_taper MODIFY frequency_id INT(10) UNSIGNED NOT NULL");
             $this->execute("UPDATE ophdrprescription_item_taper 
-                                LEFT JOIN  ref_medication_frequency ON ref_medication_frequency.original_id = ophdrprescription_item_taper.frequency_id  
-                                SET ophdrprescription_item_taper.frequency_id = ref_medication_frequency.id
+                                LEFT JOIN  medication_frequency ON medication_frequency.original_id = ophdrprescription_item_taper.frequency_id  
+                                SET ophdrprescription_item_taper.frequency_id = medication_frequency.id
                                 ");
             $this->addForeignKey('ophdrprescription_item_taper_frequency_id_fk',
                 'ophdrprescription_item_taper',

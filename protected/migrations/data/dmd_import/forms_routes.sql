@@ -1,5 +1,5 @@
 /*------------------------------------------ FORMS ------------------------------------------------------*/
-INSERT INTO openeyes.ref_medication_form (`term`,`code`,`unit_term`,`default_dose_unit_term`,`source_type`)
+INSERT INTO openeyes.medication_form (`term`,`code`,`unit_term`,`default_dose_unit_term`,`source_type`)
   SELECT DISTINCT
     `desc`,
     cd,
@@ -9,7 +9,7 @@ INSERT INTO openeyes.ref_medication_form (`term`,`code`,`unit_term`,`default_dos
   FROM drugs2.f_lookup_form
 ;
 /*------------------------------------------ ROUTES -----------------------------------------------------*/
-INSERT INTO openeyes.ref_medication_route (term,`code`, source_type)
+INSERT INTO openeyes.medication_route (term,`code`, source_type)
   SELECT
     lr.desc,
     lr.cd,

@@ -1,6 +1,6 @@
 <?php
 
-class m180808_100619_ref_med_set_taper_import extends CDbMigration
+class m180808_100619_med_set_taper_import extends CDbMigration
 {
 	public function up()
 	{
@@ -20,20 +20,20 @@ class m180808_100619_ref_med_set_taper_import extends CDbMigration
             if($tapers) {
                 foreach ($tapers as $taper) {
 
-                    Yii::app()->db->createCommand("INSERT INTO ref_medication_set_taper (
-                                      ref_medication_set_id,
+                    Yii::app()->db->createCommand("INSERT INTO medication_medication_set_taper (
+                                      medication_medication_set_id,
                                       dose,
                                       frequency_id,
                                       duration_id
                                       ) VALUES 
                                       (
                                           ( 
-                                           SELECT id FROM ref_medication_set 
+                                           SELECT id FROM medication_medication_set 
                                            WHERE
-                                            ref_medication_id = ( SELECT id FROM ref_medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
-                                            AND ref_set_id =
-                                              ( SELECT id FROM ref_set WHERE `name` LIKE CONCAT('%', :ref_set_name) AND id IN 
-                                                ( SELECT ref_set_id FROM ref_set_rules WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug')
+                                            medication_id = ( SELECT id FROM medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
+                                            AND medication_set_id =
+                                              ( SELECT id FROM medication_set WHERE `name` LIKE CONCAT('%', :ref_set_name) AND id IN 
+                                                ( SELECT medication_set_id FROM medication_set_rule WHERE subspecialty_id = :subspecialty_id AND usage_code = 'Drug')
                                               )
                                           ),
                                           
@@ -65,6 +65,6 @@ class m180808_100619_ref_med_set_taper_import extends CDbMigration
 
 	public function down()
 	{
-		$this->execute("DELETE FROM ref_medication_set_taper WHERE 1=1");
+		$this->execute("DELETE FROM medication_medication_set_taper WHERE 1=1");
 	}
 }

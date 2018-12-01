@@ -22,13 +22,13 @@ class m180510_093824_prescription_events_import extends CDbMigration
     public function down()
     {
         $this->execute("SET foreign_key_checks = 0");
-        $this->execute("DELETE FROM event_medication_uses WHERE usage_type = 'OphDrPrescription' ");
+        $this->execute("DELETE FROM event_medication_use WHERE usage_type = 'OphDrPrescription' ");
         $this->execute("SET foreign_key_checks = 1");
 
         $this->dropForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper');
         $this->alterColumn('ophdrprescription_item_taper', 'item_id', 'INT(10) UNSIGNED NOT NULL');
 
-        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = (SELECT temp_prescription_item_id FROM event_medication_uses WHERE id = ophdrprescription_item_taper.item_id)");
+        $this->execute("UPDATE ophdrprescription_item_taper SET item_id = (SELECT temp_prescription_item_id FROM event_medication_use WHERE id = ophdrprescription_item_taper.item_id)");
 
         $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'ophdrprescription_item', 'id');
     }
@@ -42,7 +42,7 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
     private function applyTapersFK()
     {
-        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'event_medication_uses', 'id');
+        $this->addForeignKey('ophdrprescription_item_taper_item_id_fk', 'ophdrprescription_item_taper', 'item_id', 'event_medication_use', 'id');
         return $this;
     }
 
@@ -62,11 +62,11 @@ class m180510_093824_prescription_events_import extends CDbMigration
                         presc_item.dispense_condition_id    AS ref_dispense_condition_id,
                         presc_item.dispense_location_id     AS ref_dispense_location_id,
                         presc_item.comments                 AS comments,
-                        ref_medication_laterality.id        AS ref_laterality_id,
-                        ref_medication.id                   AS ref_medication_id,
-                        ref_medication_form.id              AS ref_medication_form_id,
-                        ref_medication_route.id             AS ref_route_id,
-                        ref_medication_frequency.id         AS ref_frequency_id,
+                        medication_laterality.id        AS ref_laterality_id,
+                        medication.id                   AS ref_medication_id,
+                        medication_form.id              AS ref_medication_form_id,
+                        medication_route.id             AS ref_route_id,
+                        medication_frequency.id         AS ref_frequency_id,
                         dd.id                               AS duration_id
                     FROM event 
                     JOIN event_type                                 AS et               ON event.event_type_id = et.id
@@ -78,14 +78,14 @@ class m180510_093824_prescription_events_import extends CDbMigration
                     LEFT JOIN drug_frequency                        AS dfreq            ON presc_item.frequency_id = dfreq.id
                     LEFT JOIN drug_duration                         AS dd               ON presc_item.duration_id = dd.id
                     LEFT JOIN drug_route_option                     AS dro              ON presc_item.route_option_id = dro.id
-                    LEFT JOIN ref_medication                                            ON ref_medication.source_old_id = presc_item.drug_id
-                    LEFT JOIN ref_medication_form                                       ON ref_medication_form.term = df.name
-                    LEFT JOIN ref_medication_route                                      ON ref_medication_route.term = dr.name
-                    LEFT JOIN ref_medication_frequency                                  ON ref_medication_frequency.original_id = dfreq.id
-                    LEFT JOIN ref_medication_laterality                                 ON ref_medication_laterality.name = dro.name
+                    LEFT JOIN medication                                            ON medication.source_old_id = presc_item.drug_id
+                    LEFT JOIN medication_form                                       ON medication_form.term = df.name
+                    LEFT JOIN medication_route                                      ON medication_route.term = dr.name
+                    LEFT JOIN medication_frequency                                  ON medication_frequency.original_id = dfreq.id
+                    LEFT JOIN medication_laterality                                 ON medication_laterality.name = dro.name
                     WHERE et.name = 'Prescription'
-                    AND ref_medication.source_type = 'LEGACY'
-                    AND ref_medication.source_subtype = 'drug'
+                    AND medication.source_type = 'LEGACY'
+                    AND medication.source_subtype = 'drug'
                     ORDER BY event.id ASC
                  ")
             ->queryAll();
@@ -132,10 +132,10 @@ class m180510_093824_prescription_events_import extends CDbMigration
 
                 $command = Yii::app()->db
                     ->createCommand("
-                    INSERT INTO event_medication_uses(
+                    INSERT INTO event_medication_use(
                         event_id, 
                         usage_type, 
-                        ref_medication_id, 
+                        medication_id, 
                         form_id, 
                         laterality,
                         dose,
