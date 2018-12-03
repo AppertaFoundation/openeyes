@@ -370,6 +370,12 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'disorder' => array(
+                    'title' => 'Manage Disorders',
+                    'uri' => "patient/create",
+                    'requires_setting' => array('setting_key'=>'user_add_diagnosis', 'required_value'=>'on'),
+                    'position' => 91,
+            ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',
