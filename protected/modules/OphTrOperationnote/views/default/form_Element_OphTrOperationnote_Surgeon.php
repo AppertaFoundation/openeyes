@@ -23,6 +23,13 @@
       <col class="cols-4">
       <col class="cols-4">
     </colgroup>
+      <thead>
+      <tr>
+          <th><?=\CHtml::encode($element->getAttributeLabel('surgeon_id'));?></th>
+          <th><?=\CHtml::encode($element->getAttributeLabel('assistant_id'));?></th>
+          <th><?=\CHtml::encode($element->getAttributeLabel('supervising_surgeon_id'));?></th>
+      </tr>
+      </thead>
     <tbody>
     <tr class="col-gap">
       <td>
@@ -30,9 +37,13 @@
               $element,
               'surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => false),
+<<<<<<< HEAD
+              array('empty' => 'Select', 'class' => 'cols-full', 'nowrapper' => false),
+=======
+              array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
+>>>>>>> release/v3.0
               false,
-              array('label' => 4, 'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
       <td>
@@ -40,9 +51,13 @@
               $element,
               'assistant_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+<<<<<<< HEAD
+              array('empty' => 'None', 'class' => 'cols-full', 'nowrapper' => false),
+=======
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+>>>>>>> release/v3.0
               false,
-              array('label' => 4, 'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
       <td>
@@ -50,9 +65,13 @@
               $element,
               'supervising_surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => false),
+<<<<<<< HEAD
+              array('empty' => 'None', 'class' => 'cols-full', 'nowrapper' => false),
+=======
+              array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+>>>>>>> release/v3.0
               false,
-              array('label' => 4,'field' => 8)
+              array('field' => 8)
           ); ?>
       </td>
     </tr>

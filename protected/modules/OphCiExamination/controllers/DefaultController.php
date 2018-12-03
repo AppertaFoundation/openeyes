@@ -399,11 +399,6 @@ class DefaultController extends \BaseEventTypeController
         }
 
 		$active_check = "";
-        if (!empty($class_array)) {
-            if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = Yii::app()->params['city_road_satellite_view'];
-            }
-        }
 
         $view_data = array_merge(array(
             'active_check' => $active_check,
