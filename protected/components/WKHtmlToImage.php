@@ -35,7 +35,7 @@ class WKHtmlToImage extends WKHtmlToX
      * @param string $prefix THe prefix of the ouput file
      * @param string $suffix The suffix of the output file (extension will always be .png
      * @param string $html The HTML to render
-     * @param array $options Custom options, including heigh twidth etc
+     * @param array $options Custom options, including height, width, etc
      * @param bool $output_html Whether to return the HTML that was rendered or not
      * @return bool True if the image was generated, otherwise false
      * @throws Exception Throw nif an error occurs

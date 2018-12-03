@@ -523,7 +523,7 @@ return array(
          */
 
         'lightning_viewer' => array(
-            'image_width' => 800,
+            'image_width' => 1280,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
