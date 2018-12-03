@@ -14,56 +14,55 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             <b>Practices</b>
         </div>
     </div>
-    <div class="oe-full-content oe-new-patient flex-layout flex-top">
-        <table id="practice-grid" class="standard">
-            <thead>
-            <tr>
-                <th>Practice Contact</th>
-                <th>Practice Address</th>
-                <th>Code</th>
-                <th>Telephone</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($dataProvided as $practice): ?>
-                <tr id="r<?php echo $practice->id; ?>" class="clickable">
-                    <td><?php echo CHtml::encode($practice->contact->getFullName()); ?></td>
-                    <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
-                    <td><?php echo CHtml::encode($practice->code); ?></td>
-                    <td><?php echo CHtml::encode($practice->phone); ?></td>
+    <div class="oe-full-content oe-new-patient">
+        <div>
+            <table id="practice-grid" class="standard">
+                <thead>
+                <tr>
+                    <th>Practice Contact</th>
+                    <th>Practice Address</th>
+                    <th>Code</th>
+                    <th>Telephone</th>
                 </tr>
-            <?php endforeach; ?>
-            </tbody>
-            <tfoot class="pagination-container">
-            <tr>
-                <td colspan="7">
-                    <?php
-                    $this->widget('LinkPager', array(
-                        'pages' => $dataProvider->getPagination(),
-                        'maxButtonCount' => 15,
-                        'cssFile' => false,
-                        'selectedPageCssClass' => 'current',
-                        'hiddenPageCssClass' => 'unavailable',
-                        'htmlOptions' => array(
-                            'class' => 'pagination',
-                        ),
-                    ));
-                    ?>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-        <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
-            <div class="large-4 column end">
-                <div class="row">
-                    <div class="large-12 column end">
-                        <div class="box generic">
-                            <p><?php echo CHtml::link('Create Practice', $this->createUrl('/practice/create')); ?></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+                </thead>
+                <tbody>
+                <?php foreach ($dataProvided as $practice): ?>
+                    <tr id="r<?php echo $practice->id; ?>" class="clickable">
+                        <td><?php echo CHtml::encode($practice->contact->getFullName()); ?></td>
+                        <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
+                        <td><?php echo CHtml::encode($practice->code); ?></td>
+                        <td><?php echo CHtml::encode($practice->phone); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+                <tfoot class="pagination-container">
+                <tr>
+                    <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
+                    <td>
+                        <button class="button hint green" href="<?=$this->createUrl('/practice/create')?>">
+                            <i class="oe-i plus pad pro-theme"></i>
+                            Create Practice
+                        </button>
+                    </td>
+                    <?php endif; ?>
+                    <td colspan="7">
+                        <?php
+                        $this->widget('LinkPager', array(
+                            'pages' => $dataProvider->getPagination(),
+                            'maxButtonCount' => 15,
+                            'cssFile' => false,
+                            'selectedPageCssClass' => 'current',
+                            'hiddenPageCssClass' => 'unavailable',
+                            'htmlOptions' => array(
+                                'class' => 'pagination',
+                            ),
+                        ));
+                        ?>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
 
