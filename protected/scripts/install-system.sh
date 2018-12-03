@@ -71,9 +71,12 @@ echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 
 export DEBIAN_FRONTEND=noninteractive
 
-echo "DEBUG: update apt"
+# use minimal amount of memory swapping
+sudo sysctl vm.swappiness=1
+
+# update system packages
 sudo apt-get update
-# workaround grub-pc upgrade not working in noninteractive mode
+# workaround grub-pc upgrade not working in noninteractive mode (this can be removed once the issue with the upstream package has been resolved)
 sudo apt-mark hold grub-pc
 sudo apt-get upgrade -y
 sudo apt-get install -y software-properties-common

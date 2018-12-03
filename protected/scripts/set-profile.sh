@@ -13,11 +13,16 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 
+
+# Copy each file in ./profile.d to /etc/profile.d, expand variables and set source
 shopt -s nullglob
-for f in $(ls $SCRIPTDIR | sort -V)
+for f in $(ls $SCRIPTDIR/profile.d | sort -V)
 do
-  echo "importing $f"
-  # Use sed to expand variable for home dir
-  sed "s|\$SCRIPTDIR|$SCRIPTDIR|" $f | sudo tee /etc/profile.d/$f
-  sudo chmod 755 /etc/profile.d/$f
+  if [[ $f == *.sh ]]; then
+    echo "importing $f"
+    sed "s|\$SCRIPTDIR|$SCRIPTDIR|; s|\$WROOT|$WROOT|" $SCRIPTDIR/profile.d/$f | sudo tee /etc/profile.d/$f &> /dev/null
+    sudo chmod 755 /etc/profile.d/$f
+    source /etc/profile.d/$f
+  fi
+
 done
