@@ -126,6 +126,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         $(document).ready(function () {
+            if (controller.$noRisksFld.prop('checked')) {
+                controller.$table.find('tr:not(:first-child)').hide();
+                controller.$popupSelector.hide();
+            }
             controller.updateNoRisksState();
         });
 
@@ -153,12 +157,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         controller.$noRisksFld.on('click', function () {
             if (controller.$noRisksFld.prop('checked')) {
-                controller.$table.hide();
+                controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
                 controller.setRadioButtonsToNo();
             } else {
                 controller.$popupSelector.show();
-                controller.$table.show();
+                controller.$table.find('tr:not(:first-child)').show();
                 controller.$table.find('input[type=radio]:checked').prop('checked', false);
             }
         });
@@ -186,11 +190,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * if any of the values are checked to Yes or Not Checked
      */
     HistoryRisksController.prototype.updateNoRisksState = function () {
-        if (this.$noRisksFld.prop('checked') && this.isRisksChecked(this.riskNotCheckedValue)) {
+        if (this.$noRisksFld.prop('checked')) {
             this.$noRisksFld.prop('checked', false);
             this.$popupSelector.show();
         }
-        if (this.isRisksChecked(this.riskYesValue) || this.isRisksChecked(this.riskNotCheckedValue)) {
+        if (this.isRisksChecked(this.riskYesValue)) {
             this.$noRisksWrapper.hide();
             this.$popupSelector.show();
             this.$noRisksFld.prop('checked', false);
