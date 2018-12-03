@@ -261,10 +261,10 @@
     var setOnBeforeUnload = function () {
         window.onbeforeunload = function (e) {
             //Check if this is a submit (don't stop users from moving if they are saving)
-            if (e.target.activeElement.type == 'submit') {
+            if (e.target.activeElement.type === 'submit') {
                 return null;
             }
-            if (initialContentHash != getContentHash()) {
+            if (initialContentHash !== getContentHash()) {
                 return true;
             } else {
                 return null;
