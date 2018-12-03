@@ -7,13 +7,12 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 
 function gitbranch {
-  branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  if [ !$? = 0 ]; then
-    branch="";
-  else
+  if branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); then
     if [ "$branch" = "HEAD" ]; then
       branch=$(git describe --all 2>/dev/null);
     fi
+  else
+    branch="";
   fi
 
   if [ ! "$branch" = "" ]; then
