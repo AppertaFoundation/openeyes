@@ -251,7 +251,7 @@ class DefaultController extends \BaseEventTypeController
             $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis($episode, $episode->diagnosis->id);
         }
 
-        if ($action == 'create') {
+        if ($element->isNewRecord) {
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
@@ -289,9 +289,10 @@ class DefaultController extends \BaseEventTypeController
                 }
             }
             $element->diagnoses = $_diagnoses;
+
         }
 
-        if ($action == 'update') {
+        if (!$element->isNewRecord) {
             if ($episode->diagnosis && !$principal_diagnosis) {
                 /* episode.disorder_id is set but not via Diagnoses element - eg via OpBooking event */
                 $d = $this->getNewPrincipalDiagnosisModel($episode);
