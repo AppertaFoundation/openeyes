@@ -1,0 +1,17 @@
+
+alias oec="$SCRIPTDIR/oe-checkout.sh"
+alias oemig="$SCRIPTDIR/oe-migrate.sh"
+alias oereset="$SCRIPTDIR/oe-reset.sh"
+alias oeu="$SCRIPTDIR/oe-update.sh"
+alias oefix="$SCRIPTDIR/oe-fix.sh"
+alias oe-checkout="oec"
+alias oe-migrate="oemig"
+alias oe-reset="oereset"
+alias oe-update="oeu"
+alias oe-fix="oefix"
+
+alias cdoe="cd $WROOT"
+alias cded="cd $WROOTprotected/modules/eyedraw"
+alias cdnb="cd $WROOTprotected/assets/newblue"
+alias cdsample="cd $WROOTprotected/modules/sample/sql"
+alias cdscripts="cd $SCRIPTDIR"
