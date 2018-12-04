@@ -16,6 +16,21 @@ MODULEROOT="$WROOT/protected/javamodules"
 gitroot=${OE_GITROOT:-'openeyes'}
 module=IOLMasterImport
 
+# Load in existing git configuration if known
+source $SCRIPTDIR/../git.conf
+
+$(ssh-agent)  2>/dev/null
+
+# attempt ssh authentication. If it fails, revert to https
+ssh git@github.com -T
+[ "$?" == "1" ] && usessh=1 || usessh=0
+
+# Set the base string for SSH or HTTP accordingly
+[ "$usessh" == "1" ] && basestring="git@github.com:$gitroot" || basestring="https://github.com/$gitroot"
+
+# Make sure JDK is installed
+sudo apt-get update && sudo apt-get install default-jdk -y
+
 # Check if module is already cloned, if not clone it (will only clone master branch version)
 [ -d "$MODULEROOT/${module}" ] && echo "using existing ${module} files" || git -C $MODULEROOT clone ${basestring}/${module}.git $module
 
