@@ -31,6 +31,11 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+    <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()): ?>
+        <div class="alert-box issue"><i class="oe-i exclamation pad-right no-click"></i><b>
+                NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
+        </div>
+    <?php endif; ?>
     <?php if (count($this->patient->identifiers) > 0) { ?>
       <div class="patient-numbers flex-layout">
         <div class="local-numbers">
