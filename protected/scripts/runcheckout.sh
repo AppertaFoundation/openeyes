@@ -193,7 +193,7 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
 fi
 
 echo ""
-echo "Checking out $branch..."
+echo "User $USER is checking out branch $branch..."
 echo ""
 
 $(ssh-agent)  2>/dev/null
@@ -292,9 +292,6 @@ if [ ! "$force" = "1" ]; then
 		echo ""
 		exit 1
 	  fi
-else
-	# delete dependencies during force (they will get re-added by oe-fix)
-	sudo rm -rf $WROOT/node_modules 2>/dev/null
 fi
 
 # make sure modules directory exists
