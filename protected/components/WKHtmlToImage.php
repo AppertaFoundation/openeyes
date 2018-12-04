@@ -73,6 +73,19 @@ class WKHtmlToImage extends WKHtmlToX
 
         $res = $this->execute($cmd_str);
 
+        // final width of quickview images must be 800px
+        $width = 800;
+        if ($width != $options['width']) {
+            // use ImageMagick to resize the image to a width of 800px
+            $imagick = new Imagick();
+            $imagick->readImage($image_file);
+            // get related height
+            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
+            // save new re-sized image with the same file name
+            file_put_contents($image_file, $imagick->getImage());
+        }
+
         if (!$this->fileExists($image_file) || $this->fileSize($image_file) == 0) {
             if ($this->fileSize($image_file) == 0) {
                 $this->deleteFile($image_file);
