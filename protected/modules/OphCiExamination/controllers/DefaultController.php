@@ -244,7 +244,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphCiExamination_Diagnoses($element, $action)
     {
-        if ($action == 'create') {
+        if ($element->isNewRecord) {
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
