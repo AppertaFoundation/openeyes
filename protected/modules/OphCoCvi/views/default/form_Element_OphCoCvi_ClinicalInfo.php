@@ -86,7 +86,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                 <td>
                     <?php echo $form->dropDownList($element, 'low_vision_status_id',
                         CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_LowVisionStatus::model()->findAll(array('order' => 'display_order asc')),
-                            'id', 'name'), array('empty' => '- Please select -','nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
+                            'id', 'name'), array('empty' => 'Select','nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
                 </td>
               </tr>
             <tr>
@@ -96,7 +96,7 @@ if ($this->checkClinicalEditAccess()) { ?>
               <td>
                   <?php echo $form->dropDownList($element, 'field_of_vision_id',
                       CHtml::listData(OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_FieldOfVision::model()->findAll(array('order' => 'display_order asc')),
-                          'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
+                          'id', 'name'), array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'), false, array('label' => 4, 'field' => 6)) ?>
               </td>
             </tr>
             </tbody>

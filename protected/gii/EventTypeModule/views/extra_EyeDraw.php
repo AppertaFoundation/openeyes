@@ -15,17 +15,17 @@ if (!isset($_POST['eyedrawSize'.$element_num.'Field'.$field_num])) {
 <div style="margin-top: 8px;">
 	Toolbar doodles:&nbsp;&nbsp;&nbsp;
 	<select class="eyeDrawDoodleSelect" data-attr-element="<?php echo $element_num?>" data-attr-field="<?php echo $field_num?>">
-		<option value="">- Please select -</option>
+		<option value="">Select</option>
 		<?php foreach ($eyedraw_doodles as $class) {
     ?>
 			<option value="<?php echo $class?>"><?php echo $class?></option>
-		<?php 
+		<?php
 }?>
 	</select><br/>
 	<?php if (isset($this->form_errors['eyedrawDoodleSelect'.$element_num.'Field'.$field_num])) {
     ?>
 		<span style="color: #f00;"><?php echo $this->form_errors['eyedrawDefaultDoodleSelect'.$element_num.'Field'.$field_num]?></span><br/>
-	<?php 
+	<?php
 }?>
 	<div style="height: 0.4em;"></div>
 	<div class="selectedToolbarDoodles">
@@ -36,14 +36,14 @@ if (!isset($_POST['eyedrawSize'.$element_num.'Field'.$field_num])) {
 					<input type="hidden" name="eyedrawToolbarDoodle<?php echo $element_num?>Field<?php echo $field_num?>[]" value="<?php echo $doodle?>" /><?php echo $doodle?>
 					<a href="#" class="removeToolbarDoodle">(remove)</a>
 				</div>
-			<?php 
+			<?php
     }
 }?>
 	</div>
 	<div style="height: 0.6em;"></div>
 	Default doodles:&nbsp;&nbsp;&nbsp;
 	<select class="eyeDrawDefaultDoodleSelect" data-attr-element="<?php echo $element_num?>" data-attr-field="<?php echo $field_num?>">
-		<option value="">- Please select -</option>
+		<option value="">Select</option>
 		<?php foreach ($eyedraw_doodles as $class) {
     ?>
 			<option value="<?php echo $class?>"><?php echo $class?></option>

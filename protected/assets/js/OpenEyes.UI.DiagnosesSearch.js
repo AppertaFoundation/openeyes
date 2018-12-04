@@ -147,7 +147,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             if(item && item.hasOwnProperty('secondary') && item['secondary'].length > 0){
 
-                $associated_select.append( $('<option>',{'text': '- Please Select -'}));
+                $associated_select.append( $('<option>',{'text': 'Select'}));
 
                 if(item['alternate']){
                     $associated_select.append( $('<option>',

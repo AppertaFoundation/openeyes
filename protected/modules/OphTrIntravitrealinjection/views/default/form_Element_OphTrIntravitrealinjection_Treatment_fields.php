@@ -20,7 +20,7 @@
 <?php
 $antiseptic_drugs = OphTrIntravitrealinjection_AntiSepticDrug::model()->with('allergies')->activeOrPk($element->{$side . '_pre_antisept_drug_id'})->findAll();
 $antiseptic_drugs_opts = array(
-    'empty' => '- Please select -',
+    'empty' => 'Select',
     'nowrapper' => true,
     'options' => array(),
 );
@@ -39,7 +39,7 @@ foreach ($antiseptic_drugs as $drug) {
     $antiseptic_drugs_opts['options'][(string)$drug->id] = $opts;
 }
 $skin_drugs = OphTrIntravitrealinjection_SkinDrug::model()->with('allergies')->activeOrPk($element->{$side . '_pre_skin_drug_id'})->findAll();
-$skin_drugs_opts = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
+$skin_drugs_opts = array('empty' => 'Select', 'nowrapper' => true, 'options' => array());
 $skin_allergy = null;
 foreach ($skin_drugs as $drug) {
     $opts = array();
@@ -123,7 +123,7 @@ foreach ($skin_drugs as $drug) {
           <?php
           $html_options = array(
               'options' => array(),
-              'empty' => '- Please select -',
+              'empty' => 'Select',
               'div_id' => 'div_' . get_class($element) . '_' . $side . '_pre_ioploweringdrugs',
               'label' => '',
               'div_class' => $div_class,
@@ -156,7 +156,7 @@ foreach ($skin_drugs as $drug) {
     $drugs = OphTrIntravitrealinjection_Treatment_Drug::model()->activeOrPk($element->{$side . '_drug_id'})->findAll();
 
     $html_options = array(
-        'empty' => '- Please select -',
+        'empty' => 'Select',
         'nowrapper' => true,
         'options' => array(),
     );
@@ -294,7 +294,7 @@ foreach ($skin_drugs as $drug) {
               $side . '_injection_given_by_id',
               CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(), 'id',
                   'ReversedFullNameAndUserName'),
-              array('empty' => '- Please select -', 'nowrapper' => true),
+              array('empty' => 'Select', 'nowrapper' => true),
               false,
               array('field' => 6))
           ?>
@@ -362,7 +362,7 @@ foreach ($skin_drugs as $drug) {
           <?php
           $html_options = array(
               'options' => array(),
-              'empty' => '- Please select -',
+              'empty' => 'Select',
               'div_id' => 'div_' . get_class($element) . '_' . $side . '_post_ioploweringdrugs',
               'label' => $element->getAttributeLabel($side . '_post_ioploweringdrugs'),
               'div_class' => $div_class,

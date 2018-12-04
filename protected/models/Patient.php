@@ -296,7 +296,7 @@ class Patient extends BaseActiveRecordVersioned
             'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
-            'gp_id' => 'General Practitioner',
+            'gp_id' => 'Referring Practitioner',
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
@@ -2113,7 +2113,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . Helper::convertDate2NHS($ep->disorder_date);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getHTMLformatedDate();
             }
         }
 

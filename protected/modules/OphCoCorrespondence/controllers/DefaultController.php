@@ -547,15 +547,6 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    public function renderAllProcedureElements($action, $form = null, $data = null)
-    {
-        foreach ($this->open_elements as $el) {
-            if (get_class($el) == 'Element_OphTrOperationnote_ProcedureList') {
-                $this->renderChildOpenElements($el, $action, $form, $data);
-            }
-        }
-    }
-
     /**
      * The PDFPrint action is used in all cases, normal print action won't work!
      * This is required to make sure that the PDF attachments can be merged to the letter.
@@ -955,6 +946,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+        // mimic print request so that the print style sheet is applied
+        $assetManager = Yii::app()->assetManager;
+        $assetManager->isPrintRequest  =true;
         try {
             $this->initActionView();
             $this->removeEventImages();
