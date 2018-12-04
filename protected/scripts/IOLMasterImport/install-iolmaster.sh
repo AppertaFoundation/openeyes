@@ -11,6 +11,13 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../../" && pwd )"
 
+MODULEROOT="$WROOT/protected/javamodules"
+
+gitroot=${OE_GITROOT:-'openeyes'}
+module=IOLMasterImport
+
+# Check if module is already cloned, if not clone it (will only clone master branch version)
+[ -d "$MODULEROOT/${module}" ] && echo "using existing ${module} files" || git -C $MODULEROOT clone ${basestring}/${module}.git $module
 
 # Copy DICOM related files in place as required
 if [[ `lsb_release -rs` == "14.04" ]]; then
@@ -32,7 +39,31 @@ sudo mkdir -p /home/iolmaster/incoming
 sudo chown iolmaster:www-data /home/iolmaster/*
 sudo chmod 775 /home/iolmaster/*
 
-sudo systemctl daemon-reload
-sudo systemctl enable dicom-file-watcher
+## (re)-link dist directory for IOLMasterImport module and recompile
+dwservrunning=0
+# first check if service is running - if it is we stop it, then re-start at the end
+if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null
+	then
+		dwservrunning=1
+		echo "Stopping dicom-file-watcher..."
+		sudo service dicom-file-watcher stop
+fi
 
-sudo systemctl start dicom-file-watcher
+sudo rm -rf ${MODULEROOT}/${module}/dist/lib 2>/dev/null || :
+sudo mkdir -p ${MODULEROOT}/${module}/dist
+sudo ln -s ${MODULEROOT}/${module}/lib ${MODULEROOT}/${module}/dist/lib
+
+# Compile IOLImporter
+echo -e "\n\nCompiling ${module}. Please wait....\n\n"
+if [ ! sudo ${MODULEROOT}/${module}/compile.sh > /dev/null 2>&1 ]; then echo "COMPILATION FAILURE - Check the logs"; fi
+
+# restart the service if we stopped it, otherwise install the service and start it
+if [ $dwservrunning = 1 ]; then
+	echo "Restarting dicom-file-watcher..."
+	sudo service dicom-file-watcher start
+else
+  sudo systemctl daemon-reload
+  sudo systemctl enable dicom-file-watcher
+
+  sudo systemctl start dicom-file-watcher
+fi
