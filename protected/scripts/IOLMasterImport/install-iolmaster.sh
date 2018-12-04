@@ -25,6 +25,15 @@ $(ssh-agent)  2>/dev/null
 ssh git@github.com -T
 [ "$?" == "1" ] && usessh=1 || usessh=0
 
+function found_error() {
+	echo "******************************************"
+	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
+	echo "******************************************"
+	exit 1
+}
+
+trap 'found_error' ERR
+
 # Set the base string for SSH or HTTP accordingly
 [ "$usessh" == "1" ] && basestring="git@github.com:$gitroot" || basestring="https://github.com/$gitroot"
 
@@ -70,15 +79,25 @@ sudo ln -s ${MODULEROOT}/${module}/lib ${MODULEROOT}/${module}/dist/lib
 
 # Compile IOLImporter
 echo -e "\n\nCompiling ${module}. Please wait....\n\n"
-if [ ! sudo ${MODULEROOT}/${module}/compile.sh > /dev/null 2>&1 ]; then echo "COMPILATION FAILURE - Check the logs"; fi
+cdir=$(pwd)
+cd ${MODULEROOT}/${module}
+sudo ./compile.sh
+if [ $? == 1 ]; then echo "COMPILATION FAILURE - Check the logs"; fi
+cd $cdir
+
+sudo systemctl daemon-reload
 
 # restart the service if we stopped it, otherwise install the service and start it
 if [ $dwservrunning = 1 ]; then
 	echo "Restarting dicom-file-watcher..."
 	sudo service dicom-file-watcher start
 else
-  sudo systemctl daemon-reload
+  echo "enabling service..."
   sudo systemctl enable dicom-file-watcher
 
   sudo systemctl start dicom-file-watcher
 fi
+
+echo "**************************************************"
+echo "****** INSTALL OF IOLMASTERIMPORT COMPLETE *******"
+echo "**************************************************"

@@ -16,7 +16,7 @@ WROOT="$( cd -P "$SCRIPTDIR/../../../" && pwd )"
 
 # Copy each file in ./.cron to /etc/cron.d, expand variables and set source
 shopt -s nullglob
-for f in $(ls $SCRIPTDIR/IOLMasterImport/.cron | sort -V)
+for f in $(ls $SCRIPTDIR/.cron | sort -V)
 do
 
   echo "importing $f"
