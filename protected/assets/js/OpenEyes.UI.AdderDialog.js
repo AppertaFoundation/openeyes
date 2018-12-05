@@ -67,7 +67,7 @@
       content.css('width', this.options.width);
     }
     let $closeButton = $('<div />', {class: 'close-icon-btn'})
-      .append($('<i />', {class: 'oe-i remove-circle medium'}));
+      .append($('<i />', {class: 'oe-i remove-circle medium pro-theme selected'}));
     content.append($closeButton);
 
     let $addButton = $('<div />', {
@@ -236,8 +236,8 @@
     let right = (w - btnPos.right);
     let bottom = (h - btnPos.bottom);
 
-    if (h - bottom < 240) {
-      bottom = h - 245;
+    if (h - bottom < 310) {
+      bottom = h - 335;
     }
 
     // set CSS Fixed position
@@ -300,7 +300,7 @@
     }
 
     if (this.options.onClose) {
-      this.popup.onClose();
+      this.options.onClose(this);
     }
   };
 

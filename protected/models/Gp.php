@@ -193,7 +193,7 @@ class Gp extends BaseActiveRecordVersioned
      */
     public function getPrefix()
     {
-        return 'GP';
+        return 'Referring Practitioner';
     }
 
     /**

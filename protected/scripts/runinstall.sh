@@ -174,11 +174,10 @@ fi
 # Fix permissions
 echo "Setting file permissions..."
 sudo gpasswd -a "$USER" www-data
-sudo chown -R "$USER":www-data .
+sudo chown "$USER":www-data -R $WROOT
 
-sudo chmod -R 774 $WROOT
-sudo chmod -R g+s $WROOT
-sudo chmod -R 777 $SCRIPTDIR/*.sh
+sudo chmod 777 -R $WROOT
+sudo chmod g+s -R $WROOT
 
 # if this isn't a live install, then add the sample DB
 if [ "$OE_MODE" != "LIVE" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
@@ -254,6 +253,8 @@ if [ "$OE_MODE" != "BUILD" ]; then
 sudo chmod 0644 /etc/cron.d/eventimage
 fi
 
+echo ""
+bash $SCRIPTDIR/.set-profile.sh
 echo ""
 bash $SCRIPTDIR/oe-which.sh
 
