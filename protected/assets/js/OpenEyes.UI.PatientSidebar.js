@@ -101,22 +101,7 @@
       $content = content,
       expanded = initialState !== 'collapsed';
 
-    $icon.click(function(){
-      change();
-    });
-
-    $header.click(function(e){
-      headerChange(e);
-    });
-
-    function headerChange(e){
-      if(!expanded){
-        e.preventDefault();
-        $content.show();
-        $icon.toggleClass('minus plus');
-        expanded = !expanded;
-      }
-    }
+    $icon.add($header).click(change);
 
     function change(){
       if(expanded){
@@ -124,7 +109,6 @@
       } else {
         $content.show();
       }
-
       $icon.toggleClass('minus plus');
       expanded = !expanded;
     }
