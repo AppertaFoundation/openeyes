@@ -40,3 +40,7 @@
 ## OE_NO_DB is used to tell the installer that MariaDB should not be installed
 ## Locally. Instead it will assume you are using a remote database server
 # export OE_NO_DB="false"
+
+## OE_IOLM_FILE_WATCHER_PATH tells the IOLMasterImport module where to find
+## the file watcher command. Default is /var/www/openeyes/protected/cli_commands/file_watcher
+# export OE_IOLM_FILE_WATCHER_PATH="/var/www/openeyes/protected/cli_commands/file_watcher"

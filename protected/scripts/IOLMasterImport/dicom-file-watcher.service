@@ -1,0 +1,11 @@
+[Unit]
+Description="OpenEyes DICOM file watcher"
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/run-dicom-service.sh
+Restart=on-abort
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
