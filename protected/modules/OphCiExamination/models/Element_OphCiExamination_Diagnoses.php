@@ -435,6 +435,15 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     // to set the proper error highlighting
                     $diagnosis->addError('diagnoses', $term . ': Eye is required');
                 }
+                if(!$diagnosis->validate()){
+                    foreach ($diagnosis->getErrors() as $field => $errors) {
+                        if ($field == 'date') {
+                            foreach ($errors as $error_msg) {
+                                $this->addError("Diagnosis", $field . "[" . ($k+1) . "]: $error_msg");
+                            }
+                        }
+                    }
+                }
             }
 
             if (!$principal) {
