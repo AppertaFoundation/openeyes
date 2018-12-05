@@ -24,8 +24,8 @@
                 'side' => ($side == 'right') ? 'R' : 'L',
                 'mode' => 'view',
                 'scale' => 0.35,
-                'width' => $this->action->id === 'view' ? 200 : 120,
-                'height' => $this->action->id === 'view' ? 200 : 120,
+                'width' => 200,
+                'height' => 200,
                 'model' => $element,
                 'attribute' => $side.'_eyedraw',
         ));

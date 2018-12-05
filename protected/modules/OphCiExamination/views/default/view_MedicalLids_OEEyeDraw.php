@@ -27,7 +27,7 @@
     )) ?>
 </div>
 
-<div class="eyedraw-data stack">
+<div class="eyedraw-data stack"  <?= $this->action->id === 'view' ? '' : 'style="width: 240px;"'?>>
 
   <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
 

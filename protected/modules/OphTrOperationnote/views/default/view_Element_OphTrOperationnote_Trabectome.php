@@ -27,8 +27,8 @@
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'mode' => 'view',
-              'width' => $this->action->id === 'view' ? 200 : 120,
-              'height' => $this->action->id === 'view' ? 200 : 120,
+              'width' => 200,
+              'height' => 200,
               'model' => $element,
               'attribute' => 'eyedraw',
               'scale' => 0.72,
@@ -36,7 +36,7 @@
           ));
           ?>
       </div>
-      <div class="eyedraw-data cols-5">
+      <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>
             <col class="cols-5">

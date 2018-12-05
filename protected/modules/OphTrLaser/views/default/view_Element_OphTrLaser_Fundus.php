@@ -27,8 +27,8 @@
                         'idSuffix' => $eye_side . '_' . $element->elementType->id,
                         'side' => ($eye_side === 'right') ? 'R' : 'L',
                         'mode' => 'view',
-                        'width' => $this->action->id === 'view' ? 200 : 120,
-                        'height' => $this->action->id === 'view' ? 200 : 120,
+                        'width' => 200,
+                        'height' => 200,
                         'model' => $element,
                         'attribute' => $eye_side . '_eyedraw',
                     )); ?>
