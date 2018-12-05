@@ -111,6 +111,11 @@ class HistoryRisks extends \BaseEventTypeElement
         $this->originalAttributes = $this->getAttributes();
     }
 
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+
+    }
+
     private $required_risks = null;
 
     /**

@@ -159,6 +159,11 @@ class Allergies extends \BaseEventTypeElement
         $this->originalAttributes = $this->getAttributes();
     }
 
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+
+    }
+
     /**
      * Get list of available allergies for this element
      */
