@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="eyedraw <?=$this->action->id == 'PDFprint' ? '' : 'flex-layout  flex-top' ?>">
+<div class="eyedraw flex-layout flex-top posterior-pole">
   <div class="eyedraw-canvas">
       <?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
           'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
