@@ -62,7 +62,7 @@ class WKHtmlToImage extends WKHtmlToX
 
         $cmd_str = escapeshellarg($this->application_path);
         if (array_key_exists('width', $options)) {
-            $cmd_str .= ' --width ' . $options['viewport_width'] . ' --disable-smart-width ';
+            $cmd_str .= ' --width ' . $options['viewport_width'] ?: $options['width'] . ' --disable-smart-width ';
         }
 
         if(array_key_exists('quality', $options)) {
@@ -73,8 +73,8 @@ class WKHtmlToImage extends WKHtmlToX
 
         $res = $this->execute($cmd_str);
 
-        // final width of quickview images must be 800px
         $width = $options['width'];
+        // If viewport width is different to desired output width, then resize
         if ($width != $options['viewport_width']) {
             // use ImageMagick to resize the image to a width of 800px
             $imagick = new Imagick();
