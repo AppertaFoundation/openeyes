@@ -25,8 +25,7 @@ $logoHelper = new LogoHelper();
 </header>
 
 <?php if ($element->site) {?>
-    <div>
-        <h5 class="right-align">
+    <div class="right-align">
             <?php
             echo $element->site->getLetterAddress(array(
                 'include_name' => true,
@@ -44,7 +43,6 @@ $logoHelper = new LogoHelper();
                 <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
             <?php } ?>
             <div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></div>
-        </h5>
     </div>
 <?php }?>
 <div class="to-address">
