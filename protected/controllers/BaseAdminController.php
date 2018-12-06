@@ -241,6 +241,7 @@ class BaseAdminController extends BaseController
                         } else {
                             $this->redirect(Yii::app()->request->url);
                         }
+
                     } else {
                         $tx->rollback();
                     }
