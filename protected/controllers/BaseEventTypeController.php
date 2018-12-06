@@ -2370,8 +2370,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         // Regenerate the EventImage in the background
-        $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
-        exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
+        EventImageManager::actionGenerateImage($this->event);
 
         /*
          * TODO: need to check with all events why this was here!!!
