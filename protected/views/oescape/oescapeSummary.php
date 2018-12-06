@@ -109,9 +109,11 @@ if (!empty($subspecialty)) { ?>
             if (key==='IOP'){
               //set the iop target line
               var index = charts[key][eye_side].layout.shapes.length-1;
-              Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-              Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-              Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+              if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+              }
             }
           }
         }
