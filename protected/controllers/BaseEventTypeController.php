@@ -2742,7 +2742,8 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function whiteOutImageImagickBackground($imagick){
         if ($imagick->getImageAlphaChannel()) {
-            $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_FLATTEN);
+            // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
+            $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);
             $imagick->setImageBackgroundColor('white');
             $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
