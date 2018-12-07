@@ -38,3 +38,15 @@
 		</button>
 	</div>
 </script>
+<!-- COMPLog confirm dialog template -->
+<script type="text/html" id="dialog-complog-template">
+	<p>{{{content}}}</p>
+	<div class="buttons">
+		<button class="secondary small confirm ok green" type="button" style="display: none">
+			{{{okButton}}}
+		</button>
+		<button class="warning small confirm cancel red" type="button">
+			{{{cancelButton}}}
+		</button>
+	</div>
+</script>
