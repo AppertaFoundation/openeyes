@@ -62,7 +62,7 @@ class WKHtmlToImage extends WKHtmlToX
 
         $cmd_str = escapeshellarg($this->application_path);
         if (array_key_exists('width', $options)) {
-            $cmd_str .= ' --width ' . $options['viewport_width'] ?: $options['width'] . ' --disable-smart-width ';
+            $cmd_str .= ' --width ' . ($options['viewport_width'] ?: $options['width']) . ' --disable-smart-width ';
         }
 
         if(array_key_exists('quality', $options)) {
