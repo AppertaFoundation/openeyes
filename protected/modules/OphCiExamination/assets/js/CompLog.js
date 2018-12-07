@@ -1,4 +1,7 @@
-function checkCompLogWSStatus()
+let dialog = null;
+let compLogCallQueue = null;
+
+function isCompLogConnectedOnWS()
 {
     var status = false;
     $.ajax({
@@ -208,7 +211,7 @@ function sleep(milliseconds) {
 
 var Queue = (function(){
 
-    function Queue() {};
+    function Queue() {}
 
     Queue.prototype.running = false;
 
@@ -232,7 +235,7 @@ var Queue = (function(){
         }
 
         return this; // for chaining fun!
-    }
+    };
 
     Queue.prototype.next = function(){
         this.running = false;
@@ -242,7 +245,7 @@ var Queue = (function(){
             this.running = true;
             shift();
         }
-    }
+    };
 
     return Queue;
 
@@ -262,51 +265,48 @@ function addMessageToFadeContent(msg)
     $(".fadeContent").append(msg+"<br>");
 }
 
+function connectToServer(){
+	compLogCallQueue = new Queue;
+	if(!isCompLogConnectedOnWS()){
+		compLogCallQueue.add_function(function(){
+			// having to use open in new tab, as oelauncher() method doesn't work where
+			// Will mean pop-ups must be enabled on site
+			//openInNewTab("oeLauncher:complog");
+			openInIframe("oeLauncher:complog");
+			sleep(100);
+		});
+	}
+
+	compLogCallQueue.add_function(function(){
+		setTimeout(function() {
+			var maxRetry = 30;
+			var retry = 0;
+			while((!isCompLogConnectedOnWS()) && (retry < maxRetry)) {
+				sleep(1000);
+				retry++;
+			};
+			sleep(5000);
+			compLogCallQueue.add_function(COMPLogPresetTest);
+		}, 10);
+	});
+}
+
 $(document).on("click", "#et_complog", function(event){
     event.preventDefault();
-    $("#complog_launcher").before('<div class="fadeFullScreen"><div class="fadeContent"></div></div>');
-    addMessageToFadeContent("Starting COMPLog test");
-    addMessageToFadeContent('<button class="large red hint" id="et_cancel_complog">Cancel</button>');
-    $(document).on("click", "#et_cancel_complog", function(event){
-        $(".fadeFullScreen").remove();
-        $("#complog_iframe").remove();
-    });
+    dialog = new OpenEyes.UI.Dialog.Confirm({
+			title: 'Loading COMPLog test - Please wait...',
+			okButton: 'Pull COMPLog Results',
+			templateSelector: '#dialog-complog-template'});
+    dialog.open();
     // try to connect to the WS
-    var queue = new Queue;
-    if(!checkCompLogWSStatus()){
-        queue.add_function(function(){
-            // having to use open in new tab, as oelauncher() method doesn't work where
-            // Will mean pop-ups must be enabled on site
-            //openInNewTab("oeLauncher:complog");
-            openInIframe("oeLauncher:complog");
-            sleep(100);
-        });
-    }
+    connectToServer();
+    compLogCallQueue.add_function(function(){
 
-    queue.add_function(function(){
-        setTimeout(function() {
-            var maxRetry = 30;
-            var retry = 0;
-            while((!checkCompLogWSStatus()) && (retry < maxRetry)) {
-                sleep(1000);
-                retry++;
-            };
-            sleep(5000);
-            queue.add_function(function(){
-                COMPLogPresetTest();
-            });
-        }, 10);
+			dialog.setTitle('COMPLog test in progress');
+			$('.ok').show();
+			dialog.on('ok', function(){
+				COMPLogGetTestResults();
+				$("#complog_iframe").remove(); // need to add this for on cancel too
+			});
     });
-
-
-    queue.add_function(function(){
-        addMessageToFadeContent('<button class="large green hint" id="et_pull_complog_results">Pull results from COMPLog</button>');
-
-        $(document).on("click", "#et_pull_complog_results", function(event){
-            COMPLogGetTestResults();
-            $(".fadeFullScreen").remove();
-            $("#complog_iframe").remove();
-        });
-    });
-
 });
