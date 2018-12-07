@@ -17,8 +17,6 @@
  */
 ?>
 
-
-
 <table class="borders prescription_header">
     <tbody><tr>
         <th>Patient Name</th>
