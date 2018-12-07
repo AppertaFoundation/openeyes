@@ -32,9 +32,9 @@ $(document).ready(function () {
     visualAcuityChange(this, 'near');
   });
 
-  $(this).delegate('#visualacuity_unit_change', 'change', function() {
+/*  $(this).delegate('#visualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, '');
-  });
+  });*/
 
   $(this).delegate(
     '.visualAcuityReading .removeReading',
