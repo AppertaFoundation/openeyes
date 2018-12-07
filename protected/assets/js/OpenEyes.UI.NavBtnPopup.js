@@ -49,7 +49,7 @@
             if (popup.isLatched) return;
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
-                var closeContent = true;
+                let closeContent = true;
                 // Check if the mouse is over the content
                 popup.content.mouseover(function(){
                     closeContent = false;
