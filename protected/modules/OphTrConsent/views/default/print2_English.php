@@ -154,9 +154,6 @@
 			[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] general and/or regional anaesthesia<br/>[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS'))) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] local anaesthesia&nbsp;&nbsp;[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] sedation
 		</p>
 		<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant))?>
-		<p>
-			Contact details (if child/parent wishes to discuss options later) .....................
-		</p>
 		<br/>
 		<?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) {?>
 			<h3>Statement of interpreter</h3>
