@@ -101,7 +101,7 @@
 			$icon = icon,
       $header = header,
       $content = content,
-			initialState = $wrapper.attr(data-collapse),
+			initialState = $wrapper.attr('data-collapse'),
       expanded = initialState !== 'collapsed';
 
     $icon.add($header).click(change);
