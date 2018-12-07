@@ -49,7 +49,17 @@
             if (popup.isLatched) return;
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
-                popup.hide();
+                var closeContent = true;
+                // Check if the mouse is over the content
+                popup.content.mouseover(function(){
+                    closeContent = false;
+                });
+                setTimeout(function(){
+                    if(closeContent){
+                        // Close if mouse leaves btn
+                        popup.hide();
+                    }                   
+                },10)
             }
         });
         popup.hide();
