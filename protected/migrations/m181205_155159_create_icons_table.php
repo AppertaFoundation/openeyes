@@ -18,6 +18,5 @@ class m181205_155159_create_icons_table extends OEMigration
     public function down()
     {
         $this->dropTable('icons');
-
     }
 }
