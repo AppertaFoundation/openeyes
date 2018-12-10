@@ -112,7 +112,7 @@ class HistoryRisks extends \BaseEventTypeElement
 
         foreach ($element->entries as $entry) {
             // add only the entries from DB that were not in the previous session
-            if (!in_array($entry->risk->id,$previous_session_risks)) {
+            if (!in_array($entry->risk->id, $previous_session_risks)) {
                 $new = new HistoryRisksEntry();
                 $new->loadFromExisting($entry);
                 $entries[] = $new;
