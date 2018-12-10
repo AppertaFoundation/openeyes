@@ -38,10 +38,6 @@ class PatientControllerTest extends CDbTestCase
         parent::setUp();
     }
 
-    public function test_MarkIncomplete()
-    {
-        $this->markTestIncomplete('Tests not implemented yet');
-    }
 
     /*
     public function testActionIndex_RendersIndexView()

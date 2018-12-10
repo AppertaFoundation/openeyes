@@ -25,30 +25,4 @@ class SiteAndFirmFormTest extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {
     }
-
-    /**
-     * @covers SiteAndFirmForm::rules
-     *
-     * @todo   Implement testRules().
-     */
-    public function testRules()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers SiteAndFirmForm::attributeLabels
-     *
-     * @todo   Implement testAttributeLabels().
-     */
-    public function testAttributeLabels()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
 }
