@@ -16,7 +16,7 @@
  */
 ?>
 
-<?php $this->renderPartial('//print/event_header') ?>
+<?php $this->renderPartial('//print/patient_overview') ?>
 
 <!-- Operation metadata -->
 <?php $this->renderPartial('print_operation_metadata'); ?>
