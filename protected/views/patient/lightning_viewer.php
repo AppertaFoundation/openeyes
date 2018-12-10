@@ -144,6 +144,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 
 <script>
   $(function () {
+    $('body').css('overflow-y','hidden');
     var lightningViewer = new OpenEyes.UI.LightningViewer();
     var oe_header_height = $('.oe-header').outerHeight();
     var lightning_timeline_height = $('.lightning-timeline').outerHeight();
