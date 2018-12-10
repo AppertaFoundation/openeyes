@@ -168,4 +168,9 @@ class PastSurgery extends \BaseEventTypeElement
             return parent::getDisplayOrder($action);
         }
     }
+
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+
+    }
 }
