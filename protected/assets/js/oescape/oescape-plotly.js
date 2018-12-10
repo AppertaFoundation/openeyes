@@ -75,7 +75,7 @@ var layout_plotly = {
     showspikes: true,
     spikecolor: '#3db0fb',
     spikethickness: 1,
-    spikedash:'dash',
+    spikedash:'line',
     spikemode: 'across',
     spikesnap: 'cursor',
   },
