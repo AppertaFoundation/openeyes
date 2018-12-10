@@ -150,10 +150,11 @@ foreach ($this->patient->episodes as $ep) {
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
                 return [
+                        'type' => $disorder_item['type'],
                         'label' => $disorder_item['label'],
-                    'id' => $disorder_item['id'] ,
-                    'is_glaucoma' => $disorder_item['is_glaucoma'],
-                    'secondary' => json_encode($disorder_item['secondary'])
+                        'id' => $disorder_item['id'] ,
+                        'is_glaucoma' => $disorder_item['is_glaucoma'],
+                        'secondary' => json_encode($disorder_item['secondary'])
                 ];
             }, $disorder_list)
         ) ?>, {'multiSelect': true})],
@@ -161,7 +162,17 @@ foreach ($this->patient->episodes as $ep) {
           searchSource: diagnosesController.options.searchSource,
         },
         onReturn: function (adderDialog, selectedItems) {
-          diagnosesController.addEntry(selectedItems);
+            var diag = [];
+            for (let i in selectedItems) {
+                let item = selectedItems[i];
+                if (item.type === 'finding') {
+                    OphCiExamination_AddFinding(item.id, item.label);
+                } else {
+                    diag.push(item);
+                }
+            }
+            diagnosesController.addEntry(diag);
+
           return true;
         }
       });
