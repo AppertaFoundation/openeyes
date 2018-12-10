@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,27 +11,25 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2018, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
- * This is the model class for table "audit_server".
+ * This is the model class for table "icons".
  *
- * The followings are the available columns in table 'audit_server':
+ * The followings are the available columns in table 'icons':
  *
  * @property int $id
- * @property string $name
- * @property int $icon_id
+ * @property string $class_name
  */
-class NhsNumberVerificationStatus extends BaseActiveRecord
+class Icons extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
-     *
-     * @return AuditServer the static model class
+     * @return Icons the static model class
      */
-    public static function model($className = __CLASS__)
+    public static function model($className=__CLASS__)
     {
         return parent::model($className);
     }
@@ -42,7 +39,7 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'nhs_number_verification_status';
+        return 'icons';
     }
 
     /**
@@ -53,6 +50,10 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('class_name', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -64,7 +65,6 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'icon' => array(self::BELONGS_TO, 'Icons', 'icon_id'),
         );
     }
 
@@ -75,8 +75,7 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
     {
         return array(
             'id' => 'ID',
-            'code' => 'Code',
-            'description' => 'Description',
+            'class_name' => 'Class Name',
         );
     }
 
@@ -93,20 +92,10 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('code', $this->code, true);
+        $criteria->compare('class_name', $this->class_name, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    /**
-     * Is this status one that should be annotated with a description?
-     *
-     * @return bool
-     */
-    public function isAnnotatedStatus()
-    {
-        return $this->code !== '01';
     }
 }
