@@ -1,5 +1,6 @@
 let dialog = null;
-let compLogCallQueue = null;
+let compLogCallbackQueue = null;
+let latestHl7Data = null;
 
 function isCompLogConnectedOnWS()
 {
@@ -40,9 +41,13 @@ function COMPLogPresetTest()
 
 }
 
+function updateLatestPolledHl7(newLatest){
+	latestHl7Data = newLatest;
+	console.log('The latestHl7Data has been updated to' + latestHl7Data.Message);
+}
+
 function COMPLogCheckTestResults()
 {
-    addMessageToFadeContent("Checking for COMPLog results...");
     var requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTS|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|0150311798|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -53,6 +58,8 @@ function COMPLogCheckTestResults()
         crossDomain: true,
         async: false,
         success: function (data) {
+        	let hl7 = data.Message;
+        	console.log('hl7');
         },
         error: function (x, y, z) {
             //alert(x.responseText +"  " +x.status);
@@ -79,60 +86,68 @@ function COMPLogDischargePatient() {
     });
 }
 
-function COMPLogGetTestResults()
-{
-    //addMessageToFadeContent("Getting test results from COMPLog...");
-    var requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTR|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|100437363|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
-    $.ajax({
-        url: "http://localhost:"+OE_COMPLog_port+"/hl7",
-        data: JSON.stringify(requestData),
-        dataType: "json",
-        contentType: "application/json; charset=UTF-8",
-        type: "POST",
-        crossDomain: true,
-        async: false,
-        success: function (data) {
+function requestHl7TestResults(successCallback=$.noop, errorCallback=$.noop){
+	let requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTR|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|100437363|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
+	$.ajax({
+		url: "http://localhost:" + OE_COMPLog_port + "/hl7",
+		data: JSON.stringify(requestData),
+		dataType: "json",
+		contentType: "application/json; charset=UTF-8",
+		type: "POST",
+		crossDomain: true,
+		async: false,
+		success: data => successCallback(data),
+		error: (jqXHR, textStatus, errorThrown) => errorCallback(jqXHR, textStatus, errorThrown)
+	});
+}
 
-            var hl7 = data.Message;
+function convertHl7ToArray(hl7Data){
+	var hl7 = hl7Data.Message;
+	console.log('convertHl7ToArray' + hl7);
+	var parse = function (str) {
+		var segments = str.split('\n');
+		return _.map(segments, function (segment) {
+			var fields = segment.split('|');
+			return _.map(fields, function (field) {
+				return _.includes(field,'^') ? field.split('^') : field;
+			});
+		});
+	};
 
-            var parse = function (str) {
-                var segments = str.split('\n');
-                return _.map(segments, function (segment) {
-                    var fields = segment.split('|');
-                    return _.map(fields, function (field) {
-                        return _.includes(field,'^') ? field.split('^') : field;
-                    });
-                });
-            };
+	var measurements = parse(hl7);
+	var results = [];
 
-            var measurements = parse(hl7);
-            var results = [];
+	var today = new Date().toJSON().slice(0,10).replace(/-/g,'');
 
-            var today = new Date().toJSON().slice(0,10).replace(/-/g,'');
+	for(i=0;i<measurements[0].length;i++){
+		if(measurements[0][i] == "\rZR1") {
+			if(measurements[0][i+2].substring(0,8) == today){
+				measurement = {side: "", method: "", logmar: "", snellen: "", base: ""};
+				measurement.side = measurements[0][i+4].toLowerCase();
+				measurement.method = measurements[0][i+5].replace("Usual ","").replace("Lenses", "lens").replace("Best Corrected", "Glasses");
+				measurement.base = measurements[0][i+7];
+				measurement.logmar = measurements[0][i+8].substring(0, measurements[0][i+8].length - 1).replace("(","").replace(")","");
+				measurement.snellen = measurements[0][i+11].replace(".0","").replace("(","").replace(")","");
+				results.push(measurement);
+			}
+		}
+	}
+	return results;
+}
 
-            for(i=0;i<measurements[0].length;i++){
-                if(measurements[0][i] == "\rZR1") {
-                    if(measurements[0][i+2].substring(0,8) == today){
-                        measurement = {side: "", method: "", logmar: "", snellen: "", base: ""};
-                        measurement.side = measurements[0][i+4].toLowerCase();
-                        measurement.method = measurements[0][i+5].replace("Usual ","").replace("Lenses", "lens").replace("Best Corrected", "Glasses");
-                        measurement.base = measurements[0][i+7];
-                        measurement.logmar = measurements[0][i+8].substring(0, measurements[0][i+8].length - 1).replace("(","").replace(")","");
-                        measurement.snellen = measurements[0][i+11].replace(".0","").replace("(","").replace(")","");
-                        results.push(measurement);
-                    }
-                }
-            }
+function pollForTestResults(){
+	requestHl7TestResults(updateLatestPolledHl7, $.noop);
+	if(dialog){
+		setTimeout(pollForTestResults, 1000);
+	}
+}
 
-            loadCOMPLogResults(results);
-
+function importCompLogResults() {
+	//addMessageToFadeContent("Getting test results from COMPLog...");
+	requestHl7TestResults(updateLatestPolledHl7);
+	saveResultsToOE(convertHl7ToArray(latestHl7Data));
             //var hl7parser = require("hl7parser");
             //$('.visualAcuityReading ').append(data.Message);
-        },
-        error: function (x, y, z) {
-            //alert(x.responseText +"  " +x.status);
-        }
-    });
 }
 
 function OphCiExamination_VisualAcuity_getClosestValue(mvalue)
@@ -175,11 +190,11 @@ function OphCiExamination_VisualAcuity_getMethodData(methodName)
     return method_data;
 }
 
-function loadCOMPLogResults(results)
+function saveResultsToOE(resultsArray)
 {
     unit = $("#visualacuity_unit_change option:selected").html();
 
-    results.forEach(function(element)
+    resultsArray.forEach(function(element)
     {
         var selected_data = {};
         closestValue = OphCiExamination_VisualAcuity_getClosestValue(element.base);
@@ -265,10 +280,10 @@ function addMessageToFadeContent(msg)
     $(".fadeContent").append(msg+"<br>");
 }
 
-function connectToServer(){
-	compLogCallQueue = new Queue;
+function establishConnection(){
+	compLogCallbackQueue = new Queue;
 	if(!isCompLogConnectedOnWS()){
-		compLogCallQueue.add_function(function(){
+		compLogCallbackQueue.add_function(function(){
 			// having to use open in new tab, as oelauncher() method doesn't work where
 			// Will mean pop-ups must be enabled on site
 			//openInNewTab("oeLauncher:complog");
@@ -277,36 +292,50 @@ function connectToServer(){
 		});
 	}
 
-	compLogCallQueue.add_function(function(){
+	compLogCallbackQueue.add_function(function(){
 		setTimeout(function() {
 			var maxRetry = 30;
 			var retry = 0;
 			while((!isCompLogConnectedOnWS()) && (retry < maxRetry)) {
 				sleep(1000);
 				retry++;
-			};
+			}
 			sleep(5000);
-			compLogCallQueue.add_function(COMPLogPresetTest);
+			COMPLogDischargePatient(); //makes sure the there is no lingering results
+			// data from a previous early close of COMPLog
+			compLogCallbackQueue.add_function(COMPLogPresetTest);
 		}, 10);
 	});
 }
 
+function initialiseCompLogDialog(){
+	dialog = new OpenEyes.UI.Dialog.Confirm({
+		title: 'Loading COMPLog test - Please wait...',
+		okButton: 'Pull COMPLog Results',
+		templateSelector: '#dialog-complog-template'});
+	dialog.on('cancel', function(){
+		$("#complog_iframe").remove();
+		dialog.destroy();
+		dialog = null;
+	});
+	dialog.open();
+}
+
 $(document).on("click", "#et_complog", function(event){
     event.preventDefault();
-    dialog = new OpenEyes.UI.Dialog.Confirm({
-			title: 'Loading COMPLog test - Please wait...',
-			okButton: 'Pull COMPLog Results',
-			templateSelector: '#dialog-complog-template'});
-    dialog.open();
+    initialiseCompLogDialog();
     // try to connect to the WS
-    connectToServer();
-    compLogCallQueue.add_function(function(){
-
+    establishConnection();
+    //need to add a statement to  make sure there is no lingering data in COMPLog from previous early closing
+    pollForTestResults();
+    compLogCallbackQueue.add_function(function(){
 			dialog.setTitle('COMPLog test in progress');
-			$('.ok').show();
 			dialog.on('ok', function(){
-				COMPLogGetTestResults();
+				importCompLogResults();
 				$("#complog_iframe").remove(); // need to add this for on cancel too
+				dialog.destroy();
+				dialog = null;
 			});
+			$('.ok').show();
     });
 });
