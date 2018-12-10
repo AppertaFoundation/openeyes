@@ -6,7 +6,7 @@ class m181205_160624_create_icon_id_column_for_nhs_number_status extends CDbMigr
 	{
 	    $this->addColumn('nhs_number_verification_status' , 'icon_id' , 'int(11)');
 
-	    $grey_icon_id = Icons::model()->find('class_name = ?', ['exclamation'])->id;
+	    $grey_icon_id = Icons::model()->find('class_name = ?', ['exclamation pro-theme'])->id;
 	    $amber_icon_id = Icons::model()->find('class_name = ?', ['exclamation-amber'])->id;
 	    $green_icon_id = Icons::model()->find('class_name = ?', ['exclamation-green'])->id;
 	    $red_icon_id = Icons::model()->find('class_name = ?', ['exclamation-red'])->id;
