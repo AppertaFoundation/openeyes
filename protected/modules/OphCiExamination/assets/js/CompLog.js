@@ -48,9 +48,6 @@ CompLogConnection.prototype.COMPLogPresetTest = function() {
         async: false,
         success: function (data) {
         },
-        error: function (x, y, z) {
-            //alert(x.responseText +"  " +x.status);
-        }
     });
 };
 
@@ -92,9 +89,6 @@ CompLogConnection.prototype.COMPLogDischargePatient = function() {
         async: false,
         success: function (data) {
         },
-        error: function (x, y, z) {
-            //alert(x.responseText +"  " +x.status);
-        }
     });
 };
 
@@ -163,8 +157,6 @@ CompLogConnection.prototype.importCompLogResults = function() {
 function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
     var lastdiff = 10000;
     var previousvalue = {};
-
-    //$('#OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_'+side+'_readings_'+key+'_value option').each(function() {
     $('ul[data-id="reading_val"]').each(function() {
         $(this).find('li').each(function()
         {
@@ -262,14 +254,6 @@ CompLogConnection.prototype.openInIframe = function(url){
     $('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
 };
 
-/*
-*** function not used anywhere - still necessary?
-function openInNewTab(url) {
-    var win = window.open(url, '_blank');
-    win.close();
-}
-*/
-
 function addMessageToFadeContent(msg)
 {
     $(".fadeContent").append(msg+"<br>");
@@ -280,9 +264,6 @@ CompLogConnection.prototype.establishConnection = function(){
 	this.compLogCallbackQueue = new Queue;
 	if(!this.isCompLogConnectedOnWS()){
 		this.compLogCallbackQueue.add_function(function(){
-			// having to use open in new tab, as oelauncher() method doesn't work where
-			// Will mean pop-ups must be enabled on site
-			//openInNewTab("oeLauncher:complog");
 			self.openInIframe("oeLauncher:complog");
 			sleep(100);
 		});
@@ -297,8 +278,7 @@ CompLogConnection.prototype.establishConnection = function(){
 				retry++;
 			}
 			sleep(5000);
-			self.COMPLogDischargePatient(); //makes sure the there is no lingering results
-			// data from a previous early close of COMPLog
+			self.COMPLogDischargePatient(); //makes sure the there are no lingering results from old previous COMPLog session
 			self.compLogCallbackQueue.add_function(self.COMPLogPresetTest);
 		}, 10);
 	});
