@@ -372,7 +372,7 @@ return array(
                 ),
                 'disorder' => array(
                     'title' => 'Manage Disorders',
-                    'uri' => "patient/create",
+                    'uri' => "/disorder/editcommonophthalmicdisorder",
                     'requires_setting' => array('setting_key'=>'user_add_diagnosis', 'required_value'=>'on'),
                     'position' => 91,
             ),
