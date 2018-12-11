@@ -439,8 +439,8 @@ foreach ($ethnic_list as $key=>$item){
     url: '/patient/practiceList',
     onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-        removeSelectedReferredto();
-      addItemPatientForm('selected_practice_wrapper', {item: AutoCompleteResponse});
+        removeSelectedPractice();
+        addItemPatientForm('selected_practice_wrapper', {item: AutoCompleteResponse});
     }
   });
   OpenEyes.UI.AutoCompleteSearch.init({
@@ -448,7 +448,7 @@ foreach ($ethnic_list as $key=>$item){
       url: '/user/autocomplete',
       onSelect: function(){
           let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-          removeSelectedPractice();
+          removeSelectedReferredto();
           addItemPatientForm('selected_referred_to_wrapper', {item: AutoCompleteResponse});
       }
   });
