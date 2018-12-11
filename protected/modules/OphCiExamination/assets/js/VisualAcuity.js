@@ -4,20 +4,13 @@ $(document).ready(function () {
     if(near === 'near'){
       suffix = 'NearVisualAcuity';
     }
-    removeElement($(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
+    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');    
     var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
     if (el.length) {
       el.addClass('clicked');
       addElement(el, true, true, false, {unit_id: $(target).val()});
     } else {
-      // use a different selector
-      var sidebar = $('#episodes-and-events').data('patient-sidebar');
-      if (sidebar) {
-        sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
-      } else {
-        console.log('Cannot find sidebar to manipulate elements for VA change');
-      }
-
+      swapElement(target_element, OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
     }
 
   }
@@ -32,9 +25,9 @@ $(document).ready(function () {
     visualAcuityChange(this, 'near');
   });
 
-/*  $(this).delegate('#visualacuity_unit_change', 'change', function() {
+  $(this).delegate('#visualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, '');
-  });*/
+  });
 
   $(this).delegate(
     '.visualAcuityReading .removeReading',

@@ -235,6 +235,96 @@ function moveToElement($element) {
     }, 600);
 }
 
+function swapElement(element_to_swap, elementTypeClass, params){
+    var nva = elementTypeClass.endsWith("NearVisualAcuity");
+    var sidebar = $('#episodes-and-events').data('patient-sidebar');
+    var $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);
+
+    if ($menuLi) {
+        $href = $menuLi.find('a');
+        $href.removeClass('selected').removeClass('error');
+        if (!$href.hasClass('selected')) {
+            sidebar.markSidebarItems(sidebar.getSidebarItemsForExistingElements($href));
+
+            var $container = $href.parent();
+            var $parentLi = $($container);
+            if (params === undefined)
+            params = {};
+            $container.closest('.collapse-group').find('.collapse-group-header').click();
+            $href.addClass('selected');
+        }
+    }
+
+    element_to_swap.css('opacity','0.5').find('select, input, button').prop('disabled','disabled');
+    var element = $parentLi.clone(true);
+    var element_type_id = $(element).data('element-type-id');
+    var element_type_class = $(element).data('element-type-class');
+
+    var core_params = {
+        id: element_type_id,
+        patient_id: OE_patient_id,
+        previous_id: 0
+    };
+
+    $.extend(params, core_params);
+    $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
+        var new_element = $(data);
+        var container = $('.js-active-elements');
+        var cel = $(container).find('.' + element_type_class);
+        var pel = $(container).parents('.element');
+        var sideField = $(cel).find('input.sideField');
+        if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
+            $(sideField).val($(pel).find('.element-fields input.sideField').val());
+
+            if ($(sideField).val() == '1') {
+                $(cel).find('.js-element-eye.left').addClass('inactive');
+            }
+            else if ($(sideField).val() == '2') {
+                $(cel).find('.js-element-eye.right').addClass('inactive');
+            }
+        }
+
+        let reading_val_index = [];
+        let method_index = [];
+        let current_eye_va_reading;
+
+        $.each(['right-eye', 'left-eye'], function(i, eye_side){
+            current_eye_va_reading = element_to_swap.find('.'+eye_side+' table.'+(nva ? 'near-va-readings' : 'va_readings'));
+
+            // look for .va_readings values
+            if(current_eye_va_reading.find('tr').length > 0){
+                reading_val_index[eye_side] = [];
+                method_index[eye_side] = [];
+                $.each(current_eye_va_reading.find('tr'), function(i, row){
+                    // get value
+                    var reading_val = $(row).find('td:eq(0) input').val();
+                    var method = $(row).find('td:eq(2) input').val();
+
+                    // look up value and get index
+                    reading_val_index[eye_side].push($('.'+eye_side+' ul[data-id="reading_val"]').find('li[data-id="'+reading_val+'"]').index());
+                    method_index[eye_side].push($('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method+'"]').index());
+                });
+            }
+        });
+
+        element_to_swap.replaceWith(new_element);
+
+        // select equivalent
+        if(Object.keys(reading_val_index).length > 0 && Object.keys(method_index).length > 0){
+            $.each(Object.keys(reading_val_index), function(eye_index, eye_side){                
+                $.each(reading_val_index[eye_side], function(i, val){
+                    var target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
+                    target.find('ul[data-id="reading_val"] li:eq('+val+')').addClass('selected');
+                    target.find('ul[data-id="method"] li:eq('+method_index[eye_side][i]+')').addClass('selected');
+                    target.find('.oe-add-select-search .add-icon-btn').trigger('click');
+                });
+            });
+        }
+
+        element_to_swap.css('opacity','');
+    });
+}
+
 $(document).ready(function () {
 
     /**
