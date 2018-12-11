@@ -24,7 +24,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         this.imageLoadFailed = false;
         this.loadCounter = 0;
         this.imagesLoaded = 0;
-        this.loadImages(this);
+        this.loadImages();
     }
 
     ImageLoaderController._defaultOptions = {
@@ -45,7 +45,8 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
     };
 
-    ImageLoaderController.prototype.loadImages = function (controller) {
+    ImageLoaderController.prototype.loadImages = function () {
+        let controller = this;
         controller.loadCounter++;
         controller.resetVariables(controller);
 
@@ -58,38 +59,42 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
             if (response) {
                 response = JSON.parse(response);
                 if (response.error) {
-                    controller.showErrorView(controller);
+                    controller.showErrorView();
                 } else {
                     controller.pageCount = response.page_count;
-                    controller.appendImages(response.url, controller);
+                    controller.appendImages(response.url);
                 }
             } else {
-                controller.showErrorView(controller);
+                controller.showErrorView();
             }
         })
             .error(function () {
-                controller.showErrorView(controller);
+                controller.showErrorView();
             });
     };
 
-    ImageLoaderController.prototype.resetVariables = function (controller) {
+    ImageLoaderController.prototype.resetVariables = function () {
+        let controller = this;
         controller.imageLoadFailed = false;
         controller.imagesLoaded = 0;
     };
 
-    ImageLoaderController.prototype.showErrorView = function (controller) {
+    ImageLoaderController.prototype.showErrorView = function () {
+        let controller = this;
         controller.$htmlViewContainer.show();
         controller.$spinner.hide();
     };
 
-    ImageLoaderController.prototype.showSuccessView = function (controller) {
+    ImageLoaderController.prototype.showSuccessView = function () {
+        let controller = this;
         new OpenEyes.OphCoCorrespondence.DocumentViewerController();
         $('#' + controller.options.imageId + '0').show();
         controller.$spinner.hide();
         controller.$imageContainer.show();
     };
 
-    ImageLoaderController.prototype.appendImages = function (url, controller) {
+    ImageLoaderController.prototype.appendImages = function (url) {
+        let controller = this;
         for (let index = 0; index < controller.pageCount; index++) {
             let imageId = controller.options.imageId + index;
             controller.$imageContainer.append('<img id="' + imageId + '"' +
@@ -112,10 +117,11 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
     ImageLoaderController.prototype.imageNotFound = function () {
         let controller = this;
         controller.imageLoadFailed = true;
-        controller.imageFinishedLoading(controller);
+        controller.imageFinishedLoading();
     };
 
-    ImageLoaderController.prototype.allImagesLoaded = function (controller) {
+    ImageLoaderController.prototype.allImagesLoaded = function () {
+        let controller = this;
         if (controller.imageLoadFailed) {
             if (controller.loadCounter < controller.options.maxLoadCount) {
                 controller.loadImages(controller)
@@ -127,7 +133,8 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         }
     };
 
-    ImageLoaderController.prototype.imageFinishedLoading = function (controller) {
+    ImageLoaderController.prototype.imageFinishedLoading = function () {
+        let controller = this;
         controller.imagesLoaded++;
         if (controller.imagesLoaded === controller.pageCount) {
             controller.allImagesLoaded(controller);
