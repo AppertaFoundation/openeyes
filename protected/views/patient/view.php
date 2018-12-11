@@ -55,7 +55,7 @@ $warnings = $this->patient->getWarnings($clinical);
 		</div>
 
 	<div class="patient-content">
-    <div class="col-left">
+    <div class="flex-layout flex-top">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
 				<section class="element patient-info">
 					<div class="data-group">

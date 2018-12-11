@@ -58,16 +58,25 @@ try {
     }
     $this->renderPartial('_systemic_diagnoses');
     $this->renderPartial('_previous_operations');
-    $this->renderPartial('_medications');
-    // specialist extra data
-    foreach ($codes as $code) {
-        try {
-            echo $this->renderPartial('_'.$code.'_info');
-        } catch (Exception $e) {
+    $this->renderPartial('_medications'); ?>
+
+    <div class="flex-layout flex-top">
+        <?php
+        // specialist extra data
+        foreach ($codes as $code) {
+            try {
+                echo $this->renderPartial('_' . $code . '_info');
+            } catch (Exception $e) {
+            }
         }
-    }
-    $this->renderPartial('_allergies');
-    $this->renderPartial('_risks');
-    $this->renderPartial('_family_history');
-    $this->renderPartial('_social_history');
-}
+        $this->renderPartial('_allergies');
+        $this->renderPartial('_risks');
+        ?>
+    </div>
+    <div class="flex-layout flex-top">
+        <?php
+        $this->renderPartial('_family_history');
+        $this->renderPartial('_social_history');
+        ?>
+    </div>
+<?php }
