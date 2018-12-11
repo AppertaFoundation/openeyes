@@ -70,32 +70,33 @@ class m180504_085420_medication_management_tables extends OEMigration
             'deleted_date'      => 'DATE NULL',
         ), true);
         
-        $this->createOETable('medication_medication_set', array(
+        $this->createOETable('medication_set_item', array(
             'id'                        => 'pk',
             'medication_id'         => 'INT NOT NULL',
             'medication_set_id'                => 'INT NOT NULL',
-            'default_form'              => 'INT NULL',
+            'default_form_id'              => 'INT NULL',
             'default_dose'              => 'FLOAT NULL',
-            'default_route'             => 'INT NULL',
-            'default_frequency'         => 'INT NULL',
+            'default_route_id'             => 'INT NULL',
+            'default_frequency_id'         => 'INT NULL',
             'default_dose_unit_term'    => 'VARCHAR(255) NULL',
             'deleted_date'              => 'DATE NULL',
-            'default_duration'          => 'INT NULL'
+            'default_duration_id'          => 'INT NULL'
         ), true);
         
-        $this->createIndex('fk_ref_medications_idx', 'medication_medication_set', 'medication_id');
-        $this->createIndex('fk_ref_set_idx', 'medication_medication_set', 'medication_set_id');
-        $this->createIndex('fk_default_route_idx', 'medication_medication_set', 'default_route');
-        $this->createIndex('fk_default_form_idx', 'medication_medication_set', 'default_form');
-        $this->createIndex('fk_default_frequency_idx', 'medication_medication_set', 'default_frequency');
+        $this->createIndex('fk_ref_medications_idx', 'medication_set_item', 'medication_id');
+        $this->createIndex('fk_ref_set_idx', 'medication_set_item', 'medication_set_id');
+        $this->createIndex('fk_default_route_idx', 'medication_set_item', 'default_route_id');
+        $this->createIndex('fk_default_form_idx', 'medication_set_item', 'default_form_id');
+        $this->createIndex('fk_default_frequency_idx', 'medication_set_item', 'default_frequency_id');
+        $this->createIndex('fk_default_duration_idx', 'medication_set_item', 'default_duration_id');
+
+        $this->addForeignKey('fk_ref_medications', 'medication_set_item', 'medication_id', 'medication', 'id', 'NO ACTION' ,'NO ACTION');
         
-        $this->addForeignKey('fk_ref_medications', 'medication_medication_set', 'medication_id', 'medication', 'id', 'NO ACTION' ,'NO ACTION');
-        
-        $this->addForeignKey('fk_ref_set_2', 'medication_medication_set', 'medication_set_id', 'medication_set', 'id', 'NO ACTION' ,'NO ACTION');
-        $this->addForeignKey('fk_default_route', 'medication_medication_set', 'default_route', 'medication_route', 'id', 'NO ACTION' ,'NO ACTION');
-        $this->addForeignKey('fk_default_form', 'medication_medication_set', 'default_form', 'medication_form', 'id', 'NO ACTION' ,'NO ACTION');
-        $this->addForeignKey('fk_default_frequency', 'medication_medication_set', 'default_frequency', 'medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
-        $this->addForeignKey('fk_duration', 'medication_medication_set', 'default_duration', 'medication_duration', 'id');
+        $this->addForeignKey('fk_ref_set_2', 'medication_set_item', 'medication_set_id', 'medication_set', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_default_route', 'medication_set_item', 'default_route_id', 'medication_route', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_default_form', 'medication_set_item', 'default_form_id', 'medication_form', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_default_frequency', 'medication_set_item', 'default_frequency_id', 'medication_frequency', 'id', 'NO ACTION' ,'NO ACTION');
+        $this->addForeignKey('fk_duration', 'medication_set_item', 'default_duration_id', 'medication_duration', 'id');
         
         $this->createOETable('medication_dose', array(
             'id'    => 'pk',
@@ -175,17 +176,17 @@ class m180504_085420_medication_management_tables extends OEMigration
         
         $this->dropOETable('medication_dose', true);
         
-        $this->dropForeignKey('fk_ref_medications', 'medication_medication_set');
-        $this->dropForeignKey('fk_ref_set_2', 'medication_medication_set');
-        $this->dropForeignKey('fk_default_route', 'medication_medication_set');
-        $this->dropForeignKey('fk_default_form', 'medication_medication_set');
-        $this->dropForeignKey('fk_default_frequency', 'medication_medication_set');  
-        $this->dropIndex('fk_ref_medications_idx', 'medication_medication_set');
-        $this->dropIndex('fk_ref_set_idx', 'medication_medication_set');
-        $this->dropIndex('fk_default_route_idx', 'medication_medication_set');
-        $this->dropIndex('fk_default_form_idx', 'medication_medication_set');
-        $this->dropIndex('fk_default_frequency_idx', 'medication_medication_set');
-        $this->dropOETable('medication_medication_set', true);
+        $this->dropForeignKey('fk_ref_medications', 'medication_set_item');
+        $this->dropForeignKey('fk_ref_set_2', 'medication_set_item');
+        $this->dropForeignKey('fk_default_route', 'medication_set_item');
+        $this->dropForeignKey('fk_default_form', 'medication_set_item');
+        $this->dropForeignKey('fk_default_frequency', 'medication_set_item');  
+        $this->dropIndex('fk_ref_medications_idx', 'medication_set_item');
+        $this->dropIndex('fk_ref_set_idx', 'medication_set_item');
+        $this->dropIndex('fk_default_route_idx', 'medication_set_item');
+        $this->dropIndex('fk_default_form_idx', 'medication_set_item');
+        $this->dropIndex('fk_default_frequency_idx', 'medication_set_item');
+        $this->dropOETable('medication_set_item', true);
         
         $this->dropOETable('medication_route', true);
         $this->dropOETable('medication_form', true);

@@ -35,7 +35,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                         ->queryRow();
 
                         if($ref_medication_id['id']){
-                            Yii::app()->db->createCommand("INSERT INTO medication_medication_set(medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
+                            Yii::app()->db->createCommand("INSERT INTO medication_set_item(medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
                         }
                     }
                     
@@ -53,7 +53,7 @@ class m180711_092304_create_sets_from_tags extends CDbMigration
                         ->queryRow();
                        
                         if($ref_medication_id['id']){
-                            Yii::app()->db->createCommand("INSERT INTO medication_medication_set (medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
+                            Yii::app()->db->createCommand("INSERT INTO medication_set_item (medication_id, medication_set_id) values (".$ref_medication_id['id'].", ".$ref_set_id." )")->execute();
                         }
                     }
                 }  

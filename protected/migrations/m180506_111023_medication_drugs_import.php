@@ -134,7 +134,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 $ref_medication_id = $command->getLastInsertID(); 
                 
                 Yii::app()->db->createCommand("
-                    INSERT INTO medication_medication_set( medication_id , medication_set_id )
+                    INSERT INTO medication_set_item( medication_id , medication_set_id )
                         values (".$ref_medication_id." , ".$medication_drugs_id." )
                 ")->execute();
             }
@@ -222,7 +222,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
 
                 /* Add medication to the 'Legacy' set */
                 Yii::app()->db->createCommand("
-                    INSERT INTO medication_medication_set( medication_id , medication_set_id, default_form, default_route, default_frequency, default_dose_unit_term )
+                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term )
                         values (".$ref_medication_id." , ".$formulary_id.", ".$drug_form_id.", ".$drug_route_id.", ".$drug_freq_id." , '".$default_dose_unit."' )
                 ")->execute();
 
@@ -231,7 +231,7 @@ class m180506_111023_medication_drugs_import extends CDbMigration
                 if($drug_sets) {
                     foreach ($drug_sets as $drug_set) {
                         Yii::app()->db->createCommand("
-                    INSERT INTO medication_medication_set( medication_id , medication_set_id, default_form, default_route, default_frequency, default_dose_unit_term, default_duration )
+                    INSERT INTO medication_set_item( medication_id , medication_set_id, default_form_id, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
                         values (".$ref_medication_id." ,
                          
                          (SELECT id FROM medication_set WHERE `name` = :ref_set_name AND id IN 

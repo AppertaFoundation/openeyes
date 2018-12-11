@@ -10,7 +10,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
             $this->execute("INSERT INTO medication_set (`name`) VALUES ('Common subspecialty medications')");
             $ref_set_id = $this->getDbConnection()->getLastInsertID();
             $drug_ids = $ssd['drug_ids'];
-            $this->execute("INSERT INTO medication_medication_set (`medication_set_id`, `medication_id`, default_form, default_dose, default_route, default_frequency, default_dose_unit_term, default_duration)
+            $this->execute("INSERT INTO medication_set_item (`medication_set_id`, `medication_id`, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term, default_duration_id)
                                 SELECT $ref_set_id, medication.id,
                                 drug.form_id,
                                 drug.default_dose,
@@ -35,7 +35,7 @@ class m180815_071733_add_set_common_subspecialty_medications extends CDbMigratio
 	public function down()
 	{
 		$this->execute("DELETE FROM medication_set_rule WHERE usage_code = 'Common subspecialty medications'");
-		$this->execute("DELETE FROM medication_medication_set WHERE medication_set_id IN (SELECT id FROM medication_set WHERE `name` = 'Common subspecialty medications')");
+		$this->execute("DELETE FROM medication_set_item WHERE medication_set_id IN (SELECT id FROM medication_set WHERE `name` = 'Common subspecialty medications')");
 		$this->execute("DELETE FROM medication_set WHERE `name` = 'Common subspecialty medications'");
 	}
 }

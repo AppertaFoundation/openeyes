@@ -20,15 +20,15 @@ class m180808_100619_med_set_taper_import extends CDbMigration
             if($tapers) {
                 foreach ($tapers as $taper) {
 
-                    Yii::app()->db->createCommand("INSERT INTO medication_medication_set_taper (
-                                      medication_medication_set_id,
+                    Yii::app()->db->createCommand("INSERT INTO medication_set_item_taper (
+                                      medication_set_item_id,
                                       dose,
                                       frequency_id,
                                       duration_id
                                       ) VALUES 
                                       (
                                           ( 
-                                           SELECT id FROM medication_medication_set 
+                                           SELECT id FROM medication_set_item 
                                            WHERE
                                             medication_id = ( SELECT id FROM medication WHERE source_old_id = :drug_id AND source_subtype = 'drug' )
                                             AND medication_set_id =
@@ -65,6 +65,6 @@ class m180808_100619_med_set_taper_import extends CDbMigration
 
 	public function down()
 	{
-		$this->execute("DELETE FROM medication_medication_set_taper WHERE 1=1");
+		$this->execute("DELETE FROM medication_set_item_taper WHERE 1=1");
 	}
 }

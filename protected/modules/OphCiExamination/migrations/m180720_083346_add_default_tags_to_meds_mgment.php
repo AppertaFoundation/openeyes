@@ -10,11 +10,11 @@ class m180720_083346_add_default_tags_to_meds_mgment extends CDbMigration
             $ref_set_id1 = Yii::app()->db->getLastInsertID();
             $this->execute("INSERT INTO medication_set (`name`) VALUES ('Ophthalmic')");
             $ref_set_id2 = Yii::app()->db->getLastInsertID();
-            $this->execute("INSERT INTO medication_medication_set (medication_id, medication_set_id, default_form, default_dose, default_route, default_frequency, default_dose_unit_term)
+            $this->execute("INSERT INTO medication_set_item (medication_id, medication_set_id, default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term)
                             SELECT medication_id, 
                             $ref_set_id2, 
-                            default_form, default_dose, default_route, default_frequency, default_dose_unit_term
-                            FROM medication_medication_set WHERE default_route IN (SELECT id FROM medication_route WHERE term IN ('Eye', 'Ocular', 'Interocular'));
+                            default_form_id, default_dose, default_route_id, default_frequency_id, default_dose_unit_term
+                            FROM medication_set_item WHERE default_route_id IN (SELECT id FROM medication_route WHERE term IN ('Eye', 'Ocular', 'Interocular'));
                             ");
 
             $this->execute("INSERT INTO medication_set_rule (medication_set_id, usage_code) 
