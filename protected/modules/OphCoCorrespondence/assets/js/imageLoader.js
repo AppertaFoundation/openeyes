@@ -14,7 +14,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-let OpenEyes = OpenEyes || {};
 OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
 (function (exports) {
@@ -92,13 +91,12 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
     ImageLoaderController.prototype.appendImages = function (url, controller) {
         for (let index = 0; index < controller.pageCount; index++) {
-            let lastImage = index === controller.pageCount - 1;
             let imageId = controller.options.imageId + index;
             controller.$imageContainer.append('<img id="' + imageId + '"' +
                 ' style="display:none; max-width: ' + controller.options.imageMaxWidth + '">');
             let $image = $('#' + imageId);
 
-            $image.on('error', {controller: controller, lastImage: lastImage}, controller.imageNotFound);
+            $image.on('error', controller.imageNotFound.bind(controller));
             $image.on('load', function () {
                 controller.imageFinishedLoading(controller)
             });
@@ -111,11 +109,10 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         }
     };
 
-    ImageLoaderController.prototype.imageNotFound = function (event) {
-        let controller = event.data.controller;
+    ImageLoaderController.prototype.imageNotFound = function () {
+        let controller = this;
         controller.imageLoadFailed = true;
         controller.imageFinishedLoading(controller);
-
     };
 
     ImageLoaderController.prototype.allImagesLoaded = function (controller) {
