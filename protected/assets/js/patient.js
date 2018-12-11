@@ -1,6 +1,6 @@
-function addItem(wrapper_id, ui) {
+// change the function name from addItem to addItemP
+function addItemPatientForm(wrapper_id, ui) {
   var $wrapper = $('#' + wrapper_id);
-
   $wrapper.find('.js-name').text(ui.item.label);
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);

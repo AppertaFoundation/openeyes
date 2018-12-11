@@ -1069,8 +1069,13 @@ class Examination extends OpenEyesPage {
         $this->elements['Allergy_val'] = array(
             'css' => 'li[data-label='.$allergy.']'
         );
+        //add something new
+        $this->elements['confirmAddButton'] = array('css'=>'.add-icon-btn');
+        //something wrong there
         $this->getElementAtChain(['Allergy', 'allergyPopup', 'Allergy_val'])->click();
-        $this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAdderButton'])->click();
+        //add something new
+        $this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAddButton'])->click();
+        //$this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAdderButton'])->click();
     }
 
     /***
@@ -1087,9 +1092,13 @@ class Examination extends OpenEyesPage {
         $this->elements['NVAMethod_val'] = array(
             'css' => 'li[data-id='.$method.']'
         );
+        //add something new
+        $this->elements['confirmAddButton'] = array('css'=>'.add-icon-btn');
         $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAReading', 'NVAReading_val'))->click();
         $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAMethod', 'NVAMethod_val'))->click();
-        $this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAdderButton'))->click();
+        //add something new
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAddButton'))->click();
+        //$this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAdderButton'))->click();
 
     }
 
