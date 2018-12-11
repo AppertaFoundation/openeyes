@@ -603,7 +603,7 @@ class AdminController extends BaseAdminController
                 }
             }
 
-            if($search['active'] == 1){
+            if ($search['active'] == 1) {
                 $criteria->addCondition('active = 1');
             } elseif ($search['active'] !== '') {
                 $criteria->addCondition('active != 1');
@@ -667,18 +667,21 @@ class AdminController extends BaseAdminController
             Audit::add('admin-Firm', 'view', $id);
         }
 
-        $siteSecretaries = array();
+        $site_secretaries = array();
         if (isset(Yii::app()->modules['OphCoCorrespondence'])) {
             $firmSiteSecretaries = new FirmSiteSecretary();
-            $siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
+            $site_secretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
             $firmSiteSecretaries->firm_id = $id;
-            $siteSecretaries[] = $firmSiteSecretaries;
+            $site_secretaries[] = $firmSiteSecretaries;
         }
 
         $this->render('/admin/contexts/edit', array(
             'firm' => $firm,
             'errors' => @$errors,
-            'siteSecretaries' => $siteSecretaries,
+            'site_secretaries' => $site_secretaries,
+            'subspecialties_list_data' => CHtml::listData(Subspecialty::model()->findAll(['order' => 'name']), 'id', 'name'),
+            'consultant_list_data' => CHtml::listData(User::model()->findAll(['order' => 'first_name,last_name']), 'id', 'fullName'),
+
         ));
     }
 

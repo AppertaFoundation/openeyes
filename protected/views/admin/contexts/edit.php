@@ -45,54 +45,30 @@
         <tbody>
         <tr>
             <td>Pass Code</td>
-            <td> <?= \CHtml::activeTextField(
-                $firm,
-                'pas_code',
-                ['class' => 'cols-full']
-            ); ?> </td>
+            <td> <?= \CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>
             <td>Name</td>
-            <td> <?= \CHtml::activeTextField(
-                $firm,
-                'name',
-                ['class' => 'cols-full']
-            ); ?> </td>
+            <td> <?= \CHtml::activeTextField($firm, 'name', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>
             <td>Subspecialty</td>
             <td>
-                <?= \CHtml::activeDropDownList(
-                    $firm,
-                    'subspecialty_id',
-                    CHtml::listData(
-                        Subspecialty::model()->findAll(
-                            array('order' => 'name')
-                        ),
-                        'id',
-                        'name'
-                    ),
-                    ['class' => 'cols-full', 'empty' => '- None -']
-                ); ?>
+                <?= \CHtml::activeDropDownList($firm, 'subspecialty_id', $subspecialties_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
             </td>
         </tr>
         <tr>
             <td>Consultant</td>
             <td>
-                <?= \CHtml::activeDropDownList(
-                    $firm,
-                    'consultant_id',
-                    CHtml::listData(
-                        User::model()->findAll(
-                            array('order' => 'first_name,last_name')
-                        ),
-                        'id',
-                        'fullName'
-                    ),
-                    ['class' => 'cols-full', 'empty' => '- None -']
-                ); ?>
+                <?= \CHtml::activeDropDownList($firm, 'consultant_id', $consultant_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
             </td>
         </tr>
+        <tr class="js-cost-code<?=$firm->consultant_id ? '' : ' hidden'?>">
+            <td><?=$firm->getAttributeLabel('cost_code');?></td>
+            <td> <?= \CHtml::activeTextField($firm, 'cost_code', ['class' => 'cols-full']);?>
+            </td>
+        </tr>
+
         <tr class="col-gap">
             <td>Service Enabled</td>
             <td><?= \CHtml::activeCheckBox(
@@ -152,4 +128,15 @@
     <?php endif; ?>
 
 </div>
+<script>
+    $('#Firm_consultant_id').on('change', function() {
+        let $tr = $('.js-cost-code');
+        let $input = $tr.find('input');
+
+        if(!$(this).val()) {
+            $input.val('');
+        }
+        $tr.toggle(Boolean($(this).val()));
+    });
+</script>
 
