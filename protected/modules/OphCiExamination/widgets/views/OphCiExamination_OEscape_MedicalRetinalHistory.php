@@ -238,6 +238,7 @@
       }
 
       layout_MR['shapes'].push(setMRFlags_options(inj_background));
+
       currentPlot.on('plotly_hover', function (data) {
         for(var i=0; i < data.points.length; i++){
           var tn = data.points[i].curveNumber;
