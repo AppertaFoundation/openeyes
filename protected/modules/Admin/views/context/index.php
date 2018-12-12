@@ -25,7 +25,7 @@
                 </colgroup>
                 <tr>
                     <td><?=CHtml::textField('search[query]', $search['query'], [
-                            'placeholder' => 'Search Id, PAS Code, Name (case sensitive)',
+                            'placeholder' => 'Search Id, PAS Code, Cost Code, Name - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
@@ -64,7 +64,7 @@
             <tbody>
             <?php foreach ($firms as $firm) : ?>
                 <tr class="clickable" data-id="<?=$firm->id ?>"
-                    data-uri="admin/editFirm/<?=$firm->id ?>">
+                    data-uri="Admin/context/edit/<?=$firm->id ?>">
                     <td><input type="checkbox" name="firms[]" value="<?=$firm->id ?>"/></td>
                     <td><?=$firm->id ?></td>
                     <td><?=$firm->pas_code ?></td>
@@ -86,7 +86,7 @@
                     <?=\CHtml::button(
                         'Add',
                         [
-                            'data-uri' => '/admin/addFirm',
+                            'data-uri' => '/Admin/context/add',
                             'class' => 'button large',
                             'name' => 'add',
                             'id' => 'et_add']
