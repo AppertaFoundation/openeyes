@@ -1,3 +1,4 @@
+
 <?php
 /**
  * OpenEyes.
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if (!empty($subspecialty)) { ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
@@ -48,23 +50,30 @@ if (!empty($subspecialty)) { ?>
 
 <script type="text/javascript">
   $(document).ready(function () {
+    var charts = [];
+    charts['VA'] = [];
+    charts['VA']['right'] = $('.plotly-VA')[0];
+    charts['VA']['left'] = $('.plotly-VA')[1];
+
+    charts['Med'] = [];
+    charts['Med']['right'] = $('.plotly-Meds')[0];
+    charts['Med']['left'] = $('.plotly-Meds')[1];
+
+
+    charts['IOP'] = [];
+    charts['IOP']['right'] = $('.plotly-IOP')[0];
+    charts['IOP']['left'] = $('.plotly-IOP')[1];
+
+    //hide cursors in plot
+    ['right', 'left'].forEach(function (eye_side) {
+      for(var key in charts){
+        $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
+      }
+      $('.plotly-MR').find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
+    });
+
     if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General')){
       $('.right-side-content').show();
-
-      var charts = [];
-      charts['VA'] = [];
-      charts['VA']['right'] = $('.plotly-VA')[0];
-      charts['VA']['left'] = $('.plotly-VA')[1];
-
-      charts['Med'] = [];
-      charts['Med']['right'] = $('.plotly-Meds')[0];
-      charts['Med']['left'] = $('.plotly-Meds')[1];
-
-
-      charts['IOP'] = [];
-      charts['IOP']['right'] = $('.plotly-IOP')[0];
-      charts['IOP']['left'] = $('.plotly-IOP')[1];
-
 
       var limits = {};
       ['right', 'left'].forEach(function(eye_side)  {
@@ -96,6 +105,7 @@ if (!empty($subspecialty)) { ?>
         if (limits[eye_side]['min']!==limits[eye_side]['max']){
           for(var key in charts){
             Plotly.relayout(charts[key][eye_side], 'xaxis.range', [limits[eye_side].min, limits[eye_side].max]);
+
             if (key==='IOP'){
               //set the iop target line
               var index = charts[key][eye_side].layout.shapes.length-1;
