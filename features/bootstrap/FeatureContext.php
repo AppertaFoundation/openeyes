@@ -169,8 +169,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		}
 	}
 	private function saveScreenshots() {
-//	    echo 'There is an unknown error in the permissions for this function (saveScreenshots), for now it\'s disabled';
-//	    return;
 
         foreach ( $this->screenshots as $screenshot ) {
 			try {
