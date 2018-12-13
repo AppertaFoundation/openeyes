@@ -17,14 +17,14 @@
  */
 ?>
 
-<section class="element patient-info associated-data js-toggle-container cols-3">
+<section class="element view full view-xxx patient-info associated-data js-toggle-container">
     <header class="element-header">
-        <h3 class="element-header">
+        <h3 class="element-title">
             <span class="icon-patient-clinician-hd_flag"></span>
             CVI Status
         </h3>
     </header>
-    <div class="js-toggle-body">
+    <div class="element-data full-width js-toggle-body">
         <?php if ($override = $this->renderOverride('patient_summary_render.cvi_status', array($this->patient))) {
             echo $override;
         } else { ?>

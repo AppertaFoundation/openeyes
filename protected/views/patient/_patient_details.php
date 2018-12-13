@@ -16,9 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info js-toggle-container cols-3">
-	<h3 class="element-header">Personal Details:</h3>
-	<div class="js-toggle-body">
+<section class="element view full view-xxx patient-info js-toggle-container">
+    <header class="element-header">
+        <h3 class="element-title">Personal Details</h3>
+    </header>
+	<div class="element-data full-width js-toggle-body">
         <table class="standard">
             <colgroup>
                 <col class="cols-1">

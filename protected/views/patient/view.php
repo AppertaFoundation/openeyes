@@ -54,8 +54,8 @@ $warnings = $this->patient->getWarnings($clinical);
 		<?php $this->renderPartial('//patient/_patient_alerts')?>
 		</div>
 
-	<div class="patient-content">
-    <div class="flex-layout flex-top">
+	<div class="patient-content flex-layout flex-top col-gap-small">
+    <div class="cols-half">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
 				<section class="element patient-info">
 					<div class="data-group">
@@ -78,9 +78,9 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_contacts')?>
 			<?php $this->renderModulePartials('patient_summary_column1')?>
     </div>
-    <div class="col-right" id="patient-summary-form-container">
+    <div class="cols-half" id="patient-summary-form-container">
         <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
-          <section class="box patient-info internalreferral internalreferral-doclist">
+          <section class="element view full view-xxx patient-info internalreferral internalreferral-doclist">
               <?=\CHtml::link('View patient referrals', $component->generateUrlForDocumentList($this->patient)); ?>
             <i class="spinner" title="Loading..." style="display: none;"></i>
             <span>e-WinDIP</span>

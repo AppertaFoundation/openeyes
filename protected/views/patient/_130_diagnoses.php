@@ -16,17 +16,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info associated-data js-toggle-container">
-
+<section class="element view full view-xxx patient-info associated-data js-toggle-container">
 	<header class="element-header">
-		<h3 class="box-title">
+		<h3 class="element-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Other ophthalmic diagnoses
 		</h3>
 	</header>
 
-	<div class="js-toggle-body data-group">
-
+	<div class="jelement-data full-width js-toggle-body data-group">
 		<table class="plain patient-data">
 			<thead>
 			<tr>
