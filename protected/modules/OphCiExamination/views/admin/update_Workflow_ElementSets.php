@@ -47,7 +47,7 @@
                     <?php endif; ?>
                 </td>
                 <td>
-                    <a href="#" class="elementSetActiveStatus" data-stepid="<?php echo $step->id ?>"><?= ($step->is_active ? "Disable" : "Enable"); ?></a>
+                    <a href="#" class="js-elementSetActiveStatus" data-stepid="<?php echo $step->id ?>"><?= ($step->is_active ? "Disable" : "Enable"); ?></a>
                 </td>
             </tr>
             <?php

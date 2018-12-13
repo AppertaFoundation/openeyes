@@ -994,11 +994,12 @@ class AdminController extends \ModuleAdminController
     }
 
     public function actionChangeWorkflowStepActiveStatus(){
-        if (!$step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']))) {
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
+        if (!$step) {
             throw new \Exception('Unknown element set '.$_POST['element_set_id'].' for workflow '.$_POST['workflow_id']);
         }
 
-        $step->is_active = ($step->is_active == 1 ? 0 : 1);
+        $step->is_active = ($step->is_active === '1' ? 0 : 1);
         if (!$step->save()) {
             throw new \Exception('Unable to change element set is_active status: '.print_r($step->getErrors(), true));
         }
