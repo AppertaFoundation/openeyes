@@ -134,9 +134,9 @@ class FamilyHistory extends \BaseEventTypeElement
         if (!$entries) {
             // add the entries from the DB
             foreach ($element->entries as $entry) {
-                $new = new FamilyHistory_Entry();
-                $new->loadFromExisting($entry);
-                $entries[] = $new;
+                $new_entry = new FamilyHistory_Entry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
             }
         }
 

@@ -108,9 +108,9 @@ class HistoryRisks extends \BaseEventTypeElement
         if (!$entries) {
             // add the entries from the DB
             foreach ($element->entries as $entry) {
-                $new = new HistoryRisksEntry();
-                $new->loadFromExisting($entry);
-                $entries[] = $new;
+                $new_entry = new HistoryRisksEntry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
             }
         }
 

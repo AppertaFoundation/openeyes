@@ -140,12 +140,12 @@ class PastSurgery extends \BaseEventTypeElement
         if (!$operations) {
             // add the entries from the DB
             foreach ($element->operations as $prev) {
-                $op = new PastSurgery_Operation();
-                $op->operation = $prev->operation;
-                $op->side_id = $prev->side_id;
-                $op->date = $prev->date;
-                $op->had_operation = $prev->had_operation;
-                $operations[] = $op;
+                $operation = new PastSurgery_Operation();
+                $operation->operation = $prev->operation;
+                $operation->side_id = $prev->side_id;
+                $operation->date = $prev->date;
+                $operation->had_operation = $prev->had_operation;
+                $operations[] = $operation;
             }
         }
 
