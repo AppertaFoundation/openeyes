@@ -2234,13 +2234,13 @@ class PatientController extends BaseController
     }
 
 
-    public function actionPerformReferralDoc($patient, $referral, $_Files)
+    public function actionPerformReferralDoc($patient)
     {
         if (isset($_POST['PatientReferral'])) {
             $episode = new Episode();
             $episode->patient_id = $patient->id;
             $episode->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-            $episode->support_services = true;
+            $episode->support_services = false;
             $episode->start_date = date('Y-m-d H:i:s');
             if ($episode->save()) {
                 $event = new Event();
@@ -2273,7 +2273,6 @@ class PatientController extends BaseController
                 }
             }
         }
-        return;
     }
 
 
