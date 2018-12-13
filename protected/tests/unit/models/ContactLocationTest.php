@@ -129,30 +129,6 @@ class ContactLocationTest extends CDbTestCase
     }
 
     /**
-     * @covers ContactLocation::getLetterAddress
-     */
-    public function testGetLetterAddress()
-    {
-        $expected = $this->expectedLetterAddress;
-        $result = $this->contactlocations('contactlocation1')->getLetterAddress();
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * @covers ContactLocation::getLetterArray
-     */
-    public function testGetLetterArray()
-    {
-        Yii::app()->session['selected_site_id'] = 1;
-
-        $expected = $this->expectedLetterAddress;
-
-        $result = $this->contactlocations('contactlocation1')->getLetterArray(true);
-
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
      * @covers ContactLocation::getPatients
      */
     public function testGetPatients()
