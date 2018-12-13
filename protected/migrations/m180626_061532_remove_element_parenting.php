@@ -100,14 +100,18 @@ class m180626_061532_remove_element_parenting extends OEMigration
         }
 
         // Group tiles are now located in the element_group table, and the column can now bw removed
-        $this->dropColumn('element_type', 'group_title');
-        $this->dropColumn('element_type_version', 'group_title');
+        // Check that group_title exists
+        $table = Yii::app()->db->schema->getTable('element_type');
+        if(!isset($table->columns['group_title'])) {
+            //Assume all these things are extant if group title is
+            $this->dropColumn('element_type', 'group_title');
+            $this->dropColumn('element_type_version', 'group_title');
 
-        $this->dropForeignKey('element_type_parent_et_fk', 'element_type');
+            $this->dropForeignKey('element_type_parent_et_fk', 'element_type');
 
-        $this->dropColumn('element_type', 'parent_element_type_id');
-        $this->dropColumn('element_type_version', 'parent_element_type_id');
-
+            $this->dropColumn('element_type', 'parent_element_type_id');
+            $this->dropColumn('element_type_version', 'parent_element_type_id');
+        }
     }
 
     public function safeDown()

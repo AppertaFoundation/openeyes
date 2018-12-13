@@ -203,6 +203,7 @@ class PatientController extends BaseController
     {
         $term = \Yii::app()->request->getParam('term', '');
 
+
         $patientSearch = new PatientSearch();
       $dataProvider = $patientSearch->search($term);
       $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
@@ -233,6 +234,10 @@ class PatientController extends BaseController
                 $message .= 'found for your search.';
             }
             Yii::app()->user->setFlash('warning.no-results', $message);
+
+
+            Yii::app()->session['search_term'] = $term;
+            Yii::app()->session->close();
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
