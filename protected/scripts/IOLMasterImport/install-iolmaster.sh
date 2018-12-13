@@ -98,6 +98,18 @@ else
   sudo systemctl start dicom-file-watcher
 fi
 
+# IOLMasterImport still uses al the old conf files in /etc/openeyes. We will copy come back now, but note that these are deprecated
+sudo mkdir -p /etc/openeyes
+shopt -s nullglob
+for f in $(ls $SCRIPTDIR/.etc | sort -V)
+do
+  if [ ! -f /etc/openeyes/$f ]; then
+    echo "importing $f to /etc/OpenEyes"
+    sed "s|\$SCRIPTDIR|$SCRIPTDIR|; s|\$WROOT|$WROOT|" $SCRIPTDIR/.etc/$f | sudo tee /etc/openeyes/$f &> /dev/null
+    sudo chmod 0644 /etc/openeyes/$f
+  fi
+done
+
 echo "**************************************************"
 echo "****** INSTALL OF IOLMASTERIMPORT COMPLETE *******"
 echo "**************************************************"
