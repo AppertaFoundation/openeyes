@@ -14,12 +14,6 @@ $this->pageTitle = 'View Practice';
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
 
         <section class="box patient-info patient-contacts js-toggle-container">
-            <h3 class="box-title">Contact Information:</h3>
-            <a href="#" class="toggle-trigger toggle-hide js-toggle">
-            <span class="icon-showhide">
-                Show/hide this section
-            </span>
-            </a>
             <div class="js-toggle-body">
                 <table class="standard">
                     <tbody>
@@ -59,16 +53,11 @@ $this->pageTitle = 'View Practice';
                 </table>
                 <div class="align-right">
                 <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
-                    <div class="large-4 column end">
-                        <div class="box generic">
-                            <div class="row">
-                                <div class="large-12 column end">
-                                    <p><?php echo CHtml::link('Update Practice Details',
-                                            $this->createUrl('/practice/update', array('id' => $model->id))); ?></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <button class="button hint blue pad pro-theme"
+                        href="<?= $this->createUrl('/practice/update', array('id' => $model->id))?>"
+                >
+                    Update Practice Details
+                </button>
                 <?php endif; ?>
                 </div>
             </div>
