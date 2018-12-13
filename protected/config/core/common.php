@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201811051630',
+            'time' => '201812030946',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -141,7 +141,7 @@ return array(
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
-            'errorAction' => 'site/error',
+            'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
@@ -150,8 +150,8 @@ return array(
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
-            'class' => 'FlushableLogRouter',
-            'autoFlush' => 1,
+            'class' => 'CLogRouter',
+            // 'autoFlush' => 1,
             'routes' => array(
                 // Normal logging
                 'application' => array(
@@ -311,6 +311,7 @@ return array(
             'menubar' => false,
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+            'browser_spellcheck' => true,
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -369,6 +370,12 @@ return array(
                     'uri' => "javascript:oelauncher('forum');",
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
+                ),
+                'gps' => array(
+                    'title' => 'Practitioners',
+                    'uri' => 'gp/index',
+                    'position' => 10,
+                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
 // temporarily disabled
 //			'worklist' => array(
@@ -474,7 +481,7 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-				 * Without this, lightning images and event view will not show draft watermark
+         * Without this, lightning images and event view will not show draft watermark
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
@@ -523,13 +530,17 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
-            'pdf_render_width' => 1250,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
-                'height' => 800,
-                'width' => 600
-            )
+                'height' => 912,
+                'width' => 800
+            ),
+            'event_specific' => array(
+                'Correspondence' => array(
+                    'image_width' => 1000
+                ),
+            ),
         ),
 
         /**
@@ -558,5 +569,11 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
+
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
     ),
 );

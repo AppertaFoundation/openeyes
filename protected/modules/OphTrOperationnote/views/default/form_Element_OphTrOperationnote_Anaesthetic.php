@@ -73,7 +73,7 @@ $is_hidden = function () use ($element) {
             <td>
                 <?php echo $form->dropDownList($element, 'anaesthetic_witness_id',
                     CHtml::listData($element->surgeons, 'id', 'FullName'),
-                    array('empty' => '- Please select -', 'nowrapper' => true),
+                    array('empty' => 'Select', 'nowrapper' => true),
                     $element->witness_hidden, array('field' => 3)); ?>
 
             </td>

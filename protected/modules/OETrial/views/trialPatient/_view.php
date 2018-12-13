@@ -25,20 +25,6 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
 ?>
 <tr class="js-trial-patient" data-trial-patient-id="<?= $data->id ?>">
-  <td> <!-- Warnings -->
-      <?php if (count($warnings) > 0): ?>
-        <span class="warning">
-          <span class="icon icon-alert icon-alert-warning"></span>
-          <span class="quicklook warning">
-            <ul>
-              <li>
-                <?= implode('</li><li>', $warnings) ?>
-              </li>
-            </ul>
-          </span>
-        </span>
-      <?php endif; ?>
-  </td>
 
   <td colspan="4">
       <?php
@@ -117,42 +103,35 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 
           <?php if ($data->status->code === TrialPatientStatus::SHORTLISTED_CODE): ?>
 
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::ACCEPTED_CODE ?>')"
-               class="accept-patient-link"
+               class="accept-patient-button button hint green"
                <?php if ($data->trial->trialType->code === TrialType::INTERVENTION_CODE && $isInAnotherInterventionTrial): ?>style="color: #ad1515;"<?php endif; ?> >
               Accept
-            </a>
-          </div>
+            </button>
           <?php endif; ?>
 
           <?php if (in_array($data->status->code,
               [TrialPatientStatus::SHORTLISTED_CODE, TrialPatientStatus::ACCEPTED_CODE], true)): ?>
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::REJECTED_CODE ?>')"
-               class="accept-patient-link">Reject
-            </a>
-          </div>
+               class="accept-patient-button button hint red">Reject
+            </button>
           <?php endif; ?>
 
           <?php if ($data->status->code === TrialPatientStatus::REJECTED_CODE): ?>
-          <div style="white-space: nowrap;">
           <span>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
                onclick="changePatientStatus(this, <?= $data->id ?>, '<?= TrialPatientStatus::SHORTLISTED_CODE ?>')"
-               class="accept-patient-link">Re-Shortlist
-            </a>
+               class="accept-patient-button button hint blue">Re-Shortlist
+            </button>
           </span>
 
-          </div>
-          <div>
-            <a href="javascript:void(0)"
+            <button href="javascript:void(0)"
+                    class="accept-patient-button button hint red"
                onclick="removePatientFromTrial(<?= $data->id ?>, <?= $data->patient_id ?>, <?= $data->trial_id ?>)">
               Remove
-            </a>
-          </div>
+            </button>
           <?php endif; ?>
 
         <img class="loader" id="action-loader-<?= $data->id ?>"

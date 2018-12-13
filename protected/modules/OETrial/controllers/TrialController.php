@@ -68,6 +68,7 @@ class TrialController extends BaseModuleController
                     'reopen',
                     'changePi',
                     'changeCoordinator',
+                    'changeTrialUserPosition'
                 ),
                 'expression' => function ($user) {
                     return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_manage;
@@ -83,20 +84,7 @@ class TrialController extends BaseModuleController
     public static function getCurrentUserPermission()
     {
         $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
-
         return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
-    }
-
-    /**
-     * @param CAction $action The action being called
-     * @return bool Whether the action is
-     */
-    public function beforeAction($action)
-    {
-        $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OETrial.assets'));
-        Yii::app()->clientScript->registerCssFile($assetPath . '/css/module.css');
-
-        return parent::beforeAction($action);
     }
 
     /**
@@ -110,36 +98,14 @@ class TrialController extends BaseModuleController
         $report = new OETrial_ReportTrialCohort();
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
-        $sortBy = null;
-
-        switch (Yii::app()->request->getParam('sort_by', -1)) {
-            case 1:
-            default:
-                $sortBy = 'name';
-                break;
-            case 2:
-                $sortBy = 'gender';
-                break;
-            case 3:
-                $sortBy = 'age';
-                break;
-            case 4:
-                $sortBy = 'ethnicity';
-                break;
-            case 5:
-                $sortBy = 'external_reference';
-                break;
-            case 6:
-                $sortBy = 'treatment_type_id';
-                break;
-        }
+        $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
 
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
             'trial' => $this->model,
             'report' => $report,
             'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
-            'sort_by' => (int)Yii::app()->request->getParam('sort_by', 1),
+            'sort_by' => $sortBy,
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', 0),
         ));
     }
@@ -173,7 +139,6 @@ class TrialController extends BaseModuleController
         $this->model->is_open = 1;
         $this->model->trial_type_id = TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id;
         $this->model->owner_user_id = Yii::app()->user->id;
-        $this->model->principle_investigator_user_id = Yii::app()->user->id;
         $this->model->started_date = date('d M Y');
 
         $this->performAjaxValidation($this->model);
@@ -468,35 +433,32 @@ class TrialController extends BaseModuleController
     }
 
     /**
-     * Change the principle_investigator_user_id to the new value in POST
+     * Change user pisition to the new value in POST
      *
      * @throws CHttpException Thrown if the change cannot be saved
      */
-    public function actionChangePi()
-    {
-        $trial = $this->loadModel($_POST['id']);
-        $trial->principle_investigator_user_id = $_POST['user_id'];
 
-        if (!$trial->save()) {
-            throw new CHttpException(500,
-                'Unable to change.' . Trial::model()->getAttributeLabel('principle_investigator_user_id'));
-        }
-    }
+    public function actionChangeTrialUserPosition(){
+
+      $user_id = $_POST['user_id'];
+      $trial_id = $_POST['id'];
+      $isTrue = $_POST['isTrue'];
+      $column_name = $_POST['column_name'];
+
+      $existing = UserTrialAssignment::model()->findAll('trial_id=? and '.$column_name.'=1', array($trial_id));;
+      if ($column_name==='is_principal_investigator'&&sizeof($existing)===1&&$existing[0]->user_id===$user_id){
+        $res = array(
+          'Error' => 'At least one principal investigator should be selected.'
+        );
+        echo CJSON::encode($res);
+        Yii::app()->end();
+      }
+      $userPermission = UserTrialAssignment::model()->find('user_id=? and trial_id=?', array($user_id, $trial_id));
+      $userPermission->$column_name = $isTrue;
 
 
-    /**
-     * Changes the coordinator_user_id to the new value in POST
-     *
-     * @throws CHttpException Thrown if an error occurs when saving the change
-     */
-    public function actionChangeCoordinator()
-    {
-        $trial = $this->loadModel($_POST['id']);
-        $trial->coordinator_user_id = $_POST['user_id'];
-
-        if (!$trial->save()) {
-            throw new CHttpException(500,
-                'Unable to change ' . Trial::model()->getAttributeLabel('coordinator_user_id'));
-        }
+      if (!$userPermission->save()) {
+        throw new Exception('Unable to save principal investigator: '.print_r($userPermission->getErrors(), true));
+      }
     }
 }

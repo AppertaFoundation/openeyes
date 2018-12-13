@@ -78,7 +78,7 @@ function addItem(itemId, saveURL) {
     } else {
         // itemId: autocomplete value
         // .filterfieldselect: all filter fields
-        var saveParams = $('.ui-autocomplete-input').attr('name') + "=" + itemId;
+        var saveParams = $('.autocompletesearch').attr('name') + "=" + itemId;
         $('.filterfieldselect').each(function () {
             // name: search[filterid][field_name][value]
             fieldNameData = $(this).attr('name').split('[');

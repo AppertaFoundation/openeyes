@@ -71,22 +71,40 @@ if (!empty($subspecialty)) { ?>
         limits[eye_side] = {};
         limits[eye_side]['min'] = Object.keys(charts).reduce(function(min, chart_key) {
           var chart = charts[chart_key];
+          var chart_data_list = chart[eye_side]['data'];
+          var has_data = false;
+          for (var i in chart_data_list){
+            if(chart_data_list[i]['x'].length!==0){
+              has_data = true;
+            }
+          }
           var chart_min = chart[eye_side]['layout']['xaxis']['range'][0];
-          return new Date(chart_min) < min ? new Date(chart_min) : min;
+          return has_data && new Date(chart_min) < min ? new Date(chart_min) : min;
         }, new Date());
         limits[eye_side]['max'] = Object.keys(charts).reduce(function(max, chart_key) {
           var chart = charts[chart_key];
+          var chart_data_list = chart[eye_side]['data'];
+          var has_data = false;
+          for (var i in chart_data_list){
+            if(chart_data_list[i]['x'].length!==0){
+              has_data = true;
+            }
+          }
           var chart_max = chart[eye_side]['layout']['xaxis']['range'][1];
-          return new Date(chart_max) > max ? new Date(chart_max) : max;
+          return has_data && new Date(chart_max) > max ? new Date(chart_max) : max;
         }, limits[eye_side]['min']);
-
-        for(var key in charts){
+        if (limits[eye_side]['min']!==limits[eye_side]['max']){
+          for(var key in charts){
             Plotly.relayout(charts[key][eye_side], 'xaxis.range', [limits[eye_side].min, limits[eye_side].max]);
-          if (key==='IOP'){
-            var index = charts[key][eye_side].layout.shapes.length-1;
-            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
-            Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
-            Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+            if (key==='IOP'){
+              //set the iop target line
+              var index = charts[key][eye_side].layout.shapes.length-1;
+              if (index>=0 && charts[key][eye_side].layout.shapes[index].y0 == charts[key][eye_side].layout.shapes[index].y1){
+                Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x0', limits[eye_side].min);
+                Plotly.relayout(charts[key][eye_side], 'shapes['+index+'].x1', limits[eye_side].max);
+                Plotly.relayout(charts[key][eye_side], 'annotations['+index+'].x', limits[eye_side].min);
+              }
+            }
           }
         }
 
@@ -112,7 +130,6 @@ if (!empty($subspecialty)) { ?>
           for (var i = 0; i < data.points.length; i++) {
             pn = data.points[i].pointNumber;
             tn = data.points[i].curveNumber;
-            size = data.points[i].data.marker.size;
           }
           var sizes = new Array(plots[index].data[tn].x.length).fill(10);
           sizes[pn] = 15;

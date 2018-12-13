@@ -61,20 +61,19 @@
     var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
 
     var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 17);
-
     var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
 
-    var flag_height = 5;
-    var flag_width = 8;
-    var flag_height_perc = 0.8;
+    const flag_height = 5;
+    const flag_width = 8;
+    const flag_height_perc = 0.8;
+    const oneday_time = 86400000;
 
     for (var side of sides){
       var layout_MR = JSON.parse(JSON.stringify(layout_plotly));
       layout_MR['shapes'] = [];
       layout_MR['annotations'] = [];
-      layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
-      layout_MR['yaxis']['tickvals'] = va_plotly_ticks['tick_position'];
-      layout_MR['yaxis']['ticktext'] = va_plotly_ticks['tick_labels'];
+      va_yaxis['tickvals'] = va_plotly_ticks['tick_position'];
+      va_yaxis['ticktext'] = va_plotly_ticks['tick_labels'];
       layout_MR['xaxis']['rangeslider'] = {};
 
       setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
@@ -135,7 +134,6 @@
       }
       crt_yaxis['dtick'] = Math.round((crt_yaxis['range'][1]-crt_yaxis['range'][0])/10);
       crt_yaxis['overlaying'] = 'y';
-      layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
 
 
       var j = Object.keys(injections_data[side]).length+1;
@@ -144,6 +142,9 @@
       flags_yaxis['ticktext'] = [];
       flags_yaxis['tickvals'] = [];
 
+
+      va_yaxis['domain'] = [0.04*j+0.1, 1];
+      crt_yaxis['domain'] = [0.04*j+0.1, 1];
       var text = {
         showlegend: false,
         x:[],
@@ -159,17 +160,24 @@
 
       for (var key in injections_data[side]){
         flags_yaxis['ticktext'].push(key);
-        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
+        flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
 
+        var count = 1;
         for (var i in injections_data[side][key]) {
+          if (i==0){
+            text['hovertext'].push(key+'<br>Count: '+count);
+          } else {
+            var gap = Math.round((injections_data[side][key][i]['x'] - injections_data[side][key][i-1]['x'])/oneday_time);
+            text['hovertext'].push(key+'<br>Count: '+count+'<br>Previous injection: '+gap+' days ago');
+          }
           text['x'].push(new Date(injections_data[side][key][i]['x']));
           text['y'].push(flag_height * (j - flag_height_perc));
-          text['hovertext'].push(key);
+          count++;
 
           var inj_shape = {
             x0: new Date(injections_data[side][key][i]['x']),
             y0: flag_height * j,
-            x1: new Date(injections_data[side][key][i]['x'] + 86400000 * flag_width),
+            x1: new Date(injections_data[side][key][i]['x'] + oneday_time * flag_width),
             y1: flag_height * (j - flag_height_perc),
             color: (side == 'right') ? '#9fec6d' : '#fe6767',
             yaxis: 'y3',
@@ -180,18 +188,19 @@
       }
 
       //set the flags for letters >5
-      flags_yaxis['ticktext'].push('>5');
-      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc));
-
+      flags_yaxis['ticktext'].push('>5 lines lost');
+      flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc)+2);
+      count = 1;
       for (var i in VA_lines_data[side]) {
         text['x'].push(new Date(VA_lines_data[side][i]['x']));
         text['y'].push( flag_height*(j- flag_height_perc));
-        text['hovertext'].push('>5');
+        text['hovertext'].push('>5'+'<br>Count: '+count);
+        count++;
 
         var line_shape = {
           x0: new Date(VA_lines_data[side][i]['x']),
           y0: flag_height * j,
-          x1: new Date(VA_lines_data[side][i]['x'] + 86400000 * flag_width),
+          x1: new Date(VA_lines_data[side][i]['x'] + oneday_time * flag_width),
           y1: flag_height * (j - flag_height_perc),
           color: (side == 'right') ? '#9fec6d' : '#fe6767',
           yaxis: 'y3',
@@ -199,6 +208,8 @@
         layout_MR['shapes'].push(setMRFlags_options(line_shape));
       }
       layout_MR['yaxis3'] = setYAxis_MR(flags_yaxis);
+      layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
+      layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
 
       var data =[trace1, trace2, text];
 

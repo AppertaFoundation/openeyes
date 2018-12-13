@@ -19,7 +19,7 @@
 
 <section class="element view full priority">
     <header class="element-header">
-        <h3 class="element-title"><?= $element->elementType->name; ?></h3>
+        <h3 class="element-title"><?= $element->getAttributeLabel('schedule_options_id') ?></h3>
     </header>
     <div class="element-data full-width">
         <div class="cols-10">

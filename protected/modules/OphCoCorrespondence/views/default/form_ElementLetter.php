@@ -43,10 +43,6 @@ $creating = isset($creating) ? $creating : false;
   <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 <?php endif; ?>
 <div class="element-fields full-width flex-layout flex-top col-gap">
-    <?php
-    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-    if ($correspondeceApp === "on") {
-        ?>
       <div class="cols-3">
         <div class="data-group">
           <table class="cols-full">
@@ -64,6 +60,9 @@ $creating = isset($creating) ? $creating : false;
                       array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
               </td>
             </tr>
+            <?php
+            $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+            if ($correspondeceApp === "on") { ?>
             <tr>
               <td>
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -79,6 +78,7 @@ $creating = isset($creating) ? $creating : false;
                   ); ?>
               </td>
             </tr>
+            <?php } ?>
             </tbody>
           </table>
         </div>
@@ -95,7 +95,7 @@ $creating = isset($creating) ? $creating : false;
               </td>
               <td>
                   <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <tr>
@@ -114,7 +114,7 @@ $creating = isset($creating) ? $creating : false;
               <td>
                   <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
@@ -392,26 +392,7 @@ $creating = isset($creating) ? $creating : false;
                 From
               </td>
               <td>
-                  <?php
-                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                      'id' => 'OphCoCorrespondence_footerAutoComplete',
-                      'name' => 'OphCoCorrespondence_footerAutoComplete',
-                      'value' => '',
-                      'sourceUrl' => array('default/users/correspondence-footer/true'),
-                      'options' => array(
-                          'minLength' => '3',
-                          'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
-									$('#OphCoCorrespondence_footerAutoComplete').val('');
-									return false;
-								}",
-                      ),
-                      'htmlOptions' => array(
-                          'placeholder' => 'type to search for users',
-                          'class' => 'cols-full search',
-                      ),
-                  ));
-                  ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                   <?php echo $form->textArea($element, 'footer',
                       array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
               </td>
@@ -495,7 +476,6 @@ $creating = isset($creating) ? $creating : false;
           </table>
         </div>
       </div>
-    <?php } ?>
 </div>
 </section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
 <section class="element edit full edit-xxx">
@@ -528,6 +508,15 @@ $creating = isset($creating) ? $creating : false;
         "ElementLetter_body",
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + 'users/correspondence-footer/true',
+      onSelect: function(){
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+      }
+    });
   });
 </script>
 

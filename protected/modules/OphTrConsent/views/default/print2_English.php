@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="print-form-div <?php echo $css_class ?>">
+<main class="print-main">
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 2<br/>
@@ -82,7 +82,9 @@
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
-            <td><?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+            <td>
+                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
@@ -180,10 +182,6 @@
         local anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS') ? 'checked' : '' ?>"></span> sedation
     </div>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <p>
-        Contact details (if child/parent wishes to discuss options later)
-    <div class="dotted-write"></div>
-    </p>
     <br/>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
         <h3>Statement of interpreter</h3>
@@ -226,4 +224,4 @@
         <div class="dotted-write"></div>
         </p>
     <?php } ?>
-</div>
+</main>

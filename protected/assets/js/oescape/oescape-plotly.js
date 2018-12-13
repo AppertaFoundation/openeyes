@@ -36,7 +36,7 @@ var layout_plotly = {
   autosize: false,
   height: 800,
   margin:{
-    l:50,
+    l:70,
     t:30,
     b: 50,
     pad:4,
@@ -59,6 +59,7 @@ var layout_plotly = {
   hovermode: 'closest',
   spikedistance: -1,
   xaxis: {
+    type: 'date',
     showgrid: false,
     /*Ticks setting*/
     ticks: 'outside',
@@ -69,6 +70,7 @@ var layout_plotly = {
     tickfont: {
       color: '#fff',
     },
+    tickformat: '%b %d %Y',
     /*spike setting*/
     showspikes: true,
     spikecolor: '#3db0fb',

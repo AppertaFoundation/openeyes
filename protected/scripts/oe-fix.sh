@@ -24,7 +24,7 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
-norestart=0
+restart=0
 
 while [[ $# -gt 0 ]]
 do
@@ -49,9 +49,11 @@ do
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
-            -nr|--no-restart) norestart=1
-            ;;
-	    *)  echo "Unknown command line: $i"
+        -r|--restart) restart=1
+        ;;
+		--no-compile) #reserved for future use
+		;;
+	    *)  echo "Unknown command line: $p"
         ;;
     esac
 
@@ -75,6 +77,7 @@ if [ $showhelp = 1 ]; then
 	echo "  --no-dependencies  : Do not update composer or npm dependencies"
 	echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
 	echo "  --no-permissions : Do not reset file permissions"
+	echo "  --restart      : restart apache"
 	echo ""
     exit 1
 fi
@@ -120,11 +123,11 @@ if [ "$composer" == "1" ]; then
     echo "DEPENDENCIES BEING EVALUATED... $composerexta $npmextra"
 
 	echo "Installing/updating composer dependencies"
-	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
+	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
 	rm $WROOT/package-lock.json &> /dev/null
-	sudo npm update --no-save --prefix $WROOT $npmextra
+	sudo -E npm update --no-save --prefix $WROOT $npmextra
 
 	# If we've switched from dev to live, remove dev dependencies
 	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
@@ -198,7 +201,7 @@ git config core.fileMode false 2>/dev/null
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 
 # restart apache
-if [ "$norestart" == "0" ]; then
+if [ "$restart" == "1" ]; then
     echo -e "\nrestarting apache..\n"
     sudo service apache2 restart &> /dev/null
 fi

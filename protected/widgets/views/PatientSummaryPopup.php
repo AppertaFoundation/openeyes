@@ -231,7 +231,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
                 <td>
-                  <span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span>
+                  <span class="oe-date"><?= $date ?></span>
                 </td>
               </tr>
             <?php } ?>
@@ -258,7 +258,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                 <td>
                     <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
                 </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->dateText) ?></span></td>
+                <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
               </tr>
             <?php } ?>
             </tbody>
