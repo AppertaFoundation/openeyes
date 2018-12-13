@@ -101,7 +101,11 @@ class DrugController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $drug = Drug::model()->findByPk($id);
+        if ($id) {
+            $drug = Drug::model()->findByPk($id);
+        } else {
+            $drug = new Drug();
+        }
 
         $request = Yii::app()->getRequest();
 
@@ -126,77 +130,6 @@ class DrugController extends BaseAdminController
         $this->render('/oeadmin/drug/edit', array(
             'model' => $drug,
         ));
-        die;
-
-        $admin = new Admin(Drug::model(), $this);
-        if ($id) {
-            $admin->setModelId($id);
-        }
-        $admin->setModelDisplayName('Formulary Drugs');
-        $criteria = new CDbCriteria();
-        $admin->setEditFields(array(
-            'id' => 'label',
-            'name' => 'text',
-            'aliases' => 'text',
-            'tallman' => 'text',
-            'form_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugForm::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'dose_unit' => 'text',
-            'default_dose' => 'text',
-            'default_route_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugRoute::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => array('empty' => '-- Please select --'),
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'default_frequency_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => array('empty' => '-- Please select --'),
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'default_duration_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugDuration::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => array('empty' => '-- Please select --'),
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
-            'active' => 'checkbox',
-            'allergies' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'Allergy Warnings',
-                'options' => CHtml::encodeArray(CHtml::listData(
-                    Allergy::model()->findAll($criteria->condition = "name != 'Other'"),
-                    'id',
-                    'name'
-                )),
-            ),
-            'tags' => array(
-                'widget' => 'TagsInput',
-                'relation' => 'tags',
-                'relation_field_id' => 'id',
-                'label' => 'Tags',
-                /*'options' => CHtml::encodeArray(CHtml::listData(
-                    Tag::model()->findAll(),
-                    'id',
-                    'name'
-                )),*/
-                'htmlOptions' => array(
-                    'autocomplete_url' => $this->createUrl('/oeadmin/drug/tagsAutocomplete')
-                )
-            ),
-            'national_code' => 'text',
-        ));
-        $admin->editModel();
     }
 
     /**

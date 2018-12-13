@@ -46,11 +46,7 @@ class EventImageController extends BaseController
         $event = Event::model()->findByPk($event_id);
         if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
             // Then try to make it
-            $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
-            $runner = new CConsoleCommandRunner();
-            $runner->addCommands($commandPath);
-            $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event->id);
-            $runner->run($args);
+            EventImageManager::actionGenerateImage($event);
         }
 
         // Check again to see if it exists (an error might have occurred during generation)

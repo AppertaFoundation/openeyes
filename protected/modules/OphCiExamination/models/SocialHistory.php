@@ -238,4 +238,9 @@ class SocialHistory extends \BaseEventTypeElement
     {
         return implode(' <br /> ', $this->getEntries());
     }
+
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+
+    }
 }
