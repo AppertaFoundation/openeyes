@@ -361,7 +361,7 @@ foreach ($ethnic_list as $key=>$item){
                         <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
                             <ul class="oe-multi-select js-selected_gp">
                                 <li>
-                  <span class="name">
+                  <span class="js-name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>

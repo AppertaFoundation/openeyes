@@ -254,6 +254,8 @@ sudo chmod 0644 /etc/cron.d/eventimage
 fi
 
 echo ""
+bash $SCRIPTDIR/.set-profile.sh
+echo ""
 bash $SCRIPTDIR/oe-which.sh
 
 echo --------------------------------------------------
