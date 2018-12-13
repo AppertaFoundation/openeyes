@@ -333,15 +333,15 @@ foreach ($ethnic_list as $key=>$item){
                         <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                             <ul class="oe-multi-select js-selected_gp">
                                 <li>
-                                    <span class="js-name">
-                                    </span>
-                                    <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
-                                </li>
-                            </ul>
-                            <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class'=>'hidden_id')) ?>
 
-
-                        </div>
+                  <span class="js-name">
+                      <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
+                  </span>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
+                </li>
+              </ul>
+                <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
+            </div>
                         <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
                         <div id="no_gp_result" style="display: none;">
                             <div>No result</div>
