@@ -24,6 +24,7 @@ class DefaultController extends BaseEventTypeController
         'repeatForm' => self::ACTION_TYPE_FORM,
         'routeOptions' => self::ACTION_TYPE_FORM,
         'routeOptions' => self::ACTION_TYPE_FORM,
+        'addAllergicDrugsToAudit' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
@@ -664,6 +665,16 @@ class DefaultController extends BaseEventTypeController
             $this->showReasonForEdit($reason_id,$reason_other_text);
             parent::actionUpdate($id);
         }
+    }
+
+    public function actionAddAllergicDrugsToAudit($drugs , $allergies){
+        $allergyNames = [];
+        foreach(json_decode($allergies)as $allergy){
+            $allergyNames[] = Allergy::model()->findByPk($allergy)->name;
+        }
+
+        Audit::add('Prescription details' , 'addAllergies');
+        echo 1;
     }
 
 

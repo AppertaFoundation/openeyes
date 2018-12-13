@@ -126,6 +126,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             return [
                 'label' => $drug['name'],
                 'id' => $drug['id'],
+                'allergies' => CJSON::encode(array_map(function($allergy){
+                        return $allergy->id;
+                        } , $drug->allergies)),
             ];
         }, $element->commonDrugs())
     ) ?>;
@@ -138,6 +141,8 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             ];
         }, $element->drugTypes())
     ) ?>;
+
+    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
 
 </script>
 

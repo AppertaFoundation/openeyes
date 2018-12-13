@@ -131,6 +131,25 @@ function addSet(set_id) {
   }
 }
 
+function addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs)
+{
+   let selectedItemsWithoutAllergies = [];
+   let newItemsCounter = 0;
+    for (var index = 0; index < selectedItems.length; index++) {
+        if(!allergicDrugs.drugs.includes(selectedItems[index]['label'])) {
+            selectedItemsWithoutAllergies[newItemsCounter] = selectedItems[index];
+            newItemsCounter++;
+        }
+    }
+    addItems(selectedItemsWithoutAllergies);
+}
+
+function addItems(selectedItems){
+    for (var index = 0; index < selectedItems.length; index++) {
+        addItem(selectedItems[index].label, selectedItems[index].id);
+    }
+}
+
 // Add item to prescription
 function addItem(label, item_id) {
   // we need to call different functions for admin and public pages here
@@ -170,6 +189,32 @@ function getDispenseLocation(dispense_condition) {
   });
 }
 
+function getAllergicDrugs(drugEntries) {
+    let allergyCounter = 0;
+    let allergicDrugs = [];
+    let allergiesFromAllergicDrugs = [];
+    if (patientAllergies) {
+        for (let index = 0; index < drugEntries.length; index++) {
+            drugEntries[index]['allergies'].forEach(function (allergy) {
+                if (patientAllergies.includes(allergy)) {
+                    allergicDrugs[index] = drugEntries[index]['label'];
+                    if (allergiesFromAllergicDrugs.indexOf(allergy) < 0) {
+                        allergiesFromAllergicDrugs[allergyCounter] = allergy;
+                        allergyCounter++;
+                    }
+                }
+            });
+        }
+
+        return {
+            'drugs': allergicDrugs,
+            'allergies': allergiesFromAllergicDrugs
+        };
+    } else {
+        return false;
+    }
+}
+
 $(function () {
 
   new OpenEyes.UI.AdderDialog.PrescriptionDialog({
@@ -183,8 +228,34 @@ $(function () {
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
-      for (var i = 0; i < selectedItems.length; i++) {
-        addItem(selectedItems[i].label, selectedItems[i].id);
+        let allergicDrugs = getAllergicDrugs(selectedItems);
+        console.log(allergicDrugs);
+      if(allergicDrugs){
+          let dialog = new OpenEyes.UI.Dialog.Confirm({
+              content: "Patient is allergic to " +
+                  allergicDrugs.drugs.join() +
+                  ". Are you sure you want to add them?"
+          });
+          dialog.on('ok', function () {
+            addItems(selectedItems);
+               $.ajax({
+                   type: 'GET',
+                  url: 'AddAllergicDrugsToAudit',
+                   data: {drugs: JSON.stringify(allergicDrugs.drugs) , allergies: JSON.stringify(allergicDrugs.allergies) },
+                   success: function (response) {
+                   }
+                   }
+
+               )
+          //    removeElement($parent);
+          }.bind(this));
+
+          dialog.on('cancel' , function(){
+            addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs);
+          }.bind(this));
+          dialog.open();
+      } else {
+          addItems(selectedItems);
       }
     },
   });
