@@ -22,7 +22,7 @@
 		<h3 class="element-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
 	</header>
     <div class="box-info" style="position: relative; float: right; ">
-        <strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
+        <strong>open <?= $episodes_open?> &nbsp;|&nbsp;closed <?= $episodes_closed?></strong>
     </div>
 	<?php if (empty($episodes)) {?>
 		<div class="summary">No events</div>
@@ -42,16 +42,16 @@
                 <tbody>
                 <?php foreach ($ordered_episodes as $specialty_episodes) { ?>
                     <tr class="speciality">
-                        <td colspan="6"><?php echo $specialty_episodes['specialty'] ?></td>
+                        <td colspan="6"><?= $specialty_episodes['specialty'] ?></td>
                     </tr>
                     <?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
-                        <tr id="<?php echo $episode->id ?>"class="clickable all-episode <?php if ($episode->end_date !== null) { ?> closed<?php } ?>">
-                            <td><?php echo $episode->NHSDate('start_date'); ?></td>
-                            <td><?php echo $episode->NHSDate('end_date'); ?></td>
-                            <td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+                        <tr id="<?= $episode->id ?>"class="clickable all-episode <?php if ($episode->end_date !== null) { ?> closed<?php } ?>">
+                            <td><?= $episode->NHSDate('start_date'); ?></td>
+                            <td><?= $episode->NHSDate('end_date'); ?></td>
+                            <td><?= $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
                             <td><?= \CHtml::encode($episode->getSubspecialtyText()) ?></td>
-                            <td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
-                            <td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
+                            <td><?= ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
+                            <td><?= ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>

@@ -18,7 +18,7 @@
 ?>
 
 
-<section class="element view full view-xxx patient-info associated-data js-toggle-container">
+<section class="element view full patient-info associated-data js-toggle-container">
 	<header class="element-header">
 		<h3 class="element-title">
 			<span class="icon-patient-clinician-hd_flag"></span>

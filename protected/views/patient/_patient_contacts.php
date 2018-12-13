@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element view full view-xxx patient-info patient-contacts js-toggle-container">
+<section class="element view full patient-info patient-contacts js-toggle-container">
     <header class="element-header">
         <h3 class="element-title">Associated contacts</h3>
     </header>

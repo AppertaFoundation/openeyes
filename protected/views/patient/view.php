@@ -80,7 +80,7 @@ $warnings = $this->patient->getWarnings($clinical);
     </div>
     <div class="cols-half" id="patient-summary-form-container">
         <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
-          <section class="element view full view-xxx patient-info internalreferral internalreferral-doclist">
+          <section class="element view full patient-info internalreferral internalreferral-doclist">
               <?=\CHtml::link('View patient referrals', $component->generateUrlForDocumentList($this->patient)); ?>
             <i class="spinner" title="Loading..." style="display: none;"></i>
             <span>e-WinDIP</span>
