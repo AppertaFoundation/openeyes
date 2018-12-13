@@ -438,7 +438,9 @@ foreach ($ethnic_list as $key=>$item){
                 <div id="no_practice_result" style="display: none;">
                     <div>No result</div>
                 </div>
+                <?php if (Yii::app()->user->checkAccess('Create Practice')) { ?>
                 <a id="js-add-practice-btn" href="#">Add Practice</a>
+                <?php } ?>
             </td>
         </tr>
         <tr>

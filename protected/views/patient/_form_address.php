@@ -78,9 +78,9 @@
 
 <tr>
   <td>
-      <?= $form->labelEx($address, 'county') ?>
+      <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
     <br/>
-      <?= $form->error($address, 'county') ?>
+      <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
       <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
