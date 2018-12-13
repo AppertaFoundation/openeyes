@@ -6,9 +6,9 @@ function removeSelectedContactLabel() {
 }
 function addItem(wrapper_id, ui){
     var $wrapper = $('#' + wrapper_id);
-    $wrapper.find('span.name').text(ui.item.label);
+    $wrapper.find('.js-name').text(ui.item.label);
     $wrapper.show();
-    $wrapper.find('.hidden_id').val(ui.item.id);
+    $wrapper.find('.hidden_id').val(ui.item.value);
 }
 $(document).ready(function () {
     $('#selected_contact_label_wrapper').on('click', '.remove', function () {
