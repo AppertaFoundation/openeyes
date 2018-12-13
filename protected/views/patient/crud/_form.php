@@ -350,11 +350,10 @@ foreach ($ethnic_list as $key=>$item){
                             $("#no_gp_result").hide();
                         }
                     }',
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'Search GP',
-                            ),
-
+                  ),
+                  'htmlOptions' => array(
+                      'placeholder' => 'Search '.Yii::app()->params['gp_label'],
+                  ),
                         )); ?>
 
 
