@@ -41,8 +41,8 @@
                     $info = $this->patient->getOPHInfo();
                     ?>
                     <tr>
-                        <td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
-                        <td><?php echo $info->cvi_status->name; ?></td>
+                        <td><?= Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
+                        <td><?= $info->cvi_status->name; ?></td>
                     </tr>
                 </tbody>
             </table>

@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="element view full view-xxx patient-info episodes">
+<section class="element view full patient-info episodes">
 	<header class="element-header">
 		<h3 class="element-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
 	</header>

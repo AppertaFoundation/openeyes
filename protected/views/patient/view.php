@@ -33,7 +33,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 		<?php if ($this->patient->isDeceased()) {?>
       <div id="deceased-notice" class="alert-box alert with-icon">
-        This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+        This patient is deceased (<?= $this->patient->NHSDate('date_of_death'); ?>)
       </div>
 		<?php }?>
 
@@ -46,8 +46,8 @@ $warnings = $this->patient->getWarnings($clinical);
 		<?php if ($warnings) { ?>
       <div class="alert-box patient with-icon">
           <?php foreach ($warnings as $warn) {?>
-            <strong><?php echo $warn['long_msg']; ?></strong>
-            - <?php echo $warn['details']; }?>
+            <strong><?= $warn['long_msg']; ?></strong>
+            - <?= $warn['details']; }?>
       </div>
 		<?php }?>
 
