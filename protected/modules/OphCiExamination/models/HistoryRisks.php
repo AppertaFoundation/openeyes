@@ -104,15 +104,10 @@ class HistoryRisks extends \BaseEventTypeElement
         // use previous session's entries
         $entries = $this->entries;
 
-        // array of risks selected in previous session
-        $previous_session_risks = [];
-        foreach ($this->entries as $entry) {
-            $previous_session_risks[] = $entry->risk->id;
-        }
-
-        foreach ($element->entries as $entry) {
-            // add only the entries from DB that were not in the previous session
-            if (!in_array($entry->risk->id, $previous_session_risks)) {
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
                 $new = new HistoryRisksEntry();
                 $new->loadFromExisting($entry);
                 $entries[] = $new;

@@ -121,18 +121,25 @@ class FamilyHistory extends \BaseEventTypeElement
     }
 
     /**
-     * @param \BaseEventTypeElement $element
+     * @param FamilyHistory $element
      * @inheritdoc
      */
     public function loadFromExisting($element)
     {
+        // use previous session's entries
+        $entries = $this->entries;
         $this->no_family_history_date = $element->no_family_history_date;
-        $entries = array();
-        foreach ($element->entries as $entry) {
-            $new = new FamilyHistory_Entry();
-            $new->loadFromExisting($entry);
-            $entries[] = $new;
+
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new = new FamilyHistory_Entry();
+                $new->loadFromExisting($entry);
+                $entries[] = $new;
+            }
         }
+
         $this->entries = $entries;
     }
 
@@ -182,10 +189,5 @@ class FamilyHistory extends \BaseEventTypeElement
         } else {
             return implode(' <br /> ', $this->entries);
         }
-    }
-
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-
     }
 }
