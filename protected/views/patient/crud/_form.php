@@ -163,7 +163,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -204,8 +204,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -333,7 +333,7 @@ foreach ($ethnic_list as $key=>$item){
                         <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                             <ul class="oe-multi-select js-selected_gp">
                                 <li>
-
+                                  
                   <span class="js-name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
@@ -359,7 +359,7 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
               <?= $form->error($patient, 'practice_id') ?>
