@@ -167,7 +167,7 @@ function addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs)
 {
    let selectedItemsWithoutAllergies = [];
    let newItemsCounter = 0;
-    for (var index = 0; index < selectedItems.length; index++) {
+    for (let index = 0; index < selectedItems.length; index++) {
         if(!allergicDrugs.drugs.includes(selectedItems[index]['label'])) {
             selectedItemsWithoutAllergies[newItemsCounter] = selectedItems[index];
             newItemsCounter++;
@@ -177,7 +177,7 @@ function addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs)
 }
 
 function addItems(selectedItems){
-    for (var index = 0; index < selectedItems.length; index++) {
+    for (let index = 0; index < selectedItems.length; index++) {
         addItem(selectedItems[index].label, selectedItems[index].id);
     }
 }
