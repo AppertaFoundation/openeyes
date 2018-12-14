@@ -132,9 +132,55 @@ class Prescription extends OpenEyesPage {
 		),
 		'eventSummaryPage'=> array(
 			'xpath'=>"//*[@class='inline-list tabs event-actions']//*[contains(text(),'View')]"
-		)
-	)
-	;
+		),
+        //new code from here
+        'addPrescriptionBtn'=>array(
+          'xpath'=>"//*[@id='add-prescription-btn']"
+        ),
+        'searchBar'=>array(
+            'css'=>'.search.cols-full.js-search-autocomplete'
+        ),
+        'drugList'=>array(
+            'css'=>'.oe-add-select-search.auto-width'
+        ),
+        'drugSearchList'=>array(
+            'css'=>'.add-options.js-search-results'
+        ),
+        'dispenseCondition'=>array(
+            'xpath'=>"//*[@id='prescription_item_0_dispense_condition_id']"
+        ),
+        'dispenseLocation'=>array(
+            'xpath'=>"//*[@id='prescription_item_0_dispense_location_id']"
+        ),
+	);
+	//new code from here
+	public function addDrugs($drug){
+	    $this->getElement('addPrescriptionBtn')->click();
+	    $this->getElement('searchBar')->setValue($drug);
+        $this->getSession()->wait( 5000 );
+
+        $this->elements['common_drug_val'] = array(
+	        'css'=>'li[data-value=\''.$drug.'\']'
+        );
+
+	    $this->getElement('drugSearchList')->find('xpath',$this->getElement('common_drug_val')->getXpath())->click();
+
+    }
+    public function confirmDrugAdded(){
+
+        foreach ($this->findAll('css','.add-icon-btn') as $btn){
+            if ($btn->isVisible()){
+                $btn->click();
+            }
+        }
+	}
+	public function selectDispenseCondition($condition){
+        $this->getElement('dispenseCondition')->selectOption($condition);
+    }
+    public function selectDespenseLocation($location){
+        $this->getElement('dispenseLocation')->selectOption($location);
+    }
+
 	public function filterBy($filter) {
 		$this->getElement ( 'filterBy' )->selectOption ( $filter );
 	}
@@ -199,7 +245,7 @@ class Prescription extends OpenEyesPage {
 		$this->getElement ( 'prescriptionFrequencyItem0' )->selectOption ( $frequency );
 	}
 	public function durationItem1($duration) {
-		$this->getElement ( 'prescriptionDurationItem0' )->setValue ( $duration );
+		$this->getElement ( 'prescriptionDurationItem0' )->selectOption( $duration );
 		$this->getSession ()->wait ( 1000 );
 	}
 	public function comments($comments) {

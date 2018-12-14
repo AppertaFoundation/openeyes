@@ -1069,8 +1069,9 @@ class Examination extends OpenEyesPage {
         $this->elements['Allergy_val'] = array(
             'css' => 'li[data-label='.$allergy.']'
         );
+        $this->elements['confirmAddButton'] = array('css'=>'.add-icon-btn');
         $this->getElementAtChain(['Allergy', 'allergyPopup', 'Allergy_val'])->click();
-        $this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAdderButton'])->click();
+        $this->getElementAtChain(['Allergy', 'allergyPopup', 'confirmAddButton'])->click();
     }
 
     /***
