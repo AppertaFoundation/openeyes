@@ -51,13 +51,11 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . "[id]", $values['operation']); ?>
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
-            <?=\CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Enter procedure name',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'class' => 'common-operation',
-                'readonly'=> true
-            )); ?>
+            <div class="common-operation">
+                <?= $values['operation'] ?>
+            </div>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+            <input type="hidden" name="<?=$field_prefix?>[operation]" value="<?= $values['operation'] ?>" />
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
