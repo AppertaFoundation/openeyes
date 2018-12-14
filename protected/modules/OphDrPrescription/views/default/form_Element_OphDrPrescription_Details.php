@@ -17,6 +17,7 @@
  */
 ?>
 <?php
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/allergicDrugs.js", \CClientScript::POS_HEAD);
 // we need to separate the public and admin view
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);

@@ -106,6 +106,38 @@ function addRepeat() {
   });
 }
 
+function processSetEntries(set_id)
+{
+    $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs", {
+        set_id: set_id
+    }, function (data) {
+        let allergicDrugs = new OpenEyes.OphDrPrescription.AllergicDrugsController(JSON.parse(data) , patientAllergies)
+            .getAllergicDrugsWithAllergies();
+        if(allergicDrugs) {
+            let dialog = new OpenEyes.UI.Dialog.Confirm({
+                content: "Patient is allergic to " +
+                    allergicDrugs.drugs.join() +
+                    ". Are you sure you want to add them?"
+            });
+            dialog.on('ok', function () {
+                addSet(set_id);
+                $.ajax({
+                        type: 'GET',
+                        url: 'AddAllergicDrugsToAudit',
+                        data: {
+                            drugs: JSON.stringify(allergicDrugs.drugs),
+                            allergies: JSON.stringify(allergicDrugs.allergies)
+                        },
+                        success: function (response) {
+                        }
+                    }
+                )
+            }.bind(this));
+            dialog.open();
+        }
+    });
+}
+
 // Add set to prescription
 function addSet(set_id) {
   // we need to call different functions for admin and public pages here
@@ -189,32 +221,6 @@ function getDispenseLocation(dispense_condition) {
   });
 }
 
-function getAllergicDrugs(drugEntries) {
-    let allergyCounter = 0;
-    let allergicDrugs = [];
-    let allergiesFromAllergicDrugs = [];
-    if (patientAllergies) {
-        for (let index = 0; index < drugEntries.length; index++) {
-            drugEntries[index]['allergies'].forEach(function (allergy) {
-                if (patientAllergies.includes(allergy)) {
-                    allergicDrugs[index] = drugEntries[index]['label'];
-                    if (allergiesFromAllergicDrugs.indexOf(allergy) < 0) {
-                        allergiesFromAllergicDrugs[allergyCounter] = allergy;
-                        allergyCounter++;
-                    }
-                }
-            });
-        }
-
-        return {
-            'drugs': allergicDrugs,
-            'allergies': allergiesFromAllergicDrugs
-        };
-    } else {
-        return false;
-    }
-}
-
 $(function () {
 
   new OpenEyes.UI.AdderDialog.PrescriptionDialog({
@@ -228,8 +234,7 @@ $(function () {
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
-        let allergicDrugs = getAllergicDrugs(selectedItems);
-        console.log(allergicDrugs);
+        let allergicDrugs = new OpenEyes.OphDrPrescription.AllergicDrugsController(selectedItems , patientAllergies).getAllergicDrugsWithAllergies();
       if(allergicDrugs){
           let dialog = new OpenEyes.UI.Dialog.Confirm({
               content: "Patient is allergic to " +
@@ -265,7 +270,7 @@ $(function () {
     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionDrugSets)],
     onReturn: function (adderDialog, selectedItems) {
       for (let i = 0; i < selectedItems.length; ++i) {
-        addSet(selectedItems[i].id);
+          processSetEntries(selectedItems[i].id);
       }
     }
   });
