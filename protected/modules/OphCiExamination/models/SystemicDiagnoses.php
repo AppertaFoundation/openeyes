@@ -161,7 +161,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         if ($patient) {
             $diagnoses = $this->diagnoses ? $this->diagnoses : [];
 
-            if(!isset($_POST['OEModule_OphCiExamination_models_SystemicDiagnoses'])) {
                 $both = array(true, false);
                 foreach ($both as $present) {
                     foreach ($patient->getSystemicDiagnoses($present) as $sd) {
@@ -178,7 +177,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                         }
                     }
                 }
-            }
             $this->diagnoses = $diagnoses;
         }
     }
