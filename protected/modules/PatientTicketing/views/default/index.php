@@ -54,6 +54,7 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
     <?php $this->renderPartial('ticketlist', [
         'tickets' => $tickets,
         'queueset' => $queueset,
+        'category' => $category,
         'qs_svc' => $qs_svc,
     ]); ?>
 </div>
