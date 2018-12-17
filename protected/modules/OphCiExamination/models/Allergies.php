@@ -153,18 +153,13 @@ class Allergies extends \BaseEventTypeElement
         // use previous session's entries
         $entries = $this->entries;
 
-        // array of allergies selected in previous session
-        $previous_session_allergies = [];
-        foreach ($this->entries as $entry) {
-            $previous_session_allergies[] = $entry->allergy_id;
-        }
-
-        foreach ($element->entries as $entry) {
-            // add only the entries from DB that were not in the previous session
-            if (!in_array($entry->allergy_id, $previous_session_allergies)) {
-                $new = new AllergyEntry();
-                $new->loadFromExisting($entry);
-                $entries[] = $new;
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new_entry = new AllergyEntry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
             }
         }
         $this->entries = $entries;
