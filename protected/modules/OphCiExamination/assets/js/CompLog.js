@@ -1,24 +1,21 @@
 function CompLogConnection(){
-	let self = this;
 	this.dialog = null;
 	this.compLogCallbackQueue = null;
 	this.latestHl7Data = null;
 	this.initialiseCompLogDialog();
 	this.establishConnection();
 	this.pollForTestResults();
-	this.compLogCallbackQueue.add_function(function(){
-		self.dialog.setTitle('COMPLog test in progress');
-		self.dialog.on('ok', function(){
-			self.importCompLogResults.call(self);
+	this.compLogCallbackQueue.add_function(() => {
+		this.dialog.setTitle('COMPLog test in progress');
+		this.dialog.on('ok', () => {
+			this.importCompLogResults();
 			$("#complog_iframe").remove(); // need to add this for on cancel too
-			self.dialog.destroy();
-			self.dialog = null;
+			this.dialog.destroy();
+			this.dialog = null;
 		});
 		$('.ok').show();
 	});
 }
-
-
 
 CompLogConnection.prototype.isCompLogConnectedOnWS = function() {
     let status = false;
@@ -149,7 +146,7 @@ CompLogConnection.prototype.requestHl7TestResults = function(successCallback=$.n
 
 CompLogConnection.prototype.importCompLogResults = function() {
 	//addMessageToFadeContent("Getting test results from COMPLog...");
-	this.requestHl7TestResults(this.updateLatestPolledHl7.bind(this));
+	this.requestHl7TestResults(this.updateLatestPolledHl7);
 	this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)));
             //var hl7parser = require("hl7parser");
             //$('.visualAcuityReading ').append(data.Message);
