@@ -89,7 +89,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                                 if($target->ToCc == 'To'){
                                     $toAddress = $target->contact_name . "\n" . $target->address;
                                 } else {
-                                    $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                    $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
 
                                     $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                                 }
@@ -133,7 +133,7 @@ $correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
                         if($target->ToCc == 'To'){
                             $toAddress = $target->contact_name . "\n" . $target->address;
                         } else {
-                            $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                              $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                         }
                     }

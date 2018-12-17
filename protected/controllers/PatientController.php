@@ -203,6 +203,7 @@ class PatientController extends BaseController
     {
         $term = \Yii::app()->request->getParam('term', '');
 
+
         $patientSearch = new PatientSearch();
       $dataProvider = $patientSearch->search($term);
       $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
@@ -233,6 +234,10 @@ class PatientController extends BaseController
                 $message .= 'found for your search.';
             }
             Yii::app()->user->setFlash('warning.no-results', $message);
+
+
+            Yii::app()->session['search_term'] = $term;
+            Yii::app()->session->close();
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
@@ -779,7 +784,7 @@ class PatientController extends BaseController
         }
 
         // Don't assign the patient's own GP
-        if ($contact->label == 'General Practitioner') {
+        if ($contact->label == Yii::app()->params['general_practitioner_label']) {
             if ($gp = Gp::model()->find('contact_id=?', array($contact->id))) {
                 if ($gp->id == $patient->gp_id) {
                     return;
@@ -1704,7 +1709,6 @@ class PatientController extends BaseController
         $referral = null;
         $patient_user_referral = null;
         $patient_identifiers = $this->getPatientIdentifiers($patient);
-
         $this->performAjaxValidation(array($patient, $contact, $address));
 
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
@@ -1753,7 +1757,7 @@ class PatientController extends BaseController
           // Don't save if the user just changed the "Patient Source"
           if ($_POST["changePatientSource"] == 0) {
             list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-              $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+             $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
           } else {
             // Return the same page to the user without saving
             // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
@@ -1828,17 +1832,15 @@ class PatientController extends BaseController
                 $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
                 $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
                 $success = $patient->save() && $address->save();
-                if ($success) {
-                    list($success, $patient_identifiers) = $this->performIdentifierSave($patient, $patient_identifiers);
-                }
 
                 if ($success) {
+                    list($success, $patient_identifiers) = $this->performIdentifierSave($patient, $patient_identifiers);
                   if (isset($referral)) {
                     if (!isset($referral->patient_id)) {
                       $referral->patient_id = $patient->id;
                     }
-
                     if ($referral->save()) {
+                        $this->actionPerformReferralDoc($patient,$referral, $_FILES);
                       if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
                         if (!isset($patient_user_referral->patient_id)) {
                           $patient_user_referral->patient_id = $patient->id;
@@ -1864,7 +1866,7 @@ class PatientController extends BaseController
                         } else {
                           Audit::add('Patient', $action . '-patient',
                             "Patient manually [id: $patient->id] {$action}ed.");
-                          $this->redirect(array('view', 'id' => $patient->id));
+                            $this->redirect(array('/OphCoDocument/Default/create?patient_id='.$patient->id));
                         }
                       }
                     } else {
@@ -2230,4 +2232,48 @@ class PatientController extends BaseController
 
         echo CJSON::encode($result);
     }
+
+
+    public function actionPerformReferralDoc($patient)
+    {
+        if (isset($_POST['PatientReferral'])) {
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+            $episode->support_services = false;
+            $episode->start_date = date('Y-m-d H:i:s');
+            if ($episode->save()) {
+                $event = new Event();
+                $event->episode_id = $episode->id;
+                $event->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+                $event->event_type_id = EventType::model()->findByAttributes(array(
+                    'name' => 'Document'
+                ))->id;
+                if ($event->save(true, null, true)) {
+                    foreach ($_FILES as $file) {
+                        $tmp_name = $file["tmp_name"]["uploadedFile"];
+                        $p_file = ProtectedFile::createFromFile($tmp_name);
+                        $p_file->name = $file["name"]["uploadedFile"];
+                        if ($p_file->save()) {
+                            unlink($tmp_name);
+                            $document = new Element_OphCoDocument_Document();
+                            $document->patientId = $patient->id;
+                            $document->event_id = $event->id;
+                            $document->event = $event;
+                            $document->single_document_id = $p_file->id;
+                            $document->event_sub_type = 3;
+                            $document->single_document = $p_file;
+                            if ($document->save()) {
+                                return;
+                            }
+                        } else {
+                            unlink($tmp_name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }
