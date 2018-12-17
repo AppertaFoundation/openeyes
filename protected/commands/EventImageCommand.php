@@ -140,11 +140,18 @@ EOH;
     {
         $this->deleteEventImagesForEvent($event);
         $url = 'http://localhost/' . $event->eventType->class_name . '/default/createImage/' . $event->id;
-        Yii::log('Curling URL "' . $url);
+
+        if (@Yii::app()->params['lightning_viewer']['debug_logging']){
+            Yii::log('Curling URL "' . $url);
+        }
+
         curl_setopt($this->curlConnection, CURLOPT_URL, $url);
         $content = curl_exec($this->curlConnection);
         $http_code = curl_getinfo($this->curlConnection, CURLINFO_HTTP_CODE);
-        Yii::log('Result: ' . $http_code);
+
+        if (@Yii::app()->params['lightning_viewer']['debug_logging']) {
+            Yii::log('Result: ' . $http_code);
+        }
     }
 
     private function deleteEventImagesForEvent($event)
