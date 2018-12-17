@@ -1,5 +1,8 @@
 function CompLogConnection(){
 	let self = this;
+	this.dialog = null;
+	this.compLogCallbackQueue = null;
+	this.latestHl7Data = null;
 	this.initialiseCompLogDialog();
 	this.establishConnection();
 	this.pollForTestResults();
@@ -15,9 +18,7 @@ function CompLogConnection(){
 	});
 }
 
-CompLogConnection.dialog = null;
-CompLogConnection.compLogCallbackQueue = null;
-CompLogConnection.latestHl7Data = null;
+
 
 CompLogConnection.prototype.isCompLogConnectedOnWS = function() {
     let status = false;
@@ -289,10 +290,10 @@ CompLogConnection.prototype.initialiseCompLogDialog = function(){
 		title: 'COMPLog',
 		okButton: 'Pull COMPLog Results',
 		templateSelector: '#dialog-complog-template'});
-	this.dialog.on('cancel', function(){
-		$("#complog_iframe").remove();
+	this.dialog.on('cancel', () => {
 		this.dialog.destroy();
 		this.dialog = null;
+		$("#complog_iframe").remove();
 	});
 	this.dialog.open();
 };
