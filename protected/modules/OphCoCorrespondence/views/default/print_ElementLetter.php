@@ -86,8 +86,8 @@ if (!@$no_header) {?>
         array('order' => 't.display_order asc')
     );
 
-    if($associated_content){
-        ?>
+    if($associated_content){?>
+        <br>
         Attachments:
         <?php
         $attachments = array();
