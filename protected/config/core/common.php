@@ -377,12 +377,17 @@ return array(
                     'position' => 10,
                     'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
-// temporarily disabled
-//			'worklist' => array(
-//				'title' => 'Worklists',
-//				'uri' => '/worklist',
-//				'position' => 3,
-//			),
+                'analytics' => array(
+                  'title' => 'Analytics',
+                  'uri' => '/Analytics/medicalRetina',
+                  'position' => 11,
+                ),
+          // temporarily disabled
+                'worklist' => array(
+                  'title' => 'Worklists',
+                  'uri' => '/worklist',
+                  'position' => 3,
+                ),
         ),
         'admin_menu' => array(
         ),
