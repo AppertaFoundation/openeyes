@@ -84,3 +84,11 @@ $(function () {
   });
 
 });
+
+function addGpItem(wrapper_id, ui){
+    var $wrapper = $('#' + wrapper_id);
+    var JsonObj = JSON.parse(ui);
+    $wrapper.find('span.js-name').text(JsonObj.label);
+    $wrapper.show();
+    $wrapper.find('.hidden_id').val(JsonObj.id);
+}

@@ -963,7 +963,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
     public static function dump_table_fields($table, $selected = false)
     {
-        echo '<option value="">- Please select a field -</option>';
+        echo '<option value="">Select</option>';
 
         $tableSchema = Yii::app()->getDb()->getSchema()->getTable($table);
 
@@ -1268,7 +1268,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
             case 'Date picker':
                 return '<?php echo $form->datePicker($element, \''.$field['name'].'\', array(\'maxDate\' => \'today\'), array(\'style\'=>\'width: 110px;\'))?'.'>';
             case 'Dropdown list':
-                return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
+                return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'Select\')' : '').')?'.'>';
             case 'Textarea with dropdown':
                 return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>'."\n".
                     '	<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
@@ -1308,7 +1308,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		?>
 		</div>';
             case 'Multi select':
-                return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'- Please select -\', \'label\' => \''.$field['label'].'\'))?'.'>';
+                return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'Select\', \'label\' => \''.$field['label'].'\'))?'.'>';
             case 'Slider':
                 return '<?php echo $form->slider($element, \''.$field['name'].'\', array(\'min\' => '.$field['slider_min_value'].', \'max\' => '.$field['slider_max_value'].', \'step\' => '.$field['slider_stepping'].($field['slider_dp'] ? ', \'force_dp\' => '.$field['slider_dp'] : '').'))?'.'>';
         }

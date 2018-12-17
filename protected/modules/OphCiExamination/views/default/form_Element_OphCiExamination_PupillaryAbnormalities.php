@@ -58,7 +58,7 @@
               <td>
                   <?php echo $form->dropDownList($element, $eye_side . '_abnormality_id',
                       $this->getPupilliaryAbnormalitiesList($element->{$eye_side . '_abnormality_id'}),
-                      array('empty' => '-- Select --', 'nowrapper' => true),
+                      array('empty' => 'Select', 'nowrapper' => true),
                       false, array('nowrapper' => true)); ?>
               </td>
             </tr>

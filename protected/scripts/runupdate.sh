@@ -178,12 +178,6 @@ if [ "$force" = 0 ]; then
             echo "--ignore-local switch applied - continuing"
         fi
   	fi
-else
-	# delete dependencies during force (they will get re-added by oe-fix)
-	sudo rm -rf $WROOT/node_modules
-
-    # echo "Resetting core. Any uncomitted changes have been lost..."
-    # git reset -C $WROOT --hard
 fi
 
 

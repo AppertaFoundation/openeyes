@@ -20,7 +20,7 @@
 <?php
 $html_options = array(
     'options' => array(),
-    'empty' => '- Please select -',
+    'empty' => 'Select',
     'div_id' => get_class($element) . '_' . $side . '_complications',
     'label' => 'Complications',
 );

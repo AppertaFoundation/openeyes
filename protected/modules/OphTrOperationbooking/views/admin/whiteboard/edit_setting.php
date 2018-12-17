@@ -34,14 +34,6 @@
         ),
     )) ?>
 
-    <?php if ($metadata->key == 'city_road_satellite_view') { ?>
-        <div class="cols-12 column">
-            <div class="alert-box with-icon warning">Removes the 2 check-boxes from Examination->Clinical
-                Management->Cataract Surgical Management named "At City Road" and "At Satellite"
-            </div>
-        </div>
-    <?php } ?>
-
     <table class="standard cols-full" id="finding-table">
         <colgroup>
             <col class="cols-8">

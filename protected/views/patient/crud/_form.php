@@ -163,7 +163,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -204,8 +204,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -322,7 +322,7 @@ foreach ($ethnic_list as $key=>$item){
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'gp_id') ?>
             <br/>
               <?= $form->error($patient, 'gp_id') ?>
@@ -340,6 +340,7 @@ foreach ($ethnic_list as $key=>$item){
               </ul>
                 <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
             </div>
+                        <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
             <div id="no_gp_result" style="display: none;">
               <div>No result</div>
             </div>
@@ -355,7 +356,7 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
               <?= $form->error($patient, 'practice_id') ?>
@@ -446,7 +447,7 @@ foreach ($ethnic_list as $key=>$item){
 
     <div class="row flex-layout flex-right">
         <?= CHtml::submitButton($patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint', 'id' => 'patient-form-submit-button')); ?>
+            array('class' => 'button green hint')); ?>
     </div>
   </div>
 </div>
@@ -472,7 +473,26 @@ foreach ($ethnic_list as $key=>$item){
   });
 </script>
 
-<script type="text/javascript">
+<?php
+$gpcontact = new Contact('manage_gp');
+$this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
+?>
+
+
+<script>
+    $('#js-cancel-add-practitioner').click(function(event){
+        event.preventDefault();
+        $("#gp-form")[0].reset();
+        $("#errors").text("");
+        $(".alert-box").css("display","none");
+        $('#js-add-practitioner-event').css('display','none');
+    });
+    $('#js-add-practitioner-btn').click(function(event){
+        $('#js-add-practitioner-event').css('display','');
+        return false;
+    });
+
+
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();
     var last_name = $('#Contact_last_name').val();
