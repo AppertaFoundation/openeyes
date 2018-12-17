@@ -65,7 +65,7 @@ echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 export DEBIAN_FRONTEND=noninteractive
 
 # use minimal amount of memory swapping
-sudo sysctl vm.swappiness=1
+sudo sysctl vm.swappiness=10
 
 # update system packages
 sudo apt-get update
