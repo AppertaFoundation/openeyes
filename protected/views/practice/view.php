@@ -53,11 +53,13 @@ $this->pageTitle = 'View Practice';
                 </table>
                 <div class="align-right">
                 <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
-                <button class="button hint blue pad pro-theme"
-                        href="<?= $this->createUrl('/practice/update', array('id' => $model->id))?>"
+              <a  href="<?= $this->createUrl('/practice/update', array('id' => $model->id))?>">
+                  <button class="button hint blue pad pro-theme"
+
                 >
                     Update Practice Details
                 </button>
+              </a>
                 <?php endif; ?>
                 </div>
             </div>

@@ -39,10 +39,12 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <tr>
                     <?php if (Yii::app()->user->checkAccess('TaskCreatePractice')): ?>
                     <td>
-                        <button class="button hint green" href="<?=$this->createUrl('/practice/create')?>">
+                        <a href="<?=$this->createUrl('/practice/create')?>">
+                        <button class="button hint green">
                             <i class="oe-i plus pad pro-theme"></i>
                             Create Practice
                         </button>
+                        </a>
                     </td>
                     <?php endif; ?>
                     <td colspan="7">
