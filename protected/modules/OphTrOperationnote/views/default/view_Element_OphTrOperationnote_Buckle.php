@@ -36,7 +36,7 @@
           ));
           ?>
       </div>
-      <div class="eyedraw-data cols-5">
+      <div class="eyedraw-data cols-9">
         <table class="label-value no-lines last-left">
           <colgroup>
             <col class="cols-5">

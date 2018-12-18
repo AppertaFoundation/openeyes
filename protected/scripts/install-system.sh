@@ -49,13 +49,6 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-# Verify we are running as root
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
-fi
-
-
 function found_error() {
 	echo "******************************************"
 	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
@@ -72,7 +65,7 @@ echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 export DEBIAN_FRONTEND=noninteractive
 
 # use minimal amount of memory swapping
-sudo sysctl vm.swappiness=1
+sudo sysctl vm.swappiness=10
 
 # update system packages
 sudo apt-get update
@@ -137,23 +130,23 @@ sudo rm wkhtml.deb
 if [ ! "$dependonly" = "1" ]; then
 
   # Enable display_errors and error logging for PHP, plus configure timezone
-  mkdir /var/log/php 2>/dev/null || :
-  chown www-data /var/log/php
-	chown www-data /var/log/php
-	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^;date.timezone =/date.timezone = \"Europe\/London\"/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/cli/php.ini
-	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/cli/php.ini
-	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
-	sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/cli/php.ini
+  sudo mkdir /var/log/php 2>/dev/null || :
+  sudo chown www-data /var/log/php
+  sudo chown www-data /var/log/php
+  sudo sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/cli/php.ini
 
 	if [ ! sudo timedatectl set-timezone ${TZ:-'Europe/London'} ]; then
-		 ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
+		 sudo ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
 	fi
 
-	a2enmod rewrite
+	sudo a2enmod rewrite
     ## TODO: Decide a clen way to add bash environment 'fixes'
     # cp /vagrant/install/bashrc /etc/bash.bashrc
     # source /vagrant/install/bashrc
@@ -175,10 +168,10 @@ fi
 
 # Install php composer if we are not in live mode (not needed in production environments)
 if [ "$OE_MODE" != "LIVE" ]; then
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-    mv composer.phar /usr/local/bin/composer
+    sudo php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    sudo php composer-setup.php
+    sudo php -r "unlink('composer-setup.php');"
+    sudo mv composer.phar /usr/local/bin/composer
 fi
 
 # ensure mcrypt has been installed sucesfully

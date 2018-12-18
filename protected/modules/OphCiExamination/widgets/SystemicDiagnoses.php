@@ -45,7 +45,6 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     protected function setElementFromDefaults()
     {
         $this->element->storePatientUpdateStatus();
-        parent::setElementFromDefaults();
     }
 
     /**
