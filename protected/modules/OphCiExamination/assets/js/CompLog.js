@@ -1,40 +1,99 @@
-function CompLogConnection(){
+function CompLogConnection() {
+	let self = this;
 	this.dialog = null;
-	this.compLogCallbackQueue = null;
 	this.latestHl7Data = null;
+	this.isConnectedToCompLog = false;
+	this.attemptDelay = 1000; //should be constant
+	this.maxAttempts = 30; // should be constant
 	this.initialiseCompLogDialog();
-	this.establishConnection();
-	this.pollForTestResults();
-	this.compLogCallbackQueue.add_function(() => {
-		this.dialog.setTitle('COMPLog test in progress');
-		this.dialog.on('ok', () => {
-			this.importCompLogResults();
-			$("#complog_iframe").remove(); // need to add this for on cancel too
-			this.dialog.destroy();
-			this.dialog = null;
+	this.checkConnectionToWS()
+		.fail(() => {
+			console.log('opening iframe');
+			this.openInIframe("oeLauncher:complog");
+			sleep(100);
+		})
+		.always(() => {
+			for (let i = 0; i < self.maxAttempts; i++) {
+				console.log(`start of for loop ${i}`);
+				let tryToConnect = new Promise((resolve, reject) => setTimeout(() => {
+					if (self.isConnectedToCompLog) {
+						console.log(`Whoops! Looks like a connection has already been established ${i}`);
+						reject(new Error("Whoops! Looks like a connection has already been established"));
+					}
+					else {
+						$.ajax({
+							type: 'GET',
+							url: "http://localhost:" + OE_COMPLog_port + "/info",
+							dataType: 'json',
+							contentType: 'application/json; charset=utf-8',
+							crossDomain: true,
+							success: () => {
+								if (!self.isConnectedToCompLog) { //check again in case a different response has established the connection already
+									console.log(`Yayaya we were first to find a connection! ${i}`);
+									self.isConnectedToCompLog = true;
+									resolve(`Yayaya we found a connection! ${i}`);
+								}
+								else {
+									console.log(`another ajax call got a response first :( ${i}`);
+									reject(new Error(`another ajax call got a response first :( ${i}`));
+								}
+							},
+							error: () => {
+								console.log(`no connection success yet ${i}`);
+								reject(new Error(`no connectoin succeess yet ${i}`));
+							}
+						});
+					}
+				}, self.attemptDelay * i));
+				tryToConnect
+					.then(() => {
+						console.log('hello');
+						sleep(3000);
+						console.log('wakey wakey !!');
+					}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
+					.then(self.COMPLogDischargePatient)
+					.then(self.COMPLogPresetTest)
+					.then(self.pollForTestResults.bind(self))
+					.then(() => {
+						this.dialog.setTitle('COMPLog test in progress');
+						this.dialog.on('ok', () => {
+							this.importCompLogResults();
+							$("#complog_iframe").remove(); // need to add this for on cancel too
+							this.dialog.destroy();
+							this.dialog = null;
+						});
+						$('.ok').show();
+					});
+			}
 		});
-		$('.ok').show();
-	});
 }
 
-CompLogConnection.prototype.isCompLogConnectedOnWS = function() {
-    let status = false;
-    $.ajax({
-        type: 'GET',
-        url: "http://localhost:"+OE_COMPLog_port+"/info",
-        dataType: 'json',
-        async: false,
-        contentType: 'application/json; charset=utf-8',
-        crossDomain: true,
-        success: function(response) {
-            status = true;
-        }
+CompLogConnection.prototype.initialiseCompLogDialog = function(){
+	this.dialog = new OpenEyes.UI.Dialog.Confirm({
+		title: 'COMPLog',
+		okButton: 'Pull COMPLog Results',
+		templateSelector: '#dialog-complog-template'});
+	this.dialog.on('cancel', () => {
+		this.dialog.destroy();
+		this.dialog = null;
+		$("#complog_iframe").remove();
+	});
+	this.dialog.open();
+};
+
+CompLogConnection.prototype.checkConnectionToWS = function() {
+	console.log('checkConnectionToWS');
+    return $.ajax({
+			type: 'GET',
+			url: "http://localhost:"+OE_COMPLog_port+"/info",
+			dataType: 'json',
+			contentType: 'application/json; charset=utf-8',
+			crossDomain: true,
     });
-    return status;
 };
 
 CompLogConnection.prototype.COMPLogPresetTest = function() {
-    addMessageToFadeContent("Waiting for COMPLog results...");
+    console.log('COMPLogPresetTest()');
     let requestData = {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||ZPT^ZTP^ZPT_ZTP|MSG100|P|2.4\nEVN|ZTP|20050110045502|||||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC\nZTP|COMPlogThresholding"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -50,32 +109,12 @@ CompLogConnection.prototype.COMPLogPresetTest = function() {
 };
 
 CompLogConnection.prototype.updateLatestPolledHl7 = function(newLatest){
+	console.log('updateLatestPolledHl7');
 	this.latestHl7Data = newLatest;
 };
 
-/*
-***This method is unused, but was previously left here, so unclear if intended to be used***
-CompLogConnection.prototype.COMPLogCheckTestResults = function() {
-    let requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTS|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|0150311798|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
-    $.ajax({
-        url: "http://localhost:"+OE_COMPLog_port+"/hl7",
-        data: JSON.stringify(requestData),
-        dataType: "json",
-        contentType: "application/json; charset=UTF-8",
-        type: "POST",
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-        	let hl7 = data.Message;
-        },
-        error: function (x, y, z) {
-            //alert(x.responseText +"  " +x.status);
-        }
-    });
-};
-*/
-
 CompLogConnection.prototype.COMPLogDischargePatient = function() {
+	console.log('discahrge patient');
     let requestData = {"Message": "MSH|^~\&|ADT1|COMPLOG|COMPLOG|COMPLOG|198808181126|SECURITY|ADT^A03|MSG00001|P|2.4\nEVN|A01-|198808181123\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -123,33 +162,32 @@ CompLogConnection.prototype.convertHl7ToArray = function(hl7Data){
 };
 
 CompLogConnection.prototype.pollForTestResults = function(){
-	this.requestHl7TestResults(this.updateLatestPolledHl7.bind(this));
-	if(this.dialog){
-		setTimeout(this.pollForTestResults.bind(this), 1000);
+	console.log('pollForTestResults()')
+	if(this.dialog) { //checks that the CompLog dialog is actually still open before continuing the polling process
+		this.getHl7TestResults()
+			.done((data) => {this.updateLatestPolledHl7.call(this, data);})
+			.done(() => {setTimeout(this.pollForTestResults.bind(this), 1000);});
 	}
 };
 
-CompLogConnection.prototype.requestHl7TestResults = function(successCallback=$.noop, errorCallback=$.noop){
+CompLogConnection.prototype.getHl7TestResults = function(){
+	console.log('getHl7TestResults()');
 	let requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTR|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|100437363|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
-	$.ajax({
+	return $.ajax({
 		url: "http://localhost:" + OE_COMPLog_port + "/hl7",
 		data: JSON.stringify(requestData),
 		dataType: "json",
 		contentType: "application/json; charset=UTF-8",
 		type: "POST",
 		crossDomain: true,
-		async: false,
-		success: data => successCallback(data),
-		error: (jqXHR, textStatus, errorThrown) => errorCallback(jqXHR, textStatus, errorThrown)
 	});
 };
 
 CompLogConnection.prototype.importCompLogResults = function() {
-	//addMessageToFadeContent("Getting test results from COMPLog...");
-	this.requestHl7TestResults(this.updateLatestPolledHl7);
-	this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)));
-            //var hl7parser = require("hl7parser");
-            //$('.visualAcuityReading ').append(data.Message);
+	console.log(`impotCompLogResults()`);
+	this.getHl7TestResults()
+		.done( data => {this.updateLatestPolledHl7.call(this, data);} )
+		.always( () => {this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)))} );
 };
 
 function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
@@ -186,6 +224,7 @@ function OphCiExamination_VisualAcuity_getMethodData(methodName) {
 }
 
 CompLogConnection.prototype.saveResultsToOE = function(resultsArray) {
+	console.log(`saveResultsToOE(${resultsArray})`);
     unit = $("#visualacuity_unit_change option:selected").html();
     resultsArray.forEach(function(element) {
         let selected_data = {};
@@ -206,6 +245,7 @@ CompLogConnection.prototype.saveResultsToOE = function(resultsArray) {
 };
 
 function sleep(milliseconds) {
+	console.log(`sleep(${milliseconds})`);
     let start = new Date().getTime();
     for (let i = 0; i < 1e7; i++) {
         if ((new Date().getTime() - start) > milliseconds){
@@ -214,86 +254,15 @@ function sleep(milliseconds) {
     }
 }
 
-let Queue = (function(){
-    function Queue() {}
-    Queue.prototype.running = false;
-    Queue.prototype.queue = [];
-    Queue.prototype.add_function = function(callback) {
-        var _this = this;
-        //add callback to the queue
-        this.queue.push(function(){
-            var finished = callback();
-            if(typeof finished === "undefined" || finished) {
-                //  if callback returns `false`, then you have to
-                //  call `next` somewhere in the callback
-                _this.next();
-            }
-        });
-        if(!this.running) {
-            // if nothing is running, then start the engines!
-            this.next();
-        }
-        return this; // for chaining fun!
-    };
-
-    Queue.prototype.next = function(){
-        this.running = false;
-        //get the first element off the queue
-        var shift = this.queue.shift();
-        if(shift) {
-            this.running = true;
-            shift();
-        }
-    };
-    return Queue;
-})();
-
 CompLogConnection.prototype.openInIframe = function(url){
-    $('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
+	console.log(`openInIframe(${url})`);
+	$('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
 };
 
 function addMessageToFadeContent(msg)
 {
     $(".fadeContent").append(msg+"<br>");
 }
-
-CompLogConnection.prototype.establishConnection = function(){
-	let self = this;
-	this.compLogCallbackQueue = new Queue;
-	if(!this.isCompLogConnectedOnWS()){
-		this.compLogCallbackQueue.add_function(function(){
-			self.openInIframe("oeLauncher:complog");
-			sleep(100);
-		});
-	}
-
-	this.compLogCallbackQueue.add_function(function(){
-		setTimeout(function() {
-			var maxRetry = 30;
-			var retry = 0;
-			while((!self.isCompLogConnectedOnWS()) && (retry < maxRetry)) {
-				sleep(1000);
-				retry++;
-			}
-			sleep(5000);
-			self.COMPLogDischargePatient(); //makes sure the there are no lingering results from old previous COMPLog session
-			self.compLogCallbackQueue.add_function(self.COMPLogPresetTest);
-		}, 10);
-	});
-};
-
-CompLogConnection.prototype.initialiseCompLogDialog = function(){
-	this.dialog = new OpenEyes.UI.Dialog.Confirm({
-		title: 'COMPLog',
-		okButton: 'Pull COMPLog Results',
-		templateSelector: '#dialog-complog-template'});
-	this.dialog.on('cancel', () => {
-		this.dialog.destroy();
-		this.dialog = null;
-		$("#complog_iframe").remove();
-	});
-	this.dialog.open();
-};
 
 $(document).on("click", "#et_complog", function(event){
     event.preventDefault();
