@@ -63,12 +63,13 @@ if (!@$no_header) {?>
 	<?php echo $element->renderFooter() ?>
 </p>
 
+<div class="spacer"></div>
+    <h5>
+        <?php
+        echo($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>') : '');
+        echo($ccString ? $ccString : ''); ?>
+    </h5>
 <p nobr="true">
-<?php
-    echo ($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>' ) : '');
-    echo ($ccString ? $ccString : '');
-    ?>
-
 <?php if ($element->enclosures) {?>
 <?php
     foreach ($element->enclosures as $enclosure) {?>
