@@ -1,3 +1,10 @@
+function CompLogConnectionError(message) {
+	this.name = 'CompLogConnectionError';
+	this.message = message;
+	this.stack = (new Error()).stack;
+}
+CompLogConnectionError.prototype = new Error;
+
 function CompLogConnection() {
 	let self = this;
 	this.dialog = null;
@@ -40,18 +47,14 @@ function CompLogConnection() {
 							},
 							error: () => {
 								console.log(`no connection success yet ${i}`);
-								reject(new Error(`no connectoin succeess yet ${i}`));
+								reject(new CompLogConnectionError(`no connectoin succeess yet ${i}`));
 							}
 						});
 					}
 				}, self.attemptDelay * i));
 				tryToConnect
-					.then(() => {
-						console.log('hello');
-						sleep(3000);
-						console.log('wakey wakey !!');
-					}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
-					.then(self.COMPLogDischargePatient)
+					.then(() => {sleep(3000);}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
+					.then(self.COMPLogDischargePatient) //try see if setTimeOut works instead of sleep.
 					.then(self.COMPLogPresetTest)
 					.then(self.pollForTestResults.bind(self))
 					.then(() => {
@@ -63,6 +66,14 @@ function CompLogConnection() {
 							this.dialog = null;
 						});
 						$('.ok').show();
+					})
+					.catch((error) => {
+						if(i >= self.maxAttempts - 1 && error.name === 'CompLogConnectionError'){
+							self.dialog.destroy();
+							self.dialog = null;
+							$("#complog_iframe").remove();
+							console.log('took too long to connect with CompLog');
+						}
 					});
 			}
 		});
