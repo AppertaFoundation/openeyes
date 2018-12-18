@@ -134,6 +134,8 @@ function processSetEntries(set_id)
                 )
             }.bind(this));
             dialog.open();
+        } else {
+            addSet(set_id);
         }
     });
 }

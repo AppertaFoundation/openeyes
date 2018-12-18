@@ -51,10 +51,14 @@ OpenEyes.OphDrPrescription = OpenEyes.OphDrPrescription || {};
     };
 
     AllergicDrugsController.prototype.getAllergicDrugsWithAllergies = function () {
-        return {
-            'drugs': this.allergicDrugs,
-            'allergies': this.allergiesFromAllergicDrugs
-        };
+        if(this.allergicDrugs.length !== 0) {
+            return {
+                'drugs': this.allergicDrugs,
+                'allergies': this.allergiesFromAllergicDrugs
+            };
+        } else {
+            return false;
+        }
     };
 
     exports.AllergicDrugsController = AllergicDrugsController;
