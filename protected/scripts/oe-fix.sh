@@ -173,7 +173,7 @@ fi
 if [ $noperms = 0 ]; then
     sudo gpasswd -a "$USER" www-data # add current user to www-data group
 	echo "Resetting file permissions..."
-    if [ `stat -c '%U' $WROOT` != $USER ] || [ `stat -c '%G' $WROOT` != "www-data" ]; then
+    if [ $(stat -c '%U' $WROOT) != $USER ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
         echo "updaing ownership on $WROOT"
         sudo chown -R "$USER":www-data $WROOT
     else
@@ -185,7 +185,7 @@ if [ $noperms = 0 ]; then
 
     for i in "${folders774[@]}"
     do
-        if [ `stat -c %a "$i"` != 774 ] || [ $forceperms == 1 ]; then
+        if [ $(stat -c %a "$i") != 774 ] || [ $forceperms == 1 ]; then
             echo "updating $i to 774..."
             sudo chmod -R 774 $i
         else
@@ -196,12 +196,12 @@ if [ $noperms = 0 ]; then
     touch $WROOT/protected/runtime/testme
     touch $WROOT/protected/files/testme
 
-    if [ `stat -c '%U' $WROOT/protected/runtime/testme` != $USER ] || [ `stat -c '%G' $WROOT/protected/runtime/testme` != "www-data" ] || [ `stat -c %a "$WROOT/protected/runtime/testme"` != 774 ]; then
+    if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
         echo "setting sticky bit for protected/runtime"
         sudo chmod -R g+s $WROOT/protected/runtime
     fi
 
-    if [ `stat -c '%U' $WROOT/protected/files/testme` != $USER ] || [ `stat -c '%G' $WROOT/protected/files/testme` != "www-data" ] || [ `stat -c %a "$WROOT/protected/files/testme"` != 774 ]; then
+    if [ $(stat -c '%U' $WROOT/protected/files/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
         echo "setting sticky bit for protected/files"
         sudo chmod -R g+s $WROOT/protected/files
     fi
