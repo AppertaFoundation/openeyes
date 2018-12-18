@@ -138,21 +138,21 @@ abstract class BaseMedicationElement extends \BaseEventTypeElement
      */
     public function getRouteOptions()
     {
-        return \RefMedicationRoute::model()->findAll('deleted_date IS NULL');
+        return \MedicationRoute::model()->findAll('deleted_date IS NULL');
     }
     /**
      * @return \CActiveRecord[]
      */
     public function getFrequencyOptions()
     {
-        return \RefMedicationFrequency::model()->findAll('deleted_date IS NULL');
+        return \MedicationFrequency::model()->findAll('deleted_date IS NULL');
     }
     /**
      * @return \CActiveRecord[]
      */
     public function getLateralityOptions()
     {
-        return \RefMedicationLaterality::model()->findAll('deleted_date IS NULL');
+        return \MedicationLaterality::model()->findAll('deleted_date IS NULL');
     }
     /**
      * Assorts entries into current, closed and prescribed sets

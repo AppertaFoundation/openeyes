@@ -28,7 +28,7 @@
         <h3 class="element-title">Eye Medications</h3>
     </header>
     <?php foreach ($visible_sections as $key=>$section_name): ?>
-        <?php $entries = array_filter($element->$key, function($e){ return in_array($e->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
+        <?php $entries = array_filter($element->$key, function($e){ return in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
         <?php if(!empty($entries)): ?>
             <div class="label"><?php echo $section_name; ?>:</div>
             <div class="element-data">
@@ -62,7 +62,7 @@
         <h3 class="element-title">Systemic Medications</h3>
     </header>
     <?php foreach ($visible_sections as $key=>$section_name): ?>
-        <?php $entries = array_filter($element->$key, function($e){ return !in_array($e->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
+        <?php $entries = array_filter($element->$key, function($e){ return !in_array($e->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL )); }); ?>
         <?php if(!empty($entries)): ?>
             <div class="label"><?php echo $section_name; ?>:</div>
             <div class="element-data">

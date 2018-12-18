@@ -144,7 +144,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return RefMedication[]
+     * @return Medication[]
      */
     public function commonDrugs()
     {
@@ -152,7 +152,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
+        return Medication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -161,11 +161,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      * @param $site_id
      * @param $subspecialty_id
      *
-     * @return RefMedication[]
+     * @return Medication[]
      */
     public function commonDrugsBySiteAndSpec($site_id, $subspecialty_id)
     {
-        return RefMedication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
+        return Medication::model()->getSiteSubspecialtyMedications($site_id, $subspecialty_id);
     }
 
     /**
@@ -173,7 +173,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: move this out of the model - it's not the right place for it as it's relying on session information
      *
-     * @return RefSet[]
+     * @return MedicationSet[]
      */
     public function drugSets()
     {
@@ -181,8 +181,8 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $params = array(':subspecialty_id' => $subspecialty_id);
 
-        return RefSet::model()->with("refSetRules")->findAll(array(
-            "condition" => "refSetRules.subspecialty_id = :subspecialty_id AND usage_code = 'Drug' AND refSetRules.deleted_date IS NULL",
+        return MedicationSet::model()->with("medicationSetRules")->findAll(array(
+            "condition" => "medicationSetRules.subspecialty_id = :subspecialty_id AND usage_code = 'Drug' AND medicationSetRules.deleted_date IS NULL",
             "order" => "name",
             "params" => $params
         ));
@@ -214,8 +214,8 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function drugTypes()
     {
-        return Chtml::listData(RefSet::model()->with("refSetRules")->findAll(array(
-            "condition" => "usage_code = 'DrugTag' AND refSetRules.deleted_date IS NULL",
+        return Chtml::listData(MedicationSet::model()->with("medicationSetRules")->findAll(array(
+            "condition" => "usage_code = 'DrugTag' AND medicationSetRules.deleted_date IS NULL",
             "order" => "name",
         )), 'id', 'name');
     }
@@ -301,7 +301,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                     // Item is new
                     $item_model = new OphDrPrescription_Item();
                     $item_model->event_id = $this->event_id;
-                    $item_model->ref_medication_id = $item['ref_medication_id'];
+                    $item_model->medication_id = $item['medication_id'];
                 }
 
                 // Save main item attributes
@@ -347,7 +347,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         if (!$this->draft) {
             $this->getApp()->event->dispatch('after_medications_save', array(
                 'patient' => $this->event->getPatient(),
-                'ref_medications' => array_map(function($item) {return $item->refMedication; }, $this->items)
+                'medications' => array_map(function($item) {return $item->medication; }, $this->items)
             ));
         }
     }

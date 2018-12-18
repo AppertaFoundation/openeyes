@@ -289,7 +289,7 @@ class MedicationManagement extends BaseMedicationElement
         $item->dose = $entry->dose;
         $item->frequency_id = $entry->frequency_id;
         $item->route_id = $entry->route_id;
-        $item->ref_medication_id = $entry->ref_medication_id;
+        $item->medication_id = $entry->medication_id;
 
         /* We can't get defaults as we don't know from which set the medication comes - so we're hard-coding :-( */
 

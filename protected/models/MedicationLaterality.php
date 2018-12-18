@@ -1,31 +1,29 @@
 <?php
 
 /**
- * This is the model class for table "ref_medication_allergy_assignment".
+ * This is the model class for table "medication_laterality".
  *
- * The followings are the available columns in table 'ref_medication_allergy_assignment':
+ * The followings are the available columns in table 'medication_laterality':
  * @property integer $id
- * @property integer $ref_medication_id
- * @property string $allergy_id
+ * @property string $name
+ * @property string $deleted_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property Allergy $allergy
- * @property RefMedication $refMedication
- * @property User $createdUser
  * @property User $lastModifiedUser
+ * @property User $createdUser
  */
-class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
+class MedicationLaterality extends BaseActiveRecordVersioned
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'ref_medication_allergy_assignment';
+		return 'medication_laterality';
 	}
 
 	/**
@@ -36,13 +34,13 @@ class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('ref_medication_id, allergy_id', 'required'),
-			array('ref_medication_id', 'numerical', 'integerOnly'=>true),
-			array('allergy_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('last_modified_date, created_date', 'safe'),
+			array('name', 'required'),
+			array('name', 'length', 'max'=>40),
+			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+			array('deleted_date, last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, ref_medication_id, allergy_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, name, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,10 +52,8 @@ class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'allergy' => array(self::BELONGS_TO, 'Allergy', 'allergy_id'),
-			'refMedication' => array(self::BELONGS_TO, 'RefMedication', 'ref_medication_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 		);
 	}
 
@@ -68,8 +64,8 @@ class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'ref_medication_id' => 'Ref Medication',
-			'allergy_id' => 'Allergy',
+			'name' => 'Name',
+			'deleted_date' => 'Deleted Date',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -96,8 +92,8 @@ class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('ref_medication_id',$this->ref_medication_id);
-		$criteria->compare('allergy_id',$this->allergy_id,true);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('deleted_date',$this->deleted_date,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
@@ -112,10 +108,32 @@ class RefMedicationAllergyAssignment extends BaseActiveRecordVersioned
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return RefMedicationAllergyAssignment the static model class
+	 * @return MedicationLaterality the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * @param array $ids
+     * @return $this
+     *
+     * Returns active items or those that match $ids
+     */
+
+    public function activeOrPk($ids = [])
+    {
+        $crit = new CDbCriteria();
+        $crit->condition = "deleted_date IS NULL";
+        $crit->addInCondition('id', $ids, 'OR');
+        $this->getDbCriteria()->mergeWith($crit);
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

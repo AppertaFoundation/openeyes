@@ -1007,7 +1007,7 @@ class AdminController extends \ModuleAdminController
                 'label_field' => 'ref_set_id',
                 'extra_fields' => array(
                     array('field' => 'ref_set_id', 'type' => 'lookup',
-                        'model' => \RefSet::class, ),
+                        'model' => \MedicationSet::class, ),
                 ),
             )
         );

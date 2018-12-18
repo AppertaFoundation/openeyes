@@ -20,26 +20,26 @@ class RefMedicationSetAdminController extends BaseAdminController
     public function actionList()
     {
         $ref_set_id = Yii::app()->request->getParam('ref_set_id');
-        $refSet = RefSet::model()->findByPk($ref_set_id);
+        $medSet = MedicationSet::model()->findByPk($ref_set_id);
 
-        $admin = new Admin(RefMedicationSet::model(), $this);
+        $admin = new Admin(MedicationSetItem::model(), $this);
         $admin->setListFields(array(
-            'refMedication.preferred_term',
+            'medication.preferred_term',
         ));
 
-        $admin->getSearch()->addSearchItem('refMedication.preferred_term');
+        $admin->getSearch()->addSearchItem('medication.preferred_term');
         $admin->getSearch()->setItemsPerPage(30);
         $crit = new CDbCriteria();
         $crit->order = 'id ASC';
-        $crit->condition = 'ref_set_id = '.$refSet->id;
+        $crit->condition = 'medication_set_id = '.$medSet->id;
         $admin->getSearch()->setCriteria($crit);
 
         $admin->setIsSubList(true);
         $admin->setSubListParent(array(
-            'ref_set_id' => $refSet->id
+            'medication_set_id' => $medSet->id
         ));
 
-        $admin->setModelDisplayName("Medications in set '{$refSet->name}'");
+        $admin->setModelDisplayName("Medications in set '{$medSet->name}'");
         $admin->setForceTitleDisplay(true);
         $admin->setForceFormDisplay(true);
         
@@ -50,29 +50,29 @@ class RefMedicationSetAdminController extends BaseAdminController
 
     public function actionMedEditRedir($id)
     {
-        $ref_med_id = RefMedicationSet::model()->findByPk($id)->ref_medication_id;
+        $ref_med_id = MedicationSetItem::model()->findByPk($id)->ref_medication_id;
         $this->redirect('/OphDrPrescription/RefMedicationAdmin/edit/'.$ref_med_id);
     }
 
     public function actionEdit($id = null)
     {
-        $admin = new Admin(RefMedicationSet::model(), $this);
+        $admin = new Admin(MedicationSetItem::model(), $this);
 
         $ref_set_id =  Yii::app()->request->getParam('default')['ref_set_id'];
-        $refSet = RefSet::model()->findByPk($ref_set_id);
+        $medSet = MedicationSet::model()->findByPk($ref_set_id);
 
         $admin->setEditFields(array(
-            'ref_medication_id'=> array(
+            'medication_id'=> array(
                 'widget' => 'RefMedicationLookup',
                 'label' => 'Medication',
                 'options' => array(
-                    'hiddenFieldName' => 'RefMedicationSet[ref_medication_id]',
+                    'hiddenFieldName' => 'MedicationSetItem[medication_id]',
                     'markupAfter' => '<br/>'
                 )
             ),
-            'ref_set_id' => 'hidden'
+            'medication_set_id' => 'hidden'
         ));
-        $admin->setModelDisplayName("medication to set '{$refSet->name}'");
+        $admin->setModelDisplayName("medication to set '{$medSet->name}'");
         if($id) {
             $admin->setModelId($id);
         }
@@ -82,10 +82,10 @@ class RefMedicationSetAdminController extends BaseAdminController
 
     public function actionDelete()
     {
-        $ids_to_delete = Yii::app()->request->getPost('RefMedicationSet')['id'];
+        $ids_to_delete = Yii::app()->request->getPost('MedicationSetItem')['id'];
         if(is_array($ids_to_delete)) {
             foreach ($ids_to_delete as $id) {
-                $model = RefMedicationSet::model()->findByPk($id);
+                $model = MedicationSetItem::model()->findByPk($id);
                 $model->delete();
             }
         }

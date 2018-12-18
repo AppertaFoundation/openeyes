@@ -3,16 +3,16 @@
 use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 
 /**
- * This is the model class for table "event_medication_uses".
+ * This is the model class for table "event_medication_use".
  *
- * The followings are the available columns in table 'event_medication_uses':
+ * The followings are the available columns in table 'event_medication_use':
  * @property integer $id
  * @property string $event_id
  * @property string $copied_from_med_use_id
  * @property integer $first_prescribed_med_use_id
  * @property string $usage_type
  * @property string $usage_subtype
- * @property integer $ref_medication_id
+ * @property integer $medication_id
  * @property integer $form_id
  * @property integer $laterality
  * @property double $dose
@@ -38,13 +38,13 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Event $event
- * @property RefMedicationForm $form
- * @property RefMedicationFrequency $frequency
- * @property RefMedication $refMedication
- * @property RefMedicationRoute $route
+ * @property MedicationForm $form
+ * @property MedicationFrequency $frequency
+ * @property Medication $medication
+ * @property MedicationRoute $route
  * @property HistoryMedicationsStopReason $stopReason
  * @property EventMedicationUse $prescriptionItem
- * @property RefMedicationLaterality $refMedicationLaterality
+ * @property MedicationLaterality $medicationLaterality
  * @property DrugDuration $drugDuration
  */
 
@@ -84,7 +84,7 @@ class EventMedicationUse extends BaseElement
 	 */
 	public function tableName()
 	{
-		return 'event_medication_uses';
+		return 'event_medication_use';
 	}
 
 	/**
@@ -95,8 +95,8 @@ class EventMedicationUse extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('usage_type, ref_medication_id, start_date_string_YYYYMMDD', 'required'),
-			array('first_prescribed_med_use_id, ref_medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
+			array('usage_type, medication_id, start_date_string_YYYYMMDD', 'required'),
+			array('first_prescribed_med_use_id, medication_id, form_id, laterality, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, stop_reason_id, prescription_item_id, prescribe, hidden', 'numerical', 'integerOnly'=>true),
 			array('dose', 'numerical'),
 			array('laterality', 'validateLaterality'),
 			array('event_id, copied_from_med_use_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -109,7 +109,7 @@ class EventMedicationUse extends BaseElement
             array('stop_reason_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, ref_medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, event_id, copied_from_med_use_id, first_prescribed_med_use_id, usage_type, usage_subtype, medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, dispense_location_id, dispense_condition_id, start_date_string_YYYYMMDD, end_date_string_YYYYMMDD, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -118,7 +118,7 @@ class EventMedicationUse extends BaseElement
      */
     public function validateLaterality()
     {
-        if (!$this->laterality && $this->route_id && in_array($this->route_id, array(RefMedicationRoute::ROUTE_EYE, RefMedicationRoute::ROUTE_INTRAVITREAL))) {
+        if (!$this->laterality && $this->route_id && in_array($this->route_id, array(MedicationRoute::ROUTE_EYE, MedicationRoute::ROUTE_INTRAVITREAL))) {
             $this->addError('option_id', "You must specify laterality for route '{$this->route->term}'");
         }
     }
@@ -129,7 +129,7 @@ class EventMedicationUse extends BaseElement
 
     public function copiedFields()
     {
-        return ['usage_type', 'usage_subtype', 'ref_medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
+        return ['usage_type', 'usage_subtype', 'medication_id', 'start_date_string_YYYYMMDD', 'end_date_string_YYYYMMDD', 'first_prescribed_med_use_id',
                 'form_id', 'laterality', 'route_id', 'frequency_id', 'duration', 'dispense_location_id', 'dispense_condition_id', 'stop_reason_id', 'prescription_item_id',
                 'dose', 'copied_from_med_use_id', 'dose_unit_term'];
 	}
@@ -146,13 +146,13 @@ class EventMedicationUse extends BaseElement
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'form' => array(self::BELONGS_TO, 'RefMedicationForm', 'form_id'),
-			'frequency' => array(self::BELONGS_TO, 'RefMedicationFrequency', 'frequency_id'),
-			'refMedication' => array(self::BELONGS_TO, 'RefMedication', 'ref_medication_id'),
-			'route' => array(self::BELONGS_TO, 'RefMedicationRoute', 'route_id'),
+			'form' => array(self::BELONGS_TO, MedicationForm::class, 'form_id'),
+			'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
+			'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
+			'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
             'stopReason' => array(self::BELONGS_TO, HistoryMedicationsStopReason::class, 'stop_reason_id'),
             'prescriptionItem' => array(self::BELONGS_TO, self::class, 'prescription_item_id'),
-            'refMedicationLaterality' => array(self::BELONGS_TO, RefMedicationLaterality::class, 'laterality'),
+            'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
             'drugDuration' => array(self::BELONGS_TO, DrugDuration::class, 'duration')
 		);
 	}
@@ -169,7 +169,7 @@ class EventMedicationUse extends BaseElement
 			'first_prescribed_med_use_id' => 'First Prescribed Med Use',
 			'usage_type' => 'Usage Type',
 			'usage_subtype' => 'Usage Subtype',
-			'ref_medication_id' => 'Ref Medication',
+			'medication_id' => 'Medication',
 			'form_id' => 'Form',
 			'laterality' => 'Laterality',
 			'dose' => 'Dose',
@@ -212,7 +212,7 @@ class EventMedicationUse extends BaseElement
 		$criteria->compare('first_prescribed_med_use_id',$this->first_prescribed_med_use_id);
 		$criteria->compare('usage_type',$this->usage_type,true);
 		$criteria->compare('usage_subtype',$this->usage_subtype,true);
-		$criteria->compare('ref_medication_id',$this->ref_medication_id);
+		$criteria->compare('medication_id',$this->medication_id);
 		$criteria->compare('form_id',$this->form_id);
 		$criteria->compare('laterality',$this->laterality);
 		$criteria->compare('dose',$this->dose);
@@ -258,17 +258,17 @@ class EventMedicationUse extends BaseElement
 
     public function getMedicationDisplay($short = false)
     {
-        return isset($this->refMedication) ? ($short ? $this->refMedication->short_term : $this->refMedication->preferred_term) : '';
+        return isset($this->medication) ? ($short ? $this->medication->short_term : $this->medication->preferred_term) : '';
     }
 
     public function routeOptions()
     {
-        return RefMedicationLaterality::model()->findAll();
+        return MedicationLaterality::model()->findAll();
     }
 
     public function getLateralityDisplay()
     {
-        $lname = $this->refMedicationLaterality ? $this->refMedicationLaterality->name : '';
+        $lname = $this->medicationLaterality ? $this->medicationLaterality->name : '';
         switch (strtolower($lname)) {
             case 'left':
                 return 'L';
@@ -302,7 +302,7 @@ class EventMedicationUse extends BaseElement
     public function getAdministrationDisplay()
     {
         $res = array();
-        foreach (array('dose', 'dose_unit_term', 'refMedicationLaterality', 'route', 'frequency') as $k) {
+        foreach (array('dose', 'dose_unit_term', 'medicationLaterality', 'route', 'frequency') as $k) {
             if ($this->$k) {
                 $res[] = $this->$k;
             }
@@ -499,7 +499,7 @@ class EventMedicationUse extends BaseElement
             $this->cloneFromPrescriptionItem($item);
         } else {
             // need to check if the prescription item still has the same values
-            foreach (array('ref_medication_id', 'dose', 'route_id', 'frequency_id') as $attr) {
+            foreach (array('medication_id', 'dose', 'route_id', 'frequency_id') as $attr) {
                 if ($this->$attr != $item->$attr) {
                     $this->prescription_not_synced = true;
                     break;
@@ -521,7 +521,7 @@ class EventMedicationUse extends BaseElement
 
     private function clonefromPrescriptionItem($item)
     {
-        $attrs = ['ref_medication_id', 'refMedication', 'route_id', 'route', 'laterality', 'refMedicationLaterality',
+        $attrs = ['medication_id', 'medication', 'route_id', 'route', 'laterality', 'medicationLaterality',
                   'dose', 'frequency_id', 'frequency', 'start_date_string_YYYYMMDD'];
         foreach ($attrs as $attr) {
             $this->$attr = $item->$attr;

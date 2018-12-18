@@ -84,17 +84,17 @@ class OphDrPrescription_Item extends EventMedicationUse
         return $this->getMedicationDisplay();
     }
 
-    public function loadDefaults(RefSet $set)
+    public function loadDefaults(MedicationSet $set)
     {
-        if ($this->ref_medication_id) {
+        if ($this->medication_id) {
 
-            $defaults = RefMedicationSet::model()->find(array(
-                'condition' => 'ref_set_id = :ref_set_id AND ref_medication_id = :ref_medication_id',
-                'params' => array(':ref_set_id' => $set->id, ':ref_medication_id' => $this->ref_medication_id)
+            $defaults = MedicationSetItem::model()->find(array(
+                'condition' => 'medication_set_id = :med_set_id AND medication_id = :medication_id',
+                'params' => array(':med_set_id' => $set->id, ':medication_id' => $this->medication_id)
             ));
 
             if($defaults) {
-                /** @var RefMedicationSet $defaults */
+                /** @var MedicationSetItem $defaults */
                 $this->frequency_id = $defaults->default_frequency;
                 $this->route_id = $defaults->default_route;
                 $this->dose = $defaults->default_dose;

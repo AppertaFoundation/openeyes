@@ -122,8 +122,8 @@ foreach ($items_data as $group => $items) { ?>
         /** @var OphDrPrescription_Item $item */
         ?>
         <tr
-                class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->ref_medication_id)) { ?> allergyWarning<?php } ?>">
-            <td class="prescriptionLabel"><?php echo $item->refMedication->preferred_term; ?></td>
+                class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->medication_id)) { ?> allergyWarning<?php } ?>">
+            <td class="prescriptionLabel"><?php echo $item->medication->preferred_term; ?></td>
             <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
             <td><?php echo $item->route->term ?><?php if ($item->laterality) {
                     echo ' (' . $item->laterality . ')';

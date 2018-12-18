@@ -50,14 +50,14 @@ class HistoryRisksManager
     }
 
     /**
-     * @param \RefMedication[] $tagged_list
+     * @param \Medication[] $tagged_list
      * @return array|mixed|null
      */
     protected function getRisksFromTagged($tagged_list) {
         $by_id = array();
         foreach ($tagged_list as $tagged) {
-            $ref_set_ids = array_map(function($e) { return $e->id; }, $tagged->refSets);
-            $risks = OphCiExaminationRisk::findForRefSetIds($ref_set_ids);
+            $medication_set_ids = array_map(function($e) { return $e->id; }, $tagged->medicationSets);
+            $risks = OphCiExaminationRisk::findForRefSetIds($medication_set_ids);
             foreach ($risks as $risk) {
                 if (!array_key_exists($risk->id, $by_id)) {
                     $by_id[$risk->id] = array('risk' => $risk, 'comments_list' => array());
@@ -192,7 +192,7 @@ class HistoryRisksManager
      * A relatively simple handler for receiving notifications that drugs and/or medication drugs
      * have been added to the patient, so the relevant risks should be stored on the patient.
      *
-     * @param $params (['patient' => \Patient, 'ref_medications' => \RefMedication[])
+     * @param $params (['patient' => \Patient, 'medications' => \Medication[])
      * @throws \SystemException
      */
     public function addPatientMedicationRisks($params)
@@ -201,8 +201,8 @@ class HistoryRisksManager
             throw new \SystemException('Missing expected patient parameter for updating patient risks');
         }
         $risks = array();
-        if (array_key_exists('ref_medications', $params)) {
-            $risks = $this->getRisksFromTagged($params['ref_medications']);
+        if (array_key_exists('medications', $params)) {
+            $risks = $this->getRisksFromTagged($params['medications']);
         }
 
         $this->addRisksToPatient($params['patient'], $risks);

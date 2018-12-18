@@ -59,28 +59,28 @@ class RisksController extends \BaseController
     }
 
     /**
-     * @param array $ref_set_ids
+     * @param array $medication_set_ids
      * @return array
      */
 
-    protected function riskIdsForRefSetIds($ref_set_ids = array())
+    protected function riskIdsForMedicationSetIds($medication_set_ids = array())
     {
         return array_map(
             function($r) { return $r->id; },
-            OphCiExaminationRisk::findForRefSetIds($ref_set_ids)
+            OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids)
         );
     }
 
     public function actionForRefMedication($id)
     {
-        if(!$refMedication =\RefMedication::model()->findByPk($id)) {
+        if(!$medication =\Medication::model()->findByPk($id)) {
             throw new \CHttpException('Medication not found', 404);
         }
 
-        /** @var \RefMedication $refMedication */
-        $ref_set_ids = array_map(function($e){ return $e->id; }, $refMedication->refSets);
+        /** @var \Medication $medication */
+        $med_set_ids = array_map(function($e){ return $e->id; }, $medication->medicationSets);
 
-        echo \CJSON::encode($this->riskIdsForRefSetIds($ref_set_ids));
+        echo \CJSON::encode($this->riskIdsForMedicationSetIds($med_set_ids));
     }
 
     /**

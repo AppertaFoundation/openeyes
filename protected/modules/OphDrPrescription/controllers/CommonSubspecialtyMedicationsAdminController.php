@@ -19,7 +19,7 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
 {
     public function actionList()
     {
-        $admin = new Admin(RefSet::model(), $this);
+        $admin = new Admin(MedicationSet::model(), $this);
         $admin->setListFields(array(
             'name',
             'itemsCount'
@@ -30,12 +30,12 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
         $default_site_id = Yii::app()->session['selected_site_id'];
         $default_subspecialty_id = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 
-        $admin->getSearch()->addSearchItem('refSetRules.site_id', array(
+        $admin->getSearch()->addSearchItem('medicationSetRules.site_id', array(
             'type' => 'dropdown',
             'options' => CHtml::listData(Site::model()->findAll(), 'id', 'name'),
         ));
 
-        $admin->getSearch()->addSearchItem('refSetRules.subspecialty_id', array(
+        $admin->getSearch()->addSearchItem('medicationSetRules.subspecialty_id', array(
             'type' => 'dropdown',
             'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
         ));
@@ -44,15 +44,15 @@ class CommonSubspecialtyMedicationsAdminController extends BaseAdminController
         if ($this->request->getParam('search') == '') {
             $admin->getSearch()->initSearch(array(
                     'filterid' => array(
-                        'refSetRules.site_id' => $default_site_id,
-                        'refSetRules.subspecialty_id' => $default_subspecialty_id,
-                        'refSetRules.usage_code' => 'Common subspecialty medications'
+                        'medicationSetRules.site_id' => $default_site_id,
+                        'medicationSetRules.subspecialty_id' => $default_subspecialty_id,
+                        'medicationSetRules.usage_code' => 'Common subspecialty medications'
                     ),
                 )
             );
         }
 
-        $admin->getSearch()->getCriteria()->addCondition('refSetRules.usage_code = \'Common subspecialty medications\'');
+        $admin->getSearch()->getCriteria()->addCondition('medicationSetRules.usage_code = \'Common subspecialty medications\'');
 
         $admin->setListFieldsAction('toList');
 

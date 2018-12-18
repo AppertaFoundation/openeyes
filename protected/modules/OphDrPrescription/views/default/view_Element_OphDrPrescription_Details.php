@@ -35,16 +35,16 @@
           <?php foreach ($element->items as $key => $item) { ?>
             <tr class="prescription-item">
               <td class="priority-text">
-                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->ref_medication_id)): ?>
+                  <?php if (isset($this->patient) && $this->patient->hasDrugAllergy($item->medication_id)): ?>
                       <i class="oe-i warning small pad js-has-tooltip"
-                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->ref_medication_id))?>">
+                         data-tooltip-content="Allergic to <?= implode(',',$this->patient->getPatientDrugAllergy($item->medication_id))?>">
                       </i>
                   <?php endif; ?>
-                  <?php echo $item->refMedication->preferred_term; ?></td>
+                  <?php echo $item->medication->preferred_term; ?></td>
               <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
               <td><?php echo $item->route->term ?>
                   <?php if ($item->laterality) {
-                      echo ' (' . $item->refMedicationLaterality->name . ')';
+                      echo ' (' . $item->medicationLaterality->name . ')';
                   } ?>
               </td>
               <td><?php echo $item->frequency->term ?></td>

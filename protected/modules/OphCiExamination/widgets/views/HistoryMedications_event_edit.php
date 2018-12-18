@@ -165,7 +165,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 
 
       <?php
-       $medications = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+       $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],

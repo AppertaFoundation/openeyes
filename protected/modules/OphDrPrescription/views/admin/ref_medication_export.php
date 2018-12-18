@@ -26,7 +26,7 @@
             </div>
         <?php endif; ?>
         <?php echo CHtml::form("/OphDrPrescription/RefMedicationAdmin/exportForm"); ?>
-            <?php echo CHtml::checkBoxList('RefSet', [], CHtml::listData(RefSet::model()->byName()->findAll(), 'id', 'name'), ['labelOptions' => ['style' => 'display: inline-block']]); ?>
+            <?php echo CHtml::checkBoxList('MedicationSet', [], CHtml::listData(MedicationSet::model()->byName()->findAll(), 'id', 'name'), ['labelOptions' => ['style' => 'display: inline-block']]); ?>
             <br/>
             <?php echo CHtml::submitButton('Export'); ?>
         <?php echo CHtml::endForm(); ?>

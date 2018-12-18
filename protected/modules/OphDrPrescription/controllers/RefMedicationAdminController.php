@@ -23,7 +23,7 @@ class RefMedicationAdminController extends BaseAdminController
 {
     public function actionList()
     {
-        $admin = new Admin(RefMedication::model(), $this);
+        $admin = new Admin(Medication::model(), $this);
         $admin->setListFields(array(
             'id',
             'source_type',
@@ -48,10 +48,10 @@ class RefMedicationAdminController extends BaseAdminController
 
     private function _getEditAdmin($id)
     {
-        $admin = new Admin(RefMedication::model(), $this);
+        $admin = new Admin(Medication::model(), $this);
 
         if(!is_null($id)) {
-            $search_indexes = RefMedication::model()->findByPk($id)->refMedicationsSearchIndexes;
+            $search_indexes = Medication::model()->findByPk($id)->medicationsSearchIndexes;
         }
         else {
             $search_indexes = array();
@@ -72,7 +72,7 @@ class RefMedicationAdminController extends BaseAdminController
             'alternative_terms' =>  array(
                 'widget' => 'GenericAdmin',
                 'options' => array(
-                    'model' => RefMedicationsSearchIndex::class,
+                    'model' => MedicationSearchIndex::class,
                     'label_field' => 'alternative_term',
                     'label_field_type' => 'text',
                     'items' => $search_indexes,
@@ -99,17 +99,17 @@ class RefMedicationAdminController extends BaseAdminController
         $admin = $this->_getEditAdmin($id);
 
         if(is_null($id)) {
-            $model = new RefMedication();
+            $model = new Medication();
         }
         else {
-            if(!$model = RefMedication::model()->findByPk($id)) {
+            if(!$model = Medication::model()->findByPk($id)) {
                 throw new CHttpException(404, 'Page not found');
             }
         }
 
-        /** @var RefMedication $model */
+        /** @var Medication $model */
 
-        $data = Yii::app()->request->getPost('RefMedication');
+        $data = Yii::app()->request->getPost('Medication');
         $model->setAttributes($data);
 
         if(!$model->validate()) {
@@ -122,7 +122,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         $existing_ids = array();
         $updated_ids = array();
-        foreach ($model->refMedicationsSearchIndexes as $alt_term) {
+        foreach ($model->medicationSearchIndexes as $alt_term) {
             $existing_ids[] = $alt_term->id;
         }
 
@@ -130,15 +130,15 @@ class RefMedicationAdminController extends BaseAdminController
         if(is_array($ids)) {
             foreach ($ids as $key => $rid) {
                 if($rid === '') {
-                    $alt_term = new RefMedicationsSearchIndex();
+                    $alt_term = new MedicationSearchIndex();
                 }
                 else {
-                    $alt_term = RefMedicationsSearchIndex::model()->findByPk($rid);
+                    $alt_term = MedicationSearchIndex::model()->findByPk($rid);
                     $updated_ids[] = $rid;
                 }
 
                 $alt_term->setAttributes(array(
-                    'ref_medication_id' => $model->id,
+                    'medication_id' => $model->id,
                     'alternative_term' => Yii::app()->request->getPost('alternative_term')[$key],
                 ));
 
@@ -148,7 +148,7 @@ class RefMedicationAdminController extends BaseAdminController
 
         $deleted_ids = array_diff($existing_ids, $updated_ids);
         if(!empty($deleted_ids)) {
-            RefMedicationsSearchIndex::model()->deleteByPk($deleted_ids);
+            MedicationSearchIndex::model()->deleteByPk($deleted_ids);
         }
 
         $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
@@ -160,18 +160,18 @@ class RefMedicationAdminController extends BaseAdminController
         $data = array();
 
         if(Yii::app()->request->isPostRequest) {
-            $ref_set_ids = Yii::app()->request->getPost('RefSet');
-            if(!empty($ref_set_ids)) {
-                return $this->actionExport($ref_set_ids);
+            $med_set_ids = Yii::app()->request->getPost('MedicationSet');
+            if(!empty($med_set_ids)) {
+                return $this->actionExport($med_set_ids);
             }
             else {
-                $data['form_error'] = 'Please select at least one Ref Set.';
+                $data['form_error'] = 'Please select at least one Set.';
             }
         }
         return $this->render('/admin/ref_medication_export', $data);
     }
 
-    public function actionExport($ref_set_ids = array())
+    public function actionExport($med_set_ids = array())
     {
         ini_set('max_execution_time', 0);
 
@@ -196,17 +196,18 @@ class RefMedicationAdminController extends BaseAdminController
         $sheet->setCellValue('E3', 'SET INFO >>');
 
         $cond = new CDbCriteria();
-        $cond->addInCondition('id', $ref_set_ids);
+        $cond->addInCondition('id', $med_set_ids);
 
-        $sets = RefSet::model()->findAll($cond);
+        $sets = MedicationSet::model()->findAll($cond);
 
         $sets_array = [];
 
         $sets_array[0] = array_map(function ($e){ return $e->name; }, $sets);
         $sets_array[1] = array_map(function ($e){ return $e->id; }, $sets);
         $sets_array[2] = array_map(function ($e){
+            /** @var MedicationSet $e */
             $ruleString = [];
-            foreach ($e->refSetRules as $rule) {
+            foreach ($e->medicationSetRules as $rule) {
                 $ruleString[] = $rule->usage_code." (site=".(is_null($rule->site_id) ? "null" : $rule->site->name).", ss=".(is_null($rule->subspecialty_id) ? "null" : $rule->subspecialty->name).")";
             }
 
@@ -216,9 +217,9 @@ class RefMedicationAdminController extends BaseAdminController
         $sheet->fromArray($sets_array, null, 'E1');
 
         $cond = new CDbCriteria();
-        $cond->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE ref_set_id IN (".implode(",", $ref_set_ids)."))");
+        $cond->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id IN (".implode(",", $med_set_ids)."))");
 
-        $medications = RefMedication::model()->findAll($cond);
+        $medications = Medication::model()->findAll($cond);
 
         $cells_array = [];
 
@@ -228,7 +229,7 @@ class RefMedicationAdminController extends BaseAdminController
             ];
 
             foreach ($sets as $set) {
-                if($ref_medication_set = RefMedicationSet::model()->find("ref_medication_id = {$med->id} AND ref_set_id = {$set->id}")) {
+                if($ref_medication_set = MedicationSetItem::model()->find("medication_id = {$med->id} AND medication_set_id = {$set->id}")) {
                     $repr = new stdClass();
                     $repr->dose = $ref_medication_set->default_dose;
                     $repr->dose_unit = $ref_medication_set->default_dose_unit_term;

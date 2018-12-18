@@ -53,10 +53,10 @@ class DefaultController extends BaseEventTypeController
     protected function setCommonDrugMetadata()
     {
         $this->jsVars['common_drug_metadata'] = array();
-        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $refMedication) {
-            $this->jsVars['common_drug_metadata'][$refMedication->id] = array(
-                    'ref_set_id' => array_map(function($e){ return $e->id; }, $refMedication->getTypes()),
-                    'preservative_free' => (int)$refMedication->isPreservativeFree(),
+        foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $medication) {
+            $this->jsVars['common_drug_metadata'][$medication->id] = array(
+                    'medication_set_id' => array_map(function($e){ return $e->id; }, $medication->getTypes()),
+                    'preservative_free' => (int)$medication->isPreservativeFree(),
             );
         }
     }
@@ -142,7 +142,7 @@ class DefaultController extends BaseEventTypeController
         $element = Element_OphDrPrescription_Details::model()->findByAttributes(array('event_id' => $this->event->id));
 
         foreach ($element->items as $item) {
-            if ($this->patient->hasDrugAllergy($item->ref_medication_id)) {
+            if ($this->patient->hasDrugAllergy($item->medication_id)) {
                 $this->showAllergyWarning();
                 break;
             }
@@ -190,15 +190,15 @@ class DefaultController extends BaseEventTypeController
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
 
-            $set = RefSet::model()->with('refSetRules')->find(array(
-                'condition' => 'refSetRules.subspecialty_id = :subspecialty_id AND t.name = :status_name',
+            $set = MedicationSet::model()->with('medicationSetRules')->find(array(
+                'condition' => 'medicationSetRules.subspecialty_id = :subspecialty_id AND t.name = :status_name',
                 'params' => $params,
             ));
 
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
-                    $item_model->ref_medication_id = $item->id;
+                    $item_model->medication_id = $item->id;
                     $item_model->loadDefaults($set);
                     $attr = $item->getAttributes();
                     unset($attr['drug_set_id']);
@@ -262,17 +262,17 @@ class DefaultController extends BaseEventTypeController
             $return = array();
 
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition('id IN (SELECT ref_medication_id FROM ref_medications_search_index WHERE LOWER(alternative_term) LIKE :term)');
+                $criteria->addCondition('id IN (SELECT medication_id FROM medication_search_index WHERE LOWER(alternative_term) LIKE :term)');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
 
-                $criteria->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE ref_set_id = :type_id)");
+                $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
             }
             if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
-                $criteria->addCondition("id IN (SELECT ref_medication_id FROM ref_medication_set WHERE 
-                                                ref_set_id = (SELECT id FROM ref_set WHERE name = 'Preservative free'))");
+                $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE 
+                                                medication_set_id = (SELECT id FROM medication_set WHERE name = 'Preservative free'))");
             }
 
             if(!empty($criteria->condition)){
@@ -281,7 +281,7 @@ class DefaultController extends BaseEventTypeController
                 $criteria->select = 'id, preferred_term';
                 $criteria->params = $params;
 
-                $drugs = RefMedication::model()->findAll($criteria);
+                $drugs = Medication::model()->findAll($criteria);
 
 
                 foreach ($drugs as $drug) {
@@ -353,9 +353,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionRouteOptions($key, $route_id)
     {
-        $route = RefMedicationRoute::model()->findByPk($route_id);
+        $route = MedicationRoute::model()->findByPk($route_id);
         if(in_array($route->term, ['Eye', 'Intravitreal'])) {
-            $options = RefMedicationLaterality::model()->findAll('deleted_date IS NULL');
+            $options = MedicationLaterality::model()->findAll('deleted_date IS NULL');
             echo CHtml::dropDownList('Element_OphDrPrescription_Details[items]['.$key.'][laterality]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
         }
         else {
@@ -546,7 +546,7 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @return RefSet
+     * @return MedicationSet
      */
 
     public function getCommonDrugsRefSet()
@@ -554,11 +554,11 @@ class DefaultController extends BaseEventTypeController
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
-        return RefSetRule::model()->findByAttributes(array(
+        return MedicationSetRule::model()->findByAttributes(array(
             'subspecialty_id' => $subspecialty_id,
             'site_id' => $site_id,
             'usage_code' => 'Common subspecialty medications'
-        ))->refSet;
+        ))->medicationSet;
     }
 
     /**
@@ -576,7 +576,7 @@ class DefaultController extends BaseEventTypeController
 
             // Source is a prescription item, so we should clone it
             foreach (array(
-                         'ref_medication_id',
+                         'medication_id',
                          'duration',
                          'frequency_id',
                          'dose',
@@ -599,16 +599,16 @@ class DefaultController extends BaseEventTypeController
                 $item->tapers = $tapers;
             }
         } else {
-            if (is_a($source, RefMedicationSet::class)) {
+            if (is_a($source, MedicationSetItem::class)) {
 
-                /** @var RefMedicationSet $source */
-                $item->ref_medication_id = $source->ref_medication_id;
-                $item->frequency_id = $source->default_frequency;
-                $item->form_id = $source->default_form;
+                /** @var MedicationSetItem $source */
+                $item->medication_id = $source->medication_id;
+                $item->frequency_id = $source->default_frequency_id;
+                $item->form_id = $source->default_form_id;
                 $item->dose = $source->default_dose;
                 $item->dose_unit_term = $source->default_dose_unit_term;
-                $item->route_id = $source->default_route;
-                $item->duration = $source->default_duration;
+                $item->route_id = $source->default_route_id;
+                $item->duration = $source->default_duration_id;
 
 
                 if ($source->tapers) {
@@ -629,9 +629,9 @@ class DefaultController extends BaseEventTypeController
             } elseif (is_int($source) || (int) $source) {
 
                 // Source is an integer, so we use it as a drug_id
-                $item->ref_medication_id = $source;
-                $refSet = $this->getCommonDrugsRefSet();
-                $item->loadDefaults($refSet);
+                $item->medication_id = $source;
+                $medSet = $this->getCommonDrugsRefSet();
+                $item->loadDefaults($medSet);
             } else {
                 throw new CException('Invalid prescription item source: '.print_r($source));
             }
@@ -639,7 +639,7 @@ class DefaultController extends BaseEventTypeController
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {
-                    $lat_id = RefMedicationLaterality::model()->find('name = :eye_name',
+                    $lat_id = MedicationLaterality::model()->find('name = :eye_name',
                         array(':eye_name' => $principal_eye->name));
                     $item->laterality = ($lat_id) ? $lat_id : null;
                 }

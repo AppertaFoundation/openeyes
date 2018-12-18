@@ -165,7 +165,7 @@ $element_errors = $element->getErrors();
         });
 
         <?php
-        $medications = RefMedication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+        $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
         new OpenEyes.UI.AdderDialog({
             openButton: $('#mm-add-medication-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],

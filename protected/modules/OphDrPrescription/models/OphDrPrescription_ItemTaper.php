@@ -22,7 +22,7 @@
  * @property int $id
  * @property string $dose
  * @property DrugDuration $duration
- * @property RefMedicationFrequency $frequency
+ * @property MedicationFrequency $frequency
  * @property OphDrPrescription_Item $item
  */
 class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
@@ -72,7 +72,7 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
         return array(
                 'item' => array(self::BELONGS_TO, 'OphDrPrescription_Item', 'item_id'),
                 'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
-                'frequency' => array(self::BELONGS_TO, RefMedicationFrequency::class, 'frequency_id'),
+                'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

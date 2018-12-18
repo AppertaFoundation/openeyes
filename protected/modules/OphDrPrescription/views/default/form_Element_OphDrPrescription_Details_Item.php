@@ -32,14 +32,14 @@
   <td>
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_type]" value="<?php echo OphDrPrescription_Item::getUsageType(); ?>" />
       <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][usage_subtype]" value="<?php echo OphDrPrescription_Item::getUsageSubType(); ?>" />
-      <?php if (isset($patient) && $patient->hasDrugAllergy($item->ref_medication_id)): ?>
+      <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
       <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
       <?php endif; ?>
-      <?php echo $item->refMedication->preferred_term; ?>
+      <?php echo $item->medication->preferred_term; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php
       } ?>
-    <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][ref_medication_id]" value="<?php echo $item->ref_medication_id ?>"/>
+    <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][medication_id]" value="<?php echo $item->medication_id ?>"/>
       <?php if($item->comments){ ?>
         <i class="oe-i comments-added active medium-icon pad js-add-comments js-has-tooltip" style="" data-tooltip-content="<?=\CHtml::encode($item->comments);?>"></i>
        <?php } else { ?>
@@ -80,7 +80,7 @@
   </td>
   <td>
       <?= \CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][route_id]', $item->route_id,
-          CHtml::listData(RefMedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
+          CHtml::listData(MedicationRoute::model()->activeOrPk([$item->route_id])->findAll(array()),
               'id', 'term'), array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')); ?>
   </td>
 
@@ -98,7 +98,7 @@
 
   <td class="prescriptionItemFrequencyId">
       <?=\CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][frequency_id]', $item->frequency_id,
-          CHtml::listData(RefMedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
+          CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array()), 'id', 'term'),
           array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
   </td>
   <td class="prescriptionItemDuration">
@@ -163,7 +163,7 @@ foreach ($item->tapers as $taper): ?>
     <td>
         <?=\CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][frequency_id]',
             $taper->frequency_id,
-            /* TODO figure out if this should be replaced by RefMedicationFrequency */
+            /* TODO figure out if this should be replaced by MedicationFrequency */
             CHtml::listData(DrugFrequency::model()->activeOrPk($taper->frequency_id)->findAll(array('order' => 'display_order asc')),
                 'id', 'name'), array('empty' => '-- Select --', 'class' => 'cols-11')); ?>
     </td>

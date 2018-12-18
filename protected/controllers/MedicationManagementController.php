@@ -33,8 +33,8 @@
         public function actionFindRefMedications($term = '', $limit = 50)
         {
             header('Content-type: application/json');
-            /** @var RefSet $ref_set */
-            if(!$ref_sets = RefSet::model()->findAll('id IN (SELECT ref_set_id FROM ref_set_rules WHERE usage_code =\'Formulary\')')) {
+            /** @var MedicationSet $medication_set */
+            if(!$medication_sets = MedicationSet::model()->findAll('id IN (SELECT medication_set_id FROM medication_set_rules WHERE usage_code =\'Formulary\')')) {
                 echo CJSON::encode([]);
                 exit;
             }
@@ -44,20 +44,21 @@
             $criteria = new \CDbCriteria();
 
             if($term !== '') {
-                $criteria->condition = "refMedications.preferred_term LIKE :term OR refMedicationsSearchIndexes.alternative_term LIKE :term";
+                $criteria->condition = "medications.preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term";
                 $criteria->params['term'] = "%$term%";
             }
 
             $criteria->limit = $limit > 1000 ? 1000 : $limit;
-            $criteria->order = "refMedications.preferred_term";
-            $criteria->with = 'refMedicationsSearchIndexes';
+            $criteria->order = "medications.preferred_term";
+            $criteria->with = 'medicationSearchIndexes';
 
-            foreach ($ref_sets as $ref_set) {
-                foreach ($ref_set->refMedications($criteria) as $med) {
-                    $ref_med_set = RefMedicationSet::model()
-                        ->find('ref_medication_id = :ref_medication_id AND ref_set_id = :ref_set_id', [
-                            'ref_medication_id' => $med->id,
-                            'ref_set_id' => $ref_set->id
+            foreach ($medication_sets as $medication_set) {
+                foreach ($medication_set->medications($criteria) as $med) {
+                    /** @var MedicationSetItem $med_set_item */
+                    $med_set_item = MedicationSetItem::model()
+                        ->find('medication_id = :medication_id AND medication_set_id = :medication_set_id', [
+                            'medication_id' => $med->id,
+                            'medication_set_id' => $medication_set->id
                         ]);
 
                     $tabsize = 0;
@@ -71,11 +72,11 @@
 
                     $ret_data[] = array_merge($med->getAttributes(), [
                             'label' => $med->preferred_term,
-                            'dose_unit_term' => $ref_med_set->default_dose_unit_term,
-                            'dose' => $ref_med_set->default_dose,
-                            'default_form' => $ref_med_set->default_form,
-                            'frequency_id' => $ref_med_set->default_frequency,
-                            'route_id' => $ref_med_set->default_route,
+                            'dose_unit_term' => $med_set_item->default_dose_unit_term,
+                            'dose' => $med_set_item->default_dose,
+                            'default_form' => $med_set_item->default_form_id,
+                            'frequency_id' => $med_set_item->default_frequency_id,
+                            'route_id' => $med_set_item->default_route_id,
                             'tabsize' => $tabsize,
                             'will_copy' => $med->getToBeCopiedIntoMedicationManagement()
                         ]

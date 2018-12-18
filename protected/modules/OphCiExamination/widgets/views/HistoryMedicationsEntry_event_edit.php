@@ -48,7 +48,7 @@ $chk_prescribe = isset($entry->chk_prescribe) ? $entry->chk_prescribe : ($row_ty
 $chk_stop = isset($entry->chk_stop) ? $entry->chk_stop : ($row_type == "closed");
 $is_new = isset($is_new) ? $is_new : false;
 
-$to_be_copied = !$is_new && !$entry->originallyStopped && $entry->refMedication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !$is_new && !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
 
 $is_posting = Yii::app()->request->getIsPostRequest();
 
@@ -58,12 +58,12 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
     <td>
         <div class="medication-display">
-            <?= is_null($entry->ref_medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
+            <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
         </div>
 
         <input type="hidden" name="<?= $field_prefix ?>[is_copied_from_previous_event]" value="<?= (int)$entry->is_copied_from_previous_event; ?>" />
         <input type="hidden" class="rgroup" name="<?= $field_prefix ?>[group]" value="<?= $row_type; ?>" />
-        <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= !isset($entry->ref_medication_id) ? "{{ref_medication_id}}" : $entry->ref_medication_id ?>" />
+        <input type="hidden" class="ref_medication_id" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= !isset($entry->medication_id) ? "{{ref_medication_id}}" : $entry->ref_medication_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->getMedicationDisplay() ?>" class="medication-name" />
         <input type="hidden" name="<?= $field_prefix ?>[usage_type]" value="<?= isset($entry->usage_type) ? $entry->usage_type : $usage_type ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
@@ -79,7 +79,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
                         <a class="textual-display-dose textual-display" href="javascript:void(0);" onclick="switch_alternative(this);">
                             <?= $entry->dose.' '.$entry->dose_unit_term; ?>&nbsp;
                             <?= $entry->frequency; ?>&nbsp;
-                            <?= ($entry->laterality ? $entry->refMedicationLaterality->name : ''); ?>&nbsp;
+                            <?= ($entry->laterality ? $entry->medicationLaterality->name : ''); ?>&nbsp;
                             <?= (is_null($entry->route_id) ? "" : $entry->route); ?>
 
                         </a>

@@ -38,7 +38,7 @@ class MedicationController extends BaseController
             );
         } else {
             if ($medicationId) {
-                $medication = $this->fetchModel('Medication', $medicationId, true);
+                $medication = $this->fetchModel('ArchiveMedication', $medicationId, true);
             } elseif ($prescriptionItemId) {
                 if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
                     $medication = $api->getMedicationForPrescriptionItem($patientId, $prescriptionItemId);
@@ -49,14 +49,14 @@ class MedicationController extends BaseController
                     throw new CHttpException(400, 'Missing prescription item or module');
                 }
             } else {
-                $medication = new Medication();
+                $medication = new ArchiveMedication();
             }
 
             $this->renderPartial(
                 'form',
                 array(
                     'patient' => $this->fetchModel('Patient', $patientId),
-                    'medication' => $medication,
+                    'ArchiveMedication' => $medication,
                     'firm' => Firm::model()->findByPk($this->selectedFirmId),
                 ),
                 false, true
@@ -125,7 +125,7 @@ class MedicationController extends BaseController
         $this->renderPartial(
             'route_option',
             array(
-                'medication' => new Medication(),
+                'ArchiveMedication' => new ArchiveMedication(),
                 'route' => $this->fetchModel('DrugRoute', $route_id),
             )
         );
@@ -133,7 +133,7 @@ class MedicationController extends BaseController
 
     public function actionRetrieveDrugRouteOptions($route_id)
     {
-        $route = RefMedicationRoute::model()->findByPk($route_id);
+        $route = MedicationRoute::model()->findByPk($route_id);
         if(in_array($route->term, ['Eye', 'Ocular', 'Intraocular', 'Intravitreal'])) {
             echo json_encode([
                 ['id' =>1, 'name' => 'Left'],
@@ -168,7 +168,7 @@ class MedicationController extends BaseController
             }
         } else {
             $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-            $medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
+            $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id'], true);
 
             $medication->patient_id = $patient->id;
 
@@ -201,7 +201,7 @@ class MedicationController extends BaseController
     public function actionStop()
     {
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-        $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
+        $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id']);
 
         if ($patient->id != $medication->patient_id) {
             throw new Exception('Patient ID mismatch');
@@ -217,7 +217,7 @@ class MedicationController extends BaseController
     public function actionDelete()
     {
         $patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-        $medication = $this->fetchModel('Medication', @$_POST['medication_id']);
+        $medication = $this->fetchModel('ArchiveMedication', @$_POST['medication_id']);
 
         if ($patient->id != $medication->patient_id) {
             throw new Exception('Patient ID mismatch');

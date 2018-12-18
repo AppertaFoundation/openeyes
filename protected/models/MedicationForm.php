@@ -1,12 +1,16 @@
 <?php
 
 /**
- * This is the model class for table "ref_medication_frequency".
+ * This is the model class for table "medication_form".
  *
- * The followings are the available columns in table 'ref_medication_frequency':
+ * The followings are the available columns in table 'medication_form':
  * @property integer $id
  * @property string $term
  * @property string $code
+ * @property string $unit_term
+ * @property string $default_dose_unit_term
+ * @property string $source_type
+ * @property string $source_subtype
  * @property string $deleted_date
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -15,18 +19,18 @@
  *
  * The followings are the available model relations:
  * @property EventMedicationUse[] $eventMedicationUses
- * @property User $createdUser
  * @property User $lastModifiedUser
- * @property RefMedicationSet[] $refMedicationSets
+ * @property User $createdUser
+ * @property MedicationSetItem[] $medicationSetItems
  */
-class RefMedicationFrequency extends BaseActiveRecordVersioned
+class MedicationForm extends BaseActiveRecordVersioned
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'ref_medication_frequency';
+		return 'medication_form';
 	}
 
 	/**
@@ -37,12 +41,12 @@ class RefMedicationFrequency extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('term, code', 'length', 'max'=>45),
+			array('term, code, unit_term, default_dose_unit_term, source_type, source_subtype', 'length', 'max'=>45),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('deleted_date, last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, term, code, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, term, code, unit_term, default_dose_unit_term, source_type, source_subtype, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,10 +58,10 @@ class RefMedicationFrequency extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'frequency_id'),
-			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'form_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'refMedicationSets' => array(self::HAS_MANY, 'RefMedicationSet', 'default_frequency'),
+			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'default_form_id'),
 		);
 	}
 
@@ -70,6 +74,10 @@ class RefMedicationFrequency extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'term' => 'Term',
 			'code' => 'Code',
+			'unit_term' => 'Unit Term',
+			'default_dose_unit_term' => 'Default Dose Unit Term',
+			'source_type' => 'Source Type',
+			'source_subtype' => 'Source Subtype',
 			'deleted_date' => 'Deleted Date',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
@@ -99,6 +107,10 @@ class RefMedicationFrequency extends BaseActiveRecordVersioned
 		$criteria->compare('id',$this->id);
 		$criteria->compare('term',$this->term,true);
 		$criteria->compare('code',$this->code,true);
+		$criteria->compare('unit_term',$this->unit_term,true);
+		$criteria->compare('default_dose_unit_term',$this->default_dose_unit_term,true);
+		$criteria->compare('source_type',$this->source_type,true);
+		$criteria->compare('source_subtype',$this->source_subtype,true);
 		$criteria->compare('deleted_date',$this->deleted_date,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
@@ -114,32 +126,10 @@ class RefMedicationFrequency extends BaseActiveRecordVersioned
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return RefMedicationFrequency the static model class
+	 * @return MedicationForm the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-
-    /**
-     * @param array $ids
-     * @return $this
-     *
-     * Returns active items or those that match $ids
-     */
-
-    public function activeOrPk($ids = [])
-    {
-        $crit = new CDbCriteria();
-        $crit->condition = "deleted_date IS NULL";
-        $crit->addInCondition('id', $ids, 'OR');
-        $this->getDbCriteria()->mergeWith($crit);
-
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->term;
-    }
 }

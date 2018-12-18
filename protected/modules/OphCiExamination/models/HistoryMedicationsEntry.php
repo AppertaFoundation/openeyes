@@ -433,7 +433,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function __toString()
     {
         $res = array();
-        foreach (array('Medication', 'Administration', 'Dates') as $k) {
+        foreach (array('ArchiveMedication', 'Administration', 'Dates') as $k) {
             if ($str = $this->{'get' . $k . 'Display'}()) {
                 $res[] = $str;
             }

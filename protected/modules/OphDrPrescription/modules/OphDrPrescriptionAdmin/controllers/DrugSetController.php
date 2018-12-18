@@ -35,7 +35,7 @@ class DrugSetController extends BaseAdminController
      */
     protected function initAdmin($id = false)
     {
-        $admin = new Admin(RefSetRule::model(), $this);
+        $admin = new Admin(MedicationSetRule::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
@@ -45,7 +45,7 @@ class DrugSetController extends BaseAdminController
 
         $admin->setEditFields(
             array(
-                'refSet.name' => 'text',
+                'medicationSet.name' => 'text',
                 'subspecialty' => array(
                     'widget' => 'DropDownList',
                     'options' => CHtml::listData(Subspecialty::model()->findAll(), 'id', 'name'),
@@ -69,10 +69,10 @@ class DrugSetController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(RefSetRule::model(), $this);
+        $admin = new Admin(MedicationSetRule::model(), $this);
         $admin->setListFields(array(
             'id',
-            'refSet.name',
+            'medicationSet.name',
             'subspecialty.name',
         ));
 

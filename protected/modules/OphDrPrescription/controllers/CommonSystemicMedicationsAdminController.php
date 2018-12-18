@@ -19,15 +19,15 @@ class CommonSystemicMedicationsAdminController extends BaseAdminController
 {
     public function actionList()
     {
-        $admin = new Admin(RefSet::model(), $this);
+        $admin = new Admin(MedicationSet::model(), $this);
         $admin->setListFields(array(
             'name',
             'itemsCount'
         ));
 
         $admin->getSearch()->setItemsPerPage(30);
-        $admin->getSearch()->getCriteria()->join = "INNER JOIN ref_set_rules AS refSetRules ON refSetRules.ref_set_id = t.id";
-        $admin->getSearch()->getCriteria()->addCondition('refSetRules.usage_code = \'Common systemic medications\'');
+        $admin->getSearch()->getCriteria()->join = "INNER JOIN medication_set_rule AS medSetRules ON medSetRules.medication_set_id = t.id";
+        $admin->getSearch()->getCriteria()->addCondition('medSetRules.usage_code = \'Common systemic medications\'');
 
         $admin->setListFieldsAction('toList');
 

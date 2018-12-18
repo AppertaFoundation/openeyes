@@ -33,7 +33,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 	$end_sel_year = date('Y');
 }
 
-$to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopiedIntoMedicationManagement();
+$to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
 
 /** @var EventMedicationUse $entry */
 ?>
@@ -52,7 +52,7 @@ $to_be_copied = !$entry->originallyStopped && $entry->refMedication->getToBeCopi
           <?= $entry->getMedicationDisplay() ?>
         </span>
       </span>
-		<input type="hidden" name="<?= $field_prefix ?>[ref_medication_id]" value="<?= $entry->ref_medication_id ?>"/>
+		<input type="hidden" name="<?= $field_prefix ?>[medication_id]" value="<?= $entry->medication_id ?>"/>
 		<?php if ($entry->originallyStopped) { ?>
 			<i class="oe-i stop small pad"></i>
 		<?php } ?>
