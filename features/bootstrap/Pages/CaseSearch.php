@@ -181,7 +181,35 @@ class CaseSearch extends OpenEyesPage
         }
         $this->getElement('previousProcedure')->find('xpath',"//input")->setValue($previous_procedure);
     }
+    public function clear(){
+        $this->getElement('clear')->click();
+    }
 
+
+
+    public function specificResultExist($nhs){
+        $exist = false;
+        $next_page=$this->find('css','.oe-i.arrow-right-bold');
+        while (!$next_page->hasClass('disabled')){
+            foreach ( $this->findAll('xpath',"//*[@class='nhs-number']") as $item) {
+                $exist = strpos($item->getText(),$nhs);
+                if ($exist){
+                    break;
+                }
+            }
+            if ($exist){
+                break;
+            }
+            $next_page->click();
+            $next_page=$this->find('css','.oe-i.arrow-right-bold');
+        }
+        if ($exist){
+            print "Specific result found and test passed.";
+        }else{
+            throw new BehaviorException ( "WARNING!!!  The specific result has NOT been found!!  WARNING!!" );
+        }
+
+    }
 
 
 

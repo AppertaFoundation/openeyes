@@ -177,6 +177,17 @@ class CaseSearchContext extends PageObjectContext
         return $caseSearch->resultsExist();
     }
 
-
+    /**
+     * @Then /^I should have specific result with NHS "([^"]*)"$/
+     *
+     * @var caseSearch CaseSearch
+     *
+     * @return bool wether or not results exist
+     */
+    public function iShouldHaveSpecificResultWithNHS($nhs)
+    {
+        $caseSearch = $this->getPage('CaseSearch');
+        $caseSearch->specificResultExist($nhs);
+    }
 }
 
