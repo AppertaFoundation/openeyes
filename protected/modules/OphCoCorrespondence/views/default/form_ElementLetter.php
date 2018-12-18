@@ -476,6 +476,30 @@ $creating = isset($creating) ? $creating : false;
         $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
       }
     });
+
+    $('input[id="ElementLetter_use_nickname"][type="checkbox"]').on('click', function(){
+      let contact_type = $('#DocumentTarget_0_attributes_contact_type').val();
+      let nickname_check = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked');
+      let addressee = undefined;
+      <?php $gp_contact = $element['event']['episode']['patient']['gp']['contact']; ?>
+      <?php $patient_contact = $element['event']['episode']['patient']['contact']; ?>
+      
+      if(contact_type === 'GP'){
+        addressee = '<?= $gp_contact->title.' '.$gp_contact->last_name; ?>';
+        if(nickname_check){
+            addressee = '<?= $gp_contact->nick_name; ?>';
+        }
+      } else if(contact_type === 'PATIENT'){
+        addressee = '<?= $patient_contact->title.' '.$patient_contact->last_name; ?>';
+        if(nickname_check){
+            addressee = '<?= $patient_contact->nick_name; ?>';
+        }
+      }
+
+      if(addressee !== undefined){
+        $('#ElementLetter_introduction').val('Dear '+addressee+',');
+      }
+    });
   });
 </script>
 
