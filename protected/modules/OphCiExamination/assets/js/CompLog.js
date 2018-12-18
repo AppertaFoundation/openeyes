@@ -82,7 +82,6 @@ CompLogConnection.prototype.initialiseCompLogDialog = function(){
 };
 
 CompLogConnection.prototype.checkConnectionToWS = function() {
-	console.log('checkConnectionToWS');
     return $.ajax({
 			type: 'GET',
 			url: "http://localhost:"+OE_COMPLog_port+"/info",
@@ -93,7 +92,6 @@ CompLogConnection.prototype.checkConnectionToWS = function() {
 };
 
 CompLogConnection.prototype.COMPLogPresetTest = function() {
-    console.log('COMPLogPresetTest()');
     let requestData = {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||ZPT^ZTP^ZPT_ZTP|MSG100|P|2.4\nEVN|ZTP|20050110045502|||||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC\nZTP|COMPlogThresholding"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -162,7 +160,6 @@ CompLogConnection.prototype.convertHl7ToArray = function(hl7Data){
 };
 
 CompLogConnection.prototype.pollForTestResults = function(){
-	console.log('pollForTestResults()')
 	if(this.dialog) { //checks that the CompLog dialog is actually still open before continuing the polling process
 		this.getHl7TestResults()
 			.done((data) => {this.updateLatestPolledHl7.call(this, data);})
@@ -171,7 +168,6 @@ CompLogConnection.prototype.pollForTestResults = function(){
 };
 
 CompLogConnection.prototype.getHl7TestResults = function(){
-	console.log('getHl7TestResults()');
 	let requestData =  {"Message": "MSH|^~\\&|COMPLOG|COMPLOG||COMPLOG|20130510105428.912+0300||QRY^ZTR|MSG100|P|2.4\nQRD|201311111016|R|I|Q1000|||10^RD|100437363|RES|ALL||\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
 	return $.ajax({
 		url: "http://localhost:" + OE_COMPLog_port + "/hl7",
