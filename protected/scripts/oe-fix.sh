@@ -136,6 +136,9 @@ if [ "$composer" == "1" ]; then
 	# If we've switched from dev to live, remove dev dependencies
 	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
 
+    # Refresh git submodules
+    git -C $WROOT submodule update --init
+
 fi
 
 # Automatically migrate up, unless --no-migrate parameter is given or the OE_NO_DB env variable is set
