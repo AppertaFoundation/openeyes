@@ -24,7 +24,8 @@
     <h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
     <p>
         <strong>Procedure(s):</strong>
-        <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+        <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+		<?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
             if ($i > 0) {
                 echo ', ';
             }

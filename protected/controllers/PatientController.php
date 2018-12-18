@@ -234,6 +234,10 @@ class PatientController extends BaseController
             }
             Yii::app()->user->setFlash('warning.no-results', $message);
 
+
+            Yii::app()->session['search_term'] = $term;
+            Yii::app()->session->close();
+
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
             $item = $dataProvider->getData()[0];
@@ -779,7 +783,7 @@ class PatientController extends BaseController
         }
 
         // Don't assign the patient's own GP
-        if ($contact->label == 'General Practitioner') {
+        if ($contact->label == Yii::app()->params['general_practitioner_label']) {
             if ($gp = Gp::model()->find('contact_id=?', array($contact->id))) {
                 if ($gp->id == $patient->gp_id) {
                     return;
@@ -1848,6 +1852,7 @@ class PatientController extends BaseController
                     }
 
                     if ($referral->save()) {
+                        $this->actionPerformReferralDoc($patient,$referral, $_FILES);
                       if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
                         if (!isset($patient_user_referral->patient_id)) {
                           $patient_user_referral->patient_id = $patient->id;
@@ -1873,7 +1878,7 @@ class PatientController extends BaseController
                         } else {
                           Audit::add('Patient', $action . '-patient',
                             "Patient manually [id: $patient->id] {$action}ed.");
-                          $this->redirect(array('view', 'id' => $patient->id));
+                            $this->redirect(array('/OphCoDocument/Default/create?patient_id='.$patient->id));
                         }
                       }
                     } else {
@@ -2247,4 +2252,48 @@ class PatientController extends BaseController
 
         echo CJSON::encode($result);
     }
+
+
+    public function actionPerformReferralDoc($patient)
+    {
+        if (isset($_POST['PatientReferral'])) {
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+            $episode->support_services = false;
+            $episode->start_date = date('Y-m-d H:i:s');
+            if ($episode->save()) {
+                $event = new Event();
+                $event->episode_id = $episode->id;
+                $event->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+                $event->event_type_id = EventType::model()->findByAttributes(array(
+                    'name' => 'Document'
+                ))->id;
+                if ($event->save(true, null, true)) {
+                    foreach ($_FILES as $file) {
+                        $tmp_name = $file["tmp_name"]["uploadedFile"];
+                        $p_file = ProtectedFile::createFromFile($tmp_name);
+                        $p_file->name = $file["name"]["uploadedFile"];
+                        if ($p_file->save()) {
+                            unlink($tmp_name);
+                            $document = new Element_OphCoDocument_Document();
+                            $document->patientId = $patient->id;
+                            $document->event_id = $event->id;
+                            $document->event = $event;
+                            $document->single_document_id = $p_file->id;
+                            $document->event_sub_type = 3;
+                            $document->single_document = $p_file;
+                            if ($document->save()) {
+                                return;
+                            }
+                        } else {
+                            unlink($tmp_name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }

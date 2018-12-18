@@ -163,7 +163,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -204,8 +204,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -385,53 +385,22 @@ foreach ($ethnic_list as $key=>$item){
           </td>
         </tr>
         <tr>
-            <td>
-                <?= $form->label($patient, 'practice_id') ?>
-                <br/>
-                <?= $form->error($patient, 'practice_id') ?>
-            </td>
-            <td>
-                <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => 'practice_id',
-                    'id' => 'autocomplete_practice_id',
-                    'source' => "js:function(request, response) {
-                            $.getJSON('/patient/practiceList', {
-                                    term : request.term
-                            }, response);
-                    }",
-                    'options' => array(
-                        'select' => "js:function(event, ui) {
-                            removeSelectedPractice();
-                            addItem('selected_practice_wrapper', ui);
-                            $('#autocomplete_practice_id').val('');
-                            return false;
-                    }",
-                                'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_practice_result").show();
-                        } else {
-                            $("#no_practice_result").hide();
-                        }
-                    }',
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'search Practice',
-                    ),
-
-                )); ?>
-
-                <div id="selected_practice_wrapper"
-                     style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
-                    <ul class="oe-multi-select js-selected_practice">
-                        <li>
-                          <span class="name">
-                              <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
-                          </span>
-                            <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
-                        </li>
-                    </ul>
-
-
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+              <?= $form->label($patient, 'practice_id') ?>
+            <br/>
+              <?= $form->error($patient, 'practice_id') ?>
+          </td>
+          <td>
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
+            <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_practice">
+                <li>
+                  <span class="js-name">
+                      <?= $patient->practice_id ? $patient->practice->getAddressLines() : '' ?>
+                  </span>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
+                </li>
+              </ul>
                     <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
                         array('class' => 'hidden_id')); ?>
                 </div>
@@ -564,23 +533,23 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
     });
 
 
-    function findDuplicates(id) {
-        var first_name = $('#Contact_first_name').val();
-        var last_name = $('#Contact_last_name').val();
-        var date_of_birth = $('#Patient_dob').val();
-        if (first_name && last_name && date_of_birth) {
-            $.ajax({
-                    url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
-                    data: {firstName: first_name, last_name: last_name, dob: date_of_birth, id: id},
-                    type: 'GET',
-                    success: function (response) {
-                        $('#conflicts').remove();
-                        $('.patient-duplicate-check').after(response);
-                    }
-                }
-            );
+  function findDuplicates(id) {
+    var first_name = $('#Contact_first_name').val();
+    var last_name = $('#Contact_last_name').val();
+    var date_of_birth = $('#Patient_dob').val();
+    if (first_name && last_name && date_of_birth) {
+      $.ajax({
+          url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
+          data: {firstName: first_name, last_name: last_name, dob: date_of_birth, id: id},
+          type: 'GET',
+          success: function (response) {
+            $('#conflicts').remove();
+            $('.patient-duplicate-check').after(response);
+          }
         }
+      );
     }
+  }
 
     $('#js-cancel-add-practice').click(function (event) {
         event.preventDefault();
@@ -598,7 +567,7 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
     function addGpItem(wrapper_id, ui){
         var $wrapper = $('#' + wrapper_id);
         var JsonObj = JSON.parse(ui);
-        $wrapper.find('span.name').text(JsonObj.label);
+        $wrapper.find('.js-name').text(JsonObj.label);
         $wrapper.show();
         $wrapper.find('.hidden_id').val(JsonObj.id);
     }
