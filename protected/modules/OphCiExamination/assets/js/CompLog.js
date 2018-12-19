@@ -20,7 +20,7 @@ function CompLogConnection() {
 			sleep(100);
 		})
 		.always(() => {
-			for (let i = 0; i < self.maxAttempts; i++) {
+			for (let i = 1; i <= self.maxAttempts; i++) {
 				console.log(`start of for loop ${i}`);
 				let tryToConnect = new Promise((resolve, reject) => setTimeout(() => {
 					if (self.isConnectedToCompLog) {
@@ -54,24 +54,20 @@ function CompLogConnection() {
 				}, self.attemptDelay * i));
 				tryToConnect
 					.then(() => {sleep(3000);}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
-					.then(self.COMPLogDischargePatient) //try see if setTimeOut works instead of sleep.
-					.then(self.COMPLogPresetTest)
-					.then(self.pollForTestResults.bind(self))
+					.then(this.COMPLogDischargePatient) //try see if setTimeOut works instead of sleep.
+					.then(this.COMPLogPresetTest)
+					.then(this.pollForTestResults.bind(this))
 					.then(() => {
 						this.dialog.setTitle('COMPLog test in progress');
 						this.dialog.on('ok', () => {
 							this.importCompLogResults();
-							$("#complog_iframe").remove(); // need to add this for on cancel too
-							this.dialog.destroy();
-							this.dialog = null;
+							this.destroy();
 						});
 						$('.ok').show();
 					})
 					.catch((error) => {
-						if(i >= self.maxAttempts - 1 && error.name === 'CompLogConnectionError'){
-							self.dialog.destroy();
-							self.dialog = null;
-							$("#complog_iframe").remove();
+						if(i >= self.maxAttempts && error.name === 'CompLogConnectionError'){
+							// insert some code that adds a message to the dialog that says 'could not connect to COMPLog'
 							console.log('took too long to connect with CompLog');
 						}
 					});
@@ -84,11 +80,7 @@ CompLogConnection.prototype.initialiseCompLogDialog = function(){
 		title: 'COMPLog',
 		okButton: 'Pull COMPLog Results',
 		templateSelector: '#dialog-complog-template'});
-	this.dialog.on('cancel', () => {
-		this.dialog.destroy();
-		this.dialog = null;
-		$("#complog_iframe").remove();
-	});
+	this.dialog.on('cancel', this.destroy.bind(this));
 	this.dialog.open();
 };
 
@@ -264,6 +256,13 @@ function sleep(milliseconds) {
 CompLogConnection.prototype.openInIframe = function(url){
 	console.log(`openInIframe(${url})`);
 	$('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
+};
+
+CompLogConnection.prototype.destroy = function(){
+	console.log(this);
+	this.dialog.destroy();
+	this.dialog = null;
+	$("#complog_iframe").remove();
 };
 
 function addMessageToFadeContent(msg)
