@@ -1809,7 +1809,11 @@ class PatientController extends BaseController
     * @param Patient $patient
     * @param Address $address
     * @param PatientIdentifier[] $patient_identifiers
+    * @param PatientReferral $referral
+    * @param PatientUserReferral $patient_user_referral
     * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
+    *
+    * @throws
     */
     private function performPatientSave(
       Contact $contact,
@@ -1870,7 +1874,8 @@ class PatientController extends BaseController
                         }
                       }
                     } else {
-                      $transaction->rollback();
+                        $referral->validate();
+                        $transaction->rollback();
                     }
                   } else {
                     if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
@@ -1890,7 +1895,8 @@ class PatientController extends BaseController
                           $this->redirect(array('view', 'id' => $patient->id));
                         }
                       } else {
-                        $transaction->rollback();
+                          $patient_user_referral->validate();
+                          $transaction->rollback();
                       }
                     } else {
                       $transaction->commit();
@@ -1904,9 +1910,13 @@ class PatientController extends BaseController
                     }
                   }
                 } else {
-                  // to show validation error messages to the user
-                  $address->validate();
-                  //don't validate patient here, otherwise if email leaves blank, DOB will show error even if it's valid
+                    // to show validation error messages to the user
+                    $patient->validate();
+                    $address->validate();
+                    if (isset($referral)) {
+                        $referral->validate();
+                    }
+                    //don't validate patient here, otherwise if email leaves blank, DOB will show error even if it's valid
 
                     // patient or address failed to save
                     $transaction->rollback();
@@ -2233,47 +2243,95 @@ class PatientController extends BaseController
         echo CJSON::encode($result);
     }
 
-
+    /**
+     * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
+     *
+     * @param Patient $patient To save the referral document to
+     * @throws Exception
+     */
     public function actionPerformReferralDoc($patient)
     {
-        if (isset($_POST['PatientReferral'])) {
-            $episode = new Episode();
-            $episode->patient_id = $patient->id;
-            $episode->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-            $episode->support_services = false;
-            $episode->start_date = date('Y-m-d H:i:s');
-            if ($episode->save()) {
-                $event = new Event();
-                $event->episode_id = $episode->id;
-                $event->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-                $event->event_type_id = EventType::model()->findByAttributes(array(
-                    'name' => 'Document'
-                ))->id;
-                if ($event->save(true, null, true)) {
-                    foreach ($_FILES as $file) {
-                        $tmp_name = $file["tmp_name"]["uploadedFile"];
-                        $p_file = ProtectedFile::createFromFile($tmp_name);
-                        $p_file->name = $file["name"]["uploadedFile"];
-                        if ($p_file->save()) {
-                            unlink($tmp_name);
-                            $document = new Element_OphCoDocument_Document();
-                            $document->patientId = $patient->id;
-                            $document->event_id = $event->id;
-                            $document->event = $event;
-                            $document->single_document_id = $p_file->id;
-                            $document->event_sub_type = 3;
-                            $document->single_document = $p_file;
-                            if ($document->save()) {
-                                return;
-                            }
-                        } else {
-                            unlink($tmp_name);
-                        }
-                    }
+
+        if (!isset($_POST['PatientReferral'])
+            || !isset($_POST['PatientReferral']['uploadedFile'])
+            || $_POST['PatientReferral']['uploadedFile'] == ''
+        ) {
+            return;
+        }
+
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        //Get or Create an episode
+        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm);
+
+
+        $event = new Event();
+        $event->episode_id = $episode->id;
+        $event->firm = $firm;
+        $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+
+        if (!$event->save()) {
+            throw new Exception('Could not save event');
+        }
+
+        $document_saved = false;
+        foreach ($_FILES as $file) {
+            $tmp_name = $file["tmp_name"]["uploadedFile"];
+
+            //If no document is selected this can throw errors
+            if ($tmp_name == '') {
+                continue;
+            }
+            $p_file = ProtectedFile::createFromFile($tmp_name);
+            $p_file->name = $file["name"]["uploadedFile"];
+            if ($p_file->save()) {
+                unlink($tmp_name);
+                $document = new Element_OphCoDocument_Document();
+                $document->patientId = $patient->id;
+                $document->event_id = $event->id;
+                $document->event = $event;
+                $document->single_document_id = $p_file->id;
+                $document->event_sub_type = 3;
+                $document->single_document = $p_file;
+                if (!$document->save()) {
+                    throw new Exception('Could not save Document');
+                } else {
+                    $document_saved = true;
                 }
+            } else {
+                unlink($tmp_name);
+            }
+        }
+
+        //Removed any extraneous models if we couldn't save a document
+        if (!$document_saved) {
+            $event->delete();
+            if ($episode_is_new) {
+                $episode->delete();
             }
         }
     }
 
+    /**
+     * @param Patient $patient
+     * @param Firm $firm Firm under which the episode should be
+     * @return array(Episode, bool) The created or found episode and wether or not is was created
+     * @throws Exception If a episode could not be found or created
+     */
+    private function getOrCreateEpisode($patient, $firm){
+        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm->id, 'patient_id' => $patient->id));
+        $episode_is_new = false;
+        if (!$episode){
+            $episode_is_new = true;
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->firm = $firm;
+            $episode->support_services = false;
+            $episode->start_date = date('Y-m-d H:i:s');
+            if (!$episode->save()){
+                throw new Exception('Could not get episode');
+            }
+        }
+        return [$episode, $episode_is_new];
+    }
 
 }
