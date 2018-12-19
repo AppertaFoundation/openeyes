@@ -24,7 +24,6 @@ class DefaultController extends BaseEventTypeController
         'repeatForm' => self::ACTION_TYPE_FORM,
         'routeOptions' => self::ACTION_TYPE_FORM,
         'routeOptions' => self::ACTION_TYPE_FORM,
-        'addAllergicDrugsToAudit' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
@@ -666,17 +665,6 @@ class DefaultController extends BaseEventTypeController
             parent::actionUpdate($id);
         }
     }
-
-    public function actionAddAllergicDrugsToAudit($drugs , $allergies){
-        $allergyNames = [];
-        foreach(json_decode($allergies)as $allergy){
-            $allergyNames[] = Allergy::model()->findByPk($allergy)->name;
-        }
-
-        Audit::add('Prescription details' , 'addAllergies');
-        echo 1;
-    }
-
 
     /**
      * Group the different kind of drug items for the printout
