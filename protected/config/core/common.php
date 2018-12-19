@@ -545,6 +545,10 @@ return array(
             ),
         ),
 
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
+
         /**
          * Patient Identifiers
          * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
