@@ -1816,144 +1816,140 @@ class PatientController extends BaseController
     * @throws
     */
     private function performPatientSave(
-      Contact $contact,
-      Patient $patient,
-      Address $address,
-      PatientReferral $referral,
-      PatientUserReferral $patient_user_referral,
-      $patient_identifiers)
+        Contact $contact,
+        Patient $patient,
+        Address $address,
+        PatientReferral $referral,
+        PatientUserReferral $patient_user_referral,
+        $patient_identifiers)
     {
         $patientScenario = $patient->getScenario();
         $transaction = Yii::app()->db->beginTransaction();
         try {
 
-            if ($contact->save()) {
-                $patient->contact_id = $contact->id;
-                $address->contact_id = $contact->id;
-                $action = $patient->isNewRecord ? 'add' : 'edit';
-                $isNewPatient = $patient->isNewRecord ? true : false;
-
-                $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
-                $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
-                $success = $patient->save() && $address->save();
-
-                if ($success) {
-                    list($success, $patient_identifiers) = $this->performIdentifierSave($patient, $patient_identifiers);
-                  if (isset($referral)) {
-                    if (!isset($referral->patient_id)) {
-                      $referral->patient_id = $patient->id;
-                    }
-                    if ($referral->save()) {
-                        $this->actionPerformReferralDoc($patient,$referral, $_FILES);
-                      if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
-                        if (!isset($patient_user_referral->patient_id)) {
-                          $patient_user_referral->patient_id = $patient->id;
-                        }
-
-                        if ($patient_user_referral->save()) {
-                          $transaction->commit();
-                          Audit::add('Referred to', 'saved', $patient_user_referral->id);
-                          if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
-                            $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
-                          } else {
-                            Audit::add('Patient', $action . '-patient',
-                              "Patient manually [id: $patient->id] {$action}ed.");
-                            $this->redirect(array('view', 'id' => $patient->id));
-                          }
-                        } else {
-                          $transaction->rollback();
-                        }
-                      } else {
-                        $transaction->commit();
-                        if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
-                          $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
-                        } else {
-                          Audit::add('Patient', $action . '-patient',
-                            "Patient manually [id: $patient->id] {$action}ed.");
-                            $this->redirect(array('/OphCoDocument/Default/create?patient_id='.$patient->id));
-                        }
-                      }
-                    } else {
-                        $referral->validate();
-                        $transaction->rollback();
-                    }
-                  } else {
-                    if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
-                      if (!isset($patient_user_referral->patient_id)) {
-                        $patient_user_referral->patient_id = $patient->id;
-                      }
-
-                      if ($patient_user_referral->save()) {
-
-                        $transaction->commit();
-                        Audit::add('Referred to', 'saved', $patient_user_referral->id);
-                        if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
-                          $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
-                        } else {
-                          Audit::add('Patient', $action . '-patient',
-                            "Patient manually [id: $patient->id] {$action}ed.");
-                          $this->redirect(array('view', 'id' => $patient->id));
-                        }
-                      } else {
-                          $patient_user_referral->validate();
-                          $transaction->rollback();
-                      }
-                    } else {
-                      $transaction->commit();
-                      if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
-                        $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
-                      } else {
-                        Audit::add('Patient', $action . '-patient',
-                          "Patient manually [id: $patient->id] {$action}ed.");
-                        $this->redirect(array('view', 'id' => $patient->id));
-                      }
-                    }
-                  }
+            $success =
+                $this->patientSaveInner(
+                    $contact,
+                    $patient,
+                    $address,
+                    $referral,
+                    $patient_user_referral,
+                    $patient_identifiers
+                );
+            if ($success) {
+                if (isset(Yii::app()->modules["Genetics"])
+                    && Yii::app()->user->checkAccess('Genetics Clinical')
+                    && $patient->isNewRecord
+                ) {
+                    $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
                 } else {
-                    // to show validation error messages to the user
-                    $patient->validate();
-                    $address->validate();
-                    if (isset($referral)) {
-                        $referral->validate();
-                    }
-                    //don't validate patient here, otherwise if email leaves blank, DOB will show error even if it's valid
-
-                    // patient or address failed to save
-                    $transaction->rollback();
+                    $redirect = array('/patient/episodes/' . $patient->id);
                 }
+                $transaction->commit();
             } else {
-                // to show validation error messages to the user
-                $patient->validate();
-                $address->validate();
-
-              if (isset($referral)) {
-                $referral->validate();
-              }
-                // remove contact_id validation error
-                $patient->clearErrors('contact_id');
-                $address->clearErrors('contact_id');
-
-                // contact failed to save
+                //Get all the validation errors
+                foreach ([
+                             'patient',
+                             'contact',
+                             'address',
+                             'referral',
+                             'patient_user_referral',
+                             'patient_identifiers'
+                         ] as $model)
+                {
+                    if (isset(${$model})) {
+                        if (is_array(${$model})) {
+                            foreach (${$model} as $item) {
+                                $item->validate();
+                            }
+                        } else {
+                            ${$model}->validate();
+                        }
+                    }
+                }
                 $transaction->rollback();
             }
 
+
+            if (isset($redirect)) {
+                $this->redirect($redirect);
+            }
+
+
+            // remove contact_id validation error
+            $patient->clearErrors('contact_id');
+            $address->clearErrors('contact_id');
         } catch (Exception $ex) {
+            \Yii::log("Rolling back patient creation. " . $ex->getMessage());
             OELog::logException($ex);
             $transaction->rollback();
         }
 
-      $patient->setScenario($patientScenario);
+        $patient->setScenario($patientScenario);
 
-      return array($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+        return array($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
     }
 
+    private function patientSaveInner(
+        Contact &$contact,
+        Patient &$patient,
+        Address &$address,
+        PatientReferral &$referral,
+        PatientUserReferral &$patient_user_referral,
+        &$patient_identifiers)
+    {
+        if (!$contact->save()) {
+            return false;
+        }
+
+        $patient->contact_id = $contact->id;
+        $address->contact_id = $contact->id;
+
+        if (!$patient->save()
+            || !$address->save()
+            || !$this->performIdentifierSave($patient, $patient_identifiers)
+        ) {
+            return false;
+        }
+
+        //Save referral documents
+        if (isset($referral)) {
+            if (!isset($referral->patient_id)) {
+                $referral->patient_id = $patient->id;
+            }
+            if (!$referral->save() || !$this->actionPerformReferralDoc($patient, $referral, $_FILES)) {
+                return false;
+            }
+        }
+
+        //Save referral to doctor
+        if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
+            if (!isset($patient_user_referral->patient_id)) {
+                $patient_user_referral->patient_id = $patient->id;
+            }
+
+            if (!$patient_user_referral->save()) {
+                return false;
+            }
+            Audit::add('Referred to', 'saved', $patient_user_referral->id);
+        }
+
+
+        $action = $patient->isNewRecord ? 'add' : 'edit';
+        Audit::add(
+            'Patient',
+            $action . '-patient',
+            "Patient manually [id: $patient->id] {$action}ed."
+        );
+        return true;
+    }
 
     /**
      * Saves the input $Patient_identiiers according to the config params
      *
      * @param Patient $patient
      * @param PatientIdentifier[] $patient_identifiers
-     * @return array
+     * @return bool
      * @throws Exception
      */
     private function performIdentifierSave($patient, $patient_identifiers)
@@ -1983,7 +1979,7 @@ class PatientController extends BaseController
             $result[] = $patient_identifier;
         }
 
-        return [$success, $result];
+        return $success;
     }
 
     /**
@@ -2247,16 +2243,17 @@ class PatientController extends BaseController
      * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
      *
      * @param Patient $patient To save the referral document to
+     * @return bool Returns true if a document is saved
+     *
      * @throws Exception
      */
     public function actionPerformReferralDoc($patient)
     {
-
-        if (!isset($_POST['PatientReferral'])
-            || !isset($_POST['PatientReferral']['uploadedFile'])
-            || $_POST['PatientReferral']['uploadedFile'] == ''
+        if (!isset($_FILES['PatientReferral'])
+            || !isset($_FILES['PatientReferral']['name']['uploadedFile'])
         ) {
-            return;
+            \Yii::log("no valid file uploaded");
+            return false;
         }
 
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
@@ -2309,6 +2306,8 @@ class PatientController extends BaseController
                 $episode->delete();
             }
         }
+
+        return $document_saved;
     }
 
     /**
