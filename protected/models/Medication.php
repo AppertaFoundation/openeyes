@@ -172,7 +172,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getToBeCopiedIntoMedicationManagement()
     {
-        $med_sets = array_map(function($e){ return $e->id; }, MedicationSet::model()->with('medicationSetRule')->findAll("medicationSetRule.usage_code = 'Management'"));
+        $med_sets = array_map(function($e){ return $e->id; }, MedicationSet::model()->with('medicationSetRules')->findAll("medicationSetRules.usage_code = 'Management'"));
 
         foreach ($this->medicationSets as $medSet) {
             if(in_array($medSet->id, $med_sets)) {

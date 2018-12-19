@@ -57,7 +57,7 @@ class HistoryRisksManager
         $by_id = array();
         foreach ($tagged_list as $tagged) {
             $medication_set_ids = array_map(function($e) { return $e->id; }, $tagged->medicationSets);
-            $risks = OphCiExaminationRisk::findForRefSetIds($medication_set_ids);
+            $risks = OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids);
             foreach ($risks as $risk) {
                 if (!array_key_exists($risk->id, $by_id)) {
                     $by_id[$risk->id] = array('risk' => $risk, 'comments_list' => array());

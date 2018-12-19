@@ -51,7 +51,7 @@ class RefMedicationAdminController extends BaseAdminController
         $admin = new Admin(Medication::model(), $this);
 
         if(!is_null($id)) {
-            $search_indexes = Medication::model()->findByPk($id)->medicationsSearchIndexes;
+            $search_indexes = Medication::model()->findByPk($id)->medicationSearchIndexes;
         }
         else {
             $search_indexes = array();

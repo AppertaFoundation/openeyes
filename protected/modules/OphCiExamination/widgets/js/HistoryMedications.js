@@ -29,7 +29,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.medicationSearchRequest = null;
       this.fields = [
           'medication_name',
-          'ref_medication_id',
+          'medication_id',
           'dose',
           'dose_unit_term',
           'frequency_id',
@@ -546,7 +546,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             console.log(selectedItems[i]);
 
             medication[i] = {
-                ref_medication_id: selectedItems[i].id,
+                medication_id: selectedItems[i].id,
                 default_form: selectedItems[i].default_form,
                 dose: selectedItems[i].dose,
                 dose_unit_term: selectedItems[i].dose_unit_term,
