@@ -111,10 +111,10 @@ function processSetEntries(set_id)
     $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs", {
         set_id: set_id
     }, function (data) {
-      let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(  patientAllergies)
+        let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
         allergicDrugsController.addEntries(JSON.parse(data));
         let allergicDrugs = allergicDrugsController.getAllergicDrugs();
-        if(allergicDrugs) {
+        if (allergicDrugs) {
             let dialog = new OpenEyes.UI.Dialog.Confirm({
                 content: "Patient is allergic to " +
                     allergicDrugs.join() +
