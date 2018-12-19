@@ -139,7 +139,7 @@ EOH;
     public function createImageForEvent($event)
     {
         $this->deleteEventImagesForEvent($event);
-        $url = 'http://localhost/' . $event->eventType->class_name . '/default/createImage/' . $event->id;
+        $url = Yii::app()->params['event_image']['base_url'] . $event->eventType->class_name . '/default/createImage/' . $event->id;
 
         if (@Yii::app()->params['lightning_viewer']['debug_logging']){
             Yii::log('Curling URL "' . $url);
