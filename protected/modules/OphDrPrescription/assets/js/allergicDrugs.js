@@ -19,47 +19,36 @@ OpenEyes.OphDrPrescription = OpenEyes.OphDrPrescription || {};
 
 (function (exports) {
 
-    function AllergicDrugsController(drugs, patientAllergies) {
-        this.drugs = drugs;
+    function AllergicDrugsController( patientAllergies) {
         this.patientAllergies = patientAllergies;
-        this.init();
+        this.allergicDrugs = [];
     }
 
-
-    AllergicDrugsController.prototype.init = function () {
-        let controller = this;
-        let allergyCounter = 0;
-        this.allergicDrugs = [];
-        this.allergiesFromAllergicDrugs = [];
+    AllergicDrugsController.prototype.addEntries = function(drugs){
         if (this.patientAllergies) {
-            for (let index = 0; index < this.drugs.length; index++) {
-                controller.fillAlergicDrugsAndAllergiesArray(index, controller, allergyCounter);
+            for (let index = 0; index < drugs.length; index++) {
+                this.fillAllergicDrugsAndAllergiesArray(drugs[index]);
             }
         }
     };
 
-    AllergicDrugsController.prototype.fillAlergicDrugsAndAllergiesArray = function (index, controller, allergyCounter) {
-        this.drugs[index]['allergies'].forEach(function (allergy) {
-            if (patientAllergies.includes(allergy)) {
-                controller.allergicDrugs[index] = controller.drugs[index]['label'];
-                if (controller.allergiesFromAllergicDrugs.indexOf(allergy) < 0) {
-                    controller.allergiesFromAllergicDrugs[allergyCounter] = allergy;
-                    allergyCounter++;
-                }
+    AllergicDrugsController.prototype.fillAllergicDrugsAndAllergiesArray = function (drug) {
+        let controller = this;
+        drug['allergies'].forEach(function (allergy) {
+            if (controller.patientAllergies.includes(allergy) && !controller.allergicDrugs.includes(drug['label'])) {
+                let nextAllergicDrugIndex = controller.allergicDrugs.length;
+                controller.allergicDrugs[nextAllergicDrugIndex] = drug['label'];
             }
         });
     };
 
-    AllergicDrugsController.prototype.getAllergicDrugsWithAllergies = function () {
+    AllergicDrugsController.prototype.getAllergicDrugs = function(){
         if(this.allergicDrugs.length !== 0) {
-            return {
-                'drugs': this.allergicDrugs,
-                'allergies': this.allergiesFromAllergicDrugs
-            };
+            return this.allergicDrugs;
         } else {
             return false;
         }
-    };
+    }
 
     exports.AllergicDrugsController = AllergicDrugsController;
 })(OpenEyes.OphDrPrescription);
