@@ -37,16 +37,6 @@ if ($footer_param !== null) {
 
 ?>
 
-  <h1>
-      <?php
-      if ($this->attachment_print_title) {
-          echo $this->attachment_print_title;
-      } else {
-          echo 'Prescription Form';
-      }
-      ?>
-  </h1>
-
 <?php
 $firm = $element->event->episode->firm;
 $consultantName = $firm->consultant ? $firm->consultant->getFullName() : 'None';

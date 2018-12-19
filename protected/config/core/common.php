@@ -531,12 +531,17 @@ return array(
                 'height' => 912,
                 'width' => 800
             ),
+            'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
             ),
         ),
+
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
 
         /**
          * Patient Identifiers
