@@ -354,6 +354,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if (isset($contact)) {
             $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
+            $data['to']['contact_nickname'] = $this->getNickname($contact->contact->id);
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -679,6 +680,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'contact_type' => $contact_type,
             'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
             'contact_name' => $correspondence_name,
+            'contact_nickname' => isset($contact->contact->nick_name) ? $contact->contact->nick_name : null,           
             'address' => $address ? $address : "The contact does not have a valid address.",
             'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
@@ -894,5 +896,21 @@ class OphCoCorrespondence_API extends BaseAPI
 
         }
         return '';
+    }
+
+    public function getNickname($identify_with)
+    {
+        if(is_numeric($identify_with)){
+            $contact_id = $identify_with;
+        }
+
+        if(isset($contact_id)){
+            $contact = Contact::model()->find('id=?', array($contact_id));
+            if($contact){
+                return $contact->nick_name;
+            }
+        }
+        
+        return;
     }
 }

@@ -318,6 +318,7 @@ $creating = isset($creating) ? $creating : false;
 
                   $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
                   $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+                  $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
                   $address = isset($address_data['address']) ? $address_data['address'] : null;
 
                   $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
@@ -334,6 +335,7 @@ $creating = isset($creating) ? $creating : false;
                               'contact_type' => 'GP',
                               'contact_name' => $contact_name,
                               'address' => $address,
+                              'contact_nickname' => $contact_nickname,
                           ),
                           'Cc' => array(
                               'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
@@ -476,29 +478,27 @@ $creating = isset($creating) ? $creating : false;
         $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
       }
     });
+    $('#ElementLetter_use_nickname').on('click', function(){
+      let nickname_check = $(this).is(':checked');
+      let recipient_to = $('#DocumentTarget_0_attributes_contact_name').val().split(' ');
+      let addressee = $('#DocumentTarget_0_attributes_contact_name').val();
+      let nickname;
 
-    $('input[id="ElementLetter_use_nickname"][type="checkbox"]').on('click', function(){
-      let contact_type = $('#DocumentTarget_0_attributes_contact_type').val();
-      let nickname_check = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked');
-      let addressee = undefined;
-      <?php $gp_contact = $element['event']['episode']['patient']['gp']['contact']; ?>
-      <?php $patient_contact = $element['event']['episode']['patient']['contact']; ?>
-      
-      if(contact_type === 'GP'){
-        addressee = '<?= $gp_contact->title.' '.$gp_contact->last_name; ?>';
+      if(recipient_to.length > 1){
+        addressee = recipient_to[0]+' '+(recipient_to[2] !== undefined ? recipient_to[2] : recipient_to[1]);
+
         if(nickname_check){
-            addressee = '<?= $gp_contact->nick_name; ?>';
-        }
-      } else if(contact_type === 'PATIENT'){
-        addressee = '<?= $patient_contact->title.' '.$patient_contact->last_name; ?>';
-        if(nickname_check){
-            addressee = '<?= $patient_contact->nick_name; ?>';
+          nickname = $('#DocumentTarget_0_attributes_contact_nickname').val();
+          if(nickname.length > 0){
+            addressee = nickname;
+          } else {
+            addressee = 'Sir/Madam';
+          }
         }
       }
 
-      if(addressee !== undefined){
-        $('#ElementLetter_introduction').val('Dear '+addressee+',');
-      }
+      $('#ElementLetter_introduction').val('Dear '+addressee+',');
+
     });
   });
 </script>
