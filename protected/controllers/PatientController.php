@@ -138,65 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
-
-        $this->patient = $this->loadModel($id);
-
-        if($merged = $this->patient->isMergedInto()){
-            $primary_patient = $this->loadModel($merged->primary_id);
-
-            //display the flash message
-            Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
-
-            $this->redirect(array('/patient/view/' . $primary_patient->id));
-        }
-
-        $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
-        $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
-
-        $episodes = $this->patient->episodes;
-        // TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-        $ordered_episodes = $this->patient->getOrderedEpisodes();
-
-        $legacyepisodes = $this->patient->legacyepisodes;
-        // NOTE that this is not being used in the render
-        $supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-        $properties['patient_id'] = $this->patient->id;
-        Audit::add('patient summary', 'view', $id, '', $properties);
-
-        $this->logActivity('viewed patient');
-
-        $episodes_open = 0;
-        $episodes_closed = 0;
-
-        foreach ($episodes as $episode) {
-            if ($episode->end_date === null) {
-                ++$episodes_open;
-            } else {
-                ++$episodes_closed;
-            }
-        }
-
-        $this->jsVars['currentContacts'] = $this->patient->currentContactIDS();
-
-        $this->breadcrumbs = array(
-            $this->patient->first_name.' '.$this->patient->last_name.'('.$this->patient->hos_num.')',
-        );
-
-        $this->checkImportedBiometryEvent();
-
-        $this->render('view', array(
-            'tab' => $tabId,
-            'event' => $eventId,
-            'episodes' => $episodes,
-            'ordered_episodes' => $ordered_episodes,
-            'legacyepisodes' => $legacyepisodes,
-            'episodes_open' => $episodes_open,
-            'episodes_closed' => $episodes_closed,
-            'firm' => $this->firm,
-            'supportserviceepisodes' => $supportserviceepisodes,
-        ));
+        $this->redirect(array('episodes', 'id' => $id));
     }
 
     public function actionSearch()
