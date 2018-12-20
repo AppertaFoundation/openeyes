@@ -394,6 +394,14 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return implode(', ', $this->anaesthetic_type);
     }
 
+    /**
+     * @return string
+     */
+    public function getAnaestheticTypeDisplayList()
+    {
+        return implode('</li><li>', $this->anaesthetic_type);
+    }
+
     public function afterValidate()
     {
         if( !count($this->anaesthetic_type_assignments)){
