@@ -246,6 +246,7 @@
           }
           if (!this.asc){rows = rows.reverse();}
           table.children('tbody').empty().html(rows);
+          (table).makePagination(7);
       });
   };
 
