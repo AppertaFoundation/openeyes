@@ -36,5 +36,6 @@ $this->beginContent('//patient/event_container',array('no_face'=>false , 'form_i
 		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
 		<?php $this->displayErrors($errors, true)?>
 
-	<?php $this->endWidget()?>
-<?php $this->endContent();?>
+<?php $this->endWidget() ?>
+<?php $this->endContent(); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>
