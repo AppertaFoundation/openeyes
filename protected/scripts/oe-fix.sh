@@ -121,10 +121,10 @@ fi;
 if [ "$composer" == "1" ]; then
 
 
-    [ "$OE_MODE" == "LIVE" ] && composerexta="--no-dev"
-    [ "$OE_MODE" == "LIVE" ] && npmextra="--only=production"
+    [[ "$OE_MODE" == "LIVE" ]] && { composerexta="--no-dev"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
+    [[ "$OE_MODE" == "HOST" ]] && { composerexta="--ignore-platform-reqs"; echo "-----= HOST MODE =----"; }
 
-    echo "DEPENDENCIES BEING EVALUATED... $composerexta $npmextra"
+    echo "DEPENDENCIES BEING EVALUATED..."
 
 	echo "Installing/updating composer dependencies"
 	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
