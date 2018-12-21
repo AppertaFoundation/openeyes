@@ -37,10 +37,18 @@
     });
 
     this.$nav_button.on('mouseout', function () {
-      if (!self.isFixable() && !self.latched) {
+    	let mouseIsOverPanel = self.$panel.filter(':hover').length;
+      if (!self.isFixable() && !self.latched && !mouseIsOverPanel) {
         self.hide();
       }
     });
+
+    this.$panel.on('mouseleave', function(){
+    	let mouseIsOverBtn = self.$nav_button.filter(':hover').length;
+			if (!self.isFixable() && !self.latched && !mouseIsOverBtn) {
+				self.hide();
+			}
+		})
   };
 
   NavBtnSidebar.prototype.show = function () {
