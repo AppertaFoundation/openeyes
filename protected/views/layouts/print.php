@@ -16,6 +16,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+    $printHelperClass = '';
+    switch(Yii::app()->controller->module->id){
+        case 'OphCoCorrespondence':
+            $printHelperClass = 'OphCoCorrespondence large-font';
+            break;
+        case 'OphTrConsent':
+            $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
+            break;
+    }
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,7 +34,7 @@
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print">
+<body class="open-eyes print <?= $printHelperClass ?>">
 	<?php echo $content; ?>
 	<script type="text/javascript">
 		$(document).ready(function() {

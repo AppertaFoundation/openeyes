@@ -30,8 +30,6 @@ class WorklistController extends BaseController
 
     protected function beforeAction($action)
     {
-        // Pull in the admin layout controls for ease of UI setup
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
 
         $this->manager = new WorklistManager();

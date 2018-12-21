@@ -1,6 +1,7 @@
 <?php
 $form_id = 'lab-results-create';
-$this->beginContent('//patient/event_container', array('no_face'=>true , $form_id));
+$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => $form_id,
     'enableAjaxValidation' => false,

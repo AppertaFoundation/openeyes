@@ -25,7 +25,7 @@ $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::m
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-	'id', 'name');
+  'id', 'name');
 $key = 0;
 ?>
 <div class="element-both-eyes">
@@ -33,12 +33,13 @@ $key = 0;
       <?php if ($element->isNewRecord) { ?>
           <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?=\CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
-                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
+                model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
                     'id', 'name'), array('class' => 'inline'));
           if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-              <?php }
+          <?php }
       } ?>
       </div>
 </div>
@@ -52,7 +53,6 @@ if ($cvi_api) {
 ?>
 <div class="element-fields element-eyes">
     <input type="hidden" name="visualacuity_readings_valid" value="1"/>
-    <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 

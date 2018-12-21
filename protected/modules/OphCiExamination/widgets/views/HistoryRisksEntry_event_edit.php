@@ -43,7 +43,7 @@ if (!isset($values)) {
         echo CHtml::hiddenField($field_prefix . '[other]', $values['other']); ?>
         <label class="risk-display" data-id="<?= $values['risk_id'] ?>"
                data-label="<?= $values['risk_display'] ?>"><?= $values['risk_display']; ?></label>
-        <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['other'] ?: 'none' ?>">
+        <span class="<?= $model_name ?>_other_wrapper" style="display: <?= $values['risk_display'] !== 'Other' ?'none':'' ?>">
         <?=\CHtml::textField($field_prefix . '[other]', $values['other'],
             array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     </span>

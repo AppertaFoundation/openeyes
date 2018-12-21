@@ -21,7 +21,7 @@
 $no_treatment_reasons = $element->getNoTreatmentReasons();
 $no_treatment_reasons_opts = array(
     'options' => array(),
-    'empty' => '- Please select -',
+    'empty' => 'Select',
     'nowrapper' => true,
 );
 foreach ($no_treatment_reasons as $ntr) {
@@ -77,8 +77,3 @@ foreach ($l1_disorders as $disorder) {
     </div>
   <?php endforeach;?>
 </div>
-<script type="text/javascript">
-  $('Document').ready(function(){
-      OphCiExamination_InjectionManagementComplex_init();
-  });
-</script>

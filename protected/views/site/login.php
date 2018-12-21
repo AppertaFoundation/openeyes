@@ -25,6 +25,10 @@ $this->pageTitle = Yii::app()->name . ' - Login';
 
       <button type="submit" id="login_button" class="green hint">Login</button>
 
+      <div class="oe-user-banner">
+        <?php $this->renderPartial('//base/_banner_watermark_full'); ?>
+      </div>
+
         <?php $this->endWidget(); ?>
       <!-- user -->
     </div>

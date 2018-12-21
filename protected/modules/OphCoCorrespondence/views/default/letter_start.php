@@ -16,32 +16,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoHelper = new LogoHelper();
-
 ?>
-<div class="banner clearfix" style="text-align: right">
-		<?= $logoHelper->render() ?>
-	
-</div>
+
+<header class="print-header">
+    <div class="logo">
+        <?= $logoHelper->render() ?>
+    </div>
+</header>
+
 <?php if ($element->site) {?>
-	<div class="from-address" style="float: right;">
-		<?php
-        echo $element->site->getLetterAddress(array(
-            'include_name' => true,
-            'delimiter' => '<br />',
-            'include_telephone' => true,
-            'include_fax' => true,
-        ))?>
-		<?php if ($element->direct_line || $element->fax) {?>
-			<br/>
-		<?php }?>
-		<?php if ($element->direct_line) {?>
-			<br /><?php echo $element->getAttributeLabel('direct_line')?>: <?php echo $element->direct_line?>
-		<?php }?>
-		<?php if ($element->fax) {?>
-			<br/><?php echo $element->getAttributeLabel('fax')?>: <?php echo $element->fax?>
-		<?php }?>
-		<div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date))?><?php if ($clinicDate) {?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate))?>)<?php }?></div>
-	</div>
+    <div class="right-align">
+            <?php
+            echo $element->site->getLetterAddress(array(
+                'include_name' => true,
+                'delimiter' => '<br />',
+                'include_telephone' => true,
+                'include_fax' => true,
+            )) ?>
+            <?php if ($element->direct_line || $element->fax) { ?>
+                <br/>
+            <?php } ?>
+            <?php if ($element->direct_line) { ?>
+                <br/><?php echo $element->getAttributeLabel('direct_line') ?>: <?php echo $element->direct_line ?>
+            <?php } ?>
+            <?php if ($element->fax) { ?>
+                <br/><?php echo $element->getAttributeLabel('fax') ?>: <?php echo $element->fax ?>
+            <?php } ?>
+            <div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?><?php if ($clinicDate) { ?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($clinicDate)) ?>)<?php } ?></div>
+    </div>
 <?php }?>
 <div class="to-address">
 	<div class="to-address-header">

@@ -25,8 +25,13 @@ $(document).ready(function () {
 
     $('.js-oes-eyeside').removeClass('selected'); //deselect the other button
     $(this).addClass('selected'); //select the button
-    $('.highcharts-' + side).show(); //show the new side
-    $('.highcharts-' + other_side).hide(); //hide the other side
+    $('.plotly-' + side).show(); //show the new side
+    $('.plotly-' + other_side).hide(); //hide the other side
+
+    if ($('.oes-right-side').find('.oes-data-row-input')){
+      $('#oct_stack_' + side).show();
+      $('#oct_stack_' + other_side).hide();
+    }
 
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
@@ -63,9 +68,23 @@ var OEScape = {
       return this.EpochSeriesValue(dataPoint.x, dataPoint.series.name, dataPoint.y);
     },
     EpochSeriesValue: function(epoch_date, series_name, value){
-      return  '<div>' + OEScape.epochToDateStr(epoch_date) +'<br/>'
-        + series_name + ': ' + value;
+      return  '<div>' + OEScape.epochToDateStr(epoch_date) +'<br/>' + series_name + ': ' + value;
     },
+  },
+  toolTipFormatters_plotly: {
+    VA: function (x, y, series_name) {
+      var nearestTickIndex = 0;
+      var ticks = OEScape.full_va_ticks;
+      for (var ii = 0; ii < ticks.tick_position.length; ii++){
+        if(ticks.tick_position[ii] <= y){
+          nearestTickIndex = ii;
+        } else {
+          break;
+        }
+      }
+
+      return OEScape.epochToDateStr(x) +'<br>' + series_name + ': ' +  ticks.tick_labels[nearestTickIndex];
+    }
   },
   epochToDateStr: function(epoch){
     var date = new Date(epoch);
@@ -74,23 +93,6 @@ var OEScape = {
   full_va_ticks: {'tick_position':[0], 'tick_labels':['error']},
 };
 
-function addSeries(chart, title, data, options){
-  chart.addSeries(Object.assign({
-    name: title,
-    data: data,
-  }, options));
-}
-
-function setYLabels(tick_positions, tick_labels){
-  return {
-    formatter: function () {
-      for (var i=0; i<tick_positions.length; i++)
-        if (tick_positions[i] === this.value)
-          return tick_labels[i];
-      return null;
-    }
-  }
-}
 
 //Takes a list (sorted smallest to largest) and removes overlapping labels
 function pruneYTicks(ticks, plotHeight, label_height){
@@ -115,21 +117,13 @@ function pruneYTicks(ticks, plotHeight, label_height){
   return new_ticks;
 }
 
-function cleanVATicks(ticks, options, charts, axis_index){
-  //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
-  //programmatically, please do it
-  ticks = pruneYTicks(ticks, charts.yAxis[axis_index].height, 17);
-  options['yAxis'][axis_index]['tickPositions'] = ticks['tick_position'];
-  options['yAxis'][axis_index]['labels'] = setYLabels(ticks['tick_position'], ticks['tick_labels']);
-  charts.update(options);
-  charts.redraw();
-}
 
 /**
  * Sets the horizontal size of the OEScape graphs
  * @param size_str string (small|medium|large|full)
  */
 function setOEScapeSize(size_str){
+  var eye_side = $('.js-oes-eyeside.selected').data('side');
   //This refers to the left and right of the screen, not the eyes
   var left = $('.oes-left-side'),
     right = $('.oes-right-side');
@@ -140,42 +134,24 @@ function setOEScapeSize(size_str){
     'large' : {"min_width":900, 'percent':70},
     'full'  : {"min_width":500, 'percent':100}
   };
-  var highcarts_list = $('.highchart-section');
+
   //This needs doing before and after the change in size to prevent mis-alignments between the graphs
-  var reflow = function (){
-    for (var i = 0; i<  highcarts_list.length; i++){
-      if ($(highcarts_list[i]).is(":visible")){
-        $(highcarts_list[i]).highcharts().reflow();
-      }
-    }
-  };
-  reflow();
   left.css({"min_width":sizes[size_str].min_width, "width":sizes[size_str].percent+'%'});
-  right.css({"width":(100-sizes[size_str].percent)+'%'});
+
+  var current_width = $(document).width()*sizes[size_str].percent/100;
+  var left_width = current_width>sizes[size_str].min_width ? current_width: sizes[size_str].min_width;
+  right.css({"width":$(document).width()-left_width});
   right.toggle(size_str !== 'full');
-  reflow();
-}
-
-function setXPlotLine(text_value,date,eye_side){
-  return {
-    className: 'oes-hs-plotline-'+eye_side+'-tight',
-    value: date,
-    label: {
-      text: text_value,
-      rotation: 90,
-      x: 2
-    },
-    zIndex: 1
+  var update = {
+    width: left_width,
   };
+
+  var plotly_list = $('.plotly-'+eye_side);
+  for (var i = 0; i < plotly_list.length; i++){
+    var plotly_id = plotly_list[i].id;
+    Plotly.relayout(plotly_id, update);
+  }
 }
 
-function setMarkingEvents(options, data, plotLines, side){
-    for(key in data[side]){
-      for (j in data[side][key]){
-        options['xAxis']['plotLines'].push(setXPlotLine(key,data[side][key][j], side));
-        if (plotLines){
-          plotLines[side].push(setXPlotLine(key,data[side][key][j], side));
-        }
-      }
-    }
-}
+
+

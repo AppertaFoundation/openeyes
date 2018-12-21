@@ -79,6 +79,7 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
         $criteria->join .= ' LEFT JOIN et_ophinlabresults_details on et_ophinlabresults_details.event_id = event.id ';
         $criteria->addCondition('et_ophinlabresults_details.result_type_id = :type');
         $criteria->addCondition('episode.patient_id = :patientId');
+        $criteria->addCondition('event.deleted = 0');
         $criteria->order = 'event.event_date DESC, t.time DESC, event.created_date DESC';
         $criteria->limit = 1;
         $criteria->params = array(
@@ -87,5 +88,10 @@ class Element_OphInLabResults_ResultTimedNumeric extends BaseLabResultElement
         );
 
         return $this->find($criteria);
+    }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
     }
 }

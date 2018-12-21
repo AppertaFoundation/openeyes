@@ -45,7 +45,7 @@ $logoHelper = new LogoHelper();
 
 		<tr>
 			<th>
-				NHS Number
+                <?php echo Yii::app()->params['nhs_num_label']?> Number
 			</th>
 			<td>
 				<?php echo $patient->nhsnum?>
