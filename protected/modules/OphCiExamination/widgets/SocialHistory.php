@@ -41,6 +41,13 @@ class SocialHistory extends \BaseEventElementWidget
         if (!is_a($element, 'OEModule\OphCiExamination\models\SocialHistory')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
+
+        // needed in the front end but is always empty when submitted. lets wrap it in an if statement just in case
+        // this is to stop producing errors in the application and debug logs
+        if(empty($data['MultiSelectList_OEModule_OphCiExamination_models_SocialHistory[driving_statuses'])){
+            unset($data['MultiSelectList_OEModule_OphCiExamination_models_SocialHistory[driving_statuses']);
+        }
+        
         $element->attributes = $data;
         // note we ignore the has many relation for driving status, because the multiselect widget
         // takes care of it. But it does mean that the element is not entire reflective of the POSTed data
