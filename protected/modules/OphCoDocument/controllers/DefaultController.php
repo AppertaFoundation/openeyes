@@ -465,19 +465,17 @@ class DefaultController extends BaseEventTypeController
                         break;
                     case 'image/jpeg':
                     case 'image/png':
+                        $imagick = new Imagick();
+                        $imagick->readImage($document->getPath());
+                        $this->createPdfPreviewImages($document->getPath(), $eye);
+                        break;
                     case 'image/gif':
                         $imagick = new Imagick();
                         $imagick->readImage($document->getPath());
-                        if($this->scaleImageForThumbnail($imagick)) {
-                            $parts = explode('/', $document->mimetype);
-                            $format = end($parts);
-                            $output_path = $this->getPreviewImagePath(['eye' => $eye], '.' . $format);
-                            $imagick->writeImage($output_path);
-                            $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
-                        } else {
-                            $this->saveEventImage('CREATED', array('image_path' => $document->getPath(), 'eye_id' => $eye));
-                        }
-
+                        $format = end(explode('/', $document->mimetype));
+                        $output_path = $this->getPreviewImagePath(['eye' => $eye], '.' . $format);
+                        $imagick->writeImage($output_path);
+                        $this->saveEventImage('CREATED', array('image_path' => $output_path, 'eye_id' => $eye));
                         break;
                     case 'video/mp4':
                     case 'video/ogg':

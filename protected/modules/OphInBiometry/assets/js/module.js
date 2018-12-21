@@ -155,13 +155,19 @@ $(document).ready(function() {
 
 	function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
-	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', function(){ clearIolSelection('left'); });
-	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', function(){ clearIolSelection('right'); });
+	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', () => onChangeLensType('left'));
+	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', () => onChangeLensType('right'));
+
+	function onChangeLensType(side){
+		clearIolSelection(side);
+		updateClosest (side);
+	}
 
 	function clearIolSelection(side){
 		$('input[id^=iolrefrad-' + side + ']:checked').prop('checked', false);
-		$('#Element_OphInBiometry_Selection_iol_power_' + side +
-			', #Element_OphInBiometry_Selection_predicted_refraction_' + side).val('0');
+		$('#Element_OphInBiometry_Selection_iol_power_' + side).val('');
+		$('#Element_OphInBiometry_Selection_predicted_refraction_' + side).val('0');
+		$('tr[id*=iolreftr-' + side + ']').removeClass('selected-row');
 	}
 
 	$('#Element_OphInBiometry_BiometryData_axial_length_left').die('change').live('change',function() {
@@ -332,13 +338,13 @@ function updateIolRefRow(side) {
 						for (j = 0; j < $(trstr).length; j++) {
 							if (i == j) {
 								//alert('clicked'+ rowstr + j);
-								$(rowstr + j).addClass("highlighted");
+								$(rowstr + j).addClass("selected-row");
 								//$('#iolreftr-left_6_1__' + j).css("background-color", "#FFFFE0");
 								$(rowsrad + j).attr('checked', true);
 							}
 							else
 							{
-								$(rowstr + j).removeClass("highlighted");
+								$(rowstr + j).removeClass("selected-row");
 								$(rowsrad + j).attr('checked', false);
 							}
 						}
@@ -384,7 +390,7 @@ function updateClosest (side) {
 					ref.push(refval);
 				}
 				var oldclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-				$(oldclosest).removeClass("closest");
+				$(oldclosest).find('span').removeClass("highlighter");
 			});
 			var closest = closestNew(ref,tarref );
 			var trstr1 = '#' + side + '_' + l_id + '_' + f_id+ ' tr';
@@ -394,7 +400,7 @@ function updateClosest (side) {
 				if(parseFloat(closest) == parseFloat(refval1) )
 				{
 					var newclosest = '#iolreftr-'+side+'_'+l_id + '_' + f_id+'__'+i;
-					$(newclosest).addClass("closest");
+					$(newclosest).find('span').addClass("highlighter");
 				}
 			});
 		}
