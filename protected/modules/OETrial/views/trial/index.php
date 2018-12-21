@@ -142,7 +142,7 @@
           function(){
               table.find('tbody').find('tr').hide();
               var current_page = table.find('#'+table.attr('id')+'-current-page').val();
-              if (current_page > (number_of_pages-1)) {
+              if (current_page >= (number_of_pages-1)) {
                   current_page -= 1;
               }
               table.find('#'+table.attr('id')+'-current-page').val((parseInt(current_page)+1));
