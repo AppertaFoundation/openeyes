@@ -160,10 +160,10 @@
             //set flags for oct fly
             flags_yaxis['ticktext'].push('OCT fly');
             flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc) + 2);
-            for (var i in doc_list[side]){
+            for (var i in doc_list[side]) {
                 text['x'].push(new Date(doc_list[side][i]['date']));
-                text['y'].push(flag_height*(j - flag_height_perc));
-                text['hovertext'].push('OCT<br>ID: '+ doc_list[side][i]['doc_id']+'<br>Side: '+side);
+                text['y'].push(flag_height * (j - flag_height_perc));
+                text['hovertext'].push('OCT<br>ID: ' + doc_list[side][i]['doc_id'] + '<br>Side: ' + side);
 
                 var line_shape = {
                     x0: new Date(doc_list[side][i]['date']),
@@ -265,7 +265,7 @@
                     var tn = data.points[i].curveNumber;
                     if (tn === 2) {
                         var data_info = data.points[i].hovertext.split('<br>');
-                        if (data_info[0]==='OCT'){
+                        if (data_info[0] === 'OCT') {
                             var side = data_info[2].substring(6);
                             var id = data_info[1].substring(4);
                             octImgStack[side].setImg(id, side); // link chart points to OCTs
@@ -273,21 +273,49 @@
                     }
                 }
             });
+
+
+            //resize the injection bars after xaxis rangeslider changed
+            document.body.onmouseup = function (e) {
+                var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
+
+                var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
+                var shapes = chart_MR.layout.shapes;
+                var new_width = oneday_time * flag_width / 600 * date_range;
+                for (var i in shapes) {
+                    if (shapes[i].layer !== "below") {
+                        shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
+                    }
+                }
+
+                Plotly.redraw(chart_MR);
+            }
         }
 
-        //resize the injection bars after xaxis rangeslider changed
-        document.body.onmouseup = function (e) {
-            var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
-            var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
-            var shapes = chart_MR.layout.shapes;
-            var new_width = oneday_time * flag_width / 600 * date_range;
-            for (var i in shapes) {
-                if (shapes[i].layer !== "below") {
-                    shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
+        document.body.onmousemove = function (data) {
+            var side = $('#js-hs-chart-MR').find('.plotly-MR:visible')[0].dataset['eyeSide'];
+            var current_img = $('#oct_stack_'+side).find('.oct-img:visible');
+            var chart_MR = $('#plotly-MR-'+side)[0];
+            var start_time = new Date(chart_MR.layout.xaxis.range[0]).getTime();
+            var end_time = new Date(chart_MR.layout.xaxis.range[1]).getTime();
+            var date_range = end_time - start_time;
+            var rangeslider = $('.plotly-' + side + ' .rangeslider-container')[0];
+            var rangesliderLeftX = rangeslider.getBoundingClientRect().left + window.scrollX;
+            var rangesliderRightX = rangeslider.getBoundingClientRect().right + window.scrollX;
+            var current_time = (data.clientX - rangesliderLeftX) / (rangesliderRightX - rangesliderLeftX) * date_range + start_time;
+            var closest_img = doc_list[side][0]['id'];
+            var closest_time = Math.abs(doc_list[side][0]['date'] - current_time);
+            for (var i = 0; i < doc_list[side].length; i++) {
+                var img_date = doc_list[side][i]['date'];
+                if (Math.abs(current_time - img_date) <= closest_time) {
+                    closest_time = Math.abs(current_time - img_date);
+                    closest_img = doc_list[side][i]['doc_id'];
                 }
             }
+            current_img.hide();
+            $('#oct_img_'+side+'_'+closest_img).show();
+            current_img = $('#oct_img_'+side+'_'+closest_img);
+        };
 
-            Plotly.redraw(chart_MR);
-        }
     });
 </script>
