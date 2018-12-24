@@ -35,10 +35,12 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        $search_term = Yii::app()->session['search_term'];
+        Yii::app()->session['search_term']='';
         $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
-        $this->render('index');
+        $this->render('index', array('search_term' => $search_term));
     }
 
     /**
