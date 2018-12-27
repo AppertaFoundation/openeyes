@@ -1,7 +1,19 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: zhaolian
- * Date: 17/12/18
- * Time: 4:36 PM
- */
+<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
+
+<div id="js-hs-chart-analytics-service">
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var data = [{
+            name: 'service section',
+            x: [0,1,2,3,4,5],
+            y: [12,13,14,16, 40,29],
+
+        }];
+        analytics_layout['title'] = "Service Section";
+        Plotly.newPlot(
+            'js-hs-chart-analytics-service', data ,analytics_layout
+        );
+    });
+</script>
