@@ -1,3 +1,4 @@
+
 <div class="analytics-options">
 
   <div class="select-analytics flex-layout">
@@ -23,7 +24,9 @@
   <div class="service flex-layout">
     <div class="service-selected" id="js-service-selected-filter">James Morgan</div><!-- OE UI Filter options (id: select-service) -->
     <div class="oe-filter-options" id="oe-filter-options-select-service" data-filter-id="select-service"><!-- simple button to popup filter options -->
-      <button class="oe-filter-btn green hint" id="oe-filter-btn-select-service"><i class="oe-i filter pro-theme"></i></button><!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
+      <button class="oe-filter-btn green hint" id="oe-filter-btn-select-service">
+          <i class="oe-i filter pro-theme"></i>
+      </button><!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
       <div class="filter-options-popup" id="filter-options-popup-select-service" style="display: none;"><!-- provide close (for touch) -->
         <div class="close-icon-btn">
           <i class="oe-i remove-circle medium pro-theme"></i>
@@ -49,10 +52,24 @@
   <div class="specialty-options">
 
     <div class="view-mode flex-layout">
-      <button class="pro-theme cols-3" id="js-btn-clinical">Clinical</button>
-      <button class="pro-theme cols-3 selected" id="js-btn-service">Service</button>
-      <button class="pro-theme cols-3" id="js-btn-custom">Custom</button>
-      <button class="pro-theme cols-3 disabled" id="js-btn-research">Research</button>
+      <button class="analytics-section pro-theme cols-3" id="js-btn-clinical"
+              data-section="#js-hs-chart-analytics-clinical"
+              data-tab="#js-charts-clinical" >
+          Clinical
+      </button>
+      <button class="analytics-section pro-theme cols-3 selected" id="js-btn-service"
+              data-section="#js-hs-chart-analytics-service"
+              data-tab="#js-charts-service" >
+          Service
+      </button>
+      <button class="analytics-section pro-theme cols-3" id="js-btn-custom"
+              data-section="#js-hs-chart-analytics-custom"
+              data-tab="#js-custom-data-filter" >
+          Custom
+      </button>
+      <button class="analytics-section pro-theme cols-3 disabled" id="js-btn-research">
+          Research
+      </button>
     </div>
 
 
@@ -75,8 +92,15 @@
           <li>Ages: <span id="js-chart-filter-age">All</span></li>
           <li>Ages:
             <select>
-            </select> to
+                <?php for ($i=0; $i<120; $i++) { ?>
+                    <option><?= $i ?></option>
+                <?php } ?>
+            </select>
+              to
             <select>
+                <?php for ($i=0; $i<120; $i++) { ?>
+                    <option><?= $i ?></option>
+                <?php } ?>
             </select>
           </li>
           <li>Diagnosis: <span id="js-chart-filter-diagnosis">All</span></li>

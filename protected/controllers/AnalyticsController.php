@@ -26,12 +26,10 @@ class AnalyticsController extends BaseController
 
   public function actionVr(){
     $this->render('/analytics/analytics_container');
-
   }
 
   public function actionAd(){
     $this->render('/analytics/analytics_container');
-
   }
 
   public function getEventsByType($event_type, $date_range = null){
@@ -43,7 +41,7 @@ class AnalyticsController extends BaseController
     return $examination_events;
   }
 
-  public function getCustomVA($date) {
+  public function getCustomVA() {
     $va_patient_count = array();
     $examination_events = $this->getEventsByType('Examination');
     foreach ($examination_events as $exam_item){
@@ -51,11 +49,6 @@ class AnalyticsController extends BaseController
 
       }
     }
-    for ($i=$date-3; $i<$date+3; $i++){
-      $va_patient_count.=array($i, 0);
-
-    }
-
   }
 
   public function getCustomCRT() {

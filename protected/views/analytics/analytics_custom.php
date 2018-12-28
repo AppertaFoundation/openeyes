@@ -5,7 +5,7 @@
 $this->getCustomVA(new DateTime());
 ?>
 
-<div id="js-hs-chart-analytics-custom">
+<div id="js-hs-chart-analytics-custom" style="display: none">
 
 </div>
 

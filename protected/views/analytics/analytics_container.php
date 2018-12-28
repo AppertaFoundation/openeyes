@@ -1,3 +1,6 @@
+<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
+
 <?php $this->renderPartial('//analytics/analytics_header', array()); ?>
 
 <main class="oe-analytics flex-layout flex-top">

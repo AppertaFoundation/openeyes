@@ -1,6 +1,6 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 
-<div id="js-hs-chart-analytics-clinical">
+<div id="js-hs-chart-analytics-clinical" style="display: none">
 </div>
 
 <script type="text/javascript">
