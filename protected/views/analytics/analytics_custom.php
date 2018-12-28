@@ -11,15 +11,11 @@ $this->getCustomVA(new DateTime());
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var data = [{
-            name: 'custom section',
-            x: [0,1,2,3,4,5],
-            y: [12,13,14,16, 40,29],
-
-        }];
-        analytics_layout['title'] = "Custom Section";
+        var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
+        var custom_data = <?= CJavaScript::encode($custom_data); ?>;
+        custom_layout['title'] = "Custom Section";
         Plotly.newPlot(
-            'js-hs-chart-analytics-custom', data ,analytics_layout
+            'js-hs-chart-analytics-custom', custom_data ,custom_layout
         );
     });
 </script>

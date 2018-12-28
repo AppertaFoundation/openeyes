@@ -5,15 +5,21 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var service_layout = JSON.parse(JSON.stringify(analytics_layout));
+        var service_data = <?= CJavaScript::encode($service_data); ?>;
         var data = [{
-            name: 'service section',
-            x: [0,1,2,3,4,5],
-            y: [12,13,14,16, 40,29],
-
+            name: service_data['title'],
+            x: service_data['x'],
+            y: service_data['y'],
+            type: 'bar',
+            orientation: 'h'
         }];
-        analytics_layout['title'] = "Service Section";
+        service_layout['title'] = "Service Section";
+        service_layout['yaxis']['tickvals'] = [0, 1, 2, 3, 4, 5];
+        service_layout['yaxis']['ticktext'] = ['a','b','C','D', 'E', 'F'];
+
         Plotly.newPlot(
-            'js-hs-chart-analytics-service', data ,analytics_layout
+            'js-hs-chart-analytics-service', data ,service_layout
         );
     });
 </script>

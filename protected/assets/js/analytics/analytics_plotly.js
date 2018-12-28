@@ -29,7 +29,6 @@ var analytics_layout = {
     hovermode: 'closest',
     spikedistance: -1,
     xaxis: {
-        type: 'date',
         showgrid: false,
         /*Ticks setting*/
         ticks: 'outside',

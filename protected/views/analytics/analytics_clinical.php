@@ -5,15 +5,17 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
+        var clinical_data = <?= CJavaScript::encode($clinical_data); ?>;
         var data = [{
-            name: 'clinical section',
-            x: [0,1,2,3,4,5],
-            y: [12,13,14,16, 40,29],
+            name: clinical_data['title'],
+            x: clinical_data['x'],
+            y: clinical_data['y'],
 
         }];
-        analytics_layout['title'] = "Clinical Section";
+        clinical_layout['title'] = "Clinical Section";
         Plotly.newPlot(
-            'js-hs-chart-analytics-clinical', data ,analytics_layout
+            'js-hs-chart-analytics-clinical', data ,clinical_layout
         );
     });
 </script>
