@@ -150,6 +150,7 @@ class Trial extends BaseActiveRecordVersioned
       'created_user_id' => 'Created User',
       'created_date' => 'Created Date',
       'external_data_link' => 'External Data Link',
+      'ethics_number' => 'Ethics Number',
     );
   }
 
