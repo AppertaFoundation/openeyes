@@ -9,18 +9,18 @@
         <a href="/analytics/ad" class="inactive">AD</a>
       </li>
       <li class="icon-btn">
-        <a href="/analytics/glaucoma" class="active">GL</a>
+        <a href="/analytics/glaucoma" class="active <?= $specialty=='Glaucoma'? 'selected':''?>">GL</a>
       </li>
-      <li class="icon-btn">
-        <a href="/analytics/medicalRetina" class="selected">MR</a>
+      <li class="icon-btn analytics-btn" data-specialty="Medical Retina">
+        <a href="/analytics/medicalRetina" class="active <?= $specialty=='Medical Retina'? 'selected':''?>">MR</a>
       </li>
-      <li class="icon-btn">
+      <li class="icon-btn analytics-btn" data-specialty="">
         <a href="/analytics/vr" class="inactive">VR</a>
       </li>
     </ul>
     <!-- icon-btns -->
   </div>
-  <div class="specialty">Medical Retina</div>
+  <div class="specialty"><?= $specialty ?></div>
   <div class="service flex-layout">
     <div class="service-selected" id="js-service-selected-filter">James Morgan</div><!-- OE UI Filter options (id: select-service) -->
     <div class="oe-filter-options" id="oe-filter-options-select-service" data-filter-id="select-service"><!-- simple button to popup filter options -->
@@ -75,7 +75,9 @@
 
     <div id="js-charts-clinical" style="display: none;">
       <ul class="charts">
-        <li><a href="#" id="js-hs-diagnoses">Diagnoses (2556)</a></li>
+        <li>
+            <a href="#" id="js-hs-diagnoses">Diagnoses ()</a>
+        </li>
       </ul>
     </div>
 
@@ -110,8 +112,11 @@
 
         <div class="flex-item-bottom"><!-- OE UI Filter options (id: custom-filters) -->
           <div class="oe-filter-options" id="oe-filter-options-custom-filters" data-filter-id="custom-filters"><!-- simple button to popup filter options -->
-            <button class="oe-filter-btn green hint" id="oe-filter-btn-custom-filters"><i class="oe-i filter pro-theme"></i></button><!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
-            <div class="filter-options-popup" id="filter-options-popup-custom-filters" style="display: none;"><!-- provide close (for touch) -->
+            <button class="oe-filter-btn green hint" id="oe-filter-btn-custom-filters">
+                <i class="oe-i filter pro-theme"></i>
+            </button><!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
+            <div class="filter-options-popup" id="filter-options-popup-custom-filters" style="display: none;">
+                <!-- provide close (for touch) -->
               <div class="close-icon-btn">
                 <i class="oe-i remove-circle medium pro-theme"></i>
               </div>
@@ -159,18 +164,29 @@
       </div><!-- .chart-filters -->
     </div><!-- #js-custom-data-filter -->
 
-		<h3>Filter by Date</h3>
-    <div class="flex-layout">
-      <input type="text" class="pro-theme cols-5" placeholder="from">
-      <input type="text" class="pro-theme cols-5" placeholder="to">
-    </div>
+      <form method="post">
+          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+          <h3>Filter by Date</h3>
+          <div class="flex-layout">
+              <input type="text" class="pro-theme cols-5"
+                     id="analytics_datepicker_from"
+                     value=""
+                     name="date-range-from"
+                     placeholder="from">
+              <input type="text" class="pro-theme cols-5"
+                     id="analytics_datepicker_to"
+                     value=""
+                     name="date-range-to"
+                     placeholder="to">
+          </div>
 
-    <div class="row">
-      <button id="js-clear-date-range" class="pro-theme">View all dates</button>
-    </div>
+          <div class="row">
+              <button id="js-clear-date-range" class="pro-theme">View all dates</button>
+          </div>
 
 
-    <button class="pro-theme green hint cols-full update-chart-btn">Update Chart</button>
+          <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
+      </form>
 
     <div class="extra-actions">
       <button class="pro-theme cols-full">Download (CSV)</button>

@@ -1,12 +1,12 @@
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_sidebar.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
 
-<?php $this->renderPartial('//analytics/analytics_header', array());
-Yii::log(var_export($clinical_data, true));
-?>
+<?php $this->renderPartial('//analytics/analytics_header', array());?>
 
 <main class="oe-analytics flex-layout flex-top">
-    <?php $this->renderPartial('//analytics/analytics_sidebar', array()); ?>
+    <?php $this->renderPartial('//analytics/analytics_sidebar',
+        array('specialty'=>$specialty)
+    ); ?>
     <div class="analytics-charts">
         <?php $this->renderPartial('//analytics/analytics_service',
             array('service_data'=>$service_data)); ?>

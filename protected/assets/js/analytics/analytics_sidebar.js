@@ -1,5 +1,18 @@
 
 $(document).ready(function () {
+
+    pickmeup('#analytics_datepicker_from', {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false,
+    });
+
+    pickmeup('#analytics_datepicker_to', {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false,
+    });
+
     $('.analytics-section').on('click', function () {
         $('.analytics-section').each(function () {
             if ($(this).hasClass('selected')){
@@ -36,6 +49,10 @@ $(document).ready(function () {
 
     });
 
+    $('update-chart-btn').on('click', function () {
+        console.log($('input').val());
+    });
+
     // update UI to show how Filter works
     // this is pretty basic but only to demo on IDG
     function updateUI( $optionGroup ){
@@ -48,8 +65,6 @@ $(document).ready(function () {
             $allListElements.removeClass('selected');
             $(this).addClass('selected');
 
-
-            // $optionGroup.find('.btn-list li').
         });
     }
 
