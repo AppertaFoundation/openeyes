@@ -16,39 +16,29 @@
  */
 ?>
 <?php
-$anaesthetic_agents = implode(', ', array_map(function ($agent) {
-    return $agent->name;
-}, $element->anaesthetic_agents));
-$anaesthetic_agents_list = implode('</li><li>', array_map(function ($agent) {
-    return $agent->name;
-}, $element->anaesthetic_agents));
-$anaesthetic_deliveries = implode(', ', array_map(function ($delivery) {
-    return $delivery->name;
-}, $element->anaesthetic_delivery));
-$anaesthetic_deliveries_list = implode('</li><li>', array_map(function ($delivery) {
-    return $delivery->name;
-}, $element->anaesthetic_delivery));
-$anaesthetic_complications = implode(', ', array_map(function ($complication) {
-    return $complication->name;
-}, $element->anaesthetic_complications));
-$anaesthetic_complications_list = implode('</li><li>', array_map(function ($complication) {
-    return $complication->name;
-}, $element->anaesthetic_complications));
+$anaesthetic_agents = $element->convertToString($element->anaesthetic_agents);
+$anaesthetic_agents_list = $element->convertToList($element->anaesthetic_agents);
+$anaesthetic_deliveries = $element->convertToString($element->anaesthetic_delivery);
+$anaesthetic_deliveries_list = $element->convertToList($element->anaesthetic_delivery);
+$anaesthetic_complications = $element->convertToString($element->anaesthetic_complications);
+$anaesthetic_complications_list = $element->convertToList($element->anaesthetic_complications);
+$anaesthetic_type = $element->convertToString($element->anaesthetic_type);
+$anaesthetic_type_list = $element->convertToList($element->anaesthetic_type);
 ?>
 
 <div id="js-listview-anaesthetic-pro" style="<?= $this->action->id === 'view' ? '' : 'display: none;'?>">
     <ul class="dot-list large-text">
-        <li><?= $element->getAnaestheticTypeDisplay() ?></li>
-        <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
+        <li><?php echo $anaesthetic_type; ?></li>
+        <li><?php echo $anaesthetic_deliveries; ?></li>
         <li><?= \CHtml::encode($element->getAttributeLabel('agents')) ?>:
-            <?php echo $anaesthetic_agents ?: 'None' ?>
+            <?php echo $anaesthetic_agents; ?>
         </li>
         <li>
             <?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
         </li>
         <li>
             <?= \CHtml::encode($element->getAttributeLabel('complications')) ?>:
-            <?php echo $anaesthetic_complications ?: 'None' ?>
+            <?php echo $anaesthetic_complications; ?>
         </li>
     </ul>
 </div>
@@ -69,11 +59,11 @@ $anaesthetic_complications_list = implode('</li><li>', array_map(function ($comp
         </thead>
         <tbody>
         <tr class="valign-top">
-            <td><ul class="listview"><li><?= $element->getAnaestheticTypeDisplayList() ?></li></ul></td>
-            <td><ul class="listview"><li><?php echo $anaesthetic_deliveries_list ?: 'None' ?></li></ul></td>
-            <td><ul class="listview"><li><?php echo $anaesthetic_agents_list ?: 'None';?></li></ul></td>
+            <td><ul class="listview"><?php echo $anaesthetic_type_list; ?></ul></td>
+            <td><ul class="listview"><?php echo $anaesthetic_deliveries_list; ?></ul></td>
+            <td><ul class="listview"><?php echo $anaesthetic_agents_list; ?></ul></td>
             <td><ul class="listview"><li><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None';?></li></ul></td>
-            <td><ul class="listview"><li><?php echo $anaesthetic_complications ?: 'None';?></li></ul></td>
+            <td><ul class="listview"><?php echo $anaesthetic_complications;?></ul></td>
         </tr>
         </tbody>
     </table>
