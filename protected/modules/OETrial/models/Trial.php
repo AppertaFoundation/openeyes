@@ -17,6 +17,7 @@
  * @property string $last_modified_user_id
  * @property int $created_user_id
  * @property string $created_date
+ * @property int $ethics_number
  *
  * The followings are the available model relations:
  * @property TrialType $trialType
@@ -83,7 +84,7 @@ class Trial extends BaseActiveRecordVersioned
         'max' => 10,
       ),
       array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
-      array('description, last_modified_date, created_date', 'safe'),
+      array('description, last_modified_date, created_date, ethics_number', 'safe'),
     );
   }
 
