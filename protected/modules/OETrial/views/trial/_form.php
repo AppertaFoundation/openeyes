@@ -38,14 +38,16 @@
             <?= $form->textField($trial, 'name', array('size' => 50, 'maxlength' => 200)) ?>
         </td>
       </tr>
-      <tr class="col-gap">
-          <td>
-              <?= $form->labelEx($trial, 'ethics_number') ?>
-          </td>
-          <td>
-              <?= $form->textField($trial, 'ethics_number', array('size' => 50, 'maxlength' => 200)) ?>
-          </td>
-      </tr>
+      <?php if (Yii::app()->params['include_ethics_number'] == true) { ?>
+          <tr class="col-gap">
+              <td>
+                  <?= $form->labelEx($trial, 'ethics_number') ?>
+              </td>
+              <td>
+                  <?= $form->textField($trial, 'ethics_number', array('size' => 50, 'maxlength' => 200)) ?>
+              </td>
+          </tr>
+      <?php } ?>
       <tr class="col-gap">
         <td>
             <?= $form->labelEx($trial, 'external_data_link') ?>
