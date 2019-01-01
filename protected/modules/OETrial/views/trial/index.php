@@ -111,8 +111,8 @@
           $('[data-trial-name*="'+$search_content+ '" i]').attr("data-hidden-label",'show');
           $('[data-trial-description*="'+$search_content+ '" i]').show();
           $('[data-trial-description*="'+$search_content+ '" i]').attr("data-hidden-label",'show');
-          $("#search-table-non-intervention-trials").makePagination(7);
-          $("#search-table-intervention-trials").makePagination(7);
+          $("#search-table-non-intervention-trials").makePagination(10);
+          $("#search-table-intervention-trials").makePagination(10);
       }else {
           $('.trial-list').show();
           $('.searched-trial-list').hide();
@@ -246,13 +246,15 @@
           }
           if (!this.asc){rows = rows.reverse();}
           table.children('tbody').empty().html(rows);
-          (table).makePagination(7);
+          (table).makePagination(10);
       });
   };
 
 
 
   $(function () {
+      // $("#search-table-non-intervention-trials").makePagination(10);
+      // $("#search-table-intervention-trials").makePagination(10);
       $("#search-table-non-intervention-trials").makeTableSortable();
       $("#search-table-intervention-trials").makeTableSortable();
   });

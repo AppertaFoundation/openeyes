@@ -6,7 +6,7 @@
 
 ?>
 
-<div class="worklist-group searched-trial-list" style="display: none">
+<div class="worklist-group searched-trial-list" style="display: none" >
 
     <?php
     $dataProvided = $dataProvider->getData();
