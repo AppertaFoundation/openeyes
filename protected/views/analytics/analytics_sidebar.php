@@ -5,6 +5,9 @@
 
     <h3>Select options</h3>
     <ul class="oescape-icon-btns">
+        <li class="icon-btn">
+            <a href="/analytics/cataract" class="active <?= $specialty=='Cataract'? 'selected':''?>">CA</a>
+        </li>
       <li class="icon-btn">
         <a href="/analytics/ad" class="inactive">AD</a>
       </li>
@@ -15,7 +18,7 @@
         <a href="/analytics/medicalRetina" class="active <?= $specialty=='Medical Retina'? 'selected':''?>">MR</a>
       </li>
       <li class="icon-btn analytics-btn" data-specialty="">
-        <a href="/analytics/vr" class="inactive">VR</a>
+        <a href="/analytics/vitreoretinal" class="inactive">VR</a>
       </li>
     </ul>
     <!-- icon-btns -->
@@ -93,13 +96,13 @@
         <ul class="filters-selected cols-9">
           <li>Ages: <span id="js-chart-filter-age">All</span></li>
           <li>Ages:
-            <select>
+            <select style="font-size: 1em; width: inherit">
                 <?php for ($i=0; $i<120; $i++) { ?>
                     <option><?= $i ?></option>
                 <?php } ?>
             </select>
               to
-            <select>
+            <select style="font-size: 1em; width: inherit">
                 <?php for ($i=0; $i<120; $i++) { ?>
                     <option><?= $i ?></option>
                 <?php } ?>
@@ -184,11 +187,11 @@
               <button id="js-clear-date-range" class="pro-theme">View all dates</button>
           </div>
 
-
           <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
       </form>
 
     <div class="extra-actions">
       <button class="pro-theme cols-full">Download (CSV)</button>
-    </div></div><!-- .specialty-options -->
+    </div>
+  </div><!-- .specialty-options -->
 </div>

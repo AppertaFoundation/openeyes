@@ -20,7 +20,6 @@
         );
 
         clinical_plot.on('plotly_click', function () {
-            <?php $this->renderPartial('//analytics/analytics_drill_down_list');?>
         });
     });
 </script>

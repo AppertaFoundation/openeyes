@@ -8,12 +8,25 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('medicalRetina', 'glaucoma', 'vr', 'ad'),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad'),
         'users'=> array('@')
       ),
     );
   }
 
+  public function actionCataract(){
+      $assetManager = Yii::app()->getAssetManager();
+      $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
+
+      $this->render('/analytics/analytics_container',
+          array(
+              'specialty'=>'Cataract',
+              'clinical_data'=> array(),
+              'service_data'=> array(),
+              'custom_data' => array()
+          )
+      );
+  }
   public function actionMedicalRetina(){
       $filters = array(
           'date_from' => null,
@@ -124,7 +137,7 @@ class AnalyticsController extends BaseController
     );
   }
 
-  public function actionVr(){
+  public function actionVitreoretinal(){
     $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Vitreoretinal',
