@@ -1228,7 +1228,7 @@ class OphCiExamination_API extends \BaseAPI
                 if (!array_key_exists($service, $summary)) {
                     $summary[$service] = $summaries->comments;
                     $summary_obj->service = $service;
-                    $summary_obj->comments = $summaries->comments ? : $summaries->getChildrenString();
+                    $summary_obj->comments = $summaries->comments ? : $summaries->getSiblingString();
                     $date_parts = explode(' ', $created_date);
                     $summary_obj->date = $date_parts;
                     $summary_obj->user = $user_name;

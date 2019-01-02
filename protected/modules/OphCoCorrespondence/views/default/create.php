@@ -49,7 +49,7 @@ foreach($actions as $action_id => $action){
 
 <?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
     <div id="no-practice-address" class="alert-box alert with-icon">
-        Patient has no GP practice address, please correct in PAS before creating GP letter.
+        Patient has no <?php echo \Yii::app()->params['gp_label'] ?> practice address, please correct in PAS before creating <?php echo \Yii::app()->params['gp_label'] ?> letter.
     </div>
 <?php } ?>
 

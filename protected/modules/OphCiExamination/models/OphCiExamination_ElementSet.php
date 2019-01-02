@@ -88,7 +88,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      *
      * @return ElementType[]
      */
-    public function getDefaultElementTypes()
+    public function getDefaultElementTypes($action = 'edit')
     {
         $default_element_types = \ElementType::model()->findAll(array(
                 'condition' => 'ophciexamination_element_set_item.set_id = :set_id AND ophciexamination_element_set_item.is_hidden = 0',
@@ -105,7 +105,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      *
      * @return ElementType[]
      */
-    public function getOptionalElementTypes()
+    public function getOptionalElementTypes($action = 'edit')
     {
         $optional_element_types = \ElementType::model()->findAll(array(
                 'condition' => "event_type.class_name = 'OphCiExamination' AND

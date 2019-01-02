@@ -385,13 +385,10 @@ class AdminController extends \ModuleAdminController
         $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
         // deprecated or invalid element types for this installation
-        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
-        $criteria->order = 'parent_element_type.name asc, t.name asc';
+        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList());
+        $criteria->order = 't.display_order asc';
 
-        $element_types = \ElementType::model()->with('parent_element_type')->findAll($criteria);
-        uasort($element_types, function($a, $b) {
-            return $a->nameWithParent > $b->nameWithParent;
-        });
+        $element_types = \ElementType::model()->findAll($criteria);
 
         $this->renderPartial('_update_Workflow_ElementSetItem', array(
             'step' => $step,
@@ -749,7 +746,7 @@ class AdminController extends \ModuleAdminController
                                 'type' => 'multilookup',
                                 'noSelectionsMessage' => 'All Subspecialties',
                                 'htmlOptions' => array(
-                                        'empty' => '- Please Select -',
+                                        'empty' => 'Select',
                                         'nowrapper' => true,
                                 ),
                                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -773,7 +770,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'All Subspecialties',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -925,7 +922,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'No Tags',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
