@@ -41,14 +41,14 @@ class AnalyticsController extends BaseController
 
       $clinical_data = array(
           'title' => 'Clinical Section',
-          'x'=> array(1,2,3,4,5,6),
-          'y'=> array(18, 9, 10, 7, 13, 16)
+          'y'=> array(1,2,3,4,5,6),
+          'x'=> array(18, 9, 10, 7, 13, 16)
       );
 
       $service_data = array(
           'title' => 'Service Section',
-          'x' => array(12, 5, 9, 7, 6),
-          'y' => array(0, 1, 2, 3, 4, 5)
+          'x' => array(1, 2, 3, 4, 5, 6),
+          'y' => array(1, 1, 2, 3, 4, 5)
       );
 
       $custom_data = array(

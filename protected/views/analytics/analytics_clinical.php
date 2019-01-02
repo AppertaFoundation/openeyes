@@ -12,9 +12,13 @@
             name: clinical_data['title'],
             x: clinical_data['x'],
             y: clinical_data['y'],
+            type: 'bar',
+            orientation: 'h'
 
         }];
         clinical_layout['title'] = "Clinical Section";
+        clinical_layout['yaxis']['tickvals'] = [0, 1, 2, 3, 4, 5];
+        clinical_layout['yaxis']['ticktext'] = ['a','b','C','D', 'E', 'F'];
         Plotly.newPlot(
             'js-hs-chart-analytics-clinical', data ,clinical_layout
         );

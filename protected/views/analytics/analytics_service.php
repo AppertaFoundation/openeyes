@@ -12,10 +12,9 @@
             x: service_data['x'],
             y: service_data['y'],
             type: 'bar',
-            orientation: 'h'
         }];
         service_layout['title'] = "Service Section";
-        service_layout['yaxis']['tickvals'] = [0, 1, 2, 3, 4, 5];
+        service_layout['yaxis']['tickvals'] = [1, 2, 3, 4, 5, 6];
         service_layout['yaxis']['ticktext'] = ['a','b','C','D', 'E', 'F'];
 
         Plotly.newPlot(
