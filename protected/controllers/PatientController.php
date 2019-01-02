@@ -1926,10 +1926,13 @@ class PatientController extends BaseController
             if (!isset($referral->patient_id)) {
                 $referral->patient_id = $patient->id;
             }
-            if (!$referral->save() || !$this->actionPerformReferralDoc($patient, $referral, $_FILES)) {
+            if (!$referral->save()) {
                 return false;
             }
+
+            $this->actionPerformReferralDoc($patient, $referral, $_FILES);
         }
+
 
         //Save referral to doctor
         if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
