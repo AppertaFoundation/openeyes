@@ -31,7 +31,7 @@
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk', null, 8);
         OpenEyes.Dash.init('#cataract-complication-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications', null,8);
-        OpenEyes.Dash.init('#visual-outcome-grid');
+        OpenEyes.Dash.init('#visual-acuity-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome', null, 8);
         OpenEyes.Dash.init('#refractive-outcome-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome', null, 8);

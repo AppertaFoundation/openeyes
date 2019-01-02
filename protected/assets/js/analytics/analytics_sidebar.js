@@ -1,6 +1,7 @@
 
 $(document).ready(function () {
 
+    // date filter
     pickmeup('#analytics_datepicker_from', {
         format: 'Y-m-d',
         hide_on_select: true,
@@ -13,6 +14,29 @@ $(document).ready(function () {
         default_date: false,
     });
 
+    //cataract plot change
+    $('#js-chart-CA-selection').on('change', function () {
+        $('#pcr-risk-grid').hide();
+        $('#cataract-complication-grid').hide();
+        $('#visual-acuity-grid').hide();
+        $('#refractive-outcome-grid').hide();
+        var selected_value = $(this).val();
+        switch (selected_value) {
+            case '0':
+                $('#pcr-risk-grid').show();
+                break;
+            case '1':
+                $('#cataract-complication-grid').show();
+                break;
+            case '2':
+                $('#visual-acuity-grid').show();
+                break;
+            case '3':
+                $('#refractive-outcome-grid').show();
+                break;
+        }
+    });
+    //select tag between clinic, custom and service
     $('.analytics-section').on('click', function () {
         $('.analytics-section').each(function () {
             if ($(this).hasClass('selected')){

@@ -75,7 +75,14 @@
       </button>
     </div>
 
-
+      <div
+           style="<?= $specialty!=='Cataract'?'display: none':''?>" >
+          <?= CHtml::dropDownList(
+              'js-chart-CA-selection', null,
+              array('PCR Risk', 'Complication Profile', 'Visual Acuity', 'Refractive Outcome'),
+              array('style'=>'font-size: 1em; width: inherit')
+          )?>
+      </div>
     <div id="js-charts-clinical" style="display: none;">
       <ul class="charts">
         <li>
