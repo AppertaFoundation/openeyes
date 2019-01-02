@@ -128,6 +128,10 @@ do
     	;;
     	--sample-only) sampleonly=1
     	;;
+        --no-oe) # Don't checkout the openeyes repo
+            delete=(openeyes)
+            modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
+        ;;
     	--sshidentity|-sshidentity)
             sshidentity=$2
             shift # shift past parameter
