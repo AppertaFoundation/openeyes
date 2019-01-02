@@ -22,53 +22,15 @@ function CompLogConnection() {
 		.always(() => {
 			for (let i = 1; i <= self.maxAttempts; i++) {
 				console.log(`start of for loop ${i}`);
-				let tryToConnect = new Promise((resolve, reject) => setTimeout(() => {
-					if (self.isConnectedToCompLog) {
-						console.log(`Whoops! Looks like a connection has already been established ${i}`);
-						reject(new Error("Whoops! Looks like a connection has already been established"));
-					}
-					else {
-						$.ajax({
-							type: 'GET',
-							url: "http://localhost:" + OE_COMPLog_port + "/info",
-							dataType: 'json',
-							contentType: 'application/json; charset=utf-8',
-							crossDomain: true,
-							success: () => {
-								if (!self.isConnectedToCompLog) { //check again in case a different response has established the connection already
-									console.log(`Yayaya we were first to find a connection! ${i}`);
-									self.isConnectedToCompLog = true;
-									resolve(`Yayaya we found a connection! ${i}`);
-								}
-								else {
-									console.log(`another ajax call got a response first :( ${i}`);
-									reject(new Error(`another ajax call got a response first :( ${i}`));
-								}
-							},
-							error: () => {
-								console.log(`no connection success yet ${i}`);
-								reject(new CompLogConnectionError(`no connectoin succeess yet ${i}`));
-							}
-						});
-					}
-				}, self.attemptDelay * i));
-				tryToConnect
+				this.attemptConnectionAfterDelay(i*this.attemptDelay)
 					.then(() => {sleep(3000);}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
 					.then(this.COMPLogDischargePatient) //try see if setTimeOut works instead of sleep.
 					.then(this.COMPLogPresetTest)
 					.then(this.pollForTestResults.bind(this))
-					.then(() => {
-						this.dialog.setTitle('COMPLog test in progress');
-						this.dialog.on('ok', () => {
-							this.importCompLogResults();
-							this.destroy();
-						});
-						$('.ok').show();
-					})
+					.then(this.changeDialogStatusToReady.bind(this))
 					.catch((error) => {
 						if(i >= self.maxAttempts && error.name === 'CompLogConnectionError'){
-							// insert some code that adds a message to the dialog that says 'could not connect to COMPLog'
-							console.log('took too long to connect with CompLog');
+							$('#js-complog-status').text('Could not establish connection with COMPLog').find('.spinner').hide();
 						}
 					});
 			}
@@ -81,6 +43,7 @@ CompLogConnection.prototype.initialiseCompLogDialog = function(){
 		okButton: 'Pull COMPLog Results',
 		templateSelector: '#dialog-complog-template'});
 	this.dialog.on('cancel', this.destroy.bind(this));
+	this.dialog.on('close', this.destroy.bind(this));
 	this.dialog.open();
 };
 
@@ -92,6 +55,39 @@ CompLogConnection.prototype.checkConnectionToWS = function() {
 			contentType: 'application/json; charset=utf-8',
 			crossDomain: true,
     });
+};
+
+CompLogConnection.prototype.attemptConnectionAfterDelay = function(initialDelay) {
+	return new Promise((resolve, reject) => setTimeout(() => {
+		if (this.isConnectedToCompLog) {
+			console.log(`Whoops! Looks like a connection has already been established `);
+			reject(new Error("Whoops! Looks like a connection has already been established"));
+		}
+		else {
+			$.ajax({
+				type: 'GET',
+				url: "http://localhost:" + OE_COMPLog_port + "/info",
+				dataType: 'json',
+				contentType: 'application/json; charset=utf-8',
+				crossDomain: true,
+				success: () => {
+					if (!this.isConnectedToCompLog) { //check again in case a different response has established the connection already
+						console.log(`Yayaya we were first to find a connection! `);
+						this.isConnectedToCompLog = true;
+						resolve(`Yayaya we found a connection! `);
+					}
+					else {
+						console.log(`another ajax call got a response first :( `);
+						reject(new Error(`another ajax call got a response first :( `));
+					}
+				},
+				error: () => {
+					console.log(`no connection success yet `);
+					reject(new CompLogConnectionError(`no connection succeess yet `));
+				}
+			});
+		}
+	}, initialDelay));
 };
 
 CompLogConnection.prototype.COMPLogPresetTest = function() {
@@ -243,6 +239,15 @@ CompLogConnection.prototype.saveResultsToOE = function(resultsArray) {
     this.COMPLogDischargePatient();
 };
 
+CompLogConnection.prototype.changeDialogStatusToReady = function(){
+	$('#js-complog-status').text('COMPLog test in progress').find('.spinner').hide();
+	this.dialog.on('ok', () => {
+		this.importCompLogResults();
+		this.destroy();
+	});
+	$('.ok').show();
+};
+
 function sleep(milliseconds) {
 	console.log(`sleep(${milliseconds})`);
     let start = new Date().getTime();
@@ -264,11 +269,6 @@ CompLogConnection.prototype.destroy = function(){
 	this.dialog = null;
 	$("#complog_iframe").remove();
 };
-
-function addMessageToFadeContent(msg)
-{
-    $(".fadeContent").append(msg+"<br>");
-}
 
 $(document).on("click", "#et_complog", function(event){
     event.preventDefault();
