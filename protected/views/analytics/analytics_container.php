@@ -25,6 +25,7 @@
     <?php $this->renderPartial('//analytics/analytics_drill_down_list', array(
             'patient_list' => $iop_patient_list
     )); ?>
+
 </main>
 
 <script >
@@ -37,6 +38,7 @@
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome', null, 8);
         OpenEyes.Dash.init('#refractive-outcome-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome', null, 8);
+
 
     });
 
