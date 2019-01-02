@@ -322,7 +322,6 @@ class AdminController extends \ModuleAdminController
     {
         $model = new models\OphCiExamination_Workflow();
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -331,7 +330,7 @@ class AdminController extends \ModuleAdminController
                 Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
                 Yii::app()->user->setFlash('success', 'Workflow added');
 
-                $this->redirect(array('viewWorkflowRules'));
+                $this->redirect(array('editWorkflow', 'id' => $model->getPrimaryKey()));
             }
         }
 
@@ -345,7 +344,6 @@ class AdminController extends \ModuleAdminController
     public function actionEditWorkflow($id)
     {
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
@@ -387,13 +385,10 @@ class AdminController extends \ModuleAdminController
         $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
         // deprecated or invalid element types for this installation
-        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
-        $criteria->order = 'parent_element_type.name asc, t.name asc';
+        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList());
+        $criteria->order = 't.display_order asc';
 
-        $element_types = \ElementType::model()->with('parent_element_type')->findAll($criteria);
-        uasort($element_types, function($a, $b) {
-            return $a->nameWithParent > $b->nameWithParent;
-        });
+        $element_types = \ElementType::model()->findAll($criteria);
 
         $this->renderPartial('_update_Workflow_ElementSetItem', array(
             'step' => $step,
@@ -589,7 +584,6 @@ class AdminController extends \ModuleAdminController
         }
 
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -614,7 +608,6 @@ class AdminController extends \ModuleAdminController
         $model = new models\OphCiExamination_Workflow_Rule();
 
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -753,7 +746,7 @@ class AdminController extends \ModuleAdminController
                                 'type' => 'multilookup',
                                 'noSelectionsMessage' => 'All Subspecialties',
                                 'htmlOptions' => array(
-                                        'empty' => '- Please Select -',
+                                        'empty' => 'Select',
                                         'nowrapper' => true,
                                 ),
                                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -777,7 +770,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'All Subspecialties',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
@@ -929,7 +922,7 @@ class AdminController extends \ModuleAdminController
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'No Tags',
                 'htmlOptions' => array(
-                    'empty' => '- Please Select -',
+                    'empty' => 'Select',
                     'nowrapper' => true,
                 ),
                 'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')

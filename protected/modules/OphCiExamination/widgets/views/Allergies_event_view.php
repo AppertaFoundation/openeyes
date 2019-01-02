@@ -3,9 +3,12 @@
 <div class="element-data full-width">
     <div class="flex-layout flex-top">
         <div class="cols-11">
+            <?php if($element->no_allergies_date){
+            echo 'Patient has no allergies (confirmed)';
+            } else { ?>
             <?php if (!count($element->entries)) : ?>
                 <div class="data-value not-recorded left" style="text-align: left;">
-                  Patient has no allergies (confirmed)
+                 <?= 'No entries recorded' ?>
                 </div>
             <?php else : ?>
                 <?php
@@ -29,7 +32,7 @@
                       <?php endforeach; ?>
                   </ul>
                 <?php } ?>
-                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>}
+                <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) > 0 ) { ?>
                   <ul class="dot-list large">
                     <li>Not Present:</li>
                       <?php foreach ($entries[(string)AllergyEntry::$NOT_PRESENT] as $entry) : ?>
@@ -73,5 +76,6 @@
                 <i class="oe-i small js-listview-expand-btn expand" data-list="allergies"></i>
             </div>
         <?php endif; ?>
+        <?php } ?>
     </div>
 </div>

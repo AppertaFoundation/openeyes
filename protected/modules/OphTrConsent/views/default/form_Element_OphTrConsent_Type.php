@@ -17,6 +17,6 @@
  */
  ?>
 <div class="element-fields">
-	<?= $form->hiddenField($element, 'draft') ?>
-	<?= $form->dropDownList($element, 'type_id', 'OphTrConsent_Type_Type', array(), false, array('field' => 4)) ?>
+    <?= $form->hiddenField($element, 'draft') ?>
+    <?= $form->dropDownList($element, 'type_id', 'OphTrConsent_Type_Type', ['nowrapper' => true], false, []) ?>
 </div>

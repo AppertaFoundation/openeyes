@@ -260,7 +260,7 @@
             <?php if (!empty($element->comments_rtt)) { ?>
                 <tr>
                     <td>
-                        <h3 class="data-title">Operation RTT Comments</h3>
+                        Operation RTT Comments
                     </td>
                     <td>
                         <div class="data-value panel comments">
@@ -273,9 +273,7 @@
             <?php if ($element->organising_admission_user): ?>
                 <tr>
                     <td>
-                        <h3 class="data-title">
                             <?= CHtml::encode($element->getAttributeLabel('organising_admission_user_id')) ?>
-                        </h3>
                     </td>
                     <td>
                         <div class="data-value">
@@ -459,7 +457,6 @@ if ($element->isEditable()) {
             if ($element->letterType === 'Invitation') {
                 $this->event_actions[] = EventAction::button('Print Admission form', 'print_admission_form', null, array('class' => 'small button'));
             }
-            $this->event_actions[] = EventAction::printButton();
         }
         if ($this->checkScheduleAccess() && !$td_disabled) {
             $this->event_actions[] = EventAction::link('Schedule now',

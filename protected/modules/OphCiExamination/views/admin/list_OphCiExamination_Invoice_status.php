@@ -20,59 +20,59 @@
 
 <div class="cols-5">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+    <form id="admin_invoicestatus">
+        <table class="standard">
+            <thead>
+            <tr>
+                <th><input type="checkbox" name="selectall" id="selectall"/></th>
+                <th>Name</th>
+                <th>Active</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($model_list as $i => $model) { ?>
+                <tr class="clickable" data-id="<?php echo $model->id ?>"
+                    data-uri="OphCiExamination/admin/editInvoiceStatus/<?php echo $model->id ?>">
+                    <td><input type="checkbox" name="select[]" value="<?php echo $model->id ?>"/></td>
+                    <td>
+                        <?php echo $model->name ?>
+                    </td>
+                    <td>
+                        <?php echo ($model->active) ?
+                            ('<i class="oe-i tick small"></i>') :
+                            ('<i class="oe-i remove small"></i>'); ?>
+                        <?php /*echo ($model->active == 1 ? 'Yes' : 'No'); */ ?>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+            <tfoot class="pagination-container">
+            <tr>
+                <td colspan="5">
+                    <?= \CHtml::button(
+                        'Add',
+                        [
+                            'class' => 'button large',
+                            'type' => 'button',
+                            'name' => 'add',
+                            'data-uri' => '/OphCiExamination/admin/addInvoiceStatus',
+                            'id' => 'et_add'
+                        ]
+                    ); ?>
 
-    <table class="standard">
-        <thead>
-        <tr>
-            <th><input type="checkbox" name="selectall" id="selectall"/></th>
-            <th>Name</th>
-            <th>Active</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($model_list as $i => $model) { ?>
-            <tr class="clickable" data-id="<?php echo $model->id ?>"
-                data-uri="OphCiExamination/admin/editInvoiceStatus/<?php echo $model->id ?>">
-                <td><input type="checkbox" name="select[]" value="<?php echo $model->id ?>"/></td>
-                <td>
-                    <?php echo $model->name ?>
-                </td>
-                <td>
-                    <?php echo ($model->active) ?
-                        ('<i class="oe-i tick small"></i>') :
-                        ('<i class="oe-i remove small"></i>'); ?>
-                    <?php /*echo ($model->active == 1 ? 'Yes' : 'No'); */ ?>
+                    <?= \CHtml::button(
+                        'Delete',
+                        [
+                            'class' => 'button large',
+                            'name' => 'delete',
+                            'data-object' => 'invoicestatus',
+                            'data-uri' => '/OphCiExamination/admin/deleteInvoiceStatus',
+                            'id' => 'et_delete'
+                        ]
+                    ); ?>
                 </td>
             </tr>
-        <?php } ?>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-            <td colspan="5">
-                <?= \CHtml::button(
-                    'Add',
-                    [
-                        'class' => 'button large',
-                        'type' => 'button',
-                        'name' => 'add',
-                        'data-uri' => '/OphCiExamination/admin/addInvoiceStatus',
-                        'id' => 'et_add'
-                    ]
-                ); ?>
-
-                <?= \CHtml::submitButton(
-                    'Delete',
-                    [
-                        'class' => 'button large',
-                        'name' => 'delete',
-                        'data-object' => 'InvoiceStatus',
-                        'data-uri' => '/OphCiExamination/admin/deleteInvoiceStatus',
-                        'id' => 'et_delete'
-                    ]
-                ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
     </form>
 </div>

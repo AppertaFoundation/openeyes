@@ -21,4 +21,4 @@
 
 <?php echo $form->radioBoolean($element, $side.'_iop_check')?>
 
-<?php echo $form->dropDownList($element, $side.'_drops_id', 'OphTrIntravitrealinjection_PostInjectionDrops', array('empty' => '- Please Select -'), false, array('field' => 6))?>
+<?php echo $form->dropDownList($element, $side.'_drops_id', 'OphTrIntravitrealinjection_PostInjectionDrops', array('empty' => 'Select'), false, [])?>

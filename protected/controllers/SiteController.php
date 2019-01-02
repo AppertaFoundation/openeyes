@@ -35,10 +35,12 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        $search_term = Yii::app()->session['search_term'];
+        Yii::app()->session['search_term']='';
         $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
-        $this->render('index');
+        $this->render('index', array('search_term' => $search_term));
     }
 
     /**
@@ -204,11 +206,6 @@ class SiteController extends BaseController
         $this->renderPartial('/site/debuginfo', array());
     }
 
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-        return parent::beforeAction($action);
-    }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later
 //    public function actionAdvancedSearch()

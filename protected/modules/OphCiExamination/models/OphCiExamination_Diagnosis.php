@@ -57,6 +57,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
                 array('element_diagnoses_id,disorder_id,eye_id', 'required'),
                 array('element_diagnoses_id,disorder_id,eye_id,principal,date', 'safe'),
                 array('id, name', 'safe', 'on' => 'search'),
+                array('date', 'OEFuzzyDateValidator'),
         );
     }
 
@@ -79,6 +80,18 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );
     }
+
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date',
+            ),
+        );
+    }
+
 
     /**
      * @param \BaseEventTypeElement $element

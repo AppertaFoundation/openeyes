@@ -17,12 +17,12 @@
  */
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
-$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-if($correspondeceApp === "on") {
-    ?>
-<div class="element-fields full-width flex-layout flex-top col-gap" style="padding: 10px;">
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval']; ?>
+<div class="element-data full-width flex-layout flex-top col-gap">
     <div class="cols-5 ">
         <table class="cols-full">
+            <?php if($correspondeceApp === "on") { ?>
             <tr>
                 <td class="data-label"><?=\CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                 <td>
@@ -39,6 +39,7 @@ if($correspondeceApp === "on") {
                     </div>
                 </td>
             </tr>
+            <?php } ?>
             <tr>
                 <td class="data-label">
                     From
@@ -89,7 +90,7 @@ if($correspondeceApp === "on") {
                                 if($target->ToCc == 'To'){
                                     $toAddress = $target->contact_name . "\n" . $target->address;
                                 } else {
-                                    $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                    $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
 
                                     $ccString .= "" . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                                 }
@@ -112,10 +113,17 @@ if($correspondeceApp === "on") {
             </tr>
         </table>
     </div>
-    <?php } ?>
+    <div class="spinner-overlay">
+        <i class="spinner"></i>
+        <img src="#"
+             width="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['width']?>"
+             height="<?=Yii::app()->params['lightning_viewer']['blank_image_template']['height']?>"
+             style="background-color: white;"
+        >
+    </div>
     <div id="correspondence_out"
-         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7"
-         style="background-color: white; color: black; padding: 10px; display:none;">
+         class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7 element"
+         style="background-color: white; color: black; display:none;">
             <header>
                 <?php
             $ccString = "";
@@ -126,7 +134,7 @@ if($correspondeceApp === "on") {
                         if($target->ToCc == 'To'){
                             $toAddress = $target->contact_name . "\n" . $target->address;
                         } else {
-                            $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                            $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                              $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                         }
                     }
@@ -171,36 +179,11 @@ if($correspondeceApp === "on") {
             <?php endif; ?>
         </div>
 <div class="js-correspondence-image-overlay">
-    <div class="oe-popup-wrap"><div class="spinner"></div></div>
 </div>
 
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
-        //Get all the images for the page and set them
-        $.ajax({
-            type: 'GET',
-            url: '/eventImage/getImageInfo',
-            data: {'event_id': OE_event_id},
-        }).success(function (response) {
-            $image_container = $('.js-correspondence-image-overlay');
-            $image_container.html('');
-            if (response) {
-                response = JSON.parse(response);
-                if(response.error){
-                    $('#correspondence_out').show();
-                } else {
-                    if(response.page_count === 1){
-                        $image_container.append('<img id="correspondence_image_0" src="' + response.url + '" style="display:none">');
-                    } else {
-                        for (let index = 0; index < response.page_count; index++) {
-                            $image_container.append('<img id="correspondence_image_' + index + '" src="' + response.url + '?page=' + index + '" style="display:none">');
-                        }
-                    }
-                    $('#correspondence_image_0').show();
-                    new OpenEyes.OphCoCorrespondence.DocumentViewerController();
-                }
-            }
-        });
+    $(document).ready(function () {
+        new OpenEyes.OphCoCorrespondence.ImageLoaderController(OE_event_id , []);
     });
 </script>

@@ -103,6 +103,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       'fieldPrefix': $row.closest('section').data('element-type-class')
     });
     $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController);
+    $(":input[name^='diabetic_diagnoses']").trigger('change');
     // radio buttons
     $radioButtons.on('change', function (e) {
       $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
@@ -128,6 +129,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       let data = {};
       data.row_count = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key') + newRows.length;
       data.disorder_id = option.id;
+      data.is_diabetes = option.is_diabetes;
       data.disorder_display = option.label;
       newRows.push(Mustache.render(template, data));
     });

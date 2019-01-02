@@ -43,6 +43,7 @@
 
  * @property tinyint $deleted
  * @property int $ethnic_group_id
+ * @property int $patient_source
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -55,6 +56,8 @@
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
  * @property SocialHistory $socialhistory
+ * @property TrialPatient[] $trials
+ * @property PatientIdentifier[] $identifiers
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses
@@ -63,6 +66,10 @@
 class Patient extends BaseActiveRecordVersioned
 {
     const CHILD_AGE_LIMIT = 16;
+
+    const PATIENT_SOURCE_OTHER = 0;
+    const PATIENT_SOURCE_REFERRAL = 1;
+    const PATIENT_SOURCE_SELF_REGISTER = 2;
 
     public $use_pas = true;
     private $_orderedepisodes;
@@ -121,16 +128,21 @@ class Patient extends BaseActiveRecordVersioned
     {
         return array(
             array('pas_key', 'length', 'max' => 10),
+            array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
+            array('gender', 'required', 'on' => array('self_register')),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
-            array('gender, dob', 'required', 'on' => 'manual'),
+
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
             array('deleted', 'safe'),
-            array('dob', 'dateFormatValidator', 'on' => 'manual'),
-            array('date_of_death', 'deathDateFormatValidator', 'on' => 'manual'),
-            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
+            array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
+            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local patient_source', 'safe', 'on' => 'search'),
         );
     }
 
@@ -176,6 +188,9 @@ class Patient extends BaseActiveRecordVersioned
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
+            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
+            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
+            'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
         );
     }
 
@@ -198,10 +213,28 @@ class Patient extends BaseActiveRecordVersioned
                 $item_count = Patient::model()->count('hos_num = ? AND id != ?',
                     array($hos_num, $this->id ?: -1));
                 if ($item_count) {
-                    $this->addError($attribute, 'A patient already exists with this hospital number');
+                    $this->addError($attribute, 'A patient already exists with this hospital number. The next available auto generated number is '.$this->autoCompleteHosNum());
                 }
             } elseif (!empty($this->hos_num)) {
                 $this->addError($attribute, 'Not a valid Hospital Number');
+            }
+        }
+    }
+
+//    Generates an auto incremented Hospital Number
+    public function autoCompleteHosNum(){
+        if(Yii::app()->params['set_auto_increment'] == 'on'){
+            $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
+            $command = Yii::app()->db->createCommand($query);
+            $command->prepare();
+            $result = $command->queryColumn();
+            $default_hos_num = $result;
+//            Checks the admin setting for the starting number for auto increment
+            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])){
+                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+                return $default_hos_num[0];
+            } else {
+                return ($default_hos_num[0] + 1);
             }
         }
     }
@@ -220,9 +253,17 @@ class Patient extends BaseActiveRecordVersioned
         $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
 
         $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+        $current_date =  new DateTime("now");
+        $earliest_date =  new DateTime('01-01-1900');
+        $current_date->format('d-m-Y');
 
         if( !$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+        }
+        if( $patient_dob_date > $current_date){
+            $this->addError($attribute, 'Date of Birth should be before current date.');
+        }elseif ($patient_dob_date < $earliest_date){
+            $this->addError($attribute, "Patient's Date of Birth cannot be earlier than ".$earliest_date->format('d/m/Y'));
         }
     }
     public function deathDateFormatValidator($attribute, $params)
@@ -253,12 +294,13 @@ class Patient extends BaseActiveRecordVersioned
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
             'hos_num' => 'Hospital Number',
-            'nhs_num' => 'NHS Number',
+            'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => 'NHS Number Status',
-            'gp_id' => 'General Practitioner',
+            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
+            'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
-            'is_local' => 'Is local patient ?'
+            'is_local' => 'Is local patient?',
+            'patient_source' => 'Patient Source'
         );
     }
 
@@ -280,6 +322,44 @@ class Patient extends BaseActiveRecordVersioned
     {
         return $this->_pas_errors;
     }
+
+  public function getScenarioSourceCode()
+  {
+    return array(
+      'referral' => self::PATIENT_SOURCE_REFERRAL,
+      'self_register' => self::PATIENT_SOURCE_SELF_REGISTER,
+      'other_register' => self::PATIENT_SOURCE_OTHER,
+    );
+  }
+
+  /**
+   * @return array List of sources for display in a drop-down list.
+   */
+  public function getSourcesList()
+  {
+    return array(
+      self::PATIENT_SOURCE_OTHER => 'Other',
+      self::PATIENT_SOURCE_REFERRAL => 'Referral',
+      self::PATIENT_SOURCE_SELF_REGISTER => 'Self-Registration',
+    );
+  }
+
+  /**
+   * @return string Human-readable patient source for read-only display.
+   */
+  public function getPatientSource()
+  {
+    switch ($this->patient_source)
+    {
+      case self::PATIENT_SOURCE_REFERRAL:
+        return 'Referral';
+      case self::PATIENT_SOURCE_SELF_REGISTER:
+        return 'Self-Registration';
+      case self::PATIENT_SOURCE_OTHER:
+        return 'Other';
+    }
+    return 'None';
+  }
 
     public function search_nr($params)
     {
@@ -386,10 +466,8 @@ class Patient extends BaseActiveRecordVersioned
             $this->is_deceased = 1;
         }
 
-        if( $this->scenario == 'manual'){
-            $this->dob = str_replace('/', '-', $this->dob);
-            $this->date_of_death = str_replace('/', '-', $this->date_of_death);
-        }
+        $this->dob = str_replace('/', '-', $this->dob);
+        $this->date_of_death = str_replace('/', '-', $this->date_of_death);
 
         return true;
     }
@@ -590,10 +668,11 @@ class Patient extends BaseActiveRecordVersioned
         ?>
         <table class="standard">
             <tbody>
-            <?php foreach ($this->getOphthalmicDiagnoses() as $diagnosis): ?>
+            <?php foreach ($this->getOphthalmicDiagnosesSummary() as $diagnosis): ?>
+                <?php list($side, $disorder_term, $date) = explode('~', $diagnosis, 3); ?>
                 <tr>
-                    <td><?= Helper::convertDate2NHS($diagnosis->date) ?></td>
-                    <td><?= mb_strtoupper($diagnosis->eye->adjective).' '.$diagnosis->disorder->term?></td>
+                    <td><?= Helper::convertDate2NHS($date) ?></td>
+                    <td><?= mb_strtoupper($side).' '.$disorder_term?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -1413,7 +1492,7 @@ class Patient extends BaseActiveRecordVersioned
             $type = 'sys';
         }
 
-        if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?', array($this->id, $disorder_id, $eye_id, $date))) {
+        if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?', array($this->id, $disorder_id))) {
             $action = "add-diagnosis-$type";
             $sd = new SecondaryDiagnosis();
             $sd->patient_id = $this->id;
@@ -1428,6 +1507,12 @@ class Patient extends BaseActiveRecordVersioned
             Yii::app()->event->dispatch('patient_add_diagnosis', array('diagnosis' => $sd));
 
             $this->audit('patient', $action);
+        } else if ($sd->eye_id !== $eye_id || $sd->date !== $date) {
+            $sd->eye_id = $eye_id;
+            $sd->date = $date;
+            if (!$sd->save()) {
+                throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(), true));
+            }
         }
     }
 
@@ -1954,6 +2039,59 @@ class Patient extends BaseActiveRecordVersioned
         return $patient->episodes[0]->id;
     }
 
+
+  public function dateOfBirthRangeValidator($attribute, $params)
+  {
+    if ($this->hasErrors('dob')) {
+      return;
+    }
+
+    $currentDate = new DateTime(date('j M Y'));
+    $date_of_birth = new DateTime($this->dob);
+
+    if ($date_of_birth > $currentDate || $this->getAge() > 100) {
+      $this->addError($attribute,'Invalid date. Value does not fall within the expected range.');
+    }
+
+  }
+
+  /**
+   * Find all patients with the same date of birth and similar-sounding names.
+   * @param $firstName string First name.
+   * @param $last_name string Last name.
+   * @param $dob string Date of Birth (DD/MM/YYYY).
+   * @param $id int ID of the current patient record.
+   * @return array The list of patients who have similar names and the same date of birth, or the invalid patient model.
+   */
+  public static function findDuplicates($firstName, $last_name, $dob, $id)
+  {
+    $sql = '
+        SELECT p.*
+        FROM patient p
+        JOIN contact c
+          ON c.id = p.contact_id
+        WHERE p.dob = :dob
+          AND (SOUNDEX(c.first_name) = SOUNDEX(:first_name) OR levenshtein_ratio(c.first_name, :first_name) >= 60)
+          AND (SOUNDEX(c.last_name) = SOUNDEX(:last_name) OR levenshtein_ratio(c.last_name, :last_name) >= 60)
+          AND (:id IS NULL OR p.id != :id)
+        ORDER BY c.first_name, c.last_name
+        ';
+
+    $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
+
+    $validPatient = new Patient('manual');
+    $validContact = new Contact('manual');
+    $validContact->first_name = $firstName;
+    $validContact->last_name = $last_name;
+    $validPatient->dob = $dob;
+
+    if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
+      return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
+    }
+
+    return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
+  }
+
     /**
      * Returns an array of summarised patient Systemic diagnoses
      * @return array
@@ -1976,7 +2114,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . Helper::convertDate2NHS($ep->start_date);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getHTMLformatedDate();
             }
         }
 

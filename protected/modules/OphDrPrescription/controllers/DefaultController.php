@@ -33,7 +33,7 @@ class DefaultController extends BaseEventTypeController
     {
         $user = Yii::app()->session['user'];
 
-        if ($user->role == 'admin role') {
+        if (Yii::app()->authManager->checkAccess('admin', $user->id)) {
             return true;
         }
 
@@ -257,6 +257,8 @@ class DefaultController extends BaseEventTypeController
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = [];
+            $return = array();
+
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
@@ -270,21 +272,25 @@ class DefaultController extends BaseEventTypeController
                 $tag_id = Yii::app()->params['preservative_free_tag_id'];
                 $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
             }
-            $criteria->order = 'name';
-            // we don't need 'select *' here
-            $criteria->select = 'id, tallman';
-            $criteria->params = $params;
 
-            $drugs = Drug::model()->active()->findAll($criteria);
+            if(!empty($criteria->condition)){
+                $criteria->order = 'name';
+                // we don't need 'select *' here
+                $criteria->select = 'id, tallman';
+                $criteria->params = $params;
 
-            $return = array();
-            foreach ($drugs as $drug) {
-                $return[] = array(
-                        'label' => $drug->tallmanlabel,
-                        'value' => $drug->tallman,
-                        'id' => $drug->id,
-                );
+                $drugs = Drug::model()->active()->findAll($criteria);
+
+                
+                foreach ($drugs as $drug) {
+                    $return[] = array(
+                            'label' => $drug->tallmanlabel,
+                            'value' => $drug->tallman,
+                            'id' => $drug->id,
+                    );
+                }
             }
+
             echo CJSON::encode($return);
         }
     }
