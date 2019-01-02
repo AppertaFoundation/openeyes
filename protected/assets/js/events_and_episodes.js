@@ -151,23 +151,24 @@ $(document).ready(function(){
 		}
 	});
 
-  $(this).on('click', '.js-remove-element', function (e) {
-    e.preventDefault();
-    var $parent = $(this).closest('.element');
-      if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() == 1) {
-          var dialog = new OpenEyes.UI.Dialog.Confirm({
-              content: "Are you sure that you wish to close the " +
-              $parent.data('element-type-name') +
-              " element? All data in this element will be lost"
-          });
-          dialog.on('ok', function () {
-              removeElement($parent);
-          }.bind(this));
-          dialog.open();
-      } else {
-          removeElement($parent);
-      }
-  });
+	$(this).on('click', '.js-remove-element', function (e) {
+		e.preventDefault();
+		var $parent = $(this).closest('.element');
+		if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() === "1") {
+			let dialog = new OpenEyes.UI.Dialog.Confirm({
+				content: "Are you sure that you wish to close the " +
+				$parent.data('element-type-name') +
+				" element? All data in this element will be lost"
+			});
+			dialog.on('ok', function () {
+				removeElement($parent);
+			}.bind(this));
+
+			dialog.open();
+		} else {
+		removeElement($parent);
+		}
+	});
 
   $(this).on('click', '.js-tiles-collapse-btn', function () {
     var $tileGroup = $(this).closest('.element-tile-group');
