@@ -253,8 +253,6 @@
 
 
   $(function () {
-      // $("#search-table-non-intervention-trials").makePagination(10);
-      // $("#search-table-intervention-trials").makePagination(10);
       $("#search-table-non-intervention-trials").makeTableSortable();
       $("#search-table-intervention-trials").makeTableSortable();
   });
