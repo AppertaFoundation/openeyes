@@ -1,6 +1,6 @@
 <?php
 
-class m181219_015650_add_comment_field extends CDbMigration
+class m181219_015650_add_comment_field extends OEMigration
 {
     public function up()
     {
