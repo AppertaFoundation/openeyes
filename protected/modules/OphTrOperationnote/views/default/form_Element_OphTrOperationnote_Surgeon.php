@@ -37,11 +37,7 @@
               $element,
               'surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-<<<<<<< HEAD
-              array('empty' => 'Select', 'class' => 'cols-full', 'nowrapper' => false),
-=======
               array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
->>>>>>> release/v3.0
               false,
               array('field' => 8)
           ); ?>
@@ -51,11 +47,7 @@
               $element,
               'assistant_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-<<<<<<< HEAD
-              array('empty' => 'None', 'class' => 'cols-full', 'nowrapper' => false),
-=======
               array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
->>>>>>> release/v3.0
               false,
               array('field' => 8)
           ); ?>
@@ -65,11 +57,7 @@
               $element,
               'supervising_surgeon_id',
               CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-<<<<<<< HEAD
-              array('empty' => 'None', 'class' => 'cols-full', 'nowrapper' => false),
-=======
               array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
->>>>>>> release/v3.0
               false,
               array('field' => 8)
           ); ?>

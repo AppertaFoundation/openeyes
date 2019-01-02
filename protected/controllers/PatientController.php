@@ -203,7 +203,6 @@ class PatientController extends BaseController
     {
         $term = \Yii::app()->request->getParam('term', '');
 
-
         $patientSearch = new PatientSearch();
       $dataProvider = $patientSearch->search($term);
       $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
@@ -1709,6 +1708,12 @@ class PatientController extends BaseController
         $referral = null;
         $patient_user_referral = null;
         $patient_identifiers = $this->getPatientIdentifiers($patient);
+
+        $gpcontact = new Contact();
+        $practicecontact = new Contact();
+        $practiceaddress = new Address();
+        $practice = new Practice();
+
         $this->performAjaxValidation(array($patient, $contact, $address));
 
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
@@ -1757,7 +1762,7 @@ class PatientController extends BaseController
           // Don't save if the user just changed the "Patient Source"
           if ($_POST["changePatientSource"] == 0) {
             list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-             $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
+              $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers);
           } else {
             // Return the same page to the user without saving
             // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
@@ -1775,6 +1780,10 @@ class PatientController extends BaseController
             'referral' => isset($referral) ? $referral : new PatientReferral($patient_source),
             'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
             'patient_identifiers' => $patient_identifiers,
+            'gpcontact' => $gpcontact,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice
         ));
    }
 
@@ -1998,6 +2007,10 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $referral = isset($patient->referral) ? $patient->referral : new PatientReferral();
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
+        $gpcontact = isset($patient->gp) ? $patient-> gp->contact : new Contact();
+        $practice = isset($patient->practice) ? $patient->practice : new Practice();
+        $practicecontact = isset($patient->practice) ? $patient-> practice->contact : new Contact();
+        $practiceaddress = isset($practicecontact) && isset($practicecontact->address) ? $practicecontact->address : new Address();
 
         //only local patient can be edited
         if ($patient->is_local == 0) {
@@ -2086,6 +2099,10 @@ class PatientController extends BaseController
             'patient' => $patient,
             'contact' => $contact,
             'address' => $address,
+            'patient_identifiers' => $patient_identifiers,
+            'practicecontact' => $practicecontact,
+            'practiceaddress' => $practiceaddress,
+            'practice' => $practice,
             'referral' => $referral,
           'patientuserreferral' => $patient_user_referral,
           'patient_identifiers' => $patient_identifiers,
