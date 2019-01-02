@@ -16,3 +16,7 @@ alias cdnb="cd $WROOT/protected/assets/newblue"
 alias cdsample="cd $WROOT/protected/modules/sample/sql"
 alias cdscripts="cd $SCRIPTDIR"
 alias cdiolm="cd $WROOT/protected/javamodules/IOLMasterImport"
+alias cdprotected="cd $WROOT/protected"
+
+alias oelogson="tail $WROOT/protected/runtime/application.log -f &"
+alias oelogsoff="kill -9 $(pgrep -f protected/runtime/application.log)"

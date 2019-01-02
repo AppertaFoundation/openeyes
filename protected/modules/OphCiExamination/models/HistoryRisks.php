@@ -101,12 +101,19 @@ class HistoryRisks extends \BaseEventTypeElement
      */
     public function loadFromExisting($element)
     {
-        $entries = array();
-        foreach ($element->entries as $entry) {
-            $new = new HistoryRisksEntry();
-            $new->loadFromExisting($entry);
-            $entries[] = $new;
+        // use previous session's entries
+        $entries = $this->entries;
+
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new_entry = new HistoryRisksEntry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
+            }
         }
+
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();
     }

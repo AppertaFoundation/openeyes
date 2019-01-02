@@ -42,7 +42,6 @@ class WorklistBehavior extends CBehavior
         if ($action && ($action->id === 'create') && $this->owner->event) {
 
             if ($worklist_patient && $worklist_patient->patient->id === $patient_id) {
-
                 $assignment = $this->getPasApiAssignment($worklist_patient->id);
 
                 //set pas_visit_id
@@ -51,7 +50,6 @@ class WorklistBehavior extends CBehavior
                 }
 
             } else {
-
                 $this->owner->event->pas_visit_id = null;
 
                 // Using the closest worklist_patient.id matching the current patient and current date
@@ -71,7 +69,8 @@ class WorklistBehavior extends CBehavior
         }
     }
 
-    public function getPasApiAssignment($worklist_patient_id){
+    public function getPasApiAssignment($worklist_patient_id)
+    {
         //Should this come from the PatientAppointment resource instead of directly from PasApiAssignment ???
         return \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
             'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
