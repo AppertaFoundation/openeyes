@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201812030946',
+            'time' => '201812061722',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -536,18 +536,24 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
+            'viewport_width' => 1280,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
                 'height' => 912,
                 'width' => 800
             ),
+            'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
             ),
         ),
+
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
 
         /**
          * Patient Identifiers

@@ -40,6 +40,7 @@
     <GPName><?=$data['gp_name'];?></GPName>
     <Surgery><?=$data['practice_code'];?></Surgery>
     <SurgeryName></SurgeryName>
+    <VisitID><?=$data['visit_id'];?></VisitID>
     <ActivityID><?=$data['event_id'];?></ActivityID>
     <ActivityDate><?=$data['event_date'];?></ActivityDate>
     <ClinicianType></ClinicianType>
