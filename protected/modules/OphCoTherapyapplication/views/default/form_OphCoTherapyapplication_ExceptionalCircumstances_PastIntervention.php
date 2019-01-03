@@ -158,7 +158,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         <?php $all_treatments = $pastintervention->getTreatmentOptions($pastintervention->{$treatmentattribute});
         $html_options = array(
             'class' => 'past-treatments',
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'name' => $name_stub . "[$key][$treatmentattribute]",
             'options' => array(),
         );
@@ -200,7 +200,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
     </td>
     <td>
         <?=\CHtml::activeDropDownList($pastintervention, 'start_va', $pastintervention->getVaOptions(),
-            array('empty' => '- Please select -', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
+            array('empty' => 'Select', 'name' => $name_stub . "[$key][start_va]", 'nowrapper' => true));
         ?>
     </td>
   </tr>
@@ -213,7 +213,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
     </td>
     <td>
         <?=\CHtml::activeDropDownList($pastintervention, 'end_va', $pastintervention->getVaOptions(),
-            array('empty' => '- Please select -', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true)); ?>
+            array('empty' => 'Select', 'name' => $name_stub . "[$key][end_va]", 'nowrapper' => true)); ?>
     </td>
   </tr>
 
@@ -228,7 +228,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
         $reasons = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findAll();
         $html_options = array(
             'class' => 'stop-reasons',
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'name' => $name_stub . "[$key][stopreason_id]",
             'options' => array(),
         );

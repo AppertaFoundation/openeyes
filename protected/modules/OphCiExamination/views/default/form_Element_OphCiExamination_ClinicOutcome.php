@@ -84,7 +84,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 
                     <?php } else {
                         echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
-                            array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
+                            array('empty' => 'Select', 'nowrapper' => true, 'options' => array()));
                     } ?>
                 </div>
                 <div class="cols-1">
