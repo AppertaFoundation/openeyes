@@ -158,7 +158,7 @@
             };
 
             //set flags for oct fly
-            flags_yaxis['ticktext'].push('OCT fly');
+            flags_yaxis['ticktext'].push('OCT');
             flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc) + 2);
             for (var i in doc_list[side]) {
                 text['x'].push(new Date(doc_list[side][i]['date']));
