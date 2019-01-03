@@ -51,11 +51,10 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?=\CHtml::hiddenField($field_prefix . "[id]", $values['operation']); ?>
             <?=\CHtml::hiddenField($field_prefix . '[operation]', $values['operation']); ?>
         <?php else : ?>
-            <div class="common-operation">
-                <?= $values['operation'] ?>
-            </div>
+            <?= $values['operation'] ?>
             <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-            <input type="hidden" name="<?=$field_prefix?>[operation]" value="<?= $values['operation'] ?>" />
+            <input class="common-operation" type="hidden" name="<?=$field_prefix?>[operation]" value="<?= $values['operation'] ?>"
+                   placeholder="Enter procedure name" autocomplete="off"/>
         <?php endif; ?>
     </td>
     <td class="past-surgery-entry has-operation">
