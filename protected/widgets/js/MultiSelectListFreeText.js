@@ -119,6 +119,8 @@ $(document).ready(function() {
 			}
 		}
 
+        $('textarea').autosize();
+
 		select.trigger('MultiSelectFreeTextChanged');
 		return false;
 	});

@@ -175,4 +175,9 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
     {
         return 'Laser Information';
     }
+    
+    public function getPrint_view()
+    {
+        return 'print_'.$this->getDefaultView();
+    }
 }
