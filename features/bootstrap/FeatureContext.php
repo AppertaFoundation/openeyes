@@ -40,7 +40,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext ( 'ConsentFormContext', new ConsentFormContext ( $parameters ) );
 		$this->useContext ( 'AdminPageContext', new AdminPageContext ( $parameters ) );
 		$this->useContext ( 'BiometryContext', new BiometryContext ( $parameters ) );
-		
+        $this->useContext ( 'CaseSearchContext', new CaseSearchContext ( $parameters ) );
+
 		$this->loadModuleContextsPages ( $parameters );
 		
 		$this->screenshots = array ();
@@ -64,7 +65,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		if (isset ( $this->environment [$environment] )) {
 			$homepage = $this->getPage ( 'HomePage' );
 			$homepage->open ();
-			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login' );
+			$homepage->checkOpenEyesTitle ( 'OpenEyes - Login - OE' );
 		} else {
 			throw new \Exception ( "Environment $environment doesn't exist" );
 		}

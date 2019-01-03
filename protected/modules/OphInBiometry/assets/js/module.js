@@ -155,13 +155,19 @@ $(document).ready(function() {
 
 	function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
-	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', function(){ clearIolSelection('left'); });
-	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', function(){ clearIolSelection('right'); });
+	$('#Element_OphInBiometry_Selection_lens_id_left').on('change', () => onChangeLensType('left'));
+	$('#Element_OphInBiometry_Selection_lens_id_right').on('change', () => onChangeLensType('right'));
+
+	function onChangeLensType(side){
+		clearIolSelection(side);
+		updateClosest (side);
+	}
 
 	function clearIolSelection(side){
 		$('input[id^=iolrefrad-' + side + ']:checked').prop('checked', false);
 		$('#Element_OphInBiometry_Selection_iol_power_' + side).val('');
 		$('#Element_OphInBiometry_Selection_predicted_refraction_' + side).val('0');
+		$('tr[id*=iolreftr-' + side + ']').removeClass('selected-row');
 	}
 
 	$('#Element_OphInBiometry_BiometryData_axial_length_left').die('change').live('change',function() {
