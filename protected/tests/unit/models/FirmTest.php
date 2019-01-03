@@ -40,32 +40,6 @@ class FirmTest extends CDbTestCase
     }
 
     /**
-     * @covers Firm::tableName
-     *
-     * @todo   Implement testTableName().
-     */
-    public function testTableName()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::search
-     *
-     * @todo   Implement testSearch().
-     */
-    public function testSearch()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @covers Firm::getServiceText
      */
     public function testGetServiceText()
@@ -74,70 +48,6 @@ class FirmTest extends CDbTestCase
         $this->assertEquals($firm->getServiceText(), $firm->serviceSubspecialtyAssignment->service->name);
     }
 
-    /**
-     * @covers Firm::getSubspecialtyText
-     *
-     * @todo   Implement testGetSubspecialtyText().
-     */
-    public function testGetSubspecialtyText()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::getList
-     *
-     * @todo   Implement testGetList().
-     */
-    public function testGetList()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::getListWithoutDupes
-     *
-     * @todo   Implement testGetListWithoutDupes().
-     */
-    public function testGetListWithoutDupes()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::getListWithSpecialties
-     *
-     * @todo   Implement testGetListWithSpecialties().
-     */
-    public function testGetListWithSpecialties()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::getCataractList
-     *
-     * @todo   Implement testGetCataractList().
-     */
-    public function testGetCataractList()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 
     /**
      * @covers Firm::getConsultantName
@@ -171,29 +81,6 @@ class FirmTest extends CDbTestCase
         $this->assertEquals('Aylward Firm (Subspecialty 1)', $this->firms('firm1')->getNameAndSubspecialty());
     }
 
-    /**
-     * @covers Firm::getSpecialty
-     */
-    public function testGetSpecialty()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Firm::beforeSave
-     *
-     * @todo   Implement testBeforeSave().
-     */
-    public function testBeforeSave()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 
     public function testIsSupportServicesFirm_False()
     {

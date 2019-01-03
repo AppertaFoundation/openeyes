@@ -19,6 +19,7 @@ done
 # Determine root folder for site - all relative paths will be built from here
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
+MODULEROOT=$WROOT/protected/modules
 
 ## default DB connection variables
 # If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
@@ -32,14 +33,18 @@ else
     dbpassword=""
 fi
 
-# Always using root for deleting and restoring DB
-username="root"
+if [ ! -z "$MYSQL_SUPER_USER" ] ; then
+    username="$MYSQL_SUPER_USER"
+elif [ -f "/run/secrets/MYSQL_SUPER_USER" ] ; then
+    username="$(</run/secrets/MYSQL_SUPER_USER)"
+else
+	# fallback to using root for deleting and restoring DB
+    username="root"
+fi
+
+
 port=${DATABASE_PORT:-"3306"}
 host=${DATABASE_HOST:-"localhost"}
-
-# if databse details are still empty, then attempt to load from db.conf (this is the old method from openeyes v2.x)
-#if [ -z $username ] && [ -z $dbpassword ]; then source /etc/openeyes/db.conf; fi
-
 
 
 # Process commandline parameters
@@ -56,6 +61,7 @@ cleanbase=0
 migrateparams="-q"
 nofix=0
 dwservrunning=0
+restorefile="$MODULEROOT/sample/sql/openeyes_sample_data.sql"
 
 PARAMS=()
 while [[ $# -gt 0 ]]
@@ -108,6 +114,10 @@ do
     	--ignore-warnings) migrateparams="$migrateparams $p"
     		# Ignore warnings during migrate
     	;;
+		-f|--custom-file) # use a custom database backup for the restore
+			restorefile="$2"
+			shift
+		;;
     	*)  if [ "$p" == "--hard" ]; then
                 echo "Unknown parameter $p $2"
                 exit 1
@@ -195,8 +205,6 @@ if [ ! "$branch" = "0" ]; then
     bash $SCRIPTDIR/oe-checkout.sh $branch $checkoutparams
 fi
 
-MODULEROOT=$WROOT/protected/modules
-
 echo "Clearing current database"
 
 echo "
@@ -217,7 +225,7 @@ fi
 
 if [ $cleanbase = "0" ]; then
 	echo "Re-importing database"
-	eval $dbconnectionstring -D openeyes < $MODULEROOT/sample/sql/openeyes_sample_data.sql
+	eval $dbconnectionstring -D openeyes < $restorefile || { echo -e "\n\nCOULD NOT IMPORT $restorefile. Quiting...\n\n"; exit 1; }
 fi
 
 # Force default institution code to match common.php
@@ -340,7 +348,6 @@ if [ $dwservrunning = 1 ]; then
 	sudo service dicom-file-watcher start
 fi
 
-cd "$dir"
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 

@@ -4,7 +4,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 
 ?>
 
-<div class="oe-hotlist-panel" id="js-hotlist-panel" style="display: <?= $this->fixedHotlist ? 'unset' : 'none' ?>">
+<div class="oe-hotlist-panel" id="js-hotlist-panel">
   <div class="patient-activity">
     <div class="patients-open">
       <div class="overview">

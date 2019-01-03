@@ -92,9 +92,9 @@ if ($api) {
         <div class="js-element-eye <?= $eye_side ?>-eye column">
             <?php
             $_method_name = 'methodname' . ucfirst($eye_side);
-            $method_name = $$_method_name;
+            $method_name = ${$_method_name};
             $_data = $eye_side . 'Data';
-            $data = $$_data;
+            $data = ${$_data};
             if (count($method_name)) {
             ?>
             <div class="data-value">
@@ -183,9 +183,9 @@ if ($api) {
             <div class="js-element-eye <?= $eye_side ?>-eye column">
                 <?php
                 $_method_name = 'methodname' . ucfirst($eye_side);
-                $method_name = $$_method_name;
+                $method_name = ${$_method_name};
                 $_data = $eye_side . 'NearData';
-                $data = $$_data;
+                $data = ${$_data};
                 if (count($rightNearData)) { ?>
                     <div class="data-value">
                         <?php echo $unitname ?>
