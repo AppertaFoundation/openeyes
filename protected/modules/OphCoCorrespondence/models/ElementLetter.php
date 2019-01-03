@@ -213,7 +213,7 @@ class ElementLetter extends BaseEventTypeElement
                 if($target['attributes']['contact_type'] === 'PATIENT'){
                     $patient_found = true;
                 }
-                if($target['attributes']['contact_type'] === 'GP'){
+                if($target['attributes']['contact_type'] === Yii::app()->params['gp_label']){
                     $gp_found = true;
                 }
             }
@@ -298,16 +298,16 @@ class ElementLetter extends BaseEventTypeElement
 
         if ($patient->gp) {
             if (@$patient->gp->contact) {
-                $options['Gp'.$patient->gp_id] = $patient->gp->contact->fullname.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = $patient->gp->contact->fullname.' ('.Yii::app()->params['gp_label'].')';
             } else {
-                $options['Gp'.$patient->gp_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
             }
             if (!$patient->practice || !@$patient->practice->contact->address) {
-                $options['Gp'.$patient->gp_id] .= ' - NO ADDRESS';
+                $options[Yii::app()->params['gp_label'].$patient->gp_id] .= ' - NO ADDRESS';
             }
         } else {
             if ($patient->practice) {
-                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' (GP)';
+                $options['Practice'.$patient->practice_id] = Gp::UNKNOWN_NAME.' ('.Yii::app()->params['gp_label'].')';
                 if (@$patient->practice->contact && !@$patient->practice->contact->address) {
                     $options['Practice'.$patient->practice_id] .= ' - NO ADDRESS';
                 }
@@ -392,8 +392,10 @@ class ElementLetter extends BaseEventTypeElement
                 $re .= ', '.$patient->contact->address->{$field};
             }
         }
-
-        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+        if (Yii::app()->params['nhs_num_private'] == true) {
+            return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num;
+        }
+        return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
     }
 
     /**
@@ -424,7 +426,11 @@ class ElementLetter extends BaseEventTypeElement
                 }
             }
 
-            $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
+            if (Yii::app()->params['nhs_num_private'] == true) {
+                $this->re .= ', DOB: ' . $patient->NHSDate('dob') . ', Hosps No: ' . $patient->hos_num;
+            } else {
+                $this->re .= ', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', '. Yii::app()->params['nhs_num_label'] .' No: '.$patient->nhsnum;
+            }
 
             $user = Yii::app()->session['user'];
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
@@ -487,7 +493,7 @@ class ElementLetter extends BaseEventTypeElement
             $this->introduction = $patient->getLetterIntroduction(array(
                 'nickname' => $this->use_nickname,
             ));
-        } elseif ($this->macro->recipient && $this->macro->recipient->name == 'GP') {
+        } elseif ($this->macro->recipient && $this->macro->recipient->name == Yii::app()->params['gp_label']) {
             $this->address_target = 'gp';
             if ($patient->gp) {
                 $this->introduction = $patient->gp->getLetterIntroduction(array(
@@ -994,7 +1000,7 @@ class ElementLetter extends BaseEventTypeElement
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if($target->ToCc != 'To'){
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                         $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
                     }
                 }

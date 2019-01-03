@@ -69,7 +69,7 @@ class Contact extends BaseActiveRecordVersioned
         return array(
             array('nick_name', 'length', 'max' => 80),
             array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
-            array('first_name, last_name', 'required', 'on' => 'manualAddPatient'),
+            array('first_name, last_name', 'required', 'on' => array('manualAddPatient','referral','self_register','other_register','manage_gp',)),
             array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
         );
     }
@@ -118,7 +118,7 @@ class Contact extends BaseActiveRecordVersioned
             'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
             'title' => 'Title',
-            'first_name' => 'First name',
+            'first_name' =>  $this->scenario === 'manage_practice' ? 'Practice Name' : 'First name',
             'last_name' => 'Last name',
             'qualifications' => 'Qualifications',
             'contact_label_id' => 'Label',

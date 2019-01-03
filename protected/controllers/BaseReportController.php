@@ -83,7 +83,7 @@ class BaseReportController extends BaseController
     protected function sendCsvHeaders($filename)
     {
         header('Content-type: text/csv');
-        header("Content-Disposition: attachment; filename=$filename");
+        header('Content-Disposition: attachment; filename="' . utf8_decode($filename) . '"');
         header('Pragma: no-cache');
         header('Expires: 0');
     }
@@ -124,7 +124,18 @@ class BaseReportController extends BaseController
 
     public function actionDownloadReport()
     {
-        $this->sendCsvHeaders($_POST['report-name'].'.csv');
+        if (isset($_POST['report-filename'])) {
+            $report_filename = $_POST['report-filename'];
+
+            // sanitise filename
+            $report_filename = preg_replace('/([^\w\s\d\-_~,;\[\]().])/u', '', $report_filename);
+            // Remove any runs of full stops
+            $report_filename = preg_replace('/([.]{2,})/u', '', $report_filename);
+        } else {
+            $report_filename = $_POST['report-name'];
+        }
+
+        $this->sendCsvHeaders($report_filename . '.csv');
 
         if ($this->module) {
             $report_class = $this->module->id.'_Report'.$_POST['report-name'];

@@ -3,7 +3,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         stopOnFailure="true"
+         stopOnFailure="false"
          verbose="true">
     <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>
