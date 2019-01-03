@@ -118,6 +118,7 @@ foreach ($this->patient->episodes as $ep) {
                     'disorder_display' => '{{disorder_display}}',
                     'eye_id' => '{{eye_id}}',
                     'event_date' => '{{event_date}}',
+                    'is_glaucoma' => '{{is_glaucoma}}',
                     'date' => '{{date}}',
                     'date_display' => '{{date_display}}',
                     'row_count' => '{{row_count}}',
@@ -151,6 +152,7 @@ foreach ($this->patient->episodes as $ep) {
                 return [
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
+                    'is_glaucoma' => $disorder_item['is_glaucoma'],
                     'secondary' => json_encode($disorder_item['secondary'])
                 ];
             }, $disorder_list)

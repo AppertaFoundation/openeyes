@@ -36,7 +36,7 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-
+        $('.autosize').autosize();
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
@@ -723,13 +723,9 @@ $(document).ready(function() {
 		id += 1;
 
 		var html = [
-			'<div class="data-group collapse in enclosureItem">',
-			'		<div class="cols-8 column">',
-			'			<input type="text" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
-			'		</div>',
-			'		<div class="cols-4 column end">',
-			'			<div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>',
-			'		</div>',
+			'<div class="data-group collapse in enclosureItem flex-layout">',
+			'			<input type="text" class="cols-full" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
+			'			<i class="oe-i trash removeEnclosure"></i>',
 			'	</div>'
 		].join('');
 
@@ -737,7 +733,7 @@ $(document).ready(function() {
 		$('input[name="EnclosureItems[enclosure'+id+']"]').select().focus();
 	});
 
-	$('a.removeEnclosure').die('click').live('click',function(e) {
+	$('i.removeEnclosure').die('click').live('click',function(e) {
 		$(this).closest('.enclosureItem').remove();
 		if (!$('#enclosureItems').children().length) {
 			$('#enclosureItems').hide();

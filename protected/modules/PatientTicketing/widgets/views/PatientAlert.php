@@ -65,7 +65,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
   <div id="patient-alert-patientticketing"
        class="oe-hotlist-panel"
        data-patient-id="<?= $this->patient->id ?>"
-       style="display: block;">
+       style="display: none;">
     <div class="oe-vc-mode">
       <div class="vc-content">
           <?php foreach ($tickets as $ticket) { ?>

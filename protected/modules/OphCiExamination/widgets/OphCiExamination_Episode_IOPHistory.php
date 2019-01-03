@@ -155,7 +155,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     public function getTargetIOP(){
       //set the default value of iop target
-        $iop_target = array('right'=>20, 'left'=>20);
+        $iop_target = array('right'=>0, 'left'=>0);
         $plan = $this->event_type->api->getLatestElement(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
             $this->patient,
