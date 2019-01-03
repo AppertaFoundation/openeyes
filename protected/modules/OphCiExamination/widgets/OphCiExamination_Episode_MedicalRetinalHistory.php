@@ -261,11 +261,11 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->patient);
         foreach ($events as $event) {
           $doc = $event->getElementByClass("Element_OphCoDocument_Document");
-            if ($doc) {
+            if ($doc&&$doc->sub_type->name==='OCT') {
                 $single_doc = $doc->single_document;
                 $left_doc = $doc->left_document;
                 $right_doc = $doc->right_document;
-                $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->event_date)/1000);
+                $date = Helper::mysqlDate2JsTimestamp($event->event_date);
                 if ($single_doc) {
                     array_push($MR_documents['right'],
                         array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date));
@@ -333,7 +333,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
       $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->patient);
       foreach ($events as $event) {
         $doc = $event->getElementByClass("Element_OphCoDocument_Document");
-        if ($doc) {
+        if ($doc&&$doc->sub_type->name==='OCT') {
           $single_doc = $doc->single_document;
           $left_doc = $doc->left_document;
           $right_doc = $doc->right_document;

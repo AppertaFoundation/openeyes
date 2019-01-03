@@ -246,6 +246,10 @@
       right: right
     });
 
+    if (this.popup.offset().top < 0) {
+      this.popup.css({"bottom": Math.floor(bottom + this.popup.offset().top)});
+    }
+
     /*
     Close popup on...
     as scroll event fires on assignment.
@@ -378,16 +382,15 @@
    */
   AdderDialog.prototype.runItemSearch = function (text) {
     let dialog = this;
+      if (this.searchRequest !== null) {
+          this.searchRequest.abort();
+      }
 
-        if (this.searchRequest !== null) {
-            this.searchRequest.abort();
-        }
-
-    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
-      term: text,
-      code: this.options.searchOptions.code,
-      ajax: 'ajax'
-    }, function (results) {
+      this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+          term: text,
+          code: this.options.searchOptions.code,
+          ajax: 'ajax'
+      }, function (results) {
       dialog.searchRequest = null;
       let no_data = !$(results).length;
 
