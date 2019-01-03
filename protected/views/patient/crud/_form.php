@@ -39,7 +39,14 @@ $genders = CHtml::listData($gender_models, function ($gender_model) {
     return CHtml::encode($gender_model->name)[0];
 }, 'name');
 
-$ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+$ethnic_list =  CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
+$ethnic_groups = array();
+$ethnic_filters = Yii::app()->params['ethnic_group_filters'];
+foreach ($ethnic_list as $key=>$item){
+	if (!$ethnic_filters || !in_array($item, $ethnic_filters)){
+		$ethnic_groups[] = $item;
+	}
+}
 ?>
 
 <?php $form = $this->beginWidget('CActiveForm', array(
@@ -49,13 +56,15 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
+    'htmlOptions' => array('enctype' => 'multipart/form-data'),
+
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
   <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
-            <?= $form->errorSummary(array($contact, $patient, $address)) ?>
+            <?= $form->errorSummary(array($contact, $patient, $address, $referral)) ?>
             <?= $form->errorSummary($patient_identifiers) ?>
         </div>
       <?php } ?>-->
@@ -140,6 +149,21 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
       </tr>
       <tr>
         <td class="required">
+          <?= $form->label($patient, 'patient_source') ?>
+          <br/>
+          <?= $form->error($patient, 'patient_source') ?>
+        </td>
+        <td>
+          <input type="hidden" name="changePatientSource" id="changePatientSource" value='0'>
+          <?= $form->dropDownList($patient, 'patient_source', $patient->getSourcesList(),
+            array(
+              'options' => array($patient->getScenarioSourceCode()[$patient->getScenario()] => array('selected' => 'selected')),
+              'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
+            )); ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -180,8 +204,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -298,7 +322,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
       <table class="standard highlight-rows">
         <tbody>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'gp_id') ?>
             <br/>
               <?= $form->error($patient, 'gp_id') ?>
@@ -316,13 +340,23 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               </ul>
                 <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
             </div>
+                        <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
             <div id="no_gp_result" style="display: none;">
               <div>No result</div>
             </div>
           </td>
         </tr>
         <tr>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
+            <?= $form->label($referral, 'uploadedFile'); ?>
+            <br/>
+          </td>
           <td>
+            <?= $form->fileField($referral, 'uploadedFile'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
               <?= $form->error($patient, 'practice_id') ?>
@@ -343,6 +377,66 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     array('class' => 'hidden_id')); ?>
             </div>
             <div id="no_practice_result" style="display: none;">
+              <div>No result</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <?= $form->label($patientuserreferral, 'Referred to') ?>
+            <br/>
+            <?= $form->error($patientuserreferral, 'user_id') ?>
+          </td>
+          <td>
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+              'name' => 'user_id',
+              'id' => 'autocomplete_user_id',
+              'source' => "js:function(request, response) {
+              $.ajax({
+                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
+                 'type':'GET',
+                  'data':{'term': request.term},
+                  'success':function(data) {
+                      data = $.parseJSON(data);
+                      response(data);
+                  }
+                });
+              }",
+              'options' => array(
+                'select' => "js:function(event, ui) {
+                  removeSelectedReferredto();
+                  addItem('selected_referred_to_wrapper', ui);
+                  $('#autocomplete_user_id').val('');
+                  return false;
+                 }",
+                'response' => 'js:function(event, ui){
+                    if(ui.content.length === 0){
+                      $("#no_referred_to_result").show();
+                      } else {
+                        $("#no_referred_to_result").hide();
+                      }
+                 }',
+              ),
+              'htmlOptions' => array(
+                'placeholder' => 'search User',
+              ),
+            )); ?>
+
+            <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
+              <ul class="oe-multi-select js-selected_referral_to">
+                <li>
+                  <span class="js-name">
+                      <?= $patientuserreferral->user_id ? $patientuserreferral->getUserName() : '' ?>
+                  </span>
+                  <i class="oe-i remove-circle small-icon pad-left js-remove-referral-to"></i>
+                </li>
+              </ul>
+
+              <?= CHtml::hiddenField('PatientUserReferral[user_id]',  $patientuserreferral->user_id,
+                array('class' => 'hidden_id')); ?>
+            </div>
+            <div id="no_referred_to_result" style="display: none;">
               <div>No result</div>
             </div>
           </td>
@@ -379,7 +473,25 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   });
 </script>
 
+<?php
+$gpcontact = new Contact('manage_gp');
+$this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
+?>
+
+
 <script>
+    $('#js-cancel-add-practitioner').click(function(event){
+        event.preventDefault();
+        $("#gp-form")[0].reset();
+        $("#errors").text("");
+        $(".alert-box").css("display","none");
+        $('#js-add-practitioner-event').css('display','none');
+    });
+    $('#js-add-practitioner-btn').click(function(event){
+        $('#js-add-practitioner-event').css('display','');
+        return false;
+    });
+
 
   function findDuplicates(id) {
     var first_name = $('#Contact_first_name').val();

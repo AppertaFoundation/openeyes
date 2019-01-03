@@ -111,7 +111,7 @@ if ($this->checkClericalEditAccess()) {
                             '`active` = ?',
                             array(1),
                             array('order' => 'display_order asc')), 'id', 'name'),
-                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
+                    array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
             </td>
@@ -127,7 +127,7 @@ if ($this->checkClericalEditAccess()) {
                         'id',
                         'name'
                     ),
-                    array('empty' => '- Please select -', 'nowrapper' => true , 'class' => 'cols-full'),
+                    array('empty' => 'Select', 'nowrapper' => true , 'class' => 'cols-full'),
                     false,
                     array()) ?>
                 <?php
@@ -154,7 +154,7 @@ if ($this->checkClericalEditAccess()) {
                         'name'
                     ),
                     array(
-                        'empty' => '- Please select -',
+                        'empty' => 'Select',
                         'nowrapper' => true,
                         'class' => 'cols-full',
                     ),
