@@ -75,4 +75,4 @@ jQuery.validator.addMethod("nowhitespace", function(value, element) {
 
 jQuery.validator.addMethod("nhsdate", function(value, element){
 	return this.optional(element) || /(0[1-9]|[12][0-9]|3[01])\s(J(an|ul)|Ma(r|y)|Aug|Oct|Dec)\s[1-9][0-9]{3}|(0[1-9]|[12][0-9]|30)\s(Apr|Jun|Sep|Nov)\s[1-9][0-9]{3}|(0[1-9]|1[0-9]|2[0-8])\sFeb\s[1-9][0-9]{3}|29\sFeb\s((0[48]|[2468][048]|[13579][26])00|[0-9]{2}(0[48]|[2468][048]|[13579][26]))/i.test(value);
-}, "Please enter a valid NHS date (01 Jan 2012)");
+}, "Please enter a valid date (01 Jan 2012)");
