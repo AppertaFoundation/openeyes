@@ -24,7 +24,7 @@
             </div>
             <div class="cols-4 column end">
                 <select name="Element_OphInLabResults_Details[result_type_id]" id="Element_OphInLabResults_Details_result_type_id">
-                    <option>- Please select -</option>
+                    <option>Select</option>
                     <?php foreach (OphInLabResults_Type::model()->findAll() as $type):?>
                         <option
                             data-element-id="<?=$type->result_element_id?>"

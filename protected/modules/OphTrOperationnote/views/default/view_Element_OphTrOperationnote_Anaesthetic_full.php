@@ -27,7 +27,7 @@ $anaesthetic_complications = implode('<br />', array_map(function ($complication
 }, $element->anaesthetic_complications));
 ?>
 
-<div class="cols-11" id="js-listview-anaesthetic-pro">
+<div class="cols-11" id="js-listview-anaesthetic-pro" style="<?= $this->action->id === 'view' ? '' : 'display: none;'?>">
     <ul class="dot-list large">
         <li><?= $element->getAnaestheticTypeDisplay() ?></li>
         <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
@@ -46,7 +46,7 @@ $anaesthetic_complications = implode('<br />', array_map(function ($complication
     </ul>
 </div>
 
-<div class="col-6" id="js-listview-anaesthetic-full" style="display: none;">
+<div class="col-6" id="js-listview-anaesthetic-full" style="<?= $this->action->id === 'view' ? 'display: none;' : ''?>">
     <table class="last-left large">
         <colgroup>
             <col class="cols-fifth" span="5">
@@ -93,5 +93,5 @@ $anaesthetic_complications = implode('<br />', array_map(function ($complication
     </div>
 <?php } ?>
 <div>
-    <i class="oe-i expand small js-listview-expand-btn" data-list="anaesthetic"></i>
+    <i class="oe-i small js-listview-expand-btn <?= $this->action->id === 'view' ? 'expand' : 'collapse'?>" data-list="anaesthetic"></i>
 </div>

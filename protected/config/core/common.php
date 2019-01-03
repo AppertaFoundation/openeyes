@@ -56,6 +56,7 @@ return array(
             'ipFilters' => array('127.0.0.1'),
         ),
         'oldadmin',
+        'Admin',
     ),
 
     // Application components
@@ -78,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201810311030',
+            'time' => '201812061722',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -141,7 +142,7 @@ return array(
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
-            'errorAction' => 'site/error',
+            'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
@@ -150,8 +151,8 @@ return array(
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
-            'class' => 'FlushableLogRouter',
-            'autoFlush' => 1,
+            'class' => 'CLogRouter',
+            // 'autoFlush' => 1,
             'routes' => array(
                 // Normal logging
                 'application' => array(
@@ -300,11 +301,18 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'tinymce_default_options' => array(
-            'plugins' => 'table lists importcss',
+            'plugins' => 'lists table paste code',
             'branding' => false,
             'visual' => false,
-            'toolbar' => "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent",
-            'valid_children' => '+body[style]'
+            'min_height' => 400,
+            'toolbar' => "undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | code",
+            'valid_children' => '+body[style]',
+            'custom_undo_redo_levels' => 10,
+            'object_resizing' => false,
+            'menubar' => false,
+            'paste_as_text' => true,
+            'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
+            'browser_spellcheck' => true,
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -363,6 +371,12 @@ return array(
                     'uri' => "javascript:oelauncher('forum');",
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
+                ),
+                'gps' => array(
+                    'title' => 'Practitioners',
+                    'uri' => 'gp/index',
+                    'position' => 10,
+                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
                 ),
 // temporarily disabled
 //			'worklist' => array(
@@ -468,7 +482,7 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-				 * Without this, lightning images and event view will not show draft watermark
+         * Without this, lightning images and event view will not show draft watermark
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
@@ -517,13 +531,56 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
-            'pdf_render_width' => 1250,
+            'viewport_width' => 1280,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
-                'height' => 800,
-                'width' => 600
-            )
+                'height' => 912,
+                'width' => 800
+            ),
+            'debug_logging' => false,
+            'event_specific' => array(
+                'Correspondence' => array(
+                    'image_width' => 1000
+                ),
+            ),
         ),
+
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
+
+        /**
+         * Patient Identifiers
+         * Used to have installation specific identifiers for every patient (in addition to the Hospital Number and NHS Number)
+         *
+         * 'label' is the text that will be used to label this identifier (defaults to a human friendly version of the code if not set)
+         * 'placeholder' is what appears as the placeholder in the text field (defaults to the label if not set)
+         * 'required' is whether the field needs to be entered or not (defaults to false)
+         * If 'validate_pattern' is set, then the value must match that regex (unless the value is empty and required is false)
+         * 'validate_msg' is the message displayed if the regex match fails (defaults to 'Invalid format')
+         * If 'auto_increment' is true, then a blank value will be replaced with the 1 plus the highest value of other patients
+         * If 'unique' is true, then the identifier must be unique for that patient
+         * If 'display_if_empty' is true, then identifier will be shown in the patient summary panel even if it is null
+         */
+        /*'patient_identifiers' => array(
+            'SOME_NUMBER' => array(
+                'label' => 'Some Number',
+                // 'placeholder' => 'Some number placeholder',
+                // 'required' => true,
+                // 'validate_pattern' => '/^\d{8,}$/',
+                // 'validate_msg' => ',
+                // 'editable' => true,
+                // 'auto_increment' => false,
+                // 'unique' => false,
+                // 'display_if_empty' => false,
+            ),
+        ),*/
+
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
     ),
 );

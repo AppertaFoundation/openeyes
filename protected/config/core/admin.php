@@ -26,7 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
-                'context_firm_labels and service_firm_labels' => '/admin/firms',
+                'context_firm_labels and service_firm_labels' => '/Admin/context/index',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => '/admin/contactlabels',
                 'Data sources' => '/admin/datasources',

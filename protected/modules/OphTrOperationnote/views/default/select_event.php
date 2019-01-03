@@ -87,7 +87,7 @@ $warnings = $this->patient->getWarnings($clinical);
                     </span>
                   </td>
                   <td>
-                    <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
+                    <a href="#" class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
                         <?php
                         echo implode('<br />', array_map(function ($procedure) use ($operation) {
                             return $operation->eye->name . ' ' . $procedure->term;
@@ -116,10 +116,31 @@ $warnings = $this->patient->getWarnings($clinical);
     </section>
 </div>
 <script type="text/javascript">
+    /**
+     * set the selected booking and submit the form
+     * @param booking
+     */
+    function selectBooking(booking) {
+        $('[name="SelectBooking"]').val(booking);
+        $('#operation-note-select').submit();
+    }
+
   $(function () {
     $('.booking-select').on('click', function () {
-      $('[name="SelectBooking"]').val($(this).data('booking'));
-      $('#operation-note-select').submit();
+        let eyeId = $(this).data('eye-id');
+        let booking = $(this).data('booking');
+        if (eyeId === 3) {
+            // if the procedure is for BOTH eyes, show an alert:
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Bilateral cataract operation notes are not currently supported. Please complete details for the first eye in this event, then create a second operation note event for the second eye.",
+                closeCallback: function () {
+                    selectBooking(booking);
+                }
+            }).open();
+        }
+        else {
+            selectBooking(booking);
+        }
     });
   });
 </script>

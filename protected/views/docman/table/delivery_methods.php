@@ -35,7 +35,7 @@
         }
     }
     ?>
-    <?php if ($contact_type == 'GP'): ?>
+    <?php if ($contact_type == Yii::app()->params['gp_label']): ?>
         <?php if($can_send_electronically): ?>
             <div>
 							<label class="inline highlight electronic-label docman">
@@ -87,7 +87,7 @@
             $is_checked = $print_output || $is_new_record ? 'checked' : '';
 
             $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
-            if( $contact_type == 'GP' || $contact_type == 'INTERNALREFERRAL'){
+            if( $contact_type == Yii::app()->params['gp_label'] || $contact_type == 'INTERNALREFERRAL'){
                 $is_checked = $is_post_checked ? 'checked' : ($print_output ? 'checked' : '');
             } else {
                 $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : $is_checked;

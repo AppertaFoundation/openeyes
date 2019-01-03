@@ -178,7 +178,8 @@ class DefaultController extends \BaseModuleController
         $patient_filter = null;
         $patient_list = [];
 
-        if ($queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id)) {
+        $queuesets = $qsc_svc->getCategoryQueueSetsForUser($category, Yii::app()->user->id);
+        if ($queuesets) {
             // default to the single queueset if that is all that is available to the user
             if (count($queuesets) > 1) {
                 if ($qs_id) {
