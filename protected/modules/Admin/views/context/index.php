@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="cols-9">
+<div class="cols-12">
     <div class="row divider">
         <form id="context-search-form" action="#" method="post">
             <table class="standard">
@@ -24,8 +24,8 @@
 
                 </colgroup>
                 <tr>
-                    <td><?= CHtml::textField('search[query]', $search['query'], [
-                            'placeholder' => 'Search Id, PAS Code, Name (case sensitive)',
+                    <td><?=CHtml::textField('search[query]', $search['query'], [
+                            'placeholder' => 'Search Id, PAS Code, Cost Code, Name - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]); ?>
                     </td>
@@ -38,7 +38,7 @@
                     </td>
                     <td>
                         <input type="hidden" name="YII_CSRF_TOKEN"
-                               value="<?php echo Yii::app()->request->csrfToken ?>"/>
+                               value="<?=Yii::app()->request->csrfToken ?>"/>
                         <button class="blue hint" id="search-button" formmethod="post" type="submit">Search</button>
                     </td>
                 </tr>
@@ -47,7 +47,7 @@
     </div>
 
     <form id="admin_firms">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <input type="hidden" name="YII_CSRF_TOKEN" value="<?=Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <thead>
             <th><input type="checkbox" name="selectall" id="selectall"/></th>
@@ -56,41 +56,37 @@
             <th>Name</th>
             <th>Subspecialty</th>
             <th>Consultant</th>
+            <th>Cost Code</th>
             <th>Service Enabled</th>
             <th>Context Enabled</th>
             <th>Active</th>
             </thead>
             <tbody>
             <?php foreach ($firms as $firm) : ?>
-                <tr class="clickable" data-id="<?php echo $firm->id ?>"
-                    data-uri="admin/editFirm/<?php echo $firm->id ?>">
-                    <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id ?>"/></td>
-                    <td><?php echo $firm->id ?></td>
-                    <td><?php echo $firm->pas_code ?></td>
-                    <td><?php echo $firm->name ?></td>
-                    <td><?php echo ($firm->serviceSubspecialtyAssignment) ?
+                <tr class="clickable" data-id="<?=$firm->id ?>"
+                    data-uri="Admin/context/edit/<?=$firm->id ?>">
+                    <td><input type="checkbox" name="firms[]" value="<?=$firm->id ?>"/></td>
+                    <td><?=$firm->id ?></td>
+                    <td><?=$firm->pas_code ?></td>
+                    <td><?=$firm->name ?></td>
+                    <td><?=($firm->serviceSubspecialtyAssignment) ?
                             $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>
-                    <td><?php echo ($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
+                    <td><?=($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
+                    <td><?=$firm->cost_code;?></td>
 
-                    <td><?php echo ($firm->can_own_an_episode) ?
-                            ('<i class="oe-i tick small"></i>') :
-                            ('<i class="oe-i remove small"></i>'); ?></td>
-                    <td><?php echo ($firm->runtime_selectable) ?
-                            ('<i class="oe-i tick small"></i>') :
-                            ('<i class="oe-i remove small"></i>'); ?></td>
-                    <td><?php echo ($firm->active) ?
-                            ('<i class="oe-i tick small"></i>') :
-                            ('<i class="oe-i remove small"></i>'); ?></td>
+                    <td><?=\OEHtml::icon($firm->can_own_an_episode ? 'tick' : 'remove');?></td>
+                    <td><?=\OEHtml::icon($firm->runtime_selectable ? 'tick' : 'remove');?></td>
+                    <td><?=\OEHtml::icon($firm->active ? 'tick' : 'remove');?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
                 <td colspan="5">
-                    <?= \CHtml::button(
+                    <?=\CHtml::button(
                         'Add',
                         [
-                            'data-uri' => '/admin/addFirm',
+                            'data-uri' => '/Admin/context/add',
                             'class' => 'button large',
                             'name' => 'add',
                             'id' => 'et_add']
