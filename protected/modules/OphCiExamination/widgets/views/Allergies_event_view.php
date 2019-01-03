@@ -1,4 +1,4 @@
-<?php use OEModule\OphCiExamination\models\AllergyEntry; use OEModule\OphCiExamination\models\OphCiExaminationAllergy; ?>
+<?php use OEModule\OphCiExamination\models\AllergyEntry; ?>
 
 <div class="element-data full-width">
     <div class="flex-layout flex-top">
@@ -13,16 +13,18 @@
             <?php else : ?>
                 <?php
                 $entries = [];
-                foreach ([(string)AllergyEntry::$NOT_PRESENT, (string)AllergyEntry::$PRESENT] as $key) {
+                foreach ([(string)AllergyEntry::$NOT_PRESENT, (string)AllergyEntry::$PRESENT, (string)AllergyEntry::$NOT_CHECKED] as $key) {
                     $entries[$key] = array_values(array_filter($element->getSortedEntries(), function ($e) use ($key) {
                         return $e->has_allergy === $key;
                     }));
                 }
                 $max_iter = max(
                     count($entries[(string)AllergyEntry::$NOT_PRESENT]),
-                    count($entries[(string)AllergyEntry::$PRESENT])
+                    count($entries[(string)AllergyEntry::$PRESENT]),
+                    count($entries[(string)AllergyEntry::$NOT_CHECKED])
                 );
                 ?>
+
               <div id="js-listview-allergies-pro" class="cols-full listview-pro">
                     <table class="last-left">
                         <tbody>
@@ -48,11 +50,14 @@
                             <tr>
                                 <td class="nowrap fade">Unchecked</td>
                                 <td>
-                                    <?php if(count(OphCiExaminationAllergy::unchecked($element->entries[0]['element_id'])) > 0) {?>
+                                    <?php if(count($entries[(string)AllergyEntry::$NOT_CHECKED]) > 0) {?>
                                         <ul class="dot-list">
-                                            <?php foreach (OphCiExaminationAllergy::unchecked($element->entries[0]['element_id']) as $entry) : ?>
+                                            <?php foreach ($entries[(string)AllergyEntry::$NOT_CHECKED] as $entry) : ?>
                                                 <li>
-                                                    <?= $entry->name; ?>
+                                                    <?= $entry->getDisplayAllergy(); ?>
+                                                    <?php if($entry['comments'] != ""){?>
+                                                        <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments']; ?>" pro"="" list="" mode"=""></i>
+                                                    <?php } ?>
                                                 </li>
                                             <?php endforeach; ?>
                                         </ul>
@@ -125,19 +130,21 @@
                             <col class="cols-4">
                           </colgroup>
                         <tbody>
-                            <?php if(count(OphCiExaminationAllergy::unchecked($element->entries[0]['element_id'])) >0){ ?>
-                                <?php foreach (OphCiExaminationAllergy::unchecked($element->entries[0]['element_id']) as $entry) : ?>
-                                    <tr>
-                                        <td><?= $entry->name; ?></td>
-                                        <td><span class="none">None</span></td>
-                                    </tr>
-                                <?php endforeach; ?>
+                            <?php if(count($entries[(string)AllergyEntry::$NOT_CHECKED]) >0){ ?>
+                                <?php for ($i = 0; $i < $max_iter; $i++) :?>
+                                    <?php if(isset($entries[(string)AllergyEntry::$NOT_CHECKED][$i])){?>
+                                        <tr>
+                                            <td><?= $entries[(string)AllergyEntry::$NOT_CHECKED][$i]->getDisplayAllergy(); ?></td>
+                                            <td><?= ($entries[(string)AllergyEntry::$NOT_CHECKED][$i]['comments'] !== "" ? $entries[(string)AllergyEntry::$NOT_CHECKED][$i]['comments'] : '<span class="none">None</span>'); ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php endfor; ?>
                             <?php } else { ?>
                                 <tr>
                                     <td>None</td>
                                     <td><span class="none">None</span></td>
                                 </tr>
-                            <?php } ?> 
+                            <?php } ?>
                         </tbody>
                       </table>
                     </div><!-- .flex-layout -->
