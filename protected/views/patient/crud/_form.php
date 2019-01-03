@@ -239,7 +239,7 @@ foreach ($ethnic_list as $key=>$item){
         </tr>
         <tr>
           <td>
-            <?= Yii::app()->params['nhs_num_label']?> Number
+            <?= Yii::app()->params['nhs_num_label']?>
           </td>
           <td>
               <?= $form->textField($patient, 'nhs_num',
