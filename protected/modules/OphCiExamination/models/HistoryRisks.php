@@ -104,18 +104,13 @@ class HistoryRisks extends \BaseEventTypeElement
         // use previous session's entries
         $entries = $this->entries;
 
-        // array of risks selected in previous session
-        $previous_session_risks = [];
-        foreach ($this->entries as $entry) {
-            $previous_session_risks[] = $entry->risk->id;
-        }
-
-        foreach ($element->entries as $entry) {
-            // add only the entries from DB that were not in the previous session
-            if (!in_array($entry->risk->id, $previous_session_risks)) {
-                $new = new HistoryRisksEntry();
-                $new->loadFromExisting($entry);
-                $entries[] = $new;
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new_entry = new HistoryRisksEntry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
             }
         }
 
@@ -234,15 +229,4 @@ class HistoryRisks extends \BaseEventTypeElement
         }
         return null;
     }
-
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view'){
-            return 55;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
-    }
-
 }

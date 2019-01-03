@@ -18,15 +18,26 @@
  $logoHelper = new LogoHelper();
 
 ?>
-<div class="print-form-div">
 	<?php if (@$copy) {?>
 		<div class="watermark">
 			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
 		</div>
 	<?php }?>
-	<div class="banner clearfix">
+    <header class="print-header">
+	<div class="logo">
 		<?= $logoHelper->render('//base/_logo', 50) ?>
 	</div>
-	<?php $this->renderPartial('_address', array('site' => $this->site))?>
-	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>
+    </header>
+<div class="flex-layout">
+    <h1 class="print-title">
+        <?php
+        if ($this->attachment_print_title) {
+            echo $this->attachment_print_title;
+        } else {
+            echo 'Prescription Form';
+        }
+        ?>
+    </h1>
+    <?php $this->renderPartial('_address', array('site' => $this->site)); ?>
 </div>
+	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>

@@ -5,7 +5,7 @@
 }?>
 		<h3>Select an event type:</h3>
 		<select class="EventTypeModuleEventType" name="EventTypeModuleEventType">
-			<option value="">- Please select -</option>
+			<option value="">Select</option>
 			<?php foreach (EventType::model()->findAll(array('order' => 'name asc')) as $event_type) {
     ?>
 				<option value="<?php echo $event_type->id?>"<?php if (@$_POST['EventTypeModuleEventType'] == $event_type->id) {

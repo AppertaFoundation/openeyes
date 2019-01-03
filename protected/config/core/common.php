@@ -142,7 +142,7 @@ return array(
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
-            'errorAction' => 'site/error',
+            'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
@@ -151,8 +151,8 @@ return array(
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
-            'class' => 'FlushableLogRouter',
-            'autoFlush' => 1,
+            'class' => 'CLogRouter',
+            // 'autoFlush' => 1,
             'routes' => array(
                 // Normal logging
                 'application' => array(
@@ -372,6 +372,12 @@ return array(
                     'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
                     'position' => 90,
                 ),
+                'gps' => array(
+                    'title' => 'Practitioners',
+                    'uri' => 'gp/index',
+                    'position' => 10,
+                    'restricted' => array('TaskViewGp', 'TaskCreateGp'),
+                ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',
@@ -476,7 +482,7 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
-				 * Without this, lightning images and event view will not show draft watermark
+         * Without this, lightning images and event view will not show draft watermark
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
@@ -532,12 +538,17 @@ return array(
                 'height' => 912,
                 'width' => 800
             ),
+            'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
             ),
         ),
+
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
 
         /**
          * Patient Identifiers
@@ -565,5 +576,11 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
+
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
     ),
 );
