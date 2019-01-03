@@ -103,7 +103,7 @@
     if (doSearch) {
       this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
         term: text,
-        preservative_free: 1,
+        preservative_free: 0,
         type_id: this.popup.find('.js-drug-types li.selected').data('id'),
         ajax: 'ajax'
       }, function (results) {

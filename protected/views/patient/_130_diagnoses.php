@@ -16,17 +16,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info associated-data js-toggle-container">
-
+<section class="element view full patient-info associated-data js-toggle-container">
 	<header class="element-header">
-		<h3 class="box-title">
+		<h3 class="element-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Other ophthalmic diagnoses
 		</h3>
 	</header>
 
-	<div class="js-toggle-body data-group">
-
+	<div class="jelement-data full-width js-toggle-body data-group">
 		<table class="plain patient-data">
 			<thead>
 			<tr>
@@ -47,10 +45,10 @@
 						$term = $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
 					}
 					?>
-					<td><?php echo $diagnosis->dateText?></td>
-					<td><?php echo $term; ?></td>
+					<td><?= $diagnosis->dateText?></td>
+					<td><?= $term; ?></td>
 					<?php if ($this->checkAccess('OprnEditOtherOphDiagnosis')) { ?>
-						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
+						<td><a href="#" class="removeDiagnosis" rel="<?= $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
 				</tr>
 			<?php }?>
@@ -95,22 +93,22 @@
                         ))?>
 
 						<div class="hide" id="add_ophthalmic_diagnosis_loader">
-							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> cols-<?php echo $form->layoutColumns['field'];?> column end">
-								<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
+							<p class="large-offset-<?= $form->layoutColumns['label'];?> cols-<?= $form->layoutColumns['field'];?> column end">
+								<img class="loader" src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 									searching...
 							</p>
 						</div>
 
-						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+						<input type="hidden" name="patient_id" value="<?= $this->patient->id?>" />
 
 						<fieldset class="diagnosis_eye data-group">
-							<legend class="<?php echo $form->columns('label');?>">
+							<legend class="<?= $form->columns('label');?>">
 								Eye:
 							</legend>
-							<div class="<?php echo $form->columns('field');?>">
+							<div class="<?= $form->columns('field');?>">
 								<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
 									<label class="inline">
-										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i == 0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
+										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?= $eye->id?>"<?php if ($i == 0) {?> checked="checked"<?php }?> /> <?= $eye->name?>
 									</label>
 								<?php }?>
 							</div>
@@ -121,7 +119,7 @@
 						<div class="ophthalmic_diagnoses_form_errors alert-box alert hide"></div>
 
 						<div class="buttons">
-							<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
+							<img src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
 							<button type="submit" class="secondary small btn_save_ophthalmic_diagnosis">
 								Save
 							</button>
@@ -150,7 +148,7 @@
 				<input type="hidden" id="diagnosis_id" value="" />
 				<button type="submit" class="warning small btn_remove_diagnosis">Remove diagnosis</button>
 				<button type="submit" class="secondary small btn_cancel_remove_diagnosis">Cancel</button>
-				<img class="loader hide" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
+				<img class="loader hide" src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 			</div>
 		</div>
 	</div>
