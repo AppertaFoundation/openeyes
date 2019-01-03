@@ -116,6 +116,13 @@ class Trial extends BaseActiveRecordVersioned
     return 'present';
   }
 
+  /*
+  * Get the ethics number as a string
+  */
+  public function getEthicsNumberForDisplay() {
+      return $this->ethics_number === null ? 'NA' : $this-> ethics_number;
+  }
+
   /**
    * Gets the relation rules for Trial
    *
