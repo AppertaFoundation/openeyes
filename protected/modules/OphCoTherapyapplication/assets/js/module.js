@@ -350,7 +350,7 @@ function OphCoTherapyapplication_PatientSuitability_check(side) {
 
 			if (l2_data) {
 				// need to update the list of options in the level 2 drop down
-				var options = '<option value="">- Please Select -</option>';
+				var options = '<option value="">Select</option>';
 				for (var i in l2_data) {
 					options += '<option value="' + l2_data[i].id + '">' + l2_data[i].term + '</option>';
 				}

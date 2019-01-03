@@ -535,7 +535,7 @@ EOH;
 
         if ($gp->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update'). Yii::app()->params['gp_label']);
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -566,7 +566,7 @@ EOH;
 
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP-Contact');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' '.Yii::app()->params['gp_label'].'-Contact');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
@@ -585,7 +585,7 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' GP-Address');
+                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update').' '.Yii::app()->params['gp_label'].'-Address');
             }
         } else {
             // save has not been carried out, either mode was not dirty or save() failed
