@@ -217,8 +217,10 @@ function getDispenseLocation(dispense_condition) {
 $(function () {
   new OpenEyes.UI.AdderDialog.PrescriptionDialog({
     openButton: $('#add-prescription-btn'),
-    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionElementCommonDrugs,
-      {'multiSelect': true})],
+    itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet([{'label': 'No preservative', 'id': '1'}], {'multiSelect': false, 'class': 'js-no-preservative'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(prescriptionElementCommonDrugs, {'multiSelect': true, 'class': 'js-drug-list'})
+    ],
     searchOptions: {
       searchSource: searchListUrl,
       searchFilter: prescriptionElementDrugTypes,
