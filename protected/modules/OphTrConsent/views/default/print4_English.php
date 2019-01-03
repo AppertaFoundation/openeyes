@@ -44,7 +44,7 @@
             <td><?php echo $this->patient->hos_num ?></td>
         </tr>
         <tr>
-            <th>NHS number</th>
+            <th><?php echo Yii::app()->params['nhs_num_label']?> number</th>
             <td><?php echo $this->patient->nhs_num ?></td>
         </tr>
         <tr>
@@ -81,14 +81,15 @@
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
-            <td><?php
-                foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+            <td>
+                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
                     echo \CHtml::encode($procedure->term);
-                }
-                ?></td>
+                } ?>
+            </td>
         </tr>
         <tr>
             <th>&nbsp;<br />Consent date</th>

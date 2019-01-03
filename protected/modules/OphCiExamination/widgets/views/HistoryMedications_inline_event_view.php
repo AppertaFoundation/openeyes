@@ -1,4 +1,3 @@
-<link rel="stylesheet" type="text/css" href="<?= $this->getCssPublishedPath('medications.css') ?>">
 <?php if ($element->currentOrderedEntries) { ?>
     <ul class="comma-list">
         <?php foreach ($element->currentOrderedEntries as $entry) { ?>

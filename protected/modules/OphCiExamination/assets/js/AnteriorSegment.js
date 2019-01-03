@@ -348,6 +348,20 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       case 'ready':
         if (this.primaryDrawingReady())
           this.loadSecondaryDoodles();
+
+          // in order to get the PCR Risk pupil size to update from the side view...
+          // launch the anterior segment popup in order to load the relevant pupilSize_control input into the DOM
+          $('.ed-doodle-popup').css('visibility','hidden'); // not needed for functionality but it stops the popup flashing onto the screen before it is removed 
+          
+          setTimeout(function(){
+            $('.ed-selected-doodle-select').val('Anterior segment').trigger('change');
+          },0);
+
+          // reset the select input to its initial state
+          setTimeout(function(){
+            $('.ed-doodle-popup').addClass('closed').css('visibility',''); // to stop it from flashing
+            $('.ed-selected-doodle-select').val('None').trigger('change');
+          },500);
         break;
       case 'doodlesLoaded':
         break;

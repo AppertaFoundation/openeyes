@@ -3,9 +3,12 @@
 <div class="element-data full-width">
     <div class="flex-layout flex-top">
         <div class="cols-11">
+            <?php if($element->no_allergies_date){
+            echo 'Patient has no allergies (confirmed)';
+            } else { ?>
             <?php if (!count($element->entries)) : ?>
                 <div class="data-value not-recorded left" style="text-align: left;">
-                  Patient has no allergies (confirmed)
+                 <?= 'No entries recorded' ?>
                 </div>
             <?php else : ?>
                 <?php
@@ -177,5 +180,6 @@
                 <i class="oe-i small js-listview-expand-btn expand" data-list="allergies"></i>
             </div>
         <?php endif; ?>
+        <?php } ?>
     </div>
 </div>
