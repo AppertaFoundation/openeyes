@@ -2148,6 +2148,17 @@ class Patient extends BaseActiveRecordVersioned
         }, $this->allergies);
     }
 
+    public function getAllergiesId()
+    {
+        if (!$this->hasAllergyStatus() || $this->no_allergies_date) {
+            return false;
+        } else {
+            return array_map(function($allergy) {
+                return $allergy->id;
+            }, $this->allergies);
+        }
+    }
+
     /**
      * @return Array
      */
