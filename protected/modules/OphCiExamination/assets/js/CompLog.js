@@ -6,12 +6,15 @@ function CompLogConnectionError(message) {
 CompLogConnectionError.prototype = new Error;
 
 function CompLogConnection() {
-	let self = this;
 	this.dialog = null;
 	this.latestHl7Data = null;
 	this.isConnectedToCompLog = false;
 	this.attemptDelay = 1000; //should be constant
 	this.maxAttempts = 30; // should be constant
+}
+
+CompLogConnection.prototype.run = function(){
+	let self = this;
 	this.initialiseCompLogDialog();
 	this.checkConnectionToWS()
 		.fail(() => {
@@ -33,7 +36,7 @@ function CompLogConnection() {
 					});
 			}
 		});
-}
+};
 
 CompLogConnection.prototype.initialiseCompLogDialog = function(){
 	this.dialog = new OpenEyes.UI.Dialog.Confirm({
@@ -257,4 +260,5 @@ CompLogConnection.prototype.destroy = function(){
 $("#et_complog").off().click(function(event){
 	event.preventDefault();
 	let compLogConnection = new CompLogConnection();
+	compLogConnection.run();
 });
