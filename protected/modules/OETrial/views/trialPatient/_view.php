@@ -149,7 +149,7 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
 </tr>
 <!--Comment Section-->
 <tr class="js-trial-patient-comment-tr" data-trial-patient-id="<?= $data->id ?>" style="display:none">
-    <td colspan="8">
+    <td colspan="6">
         <div id="trial-patient-comments"  class="cols-full flex-layout flex-center" >
             <?php
             echo CHtml::textArea(
@@ -157,8 +157,8 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
                 $data->comment,
                 array(
                     'class' => 'js-comment-trial-patient cols-full column',
-                    'rows'=>5,
-                    'style'=>'width:80%',
+                    'rows'=>4,
+                    'style'=>'width:90%',
                 )
             ); ?>
             <?= CHtml::hiddenField(
@@ -170,12 +170,11 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
             ) ?>
             <i class="oe-i remove-circle small-icon pad-left  js-remove-trial-patient-comments"></i>
         </div>
-        <div class="js-comment-trial-patient-actions cols-full flex-layout flex-center" style="display:none;">
-            <button class="js-save-comment-trial-patient button hint green" style="width: 10%; text-align: center" >Save</button>
-
-            <button class="js-cancel-comment-trial-patient button hint red" style="width: 10%;text-align: center">Cancel</button>
+    </td>
+    <td class="js-comment-trial-patient-actions" style="display: none; text-align: center;">
+            <button class="js-save-comment-trial-patient button hint green" style=" text-align: center" >Save</button>
+            <button class="js-cancel-comment-trial-patient button hint red" style="text-align: center">Cancel</button>
             <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
-        </div>
     </td>
 
 </tr>
