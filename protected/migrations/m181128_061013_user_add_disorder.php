@@ -1,6 +1,6 @@
 <?php
 
-class m181128_061013_user_add_diagnosis extends CDbMigration
+class m181128_061013_user_add_disorder extends CDbMigration
 {
 	public function safeUp()
 	{
@@ -8,8 +8,8 @@ class m181128_061013_user_add_diagnosis extends CDbMigration
             'element_type_id' => null,
             'display_order' => 0,
             'field_type_id' => 3, // Radio Buttons
-            'key' => 'user_add_diagnosis',
-            'name' => 'Allow all Users to Add/Edit Diagnosis',
+            'key' => 'user_add_disorder',
+            'name' => 'Allow all Users to Add/Edit Disorders',
             'data' => serialize(array('on' => 'On', 'off' => 'Off')),
             'default_value' => 'off',
         ));
@@ -17,7 +17,7 @@ class m181128_061013_user_add_diagnosis extends CDbMigration
 
 	public function safeDown()
 	{
-        $this->delete('setting_metadata', '`key` = \'user_add_diagnosis\'');
+        $this->delete('setting_metadata', '`key` = \'user_add_disorder\'');
 	}
 
 	/*
