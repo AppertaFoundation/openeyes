@@ -246,17 +246,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var rows = this.createRow(selectedItems);
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
-            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'));
+            this.appendSecondaryDiagnoses(selectedItems[i].secondary , this.$table.find('tbody tr:last'), selectedItems[i].alternate);
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
         $(":input[name^='glaucoma_diagnoses']").trigger('change');
     };
 
-    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr){
+    DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr, alternate_diagnoses){
         if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses.length) {
             $tr.find('.condition-secondary-to-wrapper').show();
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
+
+            if (alternate_diagnoses !== undefined && alternate_diagnoses !== null) {
+                data = {};
+                data.label = alternate_diagnoses['selection_label'];
+                data.id = alternate_diagnoses['id'];
+                data.type = alternate_diagnoses['type'];
+                var select = Mustache.render(template, data);
+                $tr.find('.condition-secondary-to').append(select);
+            }
 
             for (var i in secondary_diagnoses) {
                 data = {};
