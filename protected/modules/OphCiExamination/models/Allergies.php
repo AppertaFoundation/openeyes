@@ -97,12 +97,6 @@ class Allergies extends \BaseEventTypeElement
     public function beforeSave()
     {
         $entries = $this->entries;
-        foreach ($entries as $key=>$entry) {
-            if($entry->has_allergy == AllergyEntry::$NOT_CHECKED) {
-                unset($entries[$key]);
-            }
-        }
-        $this->entries = $entries;
         return parent::beforeSave();
     }
 
