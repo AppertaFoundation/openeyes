@@ -130,14 +130,15 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
+            array('gender', 'required', 'on' => array('self_register')),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
 
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
-            array('gender, dob', 'required', 'on' => array('manual', 'self_register')),
             array('deleted', 'safe'),
-            array('gp_id, practice_id', 'required', 'on' => 'referral'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
@@ -296,7 +297,7 @@ class Patient extends BaseActiveRecordVersioned
             'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
             'deleted' => 'Is Deleted',
             'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
-            'gp_id' => 'General Practitioner',
+            'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
@@ -2113,7 +2114,7 @@ class Patient extends BaseActiveRecordVersioned
         foreach ($this->episodes as $ep) {
             $d = $ep->diagnosis;
             if ($d && $d->specialty && $d->specialty->code == 130) {
-                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . Helper::convertDate2NHS($ep->disorder_date);
+                $principals[] = ($ep->eye ? $ep->eye->adjective . '~' : '') . $d->term . '~' . $ep->getHTMLformatedDate();
             }
         }
 
