@@ -254,7 +254,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     DiagnosesController.prototype.appendSecondaryDiagnoses = function(secondary_diagnoses , $tr, alternate_diagnoses){
-        if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses.length) {
+        if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses !== undefined && secondary_diagnoses.length) {
             $tr.find('.condition-secondary-to-wrapper').show();
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
             let template_alternate = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{selection_label}}  </option>';
