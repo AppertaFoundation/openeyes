@@ -48,7 +48,7 @@ $episodes = $this->episode->patient->episodes
             <td>
                 <?php $this->widget('EyeLateralityWidget', array('eye' => $principal->eye)) ?>
             </td>
-            <td><span class="oe-date"><?= Helper::convertDate2HTML($principal->getDisplayDate()) ?></span></td>
+            <td><span class="oe-date"><?= $principal->getHTMLformatedDate() ?></span></td>
           </tr>
         <?php }
         foreach ($episodes as $episode) {
@@ -82,7 +82,7 @@ $episodes = $this->episode->patient->episodes
             <td>
                 <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
             </td>
-            <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->getDisplayDate()) ?></span></td>
+            <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
           </tr>
         <?php } ?>
         </tbody>

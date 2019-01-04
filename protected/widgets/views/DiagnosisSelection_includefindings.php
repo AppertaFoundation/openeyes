@@ -273,7 +273,7 @@ if (!$nowrapper) {?>
 			}
 		}
 		if (options) {
-			var html = '<option value="">- Please Select -</option>';
+			var html = '<option value="">Select</option>';
 			if (alternate && !checkFilter(filterList, alternate)) {
 				html += '<option value="alternate-' + alternate.id + '">' + alternate.selection_label + '</option>';
 			}

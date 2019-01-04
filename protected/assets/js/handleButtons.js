@@ -20,11 +20,8 @@ $(document).ready(function(){
       for (var i = 0; i < hrefArray.length; i++) {
         if (hrefArray[i] === 'admin') {
           object = ucfirst(hrefArray[parseInt(i) + 1].replace(/ies$/, 'y'));
-
           if((object === 'EditUser') || (object === 'AddUser')) {
             window.location.href = baseUrl + '/admin/users';
-          }else if(object === 'EditFirm') {
-            window.location.href = baseUrl + '/admin/firms';
           }else {
             var object = e[parseInt(i) + 1].replace(/^[a-z]+/, '').toLowerCase() + 's';
             window.location.href = baseUrl + '/admin/' + object + (page ? '/' + page : '');

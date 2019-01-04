@@ -82,7 +82,8 @@ case $i in
     --help) showhelp=1
     ;;
 	*)  if [ ! -z "$i" ]; then
-			echo "Unknown command line: $i. Try --help"
+			# pass anything else on to oe-fix script
+			fixparams="$fixparams $i"
 		fi
     ;;
 esac
@@ -177,12 +178,6 @@ if [ "$force" = 0 ]; then
             echo "--ignore-local switch applied - continuing"
         fi
   	fi
-else
-	# delete dependencies during force (they will get re-added by oe-fix)
-	sudo rm -rf $WROOT/node_modules
-
-    # echo "Resetting core. Any uncomitted changes have been lost..."
-    # git reset -C $WROOT --hard
 fi
 
 

@@ -5,19 +5,21 @@ class m180307_235515_update_pupillary_abnormalities_element_type extends CDbMigr
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
-        $parent_id = $this->getDbConnection()->createCommand("select id from element_type where class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_VisualFunction'")->queryRow();
-        if (isset($parent_id['id']) && $parent_id['id']) {
-            $this->update('element_type',
-                array('name' => 'Pupils', 'display_order' => 5, 'parent_element_type_id' => $parent_id['id']),
-                "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
-        }
+        $group_id = $this->dbConnection->createCommand()->select('id')->from('element_group')->where('name = "Visual Function"')->queryScalar();
+
+        $this->update('element_type',
+            array(
+                'name' => 'Pupils',
+                'element_group_id' => $group_id,
+                'display_order' => 135,
+            ),
+            "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
     }
 
     public function safeDown()
     {
         $this->update('element_type',
-            array('name' => 'Pupillary Abnormalities', 'display_order' => 45, 'parent_element_type_id' => null),
+            array('name' => 'Pupillary Abnormalities', 'element_group_id' => null, 'display_order' => 180),
             "class_name='OEModule\\\OphCiExamination\\\models\\\Element_OphCiExamination_PupillaryAbnormalities'");
     }
-
 }
