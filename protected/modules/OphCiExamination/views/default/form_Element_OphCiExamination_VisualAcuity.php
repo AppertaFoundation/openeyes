@@ -176,15 +176,15 @@ if ($cvi_api) {
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
           if(selectedItems.length==2){
             var selected_data = {};
-            for (i in selectedItems) {
-              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
-                selected_data.reading_value = selectedItems[i]['id'];
-                selected_data.reading_display = selectedItems[i]['label'];
-                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip'];
+            for (let item of selectedItems) {
+              if(item['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = item['id'];
+                selected_data.reading_display = item['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[item['id']]['data-tooltip'];
               }
-              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
-                selected_data.method_id = selectedItems[i]['id'];
-                selected_data.method_display = selectedItems[i]['label'];
+              if(item['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = item['id'];
+                selected_data.method_display = item['label'];
               }
             }
             OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);
