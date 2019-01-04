@@ -380,6 +380,7 @@ foreach ($ethnic_list as $key=>$item){
           <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
             <?= $form->label($referral, 'uploadedFile'); ?>
             <br/>
+              <?= $form->error($referral, 'uploadedFile')?>
           </td>
           <td>
             <?= $form->fileField($referral, 'uploadedFile'); ?>

@@ -1855,13 +1855,13 @@ class PatientController extends BaseController
                     $redirect = array('/patient/episodes/' . $patient->id);
                 }
                 $transaction->commit();
+                $this->redirect($redirect);
             } else {
                 //Get all the validation errors
                 foreach ([
                              'patient',
                              'contact',
                              'address',
-                             'referral',
                              'patient_user_referral',
                              'patient_identifiers'
                          ] as $model)
@@ -1878,12 +1878,6 @@ class PatientController extends BaseController
                 }
                 $transaction->rollback();
             }
-
-
-            if (isset($redirect)) {
-                $this->redirect($redirect);
-            }
-
 
             // remove contact_id validation error
             $patient->clearErrors('contact_id');
@@ -1922,15 +1916,8 @@ class PatientController extends BaseController
         }
 
         //Save referral documents
-        if (isset($referral)) {
-            if (!isset($referral->patient_id)) {
-                $referral->patient_id = $patient->id;
-            }
-            if (!$referral->save()) {
-                return false;
-            }
-
-            $this->actionPerformReferralDoc($patient, $referral, $_FILES);
+        if (!$this->actionPerformReferralDoc($patient, $referral)) {
+            return false;
         }
 
 
@@ -2263,19 +2250,13 @@ class PatientController extends BaseController
      * Takes an uploaded file from $_FILES and saves it to a document event under the current context/firm
      *
      * @param Patient $patient To save the referral document to
-     * @return bool Returns true if a document is saved
+     * @param PatientReferral $referral
      *
      * @throws Exception
+     * @return bool false for failure to save a file
      */
-    public function actionPerformReferralDoc($patient)
+    public function actionPerformReferralDoc($patient, $referral)
     {
-        if (!isset($_FILES['PatientReferral'])
-            || !isset($_FILES['PatientReferral']['name']['uploadedFile'])
-        ) {
-            \Yii::log("no valid file uploaded");
-            return false;
-        }
-
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         //Get or Create an episode
         list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm);
@@ -2285,6 +2266,7 @@ class PatientController extends BaseController
         $event->episode_id = $episode->id;
         $event->firm = $firm;
         $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
+        $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
         if (!$event->save()) {
             throw new Exception('Could not save event');
@@ -2307,7 +2289,7 @@ class PatientController extends BaseController
                 $document->event_id = $event->id;
                 $document->event = $event;
                 $document->single_document_id = $p_file->id;
-                $document->event_sub_type = 3;
+                $document->event_sub_type = $referral_letter_type_id;
                 $document->single_document = $p_file;
                 if (!$document->save()) {
                     throw new Exception('Could not save Document');
@@ -2319,21 +2301,37 @@ class PatientController extends BaseController
             }
         }
 
-        //Removed any extraneous models if we couldn't save a document
         if (!$document_saved) {
+            $patient_source = $_POST['Patient']['patient_source'];
+            if($patient_source == Patient::PATIENT_SOURCE_REFERRAL){
+                //If there is no existing referral letter document, add an error
+                $command = Yii::app()->db->createCommand()->setText("
+                    select count(*) 'referral letters'
+                    from patient p
+                    join episode e on p.id = e.patient_id
+                    join event e2 on e.id = e2.episode_id
+                    join et_ophcodocument_document d on d.event_id = e2.id
+                      and d.event_sub_type in (select id from ophcodocument_sub_types where name = 'Referral Letter')
+                    where p.id = $patient->id;"
+                );
+                if ($command->queryScalar() == 0){
+                    $referral->addError('uploadedFile', 'Referral requires a letter file');
+                }
+            }
+
+            //Removed any extraneous models if we couldn't save a document
             $event->delete();
             if ($episode_is_new) {
                 $episode->delete();
             }
         }
-
-        return $document_saved;
+        return !$referral->hasErrors();
     }
 
     /**
      * @param Patient $patient
      * @param Firm $firm Firm under which the episode should be
-     * @return array(Episode, bool) The created or found episode and wether or not is was created
+     * @return array(Episode, bool) The created or found episode and whether or not is was created
      * @throws Exception If a episode could not be found or created
      */
     private function getOrCreateEpisode($patient, $firm){
