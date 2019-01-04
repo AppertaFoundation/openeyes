@@ -383,7 +383,7 @@ return array(
                 'disorder' => array(
                     'title' => 'Manage Disorders',
                     'uri' => "/disorder/editcommonophthalmicdisorder",
-                    'requires_setting' => array('setting_key'=>'user_add_diagnosis', 'required_value'=>'on'),
+                    'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
                     'position' => 91,
             ),
                 'gps' => array(
