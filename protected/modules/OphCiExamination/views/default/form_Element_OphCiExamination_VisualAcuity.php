@@ -28,7 +28,6 @@ if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port
         var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
     </script>
 <?php
-    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/lodash.min.js", CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
 }
 
