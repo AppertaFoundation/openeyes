@@ -49,32 +49,40 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-# Terminate if any command fails
-set -e
+function found_error() {
+	echo "******************************************"
+	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
+	echo "******************************************"
+	exit 1
+}
 
-# Verify we are running as root
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
-fi
+trap 'found_error' ERR
+
+
 
 echo -e "STARTING SYSTEM INSATLL IN MODE: $OE_MODE...\n"
 
-sudo apt-get update -y
+export DEBIAN_FRONTEND=noninteractive
 
-  sudo apt-get install -y software-properties-common
+# use minimal amount of memory swapping
+sudo sysctl vm.swappiness=10
 
-  #add repos for PHP5.6 and Java7
-  sudo add-apt-repository ppa:ondrej/php -y
+# update system packages
+sudo apt-get update
+# workaround grub-pc upgrade not working in noninteractive mode (this can be removed once the issue with the upstream package has been resolved)
+sudo apt-mark hold grub-pc
+sudo apt-get upgrade -y
+sudo apt-get install -y software-properties-common
 
+#add repos for PHP5.6 and Java7
+sudo add-apt-repository ppa:ondrej/php -y
 
-
-  echo Performing package updates
-  # ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
-  if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` -lt "16.04" ]]; then
-      sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
-      sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
-  fi
+echo "Performing package updates"
+# ffmpeg 3 isn't supported on xenial or older, so a third party ppa is required
+if [[ `lsb_release -rs` == "16.04" ]] || [[ `lsb_release -rs` == "14.04" ]]; then
+		sudo add-apt-repository ppa:mc3man/gstffmpeg-keep -y
+		sudo add-apt-repository ppa:jonathonf/ffmpeg-3 -y
+fi
 
 # Don't worry about upgrading everything for build mode
 if [ "$OE_MODE" != "BUILD" ]; then
@@ -84,15 +92,18 @@ fi
 
 
 echo Installing required system packages
-export DEBIAN_FRONTEND=noninteractive
 
 # if we are in dev mode, or need to include mysqlserver inside the image, then add additional packages
 extrapackages=$OE_INSTALL_EXTRA_PACKAGES
+[ "$OE_INSTALL_LOCAL_DB" == "" ] && OE_INSTALL_LOCAL_DB="TRUE" # default to local db unless otherwise specified in env
 [ "$OE_INSTALL_LOCAL_DB" == "TRUE" ] && extrapackages="mariadb-server mariadb-client $extrapackages"
 
-# Install required packages + any extras - or if in build mode, intstall minimal build packages only
+# Install required packages + any extras - or if in build or host mode, intstall minimal build packages only
+echo "---= installing $OE_MODE packages =---"
 if [ "$OE_MODE" == "BUILD" ]; then
 	sudo apt-get install -y $(<$SCRIPTDIR/.packages-build.conf)
+elif [ "$OE_MODE" == "HOST" ]; then
+  sudo apt-get install -y $(<$SCRIPTDIR/.packages-host-only.conf)
 else
 	sudo apt-get install -y $(<$SCRIPTDIR/.packages.conf) $extrapackages
 fi
@@ -101,32 +112,44 @@ fi
 [ "$OE_MODE" != "LIVE" ] && bash $SCRIPTDIR/install-dev-tools.sh
 
 
-# wkhtmltox is now bundled in the repository. Original download location is:
-# wget http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
-## TODO: install this via a package manager if not being done already
-# cd /vagrant/install
-# dpkg -i --force-depends wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+# Download and install wkhtmltopdf/toimage (needed for printing and lightning viewer)
+# switch to correct wkhtml version based on OS (trusty/xenial/bionic/etc)
+echo -e "\n\nInstalling wkhtmltopdf...\n\n"
+osver=`lsb_release -rs`
+if [[ "$osver" == "14.04" ]]; then
+    # Ubuntu 14.04
+	sudo wget -O wkhtml.deb https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
+elif [[ "$osver" == "16.04" ]]; then
+	# Ubuntu 16.04
+	sudo wget -O wkhtml.deb https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb
+elif [[ "$osver" == "18.04" ]]; then
+	# Ubuntu 18.04
+	sudo wget -O wkhtml.deb https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+fi
+## TODO: replace with package manager. e.g, https://packagist.org/packages/h4cc/wkhtmltopdf-amd64 and https://packagist.org/packages/h4cc/wkhtmltoimage-amd64
+sudo dpkg -i --force-depends wkhtml.deb || echo -e "\n\nWARNING WARNING WARNING:\n\nUnable to install wkhtmltopdf automatically\nPlease install manually"
+sudo rm wkhtml.deb
 
 if [ ! "$dependonly" = "1" ]; then
 
-    # Enable display_errors and error logging for PHP, plus configure timezone
-    mkdir /var/log/php 2>/dev/null || :
-    chown www-data /var/log/php
-	chown www-data /var/log/php
-	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^;date.timezone =/date.timezone = \"Europe\/London\"/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/apache2/php.ini
-	sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/cli/php.ini
-	sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/cli/php.ini
-	sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
-	sed -i "s|^;date.timezone =|date.timezone = \"${TZ:-'Europe/London'}\"|" /etc/php/5.6/cli/php.ini
+  # Enable display_errors and error logging for PHP, plus configure timezone
+  sudo mkdir /var/log/php 2>/dev/null || :
+  sudo chown www-data /var/log/php
+  sudo chown www-data /var/log/php
+  sudo sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/apache2/php.ini
+  sudo sed -i "s/^display_errors = Off/display_errors = On/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s/^display_startup_errors = Off/display_startup_errors = On/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/" /etc/php/5.6/cli/php.ini
+  sudo sed -i "s|^;date.timezone =|date.timezone = ${TZ:-'Europe/London'}|" /etc/php/5.6/cli/php.ini
 
-	if [[ ! sudo timedatectl set-timezone ${TZ:-'Europe/London'} ]]; then
-		 ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
+	if [ ! sudo timedatectl set-timezone ${TZ:-'Europe/London'} ]; then
+		 sudo ln -sf /usr/share/zoneinfo/${TZ:-Europe/London} /etc/localtime
 	fi
 
-	a2enmod rewrite
+	sudo a2enmod rewrite
     ## TODO: Decide a clen way to add bash environment 'fixes'
     # cp /vagrant/install/bashrc /etc/bash.bashrc
     # source /vagrant/install/bashrc
@@ -147,22 +170,24 @@ fi
 
 
 # Install php composer if we are not in live mode (not needed in production environments)
-if [ "$OE_MODE" != "LIVE"]; then
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-    mv composer.phar /usr/local/bin/composer
+if [ "$OE_MODE" != "LIVE" ]; then
+    sudo php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    sudo php composer-setup.php
+    sudo php -r "unlink('composer-setup.php');"
+    sudo mv composer.phar /usr/local/bin/composer
 fi
 
 # ensure mcrypt has been installed sucesfully
 sudo phpenmod mcrypt
 sudo phpenmod imagick
 
-#  update ImageMagick policy to allow PDFs
-sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null
-sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null
+echo "updating imagick to read/write PDFs"
 
-echo --------------------------------------------------
-echo SYSTEM SOFTWARE INSTALLED
-echo Please check previous messages for any errors
-echo --------------------------------------------------
+#  update ImageMagick policy to allow PDFs
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &> /dev/null || :
+sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &> /dev/null || :
+
+echo "--------------------------------------------------"
+echo "SYSTEM SOFTWARE INSTALLED"
+echo "Please check previous messages for any errors"
+echo "--------------------------------------------------"

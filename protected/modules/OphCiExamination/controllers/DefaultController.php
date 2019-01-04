@@ -244,7 +244,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setElementDefaultOptions_Element_OphCiExamination_Diagnoses($element, $action)
     {
-        if ($action == 'create') {
+        if ($element->isNewRecord) {
             // set the diagnoses to match the current patient diagnoses for the episode
             // and any other ophthalmic secondary diagnoses the patient has
             $diagnoses = array();
@@ -399,11 +399,6 @@ class DefaultController extends \BaseEventTypeController
         }
 
 		$active_check = "";
-        if (!empty($class_array)) {
-            if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = Yii::app()->params['city_road_satellite_view'];
-            }
-        }
 
         $view_data = array_merge(array(
             'active_check' => $active_check,

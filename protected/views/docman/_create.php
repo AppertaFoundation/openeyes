@@ -96,29 +96,17 @@
                     );
                 ?>
         <?php endif; ?>
-        <?php $row_index++; ?>cd ass
+        <?php $row_index++; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
-                <?php $index = $row_index + $cc_index ?>
+                <?php $index = $row_index + $cc_index ;
+                $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
+                        $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
+                        $contact_id = isset($macro["contact_id"]) ? $macro["contact_id"] : null;
+                        ?>
                 <tr class="valign-top rowindex-<?php echo $index ?>" data-rowindex="<?php echo $index ?>">
                     <td> Cc <?=\CHtml::hiddenField("DocumentTarget[" . $index . "][attributes][ToCc]", 'Cc'); ?> </td>
-                    <td class="cols-3">
-                        <?php 
-                            $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
-                            $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
-                            $contact_id = isset($macro["contact_id"]) ? $macro["contact_id"] : null;
-                            $this->renderPartial('//docman/table/contact_address', array(
-                                        'contact_id' => $contact_id,
-                                        'contact_name' => $contact_name,
-                                        'address_targets' => $element->address_targets,
-                                        'is_editable_address' => ucfirst(strtolower($contact_type)) != 'Gp',
-                                        'contact_type' => $contact_type,
-                                        'row_index' => $index,
-                                        'address' => $macro["address"],
-                                    ));
-                        ?>
-                    </td>
                     <td>
                         <?php $this->renderPartial('//docman/table/contact_name_type', array(
 														'address_targets' => $element->address_targets,
@@ -130,6 +118,20 @@
                             //contact_type is not editable as per requested, former validation left until the req finalized
                             'is_editable' => false, //strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
                             'contact_types' => Document::getContactTypes() + ((strtoupper($macro["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+                        ));
+                        ?>
+                    </td>
+                    <td class="cols-3">
+                        <?php
+
+                        $this->renderPartial('//docman/table/contact_address', array(
+                            'contact_id' => $contact_id,
+                            'contact_name' => $contact_name,
+                            'address_targets' => $element->address_targets,
+                            'is_editable_address' => ucfirst(strtolower($contact_type)) != 'Gp',
+                            'contact_type' => $contact_type,
+                            'row_index' => $index,
+                            'address' => $macro["address"],
                         ));
                         ?>
                     </td>
