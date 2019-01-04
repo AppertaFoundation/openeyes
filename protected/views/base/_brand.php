@@ -24,7 +24,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 </div>
 
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
-  <h3>OpenEyes 3.0</h3>
+  <h3>OpenEyes <?=Yii::App()->params['oe_version']?></h3>
 
   <div class="group">
     <h4>Theme</h4>
