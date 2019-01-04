@@ -171,8 +171,9 @@ if ($previousTreatmentType && $previousTreatmentType->code === TreatmentType::IN
             <i class="oe-i remove-circle small-icon pad-left  js-remove-trial-patient-comments"></i>
         </div>
         <div class="js-comment-trial-patient-actions cols-full flex-layout flex-center" style="display:none;">
-            <a class="js-save-comment-trial-patient" style="width: 30%; text-align: center" >Save</a>
-            <a class="js-cancel-comment-trial-patient" style="width: 30%;text-align: center">Cancel</a>
+            <button class="js-save-comment-trial-patient button hint green" style="width: 10%; text-align: center" >Save</button>
+
+            <button class="js-cancel-comment-trial-patient button hint red" style="width: 10%;text-align: center">Cancel</button>
             <span class="js-spinner-as-icon" style="display: none;"><i class="spinner as-icon"></i></span>
         </div>
     </td>
