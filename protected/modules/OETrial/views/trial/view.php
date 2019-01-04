@@ -66,10 +66,12 @@
                 &mdash; <?= $trial->getClosedDateForDisplay() ?>
               <?php endif; ?>
           </td>
-          <td>Ethics Number</td>
-          <td>
-              <?= $trial->getEthicsNumberForDisplay(); ?>
-          </td>
+        </tr>
+        <tr>
+            <td>Ethics Number</td>
+            <td>
+                <?= $trial->getEthicsNumberForDisplay(); ?>
+            </td>
         </tr>
         <?php if ($trial->external_data_link !== ''): ?>
           <tr class="col-gap">
