@@ -272,7 +272,9 @@ CompLogConnection.prototype.openInIframe = function(url){
 
 CompLogConnection.prototype.destroy = function(){
 	console.log(this);
-	this.dialog.destroy();
+	if(this.dialog){
+		this.dialog.destroy();
+	}
 	this.dialog = null;
 	$("#complog_iframe").remove();
 };
