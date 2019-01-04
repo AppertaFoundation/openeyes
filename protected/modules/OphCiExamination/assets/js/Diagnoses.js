@@ -257,13 +257,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if(this.subspecialtyRefSpec === 'GL' && secondary_diagnoses.length) {
             $tr.find('.condition-secondary-to-wrapper').show();
             let template = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{label}}  </option>';
+            let template_alternate = '<option data-id="{{id}}" data-label="{{label}}" data-type="{{type}}">{{selection_label}}  </option>';
 
             if (alternate_diagnoses !== undefined && alternate_diagnoses !== null) {
                 data = {};
-                data.label = alternate_diagnoses['selection_label'];
+                data.label = alternate_diagnoses['label'];
+                data.selection_label = alternate_diagnoses['selection_label'];
                 data.id = alternate_diagnoses['id'];
-                data.type = alternate_diagnoses['type'];
-                var select = Mustache.render(template, data);
+                data.type = 'alternate';
+                var select = Mustache.render(template_alternate, data);
                 $tr.find('.condition-secondary-to').append(select);
             }
 
