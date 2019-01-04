@@ -15,13 +15,11 @@ function CompLogConnection() {
 	this.initialiseCompLogDialog();
 	this.checkConnectionToWS()
 		.fail(() => {
-			console.log('opening iframe');
 			this.openInIframe("oeLauncher:complog");
 			sleep(100);
 		})
 		.always(() => {
 			for (let i = 1; i <= self.maxAttempts; i++) {
-				console.log(`start of for loop ${i}`);
 				this.attemptConnectionAfterDelay(i*this.attemptDelay)
 					.then(() => {sleep(3000);}) // without sleep() function, an error box appears after the free trial dialog box. I don't know why sleep(3000) fixes this - seems like a CompLog problem
 					.then(this.COMPLogDischargePatient) //try see if setTimeOut works instead of sleep.
@@ -60,8 +58,7 @@ CompLogConnection.prototype.checkConnectionToWS = function() {
 CompLogConnection.prototype.attemptConnectionAfterDelay = function(initialDelay) {
 	return new Promise((resolve, reject) => setTimeout(() => {
 		if (this.isConnectedToCompLog) {
-			console.log(`Whoops! Looks like a connection has already been established `);
-			reject(new Error("Whoops! Looks like a connection has already been established"));
+			reject(new Error("A connection has already been established"));
 		}
 		else {
 			$.ajax({
@@ -72,17 +69,14 @@ CompLogConnection.prototype.attemptConnectionAfterDelay = function(initialDelay)
 				crossDomain: true,
 				success: () => {
 					if (!this.isConnectedToCompLog) { //check again in case a different response has established the connection already
-						console.log(`Yayaya we were first to find a connection! `);
 						this.isConnectedToCompLog = true;
 						resolve(`Yayaya we found a connection! `);
 					}
 					else {
-						console.log(`another ajax call got a response first :( `);
-						reject(new Error(`another ajax call got a response first :( `));
+						reject(new Error(`another ajax call got a response first`));
 					}
 				},
 				error: () => {
-					console.log(`no connection success yet `);
 					reject(new CompLogConnectionError(`no connection succeess yet `));
 				}
 			});
@@ -106,12 +100,10 @@ CompLogConnection.prototype.COMPLogPresetTest = function() {
 };
 
 CompLogConnection.prototype.updateLatestPolledHl7 = function(newLatest){
-	console.log('updateLatestPolledHl7');
 	this.latestHl7Data = newLatest;
 };
 
 CompLogConnection.prototype.COMPLogDischargePatient = function() {
-	console.log('discahrge patient');
     let requestData = {"Message": "MSH|^~\&|ADT1|COMPLOG|COMPLOG|COMPLOG|198808181126|SECURITY|ADT^A03|MSG00001|P|2.4\nEVN|A01-|198808181123\nPID|||"+OE_patient_hosnum+"||"+OE_patient_firstname+"^"+OE_patient_lastname+"||"+OE_patient_dob+"|"+OE_patient_gender+"-||2106-3|"+OE_patient_address+"|GL||||S||PATID12345001^2^M10|"+OE_patient_id+"|9-87654^NC"};
     $.ajax({
         url: "http://localhost:"+OE_COMPLog_port+"/hl7",
@@ -179,7 +171,6 @@ CompLogConnection.prototype.getHl7TestResults = function(){
 };
 
 CompLogConnection.prototype.importCompLogResults = function() {
-	console.log(`impotCompLogResults()`);
 	this.getHl7TestResults()
 		.done( data => {this.updateLatestPolledHl7.call(this, data);} )
 		.always( () => {this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)))} ); // always() is used here to cover case where CompLog is closed before pull button is clicked
@@ -197,9 +188,6 @@ function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
                 lastdiff = diff;
                 previousvalue.id = $(this).data("id");
                 previousvalue.label = $(this).data("label");
-                //previousvalue.tooltip = $(this).data("tooltip");
-                console.log('getting tooltip for closest value: ' + $(this).data("tooltip"));
-                console.log('getting label for closest value: ' + $(this).data("label"));
             }
         });
     });
@@ -221,25 +209,16 @@ function OphCiExamination_VisualAcuity_getMethodData(methodName) {
 }
 
 CompLogConnection.prototype.saveResultsToOE = function(resultsArray) {
-	console.log(`saveResultsToOE(${resultsArray})`);
     unit = $("#visualacuity_unit_change option:selected").html(); //possibly not used
     resultsArray.forEach(function(element) {
-    	console.log(element);
         let selected_data = {};
         closestValue = OphCiExamination_VisualAcuity_getClosestValue(element.base);
-        console.log('closestValueIs'); console.log(closestValue);
-
         selected_data.reading_value = closestValue.id;
         selected_data.reading_display = closestValue.label;
         selected_data.tooltip =  valOptions[closestValue.id]['data-tooltip'];
-        console.log('this should show the selected_data.tooltip');
-        console.log(selected_data.tooltip);
-
         method_data = OphCiExamination_VisualAcuity_getMethodData(element.method);
-
         selected_data.method_id = method_data.id;
         selected_data.method_display = method_data.label;
-
         OphCiExamination_VisualAcuity_addReading(element.side, selected_data);
     });
     this.COMPLogDischargePatient();
@@ -249,14 +228,12 @@ CompLogConnection.prototype.changeDialogStatusToReady = function(){
 	$('#js-complog-status').text('COMPLog test in progress').find('.spinner').hide();
 	this.dialog.on('ok', () => {
 		this.importCompLogResults();
-		console.log('destroy from ok button')
 		this.destroy();
 	});
 	$('.ok').show();
 };
 
 function sleep(milliseconds) {
-	console.log(`sleep(${milliseconds})`);
     let start = new Date().getTime();
     for (let i = 0; i < 1e7; i++) {
         if ((new Date().getTime() - start) > milliseconds){
@@ -266,12 +243,10 @@ function sleep(milliseconds) {
 }
 
 CompLogConnection.prototype.openInIframe = function(url){
-	console.log(`openInIframe(${url})`);
 	$('body').append('<iframe width="0" height="0" vspace="0" hspace="0" id="complog_iframe" src="'+url+'"></iframe>');
 };
 
 CompLogConnection.prototype.destroy = function(){
-	console.log(this);
 	if(this.dialog){
 		this.dialog.destroy();
 	}
