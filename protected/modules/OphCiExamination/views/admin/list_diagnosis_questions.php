@@ -46,7 +46,7 @@
                 <?php
                 echo CHtml::dropDownList('disorder_id', $disorder_id,
                     CHtml::listData(OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex::model()->getAllDisorders(),
-                        'id', 'term'), array('empty' => '- Please select -', 'id' => 'question_disorder'));
+                        'id', 'term'), array('empty' => 'Select', 'id' => 'question_disorder'));
                 ?>
             </td>
         </tr>

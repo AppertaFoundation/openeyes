@@ -1,7 +1,7 @@
 <div id="multiSelectFieldSQLDetails<?php echo $element_num?>Field<?php echo $field_num?>">
 	Table:
 	<select name="multiSelectFieldSQLTable<?php echo $element_num?>Field<?php echo $field_num?>" class="multiSelectFieldSQLTable">
-		<option value="">- Please select a table -</option>
+		<option value="">Select</option>
 		<?php foreach (Yii::app()->getDb()->getSchema()->getTableNames() as $table) {
     ?>
 			<option value="<?php echo $table?>"<?php if (@$_POST['multiSelectFieldSQLTable'.$element_num.'Field'.$field_num] == $table) {

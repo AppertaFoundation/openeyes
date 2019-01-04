@@ -63,7 +63,7 @@ foreach ($plate_positions as $pp) {
       <td>
           <?php echo $form->dropDownList($element, 'tube_position_id',
               CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
-                  'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false,
+                  'id', 'name'), array('empty' => 'Select', 'nowrapper' => true), false,
               array('field' => 3)) ?>
       </td>
     </tr>

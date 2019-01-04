@@ -53,7 +53,11 @@
         <tr class="col-gap">
           <td>Principal Investigator</td>
           <td>
-              <?= CHtml::encode($trial->principalUser->getFullName()) ?>
+              <?php $principal_investigators = $trial->getTrialPrincipalInvestigators();
+              foreach ($principal_investigators as $item){
+              	echo $item->user->getFullName().'<br>';
+              }
+             ?>
           </td>
           <td>Date</td>
           <td>

@@ -67,7 +67,7 @@
                             CHtml::listData(
                                 $lenses, 'id', 'display_name'
                             ),
-                            array('empty' => '- Please select -', 'nowrapper' => true),
+                            array('empty' => 'Select', 'nowrapper' => true),
                             null,
                             array('label' => 6, 'field' => 12)
                         );
@@ -91,7 +91,7 @@
                         $element->lens_id_left = null;
                         $element->lens_id_right = null;
                     }
-                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), array('empty' => '- Please select -', 'nowrapper' => true), null, array('label' => 6, 'field' => 12))
+                    echo $form->dropDownList($element, 'lens_id_' . $side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_' . $side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), array('empty' => 'Select', 'nowrapper' => true), null, array('label' => 6, 'field' => 12))
                     ?>
                 </td>
             </tr>
@@ -129,7 +129,7 @@
                             $element,
                             'formula_id_' . $side,
                             CHtml::listData($formulae, 'id', 'name'),
-                            array('empty' => '- Please select -', 'nowrapper' => true),
+                            array('empty' => 'Select', 'nowrapper' => true),
                             null,
                             array('label' => 4, 'field' => 6)
                         );
