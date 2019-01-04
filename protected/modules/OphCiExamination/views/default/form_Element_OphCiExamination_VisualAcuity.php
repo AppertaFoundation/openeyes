@@ -15,30 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<style>
-    div.fadeFullScreen {
-        background: rgba(0,0,0,0.5);
-        width:      100%;
-        height:     100%;
-        z-index:    10000;
-        top:        0;
-        left:       0;
-        position:   fixed;
-    }
 
-    div.fadeContent{
-        background-color: white;
-        width:      30%;
-        height:     30%;
-        top:        50%;
-        left:       40%;
-        position:   fixed;
-        color:      black;
-        padding:    20px;
-    }
-</style>
-<?php
 if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
     ?>
     <script type="text/javascript">

@@ -135,8 +135,8 @@ CompLogConnection.prototype.convertHl7ToArray = function(hl7Data){
 	let today = new Date().toJSON().slice(0,10).replace(/-/g,'');
 
 	for(i=0;i<measurements[0].length;i++){
-		if(measurements[0][i] == "\rZR1") {
-			if(measurements[0][i+2].substring(0,8) == today){
+		if(measurements[0][i] === "\rZR1") {
+			if(measurements[0][i+2].substring(0,8) === today){
 				measurement = {side: "", method: "", logmar: "", snellen: "", base: ""};
 				measurement.side = measurements[0][i+4].toLowerCase();
 				measurement.method = measurements[0][i+5].replace("Usual ","").replace("Lenses", "lens").replace("Best Corrected", "Glasses");
@@ -198,7 +198,7 @@ function OphCiExamination_VisualAcuity_getMethodData(methodName) {
     let method_data = {};
     $('ul[data-id="method"]').each(function() {
         $(this).find('li').each(function(){
-            if($(this).data("label") == methodName){
+            if($(this).data("label") === methodName){
                 method_data.id = $(this).data("id");
                 method_data.label = $(this).data("label");
                 return method_data;
