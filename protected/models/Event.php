@@ -34,6 +34,7 @@
  * @property string $created_date
  * @property string $last_modified_date
  * @property string $pas_visit_id
+ * @property int $firm_id
  *
  * The followings are the available model relations:
  * @property Episode   $episode
@@ -123,6 +124,7 @@ class Event extends BaseActiveRecordVersioned
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
             'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
             'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
+            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
         );
     }
 
@@ -346,6 +348,7 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
      *
+     * @param bool $reason
      * @throws Exception
      */
     public function softDelete($reason = false)
@@ -373,7 +376,7 @@ class Event extends BaseActiveRecordVersioned
                 $transaction->commit();
             }
 
-            $this->afterSoftDelete();
+            $this->onAfterSoftDelete(new CEvent($this));
 
         } catch (Exception $e) {
             if ($transaction) {
@@ -384,18 +387,13 @@ class Event extends BaseActiveRecordVersioned
     }
 
     /**
-     * AfterSoftDelete event
-     * Checks if the event type's API has a handler for this event
-     * if so, calls it
+     * Raising the afterSoftDelete event
+     * @param $yii_event
+     * @throws CException
      */
-
-    protected function afterSoftDelete()
+    public function onAfterSoftDelete($yii_event)
     {
-        if($api = $this->eventType->getApi()) {
-            if(method_exists($api, 'afterSoftDeleteEvent')) {
-                $api->afterSoftDeleteEvent($this);
-            }
-        }
+        $this->raiseEvent('onAfterSoftDelete', $yii_event);
     }
 
     /**

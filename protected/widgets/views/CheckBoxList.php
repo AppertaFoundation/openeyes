@@ -36,8 +36,15 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             }
         } ?>
     <label class="inline highlight <?= $label_class ?>">
+        <?php
+          if(is_array($selected_items)){
+            $is_checked = in_array($id, $selected_items);
+          } else {
+            $is_checked = (!is_null($value) && $value == $id) && (!is_string($value) || $value != '');
+          }
+        ?>
         <?=\CHtml::checkBox("{$name}[]",
-            (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
+            $is_checked, $options); ?>
         <?=\CHtml::encode($data_value) ?>
     </label>
     <?php } ?>

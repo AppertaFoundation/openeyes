@@ -148,15 +148,21 @@ class BookingController extends OphTrOperationbookingEventController
                             $operation->referral_id = $_POST['Operation']['referral_id'];
                         }
 
-                        if (($result = $operation->schedule(
-                                $booking,
-                                $_POST['Operation']['comments'],
-                                $_POST['Session']['comments'],
-                                $_POST['Operation']['comments_rtt'],
-                                ($this->reschedule !== true),
-                                $cancellation_data,
-                                $schedule_options)) !== true) {
-                            $errors = $result;
+                        $result = $operation->schedule(
+                            $booking,
+                            $_POST['Operation']['comments'],
+                            $_POST['Session']['comments'],
+                            $_POST['Operation']['comments_rtt'],
+                            $this->reschedule,
+                            $cancellation_data,
+                            $schedule_options
+                        );
+
+                        if ($result !== true) {
+                            foreach ($result as $attribute => $message) {
+                                $errors[$operation->getAttributeLabel($attribute)] = $message;
+                            }
+
                         } else {
                             $transaction->commit();
                             $this->redirect(array('default/view/'.$operation->event_id));
@@ -218,6 +224,7 @@ class BookingController extends OphTrOperationbookingEventController
     {
         $this->title = 'Reschedule operation';
         $this->reschedule = true;
+        $this->operation->reschedule = true;
 
         return $this->actionSchedule($id);
     }

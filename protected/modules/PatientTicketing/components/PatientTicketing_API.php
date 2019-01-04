@@ -230,9 +230,7 @@ class PatientTicketing_API extends \BaseAPI
         $assignment = $ticket->initial_queue_assignment;
 
         // regenerate the report field on the ticket.
-        if ($assignment->queue->report_definition) {
-            $assignment->generateReportText();
-        }
+        $assignment->generateReportText();
         if (!$assignment->save()) {
             throw new \Exception('Unable to save queue assignment');
         }
