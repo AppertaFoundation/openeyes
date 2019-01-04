@@ -182,7 +182,7 @@ CompLogConnection.prototype.importCompLogResults = function() {
 	console.log(`impotCompLogResults()`);
 	this.getHl7TestResults()
 		.done( data => {this.updateLatestPolledHl7.call(this, data);} )
-		.always( () => {this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)))} );
+		.always( () => {this.saveResultsToOE.call(this, (this.convertHl7ToArray(this.latestHl7Data)))} ); // always() is used here to cover case where CompLog is closed before pull button is clicked
 };
 
 function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
@@ -197,7 +197,9 @@ function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
                 lastdiff = diff;
                 previousvalue.id = $(this).data("id");
                 previousvalue.label = $(this).data("label");
-                previousvalue.tooltip = $(this).data("tooltip");
+                //previousvalue.tooltip = $(this).data("tooltip");
+                console.log('getting tooltip for closest value: ' + $(this).data("tooltip"));
+                console.log('getting label for closest value: ' + $(this).data("label"));
             }
         });
     });
@@ -220,14 +222,18 @@ function OphCiExamination_VisualAcuity_getMethodData(methodName) {
 
 CompLogConnection.prototype.saveResultsToOE = function(resultsArray) {
 	console.log(`saveResultsToOE(${resultsArray})`);
-    unit = $("#visualacuity_unit_change option:selected").html();
+    unit = $("#visualacuity_unit_change option:selected").html(); //possibly not used
     resultsArray.forEach(function(element) {
+    	console.log(element);
         let selected_data = {};
         closestValue = OphCiExamination_VisualAcuity_getClosestValue(element.base);
+        console.log('closestValueIs'); console.log(closestValue);
 
         selected_data.reading_value = closestValue.id;
         selected_data.reading_display = closestValue.label;
-        selected_data.tooltip =  closestValue.tooltip;
+        selected_data.tooltip =  valOptions[closestValue.id]['data-tooltip'];
+        console.log('this should show the selected_data.tooltip');
+        console.log(selected_data.tooltip);
 
         method_data = OphCiExamination_VisualAcuity_getMethodData(element.method);
 
@@ -243,6 +249,7 @@ CompLogConnection.prototype.changeDialogStatusToReady = function(){
 	$('#js-complog-status').text('COMPLog test in progress').find('.spinner').hide();
 	this.dialog.on('ok', () => {
 		this.importCompLogResults();
+		console.log('destroy from ok button')
 		this.destroy();
 	});
 	$('.ok').show();
@@ -270,7 +277,7 @@ CompLogConnection.prototype.destroy = function(){
 	$("#complog_iframe").remove();
 };
 
-$(document).on("click", "#et_complog", function(event){
-    event.preventDefault();
-    let compLogConnection = new CompLogConnection();
+$("#et_complog").off().click(function(event){
+	event.preventDefault();
+	let compLogConnection = new CompLogConnection();
 });
