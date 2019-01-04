@@ -92,7 +92,7 @@ class AnalyticsController extends BaseController
   }
 
   public function actionGlaucoma(){
-      $left_iop_list = $this->getCustomIOP();
+      list($left_iop_list, $right_iop_list, $iop_patient_list) = $this->getCustomIOP();
 
       $clinical_data = array(
           'title' => 'Clinical Section',
@@ -141,7 +141,8 @@ class AnalyticsController extends BaseController
             'specialty'=>'Glaucoma',
             'clinical_data'=> $clinical_data,
             'service_data'=> $service_data,
-            'custom_data' => $custom_data
+            'custom_data' => $custom_data,
+            'iop_patient_list' => $iop_patient_list
         )
     );
   }
@@ -279,7 +280,9 @@ class AnalyticsController extends BaseController
           }
       }
       ksort($left_iop_list);
-      return $left_iop_list;
+      ksort($right_iop_list);
+
+      return [$left_iop_list, $right_iop_list, $patient_list];
   }
 
 

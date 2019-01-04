@@ -17,5 +17,10 @@
         Plotly.newPlot(
             'js-hs-chart-analytics-custom', custom_data ,custom_layout
         );
+
+        $('#js-hs-chart-analytics-custom').on('plotly_click', function (data) {
+            $('.analytics-charts').hide();
+            $('.analytics-patient-list').show();
+        });
     });
 </script>

@@ -15,11 +15,17 @@
             <th>Gender</th>
             <th>Age</th>
             <th>Name</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
-        <tr></tr>
+        <?php foreach ($patient_list as $key->$patient) { ?>
+            <tr>
+                <td><?= $patient['hospital_number']; ?></td>
+                <td><?= $patient['gender']; ?></td>
+                <td><?= $patient['age']; ?></td>
+                <td><?= $patient['name']; ?></td>
+            </tr>
+        <?php } ?>
         </tbody>
     </table>
 </div>
