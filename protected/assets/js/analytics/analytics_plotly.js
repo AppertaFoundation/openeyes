@@ -39,7 +39,6 @@ var analytics_layout = {
         tickfont: {
             color: '#fff',
         },
-        tickformat: '%b %d %Y',
     },
     yaxis:{
         /*Ticks setting*/

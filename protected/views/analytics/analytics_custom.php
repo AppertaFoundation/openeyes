@@ -2,7 +2,6 @@
 
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <?php
-$this->getCustomVA(new DateTime());
 ?>
 
 <div id="js-hs-chart-analytics-custom" style="display: none">
@@ -14,6 +13,7 @@ $this->getCustomVA(new DateTime());
         var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         var custom_data = <?= CJavaScript::encode($custom_data); ?>;
         custom_layout['title'] = "Custom Section";
+        custom_layout['xaxis']['rangeslider'] = {};
         Plotly.newPlot(
             'js-hs-chart-analytics-custom', custom_data ,custom_layout
         );
