@@ -37,15 +37,10 @@ $element_Type = $element->getElementType();
     <section
             class="<?php echo implode(' ', $section_classes); ?>"
             data-element-type-id="<?php echo $element->elementType->id ?>"
-            data-element-type-class="<?php echo $model_name ?>"
+            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
-            data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
-            data-element-parent-id="<?php
-            if ($element->elementType->isChild()) {
-                echo $element->elementType->parent_element_type_id;
-            } ?>"
-            data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
-    >
+            data-element-display-order="<?= $element->elementType->display_order ?>"
+  >
         <?php
         if (isset($_POST['element_dirty'][$model_name])) {
             $element_dirty = $_POST['element_dirty'][$model_name];
@@ -100,7 +95,7 @@ $element_Type = $element->getElementType();
     <section
             class="<?php echo implode(' ', $section_classes); ?>"
             data-element-type-id="<?php echo $element->elementType->id ?>"
-            data-element-type-class="<?php echo $model_name ?>"
+            data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?php echo $element->elementType->display_order ?>">
 

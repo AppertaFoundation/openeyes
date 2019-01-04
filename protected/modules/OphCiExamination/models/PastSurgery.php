@@ -166,13 +166,5 @@ class PastSurgery extends \BaseEventTypeElement
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
     
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view'){
-            return 10;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
-    }
+
 }

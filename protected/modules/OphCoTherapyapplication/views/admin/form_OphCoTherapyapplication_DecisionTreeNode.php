@@ -27,14 +27,14 @@ $form->layoutColumns = array(
 
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->textField($model, 'question', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'maxlength' => 256)); ?>
-<?php echo $form->dropdownlist($model, 'outcome_id', 'OphCoTherapyapplication_DecisionTreeOutcome', array('empty' => '- Please select -')); ?>
+<?php echo $form->dropdownlist($model, 'outcome_id', 'OphCoTherapyapplication_DecisionTreeOutcome', array('empty' => 'Select')); ?>
 
 <?php
 $func_list = array();
 foreach ($model->getDefaultFunctions() as $func) {
     $func_list[$func] = $func;
 }
-echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => '- Please select -')); ?>
+echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' => 'Select')); ?>
 
 
 <div class="data-group">
@@ -64,7 +64,7 @@ echo $form->dropdownlist($model, 'default_function', $func_list, array('empty' =
 <?php
 $html_options = array(
         'options' => array(),
-        'empty' => '- Please select -',
+        'empty' => 'Select',
 );
 foreach (OphCoTherapyapplication_DecisionTreeNode_ResponseType::model()->findAll() as $rt) {
     $html_options['options'][(string) $rt->id] = array('data-datatype' => $rt->datatype);

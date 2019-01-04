@@ -106,6 +106,30 @@ function addRepeat() {
   });
 }
 
+function processSetEntries(set_id)
+{
+    $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/getSetDrugs", {
+        set_id: set_id
+    }, function (data) {
+        let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
+        allergicDrugsController.addEntries(JSON.parse(data));
+        let allergicDrugs = allergicDrugsController.getAllergicDrugs();
+        if (allergicDrugs) {
+            let dialog = new OpenEyes.UI.Dialog.Confirm({
+                content: "Patient is allergic to " +
+                    allergicDrugs.join() +
+                    ". Are you sure you want to add them?"
+            });
+            dialog.on('ok', function () {
+                addSet(set_id);
+            }.bind(this));
+            dialog.open();
+        } else {
+            addSet(set_id);
+        }
+    });
+}
+
 // Add set to prescription
 function addSet(set_id) {
   // we need to call different functions for admin and public pages here
@@ -129,6 +153,26 @@ function addSet(set_id) {
       $('#prescription_items').find('tbody').append(data.tableRows);
     });
   }
+}
+
+function addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs)
+{
+   let selectedItemsWithoutAllergies = [];
+   let newItemsCounter = 0;
+    for (let index = 0; index < selectedItems.length; index++) {
+        if(!allergicDrugs.includes(selectedItems[index]['label'])) {
+            selectedItemsWithoutAllergies[newItemsCounter] = selectedItems[index];
+            newItemsCounter++;
+        }
+    }
+    addItems(selectedItemsWithoutAllergies);
+}
+
+function addItems(selectedItems){
+    for (let index = 0; index < selectedItems.length; index++) {
+        addItem(selectedItems[index].label, selectedItems[index].id);
+
+    }
 }
 
 // Add item to prescription
@@ -171,11 +215,12 @@ function getDispenseLocation(dispense_condition) {
 }
 
 $(function () {
-
   new OpenEyes.UI.AdderDialog.PrescriptionDialog({
     openButton: $('#add-prescription-btn'),
-    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionElementCommonDrugs,
-      {'multiSelect': true})],
+    itemSets: [
+        new OpenEyes.UI.AdderDialog.ItemSet([{'label': 'No preservative', 'id': '1'}], {'multiSelect': false, 'class': 'js-no-preservative'}),
+        new OpenEyes.UI.AdderDialog.ItemSet(prescriptionElementCommonDrugs, {'multiSelect': true, 'class': 'js-drug-list'})
+    ],
     searchOptions: {
       searchSource: searchListUrl,
       searchFilter: prescriptionElementDrugTypes,
@@ -183,8 +228,25 @@ $(function () {
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
-      for (var i = 0; i < selectedItems.length; i++) {
-        addItem(selectedItems[i].label, selectedItems[i].id);
+        let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
+        allergicDrugsController.addEntries(selectedItems);
+        let allergicDrugs = allergicDrugsController.getAllergicDrugs();
+      if(allergicDrugs){
+          let dialog = new OpenEyes.UI.Dialog.Confirm({
+              content: "Patient is allergic to " +
+                  allergicDrugs.join() +
+                  ". Are you sure you want to add them?"
+          });
+          dialog.on('ok', function () {
+              addItems(selectedItems);
+          }.bind(this));
+
+          dialog.on('cancel' , function(){
+            addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs);
+          }.bind(this));
+          dialog.open();
+      } else {
+          addItems(selectedItems);
       }
     },
   });
@@ -194,7 +256,7 @@ $(function () {
     itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionDrugSets)],
     onReturn: function (adderDialog, selectedItems) {
       for (let i = 0; i < selectedItems.length; ++i) {
-        addSet(selectedItems[i].id);
+          processSetEntries(selectedItems[i].id);
       }
     }
   });

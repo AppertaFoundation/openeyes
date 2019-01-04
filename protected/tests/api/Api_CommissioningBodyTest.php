@@ -14,45 +14,4 @@
  */
 class Api_CommissioningBodyTest extends FhirTestCase
 {
-    public function testRead()
-    {
-        $this->get('Organization/cb-1');
-        $this->assertXPathEquals('Organization', 'local-name()');
-        $this->assertXPathEquals('CCG0001', 'string(./fhir:identifier/fhir:system[@value="http://example.com/cb_code"]/../fhir:value/@value)');
-        $this->assertXPathEquals('Test CCG 1', 'string(./fhir:name/@value)');
-        $this->assertXPathEquals('123 Test Street', 'string(./fhir:address/fhir:line/@value)');
-        $this->assertXPathEquals('London', 'string(./fhir:address/fhir:city/@value)');
-        $this->assertXPathEquals('NW3 5GH', 'string(./fhir:address/fhir:zip/@value)');
-        $this->assertXPathEquals('United Kingdom', 'string(./fhir:address/fhir:country/@value)');
-    }
-
-    public function testUpdate()
-    {
-        $source = file_get_contents(__DIR__.'/files/CommissioningBody.xml');
-        $this->put('Organization/cb-2', $source);
-        $this->get('Organization/cb-2');
-        $this->assertXmlEquals($source);
-    }
-
-    public function testCreate()
-    {
-        $source = file_get_contents(__DIR__.'/files/CommissioningBody.xml');
-        $this->post('Organization', $source, array('Category' => services\CommissioningBody::getOeFhirProfile().'; scheme=http://hl7.org/fhir/tag/profile'));
-        $this->get($this->response->getLocation());
-        $this->assertXmlEquals($source);
-    }
-
-    public function testSearchByOrgCode()
-    {
-        $this->get('Organization?identifier=CCG0001&_profile='.urlencode(services\CommissioningBody::getOeFhirProfile()));
-        $this->assertXPathEquals('feed', 'local-name()');
-        $this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
-        $this->assertUrlEquals(
-            $this->client->getBaseUrl().'/Organization?identifier=CCG0001&_profile='.urlencode(services\CommissioningBody::getOeFhirProfile()),
-            $this->xPathEval('string(./atom:link[@rel="self"]/@href)')
-        );
-        $this->assertXPathCount(1, './atom:entry');
-        $this->assertXPathEquals($this->client->getBaseUrl().'/Organization/cb-1', 'string(./atom:entry/atom:id/text())');
-        $this->assertXPathEquals('Organization', 'local-name(./atom:entry/atom:content/*)');
-    }
 }
