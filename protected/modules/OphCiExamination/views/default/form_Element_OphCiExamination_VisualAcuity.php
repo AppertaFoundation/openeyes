@@ -53,7 +53,6 @@ if ($cvi_api) {
 ?>
 <div class="element-fields element-eyes">
     <input type="hidden" name="visualacuity_readings_valid" value="1"/>
-    <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 

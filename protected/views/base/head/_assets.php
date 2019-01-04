@@ -2,12 +2,18 @@
 <?php
 $display_theme = SettingMetadata::model()->getSetting('display_theme');
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+$basic_assets_path = Yii::getPathOfAlias('application.assets');
 Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
       href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
       href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0_classic.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+
+<link rel="stylesheet" type="text/css" data-theme="dark"
+      href="<?= $assetManager->getPublishedUrl($basic_assets_path) . '/css/patient_panel.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+<link rel="stylesheet" type="text/css" data-theme="light"
+      href="<?= $assetManager->getPublishedUrl($basic_assets_path) . '/css/patient_panel_classic.css' ?>" media="<?= $display_theme !== 'dark' ? '' : 'none' ?>">
 
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
@@ -37,10 +43,11 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.ItemSet.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.AdderDialog.PrescriptionDialog.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.LightningViewer.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopup.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnSidebar.js')?>
-<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnSidebar.HotList.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.NavBtnPopUp.HotList.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Alert.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Confirm.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>

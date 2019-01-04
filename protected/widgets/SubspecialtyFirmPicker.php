@@ -71,7 +71,7 @@ class SubspecialtyFirmPicker extends \BaseFieldWidget
             $this->model,
             'subspecialty_id',
             Subspecialty::model()->getList(),
-            ['empty' => '- Please select -', 'class' => 'js-subspecialty-dropdown cols-full']
+            ['empty' => 'Select', 'class' => 'js-subspecialty-dropdown cols-full']
         );
     }
 

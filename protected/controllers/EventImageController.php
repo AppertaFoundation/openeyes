@@ -46,11 +46,7 @@ class EventImageController extends BaseController
         $event = Event::model()->findByPk($event_id);
         if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
             // Then try to make it
-            $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
-            $runner = new CConsoleCommandRunner();
-            $runner->addCommands($commandPath);
-            $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event->id);
-            $runner->run($args);
+            EventImageManager::actionGenerateImage($event);
         }
 
         // Check again to see if it exists (an error might have occurred during generation)
@@ -105,23 +101,26 @@ class EventImageController extends BaseController
         $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
 
         $model = EventImage::model()->find($criteria);
-        $fileModTime = strtotime($model->last_modified_date);
-        $headers = $this->getRequestHeaders();
+        if(isset($model)) {
+            $fileModTime = strtotime($model->last_modified_date);
+            $headers = $this->getRequestHeaders();
 
-        header('Content-type: image/png');
-        header('Cache-Control: public');
-        header('Pragma:');
-        // Check if the client is validating his cache and if it is current.
-        if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $fileModTime)) {
-            // Client's cache IS current, so we just respond '304 Not Modified'.
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
-        } else {
-            // Image not cached or cache outdated, we respond '200 OK' and output the image.
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
+            header('Content-type: image/png');
+            header('Cache-Control: public');
+            header('Pragma:');
+            // Check if the client is validating his cache and if it is current.
+            if (isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $fileModTime)) {
+                // Client's cache IS current, so we just respond '304 Not Modified'.
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 304);
+            } else {
+                $image_data = $model->image_data;
+                // Image not cached or cache outdated, we respond '200 OK' and output the image.
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $fileModTime) . ' GMT', true, 200);
 
-            header('Content-transfer-encoding: binary');
-            header('Content-length: ' . strlen($model->image_data));
-            echo $model->image_data;
+                header('Content-transfer-encoding: binary');
+                header('Content-length: ' . strlen($image_data));
+                echo $image_data;
+            }
         }
     }
 

@@ -24,6 +24,7 @@
  * @property int $id
  * @property int $service_subspecialty_assignment_id
  * @property string $pas_code
+ * @property string $cost_code
  * @property string $name
  *
  * The followings are the available model relations:
@@ -67,8 +68,9 @@ class Firm extends BaseActiveRecordVersioned
             array('name', 'required'),
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
+            array('cost_code', 'length', 'max' => 5),
             array('name', 'length', 'max' => 40),
-            array('name, pas_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
+            array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, service_subspecialty_assignment_id, pas_code, name', 'safe', 'on' => 'search'),
@@ -101,6 +103,7 @@ class Firm extends BaseActiveRecordVersioned
             'id' => 'ID',
             'service_subspecialty_assignment_id' => 'Service Subspecialty Assignment',
             'pas_code' => 'Pas Code',
+            'cost_code' => 'Cost Code',
             'name' => 'Name',
             'serviceSubspecialtyAssignment.subspecialty.name' => 'Subspeciality Name',
             'active' => 'Active',

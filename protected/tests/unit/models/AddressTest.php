@@ -49,21 +49,6 @@ class AddressTest extends CDbTestCase
         $this->assertEquals('Address', get_class(Address::model()), 'Class name should match model.');
     }
 
-    public function testAttributeLabels()
-    {
-        $expected = array(
-            'id' => 'ID',
-            'address1' => 'Address1',
-            'address2' => 'Address2',
-            'city' => 'City',
-            'postcode' => 'Postcode',
-            'county' => 'County',
-            'country_id' => 'Country',
-            'email' => 'Email',
-        );
-
-        $this->assertEquals($expected, $this->model->attributeLabels());
-    }
 
     /**
      * @covers AuditTrail::rules
