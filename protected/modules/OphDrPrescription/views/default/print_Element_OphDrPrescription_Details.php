@@ -39,7 +39,8 @@ if ($footer_param !== null) {
 
 <?php
 $firm = $element->event->episode->firm;
-$consultantName = $firm->consultant ? $firm->consultant->getFullName() : 'None';
+$cost_code = $firm->cost_code ? " ($firm->cost_code)": '';
+$consultantName = $firm->consultant ? ($firm->consultant->getFullName() . $cost_code) : 'None';
 $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 

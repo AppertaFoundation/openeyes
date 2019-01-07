@@ -56,6 +56,7 @@ return array(
             'ipFilters' => array('127.0.0.1'),
         ),
         'oldadmin',
+        'Admin',
     ),
 
     // Application components
@@ -583,10 +584,11 @@ return array(
         ),*/
         'hos_num_label' => 'Hospital',
         'nhs_num_label' => 'NHS',
-        'ethnic_group_filters' => array(
-            'Indigenous Australian',
-            'Greek',
-            'Italian'
-        ),
+      'ethnic_group_filters' => array(
+        'Indigenous Australian',
+        'Greek',
+        'Italian'
+      ),
+      'oe_version' => '3.1',
     ),
 );
