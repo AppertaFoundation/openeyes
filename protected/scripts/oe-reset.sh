@@ -348,7 +348,6 @@ if [ $dwservrunning = 1 ]; then
 	sudo service dicom-file-watcher start
 fi
 
-cd "$dir"
 printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 

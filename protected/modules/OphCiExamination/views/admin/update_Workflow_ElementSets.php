@@ -27,7 +27,7 @@
         <tr>
             <th>Position</th>
             <th>Step</th>
-            <th>Actions</th>
+            <th colspan="2">Actions</th>
         </tr>
         </thead>
 
@@ -45,6 +45,9 @@
                         <i class="js-has-tooltip oe-i info small pad right"
                            data-tooltip-content="Step is in use and cannot be deleted."></i>
                     <?php endif; ?>
+                </td>
+                <td>
+                    <a href="#" class="js-elementSetActiveStatus" data-stepid="<?php echo $step->id ?>"><?= ($step->is_active ? "Disable" : "Enable"); ?></a>
                 </td>
             </tr>
             <?php

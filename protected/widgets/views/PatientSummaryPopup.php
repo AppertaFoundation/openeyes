@@ -31,6 +31,12 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+    <?php if ($this->patient->nhsNumberStatus): ?>
+        <div class="alert-box <?= $this->patient->nhsNumberStatus->icon->banner_class_name ?: 'issue' ?>">
+            <i class="oe-i exclamation pad-right no-click medium-icon"></i><b>
+                NHS Number: <?= $this->patient->nhsNumberStatus->description; ?></b>
+        </div>
+    <?php endif; ?>
     <?php if (count($this->patient->identifiers) > 0) { ?>
       <div class="patient-numbers flex-layout">
         <div class="local-numbers">
@@ -102,15 +108,15 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
         <table class="patient-demographics" style="position: relative; right: 0;">
           <tbody>
           <tr>
-            <td>General Practitioner</td>
+            <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
           </tr>
           <tr>
-            <td>GP Address</td>
+            <td><?php echo Yii::app()->params['gp_label']?> Address</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
           </tr>
           <tr>
-            <td>GP Telephone</td>
+            <td><?php echo Yii::app()->params['gp_label']?> Telephone</td>
             <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
           </tr>
           </tbody>
@@ -231,7 +237,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                     <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                 </td>
                 <td>
-                  <span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span>
+                  <span class="oe-date"><?= $date ?></span>
                 </td>
               </tr>
             <?php } ?>
@@ -258,7 +264,7 @@ $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
                 <td>
                     <?php $this->widget('EyeLateralityWidget', array('eye' => $diagnosis->eye)) ?>
                 </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->dateText) ?></span></td>
+                <td><span class="oe-date"><?= $diagnosis->getHTMLformatedDate() ?></span></td>
               </tr>
             <?php } ?>
             </tbody>
