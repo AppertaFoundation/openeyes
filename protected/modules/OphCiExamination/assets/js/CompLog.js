@@ -187,7 +187,7 @@ function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
 	switch(mvalue){
 		case '2': return {'id':'1', 'label':'NPL'};
 		case '3': return {'id':'2', 'label':'PL'};
-		case '4': return {'id':'3', 'label':'HF'};
+		case '4': return {'id':'3', 'label':'HM'};
 		case '5': return {'id':'4', 'label':'CF'};
 	}
 
