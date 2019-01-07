@@ -31,7 +31,7 @@
 				<?php if (isset($data['empty'])) {?>
 					<option value=""><?=\CHtml::encode($data['empty'])?></option>
 				<?php } else {?>
-					<option value="">- Please select -</option>
+					<option value="">Select</option>
 				<?php }?>
 				<?php foreach ($data['options'] as $id => $content) {?>
 					<option value="<?php echo $id?>"><?=\CHtml::encode($content)?></option>
