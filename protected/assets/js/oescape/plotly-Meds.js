@@ -7,6 +7,7 @@ var meds_yaxis = {
 };
 
 var meds_xaxis = {
+  type: 'date',
   showticklabels: false,
   showgrid: true,
   gridcolor: '#444',

@@ -14,7 +14,7 @@
 	<div style="height: 0.4em;"></div>
 	<input type="checkbox" name="dropDownUseEmpty<?php echo $element_num?>Field<?php echo $field_num?>" value="1"<?php if (empty($_POST) || @$_POST['dropDownUseEmpty'.$element_num.'Field'.$field_num]) {
     ?> checked="checked"<?php 
-}?> /> Have a "- Please select -" option at the top with a blank value
+}?> /> Have a "Select" option at the top with a blank value
 	<div style="height: 0.4em;"></div>
 	<div id="dropDownMethodFields<?php echo $element_num?>Field<?php echo $field_num?>">
 		<?php if (@$_POST['dropDownMethod'.$element_num.'Field'.$field_num] === '0') {

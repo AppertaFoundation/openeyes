@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
 <?php echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";?>
+
 <DocumentInformation>
     <PatientNumber><?=$data['hos_num'];?></PatientNumber>
     <NhsNumber><?=$data['nhs_num'];?></NhsNumber>
@@ -51,8 +51,7 @@
     <LocationName><?=$data['site_name'];?></LocationName>
     <SubLocation></SubLocation>
     <SubLocationName></SubLocationName>
-    <LetterType><?=$data['letter_type'];?></LetterType>";
-
+    <LetterType><?=$data['letter_type'];?></LetterType>
 <?php if(isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
     <!--Internal Referral-->
     <ServiceTo><?=$data['service_to'];?></ServiceTo>
@@ -61,9 +60,8 @@
     <workflowimportance><?=$data['is_urgent'];?></workflowimportance>
     <SameCondition><?=$data['is_same_condition'];?></SameCondition>
     <ToLocationCode><?=$data['location_code'];?></ToLocationCode>
-
     <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
     <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
-    <SendTo><?=$data['output_type']?></SendTo>";
+    <SendTo><?=$data['output_type']?></SendTo>
 <?php endif; ?>
 </DocumentInformation>
