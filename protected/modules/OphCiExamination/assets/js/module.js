@@ -823,16 +823,34 @@ $(document).ready(function() {
     /**
      * Update gonioExpert when gonioBasic is changed (gonioBasic controls are not stored in DB)
      */
-    $('body').delegate('.gonioBasic', 'change', function(e) {
+    $('body').on('change', '.gonioBasic', function(e) {
         var position = $(this).attr('data-position');
         var expert = $(this).closest('.js-element-eye').find('.gonioExpert[data-position="'+position+'"]');
-        if($(this).val() == 0) {
+        if($(this).val() === '0') {
             $('option',expert).attr('selected', function () {
-                return ($(this).attr('data-value') == '1');
+                return ($(this).attr('data-value') === '0');
             });
         } else {
             $('option',expert).attr('selected', function () {
-                return ($(this).attr('data-value') == '3');
+                return ($(this).attr('data-value') === '4');
+            });
+        }
+        e.preventDefault();
+    });
+
+    /**
+     * Update gonioBasic when gonioExpert is changed
+     */
+    $('body').on('change', '.gonioExpert', function(e) {
+        var position = $(this).attr('data-position');
+        var basic = $(this).closest('.js-element-eye').find('.gonioBasic[data-position="'+position+'"]');
+        if($(this).val() === '5') {
+            $('option',basic).attr('selected', function () {
+                return ($(this).attr('data-value') === 'No');
+            });
+        } else {
+            $('option',basic).attr('selected', function () {
+                return ($(this).attr('data-value') === 'Yes');
             });
         }
         e.preventDefault();
@@ -1791,7 +1809,7 @@ function OphCiExamination_InjectionManagementComplex_DiagnosisCheck(side) {
         let l2_selected_val = l2_el.val();
 
         l2_el.find('option').remove();
-        l2_el.append( $('<option>').text("- Please Select -") );
+        l2_el.append( $('<option>').text("Select") );
 
         if (l2_data) {
             for (let i in l2_data) {

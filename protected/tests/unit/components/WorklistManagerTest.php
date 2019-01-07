@@ -576,11 +576,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->generateAutomaticWorklists();
     }
 
-    public function test_generateWorklistName()
-    {
-        $this->markTestIncomplete('Waiting to implement actual intended functionality');
-    }
-
     public function test_mapPatientToWorklistDefinition()
     {
         $patient = ComponentStubGenerator::generate('Patient');
@@ -769,26 +764,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($manager->hasErrors());
     }
 
-    public function test_updateWorklistDefinitionMapping_invalid_key()
-    {
-        $definition = $this->getMockBuilder('WorklistDefinition')
-            ->disableOriginalConstructor()
-            ->setMethods(array('validateMappingKey'))
-            ->getMock();
-
-        $definition->expects($this->once())
-            ->method('validateMappingKey')
-            ->will($this->returnValue(false));
-
-        $mapping = new WorklistDefinitionMapping();
-        $mapping->worklist_definition = $definition;
-
-        $manager = new WorklistManager();
-
-        $this->assertFalse($manager->updateWorklistDefinitionMapping($mapping, 'test key', 'foo'));
-        $this->assertTrue($manager->hasErrors());
-    }
-
     public function updateWorklistDefinitionMapping_saveProvider()
     {
         return array(
@@ -797,70 +772,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             array(false, true), // update displayed mapping
             array(false, false), // update non-displayed mapping
         );
-    }
-
-    /**
-     * @dataProvider updateWorklistDefinitionMapping_saveProvider
-     *
-     * @param bool $new
-     * @param bool $display
-     */
-    public function test_updateWorklistDefinitionMapping_save($new, $display)
-    {
-        $key = 'test-key';
-
-        $definition = $this->getMockBuilder('WorklistDefinition')
-            ->disableOriginalConstructor()
-            ->setMethods(array('validateMappingKey', 'getNextDisplayOrder'))
-            ->getMock();
-
-        $mapping = $this->getMockBuilder('WorklistDefinitionMapping')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save', 'updateValues'))
-            ->getMock();
-
-        $mapping->worklist_definition = $definition;
-        $mapping->isNewRecord = $new;
-        $mapping->id = $new ? null : 4;
-
-        $mapping->expects($this->once())
-            ->method('save')
-            ->will($this->returnValue(true));
-
-        $mapping->expects($this->once())
-            ->method('updateValues')
-            ->will($this->returnValue(true));
-
-        if ($new) {
-            $definition->expects($this->once())
-                ->method('validateMappingKey')
-                ->with($key)
-                ->will($this->returnValue(true));
-        } else {
-            $definition->expects($this->once())
-                ->method('validateMappingKey')
-                ->with($key, $mapping->id)
-                ->will($this->returnValue(true));
-        }
-
-        if ($display) {
-            $definition->expects($this->once())
-                ->method('getNextDisplayOrder')
-                ->will($this->returnValue(3));
-        } else {
-            $definition->expects($this->never())
-                ->method('getNextDisplayOrder');
-        }
-
-        $manager = $this->getMockBuilder('WorklistManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('startTransaction', 'audit'))
-            ->getMock();
-        $manager->expects($this->once())
-            ->method('startTransaction')
-            ->will($this->returnValue($this->getTransactionMock(array('commit'))));
-
-        $manager->updateWorklistDefinitionMapping($mapping, $key, 'one,two', $display);
     }
 
     public function test_getAvailableManualWorklistsForUser()
@@ -963,83 +874,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @dataProvider getDashboardRenderDatesProvider
-     *
-     * @param $days_interval
-     * @param $skip_days
-     * @param $expected
-     */
-    public function test_getDashboardRenderDates($test_date, $days_interval, $skip_days, $expected)
-    {
-        $interval = "+{$days_interval} days";
-
-        $manager = $this->getMockBuilder('WorklistManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getAppParam'))
-            ->getMock();
-
-        $manager->expects($this->at(0))
-            ->method('getAppParam')
-            ->with('worklist_dashboard_future_days')
-            ->will($this->returnValue($interval));
-
-        $manager->expects($this->at(1))
-            ->method('getAppParam')
-            ->with('worklist_dashboard_skip_days')
-            ->will($this->returnValue($skip_days));
-
-        $dates = $manager->getDashboardRenderDates(DateTime::createFromFormat('Y-m-d', $test_date));
-
-        $this->assertEquals(count($expected), count($dates));
-        for ($i = 0; $i < count($dates); ++$i) {
-            $this->assertEquals($expected[$i], $dates[$i]->format('Y-m-d'));
-        }
-    }
-
-    public function test_renderAutomaticDashboard()
-    {
-        $manager = $this->getMockBuilder('WorklistManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getCurrentUser', 'getCurrentSite', 'getCurrentFirm', 'getDashboardRenderDates',
-                'getCurrentAutomaticWorklistsForUserContext', 'renderWorklistForDashboard', ))
-            ->getMock();
-
-        $user = ComponentStubGenerator::generate('User');
-        $site = ComponentStubGenerator::generate('Site');
-        $firm = ComponentStubGenerator::generate('Firm');
-
-        $manager->expects($this->once())
-            ->method('getCurrentUser')
-            ->will($this->returnValue($user));
-        $manager->expects($this->once())
-            ->method('getCurrentSite')
-            ->will($this->returnValue($site));
-        $manager->expects($this->once())
-            ->method('getCurrentFirm')
-            ->will($this->returnValue($firm));
-
-        $dates = array(new DateTime('2012-07-03'), new DateTime('2012-07-04'));
-        $manager->expects($this->once())
-            ->method('getDashboardRenderDates')
-            ->will($this->returnValue($dates));
-
-        $manager->expects($this->exactly(count($dates)))
-            ->method('getCurrentAutomaticWorklistsForUserContext')
-            ->with($user, $site, $firm)
-            ->will($this->returnValue(array('fake')));
-
-        $manager->expects($this->exactly(count($dates)))
-            ->method('renderWorklistForDashboard')
-            ->will($this->returnValue('fake render'));
-
-        $res = $manager->renderAutomaticDashboard();
-
-        $this->assertTrue(is_array($res));
-        $this->assertArrayHasKey('content', $res);
-        $this->assertEquals('fake renderfake render', $res['content']);
-    }
-
     public function setWorklistDefinitionDisplayOrder_simpleProvider()
     {
         return array(
@@ -1131,35 +965,6 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             array(false, false, 0, true),
             array(false, false, 3, false),
         );
-    }
-
-    /**
-     * @dataProvider canUpdateWorklistDefinitionProvider
-     *
-     * @param $always
-     * @param $new_record
-     * @param $worklists_count
-     * @param $expected
-     */
-    public function test_canUpdateWorklistDefinition($always, $new_record, $worklists_count, $expected)
-    {
-        $manager = $this->getMockBuilder('WorklistManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getAppParam'))
-            ->getMock();
-
-        $manager->expects($this->once())
-            ->method('getAppParam')
-            ->with('worklist_always_allow_definition_edit')
-            ->will($this->returnValue($always));
-
-        $worklists = $this->getMockArray('Worklist', $worklists_count);
-
-        $definition = ComponentStubGenerator::generate('WorklistDefinition', array(
-            'isNewRecord' => $new_record,
-            'worklists' => $worklists, ));
-
-        $this->assertEquals($expected, $manager->canUpdateWorklistDefinition($definition));
     }
 
     public function test_getCurrentAutomaticWorklistsForUserContext()

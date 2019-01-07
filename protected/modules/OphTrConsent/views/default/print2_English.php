@@ -44,7 +44,7 @@
             <td><?php echo $this->patient->hos_num ?></td>
         </tr>
         <tr>
-            <th>NHS number</th>
+            <th><?php echo Yii::app()->params['nhs_num_label']?> number</th>
             <td><?php echo $this->patient->nhs_num ?></td>
         </tr>
         <tr>
@@ -82,7 +82,9 @@
         <?php } ?>
         <tr>
             <th>Procedure(s)</th>
-            <td><?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
+            <td>
+                <?= $elements['Element_OphTrConsent_Procedure']->eye ?>
+                <?php foreach ($elements['Element_OphTrConsent_Procedure']->procedures as $i => $procedure) {
                     if ($i > 0) {
                         echo ', ';
                     }
@@ -180,10 +182,6 @@
         local anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS') ? 'checked' : '' ?>"></span> sedation
     </div>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
-    <p>
-        Contact details (if child/parent wishes to discuss options later)
-    <div class="dotted-write"></div>
-    </p>
     <br/>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
         <h3>Statement of interpreter</h3>

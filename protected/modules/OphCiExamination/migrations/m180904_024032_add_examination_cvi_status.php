@@ -12,7 +12,7 @@ class m180904_024032_add_examination_cvi_status extends OEMigration
         $display_order = ceil(($risk_display_order+$family_display_order)/2);
         $this->createElementType('OphCiExamination', 'CVI status', array(
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CVI_Status',
-            'parent_class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_History',
+            'group_name' => 'History',
             'display_order' => $display_order
         ));
 

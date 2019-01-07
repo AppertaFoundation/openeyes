@@ -29,7 +29,8 @@
                 <?php if ($element->hasEye($eye_side)): ?>
                     <tr>
                         <td><?= Yii::app()->format->text($element->getCombined($eye_side)) ?></td>
-                        <td>SE: <?= number_format($element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'}, 2) ?></td>
+                        <?php $SE = $element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'};?>
+                        <td>SE: <?=$SE > 0 ? '+' : ''?><?= number_format($SE, 2) ?></td>
                         <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
                     </tr>
                     <tr>

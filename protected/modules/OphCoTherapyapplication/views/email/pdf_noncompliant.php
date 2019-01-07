@@ -143,7 +143,7 @@ $logoHelper = new LogoHelper();
 					<table class="inner">
 						<tbody>
 							<tr>
-								<th>NHS No.</th>
+								<th><?php echo Yii::app()->params['nhs_num_label']?> No.</th>
 								<td><?php echo $patient->nhs_num ?></td>
 							</tr>
 							<tr>
@@ -159,11 +159,11 @@ $logoHelper = new LogoHelper();
 								<td><?php echo $service_info->consultant->getConsultantName() ?></td>
 							</tr>
 							<tr>
-								<th>Registered GP Name</th>
+								<th>Registered <?php echo \Yii::app()->params['gp_label'] ?> Name</th>
 								<td><?php echo ($patient->gp) ? $patient->gp->contact->fullName : 'Unknown'; ?></td>
 							</tr>
 							<tr>
-								<th>Registered GP Address</th>
+								<th>Registered <?php echo \Yii::app()->params['gp_label'] ?> Address</th>
 								<td><?php echo ($patient->practice &&
                                         $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ?
                                         $address :
@@ -179,7 +179,7 @@ $logoHelper = new LogoHelper();
                                 </td>
 							</tr>
 							<tr>
-								<th>Referred By (other than GP)</th>
+								<th>Referred By (other than <?php echo \Yii::app()->params['gp_label'] ?>)</th>
 								<td>N/A</td>
 							</tr>
 							<tr>
