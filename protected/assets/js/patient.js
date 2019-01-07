@@ -1,6 +1,6 @@
-function addItem(wrapper_id, ui) {
+// change the function name from addItem to addItemP
+function addItemPatientForm(wrapper_id, ui) {
   var $wrapper = $('#' + wrapper_id);
-
   $wrapper.find('.js-name').text(ui.item.label);
   $wrapper.show();
   $wrapper.find('.hidden_id').val(ui.item.value);
@@ -88,7 +88,7 @@ $(function () {
 function addGpItem(wrapper_id, ui){
     var $wrapper = $('#' + wrapper_id);
     var JsonObj = JSON.parse(ui);
-    $wrapper.find('span.name').text(JsonObj.label);
+    $wrapper.find('span.js-name').text(JsonObj.label);
     $wrapper.show();
     $wrapper.find('.hidden_id').val(JsonObj.id);
 }

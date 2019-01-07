@@ -1088,9 +1088,10 @@ class Examination extends OpenEyesPage {
         $this->elements['NVAMethod_val'] = array(
             'css' => 'li[data-id='.$method.']'
         );
+        $this->elements['confirmAddButton'] = array('css'=>'.add-icon-btn');
         $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAReading', 'NVAReading_val'))->click();
         $this->getElementAtChain(array('NVA', $side.'Eye', 'NVAMethod', 'NVAMethod_val'))->click();
-        $this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAdderButton'))->click();
+        $this->getElementAtChain(array('NVA', $side.'Eye', 'confirmAddButton'))->click();
 
     }
 

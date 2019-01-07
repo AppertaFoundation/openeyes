@@ -130,14 +130,15 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('dob, patient_source', 'required'),
             array('hos_num', 'required', 'on' => 'pas'),
+            array('gender', 'required', 'on' => array('self_register')),
+            array('gp_id, practice_id', 'required', 'on' => 'referral'),
+
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
 
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id, patient_source', 'safe'),
-            array('gender, dob', 'required', 'on' => array('manual', 'self_register')),
             array('deleted', 'safe'),
-            array('gp_id, practice_id', 'required', 'on' => 'referral'),
             array('dob', 'dateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob','dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
@@ -292,11 +293,11 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => 'Hospital Number',
-            'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
+            'hos_num' => Yii::app()->params['hos_num_label'],
+            'nhs_num' => Yii::app()->params['nhs_num_label'],
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
-            'gp_id' => 'Referring Practitioner',
+            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
+            'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
             'patient_source' => 'Patient Source'
@@ -2145,6 +2146,17 @@ class Patient extends BaseActiveRecordVersioned
         return array_map(function($allergy) {
             return $allergy->name;
         }, $this->allergies);
+    }
+
+    public function getAllergiesId()
+    {
+        if (!$this->hasAllergyStatus() || $this->no_allergies_date) {
+            return false;
+        } else {
+            return array_map(function($allergy) {
+                return $allergy->id;
+            }, $this->allergies);
+        }
     }
 
     /**

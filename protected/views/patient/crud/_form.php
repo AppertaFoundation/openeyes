@@ -163,7 +163,7 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td class="required">
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
             <?= $form->label($patient, 'gender') ?>
           <br/>
             <?= $form->error($patient, 'gender') ?>
@@ -204,8 +204,8 @@ foreach ($ethnic_list as $key=>$item){
         </td>
       </tr>
       <tr>
-        <td>
-            <?= $form->label($address, 'email') ?>
+        <td class="<?= $patient->getScenario() === 'self_register'? 'required':'' ?>">
+          <?= $form->label($address, 'email') ?>
           <br/>
             <?= $form->error($address, 'email') ?>
         </td>
@@ -239,7 +239,7 @@ foreach ($ethnic_list as $key=>$item){
         </tr>
         <tr>
           <td>
-            <?= Yii::app()->params['nhs_num_label']?> Number
+            <?= Yii::app()->params['nhs_num_label']?>
           </td>
           <td>
               <?= $form->textField($patient, 'nhs_num',
@@ -358,10 +358,10 @@ foreach ($ethnic_list as $key=>$item){
                         )); ?>
 
 
-                        <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
+                        <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : 'color: white;' ?>">
                             <ul class="oe-multi-select js-selected_gp">
                                 <li>
-                  <span class="name">
+                  <span class="js-name">
                       <?= $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?>
                   </span>
                   <i class="oe-i remove-circle small-icon pad-left js-remove-gp"></i>
@@ -370,22 +370,24 @@ foreach ($ethnic_list as $key=>$item){
                 <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
             </div>
                         <a id="js-add-practitioner-btn" href="#">Add Referring Practitioner</a>
-            <div id="no_gp_result" style="display: none;">
-              <div>No result</div>
-            </div>
-          </td>
-        </tr>
+                        <div id="no_gp_result" style="display: none;">
+                            <div>No result</div>
+                        </div>
+
+                    </td>
+                </tr>
         <tr>
           <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
             <?= $form->label($referral, 'uploadedFile'); ?>
             <br/>
+              <?= $form->error($referral, 'uploadedFile')?>
           </td>
           <td>
             <?= $form->fileField($referral, 'uploadedFile'); ?>
           </td>
         </tr>
         <tr>
-          <td>
+          <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
               <?= $form->label($patient, 'practice_id') ?>
             <br/>
               <?= $form->error($patient, 'practice_id') ?>
@@ -401,14 +403,16 @@ foreach ($ethnic_list as $key=>$item){
                   <i class="oe-i remove-circle small-icon pad-left js-remove-practice"></i>
                 </li>
               </ul>
-
-                <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
-                    array('class' => 'hidden_id')); ?>
-            </div>
-            <div id="no_practice_result" style="display: none;">
-              <div>No result</div>
-            </div>
-          </td>
+                    <?= CHtml::hiddenField('Patient[practice_id]', $patient->practice_id,
+                        array('class' => 'hidden_id')); ?>
+                </div>
+                <div id="no_practice_result" style="display: none;">
+                    <div>No result</div>
+                </div>
+                <?php if (Yii::app()->user->checkAccess('Create Practice')) { ?>
+                <a id="js-add-practice-btn" href="#">Add Practice</a>
+                <?php } ?>
+            </td>
         </tr>
         <tr>
           <td>
@@ -417,40 +421,9 @@ foreach ($ethnic_list as $key=>$item){
             <?= $form->error($patientuserreferral, 'user_id') ?>
           </td>
           <td>
-            <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'name' => 'user_id',
-              'id' => 'autocomplete_user_id',
-              'source' => "js:function(request, response) {
-              $.ajax({
-                'url': '" . Yii::app()->createUrl('/user/autocomplete') . "',
-                 'type':'GET',
-                  'data':{'term': request.term},
-                  'success':function(data) {
-                      data = $.parseJSON(data);
-                      response(data);
-                  }
-                });
-              }",
-              'options' => array(
-                'select' => "js:function(event, ui) {
-                  removeSelectedReferredto();
-                  addItem('selected_referred_to_wrapper', ui);
-                  $('#autocomplete_user_id').val('');
-                  return false;
-                 }",
-                'response' => 'js:function(event, ui){
-                    if(ui.content.length === 0){
-                      $("#no_referred_to_result").show();
-                      } else {
-                        $("#no_referred_to_result").hide();
-                      }
-                 }',
-              ),
-              'htmlOptions' => array(
-                'placeholder' => 'search User',
-              ),
-            )); ?>
+
+             <?php $this->widget('applicaiton.widgets.AutoCompleteSearch',['field_name'=>'autocomplete_user_id']);?>
+
 
             <div id="selected_referred_to_wrapper" style="<?= !$patientuserreferral->user_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_referral_to">
@@ -488,7 +461,7 @@ foreach ($ethnic_list as $key=>$item){
     onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
       removeSelectedGP();
-      addItem('selected_gp_wrapper', {item: AutoCompleteResponse});
+      addItemPatientForm('selected_gp_wrapper', {item: AutoCompleteResponse});
     }
   });
   OpenEyes.UI.AutoCompleteSearch.init({
@@ -496,12 +469,30 @@ foreach ($ethnic_list as $key=>$item){
     url: '/patient/practiceList',
     onSelect: function(){
       let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
-      removeSelectedPractice();
-      addItem('selected_practice_wrapper', {item: AutoCompleteResponse});
+        removeSelectedPractice();
+        addItemPatientForm('selected_practice_wrapper', {item: AutoCompleteResponse});
     }
+  });
+  OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#autocomplete_user_id'),
+      url: '/user/autocomplete',
+      onSelect: function(){
+          let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+          removeSelectedReferredto();
+          addItemPatientForm('selected_referred_to_wrapper', {item: AutoCompleteResponse});
+      }
   });
 </script>
 
+<?php
+$practicecontact = new Contact('manage_practice');
+$practiceaddress = new Address('manage_practice');
+$practice = new Practice('manage_practice');
+$this->renderPartial('../practice/create_practice_form',
+    array('model'=>$practice, 'address'=>$practiceaddress, 'contact'=>$practicecontact, 'context'=>'AJAX')
+);
+
+?>
 <?php
 $gpcontact = new Contact('manage_gp');
 $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'context' => 'AJAX'), false);
@@ -539,5 +530,26 @@ $this->renderPartial('../gp/create_gp_form', array('model' => $gpcontact, 'conte
       );
     }
   }
+
+    $('#js-cancel-add-practice').click(function (event) {
+        event.preventDefault();
+        $("#practice-form")[0].reset();
+        $("#errors").text("");
+        $("#practice-alert-box").css("display","none");
+        $('#js-add-practice-event').css('display', 'none');
+    });
+    $('#js-add-practice-btn').click(function (event) {
+        $('#js-add-practice-event').css('display', '');
+        return false;
+    });
+
+
+    function addGpItem(wrapper_id, ui){
+        var $wrapper = $('#' + wrapper_id);
+        var JsonObj = JSON.parse(ui);
+        $wrapper.find('.js-name').text(JsonObj.label);
+        $wrapper.show();
+        $wrapper.find('.hidden_id').val(JsonObj.id);
+    }
 
 </script>

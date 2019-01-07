@@ -223,7 +223,10 @@
                         array('order' => 'display_order asc')),
                         'id', 'name'),
                     null,
-                    array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
+                    array('empty' => '- Complications -',
+                        'label' => 'Complications',
+                        'nowrapper' => true ,
+                        'class' => $element->hasErrors('Complications') ? 'error': ''),
                     false, false, null,
                     false, false, array('field' => 4)) ?>
             </td>

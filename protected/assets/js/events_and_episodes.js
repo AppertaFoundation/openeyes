@@ -151,17 +151,18 @@ $(document).ready(function(){
 		}
 	});
 
-  $(this).on('click', '.js-remove-element', function (e) {
-    e.preventDefault();
-    var $parent = $(this).closest('.element');
-      if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() == 1) {
-          var dialog = new OpenEyes.UI.Dialog.Confirm({
+	$(this).on('click', '.js-remove-element', function (e) {
+		e.preventDefault();
+		var $parent = $(this).closest('.element');
+		if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() === "1") {
+			let dialog = new OpenEyes.UI.Dialog.Confirm({
               content: "Are you sure that you wish to close the " +
               $parent.data('element-type-name') +
               " element? All data in this element will be lost"
           });
           dialog.on('ok', function () {
               removeElement($parent);
+              $(document).trigger('element_removed');
           }.bind(this));
           dialog.open();
       } else {

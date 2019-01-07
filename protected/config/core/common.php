@@ -56,6 +56,7 @@ return array(
             'ipFilters' => array('127.0.0.1'),
         ),
         'oldadmin',
+        'Admin',
     ),
 
     // Application components
@@ -78,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201812030946',
+            'time' => '201812061722',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -365,6 +366,12 @@ return array(
                     'position' => 46,
                     'restricted' => array('TaskAddPatient'),
                 ),
+                'practices' => array(
+                    'title' => 'Practices',
+                    'uri' => 'practice/index',
+                    'position' => 11,
+                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
+                ),
                 'forum' => array(
                     'title' => 'FORUM',
                     'uri' => "javascript:oelauncher('forum');",
@@ -530,18 +537,24 @@ return array(
 
         'lightning_viewer' => array(
             'image_width' => 800,
+            'viewport_width' => 1280,
             'keep_temp_files' => false,
             'compression_quality' => 50,
             'blank_image_template' => array(
                 'height' => 912,
                 'width' => 800
             ),
+            'debug_logging' => false,
             'event_specific' => array(
                 'Correspondence' => array(
                     'image_width' => 1000
                 ),
             ),
         ),
+
+        'event_image' => [
+            'base_url' => 'http://localhost/'
+        ],
 
         /**
          * Patient Identifiers
@@ -569,11 +582,13 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-
+        'hos_num_label' => 'Hospital',
+        'nhs_num_label' => 'NHS',
       'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',
         'Italian'
       ),
+      'oe_version' => '3.1',
     ),
 );

@@ -2252,8 +2252,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         // Regenerate the EventImage in the background
-        $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
-        exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
+        EventImageManager::actionGenerateImage($this->event);
 
         /*
          * TODO: need to check with all events why this was here!!!
@@ -2331,27 +2330,14 @@ class BaseEventTypeController extends BaseModuleController
 
 
     /**
-     * Gets a value indicating whether this event has any extra information to display in the title
-     * This function will always return false, but can be overridden to return true
-     * iF it is, then getExtraTitleInfo() should also be overridden.
-     *
-     * @return bool
-     */
-    public function hasExtraTitleInfo()
-    {
-        return false;
-    }
-
-    /**
      * Gets the extra info to be displayed in the title of this event
-     * Should only be overridden if hasExtraTitleInfo() has also been overridden
+     * returns null if no extra info exists
      *
-     * @return string HTML to display next to the title
-     * @throws BadMethodCallException thrown if the method hasn't been overridden
+     * @return string|null HTML to display next to the title
      */
     public function getExtraTitleInfo()
     {
-        throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
+        return null;
     }
 
     protected function updateHotlistItem(Patient $patient)
@@ -2393,7 +2379,8 @@ class BaseEventTypeController extends BaseModuleController
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => Yii::app()->params['lightning_viewer']['image_width']));
+                ['width' => Yii::app()->params['lightning_viewer']['image_width'],
+                 'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]);
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
