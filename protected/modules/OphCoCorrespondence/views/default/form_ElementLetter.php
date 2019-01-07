@@ -95,7 +95,7 @@ $creating = isset($creating) ? $creating : false;
               </td>
               <td>
                   <?php echo $form->dropDownList($element, 'site_id', Site::model()->getLongListForCurrentInstitution(),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <tr>
@@ -114,7 +114,7 @@ $creating = isset($creating) ? $creating : false;
               <td>
                   <?php echo $form->dropDownList($element, 'letter_type_id',
                       CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                      array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
+                      array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width', 'class' => 'cols-full')) ?>
               </td>
             </tr>
             <!--                  Clinic Date  -->
@@ -331,7 +331,7 @@ $creating = isset($creating) ? $creating : false;
                       'defaults' => array(
                           'To' => array(
                               'contact_id' => $contact_id,
-                              'contact_type' => 'GP',
+                              'contact_type' => \Yii::app()->params['gp_label'],
                               'contact_name' => $contact_name,
                               'address' => $address,
                           ),
@@ -402,73 +402,32 @@ $creating = isset($creating) ? $creating : false;
                 Enclosures
               </td>
               <td>
-                  <?php if (!$element->document_instance): ?>
-                    <div class="data-group">
-                      <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-                          <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '',
-                              array('empty' => '- Cc -', 'nowrapper' => true)) ?>
-                      </div>
-                      <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-                          <?php echo $form->textArea($element, 'cc',
-                              array('rows' => 8, 'label' => false, 'nowrapper' => true), false,
-                              array('class' => 'address')) ?>
-                      </div>
-                      <div id="cc_targets">
-                          <?php foreach ($element->cc_targets as $cc_target) {
-                              ?>
-                            <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target ?>"/>
-                              <?php
-                          } ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
-                      <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[$key]", $value,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } else { ?>
-                      <?php foreach ($element->enclosures as $i => $item) { ?>
-                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[enclosure$i]",
-                              $item->content,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } ?>
 
                 <input type="hidden" name="update_enclosures" value="1"/>
                 <div id="enclosureItems"
                      class="<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
                     <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                         <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                        <div class=" row collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?=\CHtml::textField("EnclosureItems[$key]", $value,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
+                            <div class="data-group collapse in enclosureItem flex-layout">
+                                <?=\CHtml::textField("EnclosureItems[$key]", $value,
+                                    array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                                			<i class="oe-i trash removeEnclosure"></i>
+                            </div>
                         </div>
                         <?php } ?>
                     <?php } else { ?>
                         <?php foreach ($element->enclosures as $i => $item) { ?>
-                        <div class="data-group collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
-                        </div>
+                  <div class="data-group collapse in enclosureItem flex-layout">
+                      <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
+                          array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                      <i class="oe-i trash removeEnclosure"></i>
+                  </div>
                         <?php } ?>
                     <?php } ?>
                 </div>
-                <button class="addEnclosure secondary small" type="button">
-                  Add
+          <div class="add-data-actions">
+              <button class="addEnclosure secondary small" type="button">Add</button>
+          </div>
                 </button>
               </td>
             </tr>

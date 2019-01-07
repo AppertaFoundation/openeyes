@@ -23,6 +23,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property int $icon_id
  */
 class NhsNumberVerificationStatus extends BaseActiveRecord
 {
@@ -63,6 +64,7 @@ class NhsNumberVerificationStatus extends BaseActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'icon' => array(self::BELONGS_TO, 'Icons', 'icon_id'),
         );
     }
 

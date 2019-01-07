@@ -40,13 +40,21 @@
             // use button class as boolean
             popup.changeContent(popup.button.hasClass(popup.css.open));
         }).mouseenter(function () {
-            if (popup.isLatched) return;
+            if (popup.isLatched) {
+            	return;
+						}
+            if (popup.groupController) {
+            	popup.groupController.closeAll();
+            	popup.groupController.unlockAll();
+            }
             popup.button.addClass(popup.css.active);
             if (popup.useMouseEvents) {
                 popup.show();
             }
         }).mouseleave(function () {
-            if (popup.isLatched) return;
+					if (popup.isLatched) {
+						return;
+					}
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
                 let closeContent = true;
@@ -68,7 +76,7 @@
 					$(window).resize(function () {
 						popup.toggleFixed($(this).width() > popup.options.autoHideWidthPixels);
 					});
-			}
+        }
     };
 
     /**
@@ -77,7 +85,9 @@
      **/
     NavBtnPopup.prototype.changeContent = function (isOpen) {
         let popup = this;
-        if (popup.isFixed) return; // if popup is fixed
+        if (popup.isFixed) {
+					return;
+				} // if popup is fixed
 
         if (popup.latchable) {
             if (popup.isLatched) {
@@ -105,11 +115,13 @@
         let popup = this;
         popup.button.addClass(popup.css.open);
         popup.content.show();
-        if (popup.useMouseEvents && !popup.isFixed) popup.addContentEvents();
+        if (popup.useMouseEvents && !popup.isFixed) {
+        	popup.addContentEvents();
+				}
     };
 
     NavBtnPopup.prototype.hide = function () {
-        let popup = this;
+			let popup = this;
         this.button.removeClass(popup.css.open);
         this.content.hide();
     };
@@ -124,7 +136,6 @@
             $(this).off('mouseenter'); // clean up
             $(this).mouseleave(function () {
                 $(this).off('mouseleave'); // clean up
-                popup.hide();
             });
         });
     };
@@ -197,9 +208,6 @@
 
     NavBtnPopup.prototype.latch = function () {
         let popup = this;
-        if (popup.groupController) {
-            popup.groupController.lockAll();
-        }
         popup.isLatched = true;
         popup.show();
         this.content.off('mouseenter mouseleave');
@@ -207,9 +215,6 @@
 
     NavBtnPopup.prototype.unlatch = function () {
         let popup = this;
-        if (popup.groupController) {
-            popup.groupController.unlockAll();
-        }
         popup.isLatched = false;
         popup.hide();
         popup.button.removeClass(popup.css.active);
