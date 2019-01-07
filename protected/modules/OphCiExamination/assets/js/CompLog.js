@@ -180,8 +180,17 @@ CompLogConnection.prototype.importCompLogResults = function() {
 };
 
 function OphCiExamination_VisualAcuity_getClosestValue(mvalue) {
-    var lastdiff = 10000;
-    var previousvalue = {};
+	var lastdiff = 10000;
+	var previousvalue = {};
+
+	//switch statement to correct CompLog's mapping of NPL/PL/HF/CF values before saving into OpenEyes. There is probably a better way of doing this
+	switch(mvalue){
+		case '2': return {'id':'1', 'label':'NPL'};
+		case '3': return {'id':'2', 'label':'PL'};
+		case '4': return {'id':'3', 'label':'HF'};
+		case '5': return {'id':'4', 'label':'CF'};
+	}
+
     $('ul[data-id="reading_val"]').each(function() {
         $(this).find('li').each(function()
         {
