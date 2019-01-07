@@ -4,7 +4,7 @@
 /* @var $form CActiveForm */
 ?>
 
-<div class="form">
+<div class="oe-full-content flex-layout flex-top">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'disorder-form',
@@ -19,62 +19,60 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'id'); ?>
-		<?php echo $form->textField($model,'id',array('size'=>20,'maxlength'=>20)); ?>
-		<?php echo $form->error($model,'id'); ?>
-	</div>
+    <table class="standard highlight-rows">
+        <tbody>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'id'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model,'id',array('size'=>20,'maxlength'=>20)); ?>
+                <?php echo $form->error($model,'id'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'fully_specified_name'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model,'fully_specified_name',array('size'=>60,'maxlength'=>255)); ?>
+                <?php echo $form->error($model,'fully_specified_name'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'term'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model,'term',array('size'=>60,'maxlength'=>255)); ?>
+                <?php echo $form->error($model,'term'); ?>
+            </td>
+        </tr>
+         <tr>
+            <td>
+                <?php echo $form->labelEx($model,'specialty_id'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+                <?php echo $form->error($model,'specialty_id'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'active'); ?>
+            </td>
+            <td>
+                <?php echo $form->textField($model,'active'); ?>
+                <?php echo $form->error($model,'active'); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'fully_specified_name'); ?>
-		<?php echo $form->textField($model,'fully_specified_name',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'fully_specified_name'); ?>
-	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'term'); ?>
-		<?php echo $form->textField($model,'term',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'term'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'last_modified_user_id'); ?>
-		<?php echo $form->textField($model,'last_modified_user_id',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'last_modified_user_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'last_modified_date'); ?>
-		<?php echo $form->textField($model,'last_modified_date'); ?>
-		<?php echo $form->error($model,'last_modified_date'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'created_user_id'); ?>
-		<?php echo $form->textField($model,'created_user_id',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'created_user_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'created_date'); ?>
-		<?php echo $form->textField($model,'created_date'); ?>
-		<?php echo $form->error($model,'created_date'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'specialty_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'active'); ?>
-		<?php echo $form->textField($model,'active'); ?>
-		<?php echo $form->error($model,'active'); ?>
-	</div>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	<div class="row flex-layout flex-left">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',
+        array('class' => 'button green hint')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
