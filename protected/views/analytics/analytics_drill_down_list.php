@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($patient_list as $key->$patient) { ?>
+        <?php foreach ($patient_list as $patient) { ?>
             <tr>
                 <td><?= $patient['hospital_number']; ?></td>
                 <td><?= $patient['gender']; ?></td>

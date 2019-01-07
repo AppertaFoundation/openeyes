@@ -32,6 +32,9 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
+      list($left_va_list, $right_va_list, $va_patient_list) = $this->getCustomVA();
+      list($left_crt_list, $right_crt_list, $crt_patient_list) = $this->getCustomCRT();
+
       $filters = array(
           'date_from' => null,
           'date-to' => null
@@ -58,26 +61,32 @@ class AnalyticsController extends BaseController
       $custom_data = array(
           array(
           'name' => 'VA',
-          'x' => array(0,1,2,3,4,5),
-          'y' => array(12,13,14,16, 40,29),
-          'error_y'=> array(
-              'type'=> 'data',
-              'array' => array(1, 2, 1, 2, 1),
-              'visible' => true,
-              'color' => '#aaa',
-              'thickness' => 1
-          )
+          'x' => array_keys($left_va_list),
+          'y' => array_map(
+              function ($item){
+                  return $item['average'];
+          }, array_values($left_va_list)),
+//          'error_y'=> array(
+//              'type'=> 'data',
+//              'array' => array(1, 2, 1, 2, 1),
+//              'visible' => true,
+//              'color' => '#aaa',
+//              'thickness' => 1
+//          )
       ), array(
           'name' => 'CRT',
-              'x' => array(3.5, 4, 6, 7, 9),
-              'y' => array(34, 25, 61, 12, 15),
-              'error_y' => array(
-                  'type' => 'data',
-                  'array' => array(2, 1, 2, 1, 2, 1),
-                  'visible' => true,
-                  'color' => '#aaa',
-                  'thickness' => 1
-              )
+          'x' => array_keys($left_crt_list),
+          'y' => array_map(
+              function ($item){
+                  return $item['average'];
+          }, array_values($left_crt_list)),
+//              'error_y' => array(
+//                  'type' => 'data',
+//                  'array' => array(2, 1, 2, 1, 2, 1),
+//                  'visible' => true,
+//                  'color' => '#aaa',
+//                  'thickness' => 1
+//              )
           )
       );
 
@@ -86,13 +95,15 @@ class AnalyticsController extends BaseController
             'specialty'=>'Medical Retina',
             'clinical_data'=> $clinical_data,
             'service_data'=> $service_data,
-            'custom_data' => $custom_data
+            'custom_data' => $custom_data,
+            'patient_list' => $va_patient_list
         )
     );
   }
 
   public function actionGlaucoma(){
       list($left_iop_list, $right_iop_list, $iop_patient_list) = $this->getCustomIOP();
+      list($left_va_list, $right_va_list, $va_patient_list) = $this->getCustomVA();
 
       $clinical_data = array(
           'title' => 'Clinical Section',
@@ -109,15 +120,18 @@ class AnalyticsController extends BaseController
       $custom_data = array(
           array(
               'name' => 'VA',
-              'x' => array(0,1,2,3,4,5),
-              'y' => array(12,13,14,16, 40,29),
-              'error_y'=> array(
-                  'type'=> 'data',
-                  'array' => array(1, 2, 1, 2, 1),
-                  'visible' => true,
-                  'color' => '#aaa',
-                  'thickness' => 1
-              )
+              'x' => array_keys($left_va_list),
+              'y' => array_map(
+                  function ($item){
+                      return $item['average'];
+                  }, array_values($left_va_list)),
+//              'error_y'=> array(
+//                  'type'=> 'data',
+//                  'array' => array(1, 2, 1, 2, 1),
+//                  'visible' => true,
+//                  'color' => '#aaa',
+//                  'thickness' => 1
+//              )
           ),
           array(
               'name' => 'IOP',
@@ -142,7 +156,7 @@ class AnalyticsController extends BaseController
             'clinical_data'=> $clinical_data,
             'service_data'=> $service_data,
             'custom_data' => $custom_data,
-            'iop_patient_list' => $iop_patient_list
+            'patient_list' => $iop_patient_list
         )
     );
   }
@@ -183,22 +197,136 @@ class AnalyticsController extends BaseController
   }
 
   public function getCustomVA() {
-    $va_patient_count = array();
-    $examination_events = $this->getEventsByType('Examination');
-    foreach ($examination_events as $exam_item){
-      if (isset($exam_item->visual_acuity)){
-
+      $va_patient_list = array();
+      $patient_list = array();
+      $left_va_list = array();
+      $right_va_list = array();
+      $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
+      foreach ($va_elements as $va){
+          $left_reading = $va->getReading('left');
+          $right_reading = $va->getReading('right');
+          $current_event = $va->event;
+          if(isset($current_event->episode)){
+              $current_episode = $current_event->episode;
+              $current_patient = $current_episode->patient;
+              if (!array_key_exists($current_patient->id, $patient_list)){
+                  $patient_list[$current_patient->id] = array(
+                      'hospital_number' => $current_patient->hos_num,
+                      'gender' => $current_patient->gender,
+                      'age' => $current_patient->getAge(),
+                      'name' => $current_patient->getFullName(),
+                  );
+              }
+              $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
+              if (!array_key_exists($current_patient->id, $va_patient_list)){
+                  $va_patient_list[$current_patient->id]=array();
+              }
+              array_push($va_patient_list[$current_patient->id], array(
+                      'left_reading'=>$left_reading,
+                      'right_reading'=>$right_reading,
+                      'event_time' => $current_time,
+                      'weeks'=> 0
+                  )
+              );
+          }
       }
-    }
-  }
+      foreach ($va_patient_list as $patient_id => &$patient_vas){
+          usort($patient_vas, array($this, 'sortByTime'));
+          $start_time = $patient_vas[0]['event_time']/1000;
+          foreach ($patient_vas as &$va_item){
+              $current_week = floor(($va_item['event_time']/1000 - $start_time) / self::WEEKTIME);
+              $va_item['weeks'] = $current_week;
+              foreach (['left', 'right'] as $side){
+                  if($va_item[$side.'_reading']){
+                      if (array_key_exists((int)$current_week, ${$side.'_va_list'})){
+                          ${$side.'_va_list'}[$current_week]['count']+=1;
+                          ${$side.'_va_list'}[$current_week]['sum']+=$va_item[$side.'_reading'];
+                          ${$side.'_va_list'}[$current_week]['patients'][] = $patient_id;
+                      } else {
+                          ${$side.'_va_list'}[$current_week] = array(
+                              'count'=> 1,
+                              'sum' => $va_item[$side.'_reading'],
+                              'patients' => array($patient_id),
+                          );
+                      }
+                  }
+              }
+          }
+      }
+      foreach (['left', 'right'] as $side){
+          foreach (${$side.'_va_list'} as &$va_item){
+              $va_item['average'] = round($va_item['sum']/$va_item['count']);
+          }
+      }
+      ksort($left_va_list);
+      ksort($right_va_list);
+      return [$left_va_list,$right_va_list,$patient_list];  }
 
   public function getCustomCRT() {
       $crt_patient_list = array();
-      $examination_events = $this->getEventsByType('Examination');
-      foreach ($examination_events as $exam_item){
-          $current_patient = $exam_item->patient->id;
-          $current_crts = array();
+      $patient_list = array();
+      $left_crt_list = array();
+      $right_crt_list = array();
+      $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
+      foreach ($crt_elements as $crt){
+          $left_crt = $crt->left_crt;
+          $right_crt = $crt->right_crt;
+          $current_event = $crt->event;
+          if(isset($current_event->episode)){
+              $current_episode = $current_event->episode;
+              $current_patient = $current_episode->patient;
+              if (!array_key_exists($current_patient->id, $patient_list)){
+                  $patient_list[$current_patient->id] = array(
+                      'hospital_number' => $current_patient->hos_num,
+                      'gender' => $current_patient->gender,
+                      'age' => $current_patient->getAge(),
+                      'name' => $current_patient->getFullName(),
+                  );
+              }
+              $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
+              if (!array_key_exists($current_patient->id, $crt_patient_list)){
+                  $crt_patient_list[$current_patient->id]=array();
+              }
+              array_push($crt_patient_list[$current_patient->id], array(
+                      'left_crt'=>$left_crt,
+                      'right_crt'=>$right_crt,
+                      'event_time' => $current_time,
+                      'weeks'=> 0
+                  )
+              );
+          }
       }
+      foreach ($crt_patient_list as $patient_id => &$patient_crts){
+          usort($patient_crts, array($this, 'sortByTime'));
+          $start_time = $patient_crts[0]['event_time']/1000;
+          foreach ($patient_crts as &$crt_item){
+              $current_week = floor(($crt_item['event_time']/1000 - $start_time) / self::WEEKTIME);
+              $crt_item['weeks'] = $current_week;
+              foreach (['left', 'right'] as $side){
+                  if($crt_item[$side.'_crt']){
+                      if (array_key_exists((int)$current_week, ${$side.'_crt_list'})){
+                          ${$side.'_crt_list'}[$current_week]['count']+=1;
+                          ${$side.'_crt_list'}[$current_week]['sum']+=$crt_item[$side.'_crt'];
+                          ${$side.'_crt_list'}[$current_week]['patients'][] = $patient_id;
+                      } else {
+                          ${$side.'_crt_list'}[$current_week] = array(
+                              'count'=> 1,
+                              'sum' => $crt_item[$side.'_crt'],
+                              'patients' => array($patient_id),
+                          );
+                      }
+                  }
+              }
+          }
+      }
+      foreach (['left', 'right'] as $side){
+          foreach (${$side.'_crt_list'} as &$crt_item){
+              $crt_item['average'] = round($crt_item['sum']/$crt_item['count']);
+          }
+      }
+      ksort($left_crt_list);
+      ksort($right_crt_list);
+      return [$left_crt_list,$right_crt_list,$patient_list];
   }
 
   public function queryIOP(){

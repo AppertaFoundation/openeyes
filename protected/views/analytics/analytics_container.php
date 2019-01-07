@@ -23,7 +23,7 @@
         }?>
     </div>
     <?php $this->renderPartial('//analytics/analytics_drill_down_list', array(
-            'patient_list' => $iop_patient_list
+            'patient_list' => $patient_list
     )); ?>
 
 </main>
