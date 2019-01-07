@@ -201,7 +201,6 @@ $config = array(
                         'Consultant Ophthalmologist',
                         'Other specialist',
                 ),
-        'COMPLog_port' => '8080', // this will turn on the COMPLog integration button!!
     ),
 );
 
