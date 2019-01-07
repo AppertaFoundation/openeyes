@@ -38,16 +38,13 @@ PatientPanel.patientPopups = {
       all.push(trials);
     }
 
-
     for (pBtns in all) {
       var popup = all[pBtns];
       popup.inGroup(this); // register group with PopupBtn
       popup.latchable = true;
       popup.useMouseEvents = true;
     }
-
     this.popupBtns = all;
-
   },
 
   closeAll: function () {
@@ -73,5 +70,4 @@ PatientPanel.patientPopups = {
       popup.isLatched = false;
     }
   }
-
 };

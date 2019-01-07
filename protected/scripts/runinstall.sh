@@ -16,6 +16,14 @@ if [ "$DIR" != "/tmp" ]; then
     exit 1
 fi
 
+function found_error() {
+	echo "******************************************"
+	echo "*** AN ERROR OCCURRED - CHECK THE LOGS ***"
+	echo "******************************************"
+	exit 1
+}
+
+trap 'found_error' ERR
 
 SCRIPTROOT="" # will be passed in from install-oe.sh
 WROOT="" # will be passed in from install-oe.sh
@@ -54,7 +62,7 @@ httpuserstring=""
 usessh=0
 sshuserstring="git"
 showhelp=0
-checkoutparams="-f --no-migrate --no-summary --no-fix"
+checkoutparams="-f --no-migrate --no-summary --no-fix --no-oe"
 accept=0
 genetics=0
 preservedb=0
@@ -115,13 +123,8 @@ if [ $showhelp = 1 ]; then
 fi
 
 
-echo "
+echo -e "\n\n\nInstalling openeyes as user: $USER...\n\n\n"
 
-Installing openeyes...
-"
-
-# Terminate if any command fails
-set -e
 
 # Show disclaimer
 echo "
@@ -171,10 +174,10 @@ fi
 # Fix permissions
 echo "Setting file permissions..."
 sudo gpasswd -a "$USER" www-data
-sudo chown -R "$USER":www-data .
+sudo chown "$USER":www-data -R $WROOT
 
-sudo chmod -R 774 $WROOT
-sudo chmod -R g+s $WROOT
+sudo chmod 777 -R $WROOT
+sudo chmod g+s -R $WROOT
 
 # if this isn't a live install, then add the sample DB
 if [ "$OE_MODE" != "LIVE" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
@@ -222,7 +225,7 @@ fi
 $SCRIPTDIR/oe-fix.sh $fixparams
 
 # unless we are in build mode, configure apache and cron
-if [ $OE_MODE != "BUILD" ]; then
+if [ "$OE_MODE" != "BUILD" ]; then
     echo Configuring Apache
 
     echo "
@@ -250,6 +253,8 @@ if [ $OE_MODE != "BUILD" ]; then
 sudo chmod 0644 /etc/cron.d/eventimage
 fi
 
+echo ""
+bash $SCRIPTDIR/set-profile.sh
 echo ""
 bash $SCRIPTDIR/oe-which.sh
 
