@@ -7,6 +7,7 @@ class AnalyticsController extends BaseController
     const WEEKTIME = 604800;
 
   public $layout = '//layouts/events_and_episodes';
+  protected $patient_list = array();
 
   public function accessRules()
   {
@@ -27,13 +28,14 @@ class AnalyticsController extends BaseController
               'specialty'=>'Cataract',
               'clinical_data'=> array(),
               'service_data'=> array(),
-              'custom_data' => array()
+              'custom_data' => array(),
+              'patient_list' => $this->patient_list,
           )
       );
   }
   public function actionMedicalRetina(){
-      list($left_va_list, $right_va_list, $va_patient_list) = $this->getCustomVA();
-      list($left_crt_list, $right_crt_list, $crt_patient_list) = $this->getCustomCRT();
+      list($left_va_list, $right_va_list) = $this->getCustomVA();
+      list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
 
       $filters = array(
           'date_from' => null,
@@ -75,6 +77,7 @@ class AnalyticsController extends BaseController
 //          )
       ), array(
           'name' => 'CRT',
+          'yaxis' =>'y2',
           'x' => array_keys($left_crt_list),
           'y' => array_map(
               function ($item){
@@ -96,14 +99,14 @@ class AnalyticsController extends BaseController
             'clinical_data'=> $clinical_data,
             'service_data'=> $service_data,
             'custom_data' => $custom_data,
-            'patient_list' => $va_patient_list
+            'patient_list' => $this->patient_list
         )
     );
   }
 
   public function actionGlaucoma(){
-      list($left_iop_list, $right_iop_list, $iop_patient_list) = $this->getCustomIOP();
-      list($left_va_list, $right_va_list, $va_patient_list) = $this->getCustomVA();
+      list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
+      list($left_va_list, $right_va_list) = $this->getCustomVA();
 
       $clinical_data = array(
           'title' => 'Clinical Section',
@@ -135,6 +138,7 @@ class AnalyticsController extends BaseController
           ),
           array(
               'name' => 'IOP',
+              'yaxis' => 'y2',
               'x' => array_keys($left_iop_list),
               'y' => array_map(
                   function ($item){
@@ -156,7 +160,7 @@ class AnalyticsController extends BaseController
             'clinical_data'=> $clinical_data,
             'service_data'=> $service_data,
             'custom_data' => $custom_data,
-            'patient_list' => $iop_patient_list
+            'patient_list' => $this->patient_list
         )
     );
   }
@@ -198,7 +202,6 @@ class AnalyticsController extends BaseController
 
   public function getCustomVA() {
       $va_patient_list = array();
-      $patient_list = array();
       $left_va_list = array();
       $right_va_list = array();
       $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
@@ -209,8 +212,8 @@ class AnalyticsController extends BaseController
           if(isset($current_event->episode)){
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
-              if (!array_key_exists($current_patient->id, $patient_list)){
-                  $patient_list[$current_patient->id] = array(
+              if (!array_key_exists($current_patient->id, $this->patient_list)){
+                  $this->patient_list[$current_patient->id] = array(
                       'hospital_number' => $current_patient->hos_num,
                       'gender' => $current_patient->gender,
                       'age' => $current_patient->getAge(),
@@ -260,11 +263,11 @@ class AnalyticsController extends BaseController
       }
       ksort($left_va_list);
       ksort($right_va_list);
-      return [$left_va_list,$right_va_list,$patient_list];  }
+      return [$left_va_list,$right_va_list];
+  }
 
   public function getCustomCRT() {
       $crt_patient_list = array();
-      $patient_list = array();
       $left_crt_list = array();
       $right_crt_list = array();
       $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
@@ -275,8 +278,8 @@ class AnalyticsController extends BaseController
           if(isset($current_event->episode)){
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
-              if (!array_key_exists($current_patient->id, $patient_list)){
-                  $patient_list[$current_patient->id] = array(
+              if (!array_key_exists($current_patient->id, $this->patient_list)){
+                  $this->patient_list[$current_patient->id] = array(
                       'hospital_number' => $current_patient->hos_num,
                       'gender' => $current_patient->gender,
                       'age' => $current_patient->getAge(),
@@ -326,12 +329,9 @@ class AnalyticsController extends BaseController
       }
       ksort($left_crt_list);
       ksort($right_crt_list);
-      return [$left_crt_list,$right_crt_list,$patient_list];
+      return [$left_crt_list,$right_crt_list];
   }
 
-  public function queryIOP(){
-
-  }
 
   public function sortByTime($a, $b){
       if($a['event_time']==$b['event_time'])
@@ -341,7 +341,6 @@ class AnalyticsController extends BaseController
 
   public function getCustomIOP(){
       $iop_patient_list = array();
-      $patient_list = array();
       $left_iop_list = array();
       $right_iop_list = array();
       $iop_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findAll();
@@ -354,8 +353,8 @@ class AnalyticsController extends BaseController
           if(isset($current_event->episode)){
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
-              if (!array_key_exists($current_patient->id, $patient_list)){
-                  $patient_list[$current_patient->id] = array(
+              if (!array_key_exists($current_patient->id, $this->patient_list)){
+                  $this->patient_list[$current_patient->id] = array(
                       'hospital_number' => $current_patient->hos_num,
                       'gender' => $current_patient->gender,
                       'age' => $current_patient->getAge(),
@@ -410,7 +409,7 @@ class AnalyticsController extends BaseController
       ksort($left_iop_list);
       ksort($right_iop_list);
 
-      return [$left_iop_list, $right_iop_list, $patient_list];
+      return [$left_iop_list, $right_iop_list];
   }
 
 

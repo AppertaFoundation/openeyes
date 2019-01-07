@@ -14,6 +14,10 @@
         var custom_data = <?= CJavaScript::encode($custom_data); ?>;
         custom_layout['title'] = "Custom Section";
         custom_layout['xaxis']['rangeslider'] = {};
+        custom_layout['yaxis2'] = {
+            side: 'right',
+            overlaying: 'y',
+        };
         Plotly.newPlot(
             'js-hs-chart-analytics-custom', custom_data ,custom_layout
         );
