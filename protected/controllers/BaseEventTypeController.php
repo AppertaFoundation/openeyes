@@ -1513,52 +1513,53 @@ class BaseEventTypeController extends BaseModuleController
         $return = false,
         $processOutput = false
     ) {
+        if(is_string($action)){
+            if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
+                $action = 'print';
+            }
+            if ($action == 'savePDFprint') {
+                $action = 'print';
+            }
 
-        if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
-            $action = 'print';
+            if($action === 'createImage') {
+                $action = 'view';
+            }
+
+            // Get the view names from the model.
+            $view = isset($element->{$action . '_view'})
+                ? $element->{$action . '_view'}
+                : $element->getDefaultView();
+            $container_view = isset($element->{'container_' . $action . '_view'})
+                ? $element->{'container_' . $action . '_view'}
+                : $element->getDefaultContainerView();
+
+            $use_container_view = ($element->useContainerView && $container_view);
+            $view_data = array_merge(array(
+                'element' => $element,
+                'data' => $data,
+                'form' => $form,
+                'container_view' => $container_view,
+            ), $view_data);
+
+            // Render the view.
+            ($use_container_view) && $this->beginContent($container_view, $view_data);
+            if ($element->widgetClass) {
+                // only wrap the element in a widget if it's not already in one
+                $widget = $element->widget ?:
+                    $this->createWidget($element->widgetClass,
+                        array(
+                            'patient' => $this->patient,
+                            'element' => $view_data['element'],
+                            'data' => $view_data['data'],
+                            'mode' => $this->getElementWidgetMode($action),
+                        ));
+                $widget->form = $view_data['form'];
+                $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
+            } else {
+                $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+            }
+            ($use_container_view) && $this->endContent();
         }
-        if ($action == 'savePDFprint') {
-            $action = 'print';
-        }
-
-        if($action === 'createImage') {
-            $action = 'view';
-        }
-
-        // Get the view names from the model.
-        $view = isset($element->{$action . '_view'})
-            ? $element->{$action . '_view'}
-            : $element->getDefaultView();
-        $container_view = isset($element->{'container_' . $action . '_view'})
-            ? $element->{'container_' . $action . '_view'}
-            : $element->getDefaultContainerView();
-
-        $use_container_view = ($element->useContainerView && $container_view);
-        $view_data = array_merge(array(
-            'element' => $element,
-            'data' => $data,
-            'form' => $form,
-            'container_view' => $container_view,
-        ), $view_data);
-
-        // Render the view.
-        ($use_container_view) && $this->beginContent($container_view, $view_data);
-        if ($element->widgetClass) {
-            // only wrap the element in a widget if it's not already in one
-            $widget = $element->widget ?:
-                $this->createWidget($element->widgetClass,
-                    array(
-                        'patient' => $this->patient,
-                        'element' => $view_data['element'],
-                        'data' => $view_data['data'],
-                        'mode' => $this->getElementWidgetMode($action),
-                    ));
-            $widget->form = $view_data['form'];
-            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
-        } else {
-            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
-        }
-        ($use_container_view) && $this->endContent();
     }
 
     /**
