@@ -93,7 +93,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
           <tr>
             <td>
                 <?= $form->dropDownList($element, $eye.'_glaucoma_status_id', $glaucomaStatus,
-                    array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                    array('empty' => 'Select'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
             </td>
           </tr>
           <tr>
@@ -105,7 +105,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
           <tr>
             <td>
                 <?= $form->dropDownList($element, $eye.'_drops_id',
-                    $dropsIds, array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+                    $dropsIds, array('empty' => 'Select'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
             </td>
           </tr>
           <tr>

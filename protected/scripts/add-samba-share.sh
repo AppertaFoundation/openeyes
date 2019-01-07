@@ -8,7 +8,7 @@ sudo apt install samba -y
 echo -e "vagrant\nvagrant" | sudo smbpasswd -s -a root
 echo -e "vagrant\nvagrant" | sudo smbpasswd -s -a vagrant
 
-sudo echo "
+echo "
 [openeyes]
         path = /var/www/
         valid users = vagrant root
@@ -17,7 +17,7 @@ sudo echo "
         force user = vagrant
         read only = No
 
-" >> /etc/samba/smb.conf
+" | sudo tee /etc/samba/smb.conf
 
 sudo service smbd restart
 sudo testparm -s

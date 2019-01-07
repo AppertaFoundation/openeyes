@@ -97,7 +97,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
                                         'condition' => 'is_consultant = 1 and is_surgeon=1',
                                         'order' => 'last_name, first_name',
                                     )),
-                                    'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 5)); ?>
+                                    'id', 'reversedFullName'), array('empty' => 'Select'), false, array('field' => 5)); ?>
                         </td>
                     </tr>
                     <tr>
