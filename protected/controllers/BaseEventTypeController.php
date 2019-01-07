@@ -2370,8 +2370,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         // Regenerate the EventImage in the background
-        $command = 'php /var/www/openeyes/protected/yiic eventimage create --event=' . $this->event->id;
-        exec('bash -c "exec nohup setsid ' . $command . ' > /dev/null 2>&1 &"');
+        EventImageManager::actionGenerateImage($this->event);
 
         /*
          * TODO: need to check with all events why this was here!!!
@@ -2512,7 +2511,8 @@ class BaseEventTypeController extends BaseModuleController
             $image = new WKHtmlToImage();
             $image->setCanvasImagePath($this->event->getImageDirectory());
             $image->generateImage($this->event->getImageDirectory(), 'preview', '', $content,
-                array('width' => Yii::app()->params['lightning_viewer']['image_width']));
+                ['width' => Yii::app()->params['lightning_viewer']['image_width'],
+                 'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']]);
 
             $input_path = $this->event->getImagePath('preview');
             $output_path = $this->event->getImagePath('preview', '.jpg');
@@ -2741,7 +2741,8 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function whiteOutImageImagickBackground($imagick){
         if ($imagick->getImageAlphaChannel()) {
-            $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_FLATTEN);
+            // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
+            $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);
             $imagick->setImageBackgroundColor('white');
             $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
