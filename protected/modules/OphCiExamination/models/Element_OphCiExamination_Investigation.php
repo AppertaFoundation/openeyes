@@ -122,7 +122,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
     }
 
     /**
-     * get the letter strings for this element and its children
+     * get the letter strings for this element and the elements in its group
      * method used by correspondence module if installed.
      *
      * @return string
@@ -134,7 +134,7 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
             $res .= "Investigation: $this->description\n";
         }
 
-        foreach ($this->getChildren() as $el) {
+        foreach ($this->getSiblings() as $el) {
             if (method_exists($el, 'getLetter_string')) {
                 $res .= $el->getLetter_string()."\n";
             }

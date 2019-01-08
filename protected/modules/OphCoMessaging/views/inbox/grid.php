@@ -84,7 +84,8 @@ $cols = array(
         'name' => 'Message',
         'cssClassExpression' => '"js-message"',
         'value' => function ($data) {
-            return '<div class="message">' . Yii::app()->format->Ntext($data->message_text) . '</div>';
+            return '<div class="js-preview-message message">' . Yii::app()->format->text(rtrim($data->message_text)) . '</div>' .
+							'<div class="js-expanded-message message expand">' . Yii::app()->format->Ntext(rtrim($data->message_text)) . '</div>';
         },
         'type' => 'raw',
     ),
@@ -101,9 +102,6 @@ $cols = array(
         'buttons' => array(
             'mark' => array(
                 'options' => array('title' => 'Mark as read'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
-                        "id" => $data->event->id,
-                        "returnUrl" => \Yii::app()->request->requestUri))',
                 'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
                 'visible' => function ($row, $data) {
                     return $data->marked_as_read === '0'
