@@ -87,6 +87,7 @@ class Disorder extends BaseActiveRecordVersioned
         return array(
             array('id, fully_specified_name, term', 'required'),
             array('id', 'length', 'max' => 10),
+            array('id', 'checkDisorderExists'),
             array('fully_specified_name, term', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -198,5 +199,17 @@ class Disorder extends BaseActiveRecordVersioned
     public function __toString()
     {
         return $this->term;
+    }
+
+    public function checkDisorderExists($attribute) {
+        $query = "SELECT id FROM disorder where id='$this->id'";
+        $command = Yii::app()->db->createCommand($query);
+        $command->prepare();
+        $result = $command->queryColumn();
+        if (sizeof($result) > 0) {
+            $this->addError( $attribute,'ID '.$this->id.' already exists. Please choose a unique ID.');
+            return true;
+        }
+            return false;
     }
 }
