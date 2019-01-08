@@ -674,6 +674,4 @@ class DisorderController extends BaseController
             Yii::app()->end();
         }
     }
-
-
 }
