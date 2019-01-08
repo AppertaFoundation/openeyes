@@ -26,7 +26,7 @@
                 <?php echo $form->labelEx($model,'id'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'id',array('size'=>20,'maxlength'=>20)); ?>
+                <?php echo $form->textField($model,'id',array('size'=>20,'maxlength'=>20,'disabled'=>($model->isNewRecord ? false : true),)); ?>
                 <?php echo $form->error($model,'id'); ?>
             </td>
         </tr>
