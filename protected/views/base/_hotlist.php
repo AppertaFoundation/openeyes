@@ -19,8 +19,7 @@ $openHotlistItems = UserHotlistItem::model()->getHotlistItems(1);
 $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'));
 
 ?>
-
-<div class="oe-hotlist-panel" id="js-hotlist-panel" style="display: <?= $this->fixedHotlist ? 'unset' : 'none' ?>">
+<div class="oe-hotlist-panel" id="js-hotlist-panel">
     <div class="patient-activity">
         <div class="patients-open">
             <div class="overview">
@@ -30,10 +29,26 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
             </div>
 
             <!-- Open Items -->
+            <table class="activity-list open" style="table-layout: fixed;">
+                <colgroup>
+                    <col style="width: 50px;">
+                    <col style="width: 40%;">
+                    <col style="width: 30%">
+                    <col style="width: 50px;">
+                </colgroup>
+                <tbody>
+
+                <?php foreach ($openHotlistItems as $hotlistItem) : ?>
+                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <!-- Open Items -->
             <table class="activity-list open">
                 <tbody>
 
-                <?php foreach ($openHotlistItems as $hotlistItem): ?>
+                <?php foreach ($openHotlistItems as $hotlistItem) : ?>
                     <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
                 <?php endforeach; ?>
                 </tbody>
@@ -57,7 +72,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 
             <table class="activity-list closed">
                 <tbody>
-                <?php foreach ($closedHotlistItems as $hotlistItem): ?>
+                <?php foreach ($closedHotlistItems as $hotlistItem) : ?>
                     <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
                 <?php endforeach; ?>
                 </tbody>

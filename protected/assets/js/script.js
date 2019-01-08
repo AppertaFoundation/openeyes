@@ -172,15 +172,14 @@ $(document).ready(function () {
 
     $('.js-listview-expand-btn').each(function () {
       // id= js-listview-[data-list]-full | quick
-      var listid = $(this).data('list');
-      var listview = new ListView($(this),
+      let listid = $(this).data('list');
+      let listview = new ListView($(this),
         $('#js-listview-' + listid + '-pro'),
         $('#js-listview-' + listid + '-full'));
     });
 
     function ListView($iconBtn, $quick, $full) {
-      var quick = true;
-
+      let quick = $quick.css('display') !== 'none';
 
       $iconBtn.click(function () {
         $(this).toggleClass('collapse expand');

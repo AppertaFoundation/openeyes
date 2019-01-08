@@ -70,7 +70,7 @@
 			<label for="OphTrOperationbooking_Operation_Session_unavailablereason_id"><?php echo $session->getAttributeLabel('unavailablereason_id'); ?>:</label>
 		</div>
 		<div class="cols-5 column end">
-			<?php echo $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => '- Please Select -', 'nowrapper' => true))?>
+			<?php echo $form->dropDownList($session, 'unavailablereason_id', CHtml::listData($session->getUnavailableReasonList(), 'id', 'name'), array('empty' => 'Select', 'nowrapper' => true))?>
 		</div>
 	</fieldset>
 	<?php echo $form->errorSummary($session); ?>
