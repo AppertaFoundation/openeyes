@@ -43,17 +43,6 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
                 <?php endforeach; ?>
                 </tbody>
             </table>
-
-            <!-- Open Items -->
-            <table class="activity-list open">
-                <tbody>
-
-                <?php foreach ($openHotlistItems as $hotlistItem) : ?>
-                    <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-
         </div>
 
         <!-- Closed Items. users can select date to view all patients closed on that date -->
