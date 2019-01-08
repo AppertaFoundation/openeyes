@@ -2,22 +2,24 @@
 /* @var $this DisorderController */
 /* @var $model Disorder */
 /* @var $form CActiveForm */
+
+$specialties = Specialty::model()->findAll();
 ?>
 
 <div class="oe-full-content flex-layout flex-top">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'disorder-form',
-	// Please note: When you enable ajax validation, make sure the corresponding
-	// controller action is handling ajax validation correctly.
-	// There is a call to performAjaxValidation() commented in generated controller code.
-	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
+    'id'=>'disorder-form',
+    // Please note: When you enable ajax validation, make sure the corresponding
+    // controller action is handling ajax validation correctly.
+    // There is a call to performAjaxValidation() commented in generated controller code.
+    // See class documentation of CActiveForm for details on this.
+    'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+    <p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($model); ?>
+    <?php echo $form->errorSummary($model); ?>
 
     <table class="standard highlight-rows">
         <tbody>
@@ -53,7 +55,7 @@
                 <?php echo $form->labelEx($model,'specialty_id'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+                <?php echo $form->dropDownList($model, 'specialty_id', CHtml::listData($specialties, 'id', 'name')) ?>
                 <?php echo $form->error($model,'specialty_id'); ?>
             </td>
         </tr>
@@ -62,18 +64,17 @@
                 <?php echo $form->labelEx($model,'active'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'active'); ?>
+                <?php echo $form->dropDownList($model, 'active', array('0'=> 'False', '1'=> 'True'));?>
                 <?php echo $form->error($model,'active'); ?>
             </td>
         </tr>
         </tbody>
     </table>
 
-
-	<div class="row flex-layout flex-left">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',
+    <div class="row flex-layout flex-left">
+        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',
         array('class' => 'button green hint')); ?>
-	</div>
+    </div>
 
 <?php $this->endWidget(); ?>
 

@@ -555,7 +555,7 @@ class DisorderController extends BaseController
      */
     public function actionView($id)
     {
-        $this->render('_view',array(
+        $this->render('view',array(
             'model'=>$this->loadModel($id),
         ));
     }
@@ -597,7 +597,10 @@ class DisorderController extends BaseController
 
         if(isset($_POST['Disorder']))
         {
-            $model->attributes=$_POST['Disorder'];
+            foreach ($_POST['Disorder'] as $key=> $value){
+                $model->$key = $value;
+            }
+
             if($model->save())
                 $this->redirect(array('view','id'=>$model->id));
         }
