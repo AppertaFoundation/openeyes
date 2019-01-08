@@ -206,7 +206,7 @@ class Disorder extends BaseActiveRecordVersioned
         $command = Yii::app()->db->createCommand($query);
         $command->prepare();
         $result = $command->queryColumn();
-        if (sizeof($result) > 0) {
+        if (sizeof($result) > 0 && $this->isNewRecord === true) {
             $this->addError( $attribute,'ID '.$this->id.' already exists. Please choose a unique ID.');
             return true;
         }
