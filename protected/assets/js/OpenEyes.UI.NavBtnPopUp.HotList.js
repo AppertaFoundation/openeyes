@@ -57,20 +57,11 @@
         });
 
         // When a patient record is clicked
-        $('.activity-list').delegate('.js-hotlist-closed-patient', 'click', function () {
-            var closedPatient = $(this);
-            $.ajax({
-                type: 'GET',
-                url: '/UserHotlistItem/openHotlistItem',
-                data: {hotlist_item_id: closedPatient.data('id')},
-                success: function () {
-                    window.location.href = closedPatient.data('patient-href');
-                }
-            });
-            return false;
+        $('.activity-list').on('click', '.js-hotlist-open-patient, .js-hotlist-closed-patient', function () {
+            window.location.href = $(this).data('patient-href');
         });
 
-        // When the close link in an open item is clicked
+        // When the open link in a closed item is clicked
         $('.activity-list.closed').delegate('.js-open-hotlist-item', 'click', function () {
             var itemId = $(this).closest('.js-hotlist-closed-patient').data('id');
             $.ajax({
@@ -85,7 +76,7 @@
             return false;
         });
 
-        // When the open link in a closed item is clicked
+        // When the close link in an open item is clicked
         $('.activity-list.open').delegate('.js-close-hotlist-item', 'click', function () {
 
             var itemId = $(this).closest('.js-hotlist-open-patient').data('id');
