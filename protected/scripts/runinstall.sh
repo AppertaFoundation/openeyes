@@ -62,7 +62,7 @@ httpuserstring=""
 usessh=0
 sshuserstring="git"
 showhelp=0
-checkoutparams="-f --no-migrate --no-summary --no-fix"
+checkoutparams="-f --no-migrate --no-summary --no-fix --no-oe"
 accept=0
 genetics=0
 preservedb=0
@@ -253,6 +253,8 @@ if [ "$OE_MODE" != "BUILD" ]; then
 sudo chmod 0644 /etc/cron.d/eventimage
 fi
 
+echo ""
+bash $SCRIPTDIR/set-profile.sh
 echo ""
 bash $SCRIPTDIR/oe-which.sh
 
