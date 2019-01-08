@@ -1955,7 +1955,10 @@ class Examination extends OpenEyesPage {
 	}
 
 	public function openHistory(){
-        $this->getElement('expandHistory')->click();
+        $history_element = $this->getElement('expandHistory');
+        if ($history_element->getAttribute('data-collapse')){
+            $history_element->click();
+        }
     }
 
 	public function openColourVision() {
