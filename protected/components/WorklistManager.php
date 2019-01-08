@@ -298,7 +298,7 @@ class WorklistManager extends CComponent
         $date_limit = new DateTime();
         $date_limit->add($interval);
 
-        if ($definition) {
+        if ($definition && $definition->active_until) {
             $active_until = new DateTime($definition->active_until);
             if ($active_until < $date_limit) {
                 $date_limit = $active_until;
