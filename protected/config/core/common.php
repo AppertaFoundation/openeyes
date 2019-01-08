@@ -56,6 +56,7 @@ return array(
             'ipFilters' => array('127.0.0.1'),
         ),
         'oldadmin',
+        'Admin',
     ),
 
     // Application components
@@ -581,5 +582,6 @@ return array(
         'Greek',
         'Italian'
       ),
+      'oe_version' => '3.1',
     ),
 );

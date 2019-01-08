@@ -102,9 +102,6 @@ $cols = array(
         'buttons' => array(
             'mark' => array(
                 'options' => array('title' => 'Mark as read'),
-                'url' => 'Yii::app()->createURL("/OphCoMessaging/Default/markRead/", array(
-                        "id" => $data->event->id,
-                        "returnUrl" => \Yii::app()->request->requestUri))',
                 'label' => '<i class="oe-i small tick pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as Read"></i>',
                 'visible' => function ($row, $data) {
                     return $data->marked_as_read === '0'
