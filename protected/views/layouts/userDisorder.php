@@ -42,7 +42,7 @@
         <?php $this->renderPartial('//base/_header'); ?>
 
         <div class="oe-full-header flex-layout">
-            <div class="title wordcaps"><b>Common Opthalmic Disorders </b>
+            <div class="title wordcaps"><b>Disorder Management </b>
 
             </div>
         </div>
