@@ -23,5 +23,5 @@ Feature: Document test
     Then I save document event and confirm it saved successfully
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                     |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/home/fivium/Desktop/index.jpg|
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                      |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/pdf/OpenEyesOnlineHelp.pdf   |
