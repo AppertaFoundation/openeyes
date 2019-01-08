@@ -555,7 +555,7 @@ class DisorderController extends BaseController
      */
     public function actionView($id)
     {
-        $this->render('view',array(
+        $this->render('_view',array(
             'model'=>$this->loadModel($id),
         ));
     }
