@@ -126,19 +126,25 @@ if (isset($values['date']) && strtotime($values['date'])) {
         ]); ?>
     <?php endif; ?>
 
-    <td>
-        <?php if (!$removable) :?>
-            <?=Helper::formatFuzzyDate($values['date']) ?>
-        <?php else :?>
+
+    <?php if (!$removable) : ?>
+        <td>
+            <?= Helper::formatFuzzyDate($values['date']) ?>
+        </td>
+    <?php else : ?>
         <?php /* I have seen a css class instead of this (???) style="width:90px" */ ?>
+        <td>
             <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px"
                    class="date"
                    placeholder="yyyy-mm-dd"
-                   name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
+                   name="<?= $field_prefix ?>[date]" value="<?= $values['date'] ?>" autocomplete="off">
+        </td>
+        <td>
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
-        <?php endif; ?>
-    </td>
+        </td>
+    <?php endif; ?>
+
     <?php if ($removable && !$required) : ?>
         <td>
             <i class="oe-i trash remove_item"></i>

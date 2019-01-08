@@ -146,7 +146,11 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        foreach ($this->getChildElements($element->elementType) as $child) {
+        foreach ($this->getElements($element->elementType) as $child) {
+            if(!is_subclass_of($child, 'SplitEventTypeElement')) {
+                continue;
+            }
+
             if ($child->hasRight() && !$element->hasRight()) {
                 $errors[$child->elementTypeName][] = "Can't have right side without procedures on right eye";
             }

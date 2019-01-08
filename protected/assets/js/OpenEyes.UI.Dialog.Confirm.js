@@ -57,7 +57,8 @@
 		title: 'Confirm',
 		dialogClass: 'dialog confirm',
 		okButton: 'OK',
-		cancelButton: 'Cancel'
+		cancelButton: 'Cancel',
+		templateSelector: '#dialog-confirm-template'
 	};
 
 	/**
@@ -72,7 +73,7 @@
 	ConfirmDialog.prototype.getContent = function(options) {
 		// Compile the template, get the HTML
 		return this.compileTemplate({
-			selector: '#dialog-confirm-template',
+			selector: options.templateSelector,
 			data: {
 				content: options.content,
 				okButton: options.okButton,
