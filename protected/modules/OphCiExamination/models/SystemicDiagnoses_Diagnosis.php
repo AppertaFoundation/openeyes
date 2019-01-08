@@ -42,6 +42,17 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     protected static $sd_attribute_ignore = array('id', 'element_id', 'secondary_diagnosis_id', 'has_disorder');
     protected static $sd_attribute_map = array('side_id' => 'eye_id');
 
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'date',
+            ),
+        );
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *

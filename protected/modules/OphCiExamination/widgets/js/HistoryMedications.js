@@ -218,25 +218,27 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if(drug_id === ''){
           drug_id = $row.find("input[name*='[medication_drug_id]']").val();
       }
-      $.getJSON('/medication/drugdefaults', { drug_id: drug_id }, function (res) {
-          for (var name in res) {
-              var $input = $row.find('[name$="[' + name +']"]');
-              if (name === 'dose') {
-                  $input.attr('placeholder', res['dose_unit']);
-                  $input.addClass('numbers-only');
-                  if(res['dose_unit'] === 'mg'){
-                      $input.addClass('decimal');
-                  } else if(!res['dose_unit']){
-                      $input.removeClass('numbers-only decimal');
-                  }
+      if(drug_id !== '') {
+          $.getJSON('/medication/drugdefaults', {drug_id: drug_id}, function (res) {
+              for (let name in res) {
+                  let $input = $row.find('[name$="[' + name + ']"]');
+                  if (name === 'dose') {
+                      $input.attr('placeholder', res['dose_unit']);
+                      $input.addClass('numbers-only');
+                      if (res['dose_unit'] === 'mg') {
+                          $input.addClass('decimal');
+                      } else if (!res['dose_unit']) {
+                          $input.removeClass('numbers-only decimal');
+                      }
 
-                  $input.val('');
-                  $row.find('[name$="[units]"]').val(res['dose_unit']);
-              } else {
-                  $input.val(res[name]).change();
+                      $input.val('');
+                      $row.find('[name$="[units]"]').val(res['dose_unit']);
+                  } else {
+                      $input.val(res[name]).change();
+                  }
               }
-          }
-      });
+          });
+      }
   };
 
   /**

@@ -4,7 +4,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
 
 <div class="oe-login">
   <div class="login">
-    <h1>OpenEyes 3.0</h1>
+    <h1>OpenEyes <?=Yii::App()->params['oe_version']?></h1>
     <div class="user">
 
         <?php $form = $this->beginWidget('CActiveForm', array(

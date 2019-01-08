@@ -28,23 +28,8 @@
         $warnings = $this->patient->getWarnings($clinical);
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
-        <div class="alert-box alert with-icon" style="display: <?php if (!is_array($errors)) {
-            echo 'none';
-        } ?>">
-            <p>Please fix the following input errors:</p>
-            <ul>
-                <?php if (is_array($errors)) {
-                foreach ($errors as $errors2) {
-                    foreach ($errors2 as $error) { ?>
-                        <li><?php echo $error ?></li>
-                    <?php }
-                } ?>
-            </ul>
-            <?php } else { ?>
-                <li>&nbsp;</li>
-                </ul>
-            <?php } ?>
-        </div>
+
+        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">
