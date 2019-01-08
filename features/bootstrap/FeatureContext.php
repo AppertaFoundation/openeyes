@@ -41,8 +41,12 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext ( 'AdminPageContext', new AdminPageContext ( $parameters ) );
 		$this->useContext ( 'BiometryContext', new BiometryContext ( $parameters ) );
         $this->useContext ( 'CaseSearchContext', new CaseSearchContext ( $parameters ) );
+        // added Delete and TestDocument
+        $this->useContext('DeleteEventContext',new DeleteEventContext($parameters));
+        $this->useContext('DocumentContext',new DocumentContext($parameters));
+        $this->useContext('VisualFieldContext',new VisualFieldContext($parameters));
 
-		$this->loadModuleContextsPages ( $parameters );
+        $this->loadModuleContextsPages ( $parameters );
 		
 		$this->screenshots = array ();
 		$this->screenshotPath = realpath ( join ( DIRECTORY_SEPARATOR, array (
@@ -152,7 +156,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 						'step' => substr ( $step->getType () . ' ' . $step->getText (), 0, 255 ) 
 				);
 				$path = preg_replace ( '/[^\-\.\w]/', '_', $path );
-				//change here
 				$filename = $this->screenshotPath . DIRECTORY_SEPARATOR . implode ( '/', $path ) . '.png';
 				
 				if (count ( $this->screenshots ) >= 5) {

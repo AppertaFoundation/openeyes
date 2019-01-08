@@ -144,6 +144,7 @@ class AddingNewEvent extends OpenEyesPage {
 
 
 	public function addNewEvent($event){
+        $this->getSession()->getDriver()->maximizeWindow();
 		$this->elements['addEvent'] = array(
 			'xpath' => "//*[@id='add-event']"
 		);

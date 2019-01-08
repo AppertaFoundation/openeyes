@@ -38,8 +38,11 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_any_grade_of_doctor_0']" 
 			),
 			'preopassessmentNo' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetist_preop_assessment_0']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_preassessment_booking_required_0']"
 			),
+			'preopassessmentYes'=>array(
+                'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_preassessment_booking_required_1']"
+            ),
 			'AnaestheticTypeTopical' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']" 
 			),
@@ -53,20 +56,26 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_4']"
 			),
 			'anaestheticTopical' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_AnaestheticType_Topical']"
 			),
 			'anaestheticLa' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_3']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_AnaestheticType_LA']"
 			),
 			'anaestheticLac' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_2']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_']"
 			),
 			'anaestheticLas' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_4']" 
 			),
 			'anaestheticGa' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_5']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_AnaestheticType_GA']"
 			),
+             'anaestheticSedation' => array (
+                'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_AnaestheticType_Sedation']"
+            ),
+            'anaestheticNo' => array (
+                'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_AnaestheticType_No_Anaesthetic']"
+             ),
 			'AnaestheticchoicePatientpreference' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_choice_id_1']" 
 			),
@@ -74,8 +83,20 @@ class OperationBooking extends OpenEyesPage {
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_1']" 
 			),
 			'postOpStatNo' => array (
-					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_0']" 
+					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_required_id_1']"
 			),
+            'OvernightStayNo' => array (
+                'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_required_id_1']"
+            ),
+            'OvernightStayPreOp' => array (
+            'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_required_id_2']"
+            ),
+            'OvernightStayPostOp' => array (
+            'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_required_id_3']"
+             ),
+            'OvernightStayBoth' => array (
+             'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_required_id_4']"
+             ),
 			'operationSiteID' => array (
 					'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_site_id']" 
 			),
@@ -152,9 +173,45 @@ class OperationBooking extends OpenEyesPage {
 			),
 			'consultantValidationError' => array (
 					'xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Operation: The booked session does not have a consultant present, you must change the session or cancel the booking before making this change')]" 
-			) 
-	)
-	;
+			) ,
+            'complexity_low'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_Operation_complexity_0']"
+            ),
+            'complexity_medium'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_Operation_complexity_5']"
+            ),
+            'complexity_high'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_Operation_complexity_10']"
+            ),
+            'schedule_option_am'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_2']"
+            ),
+            'schedule_option_pm'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_3']"
+            ),
+            'schedule_option_np'=>array(
+                'xpath'=>"//input[@id='Element_OphTrOperationbooking_ScheduleOperation_schedule_options_id_4']"
+            ),
+            'special_equipment_details'=>array(
+                'xpath'=>"//*[@id='Element_OphTrOperationbooking_Operation_special_equipment_details']"
+            ),
+            'collector_name'=>array(
+              'xpath'=>"//*[@id='Element_OphTrOperationbooking_ContactDetails_collector_name']"
+            ),
+             'collector_number'=>array(
+                'xpath'=>"//*[@id='Element_OphTrOperationbooking_ContactDetails_collector_contact_number']"
+            ),
+            'operation_rtt_comment'=>array(
+                'xpath'=>"//*[@id='Element_OphTrOperationbooking_Operation_comments_rtt']"
+            ),
+            'add_procedure_btn'=>array(
+              'xpath'=>"//*[@id='add-procedure-list-btn-procs']"
+            ),
+            'add_diagnosis_btn'=>array(
+                'xpath'=>"//*[@id='add-operation-booking-diagnosis']"
+            ),
+
+	);
 	public function diagnosisEyes($eye) {
 		if ($eye === 'Right') {
 			$this->getElement ( 'diagnosisRightEye' )->click ();
@@ -169,7 +226,8 @@ class OperationBooking extends OpenEyesPage {
 	public function diagnosis($diagnosis) {
 		$element = $this->getElement ( 'operationDiagnosis' );
 		$this->scrollWindowToElement ( $element );
-		$element->setValue ( $diagnosis );
+        $this->getElement('add_diagnosis_btn')->click();
+        $this->addSelection($diagnosis);
 	}
 	public function operationEyes($opEyes) {
 		if ($opEyes === 'Right') {
@@ -183,9 +241,27 @@ class OperationBooking extends OpenEyesPage {
 		}
 	}
 	public function procedure($procedure) {
-		$this->getElement ( 'operationProcedure' )->setValue ( $procedure );
+        $this->getSession()->getDriver()->maximizeWindow();
+        //$this->getElement ( 'operationProcedure' )->setValue ( $procedure );
+        $this->getSession ()->wait ( 2000 );
+        $this->getElement('add_procedure_btn')->click();
+        $this->addSelection($procedure);
 		$this->getSession ()->wait ( 2000 );
 	}
+
+	public function addSelection($selection){
+	    foreach($this->findAll('css','.oe-add-select-search.auto-width') as $pop_up){
+	        if ($pop_up->isVisible()){
+	            $this->elements['pop_up_selection']=array(
+	                'css'=>'li[data-label=\''.$selection.'\']'
+                );
+	            $pop_up->find('xpath',$this->getElement('pop_up_selection')->getXpath())->click();
+	            $pop_up->find('css','.add-icon-btn')->click();
+            }
+        }
+    }
+
+
 	public function consultantYes() {
 		//$element = $this->getElement ( 'consultantYes' );
 		//$this->scrollWindowToElement ( $element );
@@ -201,6 +277,9 @@ class OperationBooking extends OpenEyesPage {
 	public function preopassessmentNo() {
 		$this->getElement ( 'preopassessmentNo' )->click ();
 	}
+    public function preopassessmentYes() {
+        $this->getElement ( 'preopassessmentYes' )->click ();
+    }
 	public function AnaestheticTypeTopical() {
 		$this->getElement ( 'AnaestheticTypeTopical' )->click ();
 	}
@@ -233,6 +312,12 @@ class OperationBooking extends OpenEyesPage {
 		if ($type === 'GA') {
 			$element = $this->getElement ( 'anaestheticGa' );
 		}
+		if ($type === 'Sedation'){
+		    $element = $this->getElement('anaestheticSedation');
+        }
+        if ($type === 'No Anaesthetic'){
+            $element = $this->getElement('anaestheticNo');
+        }
 		// $element->focus();
 	//	$this->scrollWindowToElement ( $element );
 		$this->getSession ()->wait ( 2000 );
@@ -340,8 +425,8 @@ class OperationBooking extends OpenEyesPage {
 	public function sessionOperationComments($opComments) {
 		$this->getElement ( 'sessionOperationComments' )->setValue ( $opComments );
 	}
-	public function sessionRTTComments($RTTcomments) {
-		$this->getElement ( 'sessionRTTComments' )->setValue ( $RTTcomments );
+	public function enterRTTComments($RTTcomments) {
+		$this->getElement ( 'operation_rtt_comment' )->setValue ( $RTTcomments );
 	}
 	public function confirmSlot() {
 		$this->getElement ( 'confirmSlot' )->click ();
@@ -367,4 +452,60 @@ class OperationBooking extends OpenEyesPage {
 			throw new BehaviorException ( "CONSULTANT BOOKING VALIDATION ERROR!!!" );
 		}
 	}
+	public function selectOperationComplexity($complexity){
+	    if (strpos(strtolower($complexity),'high')!==false){
+	        $this->getElement('complexity_high')->click();
+        }elseif (strpos(strtolower($complexity),'medium')!==false){
+            $this->getElement('complexity_medium')->click();
+        }else{
+            $this->getElement('complexity_low')->click();
+        }
+    }
+    public function selectScheduleTime($schedule){
+        if (strpos(strtolower($schedule),'am')!==false){
+            $this->getElement('schedule_option_am')->click();
+        }elseif (strpos(strtolower($schedule),'pm')!==false){
+            $this->getElement('schedule_option_pm')->click();
+        }else{
+            $this->getElement('schedule_option_np')->click();
+        }
+    }
+
+    public function specialEquipment($required_or_not){
+	    if ($required_or_not){
+            $this->elements['special_equipment'] = array(
+                'xpath'=>"//*[@id='Element_OphTrOperationbooking_Operation_special_equipment_1']"
+            );
+            $this->getElement('special_equipment')->click();
+        }else{
+            $this->elements['special_equipment'] = array(
+                'xpath'=>"//*[@id='Element_OphTrOperationbooking_Operation_special_equipment_0']"
+            );
+            $this->getElement('special_equipment')->click();
+        }
+    }
+    public function speicialEquipmentDetails($details){
+	    $this->getElement('special_equipment_details')->setValue($details);
+    }
+
+    public function collecterName($name){
+	    $this->getElement('collector_name')->setValue($name);
+    }
+    public function collecterNumber($number){
+        $this->getElement('collector_number')->setValue($number);
+    }
+
+    public function overnightRequiredOption($option){
+	    if ($option === 'Both'){
+	        $this->getElement('OvernightStayBoth')->click();
+        }elseif($option === 'Pre-op'){
+	        $this->getElement('OvernightStayPreOp')->click();
+        }elseif($option === 'Post-op'){
+	        $this->getElement('OvernightStayPostOp')->click();
+        }else{
+            $this->getElement('OvernightStayNo')->click();
+        }
+    }
+
+
 }

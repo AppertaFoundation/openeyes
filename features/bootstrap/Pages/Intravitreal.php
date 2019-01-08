@@ -284,11 +284,12 @@ class Intravitreal extends OpenEyesPage {
 			),
 			
 			'leftComplicationsComments' => array (
-					'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_left_oth_descrip']" 
+					'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_left_complications']"
 			),
 			'rightComplicationsComments' => array (
-					'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_right_oth_descrip']" 
-			) 
+					'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_right_complications']"
+			),
+
 	);
 	protected function isRightSideOpen() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'addRightSide' )->getXpath () );
@@ -361,7 +362,7 @@ class Intravitreal extends OpenEyesPage {
 		$this->getElement ( 'rightDeliveryOther' )->click ();
 	}
 	public function rightAnaestheticAgent($agent) {
-		$this->getElement ( 'rightAnaestheticAgent' )->setValue ( $agent );
+		$this->getElement ( 'rightAnaestheticAgent' )->selectOption( $agent );
 	}
 	
 	// Left
@@ -397,7 +398,7 @@ class Intravitreal extends OpenEyesPage {
 		$this->getElement ( 'leftDeliveryOther' )->click ();
 	}
 	public function leftAnaestheticAgent($agent) {
-		$this->getElement ( 'leftAnaestheticAgent' )->setValue ( $agent );
+		$this->getElement ( 'leftAnaestheticAgent' )->selectOption( $agent );
 	}
 	public function rightPreInjectionAntiseptic($antiseptic) {
 		$this->getElement ( 'rightPreInjectionAntiseptic' )->selectOption ( $antiseptic );
@@ -544,9 +545,11 @@ class Intravitreal extends OpenEyesPage {
 		}
 	}
 	public function leftComplicationComments($comments) {
-		$this->getElement ( 'leftComplicationsComments' )->setValue ( $comments );
+		$this->getElement ( 'leftComplicationsComments' )->setValue( $comments );
 	}
 	public function rightComplicationComments($comments) {
-		$this->getElement ( 'rightComplicationsComments' )->setValue ( $comments );
-	}
+		//$this->getElement ( 'rightComplicationsComments' )->setValue($comments);
+        $this->getElement ( 'rightComplicationsComments' )->selectOption($comments);
+
+    }
 }
