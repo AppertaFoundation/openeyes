@@ -366,6 +366,12 @@ return array(
                     'position' => 46,
                     'restricted' => array('TaskAddPatient'),
                 ),
+                'practices' => array(
+                    'title' => 'Practices',
+                    'uri' => 'practice/index',
+                    'position' => 11,
+                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
+                ),
                 'forum' => array(
                     'title' => 'FORUM',
                     'uri' => "javascript:oelauncher('forum');",
@@ -576,7 +582,8 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-
+        'hos_num_label' => 'Hospital',
+        'nhs_num_label' => 'NHS',
       'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',

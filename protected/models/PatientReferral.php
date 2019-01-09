@@ -21,78 +21,75 @@
  */
 class PatientReferral extends BaseActiveRecord
 {
-  public $uploadedFile;
-  /**
-   * @return string the associated database table name
-   */
-  public function tableName()
-  {
-    return 'patient_referral';
-  }
+    public $uploadedFile;
 
-  /**
-   * @return array validation rules for model attributes.
-   */
-  public function rules()
-  {
-    // NOTE: you should only define rules for those attributes that
-    // will receive user inputs.
-    return array(
-      array('uploadedFile', 'file', 'allowEmpty' => true, 'on' => array('edit_patient', 'self_register', 'other_register')),
-      array('uploadedFile', 'file', 'allowEmpty' => false, 'on' => 'referral'),
-      array('patient_id, uploadedFile, file_name, file_size, file_content, file_type', 'safe')
-    );
-  }
-
-  /**
-   * @return array relational rules.
-   */
-  public function relations()
-  {
-    // NOTE: you may need to adjust the relation name and the related
-    // class name for the relations automatically generated below.
-    return array(
-      'patient' => array(self::BELONGS_TO, 'Patient', 'id'),
-      'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-      'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-    );
-  }
-
-  /**
-   * @return array customized attribute labels (name=>label)
-   */
-  public function attributeLabels()
-  {
-    return array(
-      'uploadedFile' => 'Referral'
-    );
-  }
-
-  public function beforeValidate()
-  {
-    if (!$this->isNewRecord)
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
     {
-      $this->setScenario('edit_patient');
-    }
-    return parent::beforeValidate();
-  }
-
-  /**
-   * Populate the model with the main attributes from $FILE.
-   * @return bool The beforeSave event.
-   */
-  protected function beforeSave()
-  {
-    $file = CUploadedFile::getInstance($this, 'uploadedFile');
-    if ($file) {
-      $this->file_size = $file->size;
-      $this->file_name = $file->name;
-      $this->file_content = file_get_contents($file->tempName);
-      $this->file_type = $file->type;
+        return 'patient_referral';
     }
 
-    return parent::beforeSave();
-  }
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('uploadedFile', 'file', 'allowEmpty' => true),
+            array('patient_id, uploadedFile, file_name, file_size, file_content, file_type', 'safe')
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'patient' => array(self::BELONGS_TO, 'Patient', 'id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'uploadedFile' => 'Referral'
+        );
+    }
+
+    public function beforeValidate()
+    {
+        if (!$this->isNewRecord) {
+            $this->setScenario('edit_patient');
+        }
+        return parent::beforeValidate();
+    }
+
+    /**
+     * Populate the model with the main attributes from $FILE.
+     * @return bool The beforeSave event.
+     */
+    protected function beforeSave()
+    {
+        $file = CUploadedFile::getInstance($this, 'uploadedFile');
+        if ($file) {
+            $this->file_size = $file->size;
+            $this->file_name = $file->name;
+            $this->file_content = file_get_contents($file->tempName);
+            $this->file_type = $file->type;
+        }
+
+        return parent::beforeSave();
+    }
 
 
 }
