@@ -33,9 +33,10 @@ $required_risk_ids = array_map(function ($r) {
   <div class="data-group cols-10">
     <div
         class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
-      <label for="<?= $model_name ?>_no_risks">Confirm patient has no risks:</label>
-        <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
-            array('class' => $model_name . '_no_risks')); ?>
+         <label for="<?= $model_name ?>_no_risks" class="inline highlight">
+            <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false, array('class' => $model_name . '_no_risks')); ?>
+            Confirm patient has no risks
+         </label>
     </div>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
