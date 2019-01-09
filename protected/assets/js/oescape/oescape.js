@@ -28,6 +28,11 @@ $(document).ready(function () {
     $('.plotly-' + side).show(); //show the new side
     $('.plotly-' + other_side).hide(); //hide the other side
 
+    if ($('.oes-right-side').find('.oes-data-row-input')){
+      $('#oct_stack_' + side).show();
+      $('#oct_stack_' + other_side).hide();
+    }
+
     setOEScapeSize($('.js-oes-area-resize.selected').data('area'));
   });
 

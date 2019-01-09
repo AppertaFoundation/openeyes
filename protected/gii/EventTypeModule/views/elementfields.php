@@ -19,7 +19,7 @@ if (isset($_GET['event_type_id'])) {
 		<label>Select the element to add fields to</label>
 		<h4 style="margin-bottom: 0;">
 			<select class="elementToAddFieldsTo" name="elementId<?php echo $element_num?>">
-				<option value="">- Please select -</option>
+				<option value="">Select</option>
 				<?php foreach (ElementType::model()->findAll('event_type_id=?', array($event_type_id)) as $element_type) {
     ?>
 					<option value="<?php echo $element_type->id?>"<?php if (@$_POST['elementId'.$element_num] == $element_type->id) {

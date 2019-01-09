@@ -153,15 +153,19 @@ foreach ($this->patient->episodes as $ep) {
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
                     'is_glaucoma' => $disorder_item['is_glaucoma'],
-                    'secondary' => json_encode($disorder_item['secondary'])
+                    'secondary' => json_encode($disorder_item['secondary']),
+                    'alternate' => json_encode($disorder_item['alternate']),
                 ];
             }, $disorder_list)
         ) ?>, {'multiSelect': true})],
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
         },
-        onReturn: function (adderDialog, selectedItems) {
+        onReturn: function (adderDialog, selectedItems, selectedAdditions) {
           diagnosesController.addEntry(selectedItems);
+          if(selectedAdditions){
+            diagnosesController.addEntry(selectedAdditions);
+          }
           return true;
         }
       });
