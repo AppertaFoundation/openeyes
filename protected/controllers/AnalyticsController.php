@@ -5,6 +5,7 @@ class AnalyticsController extends BaseController
     const DAYTIME_ONE = 86400;
     const DAYTIME_THREE = self::DAYTIME_ONE * 3;
     const WEEKTIME = 604800;
+    private $current_user ;
 
   public $layout = '//layouts/events_and_episodes';
   protected $patient_list = array();
@@ -23,6 +24,7 @@ class AnalyticsController extends BaseController
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
 
+      $this->getDisorders();
       $this->render('/analytics/analytics_container',
           array(
               'specialty'=>'Cataract',
@@ -34,6 +36,9 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
+      $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+      $roles = Yii::app()->user->getRole(Yii::app()->user->id);
+
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
 
@@ -107,17 +112,19 @@ class AnalyticsController extends BaseController
   public function actionGlaucoma(){
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
+      $disorder_data = $this->getDisorders();
 
-      $clinical_data = array(
+      $service_data = array(
           'title' => 'Clinical Section',
           'x'=> array(1,2,3,4,5,6),
           'y'=> array(18, 9, 10, 7, 13, 16)
       );
 
-      $service_data = array(
-          'title' => 'Service Section',
-          'x' => array(12, 5, 9, 7, 6),
-          'y' => array(0, 1, 2, 3, 4, 5)
+      $clinical_data = array(
+          'title' => 'Disorders Section',
+          'x' => $disorder_data['x'],
+          'y' => $disorder_data['y'],
+          'text' => $disorder_data['text']
       );
 
       $custom_data = array(
@@ -200,7 +207,13 @@ class AnalyticsController extends BaseController
 
   }
 
-  public function getCustomVA() {
+  public function sortByTime($a, $b){
+      if($a['event_time']==$b['event_time'])
+          return 0;
+      return ($a['event_time']<$b['event_time'])? -1: 1;
+  }
+
+  public function getCustomVA(                                                                                                                                                                                  ) {
       $va_patient_list = array();
       $left_va_list = array();
       $right_va_list = array();
@@ -333,12 +346,6 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function sortByTime($a, $b){
-      if($a['event_time']==$b['event_time'])
-          return 0;
-      return ($a['event_time']<$b['event_time'])? -1: 1;
-  }
-
   public function getCustomIOP(){
       $iop_patient_list = array();
       $left_iop_list = array();
@@ -414,6 +421,64 @@ class AnalyticsController extends BaseController
 
 
   public function getDisorders(){
+      $disorder_list = array(
+          'x'=> array(),
+          'y'=>array(),
+          'text' => array(),
+      );
+      $disorder_patient_list = array();
+      $other_patient_list = array();
+      $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+      $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+      $criteria = new CDbCriteria();
+      $criteria->compare('subspecialty_id', $subspecialty_id);
+      $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAll($criteria);
+      foreach ($common_ophthalmic_disorders as $disorder){
+          if(isset($disorder->disorder_id)){
+              if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
+                  $disorder_patient_list[$disorder->disorder->id]= array(
+                      'full_name' => $disorder->disorder->fully_specified_name,
+                      'short_name' => $disorder->disorder->term,
+                      'patient_list' => array(),
+                  );
+              }
+          }
+      }
 
+      $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
+      foreach ($diagnoses_elements as $diagnosis_element_item){
+          $current_event = $diagnosis_element_item->event;
+          if(isset($current_event->episode)) {
+              $current_episode = $current_event->episode;
+              $current_patient = $current_episode->patient;
+              $diagnoses = $diagnosis_element_item->diagnoses;
+              foreach($diagnoses as $diagnosis_item){
+                  $disorder_id = $diagnosis_item->disorder->id;
+                  if (array_key_exists($disorder_id, $disorder_patient_list)){
+                      if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
+                          array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
+                      }
+                  } else {
+                      if(!in_array($current_patient->id, $other_patient_list)){
+                          array_push($other_patient_list, $current_patient->id);
+                      }
+                  }
+              }
+          }
+      }
+
+      $i=0;
+      foreach ($disorder_patient_list as $key=>$value){
+          $disorder_list['y'][] = $i;
+          $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
+          $disorder_list['text'][] = $disorder_patient_list[$key]['short_name'];
+          $i++;
+      }
+      $disorder_list['y'][] = $i;
+      $disorder_list['x'][] = count($other_patient_list);
+      $disorder_list['text'][] = 'Other';
+      Yii::log(var_export($disorder_list, true));
+
+      return $disorder_list;
   }
 }

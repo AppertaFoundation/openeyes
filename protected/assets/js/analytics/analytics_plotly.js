@@ -54,3 +54,8 @@ var analytics_layout = {
         },
     },
 };
+
+var analytics_options = {
+    displayLogo: false,
+    displayModeBar: false,
+};

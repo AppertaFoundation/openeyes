@@ -12,13 +12,16 @@
             x: service_data['x'],
             y: service_data['y'],
             type: 'bar',
+            orientation: 'h'
         }];
-        service_layout['title'] = "Service Section";
-        service_layout['yaxis']['tickvals'] = [1, 2, 3, 4, 5, 6];
-        service_layout['yaxis']['ticktext'] = ['a','b','C','D', 'E', 'F'];
+        service_layout['width'] = 700;
+        service_layout['margin']['l'] = 250;
+        service_layout['yaxis']['showgrid'] = false;
+        service_layout['yaxis']['tickvals'] = service_data['y'];
+        service_layout['yaxis']['ticktext'] = service_data['text'];
 
         Plotly.newPlot(
-            'js-hs-chart-analytics-service', data ,service_layout
+            'js-hs-chart-analytics-service', data ,service_layout, analytics_options
         );
     });
 </script>

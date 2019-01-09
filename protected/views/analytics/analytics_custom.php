@@ -19,7 +19,7 @@
             overlaying: 'y',
         };
         Plotly.newPlot(
-            'js-hs-chart-analytics-custom', custom_data ,custom_layout
+            'js-hs-chart-analytics-custom', custom_data ,custom_layout, analytics_options
         );
 
         $('#js-hs-chart-analytics-custom').on('plotly_click', function (data) {

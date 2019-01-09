@@ -14,16 +14,14 @@
             y: clinical_data['y'],
             type: 'bar',
             orientation: 'h'
-
         }];
-        clinical_layout['title'] = "Clinical Section";
-        clinical_layout['yaxis']['tickvals'] = [0, 1, 2, 3, 4, 5];
-        clinical_layout['yaxis']['ticktext'] = ['a','b','C','D', 'E', 'F'];
+        clinical_layout['margin']['l'] = 250;
+        clinical_layout['yaxis']['showgrid'] = false;
+        clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
+        clinical_layout['yaxis']['ticktext'] = clinical_data['text'];
         Plotly.newPlot(
-            'js-hs-chart-analytics-clinical', data ,clinical_layout
+            'js-hs-chart-analytics-clinical', data ,clinical_layout, analytics_options
         );
 
-        clinical_plot.on('plotly_click', function () {
-        });
     });
 </script>
