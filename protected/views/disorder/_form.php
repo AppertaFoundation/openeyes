@@ -64,11 +64,7 @@ $specialties = Specialty::model()->findAll();
                 <?php echo $form->labelEx($model,'active'); ?>
             </td>
             <td>
-<<<<<<< HEAD
                 <?php echo $form->checkBox($model,'active',array('checked'=>'checked')); ?>
-=======
-                <?php echo $form->dropDownList($model, 'active', array('0'=> 'False', '1'=> 'True'));?>
->>>>>>> 7029a99260e2bc64fbb099e59ac7f8c131647c3f
                 <?php echo $form->error($model,'active'); ?>
             </td>
         </tr>
