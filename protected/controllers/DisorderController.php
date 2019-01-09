@@ -680,4 +680,16 @@ class DisorderController extends BaseController
             Yii::app()->end();
         }
     }
+
+    public function getSpecialtyNameFromId($data) {
+        $specialties = Specialty::model()->findAll();
+        if ($data->specialty_id !== null || $data->specialty_id != '') {
+            foreach ($specialties as $specialty) {
+                if($specialty->id == $data->specialty_id) {
+                    return $specialty->name;
+                }
+            }
+        }
+        return 'NA';
+    }
 }
