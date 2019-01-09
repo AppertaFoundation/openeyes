@@ -293,10 +293,10 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => 'Hospital Number',
-            'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
+            'hos_num' => Yii::app()->params['hos_num_label'],
+            'nhs_num' => Yii::app()->params['nhs_num_label'],
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
+            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
             'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
@@ -2146,6 +2146,17 @@ class Patient extends BaseActiveRecordVersioned
         return array_map(function($allergy) {
             return $allergy->name;
         }, $this->allergies);
+    }
+
+    public function getAllergiesId()
+    {
+        if (!$this->hasAllergyStatus() || $this->no_allergies_date) {
+            return false;
+        } else {
+            return array_map(function($allergy) {
+                return $allergy->id;
+            }, $this->allergies);
+        }
     }
 
     /**

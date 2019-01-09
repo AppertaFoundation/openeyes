@@ -16,32 +16,30 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info js-toggle-container">
-	<h3 class="element-header">Contact details:</h3>
-	<div class="js-toggle-body">
-		<div class="data-group">
-			<div class="cols-4 column">
-				<div class="data-label">Telephone:</div>
-			</div>
-			<div class="cols-8 column">
-				<div class="data-value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
-			</div>
-		</div>
-		<div class="data-group">
-			<div class="cols-4 column">
-				<div class="data-label">Email:</div>
-			</div>
-			<div class="cols-8 column">
-				<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
-			</div>
-		</div>
-		<div class="data-group">
-			<div class="cols-4 column">
-				<div class="data-label">Next of Kin:</div>
-			</div>
-			<div class="cols-8 column">
-				<div class="data-value">Unknown</div>
-			</div>
-		</div>
+<section class="element view full patient-info js-toggle-container">
+    <header class="element-header">
+        <h3 class="element-title">Contact details</h3>
+    </header>
+	<div class="element-data full-width js-toggle-body">
+        <table class="standard">
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-2">
+            </colgroup>
+            <tbody>
+            <tr class="data-group">
+                <td class="data-label">Telephone:</td>
+                <td class="data-value"><?= !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></td>
+            </tr>
+            <tr class="data-group">
+                <td class="data-label">Email:</td>
+                <td class="data-value"><?= !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></td>
+            </tr>
+            <tr class="data-group">
+                <td class="data-label">Next of Kin:</td>
+                <td class="data-value">Unknown</td>
+            </tr>
+            </tbody>
+        </table>
 	</div>
 </section>

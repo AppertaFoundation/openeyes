@@ -57,6 +57,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
                 array('element_diagnoses_id,disorder_id,eye_id', 'required'),
                 array('element_diagnoses_id,disorder_id,eye_id,principal,date', 'safe'),
                 array('id, name', 'safe', 'on' => 'search'),
+                array('date', 'OEFuzzyDateValidator'),
         );
     }
 

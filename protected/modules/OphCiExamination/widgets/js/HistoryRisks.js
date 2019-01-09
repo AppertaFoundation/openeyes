@@ -241,7 +241,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let new_row = Mustache.render(template, data);
         let row_item = $(new_row);
         if (risk_name === 'Other') {
-            row_item.find('span').show();
+            row_item.find('span').css('display' ,'');
         }
         return row_item;
     };

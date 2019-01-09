@@ -75,7 +75,7 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
     public function getNextStep()
     {
         $criteria = new \CDbCriteria(array(
-            'condition' => 'workflow_id = :workflow_id AND position >= :position AND id <> :id',
+            'condition' => 'workflow_id = :workflow_id AND position >= :position AND id <> :id and is_active = 1',
             'order' => 'position, id',
             'params' => array(':position' => $this->position, ':workflow_id' => $this->workflow_id, ':id' => $this->id),
         ));
