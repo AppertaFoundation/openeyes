@@ -161,8 +161,11 @@ foreach ($this->patient->episodes as $ep) {
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
         },
-        onReturn: function (adderDialog, selectedItems) {
+        onReturn: function (adderDialog, selectedItems, selectedAdditions) {
           diagnosesController.addEntry(selectedItems);
+          if(selectedAdditions){
+            diagnosesController.addEntry(selectedAdditions);
+          }
           return true;
         }
       });
