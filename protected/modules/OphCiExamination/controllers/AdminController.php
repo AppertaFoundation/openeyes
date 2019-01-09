@@ -655,6 +655,7 @@ class AdminController extends \ModuleAdminController
                     array('field' => 'subspecialty_id', 'type' => 'lookup', 'model' => 'Subspecialty'),
                 ),
                 'div_wrapper_class' => 'cols-5',
+                'return_url' => '/oeadmin/examinationElementAttributes/list',
             )
         );
     }
