@@ -18,17 +18,45 @@ $this->menu=array(
 
 <h1>View Disorder #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		'id',
-		'fully_specified_name',
-		'term',
-		'last_modified_user_id',
-		'last_modified_date',
-		'created_user_id',
-		'created_date',
-		'specialty_id',
-		'active',
-	),
-)); ?>
+<table class="standard highlight-rows">
+    <tbody>
+    <tr>
+        <td>ID: </td>
+        <td>
+            <?= CHtml::link(CHtml::encode($model->id), array('view', 'id'=>$model->id)); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Fully Specified Name:
+        </td>
+        <td>
+            <?= CHtml::encode($model->fully_specified_name); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Term:
+        </td>
+        <td>
+            <?= CHtml::encode($model->term); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Specialty:
+        </td>
+        <td>
+            <?= isset($model->specialty_id)? Specialty::model()->findByPk($model->specialty_id)->name: ''; ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Active:
+        </td>
+        <td>
+            <?= $model->active?'True': 'False'; ?>
+        </td>
+    </tr>
+    </tbody>
+</table>
