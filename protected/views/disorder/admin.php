@@ -50,7 +50,9 @@ $('.search-form form').submit(function(){
 //		'last_modified_date',
 //		'created_user_id',
 //		'created_date',
-		'specialty_id',
+		array('name'=>'specialty_id',
+		      'value'=>array($this, 'getSpecialtyNameFromId'),
+		      'header'=>'Specialty'),
 //		'active',
 		array(
 			'class'=>'CButtonColumn',
