@@ -26,17 +26,17 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<p class="description-note note">
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
-</p>
 
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'button large')); ?>
-<div class="search-form" style="display:none">
+<?php echo CHtml::link('Advanced Search','#',array('class'=>'button large search-button')); ?>
+<div class="search-form " style="display:none">
 <?php $this->renderPartial('_search',array(
 	'model'=>$model,
 )); ?>
 </div><!-- search-form -->
+<div class="find-by" style="font-size: 0.6875rem; font-weight: 400; color: #8c8c8c;">
+    You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
+    or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
+</div>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'disorder-grid',
@@ -46,12 +46,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'id',
 		'fully_specified_name',
 		'term',
-		'last_modified_user_id',
-		'last_modified_date',
-		'created_user_id',
-		'created_date',
+//		'last_modified_user_id',
+//		'last_modified_date',
+//		'created_user_id',
+//		'created_date',
 		'specialty_id',
-		'active',
+//		'active',
 		array(
 			'class'=>'CButtonColumn',
             'deleteButtonOptions'=>array('class' => 'oe-i trash small hint'),
