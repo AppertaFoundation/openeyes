@@ -573,6 +573,9 @@ class DisorderController extends BaseController
 
         if(isset($_POST['Disorder']))
         {
+            foreach ($_POST['Disorder'] as $key=> $value){
+                $model->$key = $value;
+            }
             $model->attributes=$_POST['Disorder'];
             if($model->save())
                 $this->redirect(array('view','id'=>$model->id));

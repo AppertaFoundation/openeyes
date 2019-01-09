@@ -62,7 +62,7 @@
                 <?php echo $form->labelEx($model,'active'); ?>
             </td>
             <td>
-                <?php echo $form->textField($model,'active'); ?>
+                <?php echo $form->checkBox($model,'active',array('checked'=>'checked')); ?>
                 <?php echo $form->error($model,'active'); ?>
             </td>
         </tr>
