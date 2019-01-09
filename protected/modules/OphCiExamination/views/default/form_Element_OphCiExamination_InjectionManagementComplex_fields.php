@@ -93,7 +93,7 @@ $el_model_name = CHtml::modelName($element);
                     'options' => CHtml::listData($l1_disorders, 'id', 'term'),
                     'default' => false,
                     'nowrapper' => true,
-                    'dropdownOptions' => array('empty' => '- Please select -', 'options' => $l1_opts),
+                    'dropdownOptions' => array('empty' => 'Select', 'options' => $l1_opts),
                     'layoutColumns' => array('field' => 12),
                 )
             ) ?>
@@ -110,7 +110,7 @@ $el_model_name = CHtml::modelName($element);
         </div>
         <div>
             <?php
-            $l2_attrs = array('empty' => '- Please select -');
+            $l2_attrs = array('empty' => 'Select');
             $l2_opts = array();
             if (array_key_exists($element->{$eye . '_diagnosis1_id'}, $l2_disorders)) {
                 $l2_opts = $l2_disorders[$element->{$eye . '_diagnosis1_id'}];
@@ -160,7 +160,7 @@ $el_model_name = CHtml::modelName($element);
                 $element,
                 $eye . '_treatment_id',
                 CHtml::listData($treatments, 'id', 'name'),
-                array('empty' => '- Please select -'),
+                array('empty' => 'Select'),
                 false,
                 array('stretch' => true)
             );?>
@@ -176,7 +176,7 @@ $el_model_name = CHtml::modelName($element);
             <?php
             $html_options = array(
                 'options' => array(),
-                'empty' => '- Please select -',
+                'empty' => 'Select',
                 'div_id' => $el_model_name . '_' . $eye . '_risks',
                 'nowrapper' => true
             );

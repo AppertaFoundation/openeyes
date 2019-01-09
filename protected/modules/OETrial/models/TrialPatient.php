@@ -14,6 +14,7 @@
  * @property string $last_modified_date
  * @property int $created_user_id
  * @property string $created_date
+ * @property string $comment
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -143,7 +144,7 @@ class TrialPatient extends BaseActiveRecordVersioned
                     ),
                 ),
             ),
-            array('last_modified_date, created_date', 'safe'),
+            array('last_modified_date, created_date, comment', 'safe'),
         );
     }
 
@@ -180,6 +181,7 @@ class TrialPatient extends BaseActiveRecordVersioned
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
+            'comment'=>'Comments',
         );
     }
 
@@ -232,6 +234,23 @@ class TrialPatient extends BaseActiveRecordVersioned
         }
 
         $this->audit('trial-patient', 'update-external-id');
+    }
+
+    /**
+     * Updates the comment of a TrialPatient record
+     *
+     * @param string $new_comment The new comment
+     * @throws Exception Thrown if an error occurs when saving the model or if it cannot be found
+     */
+    public function updateComment($new_comment)
+    {
+        $this->comment = $new_comment;
+
+        if (!$this->save()) {
+            throw new Exception('An error occurred when saving the model: ' . print_r($this->getErrors(), true));
+        }
+
+        $this->audit('trial-patient', 'update-comment');
     }
 
     /**
