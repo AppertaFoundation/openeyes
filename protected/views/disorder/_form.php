@@ -2,8 +2,6 @@
 /* @var $this DisorderController */
 /* @var $model Disorder */
 /* @var $form CActiveForm */
-
-$specialties = Specialty::model()->findAll();
 ?>
 
 <div class="oe-full-content flex-layout flex-top">
@@ -55,7 +53,7 @@ $specialties = Specialty::model()->findAll();
                 <?php echo $form->labelEx($model,'specialty_id'); ?>
             </td>
             <td>
-                <?php echo $form->dropDownList($model, 'specialty_id', CHtml::listData($specialties, 'id', 'name')) ?>
+                <?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
                 <?php echo $form->error($model,'specialty_id'); ?>
             </td>
         </tr>
@@ -64,7 +62,7 @@ $specialties = Specialty::model()->findAll();
                 <?php echo $form->labelEx($model,'active'); ?>
             </td>
             <td>
-                <?php echo $form->dropDownList($model, 'active', array('0'=> 'False', '1'=> 'True'));?>
+                <?php echo $form->checkBox($model,'active',array('checked'=>'checked')); ?>
                 <?php echo $form->error($model,'active'); ?>
             </td>
         </tr>
