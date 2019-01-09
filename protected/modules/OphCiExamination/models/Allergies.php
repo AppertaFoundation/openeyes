@@ -97,12 +97,6 @@ class Allergies extends \BaseEventTypeElement
     public function beforeSave()
     {
         $entries = $this->entries;
-        foreach ($entries as $key=>$entry) {
-            if($entry->has_allergy == AllergyEntry::$NOT_CHECKED) {
-                unset($entries[$key]);
-            }
-        }
-        $this->entries = $entries;
         return parent::beforeSave();
     }
 
@@ -222,15 +216,6 @@ class Allergies extends \BaseEventTypeElement
         } else {
             $entries = $this->sortEntries($this->entries);
             return implode(' <br /> ', $entries);
-        }
-    }
-
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view') {
-            return 50;
-        } else {
-            return parent::getDisplayOrder($action);
         }
     }
 }

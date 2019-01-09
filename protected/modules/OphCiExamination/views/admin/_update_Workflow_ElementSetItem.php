@@ -39,7 +39,7 @@
         <tbody>
         <?php foreach ($step->items as $i => $item) { ?>
           <tr class="clickable" data-id="<?php echo $item->id?>">
-            <td><?php echo $item->element_type->nameWithParent ?></td>
+            <td><?php echo $item->element_type->name?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
             <td><?=\CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
             <td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
@@ -52,7 +52,7 @@
             <div class="grid-view">
               <div class="data-group">
                 <div class="cols-3 column">
-                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'nameWithParent'), array('empty' => '- Select -'))?>
+                    <?=\CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
                 </div>
                 <div class="cols-3 column end">
                     <?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>
