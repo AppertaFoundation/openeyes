@@ -31,6 +31,7 @@ $required_risk_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
   <div class="data-group cols-10">
+
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table

@@ -30,7 +30,7 @@
               CHtml::listData(OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(),
                   'id',
                   'name'),
-              array('empty' => '- Please select -', 'nolabel' => true), false, array('field' => 3)) ?>
+              array('empty' => 'Select', 'nolabel' => true), false, array('field' => 3)) ?>
       </td>
     </tr>
     <tr>

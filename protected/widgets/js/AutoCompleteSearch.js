@@ -59,6 +59,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     var item_clicked;
     var inputbox;
     var onSelect = [];
+    var timeout_id = null;
     
     function initAutocomplete(input, autocomplete_url) {
     	input.on('input',function(){
@@ -68,7 +69,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     		// if input is empty
     		if (search_term.length < 2){
-    			setTimeout(function(){
+    			timeout_id = setTimeout(function(){
     				if(search_term.length === 1){
     					inputbox.parent().find('.min-chars').removeClass('hidden');
     				}
@@ -79,6 +80,12 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    		// cancel the current search and start a new one
 				if(searching) {xhr.abort();}
 				searching = true;
+
+				//stop the empty search hidding timeout
+				if(timeout_id !== null){
+					clearTimeout(timeout_id);
+					timeout_id = null;
+				}
 
 				xhr = $.getJSON(autocomplete_url, {
 				    term: search_term,
