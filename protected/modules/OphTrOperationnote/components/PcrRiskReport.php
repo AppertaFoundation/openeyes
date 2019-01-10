@@ -126,7 +126,6 @@ class PcrRiskReport extends Report implements ReportInterface
     public function dataSet()
     {
         $return_data = array();
-        $surgeon = $this->surgeon;
         if ($this->allSurgeons){
             $surgeon_id_list =  $this->querySurgeonData();
         }else{
@@ -135,7 +134,7 @@ class PcrRiskReport extends Report implements ReportInterface
 
         foreach ($surgeon_id_list as $surgeon_id) {
             $data = $this->queryData($surgeon_id['id'], $this->from, $this->to);
-            $total = $this->getTotalOperationsBySurgeon($surgeon_id['id']);
+            $total = $this->getTotalOperations($surgeon_id['id']);
             $pcrCases = 0;
             $pcrRiskTotal = 0;
             $adjustedPcrRate = 0;
@@ -189,7 +188,7 @@ class PcrRiskReport extends Report implements ReportInterface
         foreach ($allSurgeonsId as $surgeon){
             $data = $this->queryData($surgeon['id'], $this->from, $this->to);
 
-            $total = $this->getTotalOperationsBySurgeon($surgeon['id']);
+            $total = $this->getTotalOperations($surgeon['id']);
             $pcrCases = 0;
             $pcrRiskTotal = 0;
             $adjustedPcrRate = 0;
@@ -296,40 +295,18 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return int
      */
-    public function getTotalOperations()
+    public function getTotalOperations($surgeon)
     {
         $this->command->reset();
         $this->command->select('COUNT(*) as total')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
             ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $this->surgeon))
-            ->andWhere('event.deleted=0');
+            ->where('event.deleted=0');
 
-        if ($this->from) {
-            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
+        if ($surgeon !== 'all'){
+            $this->command->andwhere('surgeon_id = :surgeon', array('surgeon' => $surgeon));
         }
-
-        if ($this->to) {
-            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $this->to));
-        }
-
-        $totalData = $this->command->queryAll();
-
-        return (int) $totalData[0]['total'];
-    }
-    /**
-     * @return int
-     */
-    public function getTotalOperationsBySurgeon($surgeon)
-    {
-        $this->command->reset();
-        $this->command->select('COUNT(*) as total')
-            ->from('et_ophtroperationnote_cataract')
-            ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
-            ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
-            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
-            ->andWhere('event.deleted=0');
 
         if ($this->from) {
             $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
@@ -352,8 +329,13 @@ class PcrRiskReport extends Report implements ReportInterface
         $this->plotlyConfig['shapes'][0]['y0'] = $this->average();
         $this->plotlyConfig['shapes'][0]['y1'] = $this->average();
       }
+      if ($this->allSurgeons){
+          $totalOperations = $this->getTotalOperations('all');
+      }else{
+          $totalOperations = $this->getTotalOperations($this->surgeon);
+      }
       $this->plotlyConfig['title'] = 'PCR Rate (risk adjusted)<br><sub>Total Operations: '
-        .$this->getTotalOperations().'</sub>';
+        .$totalOperations.'</sub>';
       return json_encode($this->plotlyConfig);
     }
 
