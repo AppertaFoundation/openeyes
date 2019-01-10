@@ -10,6 +10,9 @@ class AnalyticsController extends BaseController
   public $layout = '//layouts/events_and_episodes';
   protected $patient_list = array();
 
+  protected function getSubspecialtyID($subspecialty_name){
+      return Subspecialty::model()->findByAttributes(array('name'=>$subspecialty_name))->id;
+  }
   public function accessRules()
   {
     return array(
@@ -26,6 +29,7 @@ class AnalyticsController extends BaseController
 
       $this->getDisorders();
       $this->patient_list = $this->queryCataractEventList();
+
       $this->render('/analytics/analytics_container',
           array(
               'specialty'=>'Cataract',
@@ -37,8 +41,11 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
+      $subspecialty_id = $this->getSubspecialtyID('Medical Retina');
+
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
+      $disorder_data = $this->getDisorders($subspecialty_id);
 
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
@@ -55,9 +62,11 @@ class AnalyticsController extends BaseController
       }
 
       $clinical_data = array(
-          'title' => 'Clinical Section',
-          'y'=> array(1,2,3,4,5,6),
-          'x'=> array(18, 9, 10, 7, 13, 16)
+          'title' => 'Disorders Section',
+          'x' => $disorder_data['x'],
+          'y' => $disorder_data['y'],
+          'text' => $disorder_data['text'],
+          'customdata' =>$disorder_data['customdata']
       );
 
       $service_data = array(
@@ -129,9 +138,10 @@ class AnalyticsController extends BaseController
   }
 
   public function actionGlaucoma(){
+      $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
-      $disorder_data = $this->getDisorders();
+      $disorder_data = $this->getDisorders($subspecialty_id);
 
       $service_data = array(
           'title' => 'Clinical Section',
@@ -210,12 +220,21 @@ class AnalyticsController extends BaseController
   }
 
   public function actionVitreoretinal(){
-    $this->render('/analytics/analytics_container',
+      $subspecialty_id = $this->getSubspecialtyID('Vitreoretinal');
+      $disorder_data = $this->getDisorders($subspecialty_id);
+      $clinical_data = array(
+          'title' => 'Disorders Section',
+          'x' => $disorder_data['x'],
+          'y' => $disorder_data['y'],
+          'text' => $disorder_data['text']
+      );
+      $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Vitreoretinal',
-            'clinical_data'=> array(),
+            'clinical_data'=> $clinical_data,
             'service_data'=> array(),
-            'custom_data' => array()
+            'custom_data' => array(),
+            'patient_list' => $this->patient_list
         )
     );
   }
@@ -480,16 +499,17 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function getDisorders(){
+  public function getDisorders($subspecialty_id){
       $disorder_list = array(
           'x'=> array(),
           'y'=>array(),
           'text' => array(),
+          'customdata' => array(),
       );
       $disorder_patient_list = array();
       $other_patient_list = array();
-      $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-      $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+
+      //get common ophthalmic disorders for given subspecialty
       $criteria = new CDbCriteria();
       $criteria->compare('subspecialty_id', $subspecialty_id);
       $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAll($criteria);
@@ -505,12 +525,22 @@ class AnalyticsController extends BaseController
           }
       }
 
+      //get all the diagnoses and the patient list
       $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
       foreach ($diagnoses_elements as $diagnosis_element_item){
           $current_event = $diagnosis_element_item->event;
           if(isset($current_event->episode)) {
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
+              if (!array_key_exists($current_patient->id, $this->patient_list)){
+                  $this->patient_list[$current_patient->id] = array(
+                      'hospital_number' => $current_patient->hos_num,
+                      'gender' => $current_patient->gender,
+                      'age' => $current_patient->getAge(),
+                      'name' => $current_patient->getFullName(),
+                  );
+              }
+
               $diagnoses = $diagnosis_element_item->diagnoses;
               foreach($diagnoses as $diagnosis_item){
                   $disorder_id = $diagnosis_item->disorder->id;
@@ -532,12 +562,13 @@ class AnalyticsController extends BaseController
           $disorder_list['y'][] = $i;
           $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
           $disorder_list['text'][] = $disorder_patient_list[$key]['short_name'];
+          $disorder_list['customdata'][] = $disorder_patient_list[$key]['patient_list'];
           $i++;
       }
       $disorder_list['y'][] = $i;
       $disorder_list['x'][] = count($other_patient_list);
       $disorder_list['text'][] = 'Other';
-      Yii::log(var_export($disorder_list, true));
+      $disorder_list['customdata'][] = $other_patient_list;
 
       return $disorder_list;
   }

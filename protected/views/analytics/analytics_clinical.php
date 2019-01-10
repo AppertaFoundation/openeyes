@@ -22,6 +22,5 @@
         Plotly.newPlot(
             'js-hs-chart-analytics-clinical', data ,clinical_layout, analytics_options
         );
-
     });
 </script>
