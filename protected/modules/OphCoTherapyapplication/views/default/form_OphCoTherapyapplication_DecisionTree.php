@@ -43,7 +43,7 @@ if ($treatment && $treatment->decisiontree) {
                   <select
                       id="Element_OphCoTherapyapplication_PatientSuitability_<?php echo $side; ?>_DecisionTreeResponse_<?php echo $node->id; ?>"
                       name="Element_OphCoTherapyapplication_PatientSuitability[<?php echo $side; ?>_DecisionTreeResponse][<?php echo $node->id; ?>]">
-                    <option value="">- Please select-</option>
+                    <option value="">Select</option>
                     <option value="0" <?php if ($val == '0') {
                         echo 'selected';
                     } ?>>No
@@ -57,7 +57,7 @@ if ($treatment && $treatment->decisiontree) {
                   <select
                       id="Element_OphCoTherapyapplication_PatientSuitability_<?php echo $side; ?>_DecisionTreeResponse_<?php echo $node->id; ?>"
                       name="Element_OphCoTherapyapplication_PatientSuitability[<?php echo $side; ?>_DecisionTreeResponse][<?php echo $node->id; ?>]">
-                    <option value="">- Please select-</option>
+                    <option value="">Select</option>
                       <?php foreach ($node->response_type->getChoices() as $id => $label) { ?>
                         <option value="<?php echo $id; ?>" <?php if ($val == $id) {
                             echo 'selected';

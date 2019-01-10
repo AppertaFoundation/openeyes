@@ -25,7 +25,7 @@ class TrialPatientController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('changeStatus', 'updateExternalId', 'updateTreatmentType'),
+                'actions' => array('changeStatus', 'updateExternalId', 'updateTreatmentType','updateComment'),
                 'expression' => function ($user) {
                     $trialPatient = TrialPatient::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
                     return $user->checkAccess("TaskViewTrial") && $trialPatient && @$trialPatient->trial->getUserPermission($user->id)->can_edit;
@@ -88,6 +88,16 @@ class TrialPatientController extends BaseModuleController
     {
         $model = $this->loadModel($_POST['id']);
         $model->updateExternalId($_POST['new_external_id']);
+    }
+    /**
+     * Changes the comment of a TrialPatient record
+     *
+     * @throws Exception Thrown if an error occurs when saving the model or if it cannot be found
+     */
+    public function actionUpdateComment()
+    {
+        $model = $this->loadModel($_POST['id']);
+        $model->updateComment($_POST['new_comment']);
     }
 
     /**

@@ -21,7 +21,7 @@
 $no_treatment_reasons = $element->getNoTreatmentReasons();
 $no_treatment_reasons_opts = array(
     'options' => array(),
-    'empty' => '- Please select -',
+    'empty' => 'Select',
     'nowrapper' => true,
 );
 foreach ($no_treatment_reasons as $ntr) {

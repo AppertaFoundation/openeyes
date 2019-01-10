@@ -20,9 +20,25 @@
 if (!isset($id) && isset($this->event_type)) {
     $id = $this->event_type->class_name.'_print';
 }
+$event = $this->event;
+$event_type = $event->eventType->name;
+$logoHelper = new LogoHelper();
 ?>
-<?php $this->renderPartial('//print/event_header')?>
-<?php $this->renderPartial('//print/event_content', array(
-    'hide_modified' => @$hide_modified,
-    'hide_created' => @$hide_created,
-))?>
+
+<header class="header">
+    <header class="print-header">
+        <div class="logo">
+            <?php echo $logoHelper->render('//base/_logo_seal'); ?>
+        </div>
+    </header>
+
+    <h1 class="print-title"><?php if($this->attachment_print_title != null ){ echo $this->attachment_print_title; } else { echo $event_type;} ?></h1>
+
+    <main class="print-main">
+        <?php $this->renderPartial('//print/patient_overview')?>
+        <?php $this->renderPartial('//print/event_content', array(
+            'hide_modified' => @$hide_modified,
+            'hide_created' => @$hide_created,
+        ))?>
+    </main>
+</header>

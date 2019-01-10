@@ -41,7 +41,8 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('cvi_status_id element_date', 'required'),
+            array('element_date', 'OEFuzzyDateValidator'),
+            array('cvi_status_id', 'required'),
             array('event_id, cvi_status_id, created_user_id, last_modified_user_id', 'length', 'max'=>10),
             array('event_id, element_date, created_date, last_modified_date', 'safe'),
             // The following rule is used by search().
@@ -76,6 +77,17 @@ class Element_OphCiExamination_CVI_Status extends \BaseEventTypeElement
             'created_user_id' => 'Created User',
             'last_modified_date' => 'Last Modified Date',
             'last_modified_user_id' => 'Last Modified User',
+        );
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'element_date',
+            ),
         );
     }
 
