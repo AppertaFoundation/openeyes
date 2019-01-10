@@ -192,7 +192,6 @@ function swapElement(element_to_swap, elementTypeClass, params){
             $parentLi = $($container);
             if (params === undefined)
             params = {};
-            $container.closest('.collapse-group').find('.collapse-group-header').click();
             $href.addClass('selected');
         }
     }
