@@ -42,7 +42,9 @@
         }
 
         id = report.replace(new RegExp('[\W/:?=\\\\]', 'g'), '_');
-        Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
+        if (id.includes('&')){
+            id = id.substring(0, id.indexOf('&'));
+        }        Dash.$container.append($(Dash.itemWrapper.replace('{$id}', id).replace('{$size}', size)));
         container = '#' + id;
         return container;
     }
@@ -119,6 +121,7 @@
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
+                        console.log(data);
                     }
 
                     $searchForm.parent('.report-search').animate({

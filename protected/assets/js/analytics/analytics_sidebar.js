@@ -16,23 +16,35 @@ $(document).ready(function () {
 
     //cataract plot change
     $('#js-chart-CA-selection').on('change', function () {
-        $('#pcr-risk-grid').hide();
-        $('#cataract-complication-grid').hide();
-        $('#visual-acuity-grid').hide();
-        $('#refractive-outcome-grid').hide();
+        $('#pcr-risk-grid').html("");
+        $('#cataract-complication-grid').html("");
+        $('#visual-acuity-grid').html("");
+        $('#refractive-outcome-grid').html("");
         var selected_value = $(this).val();
         switch (selected_value) {
             case '0':
-                $('#pcr-risk-grid').show();
+                // $('#pcr-risk-grid').show();
+                // $('#pcr-risk-grid').html("");
+                OpenEyes.Dash.init('#pcr-risk-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk', null, 8);
                 break;
             case '1':
-                $('#cataract-complication-grid').show();
+                // $('#cataract-complication-grid').show();
+                // $('#cataract-complication-grid').html("");
+                OpenEyes.Dash.init('#cataract-complication-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,8);
                 break;
             case '2':
-                $('#visual-acuity-grid').show();
+                // $('#visual-acuity-grid').show();
+                // $('#visual-acuity-grid').html("");
+                OpenEyes.Dash.init('#visual-acuity-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 8);
                 break;
             case '3':
-                $('#refractive-outcome-grid').show();
+                // $('#refractive-outcome-grid').show();
+                // $('#refractive-outcome-grid').html("");
+                OpenEyes.Dash.init('#refractive-outcome-grid');
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 8);
                 break;
         }
     });
