@@ -174,31 +174,60 @@
       </div><!-- .chart-filters -->
     </div><!-- #js-custom-data-filter -->
 
-      <form method="post">
-          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+      <form id="search-form" >
+<!--          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="--><?php //echo Yii::app()->request->csrfToken ?><!--"/>-->
           <h3>Filter by Date</h3>
           <div class="flex-layout">
-              <input type="text" class="pro-theme cols-5"
+              <input name="from" type="text" class="pro-theme cols-5"
                      id="analytics_datepicker_from"
                      value=""
-                     name="date-range-from"
                      placeholder="from">
               <input type="text" class="pro-theme cols-5"
                      id="analytics_datepicker_to"
                      value=""
-                     name="date-range-to"
+                     name="to"
                      placeholder="to">
+              <input type="hidden" class="pro-theme cols-5"
+                     id="PCR_all_surgeon"
+                     value=""
+                     name="allsurgeons">
           </div>
-
           <div class="row">
-              <button id="js-clear-date-range" class="pro-theme">View all dates</button>
+              <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()">View all dates</button>
           </div>
-
+          <div class="row">
+              <button id="js-all-surgeons" class="pro-theme" onclick="viewAllSurgeons()">View all surgeons</button>
+          </div>
           <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
       </form>
 
-    <div class="extra-actions">
+
+
+      <div class="extra-actions">
       <button class="pro-theme cols-full">Download (CSV)</button>
     </div>
   </div><!-- .specialty-options -->
 </div>
+
+<script>
+    $('#search-form').on('submit', function(e){
+        e.preventDefault();
+
+        $('.report-search-form').trigger('submit');
+
+    });
+    function viewAllDates() {
+        $('#analytics_datepicker_from').val("");
+        $('#analytics_datepicker_to').val("");
+        // $('#search-from').trigger('submit');
+    }
+    function viewAllSurgeons() {
+        if ($('#PCR_all_surgeon').val() == 'on'){
+            $('#PCR_all_surgeon').val('');
+            $('#js-all-surgeons').html('View all surgeons');
+        } else{
+            $('#PCR_all_surgeon').val('on');
+            $('#js-all-surgeons').html('View current surgeons');
+        }
+    }
+</script>

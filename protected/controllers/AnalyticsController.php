@@ -14,7 +14,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad'),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','cataractPcr'),
         'users'=> array('@')
       ),
     );
@@ -25,6 +25,19 @@ class AnalyticsController extends BaseController
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
 
       $this->getDisorders();
+      $this->render('/analytics/analytics_container',
+          array(
+              'specialty'=>'Cataract',
+              'clinical_data'=> array(),
+              'service_data'=> array(),
+              'custom_data' => array(),
+              'patient_list' => $this->patient_list,
+          )
+      );
+  }
+  public function actionCataractPcr(){
+      $assetManager = Yii::app()->getAssetManager();
+      $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
       $this->render('/analytics/analytics_container',
           array(
               'specialty'=>'Cataract',

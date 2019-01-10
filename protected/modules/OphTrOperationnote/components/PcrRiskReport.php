@@ -92,6 +92,7 @@ class PcrRiskReport extends Report implements ReportInterface
      */
     protected function queryData($surgeon, $dateFrom, $dateTo)
     {
+        $this->command->reset();
         $this->command->select('ophtroperationnote_cataract_complications.name as complication, pcr_risk as risk')
             ->from('et_ophtroperationnote_cataract')
             ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
@@ -111,64 +112,134 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return $this->command->queryAll();
     }
+    protected function querySurgeonData(){
+        $this->command->reset();
+        $this->command->select('user.id as id')
+            ->from('user')
+            ->where('is_surgeon = 1');
+        return $this->command->queryAll();
+    }
 
     /**
      * @return array
      */
     public function dataSet()
     {
-        $data = $this->queryData($this->surgeon, $this->from, $this->to);
-
-        $total = $this->getTotalOperations();
-        $pcrCases = 0;
-        $pcrRiskTotal = 0;
-        $adjustedPcrRate = 0;
-
-        foreach ($data as $case) {
-            if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
-                ++$pcrCases;
-            }
-            if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
-                $pcrRiskTotal += $case['risk'];
-            } else {
-                $pcrRiskTotal += 1.92;
-            }
+        $return_data = array();
+        $surgeon = $this->surgeon;
+        if ($this->allSurgeons){
+            $surgeon_id_list =  $this->querySurgeonData();
+        }else{
+            $surgeon_id_list = array(array('id' => $this->surgeon));
         }
 
-        if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
-            // unadjusted PCR rate
+        foreach ($surgeon_id_list as $surgeon_id) {
+            $data = $this->queryData($surgeon_id['id'], $this->from, $this->to);
+            $total = $this->getTotalOperationsBySurgeon($surgeon_id['id']);
+            $pcrCases = 0;
+            $pcrRiskTotal = 0;
+            $adjustedPcrRate = 0;
+
+            foreach ($data as $case) {
+                if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
+                    ++$pcrCases;
+                }
+                if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
+                    $pcrRiskTotal += $case['risk'];
+                } else {
+                    $pcrRiskTotal += 1.92;
+                }
+            }
+
+            if ($total !== 0 && (int)$pcrRiskTotal !== 0) {
+                // unadjusted PCR rate
                 $unadjustedPcrRate = ($pcrCases / $total) * 100;
 
                 // adjusted PCR rate
                 $expectedPcrRate = $pcrRiskTotal / $total;
-            $observedPcrRate = $pcrCases / $total;
-            $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
-            $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+                $observedPcrRate = $pcrCases / $total;
+                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
                 //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
-        }
+            }
 
-        // set the graph subtitle here, so we don't have to run this query more than once
-        if ($total > 1000) {
-            $this->totalOperations = $total;
-        }
+            // set the graph subtitle here, so we don't have to run this query more than once
+            if ($total > 1000) {
+                $this->totalOperations = $total;
+            }
 
-        if ($this->mode == 0) {
-            return array(array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
-        } elseif ($this->mode == 1) {
-            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
-        } elseif ($this->mode == 2) {
-            return array(array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+
+            if ($this->mode == 0) {
+                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+            } elseif ($this->mode == 1) {
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
+            } elseif ($this->mode == 2) {
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+            }
         }
+        return $return_data;
     }
+    /**
+     * @return array
+     */
+    public function dataSets()
+    {
+        $allSurgeonsId = $this->querySurgeonData();
+        $return_data = array();
+        foreach ($allSurgeonsId as $surgeon){
+            $data = $this->queryData($surgeon['id'], $this->from, $this->to);
 
+            $total = $this->getTotalOperationsBySurgeon($surgeon['id']);
+            $pcrCases = 0;
+            $pcrRiskTotal = 0;
+            $adjustedPcrRate = 0;
+
+            foreach ($data as $case) {
+                if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
+                    ++$pcrCases;
+                }
+                if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
+                    $pcrRiskTotal += $case['risk'];
+                } else {
+                    $pcrRiskTotal += 1.92;
+                }
+            }
+
+            if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
+                // unadjusted PCR rate
+                $unadjustedPcrRate = ($pcrCases / $total) * 100;
+
+                // adjusted PCR rate
+                $expectedPcrRate = $pcrRiskTotal / $total;
+                $observedPcrRate = $pcrCases / $total;
+                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
+                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
+                //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
+            }
+
+            // set the graph subtitle here, so we don't have to run this query more than once
+            if ($total > 1000) {
+                $this->totalOperations = $total;
+            }
+            if ($this->mode == 0) {
+                array_push($return_data,array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+            } elseif ($this->mode == 1) {
+                array_push($return_data,array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
+            } elseif ($this->mode == 2) {
+                array_push($return_data,array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+            }
+        }
+        return $return_data;
+    }
     /**
      * @return string
      */
 
     public function tracesJson(){
-      $dataset = $this->dataSet();
+      $dataset =$this->dataSet();
       $trace1 = array(
         'name' => 'Current Surgeon',
+        'mode'=>'markers',
         'type' => 'scatter',
         'x' => array_map(function($item){
           return $item['x'];
@@ -247,7 +318,31 @@ class PcrRiskReport extends Report implements ReportInterface
 
         return (int) $totalData[0]['total'];
     }
+    /**
+     * @return int
+     */
+    public function getTotalOperationsBySurgeon($surgeon)
+    {
+        $this->command->reset();
+        $this->command->select('COUNT(*) as total')
+            ->from('et_ophtroperationnote_cataract')
+            ->join('event', 'et_ophtroperationnote_cataract.event_id = event.id')
+            ->join('et_ophtroperationnote_surgeon', 'et_ophtroperationnote_surgeon.event_id = event.id')
+            ->where('surgeon_id = :surgeon', array('surgeon' => $surgeon))
+            ->andWhere('event.deleted=0');
 
+        if ($this->from) {
+            $this->command->andWhere('event.event_date >= :dateFrom', array('dateFrom' => $this->from));
+        }
+
+        if ($this->to) {
+            $this->command->andWhere('event.event_date <= :dateTo', array('dateTo' => $this->to));
+        }
+
+        $totalData = $this->command->queryAll();
+
+        return (int) $totalData[0]['total'];
+    }
     /**
      * @return string
      */
