@@ -128,6 +128,10 @@ do
     	;;
     	--sample-only) sampleonly=1
     	;;
+        --no-oe) # Don't checkout the openeyes repo
+            delete=(openeyes)
+            modules=( "${modules[@]/$delete}" ) # removes openeyes from modules list
+        ;;
     	--sshidentity|-sshidentity)
             sshidentity=$2
             shift # shift past parameter
@@ -193,7 +197,7 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
 fi
 
 echo ""
-echo "User $USER is checking out branch $branch..."
+echo "User $LOGNAME is checking out branch $branch..."
 echo ""
 
 $(ssh-agent)  2>/dev/null

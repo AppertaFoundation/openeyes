@@ -24,7 +24,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 </div>
 
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
-  <h3>OpenEyes 3.0</h3>
+  <h3>OpenEyes <?=Yii::App()->params['oe_version']?></h3>
 
   <div class="group">
     <h4>Theme</h4>
@@ -85,8 +85,13 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
       var $light_theme = $('link[data-theme="light"]');
       var $dark_theme = $('link[data-theme="dark"]');
 
+      // hide all elements: for a split second, all elements are shown without formatting (no css is used)
+      $('.open-eyes').hide();
+      // change css for current theme
       $light_theme.prop('media', theme === 'light' ? '' : 'none');
       $dark_theme.prop('media', theme === 'dark' ? '' : 'none');
+      // show all elements
+      setTimeout(function () {$('.open-eyes').show();}, 100);
 
         <?php if (!Yii::app()->user->isGuest): ?>
       // Change the user's theme setting if they are logged in

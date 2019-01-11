@@ -79,7 +79,7 @@ $layoutColumns = array('label' => 4, 'field' => 8);
                 'default' => false,
                 'nowrapper' => true,
                 'dropdownOptions' => array(
-                    'empty' => '- Please select -',
+                    'empty' => 'Select',
                     'options' => $l1_opts,
                 ),
         ));?>
@@ -93,7 +93,7 @@ $layoutColumns = array('label' => 4, 'field' => 8);
 	</div>
 	<div class="cols-<?php echo $layoutColumns['field']?> column">
 		<?php
-        $l2_attrs = array('empty' => '- Please select -');
+        $l2_attrs = array('empty' => 'Select');
         $l2_opts = array();
         if (array_key_exists($element->{$side.'_diagnosis1_id'}, $l2_disorders)) {
             $l2_opts = $l2_disorders[$element->{$side.'_diagnosis1_id'}];
