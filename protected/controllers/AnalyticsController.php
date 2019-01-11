@@ -14,7 +14,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','cataractPcr'),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad'),
         'users'=> array('@')
       ),
     );
@@ -25,19 +25,7 @@ class AnalyticsController extends BaseController
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
 
       $this->getDisorders();
-      $this->render('/analytics/analytics_container',
-          array(
-              'specialty'=>'Cataract',
-              'clinical_data'=> array(),
-              'service_data'=> array(),
-              'custom_data' => array(),
-              'patient_list' => $this->patient_list,
-          )
-      );
-  }
-  public function actionCataractPcr(){
-      $assetManager = Yii::app()->getAssetManager();
-      $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
+      $this->patient_list = $this->queryCataractEventList();
       $this->render('/analytics/analytics_container',
           array(
               'specialty'=>'Cataract',
@@ -552,5 +540,12 @@ class AnalyticsController extends BaseController
       Yii::log(var_export($disorder_list, true));
 
       return $disorder_list;
+  }
+  public function queryCataractEventList(){
+      $command = Yii::app()->db->createCommand()
+          ->select('event_id')
+          ->from('et_ophtroperationnote_cataract');
+
+      return $command->queryAll();
   }
 }

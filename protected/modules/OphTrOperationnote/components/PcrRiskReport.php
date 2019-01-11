@@ -768,8 +768,12 @@ class PcrRiskReport extends Report implements ReportInterface
     /**
      * @return mixed|string
      */
-    public function renderSearch()
+    public function renderSearch($analytics = false)
     {
+        if ($analytics){
+            $this->searchTemplate = 'application.modules.OphTrOperationnote.views.report.pcr_risk_search_analytics';
+        }
+
         $displayModes = array(array('id' => '0', 'name' => 'Adjusted risk'), array('id' => '1', 'name' => 'Unadjusted risk'), array('id' => '2', 'name' => 'Both'));
 
         return $this->app->controller->renderPartial($this->searchTemplate, array('report' => $this, 'modes' => $displayModes));

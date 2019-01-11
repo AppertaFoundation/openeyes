@@ -173,9 +173,9 @@
         </div>
       </div><!-- .chart-filters -->
     </div><!-- #js-custom-data-filter -->
-
       <form id="search-form" >
           <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+          <div id="search-form-report-search-section"></div>
           <h3>Filter by Date</h3>
           <div class="flex-layout">
               <input name="from" type="text" class="pro-theme cols-5"
@@ -188,7 +188,7 @@
                      name="to"
                      placeholder="to">
               <input type="hidden" class="pro-theme cols-5"
-                     id="allSurgeons"
+                     id="analytics_allsurgeons"
                      value=""
                      name="allsurgeons">
           </div>
@@ -222,11 +222,11 @@
         $('#analytics_datepicker_to').val("");
     }
     function viewAllSurgeons() {
-        if ($('#allSurgeons').val() == 'on'){
-            $('#allSurgeons').val('');
+        if ($('#analytics_allsurgeons').val() == 'on'){
+            $('#analytics_allsurgeons').val('');
             $('#js-all-surgeons').html('View all surgeons');
         } else{
-            $('#allSurgeons').val('on');
+            $('#analytics_allsurgeons').val('on');
             $('#js-all-surgeons').html('View current surgeons');
         }
     }

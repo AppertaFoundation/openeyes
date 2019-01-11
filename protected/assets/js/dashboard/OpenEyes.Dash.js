@@ -121,7 +121,6 @@
 
                     if(typeof Dash.postUpdate[chartId] === 'function'){
                         Dash.postUpdate[chartId](data);
-                        console.log(data);
                     }
 
                     $searchForm.parent('.report-search').animate({
@@ -216,11 +215,14 @@
             chart.data[0]['y'] = data.map(function (item) {
               return item['y'];
             });
+            var totaleyes = 0;
+            for (var i =0; i<(chart.data[0]['x']).length; i++){
+                totaleyes += chart.data[0]['x'][i];
+            }
             chart.data[0]['hovertext'] = data.map(function (item){
               return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2);
             });
-
-            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+data[0]['x']+'</sub>';
+            chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totaleyes+'</sub>';
 
             Plotly.redraw(chart);
         },
@@ -257,6 +259,10 @@
             chart.data[0]['y'] = data.map(function (item) {
               return item[1];
             });
+            chart.data[0]['customdata'] = data.map(function (item) {
+                return item[2];
+            });
+            chart.layout['yaxis']['range']=Math.max(...chart.data[0]['y']);
             chart.data[0]['hovertext'] = data.map(function (item) {
               return '<b>Refractive Outcome</b><br><i>Diff Post</i>: ' +
                 chart.layout['xaxis']['ticktext'][item[0]] +
@@ -274,6 +280,13 @@
             }
           });
 
+          chart.data[0]['customdata'] = data.map(function (item) {
+              if (item['event_list']) {
+                  return item['event_list'];
+              } else {
+                  return 0;
+              }
+          });
           chart.data[0]['hovertext'] = data.map((item, index) => {
             if (item['total']){
               return '<b>Cataract Complications</b><br><i>Complication</i>: ' +
@@ -285,7 +298,19 @@
             }
           });
 
-            $.ajax({
+          var max_complications = 0;
+          for (var i =0; i<chart.data[0]['x'].length;i++){
+              var current_complication =  parseInt(chart.data[0]['x'][i]);
+              if (current_complication > max_complications){
+                  max_complications = current_complication;
+              }
+          }
+
+          chart.layout['xaxis']['range'] = max_complications;
+
+
+
+          $.ajax({
                 data: $('#search-form').serialize(),
                 url: "/OphTrOperationnote/report/cataractComplicationTotal",
                 success: function (data, textStatus, jqXHR) {
@@ -325,9 +350,16 @@
             chart.data[1]['text'] = data.map(function (item){
               return item[2];
             });
+            chart.data[1]['customdata'] = data.map(function (item){
+                return item[3];
+            });
             chart.data[1]['hovertext'] = data.map(function (item){
               return '<b>Visual Outcome</b><br>Number of eyes: ' + item[2];
             });
+            chart.data[1]['marker']['size']=data.map(function (item){
+                return item[2];
+            });
+
             Plotly.redraw(chart);
         }
     };

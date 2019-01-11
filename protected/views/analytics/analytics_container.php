@@ -9,7 +9,8 @@
     <div class="analytics-charts">
         <?php if ($specialty === 'Cataract'){ ?>
         <div class="mdl-layout__container" style="width: 60%">
-        <?php  $this->renderPartial('//analytics/analytics_cataract'); ?>
+        <?php  $this->renderPartial('//analytics/analytics_cataract',
+            array('event_list'=> $patient_list)); ?>
         </div>
         <?php } else {
             $this->renderPartial('//analytics/analytics_service',
@@ -22,15 +23,21 @@
                 array('custom_data'=> $custom_data));
         }?>
     </div>
-        <?php $this->renderPartial('//analytics/analytics_drill_down_list', array(
-            'patient_list' => $patient_list
-        )); ?>
+
+    <?php
+        if ($specialty !== 'Cataract'){
+            $this->renderPartial('//analytics/analytics_drill_down_list', array(
+              'patient_list' => $patient_list
+            ));
+        }
+    ?>
+
 </main>
 
 <script >
     $(document).ready(function() {
         OpenEyes.Dash.init('#pcr-risk-grid');
-        OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk', null, 8);
+        OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 8);
     });
 
 </script>
