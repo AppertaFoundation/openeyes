@@ -10,6 +10,10 @@ function setYAxis_IOP() {
 
     /*Ticks setting of yaxis*/
     ticks: 'outside',
+    // set y tick white
+    tickfont: {
+      color: '#fff',
+    },
     showticklabels: true,
     dtick: 5,
   };
