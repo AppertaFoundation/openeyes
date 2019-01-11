@@ -123,7 +123,7 @@ if [ $showhelp = 1 ]; then
 fi
 
 
-echo -e "\n\n\nInstalling openeyes as user: $USER...\n\n\n"
+echo -e "\n\n\nInstalling openeyes as user: $LOGNAME...\n\n\n"
 
 
 # Show disclaimer
@@ -173,8 +173,8 @@ fi
 
 # Fix permissions
 echo "Setting file permissions..."
-sudo gpasswd -a "$USER" www-data
-sudo chown "$USER":www-data -R $WROOT
+sudo gpasswd -a "$LOGNAME" www-data
+sudo chown "$LOGNAME":www-data -R $WROOT
 
 sudo chmod 777 -R $WROOT
 sudo chmod g+s -R $WROOT
