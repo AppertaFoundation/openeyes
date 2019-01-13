@@ -116,7 +116,8 @@ if (is_array($ordered_episodes)):
                   data-event-icon='<?= $event->getEventIcon('medium') ?>'
                   <?php if ($event_image !== null && $event_image->status->name === 'CREATED'): ?>
                     data-event-image-url="<?= Yii::app()->createUrl('eventImage/view/' . $event_image->event_id) ?>"
-                  <?php endif; ?>>
+                  <?php endif; ?>
+              >
 
                 <div class="tooltip quicklook" style="display: none; ">
                   <div class="event-name"><?php echo $event_name ?></div>
@@ -133,9 +134,11 @@ if (is_array($ordered_episodes)):
                         <?= $event->getEventIcon() ?>
                   </span>
 
-                  <span
-                      class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
-                    <?php echo $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?>
+                  <span class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                    <?php echo $event->event_date
+                        ? $event->NHSDateAsHTML('event_date')
+                        : $event->NHSDateAsHTML('created_date');
+                    ?>
                   </span>
                   <span class="tag"><?= $tag ?></span>
                 </a>
