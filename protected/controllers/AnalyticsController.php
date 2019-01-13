@@ -45,7 +45,7 @@ class AnalyticsController extends BaseController
 
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
-      $disorder_data = $this->getDisorders($subspecialty_id);
+      $disorder_data = $this->getDisorders($subspecialty_id, '01/05/2014', '03/12/2015');
 
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
@@ -499,7 +499,7 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function getDisorders($subspecialty_id){
+  public function getDisorders($subspecialty_id, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
           'y'=>array(),
@@ -530,6 +530,11 @@ class AnalyticsController extends BaseController
       foreach ($diagnoses_elements as $diagnosis_element_item){
           $current_event = $diagnosis_element_item->event;
           if(isset($current_event->episode)) {
+              $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
+              if( ($start_date && $current_time < Helper::mysqlDate2JsTimestamp($start_date)) ||
+                  ($end_date && $current_time > Helper::mysqlDate2JsTimestamp($end_date)))
+                  continue;
+
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
