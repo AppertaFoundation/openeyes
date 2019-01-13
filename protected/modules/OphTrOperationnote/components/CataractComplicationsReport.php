@@ -18,6 +18,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
       'xaxis' => array(
         'title' => 'Percent of cases',
         'showline' => true,
+        'showgrid'=> true,
         'ticks' => 'outside',
       ),
       'yaxis' => array(
@@ -27,6 +28,7 @@ class CataractComplicationsReport extends Report implements ReportInterface
         'autorange' => 'reversed',
         'automargin' => 'true',
         'showline' => true,
+        'showgrid'=> false,
         'tickfont' => array(
           'size' => '9.5',
         ),

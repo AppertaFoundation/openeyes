@@ -67,6 +67,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
           'size' => 11,
         ),
         'showline' => true,
+        'showgrid' => true,
         'range' => [-1,6],
         'ticks' => 'outside',
         'tickvals' => array(0, 1, 2, 3, 4, 5,6),
@@ -76,6 +77,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
       'yaxis' => array(
         'title' => 'Visual acuity 4 months after surgery (LogMAR)',
         'showline' => true,
+        'showgrid' => true,
         'range' => [-1,6],
         'ticks' => 'outside',
         'tickvals' => array(0, 1, 2, 3, 4, 5, 6),
@@ -83,6 +85,19 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'zeroline' => false,
       ),
       'hovermode'=>'closest',
+//        'shapes' => array(
+//            array(
+//            'type' => 'line',
+//             'x' => array(-1, 6),
+//            'y' => array(-1, 6),
+//            'line' => array(
+//                'dash' => 'dash',
+//                'color' => 'rgb(0,0,0)',
+//                'width' => 1,
+//            ),
+//            'hoverinfo' => 'none',
+//            )
+//        ),
     );
     /**
      * @param $app
@@ -321,15 +336,16 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         $returnData = array();
 
         foreach ($matrix as $xCoord => $bubbleX) {
-            foreach ($bubbleX as $yCoord => $value) {
+            foreach ($bubbleX as $yCoord => $array) {
+                $value = count($array);
                 $returnData[] = array(
                     $xCoord,
                     $yCoord,
-                    count($value),
                     $value,
+                    $array,
                 );
 
-                $this->totalEyes += count($value);
+                $this->totalEyes += (int)count($array);
             }
         }
 
@@ -388,13 +404,13 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'y' => array(-1, 6),
         'line' => array(
           'dash' => 'dash',
-          'color' => 'rgb(0,0,0)',
+          'color' => 'rgb(192,192,192)',
           'width' => 1,
         ),
         'hoverinfo' => 'none',
       );
 
-      $traces = array($trace2, $trace1);
+      $traces = array($trace2,$trace1);
       return json_encode($traces);
     }
     /**

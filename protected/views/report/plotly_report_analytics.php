@@ -21,9 +21,20 @@
         };
     layout['paper_bgcolor'] = '#141e2b';
     layout['plot_bgcolor'] = '#141e2b';
+    layout['xaxis']['linecolor'] = '#fff';
+    layout['yaxis']['linecolor'] = '#fff';
+    if (layout['yaxis']['showgrid']){
+        layout['yaxis']['gridcolor'] = '#aaa';
+    }
+    if (layout['xaxis']['showgrid']){
+        layout['xaxis']['gridcolor'] = '#aaa';
+    }
+    <?php if(($report->graphId() === 'PcrRiskReport')){?>
+        layout['shapes'][0]['line']['color'] = '#fff';
+    <?php }?>
     Plotly.newPlot('<?=$report->graphId();?>',
     <?= $report->tracesJson();?>,
-    layout,
+        layout,
     {
       modeBarButtonsToRemove: ['sendDataToCloud','zoom2d', 'pan', 'pan2d',
         'autoScale2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d',
@@ -33,13 +44,16 @@
       displaylogo: false,
     }
   );
+
   <?php if($report->graphId() !== 'PcrRiskReport'){?>
   var report  = document.getElementById('<?=$report->graphId()?>');
   report.on('plotly_click',function(data){
           for(var i=0; i < data.points.length; i++){
               if (data.points[i].customdata){
+                  $('#<?=$report->graphId()?>_container').parent().parent().hide();
                   $('.analytics-event-list').show();
                   $('.analytics-event-list-row').hide();
+                  $('#js-back-to-chart').show();
                   var showlist = data.points[i].customdata;
                   for (var j=0; j<showlist.length; j++){
                       var id = showlist[j].toString();
@@ -49,10 +63,10 @@
           }
   });
   <?php }?>
-  var inner =  $('#search-form-report-search-section');
+  var side_bar_inner_filter =  $('#search-form-report-search-section');
   var search_form = $('#search-form-to-side-bar').html();
-  inner.html("");
-  inner.html(search_form);
+  side_bar_inner_filter.html("");
+  side_bar_inner_filter.html(search_form);
   $('#search-form-to-side-bar').html("");
 </script>
 

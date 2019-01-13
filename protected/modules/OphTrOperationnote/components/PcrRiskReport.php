@@ -53,6 +53,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'ticks' => 'outside',
         'dtick' => 10,
         'tick0' => 0,
+        'showgrid'=>true,
         'range' => [0,50],
       ),
       'legend'=> array(

@@ -22,15 +22,15 @@
         <fieldset>
             <div id="search-form-to-side-bar">
                 <div class="mdl-selectfield">
-                 <h3 for="visual-acuity-months">Months Post Op</h3>
-                   <select name="months" id="visual-acuity-months" style="font-size: 1em; width: inherit;>
+                 <h3>Months Post Op</h3>
+                   <select name="months" id="visual-acuity-months" style="font-size: 1em; width: inherit;">
                     <?php foreach (range(1, 300) as $month): ?>
                            <option value="<?=$month?>" <?=($month == 4) ? 'selected' : '' ?>><?=$month?> </option>
                     <?php endforeach ?>
                     </select>
             </div>
             <div class="mdl-selectfield">
-                <h3 for="visual-acuity-methods">Method</h3>
+                <h3 >Method</h3>
                 <select name="method" id="visual-acuity-methods" style="font-size: 1em; width: inherit;">
                     <option value="">All</option>
                     <option value="best" selected>Best Corrected</option>
@@ -39,22 +39,24 @@
                     <?php endforeach;?>
                 </select>
             </div>
-            <div>
+            <div class="checkbox-select">
+                <h3></h3>
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="visual-acuity-distance">
                     <input checked class="mdl-radio__button" id="visual-acuity-distance" name="type" type="radio" value="distance">
-                    <span class="mdl-radio__label">Distance</span>
+                    <span>Distance</span>
                 </label>
                     <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="visual-acuity-near">
                         <input class="mdl-radio__button" id="visual-acuity-near" name="type" type="radio" value="near">
-                        <span class="mdl-radio__label">Near</span>
+                        <span>Near</span>
                     </label>
                 </div>
             </div>
             <div>
-                <button style="display: none;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
+                <button style="display: none;"  type="submit" name="action">Submit</button>
             </div>
         </fieldset>
     </form>
 
+<?php
+//span  class="mdl-radio__label"
+?>

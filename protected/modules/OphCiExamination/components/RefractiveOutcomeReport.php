@@ -59,6 +59,7 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
       'yaxis' => array(
         'title' => 'Number of eyes',
         'showline' => true,
+        'showgrid' => true,
         'ticks' => 'outside',
       ),
     );

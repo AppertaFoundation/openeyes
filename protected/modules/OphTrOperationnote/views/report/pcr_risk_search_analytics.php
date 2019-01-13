@@ -22,8 +22,8 @@
         <fieldset>
             <div id="search-form-to-side-bar">
             <div class="mdl-selectfield">
-                <label for="pcr-risk-mode">Rendering mode</label>
-                <select name="mode" id="pcr-risk-mode" class="browser-default">
+                <h3>Rendering mode</h3>
+                <select name="mode" id="pcr-risk-mode" style="font-size: 1em; width: inherit" >
                     <?php foreach ($modes as $mode):?>
                         <option value="<?=$mode['id']?>"><?=$mode['name']?></option>
                     <?php endforeach;?>
@@ -31,9 +31,11 @@
             </div>
             </div>
             <div>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
+                <button type="submit" name="action">Submit</button>
             </div>
         </fieldset>
     </form>
+
+<?php
+// select class="browser-default"
+?>

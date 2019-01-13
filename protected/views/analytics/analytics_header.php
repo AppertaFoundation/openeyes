@@ -1,4 +1,3 @@
-!doctype html>
 <html lang="en">
 <head>
     <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>

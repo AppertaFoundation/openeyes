@@ -24,24 +24,27 @@ $(document).ready(function () {
         $('#analytics_datepicker_from').val("");
         $('#analytics_datepicker_to').val("");
         $('#analytics_allsurgeons').val("");
+        $('.analytics-event-list-row').hide();
+        $('.analytics-event-list').hide();
+        $('#js-back-to-chart').hide();
         $('#js-all-surgeons').html('View all surgeons');
         var selected_value = $(this).val();
         switch (selected_value) {
             case '0':
                 OpenEyes.Dash.init('#pcr-risk-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 8);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 12);
                 break;
             case '1':
                 OpenEyes.Dash.init('#cataract-complication-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,8);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,12);
                 break;
             case '2':
                 OpenEyes.Dash.init('#visual-acuity-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 8);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 12);
                 break;
             case '3':
                 OpenEyes.Dash.init('#refractive-outcome-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 8);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 12);
                 break;
         }
     });
