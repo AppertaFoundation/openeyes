@@ -68,5 +68,19 @@
   side_bar_inner_filter.html("");
   side_bar_inner_filter.html(search_form);
   $('#search-form-to-side-bar').html("");
+
+  <?php
+    if ($report->graphId() === 'OEModule_OphCiExamination_components_RefractiveOutcomeReport'){?>
+    $('#refractive-outcome-proc-all').change(function(){
+        if (this.checked){
+            $(".refractive_outcome_specific_procedure").prop("checked", false);
+        }
+    });
+    $('.refractive_outcome_specific_procedure').change(function(){
+        if (this.checked){
+            $("#refractive-outcome-proc-all").prop("checked", false);
+        }
+    });
+    <?php }?>
 </script>
 

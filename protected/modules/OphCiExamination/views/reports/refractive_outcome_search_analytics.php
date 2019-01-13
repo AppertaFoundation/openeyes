@@ -38,7 +38,7 @@
                 <?php
                 foreach ($procedures as $id => $procedure):?>
                     <label  class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="refractive-outcome-proc-<?= $id?>">
-                        <input type="checkbox" id="refractive-outcome-proc-<?= $id?>" class="mdl-checkbox__input" name="procedures[]" value="<?= $id?>">
+                        <input type="checkbox" id="refractive-outcome-proc-<?= $id?>" class="mdl-checkbox__input refractive_outcome_specific_procedure" name="procedures[]" value="<?= $id?>">
                         <span><?= $procedure?></span>
                     </label>
                 <?php endforeach;?>
