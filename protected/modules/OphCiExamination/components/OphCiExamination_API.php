@@ -3039,7 +3039,7 @@ class OphCiExamination_API extends \BaseAPI
         if ($el) {
             $IOP = $el->getLatestIOP($patient);
             $result = '
-                <table>
+                <table style="margin: 0 !important; height: 100%;">
                     <thead>
                         <tr>
                             <th colspan="2">Glaucoma Current Management Plan</th>
@@ -3047,8 +3047,8 @@ class OphCiExamination_API extends \BaseAPI
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <table>
+                            <td class="cols-6">
+                                <table style="margin: 0 !important; height: 100%;">
                                     <thead>
                                         <tr>
                                             <th colspan="2" style="text-align: center;">Right Eye</th>
@@ -3078,8 +3078,8 @@ class OphCiExamination_API extends \BaseAPI
                                     </tbody>
                                 </table>
                             </td>
-                            <td>
-                                <table>
+                            <td class="cols-6">
+                                <table style="margin: 0 !important; height: 100%;">
                                     <thead>
                                         <tr>
                                             <th colspan="2" style="text-align: center;">Left Eye</th>
