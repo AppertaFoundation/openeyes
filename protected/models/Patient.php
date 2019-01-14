@@ -961,8 +961,8 @@ class Patient extends BaseActiveRecordVersioned
         if (!$info) {
             $info = new PatientOphInfo();
             $info->patient_id = $this->id;
-            // only interested in yyyy mm dd for the cvi date
-            $info->cvi_status_date = substr($this->created_date, 0, 10);
+            // date is unknown, set as null
+            $info->cvi_status_date = null;
             $info->cvi_status_id = 1;
         }
 

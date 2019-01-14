@@ -74,10 +74,21 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('subspecialty_id', 'required'),
+            array('disorder_id, finding_id', 'containsDisorderOrFinding'),
             array('disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'length', 'max' => 10),
             array('alternate_disorder_label', 'RequiredIfFieldValidator', 'field' => 'alternate_disorder_id', 'value' => true),
             array('id, disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function containsDisorderOrFinding($object, $attribute)
+    {
+        if (empty($this->disorder_id) && empty($this->finding_id)) {
+            $this->addError($object, Yii::t('user', 'At least one disorder or finding must be selected.'));
+            return false;
+        }
+
+        return true;
     }
 
     protected function afterValidate()
@@ -263,7 +274,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
                     $disorder['type'] = $cod->type;
                     $disorder['id'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->id : null;
                     $disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
-                    $disorder['is_glaucoma'] = isset($cod->term)? (strpos(strtolower($cod->term), 'glaucoma') !== false) : false;
+                    $disorder['is_glaucoma'] = isset($cod->disorder->term)? (strpos(strtolower($cod->disorder->term), 'glaucoma')) !== false : false;
                     $disorder['group'] = $group;
                     $disorder['alternate'] = $cod->alternate_disorder_id ?
                         array(
