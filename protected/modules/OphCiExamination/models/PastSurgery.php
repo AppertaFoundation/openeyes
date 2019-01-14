@@ -165,6 +165,9 @@ class PastSurgery extends \BaseEventTypeElement
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
-    
 
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
+    }
 }

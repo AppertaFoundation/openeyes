@@ -3,7 +3,7 @@
   list($latest_cvi_status, $last_cvi_date) = $this->patient->getCviSummary();
   $latest_cvi_status_id = PatientOphInfoCviStatus::model()->findByAttributes(array('name' =>$latest_cvi_status))->id;
   if (!is_string($last_cvi_date)) {
-    $last_cvi_date = date('d M Y');
+    $last_cvi_date = null;
   }
   else {
     $last_cvi_date = Helper::formatFuzzyDate($last_cvi_date);
@@ -29,10 +29,10 @@
           </span>
         </td>
         <td>
-          <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>";
+          <input id= "<?= CHtml::modelName($element) . '_element_date_0'?>"
                  placeholder="dd Mmm yyyy"
                  name="<?= CHtml::modelName($element) . '[element_date]' ?>"
-                 value="<?= isset($element->element_date) ? Helper::formatFuzzyDate($element->element_date) : $last_cvi_date ?>"
+                 value="<?= isset($element->element_date) ? $element->getFormatedDate() : $last_cvi_date ?>"
                  autocomplete="off"/>
         </td>
       </tr>

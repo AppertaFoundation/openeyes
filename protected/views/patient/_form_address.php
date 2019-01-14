@@ -34,7 +34,7 @@
 <tr>
 <tr>
   <td>
-      <?= $form->label($address, 'address1') ?>
+      <?= $form->labelEx($address, 'address1') ?>
     <br/>
       <?= $form->error($address, 'address1') ?>
   </td>
@@ -45,7 +45,7 @@
 
 <tr>
   <td>
-      <?= $form->label($address, 'address2') ?>
+      <?= $form->labelEx($address, 'address2') ?>
     <br/>
       <?= $form->error($address, 'address2') ?>
   </td>
@@ -56,7 +56,7 @@
 </tr>
 <tr>
   <td>
-      <?= $form->label($address, 'city') ?>
+      <?= $form->labelEx($address, 'city') ?>
     <br/>
       <?= $form->error($address, 'city') ?>
   </td>
@@ -67,7 +67,7 @@
 
 <tr>
   <td>
-      <?= $form->label($address, 'postcode') ?>
+      <?= $form->labelEx($address, 'postcode') ?>
     <br/>
       <?= $form->error($address, 'postcode') ?>
   </td>
@@ -78,9 +78,9 @@
 
 <tr>
   <td>
-      <?= $form->label($address, 'county') ?>
+      <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
     <br/>
-      <?= $form->error($address, 'county') ?>
+      <?= $form->error($address, Yii::app()->params['county_label']) ?>
   </td>
   <td>
       <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'))) ?>
@@ -90,7 +90,7 @@
 
 <tr>
   <td class="required">
-      <?= $form->label($address, 'country_id') ?>
+      <?= $form->labelEx($address, 'country_id') ?>
     <br/>
       <?= $form->error($address, 'country_id') ?>
   </td>

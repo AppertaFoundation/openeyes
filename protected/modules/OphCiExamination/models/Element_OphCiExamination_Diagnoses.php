@@ -421,15 +421,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             $validator = new \OEFuzzyDateValidator();
 
-            foreach ($this->diagnoses as $k => $diagnosis) {
+            foreach ($this->diagnoses as $key => $diagnosis) {
                 if ($diagnosis->principal) {
                     $principal = true;
                 }
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
                 if(!$diagnosis->eye_id){
-                    $key = $k+1;
-
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
@@ -491,4 +489,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
+    }
 }

@@ -206,6 +206,11 @@ class Allergies extends \BaseEventTypeElement
         return $entries;
     }
 
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 50 : parent::getDisplayOrder($action);
+    }
+
     /**
      * @return string
      */

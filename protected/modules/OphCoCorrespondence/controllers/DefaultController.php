@@ -164,8 +164,6 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
-
-
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -611,7 +609,9 @@ class DefaultController extends BaseEventTypeController
         {
             $html_letter =  $this->renderOneRecipient($letter, $recipient);
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
-            $this->addPDFToOutput($event->imageDirectory.'/event_'.$pdf_letter.".pdf");
+            if (!isset($_GET['html']) || !$_GET['html']) {
+                $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
+            }
 
             // add attachments for each
             if(count($attachments)>0)
@@ -634,10 +634,12 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
-        if ($returnContent) {
-            header('Content-Type: application/pdf');
-            header('Content-Length: ' . filesize($pdf_path));
-            readfile($pdf_path);
+        if (!isset($_GET['html']) || !$_GET['html']) {
+            if ($returnContent) {
+                header('Content-Type: application/pdf');
+                header('Content-Length: ' . filesize($pdf_path));
+                readfile($pdf_path);
+            }
         }
 
         //@unlink($pdf_path);
