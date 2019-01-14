@@ -34,4 +34,14 @@
             }
         });
     });
+    function plotUpdate(data){
+        var chart = $('#js-hs-chart-analytics-custom')[0];
+        chart.data[0]['x'] = data[0]['x'];
+        chart.data[0]['y'] = data[0]['y'];
+        chart.data[0]['customdata'] = data[0]['customdata'];
+        chart.data[1]['x'] = data[1]['x'];
+        chart.data[1]['y'] = data[1]['y'];
+        chart.data[1]['customdata'] = data[1]['customdata'];
+        Plotly.redraw(chart);
+    }
 </script>

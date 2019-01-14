@@ -17,7 +17,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad'),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','customData'),
         'users'=> array('@')
       ),
     );
@@ -46,13 +46,9 @@ class AnalyticsController extends BaseController
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
       $disorder_data = $this->getDisorders($subspecialty_id);
-
-      list($left_va_list, $right_va_list) = $this->getCustomVA();
-      list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
-
       $filters = array(
-          'date_from' => null,
-          'date-to' => null
+          'date_from' => 0,
+          'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
       if (isset($_POST)) {
           if (isset($_POST['date-range-from'])){
@@ -60,6 +56,11 @@ class AnalyticsController extends BaseController
               $filters['date-to'] = $_POST['date-range-to'];
           }
       }
+
+      list($left_va_list, $right_va_list) = $this->getCustomVA($filters);
+      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($filters);
+
+
 
       $clinical_data = array(
           'title' => 'Disorders Section',
@@ -139,9 +140,13 @@ class AnalyticsController extends BaseController
 
   public function actionGlaucoma(){
       $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
-      list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
-      list($left_va_list, $right_va_list) = $this->getCustomVA();
       $disorder_data = $this->getDisorders($subspecialty_id);
+      $filters = array(
+          'date_from' => 0,
+          'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+      );
+      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($filters);
+      list($left_va_list, $right_va_list) = $this->getCustomVA($filters);
 
       $service_data = array(
           'title' => 'Clinical Section',
@@ -269,7 +274,7 @@ class AnalyticsController extends BaseController
       return $standard_deviation;
   }
 
-  public function getCustomVA() {
+  public function getCustomVA($filters) {
       $va_patient_list = array();
       $left_va_list = array();
       $right_va_list = array();
@@ -285,16 +290,19 @@ class AnalyticsController extends BaseController
                   $this->patient_list[$current_patient->id] = $current_patient;
               }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              if (!array_key_exists($current_patient->id, $va_patient_list)){
-                  $va_patient_list[$current_patient->id]=array();
+              if ($current_time>=$filters['date_from'] && $current_time<=$filters['date_to']){
+                  if (!array_key_exists($current_patient->id, $va_patient_list)){
+                      $va_patient_list[$current_patient->id]=array();
+                  }
+                  array_push($va_patient_list[$current_patient->id], array(
+                          'left_reading'=>$left_reading,
+                          'right_reading'=>$right_reading,
+                          'event_time' => $current_time,
+                          'weeks'=> 0
+                      )
+                  );
               }
-              array_push($va_patient_list[$current_patient->id], array(
-                      'left_reading'=>$left_reading,
-                      'right_reading'=>$right_reading,
-                      'event_time' => $current_time,
-                      'weeks'=> 0
-                  )
-              );
+
           }
       }
       foreach ($va_patient_list as $patient_id => &$patient_vas){
@@ -339,7 +347,7 @@ class AnalyticsController extends BaseController
       return [$left_va_list,$right_va_list];
   }
 
-  public function getCustomCRT() {
+  public function getCustomCRT($filters) {
       $crt_patient_list = array();
       $left_crt_list = array();
       $right_crt_list = array();
@@ -355,16 +363,18 @@ class AnalyticsController extends BaseController
                   $this->patient_list[$current_patient->id] = $current_patient;
               }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              if (!array_key_exists($current_patient->id, $crt_patient_list)){
-                  $crt_patient_list[$current_patient->id]=array();
-              }
-              array_push($crt_patient_list[$current_patient->id], array(
-                      'left_crt'=>$left_crt,
-                      'right_crt'=>$right_crt,
-                      'event_time' => $current_time,
-                      'weeks'=> 0
-                  )
-              );
+              if ($current_time>=$filters['date_from'] && $current_time<=$filters['date_to']){
+                  if (!array_key_exists($current_patient->id, $crt_patient_list)){
+                    $crt_patient_list[$current_patient->id]=array();
+                  }
+                  array_push($crt_patient_list[$current_patient->id], array(
+                        'left_crt'=>$left_crt,
+                        'right_crt'=>$right_crt,
+                        'event_time' => $current_time,
+                         'weeks'=> 0
+                      )
+                  );
+            }
           }
       }
       foreach ($crt_patient_list as $patient_id => &$patient_crts){
@@ -409,7 +419,7 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function getCustomIOP(){
+  public function getCustomIOP($filters){
       $iop_patient_list = array();
       $left_iop_list = array();
       $right_iop_list = array();
@@ -428,16 +438,18 @@ class AnalyticsController extends BaseController
               }
 
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              if (!array_key_exists($current_patient->id, $iop_patient_list)){
-                  $iop_patient_list[$current_patient->id]=array();
-              }
-              array_push($iop_patient_list[$current_patient->id], array(
+              if ($current_time>=$filters['date_from'] && $current_time<=$filters['date_to']){
+                  if (!array_key_exists($current_patient->id, $iop_patient_list)){
+                    $iop_patient_list[$current_patient->id]=array();
+                  }
+                 array_push($iop_patient_list[$current_patient->id], array(
                       'left_reading'=>$left_reading,
                       'right_reading'=>$right_reading,
                       'event_time' => $current_time,
                       'weeks'=> 0
                   )
-              );
+                );
+              }
           }
       }
 
@@ -592,5 +604,86 @@ class AnalyticsController extends BaseController
           ->from('et_ophtroperationnote_cataract');
 
       return $command->queryAll();
+  }
+  public function actionCustomData(){
+      $dateFrom = Yii::app()->request->getParam('date-range-from');
+      $dateTo = Yii::app()->request->getParam('data-range-to');
+      $ageMin = Yii::app()->request->getParam('age-min');
+      $ageMax = Yii::app()->request->getParam('age-max');
+      $diagnosis = Yii::app()->request->getParam('diagnosis');
+      $protocol = Yii::app()->request->getParam('protocol');
+      $plotVA = Yii::app()->request->getParam('plot-VA');
+      $specialty = Yii::app()->request->getParam('specialty');
+
+      if ($dateTo){
+          $dateTo = Helper::mysqlDate2JsTimestamp($dateTo);
+      }else{
+          $dateTo = Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s"));
+      }
+      if ($dateFrom){
+          $dateFrom = Helper::mysqlDate2JsTimestamp($dateFrom);
+      }else{
+          $dateFrom = 0;
+      }
+      if (!isset($ageMax)){
+          $ageMax = null;
+      }
+      if (!isset($ageMin)){
+          $ageMin = 0;
+      }
+      if (!isset($diagnosis)){
+          $diagnosis = null;
+      }
+      if (!isset($protocol)){
+          $protocol = null;
+      }
+      if (!isset($plotVA)){
+          $plotVA = null;
+      }
+
+      $filters = array(
+          'date_from' => $dateFrom,
+          'date_to' => $dateTo,
+          'age_min'=>$ageMin,
+          'age_max'=>$ageMax,
+          'diagnosis'=>$diagnosis,
+          'protocol'=>$protocol,
+          'plot-va'=>$plotVA,
+      );
+      $va_list = $this->getCustomVA($filters);
+      if ($specialty === "Glaucoma"){
+          $second_list = $this->getCustomIOP($filters);
+      }elseif ($specialty === "Medical Retina"){
+          $second_list = $this->getCustomCRT($filters);
+      }
+
+      $custom_data = array(
+          array(
+              'x' => array_keys($va_list[0]),
+              'y' => array_map(
+                  function ($item){
+                      return $item['average'];
+                  }, array_values($va_list[0])),
+              'customdata'=>array_map(
+                  function($item){
+                      return $item['patients'];
+                  },
+                  array_values($va_list[0])),
+              ),array(
+              'yaxis' =>'y2',
+              'x' => array_keys($second_list[0]),
+              'y' => array_map(
+                  function ($item){
+                      return $item['average'];
+                  }, array_values($second_list[0])),
+              'customdata'=>array_map(
+                  function($item){
+                      return $item['patients'];
+                  },
+                  array_values($second_list[0])),
+          )
+
+      );
+      $this->renderJSON($custom_data);
   }
 }

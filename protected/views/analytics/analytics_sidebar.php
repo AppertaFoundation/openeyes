@@ -173,9 +173,10 @@
         </div>
       </div><!-- .chart-filters -->
     </div><!-- #js-custom-data-filter -->
+
       <form id="search-form" >
-          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-          <div id="search-form-report-search-section"></div>
+<!--          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="--><?php //echo Yii::app()->request->csrfToken ?><!--"/>-->
+          <input type="hidden" name="specialty" value="<?=$specialty;?>">
           <h3>Filter by Date</h3>
           <div class="flex-layout">
               <input name="from" type="text" class="pro-theme cols-5"
@@ -209,25 +210,16 @@
   </div><!-- .specialty-options -->
 </div>
 
-<script type="text/javascript">
-
+<script>
     $('#search-form').on('submit', function(e){
         e.preventDefault();
-
-        $('.report-search-form').trigger('submit');
-
+        $.ajax({
+            url: '/analytics/customData',
+            data:$('#search-form').serialize(),
+            dataType:'json',
+            success: function (data, textStatus, jqXHR) {
+                plotUpdate(data);
+            }
+        });
     });
-    function viewAllDates() {
-        $('#analytics_datepicker_from').val("");
-        $('#analytics_datepicker_to').val("");
-    }
-    function viewAllSurgeons() {
-        if ($('#analytics_allsurgeons').val() == 'on'){
-            $('#analytics_allsurgeons').val('');
-            $('#js-all-surgeons').html('View all surgeons');
-        } else{
-            $('#analytics_allsurgeons').val('on');
-            $('#js-all-surgeons').html('View current surgeons');
-        }
-    }
 </script>
