@@ -609,7 +609,7 @@ class DefaultController extends BaseEventTypeController
         {
             $html_letter =  $this->renderOneRecipient($letter, $recipient);
             $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
-            if (!isset($_GET['html']) && $_GET['html']) {
+            if (isset($_GET['html']) && $_GET['html']) {
                 $this->addPDFToOutput($event->imageDirectory . '/event_' . $pdf_letter . ".pdf");
             }
 
@@ -634,7 +634,7 @@ class DefaultController extends BaseEventTypeController
         $this->pdf_output->Output("F",   $pdf_path);
 
         $event->unlock();
-        if (!isset($_GET['html']) && $_GET['html']) {
+        if (isset($_GET['html']) && $_GET['html']) {
             if ($returnContent) {
                 header('Content-Type: application/pdf');
                 header('Content-Length: ' . filesize($pdf_path));
