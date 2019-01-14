@@ -3049,50 +3049,64 @@ class OphCiExamination_API extends \BaseAPI
                         <tr>
                             <td>
                                 <table>
-                                    <tr>
-                                        <td>IOP:</td>
-                                        <td>'.($IOP ? $IOP["rightIOP"].' mmHg' : 'N/A').'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Glaucoma status:</td>
-                                        <td>'.$el->right_glaucoma_status->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Drop-related problems:</td>
-                                        <td>'.$el->{'right_drop-related_prob'}->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Drops:</td>
-                                        <td>'.$el->right_drops->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Surgery:</td>
-                                        <td>'.($el->right_surgery ? $el->right_surgery->name : 'N/A').'</td>
-                                    </tr>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="text-align: center;">Right Eye</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>IOP:</td>
+                                            <td>'.($IOP ? $IOP["rightIOP"].' mmHg' : 'N/A').'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Glaucoma status:</td>
+                                            <td>'.$el->right_glaucoma_status->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drop-related problems:</td>
+                                            <td>'.$el->{'right_drop-related_prob'}->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drops:</td>
+                                            <td>'.$el->right_drops->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Surgery:</td>
+                                            <td>'.($el->right_surgery ? $el->right_surgery->name : 'N/A').'</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </td>
                             <td>
                                 <table>
-                                    <tr>
-                                        <td>IOP:</td>
-                                        <td>'.($IOP ? $IOP["leftIOP"].' mmHg' : 'N/A').'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Glaucoma status:</td>
-                                        <td>'.$el->left_glaucoma_status->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Drop-related problems:</td>
-                                        <td>'.$el->{'left_drop-related_prob'}->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Drops:</td>
-                                        <td>'.$el->left_drops->name.'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Surgery:</td>
-                                        <td>'.($el->left_surgery ? $el->left_surgery->name : 'N/A').'</td>
-                                    </tr>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="text-align: center;">Left Eye</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>IOP:</td>
+                                            <td>'.($IOP ? $IOP["leftIOP"].' mmHg' : 'N/A').'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Glaucoma status:</td>
+                                            <td>'.$el->left_glaucoma_status->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drop-related problems:</td>
+                                            <td>'.$el->{'left_drop-related_prob'}->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drops:</td>
+                                            <td>'.$el->left_drops->name.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Surgery:</td>
+                                            <td>'.($el->left_surgery ? $el->left_surgery->name : 'N/A').'</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </td>
                         </tr>
