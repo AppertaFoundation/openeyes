@@ -32,21 +32,23 @@ $(document).ready(function () {
         switch (selected_value) {
             case '0':
                 OpenEyes.Dash.init('#pcr-risk-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 12);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);
                 break;
             case '1':
                 OpenEyes.Dash.init('#cataract-complication-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,12);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,10);
                 break;
             case '2':
                 OpenEyes.Dash.init('#visual-acuity-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 12);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 10);
                 break;
             case '3':
                 OpenEyes.Dash.init('#refractive-outcome-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 12);
+                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
                 break;
         }
+        $('.mdl-cell').css('height','600px');
+
     });
     //select tag between clinic, custom and service
     $('.analytics-section').on('click', function () {

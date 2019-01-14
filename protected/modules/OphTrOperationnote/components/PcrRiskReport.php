@@ -34,7 +34,6 @@ class PcrRiskReport extends Report implements ReportInterface
       'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
       'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'title' => '',
-      'width' => '100%',
       'font' => array(
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),

@@ -44,7 +44,6 @@
       displaylogo: false,
     }
   );
-
   <?php if($report->graphId() !== 'PcrRiskReport'){?>
   var report  = document.getElementById('<?=$report->graphId()?>');
   report.on('plotly_click',function(data){

@@ -54,7 +54,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected $plotlyConfig = array(
       'showlegend' => false,
-      'width' => '100%',
       'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
       'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
       'title' => '',

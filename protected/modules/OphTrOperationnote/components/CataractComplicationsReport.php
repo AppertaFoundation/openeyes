@@ -8,7 +8,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
     protected $plotlyConfig = array(
       'type' => 'bar',
       'title' => '',
-      'width' => '100%',
       'showlegend' => false,
       'paper_bgcolor' => 'rgba(0, 0, 0, 0)',
       'plot_bgcolor' => 'rgba(0, 0, 0, 0)',
