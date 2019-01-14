@@ -506,8 +506,15 @@ class AnalyticsController extends BaseController
           'text' => array(),
           'customdata' => array(),
       );
+      $other_drill_down_list = array(
+          'x'=> array(),
+          'y'=>array(),
+          'text' => array(),
+          'customdata' => array(),
+      );
       $disorder_patient_list = array();
       $other_patient_list = array();
+      $other_disorder_list = array();
 
       //get common ophthalmic disorders for given subspecialty
       $criteria = new CDbCriteria();
@@ -554,6 +561,14 @@ class AnalyticsController extends BaseController
                           array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
                       }
                   } else {
+                      if (!array_key_exists($disorder_id, $other_disorder_list)){
+                          $other_disorder_list[$disorder_id]= array(
+                              'full_name' => $diagnosis_item->disorder->fully_specified_name,
+                              'short_name' => $diagnosis_item->disorder->term,
+                              'patient_list' => array(),
+                          );
+                      }
+                      array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
                       if(!in_array($current_patient->id, $other_patient_list)){
                           array_push($other_patient_list, $current_patient->id);
                       }
@@ -570,10 +585,20 @@ class AnalyticsController extends BaseController
           $disorder_list['customdata'][] = $disorder_patient_list[$key]['patient_list'];
           $i++;
       }
+
+      $j=0;
+      foreach ($other_disorder_list as $key=>$value){
+          $other_drill_down_list['y'][] = $j;
+          $other_drill_down_list['x'][] = count($other_disorder_list[$key]['patient_list']);
+          $other_drill_down_list['text'][] = $other_disorder_list[$key]['short_name'];
+          $other_drill_down_list['customdata'][] = $other_disorder_list[$key]['patient_list'];
+          $j++;
+      }
+
       $disorder_list['y'][] = $i;
       $disorder_list['x'][] = count($other_patient_list);
       $disorder_list['text'][] = 'Other';
-      $disorder_list['customdata'][] = $other_patient_list;
+      $disorder_list['customdata'][] = $other_drill_down_list;
 
       return $disorder_list;
   }
