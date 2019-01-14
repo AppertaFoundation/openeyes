@@ -972,7 +972,8 @@ class BaseEventTypeController extends BaseModuleController
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
                         } else {
-                            $this->redirect(array($this->successUri . $this->event->id));
+                            $redirect_to = $this->successUri . (strpos($this->successUri, 'schedule') ? $this->event->id : '');
+                            $this->redirect(array($redirect_to));
                         }
                     } else {
                         throw new Exception('Unable to save edits to event');

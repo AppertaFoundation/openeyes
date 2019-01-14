@@ -188,7 +188,11 @@ class DefaultController extends OphTrOperationbookingEventController
         parent::initActionCreate();
         $this->initActionEdit();
         if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
-            $this->successUri = 'booking/schedule/';
+            if($this->module->isTheatreDiaryDisabled()){
+                $this->successUri = 'booking/schedule/';
+            } else {
+                $this->successUri = 'waitingList/index/';
+            }
         }
     }
 
@@ -204,7 +208,11 @@ class DefaultController extends OphTrOperationbookingEventController
         parent::initActionUpdate();
         $this->initActionEdit();
         if (isset($_POST['schedule_now']) && $_POST['schedule_now']) {
-            $this->successUri = 'booking/schedule/';
+            if($this->module->isTheatreDiaryDisabled()){
+                $this->successUri = 'booking/schedule/';
+            } else {
+                $this->successUri = 'waitingList/index/';
+            }
         }
     }
     /**
