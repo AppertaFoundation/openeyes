@@ -36,6 +36,7 @@ foreach ($this->patient->episodes as $ep) {
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
             'subspecialty' => $ep->getSubspecialtyText(),
+            'is_glaucoma' => isset($diagnosis->term)? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
         ];
     }
 }

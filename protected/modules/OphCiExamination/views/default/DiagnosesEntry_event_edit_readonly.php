@@ -25,6 +25,7 @@
     <td> <?php if (isset($values['date'])) {
             echo $values['date'];
         } ?>
+        <input type="hidden" name="glaucoma_diagnoses[]" value="<?=isset($values['is_glaucoma']) ? $values['is_glaucoma'] : 'false'?>" />
     </td>
     <td><span class="js-has-tooltip oe-i info small"
               data-tooltip-content="You must switch to the <?= $values['subspecialty'] ?> subspecialty to alter this diagnosis"></span>
