@@ -4,16 +4,13 @@
     <div id="visual-acuity-grid" class="analytics-cataract"></div>
     <div id="refractive-outcome-grid" class="analytics-cataract"></div>
 <!--</main>-->
-<div class="analytics-event-list analytics-patient-list" style="display:none ">
+<div class="analytics-event-list analytics-patient-list" style="display:none;margin-right: 500px; ">
     <div class="flex-layout">
         <h3 id="js-list-title">Event List</h3>
-<!--        <a id="js-back-to-chart" class="selected" href="#">Back to chart</a>-->
         <button id="js-back-to-chart" class="selected">Back to chart</button>
     </div>
     <table>
         <colgroup>
-            <col style="width: 100px;">
-            <col style="width: 100px;">
             <col style="width: 100px;">
         </colgroup>
         <thead>
