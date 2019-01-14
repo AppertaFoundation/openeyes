@@ -143,6 +143,7 @@ $(document).ready(function() {
 		});
 	}
 
+	$('.Element_OphTrConsent_BenefitsAndRisks textarea').autosize();
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
@@ -162,6 +163,7 @@ function OphTrConsent_inArray(needle, haystack) {
 }
 
 function callbackAddProcedure(procedure_id) {
+	$('.Element_OphTrConsent_BenefitsAndRisks textarea').trigger('oninput'); // adjust the size of the box before repopulating
 	$.ajax({
 		'url': baseUrl+'/procedure/benefits/'+procedure_id,
 		'type': 'GET',
@@ -178,7 +180,7 @@ function callbackAddProcedure(procedure_id) {
 					benefits.push(data[i]);
 				}
 			}
-			$('#Element_OphTrConsent_BenefitsAndRisks_benefits').val(OphTrConsent_ucfirst(benefits.join(", ")));
+			$('#Element_OphTrConsent_BenefitsAndRisks_benefits').val(OphTrConsent_ucfirst(benefits.join(", "))).trigger('oninput');
 		}
 	});
 
@@ -198,7 +200,7 @@ function callbackAddProcedure(procedure_id) {
 					complications.push(data[i]);
 				}
 			}
-			$('#Element_OphTrConsent_BenefitsAndRisks_risks').val(OphTrConsent_ucfirst(complications.join(", ")));
+			$('#Element_OphTrConsent_BenefitsAndRisks_risks').val(OphTrConsent_ucfirst(complications.join(", "))).trigger('oninput');
 		}
 	});
 }

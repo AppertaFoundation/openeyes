@@ -38,7 +38,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     SocialHistoryController.prototype.addEntry = function (selectedItems) {
-
         // reset textField input for driving statuses
         $('#textField_driving_statuses').html('');
         this.$tableSelector.find('.js-driving-status-item').remove();
@@ -64,7 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     $textField.append(', ' + item.label);
                 }
             } else if (itemSetId === "alcohol_intake") {
-                $textField.html(item.id);
+                $textField.removeClass('hidden').html(item.id).siblings().find('span.field-info').text('units/week');
             } else {
                 // for the rest of the elements, show the info in the textField
                 $textField.html($field.find(":selected").text());

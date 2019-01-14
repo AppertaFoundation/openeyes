@@ -69,6 +69,8 @@ class UserTrialAssignment extends BaseActiveRecordVersioned
             'trial_id' => 'Trial',
             'permission' => 'Permission',
             'role' => 'Role',
+            'is_principal_investigator'=>'Is Principal Investigator',
+            'is_study_coordinator'=>'Is Study Coordinator',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',

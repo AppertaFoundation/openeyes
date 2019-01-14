@@ -14,7 +14,7 @@
               <thead>
               <tr>
                 <th>Trial</th>
-                <th><?= Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
+                <th>Study Coordinator</th>
                 <th>Treatment</th>
                 <th>Trial Status</th>
                 <th>Trial Type</th>
@@ -38,9 +38,11 @@
                   </td>
                   <td>
                       <?php
-                      $coordinator = $trialPatient->trial->coordinatorUser;
-                      if ($coordinator !== null) {
-                          echo CHtml::encode($coordinator->last_name . ', ' . $coordinator->first_name);
+                      $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
+                      if (sizeof($coordinators)) {
+                        foreach ($coordinators as $item){
+                          echo $item->user->getFullName().'<br>';
+                        }
                       } else {
                           echo 'N/A';
                       }
