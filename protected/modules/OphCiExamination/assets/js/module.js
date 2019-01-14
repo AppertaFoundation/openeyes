@@ -1102,6 +1102,7 @@ $(document).ready(function() {
 
         OphCiExamination_RefreshCommonOphDiagnoses();
 
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
         return false;
     });
 
