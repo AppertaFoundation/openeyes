@@ -73,6 +73,11 @@ class AnalyticsController extends BaseController
               function ($item){
                   return $item['average'];
           }, array_values($left_va_list)),
+        'customdata'=>array_map(
+            function($item){
+                return $item['patients'];
+            },
+        array_values($left_va_list)),
 //          'error_y'=> array(
 //              'type'=> 'data',
 //              'array' => array(1, 2, 1, 2, 1),
@@ -88,6 +93,11 @@ class AnalyticsController extends BaseController
               function ($item){
                   return $item['average'];
           }, array_values($left_crt_list)),
+          'customdata'=>array_map(
+              function($item){
+                  return $item['patients'];
+              },
+          array_values($left_crt_list)),
 //              'error_y' => array(
 //                  'type' => 'data',
 //                  'array' => array(2, 1, 2, 1, 2, 1),
@@ -135,6 +145,11 @@ class AnalyticsController extends BaseController
                   function ($item){
                       return $item['average'];
                   }, array_values($left_va_list)),
+              'customdata'=>array_map(
+                  function($item){
+                      return $item['patients'];
+                  },
+                  array_values($left_va_list)),
 //              'error_y'=> array(
 //                  'type'=> 'data',
 //                  'array' => array(1, 2, 1, 2, 1),
@@ -151,6 +166,11 @@ class AnalyticsController extends BaseController
                   function ($item){
                       return $item['average'];
               }, array_values($left_iop_list)),
+              'customdata'=>array_map(
+                  function($item){
+                      return $item['patients'];
+                  },
+                  array_values($left_iop_list)),
 //              'error_y' => array(
 //                  'type' => 'data',
 //                  'array' => array(2, 1, 2, 1, 2, 1),
@@ -226,12 +246,7 @@ class AnalyticsController extends BaseController
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = array(
-                      'hospital_number' => $current_patient->hos_num,
-                      'gender' => $current_patient->gender,
-                      'age' => $current_patient->getAge(),
-                      'name' => $current_patient->getFullName(),
-                  );
+                  $this->patient_list[$current_patient->id] = $current_patient;
               }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
               if (!array_key_exists($current_patient->id, $va_patient_list)){
@@ -292,12 +307,7 @@ class AnalyticsController extends BaseController
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = array(
-                      'hospital_number' => $current_patient->hos_num,
-                      'gender' => $current_patient->gender,
-                      'age' => $current_patient->getAge(),
-                      'name' => $current_patient->getFullName(),
-                  );
+                  $this->patient_list[$current_patient->id] = $current_patient;
               }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
               if (!array_key_exists($current_patient->id, $crt_patient_list)){
@@ -361,12 +371,7 @@ class AnalyticsController extends BaseController
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = array(
-                      'hospital_number' => $current_patient->hos_num,
-                      'gender' => $current_patient->gender,
-                      'age' => $current_patient->getAge(),
-                      'name' => $current_patient->getFullName(),
-                  );
+                  $this->patient_list[$current_patient->id] = $current_patient;
               }
 
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
