@@ -2,7 +2,6 @@
 <div class="analytics-patient-list" style="display: none; margin-right: 500px; " >
     <div class="flex-layout">
         <h3 id="js-list-title">Patient List</h3>
-<!--        <a id="js-back-to-chart" class="selected" href="#">Back to chart</a>-->
         <button id="js-back-to-chart" class="selected" >Back to chart</button>
     </div>
     <table>

@@ -15,7 +15,6 @@ var analytics_layout = {
     plot_bgcolor: '#141e2b',
     /* legend settings */
     showlegend: true,
-    hoverdistance: -1,
     legend: {
         x: 0 ,
         y: 1.1,
@@ -26,8 +25,6 @@ var analytics_layout = {
             color: '#8c8c8c',
         },
     },
-    hovermode: 'closest',
-    spikedistance: -1,
     xaxis: {
         showgrid: false,
         /*Ticks setting*/

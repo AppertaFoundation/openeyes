@@ -45,7 +45,7 @@ class AnalyticsController extends BaseController
 
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
-      $disorder_data = $this->getDisorders($subspecialty_id, '01/05/2014', '03/12/2015');
+      $disorder_data = $this->getDisorders($subspecialty_id);
 
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
@@ -248,19 +248,6 @@ class AnalyticsController extends BaseController
             'custom_data' => array()
         )
     );
-  }
-
-  public function getEventsByType($event_type, $date_range = null){
-    $event_type_id = EventType::model()->findByAttributes(array('name'=>$event_type))->id;
-    $examination_events = Event::model()->findAllByAttributes(array('event_type_id'=>$event_type_id));
-    foreach ($examination_events as $exam_item){
-    }
-    return $examination_events;
-  }
-
-  public function getElementByType($element_type, $date_range = null){
-      $element_type_id = ElementType::model()->findByAttributes(array('name'=>$element_type))->id;
-
   }
 
   public function sortByTime($a, $b){
@@ -545,12 +532,7 @@ class AnalyticsController extends BaseController
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = array(
-                      'hospital_number' => $current_patient->hos_num,
-                      'gender' => $current_patient->gender,
-                      'age' => $current_patient->getAge(),
-                      'name' => $current_patient->getFullName(),
-                  );
+                  $this->patient_list[$current_patient->id] = $current_patient;
               }
 
               $diagnoses = $diagnosis_element_item->diagnoses;
@@ -568,7 +550,9 @@ class AnalyticsController extends BaseController
                               'patient_list' => array(),
                           );
                       }
-                      array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
+                      if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])){
+                          array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
+                      }
                       if(!in_array($current_patient->id, $other_patient_list)){
                           array_push($other_patient_list, $current_patient->id);
                       }
