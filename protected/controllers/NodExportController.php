@@ -211,7 +211,7 @@ class NodExportController extends BaseController
 
     private function createAllTempTables()
     {
-        // DROP all tables if exsist before createing them
+        // DROP all tables if exist before creating them
         $this->clearAllTempTables();
         
         $query = '';
@@ -932,7 +932,7 @@ SELECT
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
-WHERE et.name = 'Operation Note'
+WHERE lower(et.name) = 'operation note'
 
 EOL;
 
@@ -969,7 +969,7 @@ JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-AND et.name = 'Operation Note'
+AND lower(et.name) = 'operation note'
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
@@ -1812,7 +1812,7 @@ EOL;
                     ON et.id = eon.event_type_id 
                 /* Correlated operation notes to outer query for same oe_episode */
                 WHERE eon.episode_id = cev.episode_id
-                AND et.name = 'Operation Note'
+                AND lower(et.name) = 'operation note'
                 AND eon.deleted = 0
                 /* Restrict to operations on or before examination post op complication date */
                 AND eon.event_date <= cev.event_date 
@@ -1847,7 +1847,7 @@ EOL;
                    ON et.id = eon.event_type_id 
                  /* Correlated operation notes to outer query for same oe_episode */
                  WHERE eon.episode_id = cev.episode_id
-                 AND et.name = 'Operation Note'
+                 AND lower(et.name) = 'operation note'
                  AND eon.deleted = 0
                  /* Restrict to operations on or before examination post op complication date */
                  AND eon.event_date <= cev.event_date 
@@ -2703,7 +2703,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment os
                 ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type_name = 'Operation Note'
+                WHERE lower(c.oe_event_type_name) = 'operation note'
                 /* Restrict: LEFT or BOTH eyes only */
                 AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
             
@@ -2737,7 +2737,7 @@ EOL;
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE c.oe_event_type_name = 'Operation Note'
+                WHERE lower(c.oe_event_type_name) = 'operation note'
                 /* Restrict: RIGHT or BOTH eyes only */
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
@@ -3111,7 +3111,7 @@ LEFT OUTER JOIN user au ON s.assistant_id = au.id
 LEFT OUTER JOIN et_ophtroperationnote_site_theatre ost ON ost.event_id = c.oe_event_id
 LEFT OUTER JOIN site s2 ON s2.id = ost.site_id
 /* Restrict: Only OPERATION NOTE type events */
-WHERE c.oe_event_type_name = 'Operation Note';    
+WHERE lower(c.oe_event_type_name) = 'operation note';
               
 EOL;
         return $query;
