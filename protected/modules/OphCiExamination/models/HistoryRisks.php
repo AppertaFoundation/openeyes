@@ -229,4 +229,9 @@ class HistoryRisks extends \BaseEventTypeElement
         }
         return null;
     }
+
+    public function getDisplayOrder($action)
+    {
+        return $action == 'view' ? 55 : parent::getDisplayOrder($action);
+    }
 }

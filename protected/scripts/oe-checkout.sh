@@ -28,7 +28,7 @@ done
 
 # Copy the runcheckout script to /tmp, make it executeable and then run
 sudo mkdir -p /tmp && sudo cp $SCRIPTDIR/runcheckout.sh /tmp/
-sudo chown "$USER":www-data /tmp/runcheckout.sh
+sudo chown "$LOGNAME":www-data /tmp/runcheckout.sh
 sudo chmod 774 /tmp/runcheckout.sh
 
 bash /tmp/runcheckout.sh $params
