@@ -42,10 +42,9 @@ $widget = $this;
                             <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                         </td>
                         <td>
-                            <div class="oe-date">
-                                <?= array_key_exists('object',
-                                    $operation) ? $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
-                            </div>
+													<span class="oe-date">
+														<?= $operation['object']->getHTMLformatedDate(); ?>
+													</span>
                         </td>
                     </tr>
                 <?php }
