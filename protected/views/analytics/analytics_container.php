@@ -2,7 +2,7 @@
 
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 
-<main class="oe-analytics flex-layout flex-top">
+<main class="oe-analytics flex-layout flex-top ">
     <?php $this->renderPartial('//analytics/analytics_sidebar',
         array('specialty'=>$specialty)
     ); ?>
@@ -22,10 +22,9 @@
                 array('custom_data'=> $custom_data));
         }?>
     </div>
-    <?php $this->renderPartial('//analytics/analytics_drill_down_list', array(
+        <?php $this->renderPartial('//analytics/analytics_drill_down_list', array(
             'patient_list' => $patient_list
-    )); ?>
-
+        )); ?>
 </main>
 
 <script >
