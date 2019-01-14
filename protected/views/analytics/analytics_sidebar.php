@@ -175,7 +175,6 @@
     </div><!-- #js-custom-data-filter -->
 
       <form id="search-form" >
-<!--          <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="--><?php //echo Yii::app()->request->csrfToken ?><!--"/>-->
           <input type="hidden" name="specialty" value="<?=$specialty;?>">
           <h3>Filter by Date</h3>
           <div class="flex-layout">
@@ -209,8 +208,8 @@
     </div>
   </div><!-- .specialty-options -->
 </div>
+<script type="text/javascript">
 
-<script>
     $('#search-form').on('submit', function(e){
         e.preventDefault();
         $.ajax({

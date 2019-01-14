@@ -274,6 +274,7 @@ class AnalyticsController extends BaseController
       return $standard_deviation;
   }
 
+
   public function getCustomVA($filters) {
       $va_patient_list = array();
       $left_va_list = array();
