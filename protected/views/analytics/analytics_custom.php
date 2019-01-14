@@ -12,7 +12,6 @@
     $(document).ready(function () {
         var custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         var custom_data = <?= CJavaScript::encode($custom_data); ?>;
-        console.log(custom_data);
         var custom_plot = document.getElementById('js-hs-chart-analytics-custom');
         custom_layout['title'] = "Custom Section";
         custom_layout['xaxis']['rangeslider'] = {};
