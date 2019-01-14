@@ -48,8 +48,10 @@ function setDiabeticDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="diabetic_diagnoses"][value=true]').length) {
+    if ($('input[name^="diabetic_diagnoses"]').filter('[value=true],[value="1"]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
@@ -66,8 +68,10 @@ function setGlaucomaDisorder(ev, pcrEl) {
         pcrEl = ev.data;
     }
 
-    if ($('input[name^="glaucoma_diagnoses"][value=true]').length) {
+    if ($('input[name^="glaucoma_diagnoses"]').filter('[value=true],[value="1"]').length) {
         $(pcrEl).val('Y');
+    } else {
+        $(pcrEl).val('N');
     }
 
     $(pcrEl).trigger('change');
