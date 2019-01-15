@@ -1,9 +1,7 @@
-<!--<main class="mdl-layout__content mdl-color--grey-100">-->
     <div id="pcr-risk-grid" class="analytics-cataract"></div>
     <div id="cataract-complication-grid" class="analytics-cataract"></div>
     <div id="visual-acuity-grid" class="analytics-cataract"></div>
     <div id="refractive-outcome-grid" class="analytics-cataract"></div>
-<!--</main>-->
 <div class="analytics-event-list analytics-patient-list" style="display:none;margin-right: 500px; ">
     <div class="flex-layout">
         <h3 id="js-list-title">Event List</h3>

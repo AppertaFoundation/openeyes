@@ -33,12 +33,12 @@
     ?>
 
 </main>
-
-<script >
+<?php if ($specialty === "Cataract"){?>
+<script>
     $(document).ready(function() {
         OpenEyes.Dash.init('#pcr-risk-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);
         $('.mdl-cell').css('height','600px');
     });
-
 </script>
+<?php }?>
