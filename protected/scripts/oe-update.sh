@@ -28,7 +28,7 @@ done
 
 # Copy the runupdate script to /tmp, make it executeable and then run
 sudo mkdir -p /tmp && sudo cp $SCRIPTDIR/runupdate.sh /tmp/
-sudo chown "$LOGNAME":www-data /tmp/runupdate.sh
+sudo chown "${LOGNAME:-'root'}":www-data /tmp/runupdate.sh
 sudo chmod 774 /tmp/runupdate.sh
 
 bash /tmp/runupdate.sh $params
