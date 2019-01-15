@@ -56,7 +56,3 @@
             </div>
         </fieldset>
     </form>
-
-<?php
-//span  class="mdl-radio__label"
-?>

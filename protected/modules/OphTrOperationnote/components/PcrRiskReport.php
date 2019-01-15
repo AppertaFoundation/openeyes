@@ -213,8 +213,7 @@ class PcrRiskReport extends Report implements ReportInterface
                 $observedPcrRate = $pcrCases / $total;
                 $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
                 $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
-                //$adjustedPcrRate = (($pcrCases / $total) / ($pcrRiskTotal / $total)) * $this->average();
-            }
+                }
 
             // set the graph subtitle here, so we don't have to run this query more than once
             if ($total > 1000) {

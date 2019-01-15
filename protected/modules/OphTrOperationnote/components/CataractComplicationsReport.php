@@ -263,10 +263,6 @@ class CataractComplicationsReport extends Report implements ReportInterface
 
         $data = $this->queryDatas($surgeon, $this->from, $this->to);
         $total = count($data);
-//        foreach ($data as $complication) {
-//            $total += $complication['complication_count'];
-//        }
-
         return $total;
     }
 

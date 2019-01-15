@@ -281,11 +281,7 @@
           });
 
           chart.data[0]['customdata'] = data.map(function (item) {
-              if (item['event_list']) {
-                  return item['event_list'];
-              } else {
-                  return 0;
-              }
+              return item['event_list']? item['event_list']:0;
           });
           chart.data[0]['hovertext'] = data.map((item, index) => {
             if (item['total']){

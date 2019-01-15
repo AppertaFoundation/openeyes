@@ -49,9 +49,3 @@
             </div>
         </fieldset>
     </form>
-
-<?php
-//select class="browser-default"
-//label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-//span  class="mdl-checkbox__label"
-?>

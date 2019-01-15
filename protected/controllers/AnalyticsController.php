@@ -494,7 +494,7 @@ class AnalyticsController extends BaseController
       $criteria->compare('subspecialty_id', $subspecialty_id);
       $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAll($criteria);
       foreach ($common_ophthalmic_disorders as $disorder){
-          if(isset($disorder->disorder_id)){
+          if(isset($disorder->disorder->id)){
               if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
                   $disorder_patient_list[$disorder->disorder->id]= array(
                       'full_name' => $disorder->disorder->fully_specified_name,

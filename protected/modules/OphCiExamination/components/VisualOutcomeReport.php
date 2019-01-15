@@ -84,19 +84,6 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'zeroline' => false,
       ),
       'hovermode'=>'closest',
-//        'shapes' => array(
-//            array(
-//            'type' => 'line',
-//             'x' => array(-1, 6),
-//            'y' => array(-1, 6),
-//            'line' => array(
-//                'dash' => 'dash',
-//                'color' => 'rgb(0,0,0)',
-//                'width' => 1,
-//            ),
-//            'hoverinfo' => 'none',
-//            )
-//        ),
     );
     /**
      * @param $app
