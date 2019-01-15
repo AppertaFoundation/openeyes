@@ -137,15 +137,6 @@
             e.preventDefault();
         });
 
-        function getFirstImageToLoadIndex(index, imageCount) {
-            let halfImageCount = imageCount / 2;
-            if (halfImageCount >= index) {
-                return 1;
-            } else {
-                return index - halfImageCount;
-            }
-        }
-
       self.element.one('mouseenter', '.event-type' , function(){
           let $screenshots = $('.oe-event-quickview .quickview-screenshots');
           let $loader = $('.oe-event-quickview .spinner');
