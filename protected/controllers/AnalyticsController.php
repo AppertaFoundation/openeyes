@@ -78,13 +78,17 @@ class AnalyticsController extends BaseController
                 return $item['patients'];
             },
         array_values($left_va_list)),
-//          'error_y'=> array(
-//              'type'=> 'data',
-//              'array' => array(1, 2, 1, 2, 1),
-//              'visible' => true,
-//              'color' => '#aaa',
-//              'thickness' => 1
-//          )
+              'error_y'=> array(
+                  'type'=> 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($left_va_list)),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
       ), array(
           'name' => 'CRT',
           'yaxis' =>'y2',
@@ -98,13 +102,17 @@ class AnalyticsController extends BaseController
                   return $item['patients'];
               },
           array_values($left_crt_list)),
-//              'error_y' => array(
-//                  'type' => 'data',
-//                  'array' => array(2, 1, 2, 1, 2, 1),
-//                  'visible' => true,
-//                  'color' => '#aaa',
-//                  'thickness' => 1
-//              )
+              'error_y' => array(
+                  'type' => 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($left_crt_list)),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
           )
       );
 
@@ -150,13 +158,17 @@ class AnalyticsController extends BaseController
                       return $item['patients'];
                   },
                   array_values($left_va_list)),
-//              'error_y'=> array(
-//                  'type'=> 'data',
-//                  'array' => array(1, 2, 1, 2, 1),
-//                  'visible' => true,
-//                  'color' => '#aaa',
-//                  'thickness' => 1
-//              )
+              'error_y'=> array(
+                  'type'=> 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($left_va_list)),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
           ),
           array(
               'name' => 'IOP',
@@ -171,13 +183,17 @@ class AnalyticsController extends BaseController
                       return $item['patients'];
                   },
                   array_values($left_iop_list)),
-//              'error_y' => array(
-//                  'type' => 'data',
-//                  'array' => array(2, 1, 2, 1, 2, 1),
-//                  'visible' => true,
-//                  'color' => '#aaa',
-//                  'thickness' => 1
-//              )
+              'error_y' => array(
+                  'type' => 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($left_iop_list)),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
           )
       );
 
@@ -233,7 +249,20 @@ class AnalyticsController extends BaseController
       return ($a['event_time']<$b['event_time'])? -1: 1;
   }
 
-  public function getCustomVA(                                                                                                                                                                                  ) {
+  public function calculateStandardDeviation($data_list, $sum, $count){
+      $variance = 0;
+      $average = $sum/$count;
+      foreach ($data_list as $value){
+          $current_deviation = $value - $average;
+          $variance += $current_deviation * $current_deviation;
+      }
+      $variance /= $count;
+
+      $standard_deviation = sqrt($variance);
+      return $standard_deviation;
+  }
+
+  public function getCustomVA() {
       $va_patient_list = array();
       $left_va_list = array();
       $right_va_list = array();
@@ -272,11 +301,13 @@ class AnalyticsController extends BaseController
                       if (array_key_exists((int)$current_week, ${$side.'_va_list'})){
                           ${$side.'_va_list'}[$current_week]['count']+=1;
                           ${$side.'_va_list'}[$current_week]['sum']+=$va_item[$side.'_reading'];
+                          ${$side.'_va_list'}[$current_week]['readings'][] = $va_item[$side.'_reading'];
                           ${$side.'_va_list'}[$current_week]['patients'][] = $patient_id;
                       } else {
                           ${$side.'_va_list'}[$current_week] = array(
                               'count'=> 1,
                               'sum' => $va_item[$side.'_reading'],
+                              'readings' => array($va_item[$side.'_reading']),
                               'patients' => array($patient_id),
                           );
                       }
@@ -286,7 +317,14 @@ class AnalyticsController extends BaseController
       }
       foreach (['left', 'right'] as $side){
           foreach (${$side.'_va_list'} as &$va_item){
-              $va_item['average'] = round($va_item['sum']/$va_item['count']);
+              if ($va_item['count'] > 1){
+                  $va_item['average'] = round($va_item['sum']/$va_item['count']);
+                  $va_item['SD'] = $this->calculateStandardDeviation($va_item['readings'], $va_item['sum'], $va_item['count']);
+
+              } else {
+                  $va_item['average'] = $va_item['sum'];
+                  $va_item['SD'] = 0;
+              }
           }
       }
       ksort($left_va_list);
@@ -333,11 +371,13 @@ class AnalyticsController extends BaseController
                       if (array_key_exists((int)$current_week, ${$side.'_crt_list'})){
                           ${$side.'_crt_list'}[$current_week]['count']+=1;
                           ${$side.'_crt_list'}[$current_week]['sum']+=$crt_item[$side.'_crt'];
+                          ${$side.'_crt_list'}[$current_week]['values'][]=$crt_item[$side.'_crt'];
                           ${$side.'_crt_list'}[$current_week]['patients'][] = $patient_id;
                       } else {
                           ${$side.'_crt_list'}[$current_week] = array(
                               'count'=> 1,
                               'sum' => $crt_item[$side.'_crt'],
+                              'values' => array($crt_item[$side.'_crt']),
                               'patients' => array($patient_id),
                           );
                       }
@@ -347,7 +387,13 @@ class AnalyticsController extends BaseController
       }
       foreach (['left', 'right'] as $side){
           foreach (${$side.'_crt_list'} as &$crt_item){
-              $crt_item['average'] = round($crt_item['sum']/$crt_item['count']);
+              if($crt_item['count'] > 1){
+                  $crt_item['average'] = round($crt_item['sum']/$crt_item['count']);
+                  $crt_item['SD'] = $this->calculateStandardDeviation($crt_item['values'], $crt_item['sum'], $crt_item['count']);
+              } else {
+                  $crt_item['average'] = $crt_item['sum'];
+                  $crt_item['SD'] = 0;
+              }
           }
       }
       ksort($left_crt_list);
@@ -399,11 +445,13 @@ class AnalyticsController extends BaseController
                       if (array_key_exists((int)$current_week, ${$side.'_iop_list'})){
                           ${$side.'_iop_list'}[$current_week]['count']+=1;
                           ${$side.'_iop_list'}[$current_week]['sum']+=$iop_item[$side.'_reading'];
+                          ${$side.'_iop_list'}[$current_week]['readings'][]=$iop_item[$side.'_reading'];
                           ${$side.'_iop_list'}[$current_week]['patients'][] = $patient_id;
                       } else {
                           ${$side.'_iop_list'}[$current_week] = array(
                               'count'=> 1,
                               'sum' => $iop_item[$side.'_reading'],
+                              'readings' => array($iop_item[$side.'_reading']),
                               'patients' => array($patient_id),
                           );
                       }
@@ -415,7 +463,13 @@ class AnalyticsController extends BaseController
 
       foreach (['left', 'right'] as $side){
           foreach (${$side.'_iop_list'} as &$iop_item){
-              $iop_item['average'] = round($iop_item['sum']/$iop_item['count']);
+              if ($iop_item['count'] > 1){
+                  $iop_item['average'] = round($iop_item['sum']/$iop_item['count']);
+                  $iop_item['SD'] = $this->calculateStandardDeviation($iop_item['readings'], $iop_item['sum'], $iop_item['count']);
+              } else {
+                  $iop_item['average'] = $iop_item['sum'];
+                  $iop_item['SD'] = 0;
+              }
           }
       }
       ksort($left_iop_list);
