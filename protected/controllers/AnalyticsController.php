@@ -368,11 +368,13 @@ class AnalyticsController extends BaseController
                       if (array_key_exists((int)$current_week, ${$side.'_list'})){
                           ${$side.'_list'}[$current_week]['count']+=1;
                           ${$side.'_list'}[$current_week]['sum']+=$data_item[$side.'_reading'];
+                          ${$side.'_list'}[$current_week]['values'][] =$data_item[$side.'_reading'];
                           ${$side.'_list'}[$current_week]['patients'][] = $patient_id;
                       } else {
                           ${$side.'_list'}[$current_week] = array(
                               'count'=> 1,
                               'sum' => $data_item[$side.'_reading'],
+                              'values'=> array($data_item[$side.'_reading']),
                               'patients' => array($patient_id),
                           );
                       }
@@ -384,7 +386,14 @@ class AnalyticsController extends BaseController
 
       foreach (['left', 'right'] as $side){
           foreach (${$side.'_list'} as &$data_item){
-              $data_item['average'] = round($data_item['sum']/$data_item['count']);
+              if ($data_item['count']>1){
+                  $data_item['average'] = round($data_item['sum']/$data_item['count']);
+                  $data_item['SD'] = $this->calculateStandardDeviation($data_item['values'],$data_item['sum'],$data_item['average']);
+              }else{
+                  $data_item['average'] = $data_item['sum'];
+                  $data_item['SD'] = 0;
+              }
+
           }
       }
 
@@ -553,6 +562,17 @@ class AnalyticsController extends BaseController
                       return $item['patients'];
                   },
                   array_values($va_list[0])),
+              'error_y'=> array(
+                  'type'=> 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($va_list[0])),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
               ),
           array(
               'yaxis' =>'y2',
@@ -566,17 +586,18 @@ class AnalyticsController extends BaseController
                       return $item['patients'];
                   },
                   array_values($second_list[0])),
+              'error_y'=> array(
+                  'type'=> 'data',
+                  'array' => array_map(
+                      function($item){
+                          return $item['SD'];
+                      },
+                      array_values($second_list[0])),
+                  'visible' => true,
+                  'color' => '#aaa',
+                  'thickness' => 1
+              )
           ),
-//          array(
-//          'yaxis' =>'y2',
-//          'x' => [100,200,300,400],
-//          'y' => [1,3,null,4],
-//          'customdata'=>array_map(
-//              function($item){
-//                  return $item['patients'];
-//              },
-//              array_values($second_list[0])),
-//      )
 
       );
       $this->renderJSON($custom_data);
