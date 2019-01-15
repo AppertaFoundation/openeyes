@@ -75,11 +75,11 @@ class EventImageController extends BaseController
      */
     public function actionGetImageUrlsBulk(){
         $event_ids = CJSON::decode($_GET['event_ids']);
-        $done_event_ids = array();
         $remaining_event_ids = null;
+        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
 
         $criteria = new CDbCriteria();
-        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
+        $criteria->select = 't.event_id';
         $criteria->compare('status_id', $created_image_status_id);
         $criteria->addInCondition('event_id', $event_ids);
         $criteria->compare('t.last_modified_date', '>= e.last_modified_date');
@@ -93,17 +93,21 @@ class EventImageController extends BaseController
         $event_images = EventImage::model()->findAll($criteria);
 
         foreach ($event_images as $event_image){
-            $done_event_ids[] = $event_image->event_id;
+            $generated_image_event_ids[] = $event_image->event_id;
         }
 
-        $remaining_event_ids = array_diff($event_ids, $done_event_ids);
-        $done_urls = array();
-        foreach ($done_event_ids as $id){
-            $done_urls[$id] = $this->createUrl('view', array('id' => $id));
+        $remaining_event_ids = array_diff($event_ids, $generated_image_event_ids);
+        $generated_image_urls = array();
+        foreach ($generated_image_event_ids as $id){
+            $generated_image_urls[$id] = $this->createUrl('view', array('id' => $id));
         }
 
-        echo '{"done_urls":'.json_encode($done_urls)
-            .', "remaining_event_ids":'.json_encode($remaining_event_ids).'}';
+        echo \CJSON::encode(
+            array(
+                'generated_image_urls' => $generated_image_urls,
+                'remaining_event_ids' => $remaining_event_ids
+            )
+        );
     }
 
     public function actionGetImageInfo($event_id)
