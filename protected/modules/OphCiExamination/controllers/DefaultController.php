@@ -57,6 +57,8 @@ class DefaultController extends \BaseEventTypeController
 
     protected $deletedAllergies = array();
 
+    protected $controller_action;
+
     public function getTitle()
     {
         $title = parent::getTitle();
@@ -79,6 +81,7 @@ class DefaultController extends \BaseEventTypeController
     {
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, \AssetManager::OUTPUT_SCREEN);
         $this->jsVars['OE_MODEL_PREFIX'] = 'OEModule_OphCiExamination_models_';
+        $this->controller_action = Yii::app()->controller->action->id;
 
         return parent::beforeAction($action);
     }
@@ -1294,8 +1297,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              @TODO: note, getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() ? $this->getNextStep() : $this->getFirstStep();
+              Note: getCurrentStep() will return firstStep if there were no steps before */
+            $this->set = $this->getElementSetAssignment() && $this->controller_action != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
