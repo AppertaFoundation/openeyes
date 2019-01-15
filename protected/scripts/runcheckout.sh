@@ -197,7 +197,7 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
 fi
 
 echo ""
-echo "User $LOGNAME is checking out branch $branch..."
+echo "Checking out branch $branch..."
 echo ""
 
 $(ssh-agent)  2>/dev/null
