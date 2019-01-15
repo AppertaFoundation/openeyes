@@ -927,12 +927,12 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
-WHERE lower(et.name) = 'operation note'
+WHERE et.class_name = 'OphTrOperationnote'
 
 EOL;
 
@@ -962,14 +962,14 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-AND lower(et.name) = 'operation note'
+AND et.class_name = 'OphTrOperationnote'
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
@@ -986,13 +986,13 @@ SELECT
 , ep.patient_id AS patient_id
 , ev.id AS nod_episode_id
 , DATE(ev.event_date) AS nod_date
-, et.name AS oe_event_type_name
+, et.class_name AS oe_event_type_name
 , 1 AS nod_episode_seq
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id 
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
-AND et.name IN ('Examination', 'Biometry', 'Prescription')
+AND et.class_name IN ('OphCiExamination', 'OphInBiometry', 'OphDrPrescription')
 AND ev.deleted = 0;
 
 EOL;
@@ -1812,7 +1812,7 @@ EOL;
                     ON et.id = eon.event_type_id 
                 /* Correlated operation notes to outer query for same oe_episode */
                 WHERE eon.episode_id = cev.episode_id
-                AND lower(et.name) = 'operation note'
+                AND et.class_name = 'OphTrOperationnote'
                 AND eon.deleted = 0
                 /* Restrict to operations on or before examination post op complication date */
                 AND eon.event_date <= cev.event_date 
@@ -1847,7 +1847,7 @@ EOL;
                    ON et.id = eon.event_type_id 
                  /* Correlated operation notes to outer query for same oe_episode */
                  WHERE eon.episode_id = cev.episode_id
-                 AND lower(et.name) = 'operation note'
+                 AND et.class_name = 'OphTrOperationnote'
                  AND eon.deleted = 0
                  /* Restrict to operations on or before examination post op complication date */
                  AND eon.event_date <= cev.event_date 
@@ -2703,7 +2703,7 @@ EOL;
                     FROM ophtroperationnote_procedurelist_procedure_assignment os
                 ) AS v
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE lower(c.oe_event_type_name) = 'operation note'
+                WHERE c.oe_event_type_name = 'OphTrOperationnote'
                 /* Restrict: LEFT or BOTH eyes only */
                 AND pl.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
             
@@ -2737,7 +2737,7 @@ EOL;
                 LEFT OUTER JOIN proc p 
                   ON p.id = pa.proc_id
                 /* Restrict: Only OPERATION NOTE type events */
-                WHERE lower(c.oe_event_type_name) = 'operation note'
+                WHERE c.oe_event_type_name = 'OphTrOperationnote'
                 /* Restrict: RIGHT or BOTH eyes only */
                 AND pl.eye_id IN (2, 3); /* 2 = RIGHT EYE, 3 = BOTH EYES */
             
@@ -3111,7 +3111,7 @@ LEFT OUTER JOIN user au ON s.assistant_id = au.id
 LEFT OUTER JOIN et_ophtroperationnote_site_theatre ost ON ost.event_id = c.oe_event_id
 LEFT OUTER JOIN site s2 ON s2.id = ost.site_id
 /* Restrict: Only OPERATION NOTE type events */
-WHERE lower(c.oe_event_type_name) = 'operation note';
+WHERE c.oe_event_type_name = 'OphTrOperationnote';
               
 EOL;
         return $query;
