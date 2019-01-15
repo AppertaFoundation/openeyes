@@ -74,9 +74,10 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $va_ticks = $this->getChartTicks();
         $va_len = sizeof($va_ticks);
         $step = $va_len/20;
-        $this->va_ticks = array_slice($va_ticks, 0,4);
+        $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
+        $this->va_ticks = array_slice($va_ticks, 0,$no_numeric_val_count);
 
-        for ($i = 5; $i<=$va_len-$step; $i+=$step){
+        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step){
             array_push($this->va_ticks, $va_ticks[$i]);
         }
 
