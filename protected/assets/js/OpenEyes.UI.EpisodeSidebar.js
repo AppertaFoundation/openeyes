@@ -82,7 +82,15 @@
   };
 
   EpisodeSidebar.prototype.create = function () {
-    var self = this;
+    let self = this;
+    let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
+
+    if ($selected_event.length) {
+        let li_offset_top = $selected_event[0].offsetTop;
+        if (li_offset_top) {
+            this.element[0].scrollTop = (this.element[0].scrollHeight - li_offset_top);
+        }
+    }
 
     if (self.options.default_sort == 'asc') {
       self.sortOrder = 'asc';

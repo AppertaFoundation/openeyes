@@ -37,5 +37,13 @@ if (empty($patient)) {
 			OphCoCorrespondence_addAttachments(selectedItems);
 			return true;
 		},
+        onOpen: function () {
+            $('table.select-options').find('li').each(function () {
+                var attachmentId = $(this).data('id');
+                var alreadyUsed = $('#correspondence_attachments_table')
+                    .find('input[type="hidden"][name*="attachments_event_id"][value="' + attachmentId + '"]').length > 0;
+                $(this).toggle(!alreadyUsed);
+            });
+        }
 	});
 </script>

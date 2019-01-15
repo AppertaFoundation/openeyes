@@ -236,9 +236,36 @@ class TrialController extends BaseModuleController
             ),
         ));
 
+
+        $interventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
+            'criteria' => array(
+                'condition' => $condition,
+                'join' => 'JOIN user u ON u.id = t.owner_user_id',
+                'params' => array(
+                    ':userId' => Yii::app()->user->id,
+                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::INTERVENTION_CODE))->id,
+                ),
+            ),
+            'pagination'=>false,
+        ));
+
+        $nonInterventionTrialSearchDataProvider = new CActiveDataProvider('Trial', array(
+            'criteria' => array(
+                'condition' => $condition,
+                'join' => 'JOIN user u ON u.id = t.owner_user_id',
+                'params' => array(
+                    ':userId' => Yii::app()->user->id,
+                    ':trialType' => TrialType::model()->find('code = ?', array(TrialType::NON_INTERVENTION_CODE))->id,
+                ),
+            ),
+            'pagination'=>false,
+        ));
+
         $this->render('index', array(
             'interventionTrialDataProvider' => $interventionTrialDataProvider,
             'nonInterventionTrialDataProvider' => $nonInterventionTrialDataProvider,
+            'interventionTrialSearchDataProvider' => $interventionTrialSearchDataProvider,
+            'nonInterventionTrialSearchDataProvider' => $nonInterventionTrialSearchDataProvider,
             'sort_by' => (int)Yii::app()->request->getParam('sort_by', null),
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', null),
         ));

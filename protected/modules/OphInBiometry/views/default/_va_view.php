@@ -22,7 +22,7 @@ if ($eventtype) {
 }
 ?>
 <?php
-$VAdate = " - (Not Recorded)";
+$VAdate = "";
 $VA_data = NULL;
 $episode = $this->episode;
 $api = Yii::app()->moduleAPI->get('OphCiExamination');
@@ -42,7 +42,7 @@ if ($api) {
             if ($vaID && !$VA_data) {
                 $VA_data = $api->getMostRecentVAData($vaID->id);
                 $chosenVA = $vaID;
-                $VAdate = "- ( " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+                $VAdate = date("d M Y", strtotime($events[$i]->event_date));
             }
         }
     }
@@ -85,7 +85,7 @@ if ($api) {
 } ?>
   eye-divider ">
     <header class="element-header">
-        <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
+        <h3 class="element-title">Visual Acuity <?= '<br />' . $VAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
@@ -98,7 +98,7 @@ if ($api) {
             if (count($method_name)) {
             ?>
             <div class="data-value">
-                <?php echo $unitname ?>
+                <?= $unitname ?>
             </div>
             <div class="data-group">
                 <div class="data-value">
@@ -125,7 +125,7 @@ if ($api) {
 </section>
 <?php
 // Near VA
-$NearVAdate = " - (Not Recorded)";
+$NearVAdate = "";
 $NearVAFound = false;
 if ($api) {
     for ($i = 0; $i < count($events); ++$i) {
@@ -136,7 +136,7 @@ if ($api) {
             $neardata = $api->getMostRecentNearVAData($vaID->id);
             $chosenNearVA = $vaID;
             $NearVAFound = true;
-            $NearVAdate = "- ( " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+            $NearVAdate = date("d M Y", strtotime($events[$i]->event_date));
         }
     }
     $rightNearData = array();
@@ -176,7 +176,7 @@ if ($api) {
 } ?>
   eye-divider ">
     <header class="element-header">
-        <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
+        <h2 class="element-title">Near Visual Acuity <?= '<br />' . $NearVAdate; ?></h2>
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
@@ -188,7 +188,7 @@ if ($api) {
                 $data = ${$_data};
                 if (count($rightNearData)) { ?>
                     <div class="data-value">
-                        <?php echo $unitname ?>
+                        <?= $unitname ?>
                     </div>
                     <div class="data-value">
                         <?php
@@ -237,11 +237,11 @@ if ($refractfound) {
     } ?>
   eye-divider ">
         <header class="element-header">
-            <h3 class="element-title">Refraction - (<?php echo \Helper::convertDate2NHS($refract_event_date); ?>)</h3>
+            <h3 class="element-title">Refraction <?= '<br />' . \Helper::convertDate2NHS($refract_event_date); ?></h3>
         </header>
         <div class="element-fields element-eyes data-group">
             <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-                <div class="js-element-eye <?php echo $eye_side ?>-eye column">
+                <div class="js-element-eye <?= $eye_side ?>-eye column">
                     <?php if ($refractelement->hasEye($eye_side)) {
                         ?>
                         <div class="refraction">
@@ -268,7 +268,7 @@ if ($refractfound) {
 } ?>
   eye-divider ">
     <header class="element-header">
-        <h3 class="element-title">Refraction - (Not Recorded)</h3>
+        <h3 class="element-title">Refraction</h3>
     </header>
     <div class="element-fields element-eyes data-group">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>

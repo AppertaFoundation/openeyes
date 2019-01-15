@@ -284,9 +284,12 @@ class DefaultController extends BaseEventTypeController
                 
                 foreach ($drugs as $drug) {
                     $return[] = array(
-                            'label' => $drug->tallmanlabel,
-                            'value' => $drug->tallman,
-                            'id' => $drug->id,
+                        'label' => $drug->tallmanlabel,
+                        'value' => $drug->tallman,
+                        'id' => $drug->id,
+                        'allergies' => CJSON::encode(array_map(function ($allergy) {
+                            return $allergy->id;
+                        }, $drug->allergies))
                     );
                 }
             }
@@ -665,7 +668,6 @@ class DefaultController extends BaseEventTypeController
             parent::actionUpdate($id);
         }
     }
-
 
     /**
      * Group the different kind of drug items for the printout
