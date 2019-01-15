@@ -28,7 +28,7 @@ done
 
 # Copy the runinstall script to /tmp, make it executeable and then run
 sudo mkdir -p /tmp && sudo cp $SCRIPTDIR/runinstall.sh /tmp/
-sudo chown "${LOGNAME":-'root'}:www-data /tmp/runinstall.sh
+sudo chown "${LOGNAME:-'root'}":www-data /tmp/runinstall.sh
 sudo chmod 774 /tmp/runinstall.sh
 
 bash /tmp/runinstall.sh $params
