@@ -137,20 +137,6 @@
             e.preventDefault();
         });
 
-      self.element.one('mouseenter', '.event-type' , function(){
-          let $screenshots = $('.oe-event-quickview .quickview-screenshots');
-          let $loader = $('.oe-event-quickview .spinner');
-          $screenshots.find('img').each(function () {
-                $(this).load(function () {
-                    $(this).data('loaded', true);
-                    if ($(this).css('display') !== 'none') {
-                        $loader.hide();
-                    }
-                    showCurrentEventImage();
-                });
-            });
-        });
-
         self.element.on('mouseenter', '.event-type', function (e) {
             var $iconHover = $(e.target);
             var $li = $iconHover.parent().parents('li:first');
@@ -178,6 +164,7 @@
         });
 
 
+
         //Shows the current event image if it's loaded and the quickview is open
         function showCurrentEventImage() {
             //First check the parent element is visible
@@ -185,17 +172,13 @@
             let loader = quickview.find('.spinner');
             let event_id = quickview.data('current_event');
             if (quickview.is(':visible') && event_id) {
-                console.log('hey rick the quickview is visible aww jeeze');
                 let img = quickview.find('img[data-event-id=' + event_id + ']');
                 if (img.data('loaded')){
                     img.show();
                     loader.hide();
                 } else {
-                    console.log('well we gotta wait morty');
                     loader.show();
                 }
-            } else {
-                console.log('hey rick the quickview isn\'t visible aww jeeze');
             }
         }
 
@@ -242,7 +225,6 @@
                                     url: '/eventImage/getImageUrl',
                                     data: {'event_id': event_id},
                                 }).success(function(response){
-                                    console.log('Aww jeeze rick theres the payload:' + response);
                                     setEventImageSrc(event_id, response);
                                 });
                             }
@@ -257,6 +239,18 @@
                     data: {'event_ids': JSON.stringify(event_ids)},
                 }).success(bulkURLFunc);
             }, 0);
+
+            let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            let $loader = $('.oe-event-quickview .spinner');
+            $screenshots.find('img').each(function () {
+                $(this).load(function () {
+                    $(this).data('loaded', true);
+                    if ($(this).css('display') !== 'none') {
+                        $loader.hide();
+                    }
+                    showCurrentEventImage();
+                });
+            });
 
         });
 

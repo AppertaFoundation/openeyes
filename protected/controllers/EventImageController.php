@@ -76,6 +76,7 @@ class EventImageController extends BaseController
     public function actionGetImageUrlsBulk(){
         $event_ids = CJSON::decode($_GET['event_ids']);
         $remaining_event_ids = null;
+        $generated_image_event_ids = array();
         $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
 
         $criteria = new CDbCriteria();
