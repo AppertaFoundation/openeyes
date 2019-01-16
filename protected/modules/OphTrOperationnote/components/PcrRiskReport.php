@@ -179,57 +179,6 @@ class PcrRiskReport extends Report implements ReportInterface
         return $return_data;
     }
     /**
-     * @return array
-     */
-    public function dataSets()
-    {
-        $allSurgeonsId = $this->querySurgeonData();
-        $return_data = array();
-        foreach ($allSurgeonsId as $surgeon){
-            $data = $this->queryData($surgeon['id'], $this->from, $this->to);
-
-            $total = $this->getTotalOperations($surgeon['id']);
-            $pcrCases = 0;
-            $pcrRiskTotal = 0;
-            $adjustedPcrRate = 0;
-
-            foreach ($data as $case) {
-                if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
-                    ++$pcrCases;
-                }
-                if (isset($case['risk']) && $case['risk'] !== '' && $case['risk'] != 0) {
-                    $pcrRiskTotal += $case['risk'];
-                } else {
-                    $pcrRiskTotal += 1.92;
-                }
-            }
-
-            if ($total !== 0 && (int) $pcrRiskTotal !== 0) {
-                // unadjusted PCR rate
-                $unadjustedPcrRate = ($pcrCases / $total) * 100;
-
-                // adjusted PCR rate
-                $expectedPcrRate = $pcrRiskTotal / $total;
-                $observedPcrRate = $pcrCases / $total;
-                $observedExpectedRate = $observedPcrRate / $expectedPcrRate;
-                $adjustedPcrRate = ($observedExpectedRate * $this->average()) * 100; // we need to return %
-                }
-
-            // set the graph subtitle here, so we don't have to run this query more than once
-            if ($total > 1000) {
-                $this->totalOperations = $total;
-            }
-            if ($this->mode == 0) {
-                array_push($return_data,array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
-            } elseif ($this->mode == 1) {
-                array_push($return_data,array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
-            } elseif ($this->mode == 2) {
-                array_push($return_data,array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
-            }
-        }
-        return $return_data;
-    }
-    /**
      * @return string
      */
 

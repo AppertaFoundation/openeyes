@@ -76,7 +76,7 @@
           Service
       </button>
       <button class="analytics-section pro-theme cols-3" id="js-btn-custom"
-              data-section="#js-hs-chart-analytics-custom"
+              data-section="#js-hs-chart-analytics-custom-right"
               data-tab="#js-custom-data-filter" >
           Custom
       </button>
@@ -101,6 +101,7 @@
     </div><div id="js-custom-data-filter" style="display: none;"><h3>Custom Data Filters</h3>
       <div class="custom-filters flex-layout">
         <ul class="filters-selected cols-9">
+          <li id="js-chart-filter-eye-side">Eyes: <input type="checkbox" id="js-chart-filter-eye-side-right" checked>Right <input type="checkbox" id="js-chart-filter-eye-side-left">Left</li>
           <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age">All</span></li>
           <li id="js-chart-filter-age-range" style="display: none;">Ages:
             <select id="js-chart-filter-age-min" style="font-size: 1em; width: inherit">
@@ -257,6 +258,20 @@
     }
 <?php }else{?>
 
+    $('#js-chart-filter-eye-side-right').click(function () {
+        if (this.checked){
+            $('#js-chart-filter-eye-side-left').attr('checked',false);
+            $('#js-hs-chart-analytics-custom-right').show();
+            $('#js-hs-chart-analytics-custom-left').hide();
+        }
+    });
+    $('#js-chart-filter-eye-side-left').click(function () {
+        if (this.checked){
+            $('#js-chart-filter-eye-side-right').attr('checked',false);
+            $('#js-hs-chart-analytics-custom-right').hide();
+            $('#js-hs-chart-analytics-custom-left').show();
+        }
+    });
    $('#js-chart-filter-age').on('DOMSubtreeModified',function () {
         if ($('#js-chart-filter-age').html() == "Range"){
             $('#js-chart-filter-age-all').hide();
@@ -271,20 +286,44 @@
         e.preventDefault();
         $.ajax({
             url: '/analytics/customData',
-            data:$('#search-form').serialize(),
+            data:$('#search-form').serialize() + getCustomDataFilters(),
             dataType:'json',
             success: function (data, textStatus, jqXHR) {
-                getCustomDataFilters();
+                console.log("done");
                 plotUpdate(data);
             }
         });
     });
     function getCustomDataFilters(){
         var specialty = "<?=$specialty;?>";
-        var filters = "&diagnosis="+$('#js-chart-filter-diagnosis').html()+"&protocol="+$('#js-chart-filter-protocol').html()+"&plot-va="+$('#js-chart-filter-plot').html();
+        var filters = "&specialty="+specialty;
+
+        if ($('#js-chart-filter-diagnosis').html() !== "All"){
+
+            if (specialty == "Medical Retina"){
+                if ($('#js-chart-filter-diagnosis').html().includes("AMD")){
+                    filters+="&diagnosis="+ 0;
+                } else if ($('#js-chart-filter-diagnosis').html().includes("BRVO")){
+                    filters+="&diagnosis="+ 1;
+                } else if ($('#js-chart-filter-diagnosis').html().includes("CRVO")){
+                    filters+="&diagnosis="+ 2;
+                } else if ($('#js-chart-filter-diagnosis').html().includes("DMO")) {
+                    filters+="&diagnosis="+ 3;
+                }
+            }
+        }
+
+        if ($('#js-chart-filter-protocol').html() !== "ALL"){
+            filters = +"&protocol="+$('#js-chart-filter-protocol').html()
+        }
+
+        var plot_va = "&plot-va="+$('#js-chart-filter-plot').html();
+
 
         if (specialty == "Medical Retina"){
-            filters += "&treatment="+$('#js-chart-filter-treatment').html();
+            if ($('#js-chart-filter-treatment').html() !== "All"){
+                filters += "&treatment="+$('#js-chart-filter-treatment').html();
+            }
         }
 
         if ($('#js-chart-filter-age').html() == "Range"){
@@ -292,6 +331,7 @@
         }
 
         console.log(filters);
+        return filters;
     }
 <?php }?>
     function viewAllDates() {
