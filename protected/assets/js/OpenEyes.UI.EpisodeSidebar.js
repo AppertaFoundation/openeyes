@@ -85,13 +85,6 @@
     let self = this;
     let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
 
-    if ($selected_event.length) {
-        let li_offset_top = $selected_event[0].offsetTop;
-        if (li_offset_top) {
-            this.element[0].scrollTop = (this.element[0].scrollHeight - li_offset_top);
-        }
-    }
-
     if (self.options.default_sort == 'asc') {
       self.sortOrder = 'asc';
     }
@@ -136,6 +129,15 @@
       self.expandGrouping($(e.target).parents('.collapse-group'));
       e.preventDefault();
     });
+
+    if ($selected_event.length) {
+        let li_offset_top = $selected_event[0].offsetTop;
+        let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
+
+        if (li_offset_top) {
+          this.element[0].scrollTop = (li_offset_top - height_offset);
+        }
+    }
 
       function getFirstImageToLoadIndex(index, imageCount) {
           let halfImageCount = imageCount / 2;
