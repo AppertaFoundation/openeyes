@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ## If the OE_NO_DB build parameter is set, then this script will not be run
 if [ "$OE_NO_DB" == "true" ]; then

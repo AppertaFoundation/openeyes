@@ -62,7 +62,7 @@
         var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
 
         var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
-        var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 17);
+        var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 30);
         const flag_height = 5;
         const flag_width = 5;
         const flag_height_perc = 0.8;
