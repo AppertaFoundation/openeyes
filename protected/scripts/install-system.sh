@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
