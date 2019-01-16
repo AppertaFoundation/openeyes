@@ -2253,7 +2253,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         // Regenerate the EventImage in the background
-        EventImageManager::actionGenerateImage($this->event);
+        EventImageManager::actionGenerateImage($this->event->id);
 
         /*
          * TODO: need to check with all events why this was here!!!
