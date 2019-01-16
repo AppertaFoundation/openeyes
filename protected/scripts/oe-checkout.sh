@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # First makes a temporary copy of the runcheckout.sh script and then calls it
 # Calling directly from inside the scripts folder could case the script to be
@@ -28,7 +28,7 @@ done
 
 # Copy the runcheckout script to /tmp, make it executeable and then run
 sudo mkdir -p /tmp && sudo cp $SCRIPTDIR/runcheckout.sh /tmp/
-sudo chown "${LOGNAME:-'root'}":www-data /tmp/runcheckout.sh
+sudo chown "${LOGNAME:-root}":www-data /tmp/runcheckout.sh
 sudo chmod 774 /tmp/runcheckout.sh
 
 bash /tmp/runcheckout.sh $params

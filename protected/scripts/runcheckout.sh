@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 
 # Check that we are running from the /tmp folder. If not, exit

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 
 # Check that we are running from the /tmp folder. If not, exit
@@ -28,7 +28,7 @@ trap 'found_error' ERR
 SCRIPTROOT="" # will be passed in from install-oe.sh
 WROOT="" # will be passed in from install-oe.sh
 
-$curuser=${LOGNAME:-'root'}
+curuser="${LOGNAME:-root}"
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()

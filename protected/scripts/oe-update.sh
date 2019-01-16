@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # First makes a temporary copy of the runupdate.sh script and then calls it
 # Calling directly from inside the scripts folder could case the script to be
