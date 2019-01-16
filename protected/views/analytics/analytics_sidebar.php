@@ -94,9 +94,8 @@
 
     <div id="js-charts-service" style="">
       <ul class="charts">
-        <li><a href="#" id="js-hs-app-new" class="selected">Appointments: New (248)</a></li>
-        <li><a href="#" id="js-hs-app-follow-up">Appointments: Follow Up (397)</a></li>
-        <li><a href="#" id="js-hs-app-follow-up">Appointments: Delayed (1)</a></li>
+        <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Follow up: overdue</a></li>
+        <li><a href="#" id="js-hs-app-follow-up-coming">Follow up: coming</a></li>
       </ul>
     </div><div id="js-custom-data-filter" style="display: none;"><h3>Custom Data Filters</h3>
       <div class="custom-filters flex-layout">

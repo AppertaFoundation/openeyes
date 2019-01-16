@@ -5,6 +5,10 @@ class AnalyticsController extends BaseController
     const DAYTIME_ONE = 86400;
     const DAYTIME_THREE = self::DAYTIME_ONE * 3;
     const WEEKTIME = 604800;
+    const PERIOD_DAY = 1;
+    const PERIOD_WEEK = 7;
+    const PERIOD_MONTH = 30;
+    const PERIOD_YEAR = 365;
     private $current_user ;
 
   public $layout = '//layouts/events_and_episodes';
@@ -52,6 +56,7 @@ class AnalyticsController extends BaseController
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
 
+      $follow_patient_list = $this->getFollowUps();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
 
@@ -65,11 +70,7 @@ class AnalyticsController extends BaseController
           'customdata' =>$disorder_data['customdata']
       );
 
-      $service_data = array(
-          'title' => 'Service Section',
-          'x' => array(1, 2, 3, 4, 5, 6),
-          'y' => array(1, 1, 2, 3, 4, 5)
-      );
+      $service_data = $this->getFollowUps();
       $custom_data = array();
       foreach (['left','right'] as $side){
           $custom_data[] = array(
@@ -129,7 +130,7 @@ class AnalyticsController extends BaseController
         array(
             'specialty'=>'Medical Retina',
             'clinical_data'=> $clinical_data,
-            'service_data'=> $service_data,
+            'service_data'=> $follow_patient_list,
             'custom_data' => $custom_data,
             'patient_list' => $this->patient_list
         )
@@ -146,11 +147,7 @@ class AnalyticsController extends BaseController
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
 
-      $service_data = array(
-          'title' => 'Clinical Section',
-          'x'=> array(1,2,3,4,5,6),
-          'y'=> array(18, 9, 10, 7, 13, 16)
-      );
+      $service_data = $this->getFollowUps();
 
       $clinical_data = array(
           'title' => 'Disorders Section',
@@ -602,7 +599,6 @@ class AnalyticsController extends BaseController
       return [$left_list,$right_list];
   }
 
-
   public function getDisorders($subspecialty_id, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
@@ -816,5 +812,72 @@ class AnalyticsController extends BaseController
           );
       }
       $this->renderJSON($custom_data);
+  }
+
+  public function getPeriodDate($period_name){
+      switch ($period_name) {
+          case 'days':
+              $period = self::PERIOD_DAY;
+              break;
+          case 'weeks':
+              $period = self::PERIOD_WEEK;
+              break;
+          case 'months':
+              $period = self::PERIOD_MONTH;
+              break;
+          case 'years':
+              $period = self::PERIOD_YEAR;
+              break;
+          default:
+              $period = 0;
+              break;
+      }
+      return $period;
+  }
+  public function getFollowUps(){
+      $followup_patient_list = array(
+          'overdue' => array(),
+          'coming' => array(),
+      );
+      $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
+      $current_time = time();
+      foreach ($followup_elements as $followup_item){
+          $current_event = $followup_item->event;
+          if (isset($current_event->episode)){
+              $current_episode = $current_event->episode;
+              $current_patient = $current_episode->patient;
+              if (!array_key_exists($current_patient->id, $this->patient_list)){
+                  $this->patient_list[$current_patient->id] = $current_patient;
+              }
+
+              $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
+              $quantity = $followup_item->followup_quantity;
+              if($quantity > 0) {
+                  $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
+                  $due_time = $event_time+$period_date*self::DAYTIME_ONE;
+                  if( $due_time < $current_time){
+                      //Follow up is overdue
+                      $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
+                      if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
+                          $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                      }
+
+                  } else {
+                      $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
+                      if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
+                          $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                      }
+                  }
+              }
+          }
+      }
+
+      ksort($followup_patient_list['overdue']);
+      ksort($followup_patient_list['coming']);
+      return $followup_patient_list;
   }
 }
