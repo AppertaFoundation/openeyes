@@ -105,20 +105,23 @@ $(document).ready(function(){
 
     $.when(et_delete_ajax_call(uri, serializedForm)).done(function(html){
       if (html === '1') {
-        window.location.reload();
+        $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+        enableButtons();
       } else {
         if(html.indexOf('Attribute Element is in use') !== -1){
           new OpenEyes.UI.Dialog.Confirm({
-            content: "One or more " + object + " has sub-options. Continue to delete?",
+            content: "One or more Element attributes has sub-options. Continue to delete?",
             closeCallback: function () {
                 enableButtons();
             }
           }).on('ok', function () {
-            et_delete_ajax_call(uri, serializedForm,1)
+            et_delete_ajax_call(uri, serializedForm,1);
+            $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+            enableButtons();
           }).open();
         } else {
           new OpenEyes.UI.Dialog.Alert({
-            content: "One or more " + object + " could not be deleted as they are in use.",
+            content: "One or more Element attributes could not be deleted as they are in use.",
             closeCallback: function () {
                 enableButtons();
             }
