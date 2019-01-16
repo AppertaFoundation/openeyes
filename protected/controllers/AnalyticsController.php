@@ -876,6 +876,12 @@ class AnalyticsController extends BaseController
           }
       }
 
+      $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
+      $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
+      foreach ($patient_tickets as $ticket){
+          Yii::log($patientticket_api->getFollowUp($ticket->id));
+      }
+
       ksort($followup_patient_list['overdue']);
       ksort($followup_patient_list['coming']);
       return $followup_patient_list;
