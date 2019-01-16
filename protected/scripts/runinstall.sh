@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 
 # Check that we are running from the /tmp folder. If not, exit
@@ -27,6 +27,8 @@ trap 'found_error' ERR
 
 SCRIPTROOT="" # will be passed in from install-oe.sh
 WROOT="" # will be passed in from install-oe.sh
+
+curuser="${LOGNAME:-root}"
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -123,7 +125,7 @@ if [ $showhelp = 1 ]; then
 fi
 
 
-echo -e "\n\n\nInstalling openeyes as user: $USER...\n\n\n"
+echo -e "\n\n\nInstalling openeyes as user: $curuser...\n\n\n"
 
 
 # Show disclaimer
@@ -173,8 +175,8 @@ fi
 
 # Fix permissions
 echo "Setting file permissions..."
-sudo gpasswd -a "$USER" www-data
-sudo chown "$USER":www-data -R $WROOT
+sudo gpasswd -a "$curuser" www-data
+sudo chown "$curuser":www-data -R $WROOT
 
 sudo chmod 777 -R $WROOT
 sudo chmod g+s -R $WROOT

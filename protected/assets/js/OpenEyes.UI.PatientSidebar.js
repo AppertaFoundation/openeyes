@@ -189,7 +189,7 @@
         if($collapse_group.attr('data-collapse') === 'collapsed'){
         	$collapse_group.find('.collapse-group-header').click();
 				}
-        addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-children'), undefined, data, callback);
+        addElement($parentLi.clone(true), true, undefined, data, callback);
     };
 
     /**

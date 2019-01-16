@@ -38,3 +38,24 @@
 		</button>
 	</div>
 </script>
+<!-- COMPLog confirm dialog template -->
+<script type="text/html" id="dialog-complog-template">
+	<p>{{{content}}}</p>
+	<table>
+		<tbody>
+		<tr>
+			<td class="fade">Status:</td>
+			<td><h4 id="js-complog-status"><i class="spinner as-icon"></i> Launching COMPLog...</h4></td>
+		</tr>
+		</tbody>
+	</table>
+	<div class="spacer"></div>
+	<div class="buttons flex-layout">
+		<button class="large blue hint ok" type="button" style="display: none">
+			{{{okButton}}}
+		</button>
+		<button class="large red hint cancel" type="button">
+			{{{cancelButton}}}
+		</button>
+	</div>
+</script>

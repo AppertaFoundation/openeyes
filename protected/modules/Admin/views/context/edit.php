@@ -17,12 +17,12 @@
 <div class="cols-7">
     <div class="row divider">
         <h2>
-            <?php echo $firm->id ? 'Edit' : 'Add' ?>
-            <?php echo Firm::contextLabel() . ' / ' . Firm::serviceLabel() ?>
+            <?=$firm->id ? 'Edit' : 'Add' ?>
+            <?=Firm::contextLabel() . ' / ' . Firm::serviceLabel() ?>
         </h2>
     </div>
 
-    <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
+    <?=$this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget(
         'BaseEventTypeCActiveForm',
@@ -45,78 +45,53 @@
         <tbody>
         <tr>
             <td>Pass Code</td>
-            <td> <?= \CHtml::activeTextField(
-                $firm,
-                'pas_code',
-                ['class' => 'cols-full']
-            ); ?> </td>
+            <td> <?=\CHtml::activeTextField($firm, 'pas_code', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>
             <td>Name</td>
-            <td> <?= \CHtml::activeTextField(
-                $firm,
-                'name',
-                ['class' => 'cols-full']
-            ); ?> </td>
+            <td> <?=\CHtml::activeTextField($firm, 'name', ['class' => 'cols-full']); ?> </td>
         </tr>
         <tr>
             <td>Subspecialty</td>
             <td>
-                <?= \CHtml::activeDropDownList(
-                    $firm,
-                    'subspecialty_id',
-                    CHtml::listData(
-                        Subspecialty::model()->findAll(
-                            array('order' => 'name')
-                        ),
-                        'id',
-                        'name'
-                    ),
-                    ['class' => 'cols-full', 'empty' => '- None -']
-                ); ?>
+                <?=\CHtml::activeDropDownList($firm, 'subspecialty_id', $subspecialties_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
             </td>
         </tr>
         <tr>
             <td>Consultant</td>
             <td>
-                <?= \CHtml::activeDropDownList(
-                    $firm,
-                    'consultant_id',
-                    CHtml::listData(
-                        User::model()->findAll(
-                            array('order' => 'first_name,last_name')
-                        ),
-                        'id',
-                        'fullName'
-                    ),
-                    ['class' => 'cols-full', 'empty' => '- None -']
-                ); ?>
+                <?=\CHtml::activeDropDownList($firm, 'consultant_id', $consultant_list_data, ['class' => 'cols-full', 'empty' => '- None -']); ?>
             </td>
         </tr>
+        <tr>
+            <td><?=$firm->getAttributeLabel('cost_code');?></td>
+            <td> <?=\CHtml::activeTextField($firm, 'cost_code', ['class' => 'cols-full', ]);?></td>
+        </tr>
+
         <tr class="col-gap">
             <td>Service Enabled</td>
-            <td><?= \CHtml::activeCheckBox(
+            <td><?=\CHtml::activeCheckBox(
                 $firm,
                 'can_own_an_episode'
             ) ?></td>
         </tr>
         <tr class="col-gap">
             <td>Context Enabled:</td>
-            <td><?= \CHtml::activeCheckBox(
+            <td><?=\CHtml::activeCheckBox(
                 $firm,
                 'runtime_selectable'
             ) ?></td>
         </tr>
         <tr class="col-gap">
             <td>Active</td>
-            <td><?= \CHtml::activeCheckBox($firm, 'active') ?></td>
+            <td><?=\CHtml::activeCheckBox($firm, 'active') ?></td>
         </tr>
         </tbody>
 
         <tfoot>
         <tr>
             <td colspan="5">
-                <?= \CHtml::submitButton(
+                <?=\CHtml::submitButton(
                     'Save',
                     [
                         'class' => 'button large',
@@ -124,11 +99,11 @@
                         'id' => 'et_save'
                     ]
                 ); ?>
-                <?= \CHtml::submitButton(
+                <?=\CHtml::submitButton(
                     'Cancel',
                     [
                         'class' => 'button large',
-                        'data-uri' => '/admin/firms',
+                        'data-uri' => '/Admin/context/index',
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]
@@ -142,7 +117,7 @@
     <?php $this->endWidget() ?>
 
     <?php if (isset($siteSecretaries) && $siteSecretaries) : ?>
-        <?php echo $this->renderPartial(
+        <?=$this->renderPartial(
             'application.modules.OphCoCorrespondence.views.admin.secretary.edit',
             [
                 'errors' => array(),
@@ -150,6 +125,4 @@
             ]
         ) ?>
     <?php endif; ?>
-
 </div>
-
