@@ -61,7 +61,11 @@
                 // Check if the mouse is over the content
                 popup.content.mouseover(function(){
                     closeContent = false;
+                }).mouseleave(function(){
+                    popup.hide();
                 });
+
+                // the timeout is to prevent the content box from closing as soon it stops hovering over the btn
                 setTimeout(function(){
                     if(closeContent){
                         // Close if mouse leaves btn
