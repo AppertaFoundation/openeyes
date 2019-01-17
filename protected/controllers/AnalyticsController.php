@@ -840,6 +840,7 @@ class AnalyticsController extends BaseController
           'coming' => array(),
       );
       $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
+
       $current_time = time();
       foreach ($followup_elements as $followup_item){
           $current_event = $followup_item->event;
@@ -879,7 +880,30 @@ class AnalyticsController extends BaseController
       $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
       $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
       foreach ($patient_tickets as $ticket){
-          Yii::log($patientticket_api->getFollowUp($ticket->id));
+          $current_patient = $ticket->patient;
+          $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
+              $quantity = $ticket_followup['followup_quantity'];
+              $assignment_time =  Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date'])/1000;
+              if($quantity > 0) {
+                  $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
+                  $due_time = $assignment_time + $period_date*self::DAYTIME_ONE;
+                  if( $due_time < $current_time){
+                      //Follow up is overdue
+                      $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
+                      if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
+                          $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                      }
+                  } else {
+                      $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
+                      if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
+                          $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                      } else {
+                          array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                      }
+                  }
+              }
       }
 
       ksort($followup_patient_list['overdue']);
