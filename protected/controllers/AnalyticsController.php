@@ -57,6 +57,7 @@ class AnalyticsController extends BaseController
       );
 
       $follow_patient_list = $this->getFollowUps();
+
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
 
@@ -839,6 +840,7 @@ class AnalyticsController extends BaseController
           'overdue' => array(),
           'coming' => array(),
       );
+
       $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
 
       $current_time = time();
@@ -847,6 +849,7 @@ class AnalyticsController extends BaseController
           if (isset($current_event->episode)){
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
+              $latest_examination = $current_patient->getLatestExaminationEvent();
               if (!array_key_exists($current_patient->id, $this->patient_list)){
                   $this->patient_list[$current_patient->id] = $current_patient;
               }
@@ -855,7 +858,7 @@ class AnalyticsController extends BaseController
               $quantity = $followup_item->followup_quantity;
               if($quantity > 0) {
                   $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
-                  $due_time = $event_time+$period_date*self::DAYTIME_ONE;
+                  $due_time = $event_time + $period_date*self::DAYTIME_ONE;
                   if( $due_time < $current_time){
                       //Follow up is overdue
                       $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
@@ -887,6 +890,7 @@ class AnalyticsController extends BaseController
               if($quantity > 0) {
                   $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
                   $due_time = $assignment_time + $period_date*self::DAYTIME_ONE;
+
                   if( $due_time < $current_time){
                       //Follow up is overdue
                       $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
