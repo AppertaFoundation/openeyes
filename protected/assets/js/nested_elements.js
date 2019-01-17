@@ -225,8 +225,8 @@ function swapElement(element_to_swap, elementTypeClass, params){
             }
         }
 
-        let reading_val_index = [];
-        let method_index = [];
+        let reading_val = [];
+        let method = [];
         let current_eye_va_reading;
 
         $.each(['right-eye', 'left-eye'], function(i, eye_side){
@@ -234,26 +234,31 @@ function swapElement(element_to_swap, elementTypeClass, params){
 
             // look for .va_readings values
             if(current_eye_va_reading.find('tr').length > 0){
-                reading_val_index[eye_side] = [];
-                method_index[eye_side] = [];
+                reading_val[eye_side] = [];
+                method[eye_side] = [];
                 $.each(current_eye_va_reading.find('tr'), function(i, row){
                     // get value
-                    let reading_val = $(row).find('td:eq(0) input').val();
-                    let method = $(row).find('td:eq(2) input').val();
+                    let visualacuity_unit = $('#visualacuity_unit_change option:selected').text();
+                    let conversion_values = $(row).find('td:eq(1) i').data('tooltip');
+                    let method_val = $(row).find('td:eq(2) input').val();
 
-                    // look up value
-                    let reading_val_li = $('.'+eye_side+' ul[data-id="reading_val"]').find('li[data-id="'+reading_val+'"]');
-                    let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method+'"]');
+                    // get values
+                    let reading_val_li;
+                    for (var i = 0; i < conversion_values.length; i++) {
+                        if(conversion_values[i].name === visualacuity_unit){
+                            reading_val_li = conversion_values[i].value;
+                        }
+                    }
+                    
+                    let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method_val+'"]');
 
                     // get index and label
-                    reading_val_index[eye_side].push({
-                        val_index: reading_val_li.index(),
-                        label:reading_val_li.data('label')
+                    reading_val[eye_side].push({
+                        label: reading_val_li
                     });
 
-                    method_index[eye_side].push({
+                    method[eye_side].push({
                         val_index: method_li.index(),
-                        label:method_li.data('label')
                     });
                 });
             }
@@ -262,20 +267,13 @@ function swapElement(element_to_swap, elementTypeClass, params){
         element_to_swap.replaceWith(new_element);
 
         // select equivalent
-        if(Object.keys(reading_val_index).length > 0 && Object.keys(method_index).length > 0){
-            $.each(Object.keys(reading_val_index), function(eye_index, eye_side){                
-                $.each(reading_val_index[eye_side], function(i, val){
+        if(Object.keys(reading_val).length > 0 && Object.keys(method).length > 0){
+            $.each(Object.keys(reading_val), function(eye_index, eye_side){                
+                $.each(reading_val[eye_side], function(i, val){
                     let target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
-                    let target_reading_val_by_label = target.find('ul[data-id="reading_val"] li[data-label="'+val.label+'"]');
-                    let target_reading_val_by_index = target.find('ul[data-id="reading_val"] li:eq('+val.val_index+')');
 
-                    if(target_reading_val_by_label.length){
-                        target_reading_val_by_label.addClass('selected');
-                    } else if(target_reading_val_by_index.length){
-                        target_reading_val_by_index.addClass('selected');
-                    }
-
-                    target.find('ul[data-id="method"] li:eq('+method_index[eye_side][i].val_index+')').addClass('selected');
+                    target.find('ul[data-id="reading_val"] li[data-label="'+val.label+'"]').addClass('selected');
+                    target.find('ul[data-id="method"] li:eq('+method[eye_side][i].val_index+')').addClass('selected');
                     target.find('.oe-add-select-search .add-icon-btn').trigger('click');
                 });
             });
