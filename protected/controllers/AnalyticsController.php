@@ -26,8 +26,8 @@ class AnalyticsController extends BaseController
   public function actionCataract(){
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-
-      $this->getDisorders();
+      $subspecialty_id = $this->getSubspecialtyID('Cataract');
+      $this->getDisorders($subspecialty_id);
       $this->patient_list = $this->queryCataractEventList();
 
       $this->render('/analytics/analytics_container',
