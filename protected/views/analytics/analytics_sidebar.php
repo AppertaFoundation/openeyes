@@ -142,41 +142,34 @@
                     <li>Range</li>
                   </ul>
                 </div><!-- options-group -->
-                  <?php if($specialty === "Medical Retina"){?>
+                  <?php if($specialty !== "Cataract"){?>
+                      <?php
+                        if ($specialty === 'Medical Retina'){
+                            $analytics_treatment = array('Lucentis','Elyea','Avastin','Triamcinolone','Ozurdex');
+                            $analytics_diagnoses = array('AMD(wet)','BRVO','CRVO','DMO');
+                            ?>
+                            <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
+                                <h3>Treatment</h3>
+                                <ul class="btn-list">
+                                    <li class="selected">ALL</li>
+                                    <?php foreach($analytics_treatment as $treatment){?>
+                                        <li><?= $treatment;?></li>
+                                    <?php }?>
+                                </ul>
+                            </div><!-- options-group -->
+                        <?php }elseif ($specialty === 'Glaucoma'){
+                            $analytics_diagnoses = array('Macular degeneration','Diabetic Macular Oedema','BRVO','CRVO','Hemivein');
+                        } ?>
                       <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
                           <h3>Diagnosis</h3>
                           <ul class="btn-list">
                               <li class="selected">All</li>
-                              <li>AMD(wet)</li>
-                              <li>BRVO</li>
-                              <li>CRVO</li>
-                              <li>DMO</li>
+                              <?php foreach($analytics_diagnoses as $diagnosis){?>
+                                    <li><?= $diagnosis;?></li>
+                              <?php }?>
                           </ul>
                       </div><!-- options-group -->
-                      <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
-                          <h3>Treatment</h3>
-                          <ul class="btn-list">
-                              <li class="selected">ALL</li>
-                              <li>Lucentis</li>
-                              <li>Eylea</li>
-                              <li>Avastin</li>
-                              <li>Triamcinolone</li>
-                              <li>Ozurdex</li>
-                          </ul>
-                      </div><!-- options-group -->
-                  <?php }elseif ($specialty == "Glaucoma"){?>
-                <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
-                  <h3>Diagnosis</h3>
-                  <ul class="btn-list">
-                    <li class="selected">All</li>
-                    <li>Macular degeneration</li>
-                    <li>Diabetic Macular Oedema</li>
-                    <li>BRVO</li>
-                    <li>CRVO</li>
-                    <li>Hemivein</li>
-                  </ul>
-                </div><!-- options-group -->
-                  <?php }?>
+                  <?php } ?>
                 <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
                   <h3>Plot</h3>
                   <ul class="btn-list">
@@ -256,22 +249,19 @@
             $('#js-all-surgeons').html('View current surgeons');
         }
     }
-<?php }else{?>
+<?php }else{
+    $filter_eye_side = array('left' => 'right','right'=>'left');
+    foreach(array_keys($filter_eye_side) as $side){?>
+    $('#js-chart-filter-eye-side-'+'<?=$side;?>').click(function () {
+        if (this.checked){
+            $('#js-chart-filter-eye-side-'+'<?=$filter_eye_side[$side];?>').attr('checked',false);
+            $('#js-hs-chart-analytics-custom-'+'<?=$side;?>').show();
+            $('#js-hs-chart-analytics-custom-'+'<?=$filter_eye_side[$side];?>').hide();
+        }
+    });
+    <?php }?>
 
-    $('#js-chart-filter-eye-side-right').click(function () {
-        if (this.checked){
-            $('#js-chart-filter-eye-side-left').attr('checked',false);
-            $('#js-hs-chart-analytics-custom-right').show();
-            $('#js-hs-chart-analytics-custom-left').hide();
-        }
-    });
-    $('#js-chart-filter-eye-side-left').click(function () {
-        if (this.checked){
-            $('#js-chart-filter-eye-side-right').attr('checked',false);
-            $('#js-hs-chart-analytics-custom-right').hide();
-            $('#js-hs-chart-analytics-custom-left').show();
-        }
-    });
+
    $('#js-chart-filter-age').on('DOMSubtreeModified',function () {
         if ($('#js-chart-filter-age').html() == "Range"){
             $('#js-chart-filter-age-all').hide();
@@ -289,7 +279,6 @@
             data:$('#search-form').serialize() + getCustomDataFilters(),
             dataType:'json',
             success: function (data, textStatus, jqXHR) {
-                console.log("done");
                 plotUpdate(data);
             }
         });
@@ -329,7 +318,6 @@
         if ($('#js-chart-filter-age').html() == "Range"){
             filters += "&age-min="+$('#js-chart-filter-age-min').val()+"&age-max="+$('#js-chart-filter-age-max').val()
         }
-
         console.log(filters);
         return filters;
     }

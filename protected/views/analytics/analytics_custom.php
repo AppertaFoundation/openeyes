@@ -51,21 +51,16 @@
         });
     }
     function plotUpdate(data){
-        var chart_left = $('#js-hs-chart-analytics-custom-left')[0];
-        var chart_right = $('#js-hs-chart-analytics-custom-right')[0];
-        chart_left.data[0]['x'] = data[0][0]['x'];
-        chart_left.data[0]['y'] = data[0][0]['y'];
-        chart_left.data[0]['customdata'] = data[0][0]['customdata'];
-        chart_left.data[1]['x'] = data[0][1]['x'];
-        chart_left.data[1]['y'] = data[0][1]['y'];
-        chart_left.data[1]['customdata'] = data[0][1]['customdata'];
-        Plotly.redraw(chart_left);
-        chart_right.data[0]['x'] = data[1][0]['x'];
-        chart_right.data[0]['y'] = data[1][0]['y'];
-        chart_right.data[0]['customdata'] = data[1][0]['customdata'];
-        chart_right.data[1]['x'] = data[1][1]['x'];
-        chart_right.data[1]['y'] = data[1][1]['y'];
-        chart_right.data[1]['customdata'] = data[1][1]['customdata'];
-        Plotly.redraw(chart_right);
+        var charts = ['js-hs-chart-analytics-custom-left','js-hs-chart-analytics-custom-right'];
+        for (var i = 0; i < charts.length; i++) {
+            var chart = $('#'+charts[i])[0];
+            chart.data[0]['x'] = data[i][0]['x'];
+            chart.data[0]['y'] = data[i][0]['y'];
+            chart.data[0]['customdata'] = data[0][0]['customdata'];
+            chart.data[1]['x'] = data[i][1]['x'];
+            chart.data[1]['y'] = data[i][1]['y'];
+            chart.data[1]['customdata'] = data[0][1]['customdata'];
+            Plotly.redraw(chart);
+        }
     }
 </script>

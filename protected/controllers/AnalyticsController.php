@@ -9,6 +9,7 @@ class AnalyticsController extends BaseController
 
   public $layout = '//layouts/events_and_episodes';
   protected $patient_list = array();
+  protected $filters;
 
   protected function getSubspecialtyID($subspecialty_name){
       return Subspecialty::model()->findByAttributes(array('name'=>$subspecialty_name))->id;
@@ -17,7 +18,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','customData','showLog'),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','customData',),
         'users'=> array('@')
       ),
     );
@@ -46,19 +47,13 @@ class AnalyticsController extends BaseController
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
       $disorder_data = $this->getDisorders($subspecialty_id);
-      $filters = array(
+      $this->filters = array(
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
-      if (isset($_POST)) {
-          if (isset($_POST['date-range-from'])){
-              $filters['date_from'] = $_POST['date-range-from'];
-              $filters['date-to'] = $_POST['date-range-to'];
-          }
-      }
 
-      list($left_va_list, $right_va_list) = $this->getCustomVA($filters);
-      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($filters);
+      list($left_va_list, $right_va_list) = $this->getCustomVA();
+      list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
 
 
 
@@ -75,111 +70,60 @@ class AnalyticsController extends BaseController
           'x' => array(1, 2, 3, 4, 5, 6),
           'y' => array(1, 1, 2, 3, 4, 5)
       );
-
-      $custom_data = array(
-          //left side eye data array
-          array(
+      $custom_data = array();
+      foreach (['left','right'] as $side){
+          $custom_data[] = array(
               array(
                   'name' => 'VA',
-                  'x' => array_keys($left_va_list),
+                  'x' => array_keys(${$side.'_va_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($left_va_list)),
+                      }, array_values(${$side.'_va_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($left_va_list)),
+                      array_values(${$side.'_va_list'})),
                   'error_y'=> array(
                       'type'=> 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($left_va_list)),
+                          array_values(${$side.'_va_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
                   )
-              ), array(
-              'name' => 'CRT',
-              'yaxis' =>'y2',
-              'x' => array_keys($left_crt_list),
-              'y' => array_map(
-                  function ($item){
-                      return $item['average'];
-                  }, array_values($left_crt_list)),
-              'customdata'=>array_map(
-                  function($item){
-                      return $item['patients'];
-                  },
-                  array_values($left_crt_list)),
-              'error_y' => array(
-                  'type' => 'data',
-                  'array' => array_map(
-                      function($item){
-                          return $item['SD'];
-                      },
-                      array_values($left_crt_list)),
-                  'visible' => true,
-                  'color' => '#aaa',
-                  'thickness' => 1
-              )
-            )
-          ),
-          //right side eye data array
-          array(
+              ),
               array(
-                  'name' => 'VA',
-                  'x' => array_keys($right_va_list),
+                  'name' => 'CRT',
+                  'yaxis' => 'y2',
+                  'x' => array_keys(${$side.'_crt_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($right_va_list)),
+                      }, array_values(${$side.'_crt_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($right_va_list)),
-                  'error_y'=> array(
-                      'type'=> 'data',
+                      array_values(${$side.'_crt_list'})),
+                  'error_y' => array(
+                      'type' => 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($right_va_list)),
+                          array_values(${$side.'_crt_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
                   )
-              ), array(
-              'name' => 'CRT',
-              'yaxis' =>'y2',
-              'x' => array_keys($right_crt_list),
-              'y' => array_map(
-                  function ($item){
-                      return $item['average'];
-                  }, array_values($right_crt_list)),
-              'customdata'=>array_map(
-                  function($item){
-                      return $item['patients'];
-                  },
-                  array_values($right_crt_list)),
-              'error_y' => array(
-                  'type' => 'data',
-                  'array' => array_map(
-                      function($item){
-                          return $item['SD'];
-                      },
-                      array_values($right_crt_list)),
-                  'visible' => true,
-                  'color' => '#aaa',
-                  'thickness' => 1
               )
-          )
-          ),
-      );
+          );
+      }
 
     $this->render('/analytics/analytics_container',
         array(
@@ -195,12 +139,12 @@ class AnalyticsController extends BaseController
   public function actionGlaucoma(){
       $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
       $disorder_data = $this->getDisorders($subspecialty_id);
-      $filters = array(
+      $this->filters = array(
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
-      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($filters);
-      list($left_va_list, $right_va_list) = $this->getCustomVA($filters);
+      list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
+      list($left_va_list, $right_va_list) = $this->getCustomVA();
 
       $service_data = array(
           'title' => 'Clinical Section',
@@ -214,29 +158,28 @@ class AnalyticsController extends BaseController
           'y' => $disorder_data['y'],
           'text' => $disorder_data['text']
       );
-
-      $custom_data = array(
-          //left side eye data array
-          array(
+      $custom_data = array();
+      foreach (['left','right'] as $side){
+          $custom_data[] = array(
               array(
                   'name' => 'VA',
-                  'x' => array_keys($left_va_list),
+                  'x' => array_keys(${$side.'_va_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($left_va_list)),
+                      }, array_values(${$side.'_va_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($left_va_list)),
+                      array_values(${$side.'_va_list'})),
                   'error_y'=> array(
                       'type'=> 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($left_va_list)),
+                          array_values(${$side.'_va_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
@@ -245,83 +188,30 @@ class AnalyticsController extends BaseController
               array(
                   'name' => 'IOP',
                   'yaxis' => 'y2',
-                  'x' => array_keys($left_iop_list),
+                  'x' => array_keys(${$side.'_iop_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($left_iop_list)),
+                      }, array_values(${$side.'_iop_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($left_iop_list)),
+                      array_values(${$side.'_iop_list'})),
                   'error_y' => array(
                       'type' => 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($left_iop_list)),
+                          array_values(${$side.'_iop_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
                   )
               )
-          ),
-          //right side eye data array
-          array(
-              array(
-                  'name' => 'VA',
-                  'x' => array_keys($right_va_list),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values($right_va_list)),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values($right_va_list)),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values($right_va_list)),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-              array(
-                  'name' => 'IOP',
-                  'yaxis' => 'y2',
-                  'x' => array_keys($right_iop_list),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values($right_iop_list)),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values($right_iop_list)),
-                  'error_y' => array(
-                      'type' => 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values($right_iop_list)),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              )
-          ),
-
-      );
+          );
+      }
 
     $this->render('/analytics/analytics_container',
         array(
@@ -385,46 +275,46 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function getCustomVA($filters) {
+  public function getCustomVA() {
 //      $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
-//      return $this->getCustomDataList($va_elements,$filters,"VA");
-      $va_elements = $this->queryVA($filters);
-      return $this->getCustomDataListQuery($va_elements,$filters,"VA");
+//      return $this->getCustomDataList($va_elements,"VA");
+      $va_elements = $this->queryVA();
+      return $this->getCustomDataListQuery($va_elements,"VA");
   }
 
-  public function getCustomCRT($filters) {
+  public function getCustomCRT() {
       $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
-      return $this->getCustomDataList($crt_elements,$filters,'CRT');
+      return $this->getCustomDataList($crt_elements,'CRT');
   }
 
 
-  public function getCustomIOP($filters){
+  public function getCustomIOP(){
 //      $iop_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findAll();
-//      return $this->getCustomDataList($iop_elements, $filters,'IOP');
-      $iop_elements = $this->queryIOP($filters);
-      return $this->getCustomDataListQuery($iop_elements,$filters,"IOP");
+//      return $this->getCustomDataList($iop_elements,'IOP');
+      $iop_elements = $this->queryIOP();
+      return $this->getCustomDataListQuery($iop_elements,"IOP");
   }
 
-  public function validateFilters($filters, $age, $protocol, $date){
+  public function validateFilters($age, $protocol, $date){
       $return_value = true;
-      if (isset($filters['age_min'])){
-          $return_value = ($age >= (int)$filters['age_min']);
+      if (isset($this->filters['age_min'])){
+          $return_value = ($age >= (int)$this->filters['age_min']);
       }
-      if (isset($filters['age_max']) && $return_value){
-          $return_value = ($age <= (int)$filters['age_max']);
+      if (isset($this->filters['age_max']) && $return_value){
+          $return_value = ($age <= (int)$this->filters['age_max']);
       }
-      if (isset($filters['date_to']) && $return_value){
-          $return_value = ($date < $filters['date_to']);
+      if (isset($this->filters['date_to']) && $return_value){
+          $return_value = ($date < $this->filters['date_to']);
       }
-      if (isset($filters['date_from']) && $return_value){
-          $return_value = ($date > $filters['date_from']);
+      if (isset($this->filters['date_from']) && $return_value){
+          $return_value = ($date > $this->filters['date_from']);
       }
 
       return $return_value;
 
   }
 
-  public function queryVA($filters){
+  public function queryVA(){
       $command =  Yii::app()->db->createCommand()
           ->select('e2.patient_id as patient_id, 
           eov.id as va_id, 
@@ -443,15 +333,16 @@ class AnalyticsController extends BaseController
           ->leftJoin('ophciexamination_diagnosis od','od.element_diagnoses_id = eod.id')
           ->leftJoin('disorder d','od.disorder_id = d.id')
           ->group('va_id, side');
-
-      if(isset($filters['diagnosis'])){
-          $command->andWhere(array('like','term',$filters['diagnosis']));
+      if(isset($this->filters['diagnosis'])){
+          foreach ($this->filters['diagnosis'] as $diagnosis){
+              $command->andWhere(array('like','term',$diagnosis));
+          }
       }
 
       return $command->queryAll();
   }
 
-    public function queryIOP($filters){
+    public function queryIOP(){
         $command =  Yii::app()->db->createCommand()
             ->select('e2.patient_id as patient_id, 
             eiop.id as iop_id, d.term as term, AVG(oir.value) as reading, e.event_date as date, od.eye_id as eye_id, IF(oiv.eye_id = 1, 1, 0) as side, IF(oiv.eye_id=1, AVG(oir.value), null) AS left_reading, IF(oiv.eye_id=2, AVG(oir.value), null) AS right_reading')
@@ -465,14 +356,16 @@ class AnalyticsController extends BaseController
             ->leftJoin('disorder d','od.disorder_id = d.id')
             ->group('iop_id, side');
 
-        if(isset($filters['diagnosis'])){
-            $command->andWhere(array('like','term',$filters['diagnosis']));
+        if(isset($this->filters['diagnosis'])){
+            foreach ($this->filters['diagnosis'] as $diagnosis){
+                $command->andWhere(array('like','term',$diagnosis));
+            }
         }
 
         return $command->queryAll();
     }
 
-    public function getCustomDataListQuery($elements,$filters,$type,$readings = null){
+    public function getCustomDataListQuery($elements,$type,$readings = null){
         $patient_list = array();
         $left_list = array();
         $right_list = array();
@@ -490,7 +383,7 @@ class AnalyticsController extends BaseController
                 $current_patient = Patient::model()->findByPk($element['patient_id']);
                 $current_time = Helper::mysqlDate2JsTimestamp($element['date']);
                 // eye 1 left, 2 right, 3 both
-                if ($this->validateFilters($filters, $current_patient->getAge(), $current_protocol, $current_time)) {
+                if ($this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time)) {
                     if (!array_key_exists($current_patient->id, $this->patient_list)) {
                         $this->patient_list[$current_patient->id] = $current_patient;
                     }
@@ -498,7 +391,7 @@ class AnalyticsController extends BaseController
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
                     }
-                    if (isset($filters['diagnosis'])){
+                    if (isset($this->filters['diagnosis'])){
                         if ($element['eye_id'] == 1){
                             $right_reading = null;
                         }elseif ($element['eye_id'] == 2){
@@ -563,7 +456,7 @@ class AnalyticsController extends BaseController
 
 
 
-  public function getCustomDataList($elements,$filters,$type,$readings = null){
+  public function getCustomDataList($elements,$type,$readings = null){
       $patient_list = array();
       $left_list = array();
       $right_list = array();
@@ -603,8 +496,8 @@ class AnalyticsController extends BaseController
               $current_treatment_right="";
               $current_treatment=Element_OphTrIntravitrealinjection_Treatment::model()->findByAttributes(array('event_id'=>$current_event->id));
               $current_protocol = "";
-              $validation = $this->validateFilters($filters, $current_patient->getAge(), $current_protocol, $current_time);
-              if ($this->validateFilters($filters, $current_patient->getAge(), $current_protocol, $current_time)) {
+              $validation = $this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time);
+              if ($this->validateFilters($current_patient->getAge(), $current_protocol, $current_time)) {
                   if (!array_key_exists($current_patient->id, $this->patient_list)) {
                       $this->patient_list[$current_patient->id] = $current_patient;
                   }
@@ -613,19 +506,19 @@ class AnalyticsController extends BaseController
                       $patient_list[$current_patient->id] = array();
                   }
 
-                  if (isset($filters['treatment'])){
-                     if ($current_treatment_left !== $filters['treatment']){
+                  if (isset($this->filters['treatment'])){
+                     if ($current_treatment_left !== $this->filters['treatment']){
                          $left_reading = false;
                      }
-                     if ($current_treatment_right !== $filters['treatment']){
+                     if ($current_treatment_right !== $this->filters['treatment']){
                          $right_reading = false;
                      }
                   }
-                  if (isset($filters['diagnosis'])){
+                  if (isset($this->filters['diagnosis'])){
                       if (!empty($current_diagnoses_left)){
                           $i = 1;
                           foreach ($current_diagnoses_left as $diagnosis){
-                              if (in_array($diagnosis, $filters['diagnosis'])){
+                              if (in_array($diagnosis, $this->filters['diagnosis'])){
                                   break;
                               }
                               if ($i == count($current_diagnoses_left)){
@@ -641,7 +534,7 @@ class AnalyticsController extends BaseController
                       if (!empty($current_diagnoses_right)){
                           $i = 1;
                           foreach ($current_diagnoses_right as $diagnosis){
-                              if (in_array($diagnosis, $filters['diagnosis'])){
+                              if (in_array($diagnosis, $this->filters['diagnosis'])){
                                   break;
                               }
                               if ($i == count($current_diagnoses_right)){
@@ -817,9 +710,9 @@ class AnalyticsController extends BaseController
 
       return $command->queryAll();
   }
-  public function actionCustomData(){
-      $specialty = Yii::app()->request->getParam('specialty');
+  public function obtainFilters(){
       $diagnoses_MR = array("Age related macular degeneration","Branch retinal vein occlusion with macular oedema","Central retinal vein occlusion with macular oedema","Diabetic macular oedema");
+      $specialty = Yii::app()->request->getParam('specialty');
       $dateFrom = Yii::app()->request->getParam('from');
       $dateTo = Yii::app()->request->getParam('to');
       $ageMin = Yii::app()->request->getParam('age-min');
@@ -847,7 +740,7 @@ class AnalyticsController extends BaseController
           $dateFrom = 0;
       }
 
-      $filters = array(
+      $this->filters = array(
           'date_from' => $dateFrom,
           'date_to' => $dateTo,
           'age_min'=>$ageMin,
@@ -857,115 +750,71 @@ class AnalyticsController extends BaseController
           'plot-va'=>$plotVA,
           'treatment'=>$treatment,
       );
+  }
 
-      $va_list = $this->getCustomVA($filters);
+
+  public function actionCustomData(){
+      $specialty = Yii::app()->request->getParam('specialty');
+      $this->obtainFilters();
+      list($left_va_list, $right_va_list) = $this->getCustomVA();
+      $va_list = $this->getCustomVA();
       if ($specialty === "Glaucoma"){
-          $second_list = $this->getCustomIOP($filters);
+          list($left_second_list,$right_second_list) = $this->getCustomIOP();
       }elseif ($specialty === "Medical Retina"){
-          $second_list = $this->getCustomCRT($filters);
+          list($left_second_list,$right_second_list) = $this->getCustomCRT();
       }
-
-      $custom_data = array(
-          array(
+      $custom_data = array();
+      foreach (['left','right'] as $side){
+          $custom_data[] = array(
               array(
-                  'x' => array_keys($va_list[0]),
+                  'x' => array_keys(${$side.'_va_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($va_list[0])),
+                      }, array_values(${$side.'_va_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($va_list[0])),
+                      array_values(${$side.'_va_list'})),
                   'error_y'=> array(
                       'type'=> 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($va_list[0])),
+                          array_values(${$side.'_va_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
                   )
               ),
               array(
-                  'yaxis' =>'y2',
-                  'x' => array_keys($second_list[0]),
+                  'yaxis' => 'y2',
+                  'x' => array_keys(${$side.'_second_list'}),
                   'y' => array_map(
                       function ($item){
                           return $item['average'];
-                      }, array_values($second_list[0])),
+                      }, array_values(${$side.'_second_list'})),
                   'customdata'=>array_map(
                       function($item){
                           return $item['patients'];
                       },
-                      array_values($second_list[0])),
-                  'error_y'=> array(
-                      'type'=> 'data',
+                      array_values(${$side.'_second_list'})),
+                  'error_y' => array(
+                      'type' => 'data',
                       'array' => array_map(
                           function($item){
                               return $item['SD'];
                           },
-                          array_values($second_list[0])),
+                          array_values(${$side.'_second_list'})),
                       'visible' => true,
                       'color' => '#aaa',
                       'thickness' => 1
                   )
-              ),
-          ),
-          array(
-              array(
-                  'x' => array_keys($va_list[1]),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values($va_list[1])),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values($va_list[1])),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values($va_list[1])),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-              array(
-                  'yaxis' =>'y2',
-                  'x' => array_keys($second_list[1]),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values($second_list[1])),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values($second_list[1])),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values($second_list[1])),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-          ),
-
-      );
+              )
+          );
+      }
       $this->renderJSON($custom_data);
   }
 }
