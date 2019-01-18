@@ -28,7 +28,7 @@
         }];
         var coming_count = coming_data[0]['y'].reduce((a, b) => a + b, 0);
         service_layout['width'] = 700;
-        service_layout['xaxis']['rangemode'] = 'tozero';
+        service_layout['xaxis']['rangemode'] = 'nonnegative';
 
         Plotly.newPlot(
             'js-hs-chart-analytics-service', overdue_data ,service_layout, analytics_options
