@@ -70,7 +70,7 @@
                     'default_frequency_id',
                     CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
                     [
-                        'empty' => '-- Please select --',
+                        'empty' => 'Select',
                         'class' => 'cols-full'
                     ]
                 ); ?>
@@ -84,7 +84,7 @@
                     'default_duration_id',
                     CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
                     [
-                        'empty' => '-- Please select --',
+                        'empty' => 'Select',
                         'class' => 'cols-full'
                     ]
                 ); ?>

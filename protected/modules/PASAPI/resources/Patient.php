@@ -199,7 +199,7 @@ class Patient extends BaseResource
                 if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
-                    $this->addWarning('Could not find GP for code '.$code);
+                    $this->addWarning('Could not find '.Yii::app()->params['gp_label'].' for code '.$code);
                 }
             } else {
                 $patient->gp_id = null;

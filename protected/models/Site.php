@@ -182,7 +182,7 @@ class Site extends BaseActiveRecordVersioned
     {
         $site = null;
         if (Yii::app()->params['default_site_code']) {
-            $site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
+            $site = $this->findByAttributes(array('remote_id' => Yii::app()->params['default_site_code']));
         }
         if (!$site) {
             $site = $this->find();

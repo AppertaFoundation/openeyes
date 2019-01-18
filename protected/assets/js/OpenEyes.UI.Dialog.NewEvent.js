@@ -281,7 +281,7 @@
         var self = this;
         var select = self.content.find(selectors.serviceList);
         select.html('');
-        var options = '<option value="">- Please Select -</option>';
+        var options = '<option value="">Select</option>';
         for (var i in services) {
             options += '<option value="' + services[i].id + '"';
             // default to current runtime firm

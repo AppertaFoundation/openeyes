@@ -11,9 +11,10 @@
       <?php if ($this->action->id === 'view') { ?>
         <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
       <?php } ?>
-      <?php if ($this->hasExtraTitleInfo()): ?>
+      <?php $extra_info = $this->getExtraTitleInfo();
+      if ($extra_info && $extra_info !== ""): ?>
         <div class="event-title-extra-info">
-            <?= $this->getExtraTitleInfo(); ?>
+            <?= $extra_info ?>
         </div>
       <?php endif; ?>
   </h2>

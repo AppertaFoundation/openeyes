@@ -91,7 +91,7 @@
           $item->dispense_condition_id, CHtml::listData(OphDrPrescription_DispenseCondition::model()->findAll(array(
               'condition' => "active or id='" . $item->dispense_condition_id . "'",
               'order' => 'display_order',
-          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => '-- Please select --')); ?>
+          )), 'id', 'name'), array('class' => 'dispenseCondition cols-11', 'empty' => 'Select')); ?>
 
   </td>
   <td>

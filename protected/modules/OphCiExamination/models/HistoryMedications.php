@@ -199,7 +199,7 @@ class HistoryMedications extends \BaseEventTypeElement
      */
     public function beforeValidate()
     {
-        $this->entries = array_filter($this->entries, function($e) {
+        $this->entries = array_filter($this->entries, function ($e) {
             return $e->hasRecordableData();
         });
 
@@ -213,11 +213,6 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function getDisplayOrder($action)
     {
-        if ($action=='view'){
-            return 25;
-        }
-        else{
-            return parent::getDisplayOrder($action);
-        }
+        return $action == 'view' ? 25 : parent::getDisplayOrder($action);
     }
 }

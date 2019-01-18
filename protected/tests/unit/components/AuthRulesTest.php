@@ -125,12 +125,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
     }
 
-    public function testCanEditEvent_PatientDeceased()
-    {
-        $event = $this->getEvent();
-        $event->episode->patient->date_of_death = '2013-11-13';
-        $this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
-    }
 
     public function testCanEditEvent_WrongSubspecialty()
     {
@@ -196,12 +190,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $this->getNormalFirm(), $event));
     }
 
-    public function testCanDeleteEvent_PatientDeceased()
-    {
-        $event = $this->getEvent();
-        $event->episode->patient->date_of_death = '2013-11-13';
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
-    }
 
     public function testCanDeleteEvent_WrongSubspecialty()
     {
@@ -274,12 +262,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
     }
 
-    public function testCanRequestEventDeletion_PatientDeceased()
-    {
-        $event = $this->getEvent();
-        $event->episode->patient->date_of_death = '2013-11-13';
-        $this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
-    }
 
     public function testCanRequestEventDeletion_WrongSubspecialty()
     {
@@ -325,16 +307,6 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $event_type = ComponentStubGenerator::generate(
             'EventType',
             array('rbac_operation_suffix' => 'Test')
-        );
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
-    }
-
-    public function testUserCanEditEventWithNoEventTypeSuffix()
-    {
-        $this->becomeTestUserWithNoCreatePermission();
-        $event_type = ComponentStubGenerator::generate(
-            'EventType',
-            array()
         );
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }

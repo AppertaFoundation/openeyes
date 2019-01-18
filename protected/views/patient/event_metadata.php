@@ -45,6 +45,18 @@ WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != pr
 <div id="js-event-audit-trail" class="oe-popup-event-audit-trail" style="display: none;">
   <table>
     <tbody>
+    <?php if ($this->event->firm_id): ?>
+        <tr>
+            <td class="title">Created under</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><?= $this->event->firm->getNameAndSubspecialty(); ?></td>
+            <td></td>
+            <td></td>
+        </tr>
+    <?php endif; ?>
     <?php if (!@$hide_created) { ?>
       <tr>
         <td class="title">Created by</td>

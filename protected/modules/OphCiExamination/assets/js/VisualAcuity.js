@@ -17,9 +17,7 @@ $(document).ready(function () {
       } else {
         console.log('Cannot find sidebar to manipulate elements for VA change');
       }
-
     }
-
   }
 
   ($('.va_readings,.near-va-readings').each(function(){

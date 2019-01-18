@@ -25,7 +25,7 @@
 
     <?php $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId()); ?>
     <?php if ($flash_message && $queueset) : ?>
-      <div class="alert-box issue"><b>No tickets match that search criteria</b></div>
+        <div class="alert-box issue"><b>No tickets match that search criteria for <?=$queueset ? $queueset->name : $category->name;?></b></div>
     <?php endif; ?>
 
   <table class="standard virtual-clinic">

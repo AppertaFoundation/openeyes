@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
@@ -98,9 +98,12 @@ extrapackages=$OE_INSTALL_EXTRA_PACKAGES
 [ "$OE_INSTALL_LOCAL_DB" == "" ] && OE_INSTALL_LOCAL_DB="TRUE" # default to local db unless otherwise specified in env
 [ "$OE_INSTALL_LOCAL_DB" == "TRUE" ] && extrapackages="mariadb-server mariadb-client $extrapackages"
 
-# Install required packages + any extras - or if in build mode, intstall minimal build packages only
+# Install required packages + any extras - or if in build or host mode, intstall minimal build packages only
+echo "---= installing $OE_MODE packages =---"
 if [ "$OE_MODE" == "BUILD" ]; then
 	sudo apt-get install -y $(<$SCRIPTDIR/.packages-build.conf)
+elif [ "$OE_MODE" == "HOST" ]; then
+  sudo apt-get install -y $(<$SCRIPTDIR/.packages-host-only.conf)
 else
 	sudo apt-get install -y $(<$SCRIPTDIR/.packages.conf) $extrapackages
 fi

@@ -42,7 +42,7 @@
                	<td>
 										<?php
 										$contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
-										if($contact_type == 'PRACTICE'){$contact_type = 'GP';}
+										if($contact_type == 'PRACTICE'){$contact_type = Yii::app()->params['gp_label'];}
 										$this->renderPartial('//docman/table/contact_name_type', array(
 											'address_targets' => $element->address_targets,
 											'contact_name' => $macro_data["to"]["contact_name"],

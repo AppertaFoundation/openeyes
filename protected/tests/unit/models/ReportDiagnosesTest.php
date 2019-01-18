@@ -921,47 +921,13 @@ Essential hypertension (Secondary)
 Diabetes mellitus type 1 (Secondary)
 Between 10 May 2002 and 19 May 2002
 
-Hospital Number,Date of Birth,First Name,Last Name,Date,Diagnoses
+Hospital,Date of Birth,First Name,Last Name,Date,Diagnoses
 "12345","1 Jan 1980","Jim","Jones","1 Jan 1970","Left one (Principal)"
 "","","","","","Right two (Secondary)"
 "","","","","","Both bloo (Principal)"
 ', $csv);
     }
 
-    public function testRun_Principal_Or()
-    {
-        $r = new ReportDiagnoses();
-        $r->principal = array(1, 2, 3);
-        $r->start_date = date('j M Y', strtotime('-35 days'));
-        $r->end_date = date('j M Y');
-        $r->condition_type = 'or';
-
-        $r->run();
-
-        $this->assertCount(1, $r->diagnoses);
-
-        $row = array_pop($r->diagnoses);
-
-        $this->assertEquals('12345', $row['hos_num']);
-        $this->assertEquals('1970-01-01', $row['dob']);
-        $this->assertEquals('Jim', $row['first_name']);
-        $this->assertEquals('Aylward', $row['last_name']);
-        $this->assertCount(2, $row['diagnoses']);
-
-        $first = array_shift($row['diagnoses']);
-
-        $this->assertEquals('Principal', $first['type']);
-        $this->assertEquals('Myopia (disorder)', $first['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $first['date']);
-        $this->assertEquals('Left', $first['eye']);
-
-        $second = array_shift($row['diagnoses']);
-
-        $this->assertEquals('Principal', $second['type']);
-        $this->assertEquals('Retinal lattice degeneration (disorder)', $second['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
-        $this->assertEquals('Both', $second['eye']);
-    }
 
     public function testRun_Principal_And()
     {
@@ -1092,49 +1058,6 @@ Hospital Number,Date of Birth,First Name,Last Name,Date,Diagnoses
         $this->assertEquals('Myopia (disorder)', $third['disorder']);
         $this->assertEquals(date('Y-m-d', strtotime('-10 days')), $third['date']);
         $this->assertEquals('Left', $third['eye']);
-    }
-
-    public function testRun_Both_Or()
-    {
-        $r = new ReportDiagnoses();
-        $r->principal = array(1, 2);
-        $r->secondary = array(3, 4);
-        $r->start_date = date('j M Y', strtotime('-35 days'));
-        $r->end_date = date('j M Y');
-        $r->condition_type = 'or';
-
-        $r->run();
-
-        $this->assertCount(1, $r->diagnoses);
-
-        $row = array_pop($r->diagnoses);
-
-        $this->assertEquals('12345', $row['hos_num']);
-        $this->assertEquals('1970-01-01', $row['dob']);
-        $this->assertEquals('Jim', $row['first_name']);
-        $this->assertEquals('Aylward', $row['last_name']);
-        $this->assertCount(3, $row['diagnoses']);
-
-        $first = array_shift($row['diagnoses']);
-
-        $this->assertEquals('Secondary', $first['type']);
-        $this->assertEquals('Posterior vitreous detachment (disorder)', $first['disorder']);
-        $this->assertEquals(date('Y-m-d', strtotime('-22 days')), $first['date']);
-        $this->assertEquals('Both', $first['eye']);
-
-        $second = array_shift($row['diagnoses']);
-
-        $this->assertEquals('Principal', $second['type']);
-        $this->assertEquals('Myopia (disorder)', $second['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
-        $this->assertEquals('Left', $second['eye']);
-
-        $third = array_shift($row['diagnoses']);
-
-        $this->assertEquals('Principal', $third['type']);
-        $this->assertEquals('Retinal lattice degeneration (disorder)', $third['disorder']);
-        $this->assertRegExp('/^'.date('Y-m-d').'/', $second['date']);
-        $this->assertEquals('Both', $third['eye']);
     }
 
     public function testRun_Both_And()

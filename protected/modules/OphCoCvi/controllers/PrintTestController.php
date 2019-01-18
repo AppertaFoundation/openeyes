@@ -118,7 +118,7 @@ class PrintTestController extends \BaseController
         $data = array(
             array('X', 'Local council / Care trust'),
             array('', 'Patient'),
-            array('', 'Patinet’s GP'),
+            array('', 'Patinet’s '.\Yii::app()->params['gp_label']),
             array('', 'Hospital notes'),
             array('', 'Epidemiological analysis'),
         );

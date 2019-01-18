@@ -121,7 +121,7 @@ if (@$_POST[CHtml::modelName($element)]) {
         $html_options = array(
             'style' => 'margin-bottom: 10px; width: 240px;',
             'options' => array(),
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'div_id' => CHtml::modelName($element) . '_' . $side . '_fluidtypes',
             'label' => 'Findings',
             'nowrapper' => true,
@@ -152,7 +152,7 @@ if (@$_POST[CHtml::modelName($element)]) {
             $element,
             $side . '_fluidstatus_id',
             '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus',
-            array('empty' => ' - Please Select - ', 'nowrapper' => true,),
+            array('empty' => 'Select', 'nowrapper' => true,),
             false,
             array('label' => 9, 'field' => 3)
         ); ?>

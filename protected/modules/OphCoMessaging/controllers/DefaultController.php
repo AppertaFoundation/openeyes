@@ -17,6 +17,7 @@
 
 namespace OEModule\OphCoMessaging\controllers;
 
+use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 
 class DefaultController extends \BaseEventTypeController
@@ -133,11 +134,9 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Mark the event message as read.
      *
-     * @param $id
-     *
      * @throws \Exception
      */
-    public function actionMarkRead($id)
+    public function actionMarkRead()
     {
         $el = $this->getMessageElement();
 
@@ -147,7 +146,12 @@ class DefaultController extends \BaseEventTypeController
             $this->markMessageRead($el);
         }
 
-        $this->redirectAfterAction();
+        if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
+            $this->redirectAfterAction();
+        } else {
+            $exam_api = new OphCoMessaging_API();
+            echo json_encode($exam_api->updateMessagesCount(\Yii::app()->user));
+        }
     }
 
     /**
@@ -412,13 +416,13 @@ class DefaultController extends \BaseEventTypeController
 
             $this->event->audit('event', 'marked read');
 
-            \Yii::app()->user->setFlash('success', '<a href="'.$this->getEventViewUrl()."\">{$this->event_type->name}</a> marked as read.");
-
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();
             throw $e;
         }
+
+        return true;
     }
 
     protected function markCommentRead($el)

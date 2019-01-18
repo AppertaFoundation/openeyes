@@ -92,7 +92,7 @@
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="Systemic Medications"
-         data-element-display-order="<?php echo $element->elementType->display_order + 1 ?>">
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <header class=" element-header">
         <h3 class="element-title">Systemic Medications</h3>
     </header>

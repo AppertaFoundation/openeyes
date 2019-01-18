@@ -78,7 +78,7 @@
                   $element,
                   'suitable_for_surgeon_id',
                   '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
-                  array('class' => 'inline', 'empty' => '- Please select -', 'nowrapper' => true)
+                  array('class' => 'inline', 'empty' => 'Select', 'nowrapper' => true)
               ) ?>
           </div>
           <label class="inline cols-6" style="padding-left: 4px">

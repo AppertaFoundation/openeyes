@@ -28,7 +28,7 @@
 		<div class="data-group collapse in flex-layout flex-top">
 			<div class="cols-10 column">
 				<div class="dropdown-row">
-					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ''?>
+					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => 'Select') : $dropdownOptions) : ''?>
 				</div>
         <div class="autocomplete-row" style="display: none">
             <?php

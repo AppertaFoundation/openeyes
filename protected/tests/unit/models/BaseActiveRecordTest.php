@@ -112,15 +112,6 @@ class BaseActiveRecordTest extends CDbTestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @covers BaseActiveRecord::audit
-     *
-     * @todo   Implement testAudit().
-     */
-    public function testAudit()
-    {
-        $this->markTestSkipped('this has been already implemented in the audittest model');
-    }
 
     public function test__set_has_many()
     {
@@ -555,73 +546,6 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->setAccessible(true);
 
         $as->invoke($test);
-    }
-
-    public function testbeforeDelete()
-    {
-        $test = $this->getMockBuilder('RelationOwnerSaveClass')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
-            ->getMock();
-
-        $hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
-        $hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
-        $mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
-
-        $meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
-            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
-                'primaryKey' => 'the_pk',
-            )),
-            'relations' => array(
-                //'has_many' => $hm_cls,
-                //'has_many_thru' => $hmt_cls,
-                'many_many' => $mm_cls,
-            ),
-        ));
-
-        $test->expects($this->any())
-            ->method('getMetaData')
-            ->will($this->returnValue($meta));
-
-        $test->expects($this->any())
-            ->method('getPrimaryKey')
-            ->will($this->returnValue('TestPK'));
-
-        // many many uses command builder behaviour to delete assignment table entries
-        $del_cmd = $this->getMockBuilder('CDbCommand')
-            ->disableOriginalConstructor()
-            ->setMethods(array('execute'))
-            ->getMock();
-
-        $del_cmd->expects($this->once())
-            ->method('execute')
-            ->will($this->returnValue(true));
-
-        $cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
-            ->disableOriginalConstructor()
-            ->setMethods(array('createDeleteCommand'))
-            ->getMock();
-
-        $cmd_builder->expects($this->any())
-            ->method('createDeleteCommand')
-            ->with($this->equalTo('many_many_ass'))
-            ->will($this->returnValue($del_cmd));
-
-        $test->expects($this->any())
-            ->method('getCommandBuilder')
-            ->will($this->returnValue($cmd_builder));
-
-        $r = new ReflectionClass($test);
-        $m = $r->getMethod('beforeDelete');
-        $m->setAccessible(true);
-
-        $p = $r->getProperty('auto_update_relations');
-        $p->setAccessible(true);
-        $p->setValue($test, true);
-
-        $m->invoke($test);
-
-        $this->markTestIncomplete('has many uses static model method so cannot complete the test.');
     }
 
     public function testsaveOnlyIfDirty()

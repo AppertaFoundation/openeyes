@@ -66,7 +66,7 @@
 										<?php if($element->draft): ?>
 											<?php
 											$contact_type = strtoupper($target->contact_type);
-											$contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
+											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
                                             $contact_nick_name = $contact_type === 'GP' ? $element['event']['episode']['patient']['gp']['contact']->nick_name : $element['event']['episode']['patient']['contact']->nick_name;
 
 											$this->renderPartial('//docman/table/contact_name_type', array(
@@ -85,7 +85,7 @@
 												'row_index' => $row_index));
 											?>
 										<?php else: ?>
-											<?php echo $target->contact_type != 'GP' ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
+											<?php echo $target->contact_type != Yii::app()->params['gp_label'] ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
 											<?php if($target->contact_modified){ echo "<br>(Modified)";}?>
 											<?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
 										<?php endif; ?>
@@ -97,7 +97,7 @@
                                     'contact_type' => $target->contact_type,
                                     'row_index' => $row_index,
                                     'address' => $target->address,
-                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL') && ($target->contact_type != 'Practice'),
+                                    'is_editable_address' => ($target->contact_type != Yii::app()->params['gp_label']) && ($target->contact_type != 'INTERNALREFERRAL') && ($target->contact_type != 'Practice'),
                                 ));
                         ?>
                     </td>

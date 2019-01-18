@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # First makes a temporary copy of the runinstall.sh script and then calls it
 # Calling directly from inside the scripts folder could case the script to be
@@ -28,7 +28,7 @@ done
 
 # Copy the runinstall script to /tmp, make it executeable and then run
 sudo mkdir -p /tmp && sudo cp $SCRIPTDIR/runinstall.sh /tmp/
-sudo chown "$USER":www-data /tmp/runinstall.sh
+sudo chown "${LOGNAME:-root}":www-data /tmp/runinstall.sh
 sudo chmod 774 /tmp/runinstall.sh
 
 bash /tmp/runinstall.sh $params
