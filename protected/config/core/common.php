@@ -46,7 +46,6 @@ return array(
     'aliases' => array(
         'services' => 'application.services',
         'OEModule' => 'application.modules',
-        'OphDrPrescriptionAdmin.OphDrPrescriptionAdminModule' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionAdmin.OphDrPrescriptionAdminModule'
     ),
 
     'modules' => array(
