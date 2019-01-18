@@ -318,7 +318,6 @@
         if ($('#js-chart-filter-age').html() == "Range"){
             filters += "&age-min="+$('#js-chart-filter-age-min').val()+"&age-max="+$('#js-chart-filter-age-max').val()
         }
-        console.log(filters);
         return filters;
     }
 <?php }?>
