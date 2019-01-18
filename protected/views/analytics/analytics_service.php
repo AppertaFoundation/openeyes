@@ -6,8 +6,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
+        service_layout['width'] = 700;
+        service_layout['xaxis']['rangemode'] = 'nonnegative';
         var service_data = <?= CJavaScript::encode($service_data); ?>;
-        var overdue_data = [{
+        var overdue_data = {
             name: "Overdue followups",
             x: Object.keys(service_data['overdue']),
             y: Object.values(service_data['overdue']).map(function (item, index) {
@@ -15,9 +17,13 @@
             }),
             customdata: Object.values(service_data['overdue']),
             type: 'bar',
-        }];
-        var overdue_count = overdue_data[0]['y'].reduce((a, b) => a + b, 0);
-        var coming_data =[{
+        };
+        if (overdue_data['x'].length < 10) {
+            overdue_data['width'] = 0.2;
+        }
+
+        var overdue_count = overdue_data['y'].reduce((a, b) => a + b, 0);
+        var coming_data ={
             name: "Followups coming due",
             x: Object.keys(service_data['coming']),
             y: Object.values(service_data['coming']).map(function (item, index) {
@@ -25,13 +31,16 @@
             }),
             customdata: Object.values(service_data['overdue']),
             type: 'bar',
-        }];
-        var coming_count = coming_data[0]['y'].reduce((a, b) => a + b, 0);
-        service_layout['width'] = 700;
-        service_layout['xaxis']['rangemode'] = 'nonnegative';
+        };
+        if (coming_data['x'].length < 10 ) {
+            coming_data['width'] = 0.2;
+        }
+
+        var coming_count = coming_data['y'].reduce((a, b) => a + b, 0);
+
 
         Plotly.newPlot(
-            'js-hs-chart-analytics-service', overdue_data ,service_layout, analytics_options
+            'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
         );
 
         $('#js-hs-app-follow-up-coming').html('Appointments: Follow Up(' + coming_count + ')');
@@ -42,7 +51,7 @@
             $('#js-hs-app-new').removeClass('selected');
 
             Plotly.react(
-                'js-hs-chart-analytics-service', coming_data ,service_layout, analytics_options
+                'js-hs-chart-analytics-service', [coming_data] ,service_layout, analytics_options
             );
         });
 
@@ -52,7 +61,7 @@
             $('#js-hs-app-new').removeClass('selected');
 
             Plotly.react(
-                'js-hs-chart-analytics-service', overdue_data ,service_layout, analytics_options
+                'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
             );
         });
 
