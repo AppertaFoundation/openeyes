@@ -116,7 +116,7 @@ if (is_array($ordered_episodes)) {
                             data-subspecialty="<?= $subspecialty_name ?>">
 
                             <!-- Quicklook tooltip -->
-                            <div class="tooltip quicklook" style="display: none; ">
+                            <div class="tooltip quicklook" style="display: none; white-space: inherit; ">
                                 <div class="event-name"><?php echo $event_name ?></div>
                                 <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
                                 <?php if ($event->hasIssue()) { ?>
