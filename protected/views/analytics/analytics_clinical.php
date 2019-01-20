@@ -28,25 +28,29 @@
         var clinical_plot = document.getElementById('js-hs-chart-analytics-clinical');
         clinical_plot.on('plotly_click', function(data){
             var custom_data = data.points[0].customdata;
-            if ('text' in custom_data && 'customdata' in custom_data){
-                $('#js-back-to-common-disorder').show();
-                //click on "other" bar, redraw the chart show details of other disorders.
-                custom_data['type'] = 'bar';
-                custom_data['orientation'] = 'h';
-                clinical_layout['yaxis']['tickvals'] = custom_data['y'];
-                clinical_layout['yaxis']['ticktext'] = custom_data['text'];
-                Plotly.react(
-                    'js-hs-chart-analytics-clinical', [custom_data], clinical_layout, analytics_options
-                );
+            if (!Array.isArray(custom_data)){
+                if ('text' in custom_data && 'customdata' in custom_data){
+                    $('#js-back-to-common-disorder').show();
+                    //click on "other" bar, redraw the chart show details of other disorders.
+                    custom_data['type'] = 'bar';
+                    custom_data['orientation'] = 'h';
+                    clinical_layout['yaxis']['tickvals'] = custom_data['y'];
+                    clinical_layout['yaxis']['ticktext'] = custom_data['text'];
+                    Plotly.react(
+                        'js-hs-chart-analytics-clinical', [custom_data], clinical_layout, analytics_options
+                    );
+                }
             }
             else{
                 //redirect to drill down patient list
-                $('.analytics-charts').hide();
-                $('.analytics-patient-list').show();
-                $('.analytics-patient-list-row').hide();
-                var patient_show_list = custom_data;
-                for (var j=0; j< patient_show_list.length; j++){
-                    $('#'+patient_show_list[j]).show();
+                if (data.points[0].x > 0){
+                    $('.analytics-charts').hide();
+                    $('.analytics-patient-list').show();
+                    $('.analytics-patient-list-row').hide();
+                    var patient_show_list = custom_data;
+                    for (var j=0; j< patient_show_list.length; j++){
+                        $('#'+patient_show_list[j]).show();
+                    }
                 }
             }
         });

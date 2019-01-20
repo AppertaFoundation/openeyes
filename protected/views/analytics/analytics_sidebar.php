@@ -275,15 +275,15 @@
     $('#search-form').on('submit', function(e){
         e.preventDefault();
         $.ajax({
-            url: '/analytics/customData',
-            data:$('#search-form').serialize() + getCustomDataFilters(),
+            url: '/analytics/updateData',
+            data:$('#search-form').serialize() + getDataFilters(),
             dataType:'json',
             success: function (data, textStatus, jqXHR) {
                 plotUpdate(data);
             }
         });
     });
-    function getCustomDataFilters(){
+    function getDataFilters(){
         var specialty = "<?=$specialty;?>";
         var filters = "&specialty="+specialty;
 
@@ -320,6 +320,29 @@
         }
         return filters;
     }
+    function plotUpdate(data){
+        var custom_charts = ['js-hs-chart-analytics-custom-left','js-hs-chart-analytics-custom-right'];
+        var custom_data = data[0];
+        for (var i = 0; i < custom_charts.length; i++) {
+            var chart = $('#'+custom_charts[i])[0];
+            chart.data[0]['x'] = custom_data[i][0]['x'];
+            chart.data[0]['y'] = custom_data[i][0]['y'];
+            chart.data[0]['customdata'] = custom_data[0][0]['customdata'];
+            chart.data[1]['x'] = custom_data[i][1]['x'];
+            chart.data[1]['y'] = custom_data[i][1]['y'];
+            chart.data[1]['customdata'] = custom_data[0][1]['customdata'];
+            Plotly.redraw(chart);
+        }
+        var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
+        var clinical_data = data[1];
+        clinical_chart.data[0]['x'] = clinical_data.x;
+        clinical_chart.data[0]['y'] = clinical_data.y;
+        clinical_chart.data[0]['customdata'] = clinical_data.customdata;
+        clinical_chart.data[0]['text'] = clinical_data.text;
+        Plotly.redraw(clinical_chart);
+        var service_chart = $('#js-hs-chart-analytics-service')[0];
+        var service_data = data[2];
+}
 <?php }?>
     function viewAllDates() {
         $('#analytics_datepicker_from').val("");

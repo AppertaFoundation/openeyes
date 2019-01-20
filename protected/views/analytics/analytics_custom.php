@@ -50,17 +50,4 @@
             }
         });
     }
-    function plotUpdate(data){
-        var charts = ['js-hs-chart-analytics-custom-left','js-hs-chart-analytics-custom-right'];
-        for (var i = 0; i < charts.length; i++) {
-            var chart = $('#'+charts[i])[0];
-            chart.data[0]['x'] = data[i][0]['x'];
-            chart.data[0]['y'] = data[i][0]['y'];
-            chart.data[0]['customdata'] = data[0][0]['customdata'];
-            chart.data[1]['x'] = data[i][1]['x'];
-            chart.data[1]['y'] = data[i][1]['y'];
-            chart.data[1]['customdata'] = data[0][1]['customdata'];
-            Plotly.redraw(chart);
-        }
-    }
 </script>

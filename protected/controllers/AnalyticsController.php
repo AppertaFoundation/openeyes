@@ -22,7 +22,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','customData',),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','updateData',),
         'users'=> array('@')
       ),
     );
@@ -640,8 +640,8 @@ class AnalyticsController extends BaseController
           $current_event = $diagnosis_element_item->event;
           if(isset($current_event->episode)) {
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              if( ($start_date && $current_time < Helper::mysqlDate2JsTimestamp($start_date)) ||
-                  ($end_date && $current_time > Helper::mysqlDate2JsTimestamp($end_date)))
+              if( ($start_date && $current_time < $start_date) ||
+                  ($end_date && $current_time > $end_date))
                   continue;
 
               $current_episode = $current_event->episode;
@@ -750,8 +750,7 @@ class AnalyticsController extends BaseController
       );
   }
 
-
-  public function actionCustomData(){
+  public function actionUpdateData(){
       $specialty = Yii::app()->request->getParam('specialty');
       $this->obtainFilters();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
@@ -761,6 +760,16 @@ class AnalyticsController extends BaseController
       }elseif ($specialty === "Medical Retina"){
           list($left_second_list,$right_second_list) = $this->getCustomCRT();
       }
+      $subspecialty_id = $this->getSubspecialtyID($specialty);
+      $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
+
+      $clinical_data = array(
+          'x' => $disorder_data['x'],
+          'y' => $disorder_data['y'],
+          'text' => $disorder_data['text'],
+          'customdata' =>$disorder_data['customdata']
+      );
+
       $custom_data = array();
       foreach (['left','right'] as $side){
           $custom_data[] = array(
@@ -813,7 +822,7 @@ class AnalyticsController extends BaseController
               )
           );
       }
-      $this->renderJSON($custom_data);
+      $this->renderJSON(array($custom_data,$clinical_data));
   }
 
   public function getPeriodDate($period_name){
