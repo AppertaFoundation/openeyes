@@ -245,8 +245,9 @@ if [ "$OE_MODE" != "BUILD" ]; then
     CustomLog /var/log/apache2/access.log combined
     </VirtualHost>
     " | sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
-
-    sudo service apache2 restart
+		
+		# If apache was running, restart it. Otherwise we assume it will be started by another process
+	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
     # copy cron tasks
     sudo cp -f $SCRIPTDIR/.cron/hotlist /etc/cron.d/
