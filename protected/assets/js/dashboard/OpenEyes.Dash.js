@@ -220,7 +220,7 @@
                 totaleyes += chart.data[0]['x'][i];
             }
             chart.data[0]['hovertext'] = data.map(function (item){
-              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2);
+              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
             });
             chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totaleyes+'</sub>';
 

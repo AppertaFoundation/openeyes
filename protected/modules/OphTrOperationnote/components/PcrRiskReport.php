@@ -131,8 +131,9 @@ class PcrRiskReport extends Report implements ReportInterface
         }else{
             $surgeon_id_list = array(array('id' => $this->surgeon));
         }
-
+        $surgeon_count = 1;
         foreach ($surgeon_id_list as $surgeon_id) {
+
             $data = $this->queryData($surgeon_id['id'], $this->from, $this->to);
             $total = $this->getTotalOperations($surgeon_id['id']);
             $pcrCases = 0;
@@ -166,15 +167,21 @@ class PcrRiskReport extends Report implements ReportInterface
             if ($total > 1000) {
                 $this->totalOperations = $total;
             }
-
+            if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
+                $surgeon_name = User::model()->findByPk($surgeon_id)->getFullName();
+                $surgeon_name = '<br><i>Surgon: </i>'.$surgeon_name;
+            }else{
+                $surgeon_name = '<br><i>Surgon: </i>Surgon '.$surgeon_count;
+            }
 
             if ($this->mode == 0) {
-                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name));
             } elseif ($this->mode == 1) {
-                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate));
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name));
             } elseif ($this->mode == 2) {
-                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate));
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name));
             }
+            $surgeon_count += 1;
         }
         return $return_data;
     }
@@ -197,7 +204,7 @@ class PcrRiskReport extends Report implements ReportInterface
         'hovertext' => array_map(function($item){
           return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
-            . number_format($item['y'], 2);
+            . number_format($item['y'], 2).$item['surgeon'];
         }, $dataset),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
