@@ -39,17 +39,18 @@
             $('#cataract-complication-grid').html("");
             $('#cataract-complication-grid').show();
             OpenEyes.Dash.init('#cataract-complication-grid');
-            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,8);
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,10);
         }else if ($('#visual-acuity-grid').html()){
             $('#visual-acuity-grid').html("");
             $('#visual-acuity-grid').show();
             OpenEyes.Dash.init('#visual-acuity-grid');
-            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 8);
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 10);
         }else if ($('#refractive-outcome-grid').html()){
             $('#refractive-outcome-grid').html("");
             $('#refractive-outcome-grid').show();
             OpenEyes.Dash.init('#refractive-outcome-grid');
-            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 8);
+            OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
         }
+        $('.mdl-cell').css('height','600px');
     });
 </script>
