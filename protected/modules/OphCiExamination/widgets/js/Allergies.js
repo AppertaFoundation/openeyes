@@ -143,9 +143,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.showEditableIfOther = function () {
         var controller = this;
         $(this.allergySelector).each(function () {
-            var isOther = (this.value == controller.options.allergyOtherValue);
-            $(this.closest('tr')).find('.js-not-other-allergy').toggle(!isOther);
-            $(this.closest('tr')).find('.js-other-allergy').toggle(isOther);
+            var row_other_allergy = $(this.closest('tr')).find('.js-other-allergy');
+            var showOtherInput = (this.value == controller.options.allergyOtherValue && row_other_allergy.find('input').val() == '');
+
+            $(this.closest('tr')).find('.js-not-other-allergy').toggle(!showOtherInput);
+            row_other_allergy.toggle(showOtherInput);
         });
     };
 
