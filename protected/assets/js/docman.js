@@ -284,7 +284,7 @@ var docman = (function() {
             if(selected_type){
                 other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
         }
-1
+
             if(contact_id != 'OTHER' ){
             	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
