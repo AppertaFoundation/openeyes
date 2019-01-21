@@ -31,7 +31,7 @@ $(document).ready(function () {
     $('#js-hotlist-panel').hide();
   } else if ($('#js-hotlist-panel').length > 0) {
     // .. otherwise set up the hotlist
-    var hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel'), {autoHideWidthPixels: 1800});
+    var hotlist = new OpenEyes.UI.NavBtnPopup.HotList('hotlist', $hotlistNavButton, $('#js-hotlist-panel'), {autoHideWidthPixels: 1890});
     hotlist.useAdvancedEvents($('.js-hotlist-panel-wrapper'));
   }
 

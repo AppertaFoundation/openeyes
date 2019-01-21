@@ -6,7 +6,7 @@
 
 ?>
 
-<div class="worklist-group">
+<div class="worklist-group trial-list">
 
     <?php
     $dataProvided = $dataProvider->getData();

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 
 # Check that we are running from the /tmp folder. If not, exit
@@ -197,7 +197,7 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
 fi
 
 echo ""
-echo "User $USER is checking out branch $branch..."
+echo "Checking out branch $branch..."
 echo ""
 
 $(ssh-agent)  2>/dev/null

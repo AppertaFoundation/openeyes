@@ -655,6 +655,7 @@ class AdminController extends \ModuleAdminController
                     array('field' => 'subspecialty_id', 'type' => 'lookup', 'model' => 'Subspecialty'),
                 ),
                 'div_wrapper_class' => 'cols-5',
+                'return_url' => '/oeadmin/examinationElementAttributes/list',
             )
         );
     }
@@ -990,4 +991,17 @@ class AdminController extends \ModuleAdminController
             'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', ['div_wrapper_class' => 'cols-4']);
     }
 
+    public function actionChangeWorkflowStepActiveStatus(){
+        $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
+        if (!$step) {
+            throw new \Exception('Unknown element set '.$_POST['element_set_id'].' for workflow '.$_POST['workflow_id']);
+        }
+
+        $step->is_active = ($step->is_active === '1' ? 0 : 1);
+        if (!$step->save()) {
+            throw new \Exception('Unable to change element set is_active status: '.print_r($step->getErrors(), true));
+        }
+
+        echo '1';
+    }
 }

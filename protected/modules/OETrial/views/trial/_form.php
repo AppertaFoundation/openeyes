@@ -39,6 +39,14 @@
         </td>
       </tr>
       <tr class="col-gap">
+          <td>
+              <?= $form->labelEx($trial, 'ethics_number') ?>
+          </td>
+          <td>
+              <?= $form->textField($trial, 'ethics_number', array('size' => 50, 'maxlength' => 200)) ?>
+          </td>
+      </tr>
+      <tr class="col-gap">
         <td>
             <?= $form->labelEx($trial, 'external_data_link') ?>
         </td>

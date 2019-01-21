@@ -110,7 +110,7 @@
         } else {
 
           // Don't deselect the item if the itemset is mandatory and there aren't any other items selected
-          if (!($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
+          if ($(this).data('itemSet') && !($(this).data('itemSet') && $(this).data('itemSet').options.mandatory)
             || $(this).closest('ul').find('li.selected').length > 1) {
             $(this).removeClass('selected');
           }
@@ -124,24 +124,31 @@
    * @name OpenEyes.UI.AdderDialog#generateContent
    */
   AdderDialog.prototype.generateContent = function () {
-    let dialog = this;
-    if (this.options.itemSets) {
-      this.selectWrapper = $('<table />', {class: 'select-options'});
-      let headers = $('<thead />').appendTo(this.selectWrapper);
-      this.selectWrapper.appendTo(this.popup);
-      let $container = $('<tbody />');
-      $container.appendTo(this.selectWrapper);
-      this.$tr = $('<tr />').appendTo($container);
+      let dialog = this;
+      if (this.options.itemSets) {
+          this.selectWrapper = $('<table />', {class: 'select-options'});
+          let headers = $('<thead />').appendTo(this.selectWrapper);
+          this.selectWrapper.appendTo(this.popup);
+          let $container = $('<tbody />');
+          $container.appendTo(this.selectWrapper);
+          this.$tr = $('<tr />').appendTo($container);
 
-      $(this.options.itemSets).each(function (index, itemSet) {
-        $('<th />').text(itemSet.options.header).appendTo(headers);
-        let $td = $('<td />').appendTo(dialog.$tr);
-        let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
-        let $list = dialog.generateItemList(itemSet);
-        let $listDiv = $('<div />').appendTo($listContainer);
-        $list.appendTo($listDiv);
-      });
-    }
+          $(this.options.itemSets).each(function (index, itemSet) {
+              let header = (itemSet.options.header) ? itemSet.options.header : '';
+              $('<th />').text(header).appendTo(headers);
+              let $td = $('<td />').appendTo(dialog.$tr);
+              let $listContainer = $('<div />', {class: 'flex-layout flex-top flex-left'}).appendTo($td);
+              if (itemSet.options.supportSigns) {
+                  dialog.generateSigns(itemSet).appendTo($listContainer);
+              }
+              var $list = dialog.generateItemList(itemSet);
+              let $listDiv = $('<div />').appendTo($listContainer);
+              $list.appendTo($listDiv);
+              if (itemSet.options.supportDecimalValues) {
+                  dialog.generateDecimalValues(itemSet).appendTo($listContainer);
+              }
+          });
+      }
   };
 
   /**
@@ -222,6 +229,47 @@
     return $list;
   };
 
+    /**
+     * Generates signs like '+' and '-' in front of the item
+     * @param itemSet
+     * @returns {jQuery|HTMLElement}
+     */
+    AdderDialog.prototype.generateSigns = function (itemSet) {
+        let dialog = this;
+        let $signContainer = $('<div />');
+        let $list = $('<ul />', {class: 'add-options cols-full single required'}).appendTo($signContainer);
+
+        Object.entries(itemSet.options.signs).forEach(([term, sign]) => {
+            let $listItem = $('<li />', {'data-addition': sign});
+            let $iconWrapper = $('<span />', {class: dialog.options.liClass});
+
+            $('<i />', {class: 'oe-i active ' + term}).appendTo($iconWrapper);
+            $iconWrapper.appendTo($listItem);
+            $listItem.appendTo($list);
+        });
+        return $signContainer;
+    };
+
+    /**
+     * Generates decimal values like '.00' , '.25' , '.50' , '.75' next to the item
+     * @param itemSet
+     * @returns {jQuery|HTMLElement}
+     */
+    AdderDialog.prototype.generateDecimalValues = function (itemSet) {
+        let dialog = this;
+        let $decimalValuesContainer = $('<div />');
+        let $list = $('<ul />', {class: 'add-options cols-full single required'}).appendTo($decimalValuesContainer);
+
+        itemSet.options.decimalValues.forEach(decimalValue => {
+            let $listItem = $('<li />', {'data-addition': decimalValue});
+            let $itemWrapper = $('<span />', {class: dialog.options.liClass}).text(decimalValue);
+            $itemWrapper.appendTo($listItem);
+            $listItem.appendTo($list);
+        });
+
+        return $decimalValuesContainer;
+    };
+
   /**
    * Positions the popup relative to the given anchor
    * @param {jQuery, HTMLElement} $anchorElement The element to anchor the popup to
@@ -245,6 +293,10 @@
       bottom: bottom,
       right: right
     });
+
+    if (this.popup.offset().top < 0) {
+      this.popup.css({"bottom": Math.floor(bottom + this.popup.offset().top)});
+    }
 
     /*
     Close popup on...
@@ -360,8 +412,16 @@
   AdderDialog.prototype.return = function () {
     let shouldClose = true;
     if (this.options.onReturn) {
-      let selectedItems = this.getSelectedItems();
-      shouldClose = this.options.onReturn(this, selectedItems) !== false;
+      let selectedValues = [];
+      let selectedAdditions = [];
+        this.getSelectedItems().forEach(selectedItem => {
+          if(selectedItem.itemSet){
+            selectedValues.push(selectedItem);
+          } else {
+            selectedAdditions.push(selectedItem);
+          }
+      });
+      shouldClose = this.options.onReturn(this, selectedValues , selectedAdditions) !== false;
     }
 
     if (shouldClose) {
@@ -378,16 +438,15 @@
    */
   AdderDialog.prototype.runItemSearch = function (text) {
     let dialog = this;
+      if (this.searchRequest !== null) {
+          this.searchRequest.abort();
+      }
 
-        if (this.searchRequest !== null) {
-            this.searchRequest.abort();
-        }
-
-    this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
-      term: text,
-      code: this.options.searchOptions.code,
-      ajax: 'ajax'
-    }, function (results) {
+      this.searchRequest = $.getJSON(this.options.searchOptions.searchSource, {
+          term: text,
+          code: this.options.searchOptions.code,
+          ajax: 'ajax'
+      }, function (results) {
       dialog.searchRequest = null;
       let no_data = !$(results).length;
 

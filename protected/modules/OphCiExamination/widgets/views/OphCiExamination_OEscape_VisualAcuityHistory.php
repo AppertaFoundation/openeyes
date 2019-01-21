@@ -49,7 +49,7 @@
     //Plotly
     var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
 
-    var va_plotly_ticks = pruneYTicks(va_ticks, height, 17);
+    var va_plotly_ticks = pruneYTicks(va_ticks, height, 25);
 
 
     for (var side of sides){
