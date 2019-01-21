@@ -58,7 +58,7 @@ do
         ;;
 		--no-compile) #reserved for future use
 		;;
-	    *)  echo "Unknown command line: $p"
+	    *)  [ ! -z $p ] && echo "Unknown command line: $p" || :
         ;;
     esac
 
@@ -228,7 +228,7 @@ fi
 
 # Set some git properties
 
-git config core.fileMode false 2>/dev/null
+git -C $WROOT config core.fileMode false 2>/dev/null
 # Set to cache password in memory (should only ask once per day or each reboot)
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 
