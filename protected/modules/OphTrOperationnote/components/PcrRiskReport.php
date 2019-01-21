@@ -139,7 +139,7 @@ class PcrRiskReport extends Report implements ReportInterface
             $pcrCases = 0;
             $pcrRiskTotal = 0;
             $adjustedPcrRate = 0;
-
+            $unadjustedPcrRate = 0;
             foreach ($data as $case) {
                 if (isset($case['complication']) && ($case['complication'] === 'PC rupture' || $case['complication'] === 'PC rupture with vitreous loss' || $case['complication'] === 'PC rupture no vitreous loss')) {
                     ++$pcrCases;
@@ -173,13 +173,18 @@ class PcrRiskReport extends Report implements ReportInterface
             }else{
                 $surgeon_name = '<br><i>Surgon: </i>Surgon '.$surgeon_count;
             }
+            if ($surgeon_id['id'] == Yii::app()->user->id){
+                $color = "#1f77b4";
+            }else{
+                $color = 'red';
+            }
 
             if ($this->mode == 0) {
-                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name));
+                array_push($return_data, array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
             } elseif ($this->mode == 1) {
-                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name));
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
             } elseif ($this->mode == 2) {
-                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name));
+                array_push($return_data, array('name' => 'unadjusted', 'x' => $total, 'y' => $unadjustedPcrRate, 'surgeon' => $surgeon_name,'color' => $color), array('name' => 'adjusted', 'x' => $total, 'y' => $adjustedPcrRate, 'surgeon' => $surgeon_name, 'color' => $color));
             }
             $surgeon_count += 1;
         }
@@ -191,21 +196,36 @@ class PcrRiskReport extends Report implements ReportInterface
 
     public function tracesJson(){
       $dataset =$this->dataSet();
+      $current_surgeon_data = array();
+      $other_surgeons_data = array();
+      foreach($dataset as $row){
+          if ($row['color'] == 'red'){
+              array_push($other_surgeons_data,$row);
+          }else{
+              array_push($current_surgeon_data,$row);
+          }
+      }
+
       $trace1 = array(
         'name' => 'Current Surgeon',
         'mode'=>'markers',
         'type' => 'scatter',
+        'marker' => array(
+            'color' => array_map(function ($item){
+                return $item['color'];
+            },$current_surgeon_data),
+        ),
         'x' => array_map(function($item){
           return $item['x'];
-        }, $dataset),
+        }, $current_surgeon_data),
         'y' => array_map(function($item){
           return $item['y'];
-        }, $dataset),
+        }, $current_surgeon_data),
         'hovertext' => array_map(function($item){
           return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
             . $item['x'] . '<br><i>PCR Avg:</i>'
             . number_format($item['y'], 2).$item['surgeon'];
-        }, $dataset),
+        }, $current_surgeon_data),
         'hoverinfo'=>'text',
         'hoverlabel' => array(
           'bgcolor' => '#fff',
@@ -241,8 +261,37 @@ class PcrRiskReport extends Report implements ReportInterface
         }, $this->upper95()),
         'hoverinfo' => 'skip',
       );
+      $trace4 = array(
+          'name' => 'Other Surgeons',
+          'mode'=>'markers',
+          'type' => 'scatter',
+          'marker' => array(
+              'color' => array_map(function ($item){
+                  return $item['color'];
+              },$other_surgeons_data),
+          ),
+          'x' => array_map(function($item){
+              return $item['x'];
+          }, $other_surgeons_data),
+          'y' => array_map(function($item){
+              return $item['y'];
+          }, $other_surgeons_data),
+          'hovertext' => array_map(function($item){
+              return '<b>PCR Risk adjusted</b><br><i>Operations:</i>'
+                  . $item['x'] . '<br><i>PCR Avg:</i>'
+                  . number_format($item['y'], 2).$item['surgeon'];
+          }, $other_surgeons_data),
+          'hoverinfo'=>'text',
+          'hoverlabel' => array(
+              'bgcolor' => '#fff',
+              'bordercolor' => '#1f77b4',
+              'font' => array(
+                  'color' => '#000',
+              ),
+          ),
+      );
 
-      $traces = array($trace1, $trace2, $trace3);
+      $traces = array($trace1, $trace4, $trace2, $trace3);
       return json_encode($traces);
 
     }

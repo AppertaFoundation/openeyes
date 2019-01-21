@@ -206,22 +206,33 @@
           }else if($('#pcr-risk-mode').val() == 2){
             newTitle = 'PCR Rate (risk adjusted & unadjusted)';
           }
-
             var chart = $('#PcrRiskReport')[0];
-
-            chart.data[0]['x'] = data.map(function (item) {
-              return item['x'];
-            });
-            chart.data[0]['y'] = data.map(function (item) {
-              return item['y'];
-            });
+            var surgon_data = [[],[]];
             var totaleyes = 0;
             for (var i =0; i<(chart.data[0]['x']).length; i++){
                 totaleyes += chart.data[0]['x'][i];
             }
-            chart.data[0]['hovertext'] = data.map(function (item){
-              return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
+            data.forEach(function (item) {
+                if (item['color'] == 'red'){
+                    surgon_data[1].push(item);
+                }else{
+                    surgon_data[0].push(item);
+                }
             });
+            for (var i = 0; i < surgon_data.length; i++) {
+                chart.data[i]['x'] = surgon_data[i].map(function (item) {
+                    return item['x'];
+                });
+                chart.data[i]['y'] = surgon_data[i].map(function (item) {
+                    return item['y'];
+                });
+                chart.data[i]['hovertext'] = surgon_data[i].map(function (item){
+                    return '<b>'+newTitle+'</b><br><i>Operations:</i>' + item['x'] + '<br><i>PCR Avg:</i>' + item['y'].toFixed(2) + item['surgeon'] ;
+                });
+                chart.data[i]['marker']['color'] = surgon_data[i].map(function (item) {
+                    return item['color'];
+                });
+            }
             chart.layout['title'] = newTitle + '<br><sub>Total Operations: '+totaleyes+'</sub>';
 
             Plotly.redraw(chart);
