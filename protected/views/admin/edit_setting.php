@@ -41,48 +41,34 @@
         <tr>
 
             <td><?= $metadata->name ?></td>
-            <?php if ($metadata->key == 'city_road_satellite_view') : ?>
-                <td>
-                    <div class="alert-box issue">
-                        Removes the 2 check-boxes from Examination->Clinical Management->Cataract Surgical
-                        Management named "At
-                        City Road" and "At Satellite"
-                    </div>
-                </td>
-
-            <?php else : ?>
-                <td>
-                    <?php
-                    $this->renderPartial(
-                        '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
-                        ['metadata' => $metadata]
-                    );
-                    ?>
-                </td>
-            <?php endif; ?>
+            <td>
+                <?php
+                $this->renderPartial(
+                    '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
+                    ['metadata' => $metadata]
+                );
+                ?>
+            </td>
         </tr>
         </tbody>
         <tfoot class="pagination-container">
         <tr>
             <td colspan="2">
-                <?php if ($metadata->key != 'city_road_satellite_view') : ?>
-                    <?= CHtml::submitButton('Save', [
-                            'class' => 'button large',
-                            'name' => 'save',
-                            'id' => 'et_save'
-                        ]
-                    );
-                    ?>
+                <?= CHtml::submitButton('Save', [
+                        'class' => 'button large',
+                        'name' => 'save',
+                        'id' => 'et_save'
+                    ]
+                );
+                ?>
 
-                    <?= CHtml::submitButton('Cancel', [
-                            'class' => 'button large',
-                            'name' => 'cancel',
-                            'id' => 'et_cancel'
-                        ]
-                    );
-                    ?>
-
-                <?php endif; ?>
+                <?= CHtml::submitButton('Cancel', [
+                        'class' => 'button large',
+                        'name' => 'cancel',
+                        'id' => 'et_cancel'
+                    ]
+                );
+                ?>
             </td>
         </tr>
         </tfoot>

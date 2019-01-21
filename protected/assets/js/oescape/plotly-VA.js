@@ -10,6 +10,10 @@ function setYAxis_VA(options) {
 
     /*Ticks setting of yaxis*/
     ticks: 'outside',
+    // set y tick white
+    tickfont: {
+      color: '#fff',
+    },
     showticklabels: true,
     tickvals: options['tickvals'],
     ticktext: options['ticktext']

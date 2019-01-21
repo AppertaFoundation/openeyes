@@ -18,26 +18,29 @@
 $logoHelper = new LogoHelper();
 
 ?>
-<div class="banner clearfix">
-		<?= $logoHelper->render() ?>
-	
-</div>
-<div class="from-address">
-	<?php
-    echo $site->getLetterAddress(array(
-        'include_name' => true,
-        'delimiter' => '<br />',
-        'include_telephone' => true,
-        'include_fax' => true,
-    ))?>
-	<div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date))?></div>
-</div>
-<div class="to-address">
-	<div class="to-address-header">
-		To:
-	</div>
-	<div class="to-address-address">
-		<?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress))?>
-	</div>
+<header class="print-header">
+    <div class="logo">
+        <?= $logoHelper->render(); ?>
+    </div>
+</header>
+<div class="flex-layout">
+    <div class="to-address">
+        <div class="to-address-header">
+            To:
+        </div>
+        <div class="to-address-address">
+            <?php echo str_replace("\n", '<br/>', CHtml::encode($toAddress)) ?>
+        </div>
+    </div>
+    <h5 class="right-align">
+        <?php
+        echo $site->getLetterAddress(array(
+            'include_name' => true,
+            'delimiter' => '<br />',
+            'include_telephone' => true,
+            'include_fax' => true,
+        )) ?>
+        <div class="date"><?php echo date(Helper::NHS_DATE_FORMAT, strtotime($date)) ?></div>
+    </h5>
 </div>
 <br/><br/>

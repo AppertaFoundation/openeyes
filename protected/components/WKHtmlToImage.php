@@ -35,7 +35,7 @@ class WKHtmlToImage extends WKHtmlToX
      * @param string $prefix THe prefix of the ouput file
      * @param string $suffix The suffix of the output file (extension will always be .png
      * @param string $html The HTML to render
-     * @param array $options Custom options, including heigh twidth etc
+     * @param array $options Custom options, including height, width, etc
      * @param bool $output_html Whether to return the HTML that was rendered or not
      * @return bool True if the image was generated, otherwise false
      * @throws Exception Throw nif an error occurs
@@ -62,7 +62,7 @@ class WKHtmlToImage extends WKHtmlToX
 
         $cmd_str = escapeshellarg($this->application_path);
         if (array_key_exists('width', $options)) {
-            $cmd_str .= ' --width ' . $options['width'] . ' --disable-smart-width ';
+            $cmd_str .= ' --width ' . ($options['viewport_width'] ?: $options['width']) . ' --disable-smart-width ';
         }
 
         if(array_key_exists('quality', $options)) {
@@ -72,6 +72,21 @@ class WKHtmlToImage extends WKHtmlToX
         $cmd_str .= ' ' . escapeshellarg($html_file) . ' ' . escapeshellarg($image_file) . ' 2>&1';
 
         $res = $this->execute($cmd_str);
+
+        $width = $options['width'];
+        // If viewport width is different to desired output width, then resize
+        if ($width != $options['viewport_width']) {
+            // use ImageMagick to resize the image to a width of 800px
+            $imagick = new Imagick();
+            $imagick->readImage($image_file);
+            // get related height
+            $height = $width * $imagick->getImageHeight() / $imagick->getImageWidth();
+            $imagick->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
+            // save new re-sized image with the same file name
+            if(file_put_contents($image_file, $imagick->getImage()) === false) {
+                \OELog::log('Cannot write :' . $image_file);
+            }
+        }
 
         if (!$this->fileExists($image_file) || $this->fileSize($image_file) == 0) {
             if ($this->fileSize($image_file) == 0) {

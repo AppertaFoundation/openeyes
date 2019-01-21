@@ -42,7 +42,7 @@
             ?>
             <script>
                 $(document).ready(function () {
-                    let $date_input = $('.js-event-date-input');
+                    var $date_input = $('.js-event-date-input');
                     $('.js-change-event-date').on('click', function () {
                         $date_input.show();
                         $('.js-event-date').hide();

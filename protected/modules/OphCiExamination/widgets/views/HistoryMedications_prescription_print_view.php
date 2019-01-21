@@ -1,4 +1,3 @@
-<link rel="stylesheet" type="text/css" href="<?= $this->getCssPublishedPath('medications.css') ?>">
 <?php $el_id = CHtml::modelName($element) . '_element'; ?>
 <?php $visible_sections = ['current_entries' => 'Current', "closed_entries" => "Stopped"]; ?>
 <header class=" element-header">

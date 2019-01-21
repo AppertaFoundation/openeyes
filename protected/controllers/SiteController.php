@@ -204,11 +204,6 @@ class SiteController extends BaseController
         $this->renderPartial('/site/debuginfo', array());
     }
 
-    protected function beforeAction($action)
-    {
-        Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-        return parent::beforeAction($action);
-    }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later
 //    public function actionAdvancedSearch()

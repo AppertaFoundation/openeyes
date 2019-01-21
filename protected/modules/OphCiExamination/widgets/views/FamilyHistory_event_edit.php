@@ -113,7 +113,7 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-       new OpenEyes.OphCiExamination.FamilyHistoryController();
+       var FamilyHistoryController = new OpenEyes.OphCiExamination.FamilyHistoryController();
        var templateText = $('#'+<?= CJSON::encode(CHtml::modelName($element).'_entry_template') ?>).text();
       <?php
         $relative_options = $element->getRelativeOptions();
@@ -162,6 +162,9 @@
            }
            $('#OEModule_OphCiExamination_models_FamilyHistory_entry_table').find('tbody').append(row_tem);
            return true;
+         },
+         onClose: function () {
+          FamilyHistoryController.showNoHistory();
          }
        });
     });

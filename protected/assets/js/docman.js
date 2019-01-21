@@ -404,6 +404,7 @@ var docman = (function() {
                     this.addDocmanMethodMandatory();
                     $('tr.rowindex-' + (++last_row_index) + ' .docman_recipient').trigger('change');
                     $('#dm_table .docman_loader').hide();
+                    $('#dm_table textarea').autosize();
                 }
             });
         },

@@ -40,7 +40,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
   <div class="label">Systemic Medications</div>
   <div class="data">
       <?php if (!$current_systemic_meds && !$stopped_systemic_meds): ?>
-        <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+        <div class="nil-recorded">Nil recorded.</div>
       <?php else: ?>
           <?php if ($current_systemic_meds): ?>
           <table id="<?= $model_name ?>_entry_table">
@@ -105,7 +105,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
     <div class="label">Eye Medications</div>
     <div class="data">
         <?php if (!$current_eye_meds && !$stopped_eye_meds): ?>
-          <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+          <div class="nil-recorded">Nil recorded.</div>
         <?php else: ?>
             <?php if ($current_eye_meds): ?>
             <table id="<?= $model_name ?>_entry_table">

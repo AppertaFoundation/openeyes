@@ -118,6 +118,19 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         ));
     }
 
+    public static function getDisordersWithDiabetesInformation()
+    {
+        $diagnoses = [];
+        foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
+            $diagnoses[] = [
+                'term' => $disorder->term,
+                'id' => $disorder->id,
+                'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET)
+            ];
+        }
+        return $diagnoses;
+    }
+
     /**
      * @param $firm
      * @return array

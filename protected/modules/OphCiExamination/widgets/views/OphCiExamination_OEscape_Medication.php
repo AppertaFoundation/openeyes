@@ -10,6 +10,8 @@
     var meds_data = <?= CJavaScript::encode($this->getMedicationList()); ?>;
     var sides = ['left', 'right'];
     var layout_meds = JSON.parse(JSON.stringify(layout_plotly));
+    const oneday_time = 86400000;
+
     //plotly
     for (var side of sides){
       var data = [];
@@ -35,7 +37,7 @@
           var end_time = meds_data[side][key][i]['high'];
           var x_values = [];
           var y_values = [];
-          for (var d = start_time; d < end_time; d= d+14*86400*1000){
+          for (var d = start_time; d < end_time; d= d+14*oneday_time){
             x_values.push(new Date(d));
             y_values.push(key);
           }

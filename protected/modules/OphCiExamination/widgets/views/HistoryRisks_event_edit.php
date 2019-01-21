@@ -34,7 +34,7 @@ $required_risk_ids = array_map(function ($r) {
     <div
         class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
       <label for="<?= $model_name ?>_no_risks">Confirm patient has no risks:</label>
-        <?=\CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
+        <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
             array('class' => $model_name . '_no_risks')); ?>
     </div>
 
@@ -42,12 +42,12 @@ $required_risk_ids = array_map(function ($r) {
 
     <table
         class="<?= $model_name ?>_entry_table cols-full <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
-			<colgroup>
-				<col class="cols-3">
-				<col class="cols-4">
-				<col class="cols-4">
-				<col class="cols-1">
-			</colgroup>
+      <colgroup>
+        <col class="cols-3">
+        <col class="cols-4">
+        <col class="cols-4">
+        <col class="cols-1">
+      </colgroup>
       <tbody>
       <?php
       $row_count = 0;
@@ -92,28 +92,6 @@ $required_risk_ids = array_map(function ($r) {
     <button id="show-add-risk-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-
-    <div id="add-history-risks" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-      <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
-      <div class="flex-layout flex-top flex-left">
-        <ul id="history-risks-option" class="add-options cols-full" data-multi="true" data-clickadd="false">
-            <?php
-            $exist_risks = array();
-            foreach ($element->entries as $entry) {
-                array_push($exist_risks, $entry->risk_id);
-            }
-            foreach ($risks_options as $risk_item) {
-                if (!in_array($risk_item->id, $exist_risks)) {
-                    ?>
-                  <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
-                    <span class="restrict-width"><?php echo $risk_item->name; ?></span>
-                  </li>
-                <?php }
-            } ?>
-        </ul>
-      </div>
-    </div>
   </div>
   <script type="text/template" class="<?= CHtml::modelName($element) . '_entry_template' ?> hidden">
       <?php
@@ -152,19 +130,24 @@ $required_risk_ids = array_map(function ($r) {
     });
   });
 
-  var adder = $('#add-history-risk-popup');
-  var popup = adder.find('#add-history-risks');
-
-  function addRisks(selection) {
-    controller.addEntry();
-  }
-
-  setUpAdder(
-    popup,
-    'multi',
-    addRisks,
-    adder.find('#show-add-risk-popup'),
-    popup.find('.add-icon-btn'),
-    adder.find('#close-btn, .add-icon-btn')
-  );
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-history-risk-popup'),
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+        array_map(function ($risk) {
+            return ['label' => $risk->name, 'id' => $risk->id];
+        }, $risks_options)) ?>, {multiSelect: true}),
+    ],
+    onOpen: function (adderDialog) {
+      adderDialog.popup.find('li').each(function() {
+        let risk_id = $(this).data('id');
+        var alreadyUsed = controller.$table.find('input[type="hidden"][id$="risk_id"][value="' + risk_id + '"]').length > 0;
+        $(this).toggle(!alreadyUsed || $(this).data('label') === 'Other');
+      });
+    },
+    onReturn: function (adderDialog, selectedItems) {
+      for (let i = 0; i < selectedItems.length; ++i) {
+        controller.addEntry(selectedItems[i].id, selectedItems[i].label);
+      }
+    },
+  });
 </script>

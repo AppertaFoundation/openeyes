@@ -28,7 +28,6 @@ OpenEyes.OphCiExamination.DilationController = (function () {
     var data_order = $(element).attr('data-order');
     if (drug_id) {
       var drug_name = $(element).text();
-      $(element).hide();
       var template = $('#dilation_treatment_template').html();
       var data = {
         "key": this.OphCiExamination_Dilation_getNextKey(),

@@ -1,6 +1,10 @@
 <?php
-/* @var $this PatientController */
-/* @var $model Patient */
+/**
+ * @var PatientController  $this
+ * @var Patient $model
+ * @var Contact $contact
+ * @var PatientIdentifier[] $patient_identifiers
+ */
 ?>
 <div class="oe-full-header flex-layout">
   <div class="title wordcaps">Add <b>New Patient</b></div>
@@ -9,4 +13,5 @@
     'patient' => $patient,
     'contact' => $contact,
     'address' => $address,
+    'patient_identifiers' => $patient_identifiers,
 )); ?>

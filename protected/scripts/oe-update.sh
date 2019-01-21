@@ -20,7 +20,7 @@ WROOT="$( cd -P "$SCRIPTDIR/../../" && pwd )"
 # Pass the script and root directories to the runcheckout script
 params="-sd $SCRIPTDIR -wr $WROOT"
 
-# parse all other CLI parameters to pass to runcheckout script
+# parse all other CLI parameters to pass to runupdate script
 for i in "$@"
 do
     params="$params $i"

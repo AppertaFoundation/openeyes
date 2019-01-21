@@ -18,41 +18,6 @@ class DefaultController extends BaseAdminController
     public $group = 'Drugs';
 
     /**
-     * @description Common drugs administration page - it lists the common drugs based on site and subspecialty
-     *
-     * @return html (rendered page)
-     */
-    public function actionCommonDrugs()
-    {
-        /*
-         * We try to set default values for the selects
-         */
-        if (isset($_GET['site_id'])) {
-            $activeSite = $_GET['site_id'];
-        } else {
-            $activeSite = Yii::app()->session['selected_site_id'];
-        }
-
-        if (isset($_GET['subspecialty_id'])) {
-            $activeSubspecialty = $_GET['subspecialty_id'];
-        } else {
-            $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-            if (isset($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
-                $activeSubspecialty = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-            } else {
-                $activeSubspecialty = null;
-            }
-        }
-
-        $this->render('druglist', array(
-            'selectedsite' => $activeSite,
-            'selectedsubspecialty' => $activeSubspecialty,
-            'site_subspecialty_drugs' => Element_OphDrPrescription_Details::model()->commonDrugsBySiteAndSpec($activeSite,
-                $activeSubspecialty),
-        ));
-    }
-
-    /**
      * @description Deletes a drug from the site_subspecialty_drug table - AJAX call only
      *
      * @param $itemId
@@ -65,30 +30,29 @@ class DefaultController extends BaseAdminController
          * We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
          */
         if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errorMessage' => 'notajaxcall'));
+            $this->render('/default/errorpage', array('errorMessage' => 'notajaxcall'));
         } else {
             $site_subspec_drug = SiteSubspecialtyDrug::model()->findByPk($itemId);
             if ($site_subspec_drug) {
                 $site_subspec_drug->delete();
                 echo 'success';
             } else {
-                $this->render('errorpage', array('errormessage' => 'recordmissing'));
+                $this->render('/default/errorpage', array('errormessage' => 'recordmissing'));
             }
         }
     }
 
     /**
      * @description Adds new drug into the site_subspecialty_drug table - AJAX call only
-     *
-     * @return string
+     * @throws Exception
      */
     public function actionCommonDrugsAdd()
     {
         $drugId = $this->request->getParam('drug_id');
         $siteId = $this->request->getParam('site_id');
         $subspecialtyId = $this->request->getParam('subspecialty_id');
-        if (!Yii::app()->request->isAjaxRequest) {
-            $this->render('errorpage', array('errormessage' => 'notajaxcall'));
+        if (false && !Yii::app()->request->isAjaxRequest) {
+            $this->render('/default/errorpage', ['errorMessage' => 'notajaxcall']);
         } else {
             if (!is_numeric($drugId) || !is_numeric($siteId) || !is_numeric($subspecialtyId)) {
                 echo 'error';

@@ -1,4 +1,3 @@
-
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {

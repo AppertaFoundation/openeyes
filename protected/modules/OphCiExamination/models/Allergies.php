@@ -149,11 +149,18 @@ class Allergies extends \BaseEventTypeElement
     public function loadFromExisting($element)
     {
         $this->no_allergies_date = $element->no_allergies_date;
-        $entries = array();
-        foreach ($element->entries as $entry) {
-            $new = new AllergyEntry();
-            $new->loadFromExisting($entry);
-            $entries[] = $new;
+
+        // use previous session's entries
+        $entries = $this->entries;
+
+        // if there are no posted entries from previous session
+        if (!$entries) {
+            // add the entries from the DB
+            foreach ($element->entries as $entry) {
+                $new_entry = new AllergyEntry();
+                $new_entry->loadFromExisting($entry);
+                $entries[] = $new_entry;
+            }
         }
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();

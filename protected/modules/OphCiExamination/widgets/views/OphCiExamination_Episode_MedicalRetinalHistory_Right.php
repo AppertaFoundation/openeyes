@@ -9,7 +9,7 @@
     <?php
     $doc_list = $this->getDocument();
     foreach (['left','right'] as $side) { ?>
-        <div id="oct_stack_<?= $side ?>" class="plotly-<?= $side ?>" style="display: <?= $side=='left'?'none': ''?>">
+        <div id="oct_stack_<?= $side ?>" class="stack-<?= $side ?>" style="display: <?= $side=='left'?'none': ''?>">
             <?php foreach ($doc_list[$side] as $k=>$doc) {?>
                 <img
                     id="oct_img_<?=$side.'_'.$doc['doc_id'] ?>"

@@ -9,8 +9,19 @@ class HomepageContext extends PageObjectContext {
 	private $patient;
 	public function __construct(array $parameters) {
 	}
-	
-	/**
+
+    /**
+     * @Given /^I go to nav "([^"]*)"$/
+     * @var Homepage $homepage
+     */
+    public function iGoToNav($navText)
+    {
+        $homepage = $this->getPage('Homepage');
+        $homepage->selectNav($navText);
+    }
+
+
+    /**
 	 * @Given /^I select Site "([^"]*)"$/
 	 */
 	public function iSelectSite($siteAddress) {

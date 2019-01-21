@@ -265,7 +265,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
                 $single_doc = $doc->single_document;
                 $left_doc = $doc->left_document;
                 $right_doc = $doc->right_document;
-                $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->created_date)/1000);
+                $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->event_date)/1000);
                 if ($single_doc) {
                     array_push($MR_documents['right'],
                         array('doc_id'=>$single_doc->id, 'doc_name'=>$single_doc->name, 'date'=>$date));
@@ -314,7 +314,6 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     public function getVaData() {
         $va_data_list = parent::getVaData();
         $id_date_map = $this->getDocDateMapID();
-
         foreach (['left', 'right'] as $side) {
             foreach ($va_data_list[$side] as &$va){
                 $va_date = date('Y-m-d', $va['x']/1000);
@@ -323,6 +322,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
                 $va['side'] = $side;
             }
         }
+
         return $va_data_list;
     }
 
@@ -337,7 +337,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
           $single_doc = $doc->single_document;
           $left_doc = $doc->left_document;
           $right_doc = $doc->right_document;
-          $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->created_date)/1000);
+          $date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($event->event_date)/1000);
           if ($single_doc) {
             $id_date_map['right'][] = array('x'=>$date, 'id'=>$single_doc->id);
             $id_date_map['left'][] = array('x'=>$date, 'id'=>$single_doc->id);

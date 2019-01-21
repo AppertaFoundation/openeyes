@@ -44,7 +44,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                 <td>
                   <?php $this->widget('EyeLateralityWidget', array('laterality' => $diag->side)) ?>
                 </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+                <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
               </tr>
             <?php } ?>
             <?php foreach ($checkedRequiredSystemicDiagnoses as $diag) { ?>
@@ -55,7 +55,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                 <td>
                   <?php $this->widget('EyeLateralityWidget', array('eye' => $diag->side)) ?>
                 </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+                <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
                 <td>
                   <string>Not present</string>
                 </td>
@@ -69,7 +69,7 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                 <td>
                   <?php $this->widget('EyeLateralityWidget', array('eye' => $diag->side)) ?>
                 </td>
-                <td><span class="oe-date"><?= Helper::convertDate2HTML($diag->getDisplayDate()) ?></span></td>
+                <td><span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span></td>
                 <td><strong>Not checked</strong></td>
               </tr>
             <?php } ?>

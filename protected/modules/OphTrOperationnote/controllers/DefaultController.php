@@ -309,13 +309,31 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDelete($id)
     {
-       $this->dont_redirect = true;
+        $this->dont_redirect = true;
 
         if (parent::actionDelete($id)) {
             if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                 $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
             } else {
                 $this->redirect(array('/patient/episode/'.$this->event->episode_id));
+            }
+        }
+    }
+
+    /**
+     * After soft delete
+     *
+     * @param $yii_event
+     * @return bool|void
+     */
+    public function afterSoftDelete($yii_event)
+    {
+        $proclist = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event->id));
+        if ($proclist && $proclist->booking_event_id) {
+            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                $last_status_id = $api->getLastNonCompleteStatus($proclist->booking_event_id);
+                $status = OphTrOperationbooking_Operation_Status::model()->findByPk($last_status_id);
+                $api->setOperationStatus($proclist->booking_event_id, $status->name);
             }
         }
     }

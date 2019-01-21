@@ -1,7 +1,8 @@
 var crt_yaxis = {
   side: 'left',
   title: 'CRT(um)',
-  domain: [0.35, 1],
+  color: '#fff',
+  domain: [0.3, 1],
   showticklabels: true,
   showgrid: false,
 
@@ -10,11 +11,12 @@ var crt_yaxis = {
 var va_yaxis = {
   side: 'right',
   title: 'VA',
+  color: '#fff',
   range: [-15, 150],
-  domain: [0.35,1],
+  domain: [0.3,1],
   showticklabels: true,
   showgrid: true,
-	zeroline:false,
+  zeroline:false,
 };
 
 var flags_yaxis = {
@@ -22,9 +24,9 @@ var flags_yaxis = {
   domain: [0, 0.3],
   showgrid: false,
   showticklabels: true,
-  ticks: 'inside',
-	color: '#fff',
-	zeroline: false,
+  color: '#fff',
+  zeroline: false,
+  ticks: '',
 };
 
 function setYAxis_MR(options){
@@ -32,6 +34,10 @@ function setYAxis_MR(options){
     gridwidth: 0.25,
     gridcolor: '#444',
     ticks: 'outside',
+    // set y tick white
+    tickfont: {
+      color: '#fff',
+    },
   };
   for (var key in options){
     yaxis_setting[key] = options[key];

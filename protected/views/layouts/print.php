@@ -22,6 +22,9 @@
         case 'OphCoCorrespondence':
             $printHelperClass = 'OphCoCorrespondence large-font';
             break;
+        case 'OphTrConsent':
+            $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
+            break;
     }
 ?>
 <!doctype html>

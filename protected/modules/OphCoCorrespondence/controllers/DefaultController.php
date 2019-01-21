@@ -955,6 +955,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionCreateImage($id)
     {
+        // mimic print request so that the print style sheet is applied
+        $assetManager = Yii::app()->assetManager;
+        $assetManager->isPrintRequest  =true;
         try {
             $this->initActionView();
             $this->removeEventImages();
@@ -971,5 +974,17 @@ class DefaultController extends BaseEventTypeController
             $this->saveEventImage('FAILED', ['message' => (string)$ex]);
             throw $ex;
         }
+    }
+
+    /**
+     * After the event was soft deleted, we need to set the output_status' to DELETED
+     * @param $yii_event
+     * @return bool
+     * @throws Exception
+     */
+    public function afterSoftDelete($yii_event)
+    {
+        $letter = ElementLetter::model()->findByAttributes(['event_id' => $this->event->id]);
+        return $letter->markDocumentRelationTreeDeleted();
     }
 }

@@ -179,9 +179,8 @@
                   <td>
                     <div class="flex-layout flex-top flex-left">
                       <ul class="add-options refraction-type" data-multi="false" data-clickadd="false">
-                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->findAll(array('order' => 'display_order')) as $type): ?>
-                            <li data-str="<?= $type->id ?>"><span class="restrict-width"><?= $type->name ?></span>
-                            </li>
+                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions() as $id => $type) : ?>
+                            <li data-str="<?= $id ?>"><span class="restrict-width"><?= $type ?></span></li>
                           <?php endforeach; ?>
                       </ul>
                     </div>
@@ -217,13 +216,15 @@
           );
 
           var axis = $popup.find('.add-options.axis').find('li.selected').data('str');
-          if (axis !== null) {
+          if (axis !== null && typeof axis !== 'undefined') {
             $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_axis').val(axis);
           }
 
           var refraction_type = $popup.find('.add-options.refraction-type').find('li.selected').data('str');
           if (refraction_type !== null) {
-            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_type_id').val(refraction_type);
+              $type = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_type_id');
+              $type.val(refraction_type);
+              $type.change();
           }
         }
 

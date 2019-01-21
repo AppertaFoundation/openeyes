@@ -92,6 +92,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Cypass</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Cypass Stent Insertion</TITLE>
+      <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>AntSegAngleMarks</EYEDRAW_CLASS_MNEMONIC>
@@ -725,7 +726,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>RetinalVeinOcclusionPostPole</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Retinal vein occluson</TITLE>
+      <TITLE>Retinal vein occlusion</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -2663,13 +2664,16 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Clinic Outcome</PRIMARY_TERM>
+          <PRIMARY_TERM>Follow-up</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Clinic Outcome</TERM>
+          </SECONDARY_TERM_LIST>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome</OPEN_ELEMENT_CLASS_NAME>
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_status_id</GOTO_ID>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Examination Macula</PRIMARY_TERM>
-          <SECONDARY_TERM_LIST>SECONDARY_TERM_LIST
+          <SECONDARY_TERM_LIST>
             <TERM>Posterior Pole</TERM>
           </SECONDARY_TERM_LIST><OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
@@ -2733,7 +2737,14 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>Macroaneurysm</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Retinal vein occluson</PRIMARY_TERM>
+              <PRIMARY_TERM>Retinal vein occlusion</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Hemipsheric retinal vein occlusion</TERM>
+                <TERM>Central retinal vein occlusion</TERM>
+                <TERM>Branch retinal vein occlusion</TERM>
+                <TERM>CRV</TERM>
+                <TERM>BRV</TERM>
+              </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RetinalVeinOcclusionPostPole.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>RetinalVeinOcclusionPostPole</GOTO_DOODLE_CLASS_NAME>
@@ -2894,14 +2905,12 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			</INDEX>
             <INDEX>
               <PRIMARY_TERM>Polypoidal choroidal vasculopathy</PRIMARY_TERM>
-              <SECONDARY_TERM_LIST>SECONDARY_TERM_LIST
+              <SECONDARY_TERM_LIST>
                 <TERM>PCV</TERM>
               </SECONDARY_TERM_LIST>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PCV.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>PCV</GOTO_DOODLE_CLASS_NAME>
-              <GOTO_ID/>
-              <GOTO_PROPERTY/>
             </INDEX>
           </INDEX_LIST>
         </INDEX>

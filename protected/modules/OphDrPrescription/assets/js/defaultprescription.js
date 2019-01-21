@@ -184,18 +184,19 @@ function addSet(set_id) {
 // Add item to prescription
 function addItem(label, item_id) {
   // we need to call different functions for admin and public pages here
+  $.ajaxSetup({async: false});
   if (controllerName == 'DefaultController') {
     $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemForm", {
       key: getNextKey(),
       patient_id: OE_patient_id,
-      drug_id: item_id
+      drug_id: item_id,
     }, function (data) {
       $('#prescription_items').find('tbody').append(data);
     });
   } else {
     $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/ItemFormAdmin", {
       key: getNextKey(),
-      drug_id: item_id
+      drug_id: item_id,
     }, function (data) {
       $('#prescription_items').find('tbody').append(data);
     });
@@ -258,60 +259,34 @@ function getDispenseLocation(dispense_condition) {
   });
 }
 
-var last_search_request = null;
-
-function updatePrescriptionResults() {
-  if (last_search_request !== null) {
-    last_search_request.abort();
-  }
-
-  last_search_request = $.getJSON(searchListUrl, {
-    term: $('#prescription-search-field').val(),
-    preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
-    type_id: $('#add-prescription-drug-types').find('li.selected').data('drugType')
-  }, function (data) {
-    last_search_request = null;
-    var $container = $('#prescription-search-results');
-    var no_data = !$(data).length;
-    $container.empty();
-    $('#prescription-search-no-results').toggle(no_data);
-    $container.toggle(!no_data);
-
-    $.each(data, function (key, value) {
-      var html = '<li data-label="' + value['label'] + '" data-item-id="' + value['id'] + '">';
-      html += '<span class="auto-width">' + value['label'] + '</span>';
-      html += '</li>';
-      $container.append($(html));
-    });
-  });
-}
-
-
-function addStandardSetCallback($selectedSet) {
-  $selectedSet.removeClass('selected');
-  addSet($selectedSet.data('drugSet'));
-}
-
 $(function () {
 
-  setUpAdder(
-    $('#add-to-prescription-popup'),
-    null,
-    function () {
+  new OpenEyes.UI.AdderDialog.PrescriptionDialog({
+    openButton: $('#add-prescription-btn'),
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionElementCommonDrugs,
+      {'multiSelect': true})],
+    searchOptions: {
+      searchSource: searchListUrl,
+      searchFilter: prescriptionElementDrugTypes,
     },
-    $('#add-prescription-btn'),
-    null,
-    $('#add-to-prescription-popup').find('.close-icon-btn, .add-icon-btn')
-  );
+    width: 600,
+    deselectOnReturn: false,
+    onReturn: function (adderDialog, selectedItems) {
+      for (var i = 0; i < selectedItems.length; i++) {
+        addItem(selectedItems[i].label, selectedItems[i].id);
+      }
+    },
+  });
 
-  setUpAdder(
-    $('#add-standard-set-popup'),
-    'return',
-    addStandardSetCallback,
-    $('#add-standard-set-btn'),
-    null,
-    $('#add-standard-set-popup').find('.close-icon-btn, .add-icon-btn')
-  );
+  new OpenEyes.UI.AdderDialog({
+    openButton: $('#add-standard-set-btn'),
+    itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(prescriptionDrugSets)],
+    onReturn: function (adderDialog, selectedItems) {
+      for (let i = 0; i < selectedItems.length; ++i) {
+        addSet(selectedItems[i].id);
+      }
+    }
+  });
 });
 
 // Check for existing prescriptions for today - warn if creating only
@@ -395,18 +370,18 @@ function goBack() {
 
 // Add comments to item
 $('#prescription_items').on('click', '.js-add-comments', function () {
-    var $row = $(this).closest('tr');
-    var key = $row.attr('data-key');
-    $('#comments-' + key).show();
-    $('.js-input-comments').autosize();
-    $row.find('.js-add-comments').hide();
-    return false;
+  var $row = $(this).closest('tr');
+  var key = $row.attr('data-key');
+  $('#comments-' + key).show();
+  $('.js-input-comments').autosize();
+  $row.find('.js-add-comments').hide();
+  return false;
 });
 // Remove comments from item
 $('#prescription_items').on('click', '.js-remove-add-comments', function () {
-    var $row = $(this).closest('tr');
-    var key = $row.attr('data-key');
-    $('#comments-' + key).hide();
-    $row.find('.js-add-comments').show();
-    return false;
+  var $row = $(this).closest('tr');
+  var key = $row.attr('data-key');
+  $('#comments-' + key).hide();
+  $row.find('.js-add-comments').show();
+  return false;
 });

@@ -157,27 +157,23 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
            $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
         });
 
-        window.switch_alternative = function(anchor) {
+    window.switch_alternative = function(anchor) {
             var $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
             $wrapper.siblings(".alternative-display-element").show();
-            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();};
-
-
-      <?php
-       $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();};<?php $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
+      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $medications) ?>, {'multiSelect': true})],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
         return true;
       },
       searchOptions: {
         searchSource: medicationsController.options.searchSource,
-      }
+      },
+    enableCustomSearchEntries: true,
     });
-
-
   });
 </script>

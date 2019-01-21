@@ -17,7 +17,7 @@
  */
 ?>
 <?php if ($site) {?>
-	<div class="from-address">
+    <h5 class="right-align">
 		<?php
         echo $site->getLetterAddress(array(
             'include_name' => true,
@@ -25,5 +25,5 @@
             'include_telephone' => true,
             'include_fax' => true,
         ))?>
-	</div>
+    </h5>
 <?php }?>

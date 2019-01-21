@@ -90,7 +90,7 @@ class PatientController extends BaseController
                 'roles' => array('OprnEditSocialHistory'),
             ),
             array('allow',
-                'actions' => array('create', 'update'),
+                'actions' => array('create', 'update', 'findDuplicates'),
                 'roles' => array('TaskAddPatient'),
             )
         );
@@ -204,9 +204,9 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
 
         $patientSearch = new PatientSearch();
-	    $dataProvider = $patientSearch->search($term);
-	    $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
-	    $search_terms = $patientSearch->getSearchTerms();
+      $dataProvider = $patientSearch->search($term);
+      $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
+      $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -226,7 +226,7 @@ class PatientController extends BaseController
                     $message = 'Hospital Number <strong>'.$search_terms['hos_num'].'</strong> was merged into <strong>'.$patientMergeRequest->primary_hos_num.'</strong>';
                 }
             } elseif ($search_terms['nhs_num']) {
-                $message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+                $message .= 'for '. Yii::app()->params['nhs_num_label'].' Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
             } elseif ($search_terms['first_name'] && $search_terms['last_name']) {
                 $message .= 'for Patient Name <strong>"'.$search_terms['first_name'].' '.$search_terms['last_name'].'"</strong>';
             } else {
@@ -551,7 +551,7 @@ class PatientController extends BaseController
             $eventTypeMap[$eventType->name] = array();
             $api = $eventType->getApi();
             if ($api) {
-                $eventTypeMap[$eventType->name] += $eventType->getApi()->getEvents($this->patient);
+                $eventTypeMap[$eventType->name] += $eventType->getApi()->getVisibleEvents($this->patient);
             }
         }
 
@@ -1700,11 +1700,11 @@ class PatientController extends BaseController
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
+        $patient_identifiers = $this->getPatientIdentifiers($patient);
 
         $this->performAjaxValidation(array($patient, $contact, $address));
 
-        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
-        {
+        if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
@@ -1712,29 +1712,59 @@ class PatientController extends BaseController
             // not to be sync with PAS
             $patient->is_local = 1;
 
-            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
+            list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
+                $patient_identifiers);
         }
-
-        $this->render('crud/create',array(
-                        'patient' => $patient,
-                        'contact' => $contact,
-                        'address' => $address,
+        if($patient->getIsNewRecord()){
+            $patient->hos_num = $patient->autoCompleteHosNum();
+        }
+        $this->render('crud/create', array(
+            'patient' => $patient,
+            'contact' => $contact,
+            'address' => $address,
+            'patient_identifiers' => $patient_identifiers,
         ));
    }
 
+    /**
+     * Gets the PatientIdentifier records from $_POST
+     *
+     * @param Patient $patient The patient for the identifiers
+     * @return PatientIdentifier[]
+     */
+    private function getPatientIdentifiers($patient)
+    {
+        if (!isset($_POST['PatientIdentifier'])) {
+            return array();
+        }
+
+        $patient_identifiers = [];
+        foreach($_POST['PatientIdentifier'] as $post_info) {
+            $patient_identifier = new PatientIdentifier();
+            $patient_identifier->patient_id = $patient->id;
+            $patient_identifier->code = $post_info['code'];
+            $patient_identifier->value = @$post_info['value'];
+            $patient_identifiers[] = $patient_identifier;
+        }
+
+        return $patient_identifiers;
+    }
+   
    /**
     * Saving the Contact, Patient and Address object
     *
     * @param Contact $contact
     * @param Patient $patient
     * @param Address $address
+    * @param PatientIdentifier[] $patient_identifiers
     * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
     */
-   private function performPatientSave(Contact $contact, Patient $patient, Address $address)
-   {
+    private function performPatientSave(Contact $contact, Patient $patient, Address $address, $patient_identifiers)
+    {
         $transaction = Yii::app()->db->beginTransaction();
-        try{
-            if( $contact->save() ){
+        try {
+
+            if ($contact->save()) {
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';
@@ -1742,12 +1772,16 @@ class PatientController extends BaseController
 
                 $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
                 $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
+                $success = $patient->save() && $address->save();
+                if ($success) {
+                    list($success, $patient_identifiers) = $this->performIdentifierSave($patient, $patient_identifiers);
+                }
 
-                if($patient->save() && $address->save()){
+                if ($success) {
                     $transaction->commit();
 
-                    if(($issetGeneticsModule !== FALSE ) && ($issetGeneticsClinical !== FALSE) && ($isNewPatient)){
-                        $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
+                    if (($issetGeneticsModule !== false) && ($issetGeneticsClinical !== false) && ($isNewPatient)) {
+                        $this->redirect(array('Genetics/subject/edit?patient=' . $patient->id));
                     } else {
                         Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
                         $this->redirect(array('episodes', 'id' => $patient->id));
@@ -1779,8 +1813,47 @@ class PatientController extends BaseController
             $transaction->rollback();
         }
 
-        return array($contact, $patient, $address);
-   }
+        return array($contact, $patient, $address, $patient_identifiers);
+    }
+
+
+    /**
+     * Saves the input $Patient_identiiers according to the config params
+     *
+     * @param Patient $patient
+     * @param PatientIdentifier[] $patient_identifiers
+     * @return array
+     * @throws Exception
+     */
+    private function performIdentifierSave($patient, $patient_identifiers)
+    {
+        $result = [];
+        $success = true;
+        foreach ($patient_identifiers as $post_info) {
+            $identifier_config = null;
+
+            $patient_identifier = PatientIdentifier::model()->find('patient_id = :patient_id AND code = :code', array(
+                ':patient_id' => $patient->id,
+                ':code' => $post_info->code,
+            ));
+
+            if (!$patient_identifier) {
+                $patient_identifier = new PatientIdentifier();
+                $patient_identifier->patient_id = $patient->id;
+                $patient_identifier->code = $post_info->code;
+            }
+
+            $patient_identifier->value = $post_info->value;
+            if (!$patient_identifier->save()) {
+                $success = false;
+            }
+
+
+            $result[] = $patient_identifier;
+        }
+
+        return [$success, $result];
+    }
 
     /**
      * Updates a particular model.
@@ -1800,32 +1873,36 @@ class PatientController extends BaseController
         $this->pageTitle = 'Update Patient - ' . $patient->last_name . ', ' . $patient->first_name;
 
         //only local patient can be edited
-        if($patient->is_local == 0){
+        if ($patient->is_local == 0) {
             Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
             $this->redirect(array('view', 'id' => $patient->id));
         }
 
-        $contact = $patient->contact ? $patient->contact : new Contact();
+        $contact = $patient->contact ? $patient->contact : new Contact('manualAddPatient');
         $address = $patient->contact->address ? $patient->contact->address : new Address();
+        $patient_identifiers = PatientIdentifier::model()->findAll('patient_id = ?', array($patient->id));
+
 
         $this->performAjaxValidation(array($patient, $contact, $address));
 
-        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
-        {
+        if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
+            $patient_identifiers = $this->getPatientIdentifiers($patient);
 
             // not to be sync with PAS
             $patient->is_local = 1;
 
-            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
+            list($contact, $patient, $address, $patient_identifiers) = $this->performPatientSave($contact, $patient, $address,
+                $patient_identifiers);
         }
 
-        $this->render('crud/update',array(
-                        'patient' => $patient,
-                        'contact' => $contact,
-                        'address' => $address,
+        $this->render('crud/update', array(
+            'patient' => $patient,
+            'contact' => $contact,
+            'address' => $address,
+            'patient_identifiers' => $patient_identifiers,
         ));
     }
 
@@ -1909,6 +1986,32 @@ class PatientController extends BaseController
         echo \CJSON::encode(array('link' => $link));
         $this->getApp()->end();
     }
+
+  public function actionFindDuplicates($firstName, $last_name, $dob, $id = null)
+  {
+    $patients = Patient::findDuplicates($firstName, $last_name, $dob, $id);
+
+    if (isset($patients['error'])) {
+      $this->renderPartial('crud/_conflicts_error', array(
+        'errors' => $patients['error'],
+      ));
+
+    }
+    else {
+      if (count($patients) !== 0) {
+        $this->renderPartial('crud/_conflicts', array(
+          'patients' => $patients,
+          'name' => $firstName . ' ' . $last_name
+        ));
+      }
+      else {
+        $this->renderPartial('crud/_conflicts', array(
+          'name' => $firstName . ' ' . $last_name
+        ));
+      }
+    }
+  }
+
 
     /**
      * Ajax method for viewing previous elements.

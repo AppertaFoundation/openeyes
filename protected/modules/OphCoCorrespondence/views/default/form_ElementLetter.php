@@ -19,7 +19,7 @@
 
 <?php echo $form->hiddenInput($element, 'draft', 1) ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/macros.js", \CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 $layoutColumns = $form->layoutColumns;
 $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->macro->id) ? $element->macro->id : null);
@@ -43,10 +43,6 @@ $creating = isset($creating) ? $creating : false;
   <input type="hidden" id="re_default" value="<?php echo $element->calculateRe($element->event->episode->patient) ?>"/>
 <?php endif; ?>
 <div class="element-fields full-width flex-layout flex-top col-gap">
-    <?php
-    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-    if ($correspondeceApp === "on") {
-        ?>
       <div class="cols-3">
         <div class="data-group">
           <table class="cols-full">
@@ -64,6 +60,9 @@ $creating = isset($creating) ? $creating : false;
                       array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full', 'class' => 'cols-full')); ?>
               </td>
             </tr>
+            <?php
+            $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+            if ($correspondeceApp === "on") { ?>
             <tr>
               <td>
                   <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -79,6 +78,7 @@ $creating = isset($creating) ? $creating : false;
                   ); ?>
               </td>
             </tr>
+            <?php } ?>
             </tbody>
           </table>
         </div>
@@ -392,26 +392,7 @@ $creating = isset($creating) ? $creating : false;
                 From
               </td>
               <td>
-                  <?php
-                  $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                      'id' => 'OphCoCorrespondence_footerAutoComplete',
-                      'name' => 'OphCoCorrespondence_footerAutoComplete',
-                      'value' => '',
-                      'sourceUrl' => array('default/users/correspondence-footer/true'),
-                      'options' => array(
-                          'minLength' => '3',
-                          'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
-									$('#OphCoCorrespondence_footerAutoComplete').val('');
-									return false;
-								}",
-                      ),
-                      'htmlOptions' => array(
-                          'placeholder' => 'type to search for users',
-                          'class' => 'cols-full search',
-                      ),
-                  ));
-                  ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                   <?php echo $form->textArea($element, 'footer',
                       array('rows' => 9, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
               </td>
@@ -421,73 +402,32 @@ $creating = isset($creating) ? $creating : false;
                 Enclosures
               </td>
               <td>
-                  <?php if (!$element->document_instance): ?>
-                    <div class="data-group">
-                      <div class="cols-<?php echo $layoutColumns['label']; ?> column">
-                          <?php echo $form->dropDownListNoPost('cc', $element->address_targets, '',
-                              array('empty' => '- Cc -', 'nowrapper' => true)) ?>
-                      </div>
-                      <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-                          <?php echo $form->textArea($element, 'cc',
-                              array('rows' => 8, 'label' => false, 'nowrapper' => true), false,
-                              array('class' => 'address')) ?>
-                      </div>
-                      <div id="cc_targets">
-                          <?php foreach ($element->cc_targets as $cc_target) {
-                              ?>
-                            <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target ?>"/>
-                              <?php
-                          } ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-
-                  <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
-                      <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[$key]", $value,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } else { ?>
-                      <?php foreach ($element->enclosures as $i => $item) { ?>
-                      <div class="enclosureItem"><?=\CHtml::textField("EnclosureItems[enclosure$i]",
-                              $item->content,
-                              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a
-                            href="#" class="removeEnclosure">Remove</a></div>
-                      <?php } ?>
-                  <?php } ?>
 
                 <input type="hidden" name="update_enclosures" value="1"/>
                 <div id="enclosureItems"
                      class="<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
                     <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                         <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                        <div class=" row collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?=\CHtml::textField("EnclosureItems[$key]", $value,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
+                            <div class="data-group collapse in enclosureItem flex-layout">
+                                <?=\CHtml::textField("EnclosureItems[$key]", $value,
+                                    array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                                			<i class="oe-i trash removeEnclosure"></i>
+                            </div>
                         </div>
                         <?php } ?>
                     <?php } else { ?>
                         <?php foreach ($element->enclosures as $i => $item) { ?>
-                        <div class="data-group collapse in enclosureItem">
-                          <div class="cols-8 column">
-                              <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
-                                  array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-                          </div>
-                          <div class="cols-4 column end">
-                            <div class="postfix align"><a href="#" class="field-info removeEnclosure">Remove</a></div>
-                          </div>
-                        </div>
+                  <div class="data-group collapse in enclosureItem flex-layout">
+                      <?=\CHtml::textField("EnclosureItems[enclosure$i]", $item->content,
+                          array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'class' => 'cols-full')) ?>
+                      <i class="oe-i trash removeEnclosure"></i>
+                  </div>
                         <?php } ?>
                     <?php } ?>
                 </div>
-                <button class="addEnclosure secondary small" type="button">
-                  Add
+          <div class="add-data-actions">
+              <button class="addEnclosure secondary small" type="button">Add</button>
+          </div>
                 </button>
               </td>
             </tr>
@@ -495,7 +435,6 @@ $creating = isset($creating) ? $creating : false;
           </table>
         </div>
       </div>
-    <?php } ?>
 </div>
 </section> <!--this closing tag closes a <section> tag that was opened in a different file. To be fixed later on. -->
 <section class="element edit full edit-xxx">
@@ -528,6 +467,15 @@ $creating = isset($creating) ? $creating : false;
         "ElementLetter_body",
         <?= CJSON::encode(\Yii::app()->params['tinymce_default_options'])?>
         );
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+      input: $('#oe-autocompletesearch'),
+      url: baseUrl + 'users/correspondence-footer/true',
+      onSelect: function(){
+        let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+        $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
+      }
+    });
   });
 </script>
 

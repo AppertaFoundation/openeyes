@@ -40,7 +40,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext ( 'ConsentFormContext', new ConsentFormContext ( $parameters ) );
 		$this->useContext ( 'AdminPageContext', new AdminPageContext ( $parameters ) );
 		$this->useContext ( 'BiometryContext', new BiometryContext ( $parameters ) );
-		
+        $this->useContext ( 'CaseSearchContext', new CaseSearchContext ( $parameters ) );
+
 		$this->loadModuleContextsPages ( $parameters );
 		
 		$this->screenshots = array ();

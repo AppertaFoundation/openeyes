@@ -36,7 +36,7 @@
       </td>
       <td>
           <div id="textField_occupation_id" class="cols-8">
-              <?= isset($element->occupation_options[$element->occupation_id]) ? $element->occupation_options[$element->occupation_id - 1]['name'] : 'Nothing selected.' ?>
+              <?= isset($element->occupation) ?  $element->occupation->name :  'Nothing selected.'; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -70,7 +70,8 @@
               <?php if (isset($element['driving_statuses']) && count($element['driving_statuses']) <= 0) {
                   echo 'Nothing selected.';
               } else {
-                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  }, $element->driving_statuses);
+                  $driving_statuses = array_map(function($driving_status){ return trim($driving_status->name);  },
+                      is_array($element->driving_statuses) ? $element->driving_statuses : []);
                   echo implode(', ', $driving_statuses);
               } ?>
           </div>
@@ -92,7 +93,7 @@
       </td>
       <td>
           <div id="textField_smoking_status_id" class="cols-8">
-              <?= isset($element->smoking_status_options[$element->smoking_status_id]) ? $element->smoking_status_options[$element->smoking_status_id - 1]['name'] : 'Nothing selected.'?>
+              <?= isset($element->smoking_status) ?  $element->smoking_status->name :  'Nothing selected.'; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -107,7 +108,7 @@
       </td>
       <td>
           <div id="textField_accommodation_id" class="cols-8">
-              <?= isset($element->accommodation_options[$element->accommodation_id]) ? $element->accommodation_options[$element->accommodation_id - 1] : 'Nothing selected.' ?>
+              <?= isset($element->accommodation) ?  $element->accommodation->name :  'Nothing selected.'; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -143,7 +144,7 @@
       </td>
       <td>
           <div id="textField_carer_id" class="cols-8">
-              <?= isset($element->carer_options[$element->carer_id]) ? $element->carer_options[$element->carer_id - 1] : 'Nothing selected.' ?>
+              <?= isset($element->carer) ?  $element->carer->name :  'Nothing selected.'; ?>
           </div>
           <?= $form->dropDownList(
               $element,
@@ -160,7 +161,7 @@
         </td>
         <td>
             <div id="textField_substance_misuse_id" class="cols-8">
-                <?= isset($element->substance_misuse_options[$element->substance_misuse_id]) ? $element->substance_misuse_options[$element->substance_misuse_id - 1] : 'Nothing selected.' ?>
+                <?= isset($element->substance_misuse) ?  $element->substance_misuse->name :  'Nothing selected.'; ?>
             </div>
             <?= $form->dropDownList(
                 $element,

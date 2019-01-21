@@ -47,21 +47,21 @@ $element_Type = $element->getElementType();
             data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
     >
         <?php
-        if (isset($_POST[$model_name]['element_dirty'])) {
-            $element_dirty = $_POST[$model_name]['element_dirty'];
+        if (isset($_POST['element_dirty'][$model_name])) {
+            $element_dirty = $_POST['element_dirty'][$model_name];
         } else if ($element->isNewRecord) {
             $element_dirty = 0;
         } else {
             $element_dirty = 1;
         } ?>
 
-        <input type="hidden" name="<?php echo $model_name?>[element_dirty]"
-               value=<?= $element_dirty ?>>
+        <input type="hidden" name="[element_dirty]<?=$model_name?>"
+               value=<?=$element_dirty ?>>
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
             <header class="element-header">
                 <!-- Add a element remove flag which is used when saving data -->
-                <input type="hidden" name="<?php echo $model_name?>[element_removed]" value="0">
+                <input type="hidden" name="[element_removed]<?php echo $model_name?>" value="0">
                 <!-- Element title -->
                 <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
             </header>

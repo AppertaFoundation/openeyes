@@ -122,11 +122,14 @@ $cols = array(
 );
 
 ?>
-<h1 class="badge">CVI List</h1>
-<div class="box content">
-    <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
-  <div class="cols-12 column">
-    <div class="box generic">
+<div class="oe-full-header flex-layout">
+    <div class="title wordcaps">CVI List</div>
+</div>
+<div class="oe-full-content subgrid oe-audit">
+    <nav class="oe-full-side-panel audit-filters">
+        <?php $this->renderPartial('list_filter', array('list_filter' => $list_filter)) ?>
+    </nav>
+    <main id="searchResults" class="oe-full-main audit-main">
         <?php $this->widget('zii.widgets.grid.CGridView', array(
             'itemsCssClass' => 'standard',
             'dataProvider' => $dp,
@@ -134,6 +137,5 @@ $cols = array(
             'summaryText' => '<small> {start}-{end} of {count} </small>',
             'columns' => $cols,
         )); ?>
-    </div>
-  </div>
+    </main>
 </div>

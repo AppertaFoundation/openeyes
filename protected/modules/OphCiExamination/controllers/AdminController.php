@@ -322,7 +322,6 @@ class AdminController extends \ModuleAdminController
     {
         $model = new models\OphCiExamination_Workflow();
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -331,7 +330,7 @@ class AdminController extends \ModuleAdminController
                 Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
                 Yii::app()->user->setFlash('success', 'Workflow added');
 
-                $this->redirect(array('viewWorkflowRules'));
+                $this->redirect(array('editWorkflow', 'id' => $model->getPrimaryKey()));
             }
         }
 
@@ -345,7 +344,6 @@ class AdminController extends \ModuleAdminController
     public function actionEditWorkflow($id)
     {
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
@@ -589,7 +587,6 @@ class AdminController extends \ModuleAdminController
         }
 
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -614,7 +611,6 @@ class AdminController extends \ModuleAdminController
         $model = new models\OphCiExamination_Workflow_Rule();
 
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1);
-        Yii::app()->clientScript->registerCssFile($assetPath.'/css/components/admin.css');
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];

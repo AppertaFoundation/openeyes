@@ -16,9 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element patient-info patient-contacts js-toggle-container">
-  <h3 class="element-header">Associated contacts:</h3>
-  <div class="js-toggle-body">
+<section class="element view full patient-info patient-contacts js-toggle-container">
+    <header class="element-header">
+        <h3 class="element-title">Associated contacts</h3>
+    </header>
+  <div class="element-data full-width js-toggle-body">
     <table class="plain patient-data patient-contacts">
       <thead>
       <tr>
@@ -135,7 +137,7 @@
           <div class="cols-4 column">
             <select id="contactfilter" name="contactfilter">
                 <?php foreach (ContactLabel::getList() as $key => $name) { ?>
-                  <option value="<?php echo $key ?>"><?php echo $name ?></option>
+                  <option value="<?= $key ?>"><?= $name ?></option>
                 <?php } ?>
             </select>
           </div>
@@ -159,97 +161,97 @@
           <fieldset>
             <legend>Add contact</legend>
 
-            <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
+            <input type="hidden" name="patient_id" value="<?= $this->patient->id ?>"/>
             <input type="hidden" name="contact_label_id" id="contact_label_id" value=""/>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <div class="data-label">Type:</div>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="<?= $form->columns('field'); ?>">
                 <div class="data-value contactType"></div>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="institution_id">Institution:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
                       array('empty' => '- Select -')) ?>
               </div>
             </div>
 
             <div class="data-group siteID">
-              <div class="<?php echo $form->columns('label'); ?>">
+              <div class="<?= $form->columns('label'); ?>">
                 <label for="site_id">Site:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::dropDownList('site_id', '', array()) ?>
               </div>
             </div>
 
             <div class="data-group contactLabel">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="label_id">Label:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::dropDownList('label_id', '', CHtml::listData(ContactLabel::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
                       array('empty' => '- Select -')) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="title">Title:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('title', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="first_name">First name:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('first_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="last_name">Last name:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('last_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="nick_name">Nick name:</label>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('nick_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="primary_phone">Primary phone:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('primary_phone', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="cols-<?php echo $form->columns('label'); ?>">
+              <div class="cols-<?= $form->columns('label'); ?>">
                 <label for="qualifications">Qualifications:</label>
               </div>
-              <div class="cols-<?php echo $form->columns('field'); ?>">
+              <div class="cols-<?= $form->columns('field'); ?>">
                   <?=\CHtml::textField('qualifications', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
               </div>
             </div>
@@ -286,34 +288,34 @@
           <fieldset>
             <legend>Edit contact</legend>
 
-            <input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
+            <input type="hidden" name="patient_id" value="<?= $this->patient->id ?>"/>
             <input type="hidden" name="contact_id" id="contact_id" value=""/>
             <input type="hidden" name="pca_id" id="pca_id" value=""/>
 
             <div class="data-group">
-              <div class="<?php echo $form->columns('label'); ?>">
+              <div class="<?= $form->columns('label'); ?>">
                 <div class="data-label">Contact:</div>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="<?= $form->columns('field'); ?>">
                 <div class="data-value editContactName"></div>
               </div>
             </div>
 
             <div class="data-group">
-              <div class="<?php echo $form->columns('label'); ?>">
+              <div class="<?= $form->columns('label'); ?>">
                 <div class="label">Institution:</div>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="<?= $form->columns('field'); ?>">
                   <?=\CHtml::dropDownList('institution_id', '', CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'),
                       array('empty' => '- Select -')) ?>
               </div>
             </div>
 
             <div class="data-group siteID">
-              <div class="<?php echo $form->columns('label'); ?>">
+              <div class="<?= $form->columns('label'); ?>">
                 <div class="label">Site:</div>
               </div>
-              <div class="<?php echo $form->columns('field'); ?>">
+              <div class="<?= $form->columns('field'); ?>">
                   <?=\CHtml::dropDownList('site_id', '', array()) ?>
               </div>
             </div>
@@ -351,27 +353,27 @@
             ))
             ?>
           <div class="data-group">
-            <div class="<?php echo $form->columns('label'); ?>">
+            <div class="<?= $form->columns('label'); ?>">
               <label for="newsite_from">From:</label>
             </div>
-            <div class="<?php echo $form->columns('field'); ?>">
+            <div class="<?= $form->columns('field'); ?>">
                 <?=\CHtml::textField('newsite_from', User::model()->findByPk(Yii::app()->user->id)->email,
                     array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
             </div>
           </div>
           <div class="data-group">
-            <div class="<?php echo $form->columns('label'); ?>">
+            <div class="<?= $form->columns('label'); ?>">
               <label for="newsite_subject">Subject:</label>
             </div>
-            <div class="<?php echo $form->columns('field'); ?>">
+            <div class="<?= $form->columns('field'); ?>">
                 <?=\CHtml::textField('newsite_subject', 'Please add the following site/institution', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
             </div>
           </div>
           <div class="data-group">
-            <div class="<?php echo $form->columns('label'); ?>">
+            <div class="<?= $form->columns('label'); ?>">
               <label for="newsite_message">Message:</label>
             </div>
-            <div class="<?php echo $form->columns('field'); ?>">
+            <div class="<?= $form->columns('field'); ?>">
                 <?=\CHtml::textArea('newsite_message', "Please could you add the following site/institution to OpenEyes:\n\n", array('rows' => 7, 'cols' => 55)) ?>
             </div>
           </div>
@@ -574,7 +576,7 @@
     $('button.btn_add_site').click(function (e) {
       e.preventDefault();
 
-      $('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email ?>');
+      $('#newsite_from').val('<?= User::model()->findByPk(Yii::app()->user->id)->email ?>');
       $('#newsite_subject').val('Please add the following site/institution');
       $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
 

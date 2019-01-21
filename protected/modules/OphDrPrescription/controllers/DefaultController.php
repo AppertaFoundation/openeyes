@@ -32,7 +32,7 @@ class DefaultController extends BaseEventTypeController
     {
         $user = Yii::app()->session['user'];
 
-        if ($user->role == 'admin role') {
+        if (Yii::app()->authManager->checkAccess('admin', $user->id)) {
             return true;
         }
 

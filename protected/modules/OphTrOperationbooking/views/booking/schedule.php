@@ -18,28 +18,18 @@
 <?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
     <div>
         <?php
+        $this->event_actions[] = EventAction::link('Cancel Scheduling',
+            Yii::app()->createUrl('/OphTrOperationbooking/default/view/' . $this->operation->event_id),
+            array(),
+            array('id' => 'cancel_scheduling', 'class' => 'red warning'));
+
         $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
         $warnings = $this->patient->getWarnings($clinical);
         $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
-        <div class="alert-box alert with-icon" style="display: <?php if (!is_array($errors)) {
-            echo 'none';
-        } ?>">
-            <p>Please fix the following input errors:</p>
-            <ul>
-                <?php if (is_array($errors)) {
-                foreach ($errors as $errors2) {
-                    foreach ($errors2 as $error) { ?>
-                        <li><?php echo $error ?></li>
-                    <?php }
-                } ?>
-            </ul>
-            <?php } else { ?>
-                <li>&nbsp;</li>
-                </ul>
-            <?php } ?>
-        </div>
+
+        <?php if (isset($errors) && !empty($errors)) { $this->displayErrors($errors);} ?>
 
         <?php if ($warnings) { ?>
             <div class="alert-box warning">

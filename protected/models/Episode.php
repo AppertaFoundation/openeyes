@@ -450,6 +450,17 @@ class Episode extends BaseActiveRecordVersioned
         return $this->end_date == null;
     }
 
+    public function behaviors()
+    {
+        return array(
+            'OeDateFormat' => array(
+                'class' => 'application.behaviors.OeDateFormat',
+                'date_columns' => [],
+                'fuzzy_date_field' => 'disorder_date',
+            ),
+        );
+    }
+
     protected function afterSave()
     {
         foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?', array($this->patient_id, $this->disorder_id)) as $sd) {

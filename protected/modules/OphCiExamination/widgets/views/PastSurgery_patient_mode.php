@@ -19,7 +19,7 @@
 <table>
     <tbody>
     <?php if (!$operations || sizeof($operations)==0) { ?>
-      <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
+      <div class="nil-recorded">Nil recorded.</div>
     <?php } else {
      foreach ($operations as $operation) {?>
         <tr>

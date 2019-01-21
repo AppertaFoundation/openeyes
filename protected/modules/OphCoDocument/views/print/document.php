@@ -22,7 +22,7 @@
     }
 ?>
 
-<?php $this->renderPartial('//print/event_header'); ?>
+<?php $this->renderPartial('//print/patient_overview'); ?>
 
 <?php foreach($this->getElements() as $element):  ?>
     <b><?php if($element->sub_type) echo $element->sub_type->name; ?></b>

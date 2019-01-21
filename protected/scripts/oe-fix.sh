@@ -24,7 +24,8 @@ nowarnmigrate=0
 resetconfig=0
 eyedraw=1
 noperms=0
-norestart=0
+restart=0
+forceperms=0
 
 while [[ $# -gt 0 ]]
 do
@@ -45,13 +46,17 @@ do
 	    ;;
 	    --no-permissions|-np) noperms=1
 	    ;;
+        --force-perms) forceperms=1
+        ;;
 	    --no-warn-migrate) nowarnmigrate=1
 	    ;;
 	    -fc|--reset-config) resetconfig=1
 	    ;;
-            -nr|--no-restart) norestart=1
-            ;;
-	    *)  echo "Unknown command line: $i"
+        -r|--restart) restart=1
+        ;;
+		--no-compile) #reserved for future use
+		;;
+	    *)  echo "Unknown command line: $p"
         ;;
     esac
 
@@ -75,6 +80,8 @@ if [ $showhelp = 1 ]; then
 	echo "  --no-dependencies  : Do not update composer or npm dependencies"
 	echo "  --no-eyedraw   : Do not (re)import eyedraw configuration"
 	echo "  --no-permissions : Do not reset file permissions"
+    echo "  --force-perms  : force permission update, even if system thinks they're correct"
+	echo "  --restart      : restart apache"
 	echo ""
     exit 1
 fi
@@ -82,13 +89,13 @@ fi
 if [ -f "$WROOT/.htaccess.sample" ]; then
     echo Renaming .htaccess file
     mv .htaccess.sample .htaccess
-    sudo chown -R www-data:www-data .htaccess
+    sudo chown www-data:www-data .htaccess
 fi
 
 if [ -f "$WROOT/index.example.php" ]; then
     echo Renaming index.php file
     mv $WROOT/index.example.php $WROOT/index.php
-    sudo chown -R www-data:www-data $WROOT/index.php
+    sudo chown www-data:www-data $WROOT/index.php
 fi
 
 if [ ! -f "$WROOT/protected/config/local/common.php" ]; then
@@ -114,20 +121,23 @@ fi;
 if [ "$composer" == "1" ]; then
 
 
-    [ "$OE_MODE" == "LIVE" ] && composerexta="--no-dev"
-    [ "$OE_MODE" == "LIVE" ] && npmextra="--only=production"
+    [[ "$OE_MODE" == "LIVE" ]] && { composerexta="--no-dev"; npmextra="--only=production"; echo "************************** LIVE MODE ******************************"; }
+    [[ "$OE_MODE" == "HOST" ]] && { composerexta="--ignore-platform-reqs"; echo "-----= HOST MODE =----"; }
 
-    echo "DEPENDENCIES BEING EVALUATED... $composerexta $npmextra"
+    echo "DEPENDENCIES BEING EVALUATED..."
 
 	echo "Installing/updating composer dependencies"
-	sudo composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
+	sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts $composerexta
 
 	echo "Installing/updating npm dependencies"
 	rm $WROOT/package-lock.json &> /dev/null
-	sudo npm update --no-save --prefix $WROOT $npmextra
+	sudo -E npm update --no-save --prefix $WROOT $npmextra
 
 	# If we've switched from dev to live, remove dev dependencies
 	[ "$OE_MODE" == "LIVE" ] && npm prune --prefix $WROOT --production
+
+    # Refresh git submodules
+    git -C $WROOT submodule update --init
 
 fi
 
@@ -164,18 +174,42 @@ fi
 
 # Fix permissions
 if [ $noperms = 0 ]; then
+    sudo gpasswd -a "$USER" www-data # add current user to www-data group
 	echo "Resetting file permissions..."
-	sudo gpasswd -a "$USER" www-data
-	sudo chown -R "$USER":www-data $WROOT
+    if [ $(stat -c '%U' $WROOT) != $USER ] || [ $(stat -c '%G' $WROOT) != "www-data" ]; then
+        echo "updaing ownership on $WROOT"
+        sudo chown -R "$USER":www-data $WROOT
+    else
+        echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
+    fi
 
-	sudo chmod -R 774 $WROOT/protected/config/local
-	sudo chmod -R 774 $WROOT/assets/
-	sudo chmod -R 774 $WROOT/protected/runtime
-	sudo chmod -R 774 $WROOT/protected/files
 
-	sudo chmod -R g+s $WROOT/protected/runtime
-    sudo chmod -R g+s $WROOT/protected/files
+    folders774=( $WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files )
 
+    for i in "${folders774[@]}"
+    do
+        if [ $(stat -c %a "$i") != 774 ] || [ $forceperms == 1 ]; then
+            echo "updating $i to 774..."
+            sudo chmod -R 774 $i
+        else
+            echo "Permissions look ok for $i, skipping. Use --force-perms to override"
+        fi
+    done
+
+    touch $WROOT/protected/runtime/testme
+    touch $WROOT/protected/files/testme
+
+    if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
+        echo "setting sticky bit for protected/runtime"
+        sudo chmod -R g+s $WROOT/protected/runtime
+    fi
+
+    if [ $(stat -c '%U' $WROOT/protected/files/testme) != $USER ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
+        echo "setting sticky bit for protected/files"
+        sudo chmod -R g+s $WROOT/protected/files
+    fi
+
+    # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
 	sudo chown -R "$USER" ~/.config 2>/dev/null || :
 	sudo chown -R "$USER" ~/.composer 2>/dev/null || :
 
@@ -198,7 +232,7 @@ git config core.fileMode false 2>/dev/null
 git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
 
 # restart apache
-if [ "$norestart" == "0" ]; then
+if [ "$restart" == "1" ]; then
     echo -e "\nrestarting apache..\n"
     sudo service apache2 restart &> /dev/null
 fi

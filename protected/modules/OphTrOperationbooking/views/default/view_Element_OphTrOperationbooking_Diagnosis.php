@@ -18,7 +18,7 @@
 ?>
 <section class="element view full priority view-diagnosis">
     <header class="element-header">
-        <h3 class="element-title"><?php  echo $element->elementType->name ?></h3>
+        <h3 class="element-title"><?= $this->action->id == 'view' ? $element->elementType->name : ''; ?></h3>
     </header>
 		<div class="element-data full-width">
             <div class="cols-10">

@@ -17,9 +17,12 @@
  */
 ?>
 <?php
-/* @var $this PatientController */
-/* @var $patient Patient */
-/* @var $form CActiveForm */
+/**
+ * @var $this PatientController
+ * @var $patient Patient
+ * @var $form CActiveForm
+ * @var $patient_identifiers PatientIdentifier[]
+ */
 
 CHtml::$errorContainerTag = 'small';
 
@@ -49,12 +52,13 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 )); ?>
 
 <div class="oe-full-content oe-new-patient flex-layout flex-top">
-  <div class="patient-inputs-column">
-    <!-- <?php if ($patient->hasErrors() || $address->hasErrors()) { ?>
-        <div class="alert-box error">"
+  <div class="patient-inputs-column" >
+    <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
+        <div class="alert-box error">
             <?= $form->errorSummary(array($contact, $patient, $address)) ?>
+            <?= $form->errorSummary($patient_identifiers) ?>
         </div>
-      <?php } ?> -->
+      <?php } ?>-->
 
     <table class="standard highlight-rows">
       <tbody>
@@ -76,7 +80,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </td>
         <td>
             <?= $form->textField($contact, 'first_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'First name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'First name')) ?>
         </td>
       </tr>
       <tr>
@@ -87,7 +92,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         </td>
         <td>
             <?= $form->textField($contact, 'last_name',
-                array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Last name')) ?>
+                array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicates($patient->id);",
+                  'placeholder' => 'Last name')) ?>
         </td>
       </tr>
       <tr>
@@ -101,7 +107,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 array('size' => 40, 'maxlength' => 40, 'placeholder' => 'Maiden name')) ?>
         </td>
       </tr>
-      <tr>
+      <tr class="patient-duplicate-check">
         <td class="required">
             <?= $form->label($patient, 'dob') ?>
           <br/>
@@ -116,8 +122,8 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 $patient->dob = str_replace('-', '/', $patient->dob);
             }
             ?>
-            <?= $form->textField($patient, 'dob', array('placeholder' => 'dd/mm/yyyy', 'class' => 'date
-            ')) ?>
+            <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicates($patient->id);",
+              'placeholder' => 'dd/mm/yyyy', 'class' => 'date')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
@@ -198,13 +204,18 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->error($patient, 'hos_num') ?>
           </td>
           <td>
-              <?= $form->textField($patient, 'hos_num',
-                  array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num'))) ?>
+            <?php if (in_array("admin", Yii::app()->user->getRole(Yii::app()->user->getId())))
+            {
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            } else{
+                echo $form->textField($patient, 'hos_num', array('size' => 40, 'maxlength' => 40, 'readonly'=>true, 'placeholder' => $patient->getAttributeLabel('hos_num')));
+            }
+            ?>
           </td>
         </tr>
         <tr>
           <td>
-            NHS Number
+            <?= Yii::app()->params['nhs_num_label']?> Number
           </td>
           <td>
               <?= $form->textField($patient, 'nhs_num',
@@ -228,6 +239,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                   array('empty' => '-- select --')); ?>
           </td>
         </tr>
+        <?= $this->renderPartial('crud/_patient_identifiers', array(
+                'form' => $form,
+                'patient_identifiers' => $patient_identifiers,
+                'patient' => $patient,
+            )
+        ) ?>
         </tbody>
       </table>
     </div>
@@ -287,36 +304,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->error($patient, 'gp_id') ?>
           </td>
           <td>
-              <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                  'name' => 'gp_id',
-                  'id' => 'autocomplete_gp_id',
-                  'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/gpList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                  'options' => array(
-                      'select' => "js:function(event, ui) {
-                                    removeSelectedGP();
-                                    addItem('selected_gp_wrapper', ui);
-                                    $('#autocomplete_gp_id').val('');
-                                    return false;
-                    }",
-                      'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_gp_result").show();
-                        } else {
-                            $("#no_gp_result").hide();
-                        }
-                    }',
-                  ),
-                  'htmlOptions' => array(
-                      'placeholder' => 'search GP',
-                  ),
-
-              )); ?>
-
-
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_gp_id']); ?>
             <div id="selected_gp_wrapper" style="<?= !$patient->gp_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_gp">
                 <li>
@@ -340,35 +328,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
               <?= $form->error($patient, 'practice_id') ?>
           </td>
           <td>
-              <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                  'name' => 'practice_id',
-                  'id' => 'autocomplete_practice_id',
-                  'source' => "js:function(request, response) {
-                                    $.getJSON('/patient/practiceList', {
-                                            term : request.term
-                                    }, response);
-                            }",
-                  'options' => array(
-                      'select' => "js:function(event, ui) {
-                                    removeSelectedPractice();
-                                    addItem('selected_practice_wrapper', ui);
-                                    $('#autocomplete_practice_id').val('');
-                                    return false;
-                    }",
-                      'response' => 'js:function(event, ui){
-                        if(ui.content.length === 0){
-                            $("#no_practice_result").show();
-                        } else {
-                            $("#no_practice_result").hide();
-                        }
-                    }',
-                  ),
-                  'htmlOptions' => array(
-                      'placeholder' => 'search Practice',
-                  ),
-
-              )); ?>
-
+              <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'autocomplete_practice_id']); ?>
             <div id="selected_practice_wrapper" style="<?= !$patient->practice_id ? 'display: none;' : '' ?>">
               <ul class="oe-multi-select js-selected_practice">
                 <li>
@@ -398,3 +358,45 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
   </div>
 </div>
 <?php $this->endWidget(); ?>
+<script>
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_gp_id'),
+    url: '/patient/gpList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedGP();
+      addItem('selected_gp_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+  OpenEyes.UI.AutoCompleteSearch.init({
+    input: $('#autocomplete_practice_id'),
+    url: '/patient/practiceList',
+    onSelect: function(){
+      let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+      removeSelectedPractice();
+      addItem('selected_practice_wrapper', {item: AutoCompleteResponse});
+    }
+  });
+</script>
+
+<script>
+
+  function findDuplicates(id) {
+    var first_name = $('#Contact_first_name').val();
+    var last_name = $('#Contact_last_name').val();
+    var date_of_birth = $('#Patient_dob').val();
+    if (first_name && last_name && date_of_birth) {
+      $.ajax({
+          url: "<?php echo Yii::app()->controller->createUrl('patient/findDuplicates'); ?>",
+          data: {firstName: first_name, last_name: last_name, dob: date_of_birth, id: id},
+          type: 'GET',
+          success: function (response) {
+            $('#conflicts').remove();
+            $('.patient-duplicate-check').after(response);
+          }
+        }
+      );
+    }
+  }
+
+</script>

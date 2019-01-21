@@ -84,38 +84,11 @@
                 ['' => 'All types', 'biometry' => 'Biometry'],
                 ['class' => 'cols-full']
                 ); ?></td>
-            <td><?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'id' => 'study_id',
-                    'name' => 'study_id',
-                    'value' => '',
-                    'sourceUrl' => array('audit/users'),
-                    'options' => array(
-                        'minLength' => '3',
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Type to search for Study Instance ID...',
-                        'class' => 'cols-full',
-                    ),
-                ));
-                ?>
+            <td>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'study_id']); ?>
             </td>
             <td>
-                <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'id' => 'file_name',
-                    'name' => 'file_name',
-                    'value' => '',
-                    'sourceUrl' => array('audit/users'),
-                    'options' => array(
-                        'minLength' => '3',
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => 'Type to search for File name...',
-                        'class' => 'cols-full',
-                    ),
-                ));
-                ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch',['field_name' => 'file_name']); ?>
             </td>
         </tr>
         </tbody>
@@ -170,3 +143,22 @@
         </tfoot>
     </table>
 </div>
+<script>
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#study_id'),
+        url: '/audit/users',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('#study_id').val(AutoCompleteResponse);
+        }
+    });
+
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $('#file_name'),
+        url: '/audit/users',
+        onSelect: function(){
+            let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            $('#file_name').val(AutoCompleteResponse);
+        }
+    });
+</script>

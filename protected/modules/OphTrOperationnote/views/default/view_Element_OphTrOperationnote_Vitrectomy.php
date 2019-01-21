@@ -28,8 +28,8 @@
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'side' => $element->eye->getShortName(),
               'mode' => 'view',
-              'width' => 200,
-              'height' => 200,
+              'width' => $this->action->id === 'view' ? 200 : 120,
+              'height' => $this->action->id === 'view' ? 200 : 120,
               'model' => $element,
               'attribute' => 'eyedraw',
               'idSuffix' => 'Vitrectomy',

@@ -238,4 +238,18 @@ class SocialHistory extends \BaseEventTypeElement
     {
         return implode(' <br /> ', $this->getEntries());
     }
+
+    /**
+     * @param SocialHistory $element
+     */
+    public function loadFromExisting($element)
+    {
+        foreach (['occupation_id', 'occupation_id', 'smoking_status_id', 'accommodation_id', 'carer_id',
+                     'substance_misuse_id', 'alcohol_intake', 'comments', 'type_of_job', 'driving_statuses'] as $field) {
+            // add only the entries from DB that were not in the previous session
+            if (!$this->$field) {
+                $this->$field = $element->$field;
+            }
+        }
+    }
 }

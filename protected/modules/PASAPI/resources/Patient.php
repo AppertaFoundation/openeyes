@@ -308,7 +308,7 @@ class Patient extends BaseResource
                 if ($status = \NhsNumberVerificationStatus::model()->findByAttributes(array('code' => $code))) {
                     $patient->nhs_num_status_id = $status->id;
                 } else {
-                    $this->addWarning('Unrecognised NHS number status code '.$code);
+                    $this->addWarning('Unrecognised'. Yii::app()->params['nhs_num_label'].' number status code '.$code);
                 }
             } else {
                 $patient->nhs_num_status_id = null;

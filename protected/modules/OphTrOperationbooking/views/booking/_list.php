@@ -133,7 +133,7 @@ if (!$reschedule) {
                 <?php if ($reschedule) { ?>
                     <tr>
                         <td>
-                            <?=\CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
+                                <?=\CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
                         </td>
                         <td>
                             <?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -143,7 +143,13 @@ if (!$reschedule) {
                             } ?>
                             <?=\CHtml::dropDownList('cancellation_reason', '',
                                 OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                                array('empty' => 'Select a reason')
+                                [
+                                    'empty' => 'Select a reason',
+                                    //how nice would be use the an activeDropDownList with cancellation_reason_id
+                                    //with the built in error adding feature ... but for some reason all over the
+                                    //OpBooking only "cancellation_reason" is used, this is definitely needs to be refactored
+                                    'class' => $operation->getError('cancellation_reason_id') ? 'error '.$operation->id : '',
+                                ]
                             ); ?>
                         </td>
                     </tr>
@@ -152,7 +158,7 @@ if (!$reschedule) {
                             <?=\CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
                         </td>
                         <td>
-                    <textarea name="cancellation_comment" class="cols-full"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
+                            <textarea name="cancellation_comment" class="cols-full"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
                         </td>
                     </tr>
                 <?php } ?>

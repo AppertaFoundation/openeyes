@@ -166,5 +166,18 @@
                 }
             }
         });
+
+        if(OpenEyes.UI.AutoCompleteSearch !== undefined){
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#oe-autocompletesearch'),
+                url: '/user/autoComplete',
+                onSelect: function(){
+                    let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    $('#Element_OphTrOperationbooking_Operation_organising_admission_user_id').val(AutoCompleteResponse.id);
+                    $('.organising_admission_user').html(AutoCompleteResponse.value + ' (<a href=\"#\" class=\"remove_organising_admission_user\">remove</a>)');
+                }
+            });
+        }
+
     });
 }());

@@ -230,15 +230,15 @@
                                             if (($this->selectionValues[0]->{'predicted_refraction_left'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_left'} == $iolData['IOL'][$j])) {
                                                 $found = 1;
                                                 if ($iolData['REF'][$j] == $closest) {
-                                                    echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                                    echo "<tr  class='selected-row' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td><span class='highlighter'>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span class="highlighter">' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                                 } else {
-                                                    echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                                    echo "<tr  class='selected-row' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td><span>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                                 }
                                             } else {
                                                 if ($iolData['REF'][$j] == $closest) {
-                                                    echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                                    echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td><span class='highlighter'>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span class="highlighter">' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                                 } else {
-                                                    echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                                    echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td><span>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                                 }
                                             }
                                             echo "<input type='hidden'  id='iolval-$radid' value=" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . "><input type='hidden'  id='refval-$radid' value=" . $iolData['REF'][$j] . '>';
@@ -274,15 +274,15 @@
                                     if (($this->selectionValues[0]->{'predicted_refraction_right'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_right'} == $iolData['IOL'][$j])) {
                                         $found = 1;
                                         if ($iolData['REF'][$j] == $closest) {
-                                            echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                            echo "<tr class='selected-row' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td><span  class='highlighter'>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span class="highlighter">' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                         } else {
-                                            echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                            echo "<tr class='selected-row' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
                                         }
                                     } else {
                                         if ($iolData['REF'][$j] == $closest) {
-                                            echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                            echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td><span class='highlighter'>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span  class="highlighter">' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                         } else {
-                                            echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</td><td>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</td></tr>';
+                                            echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td><span>" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . '</span></td><td><span>' . (($iolData['REF'][$j] > 0) ? '+' : '') . $iolData['REF'][$j] . '</span></td></tr>';
                                         }
                                     }
                                     echo "<input type='hidden'  id='iolval-$radid' value=" . number_format((float)$iolData['IOL'][$j], 2, '.', '') . "><input type='hidden'  id='refval-$radid' value=" . $iolData['REF'][$j] . '>';
