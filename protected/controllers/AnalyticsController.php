@@ -857,11 +857,11 @@ class AnalyticsController extends BaseController
       foreach ($followup_elements as $followup_item){
           $current_event = $followup_item->event;
           if (isset($current_event->episode)){
-
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
-              $latest_examination = $current_patient->getLatestExaminationEvent();
-              $latest_time = Helper::mysqlDate2JsTimestamp($latest_examination->event_date)/1000;
+              $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+              $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
+              $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
               $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
 
               if (!array_key_exists($current_patient->id, $this->patient_list)){
@@ -884,6 +884,8 @@ class AnalyticsController extends BaseController
                       }
 
                   } else {
+                      if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
+                          continue;
                       $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
                       if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
                           $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
@@ -899,8 +901,9 @@ class AnalyticsController extends BaseController
       $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
       foreach ($patient_tickets as $ticket) {
           $current_patient = $ticket->patient;
-          $latest_examination = $current_patient->getLatestExaminationEvent();
-          $latest_time = Helper::mysqlDate2JsTimestamp($latest_examination->event_date) / 1000;
+          $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+          $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
+          $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
           $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
           $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
 
@@ -910,7 +913,7 @@ class AnalyticsController extends BaseController
               $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
 
               if ($due_time < $current_time) {
-                  if ( $latest_time > $assignment_time )
+                  if ($latest_time > $assignment_time)
                       continue;
                   //Follow up is overdue
                   $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
@@ -920,6 +923,9 @@ class AnalyticsController extends BaseController
                       array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
                   }
               } else {
+                  if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
+                      continue;
+
                   $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
                   if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                       $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
@@ -933,5 +939,16 @@ class AnalyticsController extends BaseController
       ksort($followup_patient_list['overdue']);
       ksort($followup_patient_list['coming']);
       return $followup_patient_list;
+  }
+
+  protected function checkPatientWorklist($patient_id) {
+      $latest_date = null;
+      $PatientWorklists = WorklistPatient::model()->findAllByAttributes(array('patient_id' => $patient_id));
+      foreach ($PatientWorklists as $item){
+          if ($latest_date < Helper::mysqlDate2JsTimestamp($item->worklist->start)){
+              $latest_date = Helper::mysqlDate2JsTimestamp($item->worklist->start);
+          }
+      }
+      return $latest_date;
   }
 }

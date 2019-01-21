@@ -49,6 +49,7 @@
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-overdue').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
+            $('#js-service-data-filter').show();
 
             Plotly.react(
                 'js-hs-chart-analytics-service', [coming_data] ,service_layout, analytics_options
@@ -59,6 +60,7 @@
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-coming').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
+            $('#js-service-data-filter').hide();
 
             Plotly.react(
                 'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
