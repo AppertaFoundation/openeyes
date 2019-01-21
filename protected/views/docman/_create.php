@@ -47,7 +47,7 @@
 											'address_targets' => $element->address_targets,
 											'contact_name' => $macro_data["to"]["contact_name"],
 											'contact_id' => $macro_data["to"]["contact_id"],
-                                            'contact_nickname' => $macro_data["to"]["contact_nickname"],
+                                            'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
 											'contact_type' => $contact_type,
 											'row_index' => $row_index,
 											// Internal referral will always be the first row - indexed 0
@@ -116,7 +116,7 @@
 														'contact_name' => $contact_name,
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
-                            'contact_nickname' => $macro_data["to"]["contact_nickname"],
+                            'contact_nickname' => (isset($macro_data["to"]["contact_nickname"]) ? $macro_data["to"]["contact_nickname"] : ''),
 
                             //contact_type is not editable as per requested, former validation left until the req finalized
                             'is_editable' => false, //strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',

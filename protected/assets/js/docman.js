@@ -302,6 +302,7 @@ var docman = (function() {
 
             } else if(contact_id.toUpperCase() === 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
 								$('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
@@ -312,6 +313,7 @@ var docman = (function() {
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
+                $('#ElementLetter_use_nickname').prop('checked','');
             }
         },
         
@@ -356,6 +358,7 @@ var docman = (function() {
                     }
 
                     if(rowindex === 0){
+                        $('#ElementLetter_use_nickname').prop('checked','');
                         $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
                     }
                     $('#docman_recipient_' + rowindex).val('');

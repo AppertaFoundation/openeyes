@@ -480,8 +480,8 @@ $creating = isset($creating) ? $creating : false;
     });
     $('#ElementLetter_use_nickname').on('click', function(){
       let nickname_check = $(this).is(':checked');
-      let recipient_to = $('#DocumentTarget_0_attributes_contact_name').val().split(' ');
       let addressee = $('#DocumentTarget_0_attributes_contact_name').val();
+      let recipient_to = addressee.split(' ');
       let nickname;
 
       if(recipient_to.length > 1){
