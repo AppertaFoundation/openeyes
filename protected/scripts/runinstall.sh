@@ -69,6 +69,7 @@ accept=0
 genetics=0
 preservedb=0
 nocheckout=0
+nosample=0
 
 # Process command line inputs
 while [[ $# -gt 0 ]]
@@ -92,6 +93,9 @@ do
         ;;
         --preserve-database) preservedb=1
             # use an existing database (won't call oe-reset)
+        ;;
+        --no-sample|-ns) nosample=1
+          # Don't install the sample database (will use existing or migrate from new)
         ;;
     	*)  checkoutparams="$checkoutparams $1"
             # Pass anything else through to the checkout command
@@ -182,7 +186,7 @@ sudo chmod 777 -R $WROOT
 sudo chmod g+s -R $WROOT
 
 # if this isn't a live install, then add the sample DB
-if [ "$OE_MODE" != "LIVE" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
+if [ "$nosample" == "0" ]; then checkoutparams="$checkoutparams --sample"; echo "Sample database will be installed."; fi
 
 if [ "$nocheckout" = "0" ]; then
     echo "calling oe-checkout with $checkoutparams"
@@ -213,12 +217,12 @@ $SCRIPTDIR/oe-fix.sh --no-compile --no-clear --no-assets --no-migrate --no-depen
 # unless the preservedb switch is set add/reset the sample database
 if [ $preservedb = 0 ]; then
 
-    resetswitches='--no-migrate --no-fix --banner "New"'
+    resetswitches='--no-migrate --no-fix ${nosample/1/--clean-base} --banner "New"'
 
     # If the genetics switch has been set, then enable the genetics module
-    [ $genetics = 1 ] && resetswitches='$resetswitches --genetics-enable'
+    [ $genetics = 1 ] && resetswitches="$resetswitches --genetics-enable"
 
-    $SCRIPTDIR/oe-reset.sh $resetswitches
+    $SCRIPTDIR/oe-reset.sh "$resetswitches"
 
 fi
 
@@ -246,7 +250,8 @@ if [ "$OE_MODE" != "BUILD" ]; then
     </VirtualHost>
     " | sudo tee /etc/apache2/sites-available/000-default.conf >/dev/null
 
-    sudo service apache2 restart
+		# If apache was running, restart it. Otherwise we assume it will be started by another process
+	  [[ $(ps -ef | grep -v grep | grep apache2 | wc -l) > 0 ]] && sudo service apache2 restart || :
 
     # copy cron tasks
     sudo cp -f $SCRIPTDIR/.cron/hotlist /etc/cron.d/
