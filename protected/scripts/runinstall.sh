@@ -69,7 +69,7 @@ accept=0
 genetics=0
 preservedb=0
 nocheckout=0
-nosample=0
+nosample=""
 
 # Process command line inputs
 while [[ $# -gt 0 ]]
@@ -217,13 +217,12 @@ $SCRIPTDIR/oe-fix.sh --no-compile --no-clear --no-assets --no-migrate --no-depen
 # unless the preservedb switch is set add/reset the sample database
 if [ $preservedb = 0 ]; then
 
-    nosample=${nosample/0/''} # treat nosample as null if it was 0
     resetswitches="--no-migrate --no-fix ${nosample/1/--clean-base} --banner 'New'"
 
     # If the genetics switch has been set, then enable the genetics module
     [ $genetics = 1 ] && resetswitches="$resetswitches --genetics-enable"
 
-    $SCRIPTDIR/oe-reset.sh "$resetswitches"
+    $SCRIPTDIR/oe-reset.sh $resetswitches
 
 fi
 
