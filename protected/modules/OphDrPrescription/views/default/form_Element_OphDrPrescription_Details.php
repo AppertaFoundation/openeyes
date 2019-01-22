@@ -124,20 +124,23 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     var prescriptionElementCommonDrugs = <?= CJSON::encode(
         array_map(function ($drug) {
             return [
-                'label' => $drug['name'],
+                'label' => $drug['preferred_term'],
                 'id' => $drug['id'],
             ];
         }, $element->commonDrugs())
     ) ?>;
 
-    var prescriptionElementDrugTypes = <?= CJSON::encode(
-        array_map(function ($drugType) {
-            return [
-                'label' => $drugType['name'],
-                'id' => $drugType['id'],
+    <?php
+            $drugTypes = [];
+        foreach ($element->drugTypes() as $key=>$drugType) {
+            $drugTypes[] = [
+                'label' => $drugType,
+                'id' => $key
             ];
-        }, $element->drugTypes())
-    ) ?>;
+        }
+        ?>
+
+    var prescriptionElementDrugTypes = <?= CJSON::encode($drugTypes) ?>;
 
 </script>
 

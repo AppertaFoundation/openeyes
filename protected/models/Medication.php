@@ -305,4 +305,37 @@ class Medication extends BaseActiveRecordVersioned
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
     }
 
+    public function getMedicationSetsForCurrentSubspecialty()
+    {
+        $firm_id = $this->getApp()->session->get('selected_firm_id');
+        $site_id = $this->getApp()->session->get('selected_site_id');
+        /** @var Firm $firm */
+        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        if($firm) {
+            $sets = array();
+            foreach($this->medicationSets as $set) {
+                $relevant = false;
+                foreach ($set->medicationSetRules as $rule) {
+                    if($rule->subspecialty_id === null && $rule->site_id === null) {
+                        $relevant = true;
+                    }
+
+                    if($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
+                        $relevant = true;
+                    }
+                }
+
+                if($relevant) {
+                    $sets[] = $set;
+                }
+            }
+
+            return $sets;
+        }
+        else {
+            return $this->medicationSets;
+        }
+
+    }
+
 }

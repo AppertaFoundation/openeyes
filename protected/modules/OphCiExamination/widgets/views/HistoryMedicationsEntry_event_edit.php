@@ -58,6 +58,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
     <td>
         <div class="medication-display">
+            <?php if(!is_null($entry->medication_id)) { echo $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); } ?>
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
         </div>
 

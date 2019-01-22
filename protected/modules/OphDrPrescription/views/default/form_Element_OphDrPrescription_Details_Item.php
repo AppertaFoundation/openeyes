@@ -35,6 +35,7 @@
       <?php if (isset($patient) && $patient->hasDrugAllergy($item->medication_id)): ?>
       <i class="oe-i warning small pad js-has-tooltip" data-tooltip-content="Allergic to <?= implode(',',$patient->getPatientDrugAllergy($item->drug_id))?>"></i>
       <?php endif; ?>
+      <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
       <?php echo $item->medication->preferred_term; ?>
       <?php if ($item->id) { ?>
         <input type="hidden" name="Element_OphDrPrescription_Details[items][<?php echo $key ?>][id]" value="<?php echo $item->id ?>" /><?php

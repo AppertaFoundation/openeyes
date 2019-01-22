@@ -26,6 +26,7 @@ use OEModule\OphCiExamination\models\MedicationManagement as MedicationManagemen
 class HistoryMedications extends BaseMedicationWidget
 {
     protected $print_view = 'HistoryMedications_event_print';
+
     protected static $elementClass = HistoryMedicationsElement::class;
     /**
      * @param $mode
