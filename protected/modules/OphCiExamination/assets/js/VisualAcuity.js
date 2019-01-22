@@ -288,3 +288,111 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
   }
   return null;
 }
+
+function swapElement(element_to_swap, elementTypeClass, params){
+  console.log('swap element');
+    const nva = elementTypeClass.endsWith("NearVisualAcuity");
+    const sidebar = $('#episodes-and-events').data('patient-sidebar');
+    const $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);
+    let $parentLi;
+
+    if ($menuLi) {
+        let $href = $menuLi.find('a');
+        $href.removeClass('selected').removeClass('error');
+        if (!$href.hasClass('selected')) {
+            sidebar.markSidebarItems(sidebar.getSidebarItemsForExistingElements($href));
+
+            const $container = $href.parent();
+            $parentLi = $($container);
+            if (params === undefined)
+            params = {};
+            $href.addClass('selected');
+        }
+    }
+
+    element_to_swap.css('opacity','0.5').find('select, input, button').prop('disabled','disabled');
+    const element = $parentLi.clone(true);
+    const element_type_id = $(element).data('element-type-id');
+    const element_type_class = $(element).data('element-type-class');
+
+    let core_params = {
+        id: element_type_id,
+        patient_id: OE_patient_id,
+        previous_id: 0
+    };
+
+    $.extend(params, core_params);
+    $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
+        const new_element = $(data);
+        const container = $('.js-active-elements');
+        const cel = $(container).find('.' + element_type_class);
+        const pel = $(container).parents('.element');
+        const sideField = $(cel).find('input.sideField');
+        if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
+            $(sideField).val($(pel).find('.element-fields input.sideField').val());
+
+            if ($(sideField).val() == '1') {
+                $(cel).find('.js-element-eye.left').addClass('inactive');
+            }
+            else if ($(sideField).val() == '2') {
+                $(cel).find('.js-element-eye.right').addClass('inactive');
+            }
+        }
+
+        let reading_val = [];
+        let method = [];
+        let current_eye_va_reading;
+
+        $.each(['right-eye', 'left-eye'], function(i, eye_side){
+            current_eye_va_reading = element_to_swap.find('.'+eye_side+' table.'+(nva ? 'near-va-readings' : 'va_readings'));
+
+            // look for .va_readings values
+            if(current_eye_va_reading.find('tr').length > 0){
+                reading_val[eye_side] = [];
+                method[eye_side] = [];
+                $.each(current_eye_va_reading.find('tr'), function(i, row){
+                    // get value
+                    let visualacuity_unit = $('#visualacuity_unit_change option:selected').text();
+                    let conversion_values = $(row).find('td:eq(1) i').data('tooltip');
+                    let method_val = $(row).find('td:eq(2) input').val();
+
+                    // get values
+                    let reading_val_li;
+                    for (var i = 0; i < conversion_values.length; i++) {
+                        if(conversion_values[i].name === visualacuity_unit){
+                            reading_val_li = conversion_values[i].value;
+                        }
+                    }
+                    
+                    let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method_val+'"]');
+
+                    // get index and label
+                    reading_val[eye_side].push({
+                        label: reading_val_li
+                    });
+
+                    method[eye_side].push({
+                        val_index: method_li.index(),
+                    });
+                });
+            }
+        });
+
+        element_to_swap.replaceWith(new_element);
+
+        // select equivalent
+        if(Object.keys(reading_val).length > 0 && Object.keys(method).length > 0){
+            $.each(Object.keys(reading_val), function(eye_index, eye_side){                
+                $.each(reading_val[eye_side], function(i, val){
+                    let target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
+
+                    target.find('ul[data-id="reading_val"] li[data-label="'+val.label+'"]').addClass('selected');
+                    target.find('ul[data-id="method"] li:eq('+method[eye_side][i].val_index+')').addClass('selected');
+                    target.find('.oe-add-select-search .add-icon-btn').trigger('click');
+                });
+            });
+        }
+
+        element_to_swap.css('opacity','');
+    });
+}
