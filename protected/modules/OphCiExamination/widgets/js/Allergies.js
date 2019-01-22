@@ -122,9 +122,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param allergies
      * @returns {*}
      */
-    AllergiesController.prototype.createRows = function (allergies) {
-        if (allergies === undefined)
-            allergies = {};
+    AllergiesController.prototype.createRows = function (allergies = {}) {
         var newRows = [];
         var template = this.templateText;
         var tableSelector = this.tableSelector;
@@ -143,11 +141,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.showEditableIfOther = function () {
         var controller = this;
         $(this.allergySelector).each(function () {
-            var row_other_allergy = $(this.closest('tr')).find('.js-other-allergy');
-            var showOtherInput = (this.value == controller.options.allergyOtherValue && row_other_allergy.find('input').val() == '');
+            let $tr = $(this).closest('tr');
+            let row_other_allergy = $tr.find('.js-other-allergy');
+            let show_other_input = (this.value === controller.options.allergyOtherValue && row_other_allergy.find('input').val() === '');
 
-            $(this.closest('tr')).find('.js-not-other-allergy').toggle(!showOtherInput);
-            row_other_allergy.toggle(showOtherInput);
+            $tr.find('.js-not-other-allergy').toggle(!show_other_input);
+            row_other_allergy.toggle(show_other_input);
         });
     };
 
