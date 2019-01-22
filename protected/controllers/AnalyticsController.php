@@ -51,12 +51,13 @@ class AnalyticsController extends BaseController
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
       $disorder_data = $this->getDisorders($subspecialty_id);
+      $follow_patient_list = $this->getFollowUps($subspecialty_id);
+
       $this->filters = array(
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
 
-      $follow_patient_list = $this->getFollowUps();
 
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
@@ -71,7 +72,6 @@ class AnalyticsController extends BaseController
           'customdata' =>$disorder_data['customdata']
       );
 
-      $service_data = $this->getFollowUps();
       $custom_data = array();
       foreach (['left','right'] as $side){
           $custom_data[] = array(
@@ -140,7 +140,6 @@ class AnalyticsController extends BaseController
 
   public function actionGlaucoma(){
       $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
-      $disorder_data = $this->getDisorders($subspecialty_id);
       $this->filters = array(
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
@@ -148,7 +147,7 @@ class AnalyticsController extends BaseController
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
       list($left_va_list, $right_va_list) = $this->getCustomVA();
       $disorder_data = $this->getDisorders($subspecialty_id);
-      $follow_patient_list = $this->getFollowUps();
+      $follow_patient_list = $this->getFollowUps($subspecialty_id);
 
       $clinical_data = array(
           'title' => 'Disorders Section',
@@ -452,8 +451,6 @@ class AnalyticsController extends BaseController
         ksort($right_list);
         return [$left_list,$right_list];
     }
-
-
 
   public function getCustomDataList($elements,$type,$readings = null){
       $patient_list = array();
@@ -822,7 +819,9 @@ class AnalyticsController extends BaseController
               )
           );
       }
-      $this->renderJSON(array($custom_data,$clinical_data));
+
+      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000);
+      $this->renderJSON(array($custom_data,$clinical_data, $service_data));
   }
 
   public function getPeriodDate($period_name){
@@ -845,7 +844,8 @@ class AnalyticsController extends BaseController
       }
       return $period;
   }
-  public function getFollowUps(){
+
+  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null){
       $followup_patient_list = array(
           'overdue' => array(),
           'coming' => array(),
@@ -857,12 +857,16 @@ class AnalyticsController extends BaseController
       foreach ($followup_elements as $followup_item){
           $current_event = $followup_item->event;
           if (isset($current_event->episode)){
+              $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
+              if( ($start_date && $event_time < $start_date) ||
+                  ($end_date && $event_time > $end_date))
+                  continue;
+
               $current_episode = $current_event->episode;
               $current_patient = $current_episode->patient;
               $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
               $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
               $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
-              $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
 
               if (!array_key_exists($current_patient->id, $this->patient_list)){
                   $this->patient_list[$current_patient->id] = $current_patient;
@@ -900,12 +904,16 @@ class AnalyticsController extends BaseController
       $patient_tickets = \OEModule\PatientTicketing\models\Ticket::model()->findAll();
       $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
       foreach ($patient_tickets as $ticket) {
+          $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
+          $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
+          if( ($start_date && $assignment_time < $start_date) ||
+              ($end_date && $assignment_time > $end_date))
+              continue;
+
           $current_patient = $ticket->patient;
           $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
           $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
           $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
-          $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
-          $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
 
           $quantity = $ticket_followup['followup_quantity'];
           if ($quantity > 0) {

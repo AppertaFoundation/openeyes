@@ -361,8 +361,9 @@
         clinical_chart.data[0]['customdata'] = clinical_data.customdata;
         clinical_chart.data[0]['text'] = clinical_data.text;
         Plotly.redraw(clinical_chart);
-        var service_chart = $('#js-hs-chart-analytics-service')[0];
-        var service_data = data[2];
+
+        //update the service data
+        constructPlotlyData(data[2]);
 }
 <?php }?>
     function viewAllDates() {

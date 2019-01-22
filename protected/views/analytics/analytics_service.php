@@ -4,11 +4,12 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
+
+    function constructPlotlyData(service_data) {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
         service_layout['width'] = 700;
         service_layout['xaxis']['rangemode'] = 'nonnegative';
-        var service_data = <?= CJavaScript::encode($service_data); ?>;
+
         var overdue_data = {
             name: "Overdue followups",
             x: Object.keys(service_data['overdue']),
@@ -37,7 +38,6 @@
         }
 
         var coming_count = coming_data['y'].reduce((a, b) => a + b, 0);
-
 
         Plotly.newPlot(
             'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
@@ -79,5 +79,10 @@
                 }
             }
         });
+    }
+
+    $(document).ready(function () {
+        var service_data = <?= CJavaScript::encode($service_data); ?>;
+        constructPlotlyData(service_data);
     });
 </script>
