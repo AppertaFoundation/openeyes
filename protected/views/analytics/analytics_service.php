@@ -35,15 +35,43 @@
 
         var coming_count = coming_data['y'].reduce((a, b) => a + b, 0);
 
+
+
+        var waiting_data ={
+            name: "Followups waiting time",
+            x: Object.keys(service_data['waiting']),
+            y: Object.values(service_data['waiting']).map(function (item, index) {
+                return item.length;
+            }),
+            customdata: Object.values(service_data['waiting']),
+            type: 'bar',
+        };
+        if (waiting_data['x'].length < 10 ) {
+            waiting_data['width'] = 0.2;
+        }
+        var waiting_count = waiting_data['y'].reduce((a, b) => a + b, 0);
+
+        var first_plot_data;
+        if ($('#js-hs-app-follow-up-overdue').hasClass("selected")){
+            first_plot_data = [overdue_data];
+        }else if($('#js-hs-app-follow-up-coming').hasClass("selected")){
+            first_plot_data=[coming_data];
+        }else if($('#js-hs-app-follow-up-waiting').hasClass("selected")){
+            first_plot_data=[waiting_data];
+        }
+
+        $('#js-hs-chart-analytics-service').html("");
         Plotly.newPlot(
-            'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
+            'js-hs-chart-analytics-service', first_plot_data ,service_layout, analytics_options
         );
 
         $('#js-hs-app-follow-up-coming').html('Appointments: Follow Up(' + coming_count + ')');
         $('#js-hs-app-follow-up-overdue').html('Appointments: Delayed(' + overdue_count + ')');
+        $('#js-hs-app-follow-up-waiting').html('Appointments: Waiting time(' + waiting_count + ')');
         $('#js-hs-app-follow-up-coming').on('click', function () {
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-overdue').removeClass('selected');
+            $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').show();
 
@@ -55,11 +83,23 @@
         $('#js-hs-app-follow-up-overdue').on('click', function () {
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-coming').removeClass('selected');
+            $('#js-hs-app-follow-up-waiting').removeClass('selected');
             $('#js-hs-app-new').removeClass('selected');
             $('#js-service-data-filter').hide();
 
             Plotly.react(
                 'js-hs-chart-analytics-service', [overdue_data] ,service_layout, analytics_options
+            );
+        });
+        $('#js-hs-app-follow-up-waiting').on('click', function () {
+            $(this).addClass('selected');
+            $('#js-hs-app-follow-up-coming').removeClass('selected');
+            $('#js-hs-app-follow-up-overdue').removeClass('selected');
+            $('#js-hs-app-new').removeClass('selected');
+            $('#js-service-data-filter').hide();
+
+            Plotly.react(
+                'js-hs-chart-analytics-service', [waiting_data] ,service_layout, analytics_options
             );
         });
 

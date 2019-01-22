@@ -881,6 +881,7 @@ class AnalyticsController extends BaseController
       $followup_patient_list = array(
           'overdue' => array(),
           'coming' => array(),
+          'waiting' => array(),
       );
 
       $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
@@ -992,10 +993,62 @@ class AnalyticsController extends BaseController
               }
           }
       }
+      $referral_document_elements = Element_OphCoDocument_Document::model()->findAll();
 
+      foreach ($referral_document_elements as $referral_element){
+          if ($referral_element->sub_type->name !== 'Referral Letter'){
+              continue;
+          }
+          $current_event = $referral_element->event;
+          if (isset($current_event)){
+              $current_episode = $current_event->episode;
+              $current_subspecialty = $current_episode->getSubspecialtyID();
+              if ($current_subspecialty !== $subspecialty_id || !isset($current_episode->firm_id)){
+                  continue;
+              }
+              if (isset($this->surgeon)){
+                  if ($this->surgeon !== $current_event->created_user_id){
+                      continue;
+                  }
+              }
+              $current_patient = $current_episode->patient;
+              $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element->created_date) / 1000;
+              if( ($start_date && $current_referral_date < $start_date) ||
+                  ($end_date && $current_referral_date > $end_date))
+                  continue;
+              $current_patient_on_worklist = WorklistPatient::model()->findByAttributes(array('patient_id'=>$current_patient->id), array('order'=>'t.when ASC'));
+              if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)){
+                  $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
+                  if($appointment_time >= $current_referral_date){
+                      $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
+                      if (! isset($followup_patient_list['waiting'][$waiting_time])){
+                          $followup_patient_list['waiting'][$waiting_time]= array();
+                      }
+                      if (!array_key_exists($current_patient->id, $this->patient_list)){
+                          $this->patient_list[$current_patient->id] = $current_patient;
+                      }
+                      array_push($followup_patient_list['waiting'][$waiting_time],$current_patient->id);
+                  }
+              }
+          }
+      }
+
+      ksort($followup_patient_list['waiting']);
       ksort($followup_patient_list['overdue']);
       ksort($followup_patient_list['coming']);
       return $followup_patient_list;
+  }
+  protected function sortEventByEventDate($events){
+      for($i=0;$i<count($events);$i++){
+          $val = $events[$i];
+          $j = $i-1;
+          while($j>=0 && $events[$j]->event_date > $val->event_date){
+              $events[$j+1] = $events[$j];
+              $j--;
+          }
+          $events[$j+1] = $val;
+      }
+      return $events;
   }
 
   protected function checkPatientWorklist($patient_id) {
