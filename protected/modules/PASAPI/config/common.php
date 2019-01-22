@@ -45,6 +45,10 @@ return array(
         ),
     ),
 
+    'aliases' => array(
+        'PASAPIAdmin' => 'OEModule.PASAPI.modules.PASAPIAdmin',
+    ),
+
     'modules' => ['PASAPIAdmin'],
 
 

@@ -38,5 +38,9 @@ return array(
         ),
     ),
 
+    'aliases' => array(
+        'CviAdmin' => 'OEModule.OphCoCvi.modules.CviAdmin',
+    ),
+
     'modules' => array('CviAdmin'),
 );
