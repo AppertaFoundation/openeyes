@@ -59,8 +59,8 @@ class AnalyticsController extends BaseController
       );
 
 
-      list($left_va_list, $right_va_list) = $this->getCustomVA();
-      list($left_crt_list, $right_crt_list) = $this->getCustomCRT();
+      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id);
 
 
 
@@ -144,8 +144,8 @@ class AnalyticsController extends BaseController
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
-      list($left_iop_list, $right_iop_list) = $this->getCustomIOP();
-      list($left_va_list, $right_va_list) = $this->getCustomVA();
+      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
+      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       $disorder_data = $this->getDisorders($subspecialty_id);
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
 
@@ -273,23 +273,23 @@ class AnalyticsController extends BaseController
   }
 
 
-  public function getCustomVA() {
+  public function getCustomVA($subspecialty_id) {
 //      $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
 //      return $this->getCustomDataList($va_elements,"VA");
-      $va_elements = $this->queryVA();
+      $va_elements = $this->queryVA($subspecialty_id);
       return $this->getCustomDataListQuery($va_elements,"VA");
   }
 
-  public function getCustomCRT() {
+  public function getCustomCRT($subspecialty_id) {
       $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
-      return $this->getCustomDataList($crt_elements,'CRT');
+      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id);
   }
 
 
-  public function getCustomIOP(){
+  public function getCustomIOP($subspecialty_id){
 //      $iop_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findAll();
 //      return $this->getCustomDataList($iop_elements,'IOP');
-      $iop_elements = $this->queryIOP();
+      $iop_elements = $this->queryIOP($subspecialty_id);
       return $this->getCustomDataListQuery($iop_elements,"IOP");
   }
 
@@ -312,7 +312,7 @@ class AnalyticsController extends BaseController
 
   }
 
-  public function queryVA(){
+  public function queryVA($subspecialty_id){
       $command =  Yii::app()->db->createCommand()
           ->select('e2.patient_id as patient_id, 
           eov.id as va_id, 
@@ -330,7 +330,11 @@ class AnalyticsController extends BaseController
           ->leftJoin('et_ophciexamination_diagnoses eod','e.id = eod.event_id')
           ->leftJoin('ophciexamination_diagnosis od','od.element_diagnoses_id = eod.id')
           ->leftJoin('disorder d','od.disorder_id = d.id')
+          ->leftJoin('firm','e2.firm_id = firm.id')
+          ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
+          ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
           ->group('va_id, side');
+
       if(isset($this->filters['diagnosis'])){
           foreach ($this->filters['diagnosis'] as $diagnosis){
               $command->andWhere(array('like','term',$diagnosis));
@@ -340,7 +344,7 @@ class AnalyticsController extends BaseController
       return $command->queryAll();
   }
 
-    public function queryIOP(){
+    public function queryIOP($subspecialty_id){
         $command =  Yii::app()->db->createCommand()
             ->select('e2.patient_id as patient_id, 
             eiop.id as iop_id, d.term as term, AVG(oir.value) as reading, e.event_date as date, od.eye_id as eye_id, IF(oiv.eye_id = 1, 1, 0) as side, IF(oiv.eye_id=1, AVG(oir.value), null) AS left_reading, IF(oiv.eye_id=2, AVG(oir.value), null) AS right_reading')
@@ -352,6 +356,9 @@ class AnalyticsController extends BaseController
             ->leftJoin('et_ophciexamination_diagnoses eod','e.id = eod.event_id')
             ->leftJoin('ophciexamination_diagnosis od','od.element_diagnoses_id = eod.id')
             ->leftJoin('disorder d','od.disorder_id = d.id')
+            ->leftJoin('firm','e2.firm_id = firm.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
+            ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
             ->group('iop_id, side');
 
         if(isset($this->filters['diagnosis'])){
@@ -452,7 +459,7 @@ class AnalyticsController extends BaseController
         return [$left_list,$right_list];
     }
 
-  public function getCustomDataList($elements,$type,$readings = null){
+  public function getCustomDataList($elements,$type,$subspecialty_id,$readings = null){
       $patient_list = array();
       $left_list = array();
       $right_list = array();
@@ -471,87 +478,91 @@ class AnalyticsController extends BaseController
           $current_event = $element->event;
           if(isset($current_event->episode)) {
               $current_episode = $current_event->episode;
-              $current_patient = $current_episode->patient;
-              $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              $current_diagnoses = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findByAttributes(array('event_id'=>$current_event->id));
-              // eye 1 left, 2 right, 3 both
-              $current_diagnoses_left = array();
-              $current_diagnoses_right = array();
-              if (!empty($current_diagnoses)){
-                  $current_diagnoses = $current_diagnoses->diagnoses;
-                  foreach ($current_diagnoses as $diagnosis){
-                      if ($diagnosis->eye_id == 2 || $diagnosis->eye_id ==3){
-                          $current_diagnoses_right[] = $diagnosis->disorder->term;
-                      }
-                      if ($diagnosis->eye_id == 1 || $diagnosis->eye_id ==3){
-                          $current_diagnoses_left[] = $diagnosis->disorder->term;
-                      }
-                  }
-              }
-              $current_treatment_left="";
-              $current_treatment_right="";
-              $current_treatment=Element_OphTrIntravitrealinjection_Treatment::model()->findByAttributes(array('event_id'=>$current_event->id));
-              $current_protocol = "";
-              $validation = $this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time);
-              if ($this->validateFilters($current_patient->getAge(), $current_protocol, $current_time)) {
-                  if (!array_key_exists($current_patient->id, $this->patient_list)) {
-                      $this->patient_list[$current_patient->id] = $current_patient;
-                  }
-
-                  if (!array_key_exists($current_patient->id, $patient_list)) {
-                      $patient_list[$current_patient->id] = array();
-                  }
-
-                  if (isset($this->filters['treatment'])){
-                     if ($current_treatment_left !== $this->filters['treatment']){
-                         $left_reading = false;
-                     }
-                     if ($current_treatment_right !== $this->filters['treatment']){
-                         $right_reading = false;
-                     }
-                  }
-                  if (isset($this->filters['diagnosis'])){
-                      if (!empty($current_diagnoses_left)){
-                          $i = 1;
-                          foreach ($current_diagnoses_left as $diagnosis){
-                              if (in_array($diagnosis, $this->filters['diagnosis'])){
-                                  break;
-                              }
-                              if ($i == count($current_diagnoses_left)){
-                                  $left_reading = false;
-                              }
-                              $i += 1;
+              $current_subspecialty_id = $current_episode-> getSubspecialtyID();
+              if ($current_subspecialty_id == $subspecialty_id){
+                  $current_patient = $current_episode->patient;
+                  $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
+                  $current_diagnoses = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findByAttributes(array('event_id'=>$current_event->id));
+                  // eye 1 left, 2 right, 3 both
+                  $current_diagnoses_left = array();
+                  $current_diagnoses_right = array();
+                  if (!empty($current_diagnoses)){
+                      $current_diagnoses = $current_diagnoses->diagnoses;
+                      foreach ($current_diagnoses as $diagnosis){
+                          if ($diagnosis->eye_id == 2 || $diagnosis->eye_id ==3){
+                              $current_diagnoses_right[] = $diagnosis->disorder->term;
                           }
-                      }else{
-                          $left_reading = false;
-                      }
-
-
-                      if (!empty($current_diagnoses_right)){
-                          $i = 1;
-                          foreach ($current_diagnoses_right as $diagnosis){
-                              if (in_array($diagnosis, $this->filters['diagnosis'])){
-                                  break;
-                              }
-                              if ($i == count($current_diagnoses_right)){
-                                  $right_reading = false;
-                              }
-                              $i += 1;
+                          if ($diagnosis->eye_id == 1 || $diagnosis->eye_id ==3){
+                              $current_diagnoses_left[] = $diagnosis->disorder->term;
                           }
-                      }else{
-                          $right_reading = false;
                       }
                   }
+                  $current_treatment_left="";
+                  $current_treatment_right="";
+                  $current_treatment=Element_OphTrIntravitrealinjection_Treatment::model()->findByAttributes(array('event_id'=>$current_event->id));
+                  $current_protocol = "";
+                  $validation = $this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time);
+                  if ($this->validateFilters($current_patient->getAge(), $current_protocol, $current_time)) {
+                      if (!array_key_exists($current_patient->id, $this->patient_list)) {
+                          $this->patient_list[$current_patient->id] = $current_patient;
+                      }
 
-                  array_push($patient_list[$current_patient->id], array(
-                          'left_reading' => $left_reading,
-                          'right_reading' => $right_reading,
-                          'event_time' => $current_time,
-                          'weeks' => 0
-                      )
-                  );
+                      if (!array_key_exists($current_patient->id, $patient_list)) {
+                          $patient_list[$current_patient->id] = array();
+                      }
+
+                      if (isset($this->filters['treatment'])){
+                          if ($current_treatment_left !== $this->filters['treatment']){
+                              $left_reading = false;
+                          }
+                          if ($current_treatment_right !== $this->filters['treatment']){
+                              $right_reading = false;
+                          }
+                      }
+                      if (isset($this->filters['diagnosis'])){
+                          if (!empty($current_diagnoses_left)){
+                              $i = 1;
+                              foreach ($current_diagnoses_left as $diagnosis){
+                                  if (in_array($diagnosis, $this->filters['diagnosis'])){
+                                      break;
+                                  }
+                                  if ($i == count($current_diagnoses_left)){
+                                      $left_reading = false;
+                                  }
+                                  $i += 1;
+                              }
+                          }else{
+                              $left_reading = false;
+                          }
+
+
+                          if (!empty($current_diagnoses_right)){
+                              $i = 1;
+                              foreach ($current_diagnoses_right as $diagnosis){
+                                  if (in_array($diagnosis, $this->filters['diagnosis'])){
+                                      break;
+                                  }
+                                  if ($i == count($current_diagnoses_right)){
+                                      $right_reading = false;
+                                  }
+                                  $i += 1;
+                              }
+                          }else{
+                              $right_reading = false;
+                          }
+                      }
+
+                      array_push($patient_list[$current_patient->id], array(
+                              'left_reading' => $left_reading,
+                              'right_reading' => $right_reading,
+                              'event_time' => $current_time,
+                              'weeks' => 0
+                          )
+                      );
+                  }
               }
           }
+
       }
       foreach ($patient_list as $patient_id => &$patient_data){
           usort($patient_data, array($this, 'sortByTime'));
@@ -750,12 +761,12 @@ class AnalyticsController extends BaseController
   public function actionUpdateData(){
       $specialty = Yii::app()->request->getParam('specialty');
       $this->obtainFilters();
-      list($left_va_list, $right_va_list) = $this->getCustomVA();
-      $va_list = $this->getCustomVA();
+      $subspecialty_id = $this->getSubspecialtyID($specialty);
+      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       if ($specialty === "Glaucoma"){
-          list($left_second_list,$right_second_list) = $this->getCustomIOP();
+          list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id);
       }elseif ($specialty === "Medical Retina"){
-          list($left_second_list,$right_second_list) = $this->getCustomCRT();
+          list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id);
       }
       $subspecialty_id = $this->getSubspecialtyID($specialty);
       $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
