@@ -2,7 +2,7 @@
     <div id="cataract-complication-grid" class="analytics-cataract"></div>
     <div id="visual-acuity-grid" class="analytics-cataract"></div>
     <div id="refractive-outcome-grid" class="analytics-cataract"></div>
-<div class="analytics-event-list analytics-patient-list" style="display:none;margin-right: 500px; ">
+<div class="analytics-event-list analytics-patient-list" style="display:none;">
     <div class="flex-layout">
         <h3 id="js-list-title">Event List</h3>
         <button id="js-back-to-chart" class="selected">Back to chart</button>
@@ -51,6 +51,8 @@
             OpenEyes.Dash.init('#refractive-outcome-grid');
             OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
         }
+        $('.mdl-cell').css('width','1000px');
         $('.mdl-cell').css('height','600px');
     });
 </script>
+<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_csv_cataract.js')?>"></script>

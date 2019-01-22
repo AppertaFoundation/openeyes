@@ -7,7 +7,6 @@
 
     function constructPlotlyData(service_data) {
         var service_layout = JSON.parse(JSON.stringify(analytics_layout));
-        service_layout['width'] = 700;
         service_layout['xaxis']['rangemode'] = 'nonnegative';
 
         var overdue_data = {

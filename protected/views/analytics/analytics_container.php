@@ -2,7 +2,7 @@
 
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 
-<main class="oe-analytics flex-layout flex-top ">
+<main class="oe-analytics flex-layout flex-top " style="width: 1440px;">
     <?php $this->renderPartial('//analytics/analytics_sidebar',
         array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
     ); ?>
@@ -39,6 +39,7 @@
         OpenEyes.Dash.init('#pcr-risk-grid');
         OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);
         $('.mdl-cell').css('height','600px');
+        $('.mdl-cell').css('width','1000px');
     });
 </script>
 <?php }?>

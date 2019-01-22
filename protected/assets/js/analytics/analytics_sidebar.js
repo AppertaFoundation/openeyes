@@ -48,6 +48,7 @@ $(document).ready(function () {
                 break;
         }
         $('.mdl-cell').css('height','600px');
+        $('.mdl-cell').css('width','1000px');
 
     });
     //select tag between clinic, custom and service

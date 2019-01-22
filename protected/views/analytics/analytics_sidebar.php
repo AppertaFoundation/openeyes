@@ -256,7 +256,7 @@
 
 
         <div class="extra-actions">
-            <button class="pro-theme cols-full">Download (CSV)</button>
+            <button id="js-download-csv" class="pro-theme cols-full">Download (CSV)</button>
         </div>
     </div><!-- .specialty-options -->
 </div>

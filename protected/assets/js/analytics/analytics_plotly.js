@@ -5,6 +5,7 @@ var analytics_layout = {
     },
     autosize: false,
     height: 800,
+    width:1000,
     margin:{
         l:50,
         t:30,
