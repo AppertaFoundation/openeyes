@@ -15,27 +15,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<section class="element view full  view-anaesthetic">
-    <header class="element-header">
-        <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-    </header>
-    <div class="element-data full-width">
-        <div class="data-value listview-expand-collapse">
-            <div class="cols-11">
-                <?php if (count($element->anaesthetic_type) > 1 ||
-                    (count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA"))) {
-                    echo $this->renderPartial(
-                        'view_Element_OphTrOperationnote_Anaesthetic_full',
-                        array('element' => $element)
-                    );
-                } else {
-                    echo $this->renderPartial(
-                        'view_Element_OphTrOperationnote_Anaesthetic_partial',
-                        array('element' => $element)
-                    );
-                } ?>
-            </div>
-        </div>
-    </div>
-</section>
+
+/**
+ * Model behavior for OpenEyes standard dates.
+ */
+class OeAnaestheticFormat extends CActiveRecordBehavior
+{
+	function convertToString($anaesthetic_element){
+		$toreturn = implode(', ', array_map(function ($element) {
+			return $element->name;
+		}, $anaesthetic_element));
+
+		return $toreturn ?: 'None';
+	}
+
+	function convertToList($anaesthetic_element){
+		$toreturn = implode('</li><li>', array_map(function ($element) {
+			return $element->name;
+		}, $anaesthetic_element));
+
+		return '<li>'.($toreturn ?: 'None').'</li>';
+	}
+}
