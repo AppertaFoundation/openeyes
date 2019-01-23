@@ -15,9 +15,10 @@
         <?php } else {
             $this->renderPartial('//analytics/analytics_service',
                 array('service_data'=>$service_data));
-
-            $this->renderPartial('//analytics/analytics_clinical',
-                array('clinical_data'=>$clinical_data));
+            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
+                $this->renderPartial('//analytics/analytics_clinical',
+                    array('clinical_data'=>$clinical_data));
+            }
 
             $this->renderPartial('//analytics/analytics_custom',
                 array('custom_data'=> $custom_data));
