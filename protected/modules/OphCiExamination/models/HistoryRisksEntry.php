@@ -164,12 +164,18 @@ class HistoryRisksEntry extends \BaseElement
      */
     public function getDisplay($show_status = false)
     {
-        $res = $this->getDisplayRisk();
         if ($show_status) {
+            $res = $this->getDisplayRisk();
             $res .= ' - ' . $this->getDisplayHasRisk();
-        }
-        if ($this->comments) {
-            $res .= ' (' . $this->comments . ')';
+
+            if ($this->comments) {
+                $res .= ' (' . $this->comments . ')';
+            }
+        } else {
+            $res = [
+                'risk' => $this->getDisplayRisk(),
+                'comments' => $this->comments
+            ];
         }
         return $res;
 
