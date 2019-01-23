@@ -85,10 +85,12 @@
                 $('#previous_date_to').val($('#date_to').val());
 
                 $('#dicom-file-list tbody').html();
-                for(let i = 0; i < files.data.length; i++){
-                    let file = files.data[i];
-                    let tr = Mustache.render($('#tr-template').text(), file);
-                    $('#dicom-file-list tbody').append(tr);
+                if(files.data) {
+                    for (let i = 0; i < files.data.length; i++) {
+                        let file = files.data[i];
+                        let tr = Mustache.render($('#tr-template').text(), file);
+                        $('#dicom-file-list tbody').append(tr);
+                    }
                 }
 
                 enableButtons();
