@@ -161,7 +161,16 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
             var $wrapper = $(anchor).closest(".alternative-display-element");
             $wrapper.hide();
             $wrapper.siblings(".alternative-display-element").show();
-            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();};<?php $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
+    };
+      <?php
+
+      $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);
+      foreach ($medications as &$medication) {
+          $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+      }
+
+      ?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
       itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(

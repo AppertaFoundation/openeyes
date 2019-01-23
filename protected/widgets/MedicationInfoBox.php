@@ -36,6 +36,11 @@
             echo '<i class="oe-i info pad small js-has-tooltip" data-tooltip-content="'.$this->getInfoBoxHTML().'"></i>';
         }
 
+        public function getHTML()
+        {
+            return '<i class="oe-i info pad small js-has-tooltip" data-tooltip-content="'.$this->getInfoBoxHTML().'"></i>';
+        }
+
         private function getInfoBoxHTML()
         {
             if($this->error) {

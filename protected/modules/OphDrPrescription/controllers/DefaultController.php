@@ -285,10 +285,17 @@ class DefaultController extends BaseEventTypeController
 
 
                 foreach ($drugs as $drug) {
+
+                    $infoBox = new MedicationInfoBox();
+                    $infoBox->medication_id = $drug->id;
+                    $infoBox->init();
+                    $tooltip = $infoBox->getHTML();
+
                     $return[] = array(
                         'label' => $drug->preferred_term,
                         'value' => $drug->preferred_term,
                         'id' => $drug->id,
+                        'prepended_markup' => $tooltip
                     );
                 }
             }

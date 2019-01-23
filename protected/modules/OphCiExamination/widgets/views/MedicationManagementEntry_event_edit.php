@@ -58,7 +58,7 @@ $is_new = isset($is_new) ? $is_new : false;
 
     <td>
       <div class="js-medication-display">
-          <?php if(!is_null($entry->medication_id)) { echo $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); } ?>
+          <?php if(!is_null($entry->medication_id)) { $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); } ?>
           <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay() ?>
       </div>
       <?php if ($entry->originallyStopped) { ?>

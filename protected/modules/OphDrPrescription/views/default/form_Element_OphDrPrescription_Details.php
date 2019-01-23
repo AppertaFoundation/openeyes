@@ -116,7 +116,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         array_map(function ($drugSet) {
             return [
                 'label' => $drugSet->name,
-                'id' => $drugSet->id,
+                'id' => $drugSet->id
             ];
         }, $element->drugSets())
     ) ?>;
@@ -126,6 +126,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             return [
                 'label' => $drug['preferred_term'],
                 'id' => $drug['id'],
+                'prepended_markup' => $this->widget('MedicationInfoBox', array('medication_id' => $drug['id']), true)
             ];
         }, $element->commonDrugs())
     ) ?>;

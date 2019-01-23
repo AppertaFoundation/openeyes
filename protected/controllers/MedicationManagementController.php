@@ -34,7 +34,7 @@
         {
             header('Content-type: application/json');
             /** @var MedicationSet $medication_set */
-            if(!$medication_sets = MedicationSet::model()->findAll('id IN (SELECT medication_set_id FROM medication_set_rules WHERE usage_code =\'Formulary\')')) {
+            if(!$medication_sets = MedicationSet::model()->findAll('id IN (SELECT medication_set_id FROM medication_set_rule WHERE usage_code =\'Formulary\')')) {
                 echo CJSON::encode([]);
                 exit;
             }
@@ -70,6 +70,11 @@
                         $tabsize = 2;
                     }
 
+                    $infoBox = new MedicationInfoBox();
+                    $infoBox->medication_id = $med->id;
+                    $infoBox->init();
+                    $tooltip = $infoBox->getHTML();
+
                     $ret_data[] = array_merge($med->getAttributes(), [
                             'label' => $med->preferred_term,
                             'dose_unit_term' => $med_set_item->default_dose_unit_term,
@@ -78,7 +83,8 @@
                             'frequency_id' => $med_set_item->default_frequency_id,
                             'route_id' => $med_set_item->default_route_id,
                             'tabsize' => $tabsize,
-                            'will_copy' => $med->getToBeCopiedIntoMedicationManagement()
+                            'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
+                            'prepended_markup' => $tooltip
                         ]
                     );
                 }

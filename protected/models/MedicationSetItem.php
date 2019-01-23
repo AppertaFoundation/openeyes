@@ -75,7 +75,7 @@ class MedicationSetItem extends BaseActiveRecordVersioned
 			'medicationSet' => array(self::BELONGS_TO, MedicationSet::class, 'medication_set_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'tapers' => array(self::HAS_MANY, MedicationSetItemTaper::class, 'medication_set_id'),
+            'tapers' => array(self::HAS_MANY, MedicationSetItemTaper::class, 'medication_set_item_id'),
             'defaultDuration' => array(self::BELONGS_TO, MedicationDuration::class, 'default_duration_id')
 		);
 	}

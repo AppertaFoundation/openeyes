@@ -165,7 +165,12 @@ $element_errors = $element->getErrors();
         });
 
         <?php
-        $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);?>
+        $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);
+        foreach ($medications as &$medication) {
+            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+        }
+        ?>
+
         new OpenEyes.UI.AdderDialog({
             openButton: $('#mm-add-medication-btn'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode($medications) ?>, {'multiSelect': true})],
