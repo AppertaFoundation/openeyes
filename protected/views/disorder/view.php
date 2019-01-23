@@ -7,13 +7,10 @@ $this->breadcrumbs=array(
 	$model->id,
 );
 
-$this->menu=array(
-	array('label'=>'List Disorder', 'url'=>array('index')),
-	array('label'=>'Create Disorder', 'url'=>array('create')),
-	array('label'=>'Update Disorder', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Disorder', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Disorder', 'url'=>array('admin')),
-);
+?>
+<?php
+echo CHtml::link('Back to Disorder list', array('disorder/admin'),
+        array('class' => 'button small')) . ' ';
 ?>
 
 <h1>View Disorder #<?php echo $model->id; ?></h1>
