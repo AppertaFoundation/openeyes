@@ -20,11 +20,11 @@
 
 class EventImageManager
 {
-    public function actionGenerateImage($event){
+    public function actionGenerateImage($event_id){
         $commandPath = Yii::app()->getBasePath() . DIRECTORY_SEPARATOR . 'commands';
         $runner = new CConsoleCommandRunner();
         $runner->addCommands($commandPath);
-        $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event->id);
+        $args = array('EventImageCommand.php', 'eventimage', 'create', '--event=' . $event_id);
         $runner->run($args);
     }
 }
