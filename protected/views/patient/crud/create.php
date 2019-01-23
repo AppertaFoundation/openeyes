@@ -13,5 +13,7 @@
     'patient' => $patient,
     'contact' => $contact,
     'address' => $address,
+    'referral' => $referral,
+    'patientuserreferral' => $patientuserreferral,
     'patient_identifiers' => $patient_identifiers,
 )); ?>

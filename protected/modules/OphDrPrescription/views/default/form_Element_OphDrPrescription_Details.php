@@ -17,6 +17,7 @@
  */
 ?>
 <?php
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/allergicDrugs.js", \CClientScript::POS_HEAD);
 // we need to separate the public and admin view
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
@@ -126,6 +127,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             return [
                 'label' => $drug['name'],
                 'id' => $drug['id'],
+                'allergies' => CJSON::encode(array_map(function($allergy){
+                        return $allergy->id;
+                        } , $drug->allergies)),
             ];
         }, $element->commonDrugs())
     ) ?>;
@@ -138,6 +142,10 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
             ];
         }, $element->drugTypes())
     ) ?>;
+
+    <?php if(isset($this->patient)){ ?>
+    var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+    <?php } ?>
 
 </script>
 

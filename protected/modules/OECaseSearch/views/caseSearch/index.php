@@ -212,7 +212,7 @@ $this->pageTitle = 'Case Search';
                 type: 'GET',
                 success: function () {
                     $('#case-search-results').children().remove();
-                    $('#param-list').children().remove();
+                    $('#param-list tbody').children().remove();
                 }
             });
         });

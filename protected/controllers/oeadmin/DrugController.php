@@ -130,6 +130,7 @@ class DrugController extends BaseAdminController
         $this->render('/oeadmin/drug/edit', array(
             'model' => $drug,
         ));
+
     }
 
     /**

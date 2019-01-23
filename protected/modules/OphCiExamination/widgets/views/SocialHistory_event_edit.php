@@ -75,16 +75,7 @@
                   echo implode(', ', $driving_statuses);
               } ?>
           </div>
-          <?= $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[driving_statuses]',
-              'driving_statuses',
-              'id',
-              CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-              array(),
-              ['empty' => '- Select -'],
-              true
-          ); ?>
+
       </td>
     </tr>
     <tr>
@@ -123,7 +114,7 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
       </td>
       <td class="flex-layout flex-left">
-          <div id="textField_alcohol_intake" class="cols-1">
+          <div id="textField_alcohol_intake" class="cols-1 <?= (isset($element->alcohol_intake) ? '' : 'hidden') ?>">
               <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
           <?= $form->textField(
@@ -133,7 +124,7 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
-                  'append-text' => 'units/week',
+                  'append-text' => (isset($element->alcohol_intake) ? 'units/week' : 'Nothing selected.'),
                   'hidden' => true
               )
           );

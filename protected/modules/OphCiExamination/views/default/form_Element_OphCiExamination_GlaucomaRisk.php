@@ -36,7 +36,7 @@ function getRiskLevelColour($risk_level){
 		<div class="cols-2 column">
 			<div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php }?> risk">
-				<?php $html_options = array('nowrapper' => true, 'empty' => '--- Please select ---');
+				<?php $html_options = array('nowrapper' => true, 'empty' => 'Select');
 				$risks = OEModule\OphCiExamination\models\OphCiExamination_GlaucomaRisk_Risk::model()->findAll();
 				foreach ($risks as $option) {
 				  $html_options['options'][(string) $option->id] = array(

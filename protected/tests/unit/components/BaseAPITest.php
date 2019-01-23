@@ -50,7 +50,7 @@ class BaseAPITest extends CDbTestCase
 
     public function testgetModuleClass_namespaced()
     {
-        $test = new RandomNamespace\Test\TestModule_API();
+        $test = new TestModule_API();
         $r = new ReflectionClass($test);
         $m = $r->getMethod('getModuleClass');
         $m->setAccessible(true);

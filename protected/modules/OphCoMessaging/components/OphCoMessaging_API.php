@@ -21,6 +21,8 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 
 class OphCoMessaging_API extends \BaseAPI
 {
+	const DEFAULT_MESSAGES_FOLDER = 'unread';
+
     public function getMenuItem()
     {
         $user = \Yii::app()->user;
@@ -68,6 +70,7 @@ class OphCoMessaging_API extends \BaseAPI
                 'number_sent_unread' => $sent_messages['number_unread'],
                 'number_urgent_unread' => $urgent_messages['number_unread'],
                 'number_query_unread' => $query_messages['number_unread'],
+                'default_folder' => $this::DEFAULT_MESSAGES_FOLDER,
                 'module_class' => $this->getModuleClass(),
             )
         );
@@ -78,6 +81,19 @@ class OphCoMessaging_API extends \BaseAPI
                 'container-id' => \Yii::app()->user->id.'-dashboard-container',
             ),
         );
+    }
+
+    /**
+     * @param null $user
+     * @return array - list with counts of all unread messages for each folder
+     */
+    public function updateMessagesCount($user = null) {
+        return [
+            'number_inbox_unread' => $this->getInboxMessages($user)['number_unread'],
+            'number_urgent_unread' => $this->getInboxMessages($user, true)['number_unread'],
+            'number_query_unread' => $this->getInboxMessages($user, false, true)['number_unread'],
+            'number_sent_unread' => $this->getSentMessages($user)['number_unread']
+            ];
     }
 
     /**

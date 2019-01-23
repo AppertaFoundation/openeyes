@@ -20,7 +20,7 @@
 <tr>
     <td><?= $model->getAttributeLabel('drug_id'); ?></td>
     <td><?= CHtml::activeDropDownList($model, 'drug_id', CHtml::listData($model->getTreatmentDrugs(), 'id', 'name'), [
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'class' => 'cols-full'
         ]) ?>
     </td>
@@ -28,7 +28,7 @@
 <tr>
     <td><?= $model->getAttributeLabel('decisiontree_id'); ?></td>
     <td><?= CHtml::activeDropDownList($model, 'contraindications_required', [1 => 'Yes', 0 => 'No'], [
-            'empty' => '- Please select -',
+            'empty' => 'Select',
             'class' => 'cols-full'
         ]) ?>
     </td>

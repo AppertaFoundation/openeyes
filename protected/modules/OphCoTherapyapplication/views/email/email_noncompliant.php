@@ -62,7 +62,7 @@ DoB: <?php echo $patient->NHSDate('dob')."\n" ?>
 Gender: <?php echo $patient->getGenderString()."\n" ?>
 Address: <?php echo ($address = $patient->getLetterAddress(array('delimiter' => ', '))) ? $address."\n" : "Unknown\n"; ?>
 
-GP Details:
+<?php echo \Yii::app()->params['gp_label'] ?> Details:
 Name: <?php echo ($patient->gp) ? $patient->gp->fullName."\n" : "Unknown\n"; ?>
 Address: <?php echo ($patient->practice && $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ? $address."\n" : "Unknown\n"; ?>
 

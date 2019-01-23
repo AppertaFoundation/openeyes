@@ -10,8 +10,7 @@ class m180601_131147_create_elements_comments_table extends \OEMigration
         $this->insert('element_type', [
             'name' => 'Comments',
             'class_name' => 'OEModule\OphCiDidNotAttend\models\Comments',
-            'event_type_id' => $event_type_id, 'required' => 1,
-            'group_title' => 'Comments']);
+            'event_type_id' => $event_type_id, 'required' => 1]);
         $this->createOETable('et_ophcididnotattend_comments', ['id' => 'pk', 'comment' => 'text', 'event_id' => 'int(10) unsigned NOT NULL'], true);
         $this->addForeignKey('fk_documentdidnotattend_event_id', 'et_ophcididnotattend_comments', 'event_id', 'event', 'id');
     }
