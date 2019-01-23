@@ -988,6 +988,14 @@ class AnalyticsController extends BaseController
           if( ($start_date && $assignment_time < $start_date) ||
               ($end_date && $assignment_time > $end_date))
               continue;
+          if (isset($this->surgeon)){
+              if ($this->surgeon !== $current_event->created_user_id){
+                  continue;
+              }
+          }
+          $current_subspecialty = $current_episode->getSubspecialtyID();
+          if($current_subspecialty!=$subspecialty_id)
+              continue;
 
           $current_patient = $ticket->patient;
           $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
