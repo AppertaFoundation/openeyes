@@ -1294,8 +1294,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              @TODO: note, getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() ? $this->getNextStep() : $this->getFirstStep();
+              Note: getCurrentStep() will return firstStep if there were no steps before */
+            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;

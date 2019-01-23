@@ -103,16 +103,25 @@ $(document).ready(function(){
       uri = baseUrl + '/admin/delete' + ucfirst(object);
     }
 
-    $.ajax({
-      'type': 'POST',
-      'url': uri,
-      'data': serializedForm + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-      'success': function (html) {
-        if (html === '1') {
-          window.location.reload();
+    $.when(et_delete_ajax_call(uri, serializedForm)).done(function(html){
+      if (html === '1') {
+        $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+        enableButtons();
+      } else {
+        if(html.indexOf('Attribute Element is in use') !== -1){
+          new OpenEyes.UI.Dialog.Confirm({
+            content: "One or more Element attributes has sub-options. Continue to delete?",
+            closeCallback: function () {
+                enableButtons();
+            }
+          }).on('ok', function () {
+            et_delete_ajax_call(uri, serializedForm,1);
+            $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();
+            enableButtons();
+          }).open();
         } else {
           new OpenEyes.UI.Dialog.Alert({
-            content: "One or more " + object + " could not be deleted as they are in use.",
+            content: "One or more Element attributes could not be deleted as they are in use.",
             closeCallback: function () {
                 enableButtons();
             }
@@ -182,4 +191,12 @@ $(document).ready(function(){
       }
     });
   });
+
+  function et_delete_ajax_call(uri, serializedForm, delete_subs_also = 0){
+    return $.ajax({
+      'type': 'POST',
+      'url': uri,
+      'data': serializedForm + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN + (delete_subs_also ? "&DELETE_SUBS_ALSO=1" : ""),
+    });
+  }
 });
