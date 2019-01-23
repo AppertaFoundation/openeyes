@@ -27,9 +27,10 @@ class DisorderController extends BaseController
                 'allow',
                 'roles' => array('OprnViewClinical'),
             ),
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+            array('allow', // allow clinicians user to perform 'create' and 'update' actions
                 'actions'=>array('create','update','index','view'),
                 'users'=>array('@'),
+                'roles' => array('OprnViewClinical'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
                 'actions'=>array('admin','delete'),
@@ -55,27 +56,7 @@ class DisorderController extends BaseController
 
         $columns = $model::model()->metadata->columns;
 
-        foreach ($options['extra_fields'] as $extraKey => $extraField) {
-            switch ($extraField['type']) {
-                case 'lookup':
-                    $options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
-                    break;
-            }
-            if ($extraField['field'] === $options['label_field']) {
-                $options['label_extra_field'] = true;
-            }
-        }
-
-        foreach ($options['filter_fields'] as $filterKey => $filterField) {
-            $options['filter_fields'][$filterKey]['value'] = null;
-            if (isset($_GET[$filterField['field']])) {
-                $options['filter_fields'][$filterKey]['value'] = $_GET[$filterField['field']];
-            }
-
-            if ($options['filter_fields'][$filterKey]['value'] === null && !$columns[$filterField['field']]->allowNull) {
-                $options['filters_ready'] = false;
-            }
-        }
+        $options = $this->addExtraFieldsToOptions($options, $columns);
 
         $items = array();
         $errors = array();
@@ -620,11 +601,11 @@ class DisorderController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+            $this->loadModel($id)->delete();
 
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if(!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (!isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
     }
 
     /**
@@ -691,5 +672,36 @@ class DisorderController extends BaseController
             }
         }
         return 'NA';
+    }
+
+    /**
+     * @param array $options
+     * @param $columns
+     * @return array
+     */
+    protected function addExtraFieldsToOptions(array $options, $columns)
+    {
+        foreach ($options['extra_fields'] as $extraKey => $extraField) {
+            switch ($extraField['type']) {
+                case 'lookup':
+                    $options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
+                    break;
+            }
+            if ($extraField['field'] === $options['label_field']) {
+                $options['label_extra_field'] = true;
+            }
+        }
+
+        foreach ($options['filter_fields'] as $filterKey => $filterField) {
+            $options['filter_fields'][$filterKey]['value'] = null;
+            if (isset($_GET[$filterField['field']])) {
+                $options['filter_fields'][$filterKey]['value'] = $_GET[$filterField['field']];
+            }
+
+            if ($options['filter_fields'][$filterKey]['value'] === null && !$columns[$filterField['field']]->allowNull) {
+                $options['filters_ready'] = false;
+            }
+        }
+        return $options;
     }
 }

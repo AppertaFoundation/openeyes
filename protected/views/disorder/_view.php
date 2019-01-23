@@ -33,15 +33,4 @@
 	<?php echo CHtml::encode($data->created_date); ?>
 	<br />
 
-	<?php /*
-	<b><?php echo CHtml::encode($data->getAttributeLabel('specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->specialty_id); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
-	<?php echo CHtml::encode($data->active); ?>
-	<br />
-
-	*/ ?>
-
 </div>

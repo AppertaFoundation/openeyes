@@ -1,7 +1,7 @@
 
 <?php
 
-class DisorderController extends Controller
+class DisorderController extends BaseEventTypeController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -111,11 +111,11 @@ class DisorderController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+            $this->loadModel($id)->delete();
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if(!isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if(!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
     }
 
     /**
@@ -172,5 +172,3 @@ class DisorderController extends Controller
         }
     }
 }
-close
-/var/www/openeyes/protected/controllers/DisorderController.php

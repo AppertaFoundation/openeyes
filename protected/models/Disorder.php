@@ -202,6 +202,7 @@ class Disorder extends BaseActiveRecordVersioned
     }
 
     public function checkDisorderExists($attribute) {
+//        $query = Disorder::model()->findByPk($this->id);
         $query = "SELECT id FROM disorder where id='$this->id'";
         $command = Yii::app()->db->createCommand($query);
         $command->prepare();
