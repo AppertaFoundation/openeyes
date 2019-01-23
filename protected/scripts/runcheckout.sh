@@ -334,7 +334,7 @@ for module in ${modules[@]}; do
 		if [ ! "$nopull" = "1" ]; then
 			echo "Pulling latest changes: "
 			git -C $MODGITROOT pull
-			git -C $MODGITROOT submodule update --init
+			git -C $MODGITROOT submodule update --init --force
 		fi
 	fi
 
