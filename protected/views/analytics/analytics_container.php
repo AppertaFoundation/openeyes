@@ -4,7 +4,7 @@
 
 <main class="oe-analytics flex-layout flex-top ">
     <?php $this->renderPartial('//analytics/analytics_sidebar',
-        array('specialty'=>$specialty)
+        array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
     ); ?>
     <div class="analytics-charts">
         <?php if ($specialty === 'Cataract'){ ?>

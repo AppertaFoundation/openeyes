@@ -14,6 +14,7 @@ class AnalyticsController extends BaseController
   public $layout = '//layouts/events_and_episodes';
   protected $patient_list = array();
   protected $filters;
+  protected $surgeon;
 
   protected function getSubspecialtyID($subspecialty_name){
       return Subspecialty::model()->findByAttributes(array('name'=>$subspecialty_name))->id;
@@ -34,7 +35,12 @@ class AnalyticsController extends BaseController
       $subspecialty_id = $this->getSubspecialtyID('Cataract');
       $this->getDisorders($subspecialty_id);
       $this->patient_list = $this->queryCataractEventList();
-
+      $current_user = User::model()->findByPk(Yii::app()->user->id);
+      if (isset($this->surgeon)){
+          $user_list = null;
+      }else{
+          $user_list = User::model()->findAll();
+      }
       $this->render('/analytics/analytics_container',
           array(
               'specialty'=>'Cataract',
@@ -42,12 +48,14 @@ class AnalyticsController extends BaseController
               'service_data'=> array(),
               'custom_data' => array(),
               'patient_list' => $this->patient_list,
+              'user_list' => $user_list,
+              'current_user'=>$current_user,
           )
       );
   }
   public function actionMedicalRetina(){
+      $this->checkAuth();
       $subspecialty_id = $this->getSubspecialtyID('Medical Retina');
-
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
       $roles = Yii::app()->user->getRole(Yii::app()->user->id);
       $disorder_data = $this->getDisorders($subspecialty_id);
@@ -58,11 +66,17 @@ class AnalyticsController extends BaseController
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
 
+      $follow_patient_list = $this->getFollowUps($subspecialty_id);
 
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id);
 
-
+      $current_user = User::model()->findByPk(Yii::app()->user->id);
+      if (isset($this->surgeon)){
+          $user_list = null;
+      }else{
+          $user_list = User::model()->findAll();
+      }
 
       $clinical_data = array(
           'title' => 'Disorders Section',
@@ -133,12 +147,15 @@ class AnalyticsController extends BaseController
             'clinical_data'=> $clinical_data,
             'service_data'=> $follow_patient_list,
             'custom_data' => $custom_data,
-            'patient_list' => $this->patient_list
+            'patient_list' => $this->patient_list,
+            'user_list' => $user_list,
+            'current_user'=> $current_user,
         )
     );
   }
 
   public function actionGlaucoma(){
+      $this->checkAuth();
       $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
       $this->filters = array(
           'date_from' => 0,
@@ -149,6 +166,12 @@ class AnalyticsController extends BaseController
       $disorder_data = $this->getDisorders($subspecialty_id);
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
 
+      $current_user = User::model()->findByPk(Yii::app()->user->id);
+      if (isset($this->surgeon)){
+          $user_list = null;
+      }else{
+          $user_list = User::model()->findAll();
+      }
       $clinical_data = array(
           'title' => 'Disorders Section',
           'x' => $disorder_data['x'],
@@ -217,7 +240,9 @@ class AnalyticsController extends BaseController
             'clinical_data'=> $clinical_data,
             'service_data'=> $follow_patient_list,
             'custom_data' => $custom_data,
-            'patient_list' => $this->patient_list
+            'patient_list' => $this->patient_list,
+            'user_list' => $user_list,
+            'current_user'=> $current_user,
         )
     );
   }
@@ -277,12 +302,12 @@ class AnalyticsController extends BaseController
 //      $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
 //      return $this->getCustomDataList($va_elements,"VA");
       $va_elements = $this->queryVA($subspecialty_id);
-      return $this->getCustomDataListQuery($va_elements,"VA");
+      return $this->getCustomDataListQuery($va_elements,"VA",$this->surgeon);
   }
 
   public function getCustomCRT($subspecialty_id) {
       $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
-      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id);
+      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id, $this->surgeon);
   }
 
 
@@ -290,7 +315,7 @@ class AnalyticsController extends BaseController
 //      $iop_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findAll();
 //      return $this->getCustomDataList($iop_elements,'IOP');
       $iop_elements = $this->queryIOP($subspecialty_id);
-      return $this->getCustomDataListQuery($iop_elements,"IOP");
+      return $this->getCustomDataListQuery($iop_elements,"IOP",$this->surgeon);
   }
 
   public function validateFilters($age, $protocol, $date){
@@ -314,7 +339,7 @@ class AnalyticsController extends BaseController
 
   public function queryVA($subspecialty_id){
       $command =  Yii::app()->db->createCommand()
-          ->select('e2.patient_id as patient_id, 
+          ->select('e2.patient_id as patient_id, e.created_user_id as created_user_id,
           eov.id as va_id, 
           d.term as term, 
           AVG(ovr.value) as reading, 
@@ -344,9 +369,24 @@ class AnalyticsController extends BaseController
       return $command->queryAll();
   }
 
+    public function getPatientsListBySurgeon($surgeon_id){
+        $command = Yii::app()->db->createCommand()
+            ->select('e2.patient_id as patient_id')
+            ->from('et_ophtroperationnote_surgeon surgeon')
+            ->join('event e','e.id = surgeon.event_id')
+            ->join('episode e2','e2.id = e.episode_id')
+            ->where('surgeon.surgeon_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+        $query_list= $command->queryAll();
+        $patients_list = array();
+        foreach ($query_list as $patient){
+            $patients_list[] = $patient['patient_id'];
+        }
+        return $patients_list;
+  }
+
     public function queryIOP($subspecialty_id){
         $command =  Yii::app()->db->createCommand()
-            ->select('e2.patient_id as patient_id, 
+            ->select('e2.patient_id as patient_id, e.created_user_id as created_user_id,
             eiop.id as iop_id, d.term as term, AVG(oir.value) as reading, e.event_date as date, od.eye_id as eye_id, IF(oiv.eye_id = 1, 1, 0) as side, IF(oiv.eye_id=1, AVG(oir.value), null) AS left_reading, IF(oiv.eye_id=2, AVG(oir.value), null) AS right_reading')
             ->from('et_ophciexamination_intraocularpressure eiop')
             ->join('ophciexamination_intraocularpressure_value oiv','oiv.element_id = eiop.id')
@@ -370,7 +410,7 @@ class AnalyticsController extends BaseController
         return $command->queryAll();
     }
 
-    public function getCustomDataListQuery($elements,$type,$readings = null){
+    public function getCustomDataListQuery($elements,$type,$surgeon_id=null,$readings = null){
         $patient_list = array();
         $left_list = array();
         $right_list = array();
@@ -383,7 +423,11 @@ class AnalyticsController extends BaseController
                 $left_reading = $element['left_reading'];
                 $right_reading = $element['right_reading'];
             }
-
+            if (isset($surgeon_id)){
+                if ($surgeon_id !== $element['created_user_id']){
+                    continue;
+                }
+            }
             $current_protocol = null;
                 $current_patient = Patient::model()->findByPk($element['patient_id']);
                 $current_time = Helper::mysqlDate2JsTimestamp($element['date']);
@@ -459,16 +503,15 @@ class AnalyticsController extends BaseController
         return [$left_list,$right_list];
     }
 
-  public function getCustomDataList($elements,$type,$subspecialty_id,$readings = null){
+  public function getCustomDataList($elements,$type,$subspecialty_id,$surgeon_id=null,$readings = null){
       $patient_list = array();
       $left_list = array();
       $right_list = array();
-
       foreach ($elements as $element){
           if ($type === "CRT"){
            $left_reading =  $element->left_crt;
            $right_reading = $element->right_crt;
-          }else if ($type === "VAp"){
+          }else if ($type === "VA"){
                $left_reading = $readings[$element->id][0];
                $right_reading = $readings[$element->id][1];
           }else{
@@ -477,6 +520,11 @@ class AnalyticsController extends BaseController
           }
           $current_event = $element->event;
           if(isset($current_event->episode)) {
+              if (isset($surgeon_id)){
+                  if ($surgeon_id !== $current_event->created_user_id){
+                      continue;
+                  }
+              }
               $current_episode = $current_event->episode;
               $current_subspecialty_id = $current_episode-> getSubspecialtyID();
               if ($current_subspecialty_id == $subspecialty_id){
@@ -647,6 +695,11 @@ class AnalyticsController extends BaseController
       foreach ($diagnoses_elements as $diagnosis_element_item){
           $current_event = $diagnosis_element_item->event;
           if(isset($current_event->episode)) {
+              if (isset($this->surgeon)){
+                  if ($this->surgeon !== $current_event->created_user_id){
+                      continue;
+                  }
+              }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
               if( ($start_date && $current_time < $start_date) ||
                   ($end_date && $current_time > $end_date))
@@ -759,7 +812,12 @@ class AnalyticsController extends BaseController
   }
 
   public function actionUpdateData(){
+      $this->checkAuth();
       $specialty = Yii::app()->request->getParam('specialty');
+      $surgeon_id = Yii::app()->request->getParam('surgeon_id');
+      if (!isset($this->surgeon)&&isset($surgeon_id)){
+          $this->surgeon = $surgeon_id;
+      }
       $this->obtainFilters();
       $subspecialty_id = $this->getSubspecialtyID($specialty);
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
@@ -857,6 +915,7 @@ class AnalyticsController extends BaseController
   }
 
   public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null){
+
       $followup_patient_list = array(
           'overdue' => array(),
           'coming' => array(),
@@ -868,44 +927,53 @@ class AnalyticsController extends BaseController
       foreach ($followup_elements as $followup_item){
           $current_event = $followup_item->event;
           if (isset($current_event->episode)){
+
+              if (isset($this->surgeon)){
+                  if ($this->surgeon !== $current_event->created_user_id){
+                      continue;
+                  }
+              }
+
               $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
               if( ($start_date && $event_time < $start_date) ||
                   ($end_date && $event_time > $end_date))
                   continue;
-
               $current_episode = $current_event->episode;
-              $current_patient = $current_episode->patient;
-              $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
-              $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
-              $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
+              $current_subspecialty = $current_episode->getSubspecialtyID();
+              if ($current_subspecialty == $subspecialty_id){
+                  $current_patient = $current_episode->patient;
+                  $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
+                  $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
+                  $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
 
-              if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = $current_patient;
-              }
+                  if (!array_key_exists($current_patient->id, $this->patient_list)){
+                      $this->patient_list[$current_patient->id] = $current_patient;
+                  }
 
-              $quantity = $followup_item->followup_quantity;
-              if($quantity > 0) {
-                  $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
-                  $due_time = $event_time + $period_date*self::DAYTIME_ONE;
-                  if( $due_time < $current_time){
-                      if ($latest_time > $event_time)
-                          continue;
-                      //Follow up is overdue
-                      $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
-                      if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
-                          $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                  $quantity = $followup_item->followup_quantity;
+                  if($quantity > 0) {
+                      $period_date = $quantity * $this->getPeriodDate($followup_item->followup_period->name);
+                      $due_time = $event_time + $period_date*self::DAYTIME_ONE;
+                      if( $due_time < $current_time){
+                          if ($latest_time > $event_time)
+                              continue;
+                          //Follow up is overdue
+                          $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
+                          if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
+                              $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
+                          } else {
+                              array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
+                          }
+
                       } else {
-                          array_push($followup_patient_list['overdue'][$over_weeks], $current_patient->id);
-                      }
-
-                  } else {
-                      if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
-                          continue;
-                      $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
-                      if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
-                          $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
-                      } else {
-                          array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                          if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
+                              continue;
+                          $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
+                          if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
+                              $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
+                          } else {
+                              array_push($followup_patient_list['coming'][$coming_weeks], $current_patient->id);
+                          }
                       }
                   }
               }
@@ -969,5 +1037,14 @@ class AnalyticsController extends BaseController
           }
       }
       return $latest_date;
+  }
+  protected function checkAuth()
+  {
+      if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
+          $this->surgeon = null;
+      } else {
+          $this->surgeon = Yii::app()->user->id;
+          Yii::log($this->surgeon);
+      }
   }
 }

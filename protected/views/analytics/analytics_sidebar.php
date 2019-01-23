@@ -24,9 +24,15 @@
         <!-- icon-btns -->
     </div>
     <div class="specialty"><?= $specialty ?></div>
+    <?php if ($specialty !== 'Cataract'){?>
     <div class="service flex-layout">
-        <div class="service-selected" id="js-service-selected-filter">James Morgan</div>
+        <?php if(isset($user_list)){?>
+            <div class="service-selected" id="js-service-selected-filter">All</div>
+        <?php }else{?>
+            <div class="service-selected" id="js-service-selected-filter"><?=$current_user->getFullName();?></div>
+        <?php }?>
         <!-- OE UI Filter options (id: select-service) -->
+        <?php if (isset($user_list)){?>
         <div class="oe-filter-options" id="oe-filter-options-select-service" data-filter-id="select-service">
             <!-- simple button to popup filter options -->
             <button class="oe-filter-btn green hint" id="oe-filter-btn-select-service">
@@ -41,21 +47,18 @@
                     <div class="options-group" data-filter-ui-id="js-service-selected-filter">
                         <!-- <h3>Title (optional)</h3> -->
                         <ul class="btn-list">
-                            <li>David Haider</li>
-                            <li>Afsar Jafree</li>
-                            <li>Luke Membrey</li>
-                            <li class="selected">James Morgan</li>
-                            <li>Malcolm Woodcock</li>
-                            <li>Glaucoma (All)</li>
-                            <li>Medical Retina (All)</li>
-                            <li>Vitreoretinal (All)</li>
+                            <li>All</li>
+                            <?php foreach ($user_list as $user){?>
+                            <li><?=$user->getFullName();?></li>
+                            <?php }?>
                         </ul>
                     </div><!-- options-group -->
                 </div><!-- .flex -->
             </div><!-- filter-options-popup -->
         </div><!-- .oe-filter-options -->
+        <?php }?>
     </div>
-
+    <?php }?>
     <div class="specialty-options">
         <?php if ($specialty === 'Cataract') { ?>
             <div style="<?= $specialty !== 'Cataract' ? 'display: none' : '' ?>">
@@ -250,6 +253,16 @@
     </div><!-- .specialty-options -->
 </div>
 <script type="text/javascript">
+    <?php
+        $side_bar_user_list = array();
+        if (isset($user_list)){
+            foreach ($user_list as $user){
+                $side_bar_user_list[$user->getFullName()] = $user->id;
+            }
+        }else{
+            $side_bar_user_list = null;
+        }
+    ?>
     <?php if ($specialty === 'Cataract'){?>
     $('#search-form').on('submit', function (e) {
         e.preventDefault();
@@ -306,8 +319,12 @@
 
     function getDataFilters(){
         var specialty = "<?=$specialty;?>";
+        var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
+        var side_bar_user_filter_content = $('#js-service-selected-filter').html();
         var filters = "&specialty=" + specialty;
-
+        if (side_bar_user_list !== null && side_bar_user_filter_content !== "All"){
+            filters += "&surgeon_id="+side_bar_user_list[side_bar_user_filter_content];
+        }
         if ($('#js-chart-filter-diagnosis').html() !== "All") {
 
             if (specialty == "Medical Retina") {
