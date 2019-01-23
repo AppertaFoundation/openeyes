@@ -34,18 +34,20 @@
         } else {
             id = 'js-hs-chart-analytics-custom-left'
         }
+
         var custom_plot = document.getElementById(id);
         Plotly.newPlot(
             id, custom_data ,custom_layout, analytics_options
         );
+
         custom_plot.on('plotly_click', function (data) {
-            for(var i=0; i < data.points.length; i++){
+            for (var i = 0; i < data.points.length; i++) {
                 $('.analytics-charts').hide();
                 $('.analytics-patient-list').show();
                 $('.analytics-patient-list-row').hide();
                 var patient_show_list = data.points[i].customdata;
-                for (var j=0; j< patient_show_list.length; j++){
-                    $('#'+patient_show_list[j]).show();
+                for (var j = 0; j < patient_show_list.length; j++) {
+                    $('#' + patient_show_list[j]).show();
                 }
             }
         });

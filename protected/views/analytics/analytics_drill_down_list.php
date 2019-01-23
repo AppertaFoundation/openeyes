@@ -12,19 +12,19 @@
         </colgroup>
         <thead>
         <tr>
-            <th>Hospital No</th>
+            <th class="drill_down_patient_list">Hospital No</th>
             <th>Gender</th>
             <th>Age</th>
-            <th>Name</th>
+            <th class="drill_down_patient_list">Name</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($patient_list as $patient) { ?>
             <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generateEpisodeLink($patient)?>" style="display: none">
-                <td><?= $patient->hos_num; ?></td>
+                <td class="drill_down_patient_list"><?= $patient->hos_num; ?></td>
                 <td><?= $patient->gender; ?></td>
                 <td><?= $patient->getAge(); ?></td>
-                <td><?= $patient->getFullName(); ?></td>
+                <td class="drill_down_patient_list"><?= $patient->getFullName(); ?></td>
             </tr>
         <?php } ?>
         </tbody>

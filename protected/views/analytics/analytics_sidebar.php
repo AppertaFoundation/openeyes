@@ -23,8 +23,12 @@
         </ul>
         <!-- icon-btns -->
     </div>
+
     <div class="specialty"><?= $specialty ?></div>
     <?php if ($specialty !== 'Cataract'){?>
+    <div>
+        <input type="checkbox" id="js-chart-filter-global-anonymise">Anonymise
+    </div>
     <div class="service flex-layout">
         <?php if(isset($user_list)){?>
             <div class="service-selected" id="js-service-selected-filter">All</div>
@@ -284,7 +288,7 @@
             $('#js-all-surgeons').html('View current surgeons');
         }
     }
-    <?php }else{
+    <?php } else{
     $filter_eye_side = array('left' => 'right', 'right' => 'left');
     foreach(array_keys($filter_eye_side) as $side){?>
     $('#js-chart-filter-eye-side-' + '<?=$side;?>').click(function () {

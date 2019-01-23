@@ -87,8 +87,12 @@ $(document).ready(function () {
 
     });
 
-    $('update-chart-btn').on('click', function () {
-        console.log($('input').val());
+    $('#js-chart-filter-global-anonymise').on('click', function () {
+        if(this.checked){
+            $('.drill_down_patient_list').hide();
+        } else {
+            $('.drill_down_patient_list').show();
+        }
     });
 
     // update UI to show how Filter works

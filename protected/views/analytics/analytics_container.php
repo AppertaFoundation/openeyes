@@ -25,14 +25,13 @@
         }?>
     </div>
 
-    <?php
+        <?php
         if ($specialty !== 'Cataract'){
             $this->renderPartial('//analytics/analytics_drill_down_list', array(
-              'patient_list' => $patient_list
+                'patient_list' => $patient_list
             ));
         }
-    ?>
-
+        ?>
 </main>
 <?php if ($specialty === "Cataract"){?>
 <script>
