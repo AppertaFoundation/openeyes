@@ -131,39 +131,6 @@ if (!empty($subspecialty)) { ?>
         }
       });
     }
-
-    var plots = $('.plotly-section');
-    for (var j = 0; j < plots.length; j++) {
-      function get_hover_func(index){
-        return function (data) {
-          var pn = '', tn = '';
-          for (var i = 0; i < data.points.length; i++) {
-            pn = data.points[i].pointNumber;
-            tn = data.points[i].curveNumber;
-          }
-          var sizes = new Array(plots[index].data[tn].x.length).fill(10);
-          sizes[pn] = 15;
-          var update = {'marker': {size: sizes}};
-          Plotly.restyle(plots[index], update, [tn]);
-        }
-      }
-
-      function get_unhover_func(index){
-        return function (data) {
-          var pn='', tn='';
-          for(var i=0; i < data.points.length; i++){
-            pn = data.points[i].pointNumber;
-            tn = data.points[i].curveNumber;
-          }
-          var update = {'marker':{size:10}};
-          Plotly.restyle(plots[index], update, [tn]);
-        }
-      }
-      if (!$(plots[j]).hasClass('plotly-Meds')){
-        plots[j].on('plotly_hover', get_hover_func(j));
-        plots[j].on('plotly_unhover', get_unhover_func(j));
-      }
-    }
   });
 
 </script>
