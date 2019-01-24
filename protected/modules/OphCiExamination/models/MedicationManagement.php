@@ -257,11 +257,14 @@ class MedicationManagement extends BaseMedicationElement
 
             $original_item_id = $item->original_item_id;
             $orig_item = MedicationManagementEntry::model()->findByPk($original_item_id);
-            $orig_item->setAttribute('prescription_item_id', $item->id);
+            if($orig_item) {
+                $orig_item->setAttribute('prescription_item_id', $item->id);
 
-            if(!$orig_item->save()) {
-                \Yii::trace(print_r($orig_item->errors, true));
+                if(!$orig_item->save()) {
+                    \Yii::trace(print_r($orig_item->errors, true));
+                }
             }
+
 
         }
     }
