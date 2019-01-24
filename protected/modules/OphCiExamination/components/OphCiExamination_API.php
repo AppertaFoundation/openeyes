@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\components;
 
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\HistoryMedications;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -3115,5 +3116,54 @@ class OphCiExamination_API extends \BaseAPI
             ';
         }
         return $result;
+    }
+
+    public function getCurrentOphthalmicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            return $entry['route_id'] == 1;
+        };
+        $current_eye_meds = array_filter($entries['current'], $route_filter);
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-7">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="empty"></th>
+                    <th>Dose (unit)</th>
+                    <th>Eye</th>
+                    <th>Frequency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <tr>
+                        <td><?=$entry->getMedicationDisplay() ?></td>
+                        <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                        <td>
+                            <?php
+                                $laterality = $entry->getLateralityDisplay();
+                                \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?=$entry->frequency ? $entry->frequency : '';?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
     }
 }

@@ -313,6 +313,7 @@ return array(
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
+            'extended_valid_elements' => 'i[*]',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
