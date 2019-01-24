@@ -97,6 +97,8 @@
                     Research
                 </button>
             </div>
+
+            <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
                     <li>

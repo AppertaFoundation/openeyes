@@ -2,58 +2,70 @@
 
 function current_service_data_to_csv(){
     var data = $('#js-hs-chart-analytics-service')[0].data[0];
+    data.y = Array(data.y.length).fill('');
     var file_name = data.name;
-    csv_export(file_name,data);
+    csv_export(file_name,data,',weeks');
 }
 function current_custom_data_to_csv(){
     var side = ($('#js-chart-filter-eye-side-right').is(':checked')) ? 'right': 'left';
-    var data = $('#js-hs-chart-analytics-custom-'+side)[0].data[0];
+    var data = $('#js-hs-chart-analytics-custom-'+side)[0].data;
     var file_name = 'custom_data_'+side;
-    data.customdata = $('#js-hs-chart-analytics-custom-'+side)[0].data[0].customdata.concat($('#js-hs-chart-analytics-custom-'+side)[0].data[1].customdata);
-    csv_export(file_name,data);
+    if($('#side-bar-subspecialty-id').val() == 0) {
+        csv_export('va', data[0], ',week,va');
+        csv_export('crt', data[1], ',week,crt');
+    }else {
+        csv_export('va', data[0], ',week,va');
+        csv_export('iop', data[1], ',week,iop');
+    }
 }
 function current_clinical_data_to_csv(){
     var data = $('#js-hs-chart-analytics-clinical')[0].data[0];
+    var yaxis_text = $('#js-hs-chart-analytics-clinical')[0].layout.yaxis.ticktext;
+    data.x = Array(data.x.length).fill('');
+    data.y = yaxis_text;
     var file_name = data.name;
-    csv_export(file_name,data);
+    csv_export(file_name,data,',diagnosis');
 }
-function csv_export(filename,data){
+function csv_export(filename,data,csv_extra_column){
     var id_check = [];
-    var processData = function (customdata) {
+    var processData = function (x, y, customdata) {
         var finalVal = '';
         if (customdata.length > 0){
             for (var i = 0; i < customdata.length; i++) {
-                if (!id_check.includes(customdata[i])){
-                    id_check.push(customdata[i]);
-                    finalVal += id_check.length+',';
-                    var row = document.getElementById(customdata[i]);
-                    var cells = row.getElementsByTagName('td');
-                    for (j = 0;j < cells.length - 1; j++){
-                        finalVal += cells[j].innerHTML + ',';
-                    }
-                    finalVal = finalVal.slice(0,-1) + '\n';
+                id_check.push(customdata[i]);
+                finalVal += id_check.length+',';
+                var row = document.getElementById(customdata[i]);
+                var cells = ($('#js-chart-filter-global-anonymise').prop('checked')) ? row.getElementsByClassName('js-anonymise'):row.getElementsByClassName('js-csv-data');
+                for (j = 0;j < cells.length; j++){
+                    finalVal += cells[j].innerHTML + ',';
                 }
+                if (x !== ''){
+                    finalVal += x + ',';
+                }
+                if (y !== ''){
+                    finalVal += y;
+                }
+                finalVal += '\n';
             }
         }
         return finalVal;
     };
 
-    var csvFile = 'record_num, hos_num, firstname, surname, dob, gender, age\n';
+    var csvFile = ($('#js-chart-filter-global-anonymise').prop('checked')) ? 'record_num, gender, age'+csv_extra_column+'\n' : 'record_num, hos_num, firstname, surname, dob, gender, age'+csv_extra_column+'\n';
     for (var i = 0; i < data.customdata.length; i++) {
         var current_customdata = null;
         if (data.hasOwnProperty('customdata')){
             current_customdata = data.customdata[i];
         }
-        csvFile += processData(current_customdata);
+        csvFile +=  processData(data.x[i],data.y[i],current_customdata);
     }
 
     var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) { // IE 10+
+    if (navigator.msSaveBlob) {
         navigator.msSaveBlob(blob, filename);
     } else {
         var link = document.createElement("a");
-        if (link.download !== undefined) { // feature detection
-            // Browsers that support HTML5 download attribute
+        if (link.download !== undefined) {
             var url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
             link.setAttribute("download", filename);

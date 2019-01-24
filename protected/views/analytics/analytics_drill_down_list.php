@@ -21,12 +21,12 @@
         <tbody>
         <?php foreach ($patient_list as $patient) { ?>
             <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generateEpisodeLink($patient)?>" style="display: none">
-                <td class="drill_down_patient_list"><?= $patient->hos_num; ?></td>
-                <td style="display: none;"><?=$patient->first_name?></td>
-                <td style="display: none;"><?=$patient->last_name?></td>
-                <td style="display: none;"><?=$patient->dob?></td>
-                <td><?= $patient->gender; ?></td>
-                <td><?= $patient->getAge(); ?></td>
+                <td class="drill_down_patient_list js-csv-data"><?= $patient->hos_num; ?></td>
+                <td style="display: none;" class="js-csv-data"><?=$patient->first_name?></td>
+                <td style="display: none;" class="js-csv-data"><?=$patient->last_name?></td>
+                <td style="display: none;" class="js-csv-data"><?=$patient->dob?></td>
+                <td class="js-anonymise js-csv-data"><?= $patient->gender; ?></td>
+                <td class="js-anonymise js-csv-data"><?= $patient->getAge(); ?></td>
                 <td class="drill_down_patient_list"><?= $patient->getFullName(); ?></td>
             </tr>
         <?php } ?>
