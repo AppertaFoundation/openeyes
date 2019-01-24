@@ -212,6 +212,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
       $row.on("click", ".js-btn-prescribe", function () {
         var $btn = $(this);
+        if($btn.hasClass("js-readonly")) {
+            return false;
+        }
         var $input = $btn.find("input");
         var $icon = $btn.find("i");
 

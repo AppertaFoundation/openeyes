@@ -150,10 +150,8 @@ $is_new = isset($is_new) ? $is_new : false;
         <?php /* <a class="meds-stop-cancel-btn" href="javascript:void(0);" onclick="switch_alternative(this);">Cancel</a> */ ?>
     </td>
     <td>
-        <span class="icon-switch js-btn-prescribe">
-            <?php if($prescribe_access): ?>
-                <i  class="oe-i drug-rx js-prescribe js-has-tooltip" data-tooltip-content="Prescribe" <?php if($entry->prescribe){ echo 'style="opacity: 1"'; } ?>></i>
-            <?php endif; ?>
+        <span class="icon-switch js-btn-prescribe <?php if(!$prescribe_access): ?>js-readonly<?php endif; ?>">
+            <i  class="oe-i drug-rx js-prescribe js-has-tooltip" data-tooltip-content="Prescribe<?php if(!$prescribe_access): ?> (not allowed)<?php endif; ?>" <?php if($entry->prescribe){ echo 'style="opacity: 1"'; } ?>></i>
             <input type="hidden" name="<?= $field_prefix ?>[prescribe]" value="<?php echo (int)$entry->prescribe; ?>" />
         </span>
         <?php if ($removable) { ?>
