@@ -235,7 +235,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getLabel($short = false)
     {
-        $name =  $short ? $this->short_term : $this->preferred_term;
+        $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term): $this->preferred_term;
 
         if($this->isAMP()) {
             $name.=" (".$this->vtm_term.")";
