@@ -47,7 +47,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <tbody>
             <?php foreach ($current_systemic_meds as $entry): ?>
               <tr>
-                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td>
+                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                    <?= $entry->getMedicationDisplay() ?></td>
                   <td>
                       <?php if($entry->getDoseAndFrequency()) {?>
                           <i class="oe-i info small pro-theme js-has-tooltip"
@@ -79,7 +81,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <tbody style="display: none;">
             <?php foreach ($stopped_systemic_meds as $entry): ?>
               <tr>
-                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td>
+                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                    <?= $entry->getMedicationDisplay() ?></td>
                 <td><span class="oe-date"><?= $entry->getEndDateDisplay() ?></span></td>
                 <td>
                     <?php if ($entry->usage_type == 'OphDrPrescription'): ?>
@@ -112,7 +116,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tbody>
               <?php foreach ($current_eye_meds as $entry): ?>
                 <tr>
-                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td>
+                      <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                      <?= $entry->getMedicationDisplay() ?></td>
                   <td>
                       <?php $laterality = $entry->getLateralityDisplay();
                       $this->widget('EyeLateralityWidget', array('laterality' => $laterality));
@@ -146,7 +152,9 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tbody style="display: none;">
               <?php foreach ($stopped_eye_meds as $entry): ?>
                 <tr>
-                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td>
+                      <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                      <?= $entry->getMedicationDisplay() ?></td>
                     <td>
                         <?php $laterality = $entry->getLateralityDisplay();
                         $this->widget('EyeLateralityWidget', array('laterality' => $laterality));

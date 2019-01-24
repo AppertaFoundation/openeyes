@@ -60,7 +60,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
         <div class="medication-display">
             <span class="js-prepended_markup">
             <?php if(!is_null($entry->medication_id)) {
-                echo $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
+                $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id));
             }
             else {
                 echo "{{& prepended_markup}}";

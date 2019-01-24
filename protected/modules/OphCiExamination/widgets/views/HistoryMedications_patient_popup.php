@@ -35,7 +35,10 @@
                 <?php if ($current) { ?>
                     <?php foreach ($current as $entry) { ?>
                         <tr>
-                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                            <td><strong>
+                                    <? $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                    <?= $entry->getMedicationDisplay() ?>
+                                </strong>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
@@ -52,7 +55,9 @@
                     </tr>
                     <?php foreach ($stopped as $entry) { ?>
                         <tr class="stopped-kind" style="display: none;">
-                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                            <td><strong>
+                                    <?php $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); ?>
+                                    <?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item_id) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
