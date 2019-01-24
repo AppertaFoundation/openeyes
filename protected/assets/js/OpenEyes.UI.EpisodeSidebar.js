@@ -151,15 +151,6 @@
         }
     }
 
-      function getFirstImageToLoadIndex(index, imageCount) {
-          let halfImageCount = imageCount / 2;
-          if (halfImageCount >= index) {
-              return 1;
-          } else {
-              return index - halfImageCount;
-          }
-      }
-
         self.element.on('click', '.collapse-group-icon i.plus', function (e) {
             self.expandGrouping($(e.target).parents('.collapse-group'));
             e.preventDefault();
