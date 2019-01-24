@@ -168,7 +168,7 @@ class ProcedureController extends BaseAdminController
             'opcs_code' => OPCSCode::model()->findAll(),
             'benefits' => Benefit::model()->findAll(),
             'complications' => Complication::model()->findAll(),
-            'notes' => ElementType::model()->findAll(),
+            'notes' => ElementType::model()->findAll('event_type_id=?', array(EventType::model()->find('class_name=?', array('OphTrOperationnote'))->id)),
             'errors' => $errors,
         ));
     }
