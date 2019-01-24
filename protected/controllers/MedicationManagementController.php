@@ -76,7 +76,7 @@
                     $tooltip = $infoBox->getHTML();
 
                     $ret_data[] = array_merge($med->getAttributes(), [
-                            'label' => $med->getLabel(),
+                            'label' => $med->getLabel(). ($med->isMemberOf("Formulary") ? " (*)" : ""),
                             'dose_unit_term' => $med_set_item->default_dose_unit_term,
                             'dose' => $med_set_item->default_dose,
                             'default_form' => $med_set_item->default_form_id,

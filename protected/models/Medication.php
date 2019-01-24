@@ -344,4 +344,25 @@ class Medication extends BaseActiveRecordVersioned
 
     }
 
+    /**
+     * Returns whether the medication belongs to a set
+     * marked with $usage_code in the current context
+     *
+     * @param $usage_code
+     * @return bool
+     */
+
+    public function isMemberOf($usage_code)
+    {
+        foreach ($this->getMedicationSetsForCurrentSubspecialty() as $medicationSet) {
+            foreach ($medicationSet->medicationSetRules as $rule) {
+                if($rule->usage_code == $usage_code) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }
