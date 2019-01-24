@@ -258,7 +258,12 @@ class EventMedicationUse extends BaseElement
 
     public function getMedicationDisplay($short = false)
     {
-        return isset($this->medication) ? ($short ? $this->medication->short_term : $this->medication->preferred_term) : '';
+        if(!isset($this->medication)) {
+            return "";
+        }
+        else {
+            return $this->medication->getLabel($short);
+        }
     }
 
     public function routeOptions()

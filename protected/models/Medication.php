@@ -233,13 +233,19 @@ class Medication extends BaseActiveRecordVersioned
      * @return string
      */
 
-    public function getLabel()
+    public function getLabel($short = false)
     {
-        if ($this->isPreservativeFree()) {
-            return $this->preferred_term.' (No Preservative)';
-        } else {
-            return $this->preferred_term;
+        $name =  $short ? $this->short_term : $this->preferred_term;
+
+        if($this->isAMP()) {
+            $name.=" (".$this->vtm_term.")";
         }
+
+        if ($this->isPreservativeFree()) {
+            $name.= ' (No Preservative)';
+        }
+
+        return $name;
     }
 
     /**
