@@ -94,5 +94,13 @@
             echo CJSON::encode($ret_data);
         }
 
+        public function actionGetInfoBox($medication_id)
+        {
+            $infoBox = new MedicationInfoBox();
+            $infoBox->medication_id = $medication_id;
+            $infoBox->init();
+            $infoBox->run();
+        }
+
 
     }

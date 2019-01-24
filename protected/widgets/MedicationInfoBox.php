@@ -67,27 +67,32 @@
                 $this->error = true;
             }
             else {
-                /** @var Medication $medication */
+
                 $data = [
                     'label' => $medication->getLabel(),
-                    'Code' => $medication->preferred_code,
-                    'Sets' => implode(', ', array_map(function ($e){
-                            return $e->name;
-                        } , $medication->getMedicationSetsForCurrentSubspecialty())),
-                    'Alternative terms' => $medication->alternativeTerms(),
                 ];
 
-                if($medication->vtm_term != "") {
-                    $data['VTM Term'] = $medication->vtm_term;
+                /** @var Medication $medication */
+                if($medication->isAMP()) {
+                    $data['Type'] = "Branded Product (AMP)";
+                    $data['Generic'] = $medication->vmp_term;
+                    $data['Moiety'] = $medication->vtm_term;
+                }
+                elseif ($medication->isVMP()) {
+                    $data['Type'] = "Generic Product (VMP)";
+                    $data['Moiety'] = $medication->vtm_term;
+                }
+                elseif($medication->isVTM()) {
+                    $data['Type'] = "Virtual Therapeutic Moiety (VTM)";
+                }
+                else {
+                    $data['Type'] = "Unknown";
                 }
 
-                if($medication->vmp_term != "") {
-                    $data['VMP Term'] = $medication->vmp_term;
-                }
+                $data['Sets'] = implode(', ', array_map(function ($e){
+                    return $e->name;
+                } , $medication->getMedicationSetsForCurrentSubspecialty()));
 
-                if($medication->amp_term != "") {
-                    $data['AMP Term'] = $medication->amp_term;
-                }
             }
 
             return $data;

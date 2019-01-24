@@ -49,7 +49,9 @@ $to_be_copied = !$entry->originallyStopped && $entry->medication->getToBeCopiedI
         <input type="hidden" name="<?= $field_prefix ?>[to_be_copied]" class="js-to-be-copied" value="<?php echo (int)$to_be_copied; ?>" />
       <span class="medication-display">
         <span class="medication-name">
+            <span class="js-prepended_markup">
             <?php if(!is_null($entry->medication_id)) { $this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id)); } ?>
+            </span>
           <?= $entry->getMedicationDisplay() ?>
         </span>
       </span>

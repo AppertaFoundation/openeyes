@@ -42,7 +42,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'group',
           'hidden',
           'prescription_item_id',
-          'to_be_copied'
+          'to_be_copied',
+          'prepended_markup',
       ];
 
     this.initialiseFilters();
@@ -319,15 +320,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var obj = {};
         $.each(this.fields, function(i, field){
             var $element = $row.find("[name$='[entries]["+rc+"]["+field+"]']");
+            var elementval = $element.val();
             if(typeof old_values !== "undefined" && old_values) {
                 var oldval = $element.attr("data-oldvalue");
-                obj[field] = typeof oldval !== "undefined" ? oldval : $element.val();
+                obj[field] = typeof oldval !== "undefined" ? oldval : elementval;
             }
             else {
-                obj[field] =  $element.val();
+                obj[field] =  elementval;
             }
         });
-
         return obj;
     };
 
@@ -373,6 +374,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.boundController.initialiseRow($row);
         this.boundController.setRowData($row, data);
+
+        $row.find(".js-prepended_markup:visible").load("/medicationManagement/getInfoBox?medication_id="+data.medication_id);
 
         return $row;
     };
@@ -555,6 +558,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 frequency_id: selectedItems[i].frequency,
                 will_copy: selectedItems[i].will_copy,
                 to_be_copied: selectedItems[i].will_copy,
+                prepended_markup: selectedItems[i].prepended_markup
             };
         });
 
