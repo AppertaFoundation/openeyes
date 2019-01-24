@@ -1,5 +1,4 @@
-<div id="js-hs-chart-analytics-service">
-</div>
+<div id="js-hs-chart-analytics-service"></div>
 
 <script type="text/javascript">
 

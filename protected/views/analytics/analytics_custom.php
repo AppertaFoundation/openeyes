@@ -1,9 +1,7 @@
 
-<div id="js-hs-chart-analytics-custom-right" style="display: none">
-
-</div>
-<div id="js-hs-chart-analytics-custom-left" style="display: none">
-
+<div id="js-hs-chart-analytics-custom">
+    <div id="js-hs-chart-analytics-custom-right" style="display: none"></div>
+    <div id="js-hs-chart-analytics-custom-left" style="display: none"></div>
 </div>
 <script type="text/javascript">
     var custom_layout, custom_data;
@@ -18,10 +16,7 @@
         };
         plot(true,custom_layout,custom_data[1]);
         plot(false,custom_layout,custom_data[0])
-
     });
-
-
     function plot(right,custom_layout, custom_data){
         var id;
         if (right){

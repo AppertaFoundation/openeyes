@@ -529,14 +529,6 @@ class AnalyticsController extends BaseController
                           $patient_list[$current_patient->id] = array();
                       }
 
-                      if (isset($this->filters['treatment'])){
-                          if ($current_treatment_left !== $this->filters['treatment']){
-                              $left_reading = false;
-                          }
-                          if ($current_treatment_right !== $this->filters['treatment']){
-                              $right_reading = false;
-                          }
-                      }
                       if (isset($this->filters['diagnosis'])){
                           if (!empty($current_diagnoses_left)){
                               $i = 1;

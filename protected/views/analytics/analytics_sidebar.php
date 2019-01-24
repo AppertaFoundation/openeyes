@@ -73,7 +73,7 @@
                     $clinical_button_disable = false;
                 }?>
                 <button class="analytics-section pro-theme cols-3 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
-                        data-section="#js-hs-chart-analytics-clinical"
+                        data-section="#js-hs-chart-analytics-clinical-main"
                         data-tab="#js-charts-clinical">
                     Clinical
                 </button>
@@ -369,10 +369,10 @@
             var chart = $('#'+custom_charts[i])[0];
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];
-            chart.data[0]['customdata'] = custom_data[0][0]['customdata'];
+            chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
             chart.data[1]['x'] = custom_data[i][1]['x'];
             chart.data[1]['y'] = custom_data[i][1]['y'];
-            chart.data[1]['customdata'] = custom_data[0][1]['customdata'];
+            chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             Plotly.redraw(chart);
         }
         <?php if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id))){?>

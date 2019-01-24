@@ -63,6 +63,9 @@ $(document).ready(function () {
         $(this).addClass('selected');
         $($(this).data('section')).show();
         $($(this).data('tab')).show();
+        $('.analytics-charts').show();
+        $('.analytics-patient-list').hide();
+        $('.analytics-patient-list-row').hide();
     });
 
     $('.oe-filter-options').each(function(){
