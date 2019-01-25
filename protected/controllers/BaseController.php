@@ -412,13 +412,14 @@ class BaseController extends Controller
     }
 
     public function sanitizeInput($input){
+        $allowable_tags = "<b><table><hr>";
         if(count($input) > 0){
             foreach ($input as $key => $value) {
                 if(is_array($value) || is_object($value)){
                     $input[$key] = $this->sanitizeInput($value);
                     continue;
                 }
-                $value = CHtml::encode($value);
+                $value = CHtml::encode(strip_tags($value, $allowable_tags));
                 $input[$key] = $value;
             }
         }
