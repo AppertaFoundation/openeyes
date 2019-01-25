@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ## Installs and configures additional packages needed to build openeyes components
 ## In a docker environment, these can be installed on the developer machine to

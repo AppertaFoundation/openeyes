@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ### Copies contents of .cron to /etc/cron.d and expands variables
 
