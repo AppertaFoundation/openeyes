@@ -15,6 +15,7 @@ $(document).ready(function () {
     });
 
 
+
     //select tag between clinic, custom and service
     $('.analytics-section').on('click', function () {
         $('.analytics-section').each(function () {

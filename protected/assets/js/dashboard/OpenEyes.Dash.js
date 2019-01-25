@@ -368,6 +368,46 @@
             });
 
             Plotly.redraw(chart);
+        },
+        'NodAuditReport': function(data){
+            var chart = $('#NodAuditReport')[0];
+            var completedData = [
+                data['VA']['pre-complete'],
+                data['VA']['post-complete'],
+                data['RF']['pre-complete'],
+                data['RF']['post-complete'],
+                data['BM']['pre-complete'],
+                data['PRE-EXAM']['pre-complete'],
+                data['PCR_RISK']['known'],
+                data['COMPLICATION']['post-complete'],
+                data['INDICATION_FOR_SURGERY']['complete'],
+                data['E/I']['eligible'],
+            ];
+            var incompletedData = [
+                data['VA']['pre-incomplete'],
+                data['VA']['post-incomplete'],
+                data['RF']['pre-incomplete'],
+                data['RF']['post-incomplete'],
+                data['BM']['pre-incomplete'],
+                data['PRE-EXAM']['pre-incomplete'],
+                data['PCR_RISK']['not_known'],
+                data['COMPLICATION']['post-incomplete'],
+                data['INDICATION_FOR_SURGERY']['incomplete'],
+                data['E/I']['ineligible'],
+            ];
+            chart.data[1]['y'] = completedData.map(function (item) {
+                return item.length;
+            });
+            chart.data[0]['y'] = incompletedData.map(function (item) {
+                return item.length;
+            });
+            chart.data[1]['customdata'] = completedData.map(function (item) {
+                return item;
+            });
+            chart.data[0]['customdata'] = incompletedData.map(function (item) {
+                return item;
+            });
+            Plotly.redraw(chart);
         }
     };
 
