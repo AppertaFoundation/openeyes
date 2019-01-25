@@ -629,6 +629,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function initActionCreate()
     {
+        $_REQUEST = $this->sanitizeInput($_REQUEST);
         $this->moduleStateCssClass = 'edit';
 
         $this->setPatient($_REQUEST['patient_id']);

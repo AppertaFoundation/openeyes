@@ -410,4 +410,18 @@ class BaseController extends Controller
     {
         parent::setPageTitle($pageTitle . ' - OE');
     }
+
+    public function sanitizeInput($input){
+        if(count($input) > 0){
+            foreach ($input as $key => $value) {
+                if(is_array($value) || is_object($value)){
+                    $input[$key] = $this->sanitizeInput($value);
+                    continue;
+                }
+                $value = CHtml::encode($value);
+                $input[$key] = $value;
+            }
+        }
+        return $input;
+    }
 }
