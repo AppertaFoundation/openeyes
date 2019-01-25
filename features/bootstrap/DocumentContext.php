@@ -94,7 +94,7 @@ class DocumentContext extends PageObjectContext
         $document->uploadRightFile($file_path);
     }
     /**
-     * @Then/^I upload Left file "([^"]*)"$/
+     * @Then/^I upload left file "([^"]*)"$/
      */
     public function iUploadLeftFile($file_path){
         /**
