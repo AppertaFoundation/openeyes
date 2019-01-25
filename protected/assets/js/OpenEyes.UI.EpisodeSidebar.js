@@ -127,10 +127,29 @@
             e.preventDefault();
         });
 
-        self.element.on('click', '.collapse-group-icon i.minus', function (e) {
-            self.collapseGrouping($(e.target).parents('.collapse-group'));
-            e.preventDefault();
-        });
+    self.element.on('click', '.expand-all', function (e) {
+      self.expandAll();
+      e.preventDefault();
+    });
+
+    self.element.on('click', '.collapse-group-icon i.minus', function (e) {
+      self.collapseGrouping($(e.target).parents('.collapse-group'));
+      e.preventDefault();
+    });
+
+    self.element.on('click', '.collapse-group-icon i.plus', function (e) {
+      self.expandGrouping($(e.target).parents('.collapse-group'));
+      e.preventDefault();
+    });
+
+    if ($selected_event.length) {
+        let li_offset_top = $selected_event[0].offsetTop;
+        let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
+
+        if (li_offset_top) {
+          this.element[0].scrollTop = (li_offset_top - height_offset);
+        }
+    }
 
         self.element.on('click', '.collapse-group-icon i.plus', function (e) {
             self.expandGrouping($(e.target).parents('.collapse-group'));
