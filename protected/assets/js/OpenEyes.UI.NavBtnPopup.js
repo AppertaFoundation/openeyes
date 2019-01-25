@@ -57,7 +57,21 @@
 					}
             popup.button.removeClass(popup.css.active);
             if (popup.useMouseEvents) {
-                popup.hide();
+                let closeContent = true;
+                // Check if the mouse is over the content
+                popup.content.mouseover(function(){
+                    closeContent = false;
+                }).mouseleave(function(){
+                    popup.hide();
+                });
+
+                // the timeout is to prevent the content box from closing as soon it stops hovering over the btn
+                setTimeout(function(){
+                    if(closeContent){
+                        // Close if mouse leaves btn
+                        popup.hide();
+                    }                   
+                },10)
             }
         });
         popup.hide();

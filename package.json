@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "plotly.js-dist": "^1.41.3",
-    "tinymce": "^4.8.2"
+    "tinymce": "^4.8.2",
+    "lodash": "^4.17.4"
   }
 }

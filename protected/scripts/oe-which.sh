@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Shows which branch each module is currently using
 
