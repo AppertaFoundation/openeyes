@@ -314,6 +314,7 @@ return array(
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
             'extended_valid_elements' => 'i[*]',
+            'valid_elements' => '*[*]',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
