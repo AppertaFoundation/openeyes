@@ -389,7 +389,6 @@ return array(
                   'uri' => '/Analytics/medicalRetina',
                   'position' => 11,
                 ),
-          // temporarily disabled
                 'worklist' => array(
                   'title' => 'Worklists',
                   'uri' => '/worklist',

@@ -8,17 +8,11 @@
                 <a href="/analytics/cataract" class="active <?= $specialty == 'Cataract' ? 'selected' : '' ?>">CA</a>
             </li>
             <li class="icon-btn">
-                <a href="/analytics/ad" class="inactive">AD</a>
-            </li>
-            <li class="icon-btn">
                 <a href="/analytics/glaucoma" class="active <?= $specialty == 'Glaucoma' ? 'selected' : '' ?>">GL</a>
             </li>
             <li class="icon-btn analytics-btn" data-specialty="Medical Retina">
                 <a href="/analytics/medicalRetina"
                    class="active <?= $specialty == 'Medical Retina' ? 'selected' : '' ?>">MR</a>
-            </li>
-            <li class="icon-btn analytics-btn" data-specialty="">
-                <a href="/analytics/vitreoretinal" class="inactive">VR</a>
             </li>
         </ul>
         <!-- icon-btns -->

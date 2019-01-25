@@ -3,7 +3,7 @@
 class AnalyticsController extends BaseController
 {
     const DAYTIME_ONE = 86400;
-    const DAYTIME_THREE = self::DAYTIME_ONE * 3;
+    const DAYTIME_THREE = 259200;
     const WEEKTIME = 604800;
     const PERIOD_DAY = 1;
     const PERIOD_WEEK = 7;
@@ -247,36 +247,6 @@ class AnalyticsController extends BaseController
     );
   }
 
-  public function actionVitreoretinal(){
-      $subspecialty_id = $this->getSubspecialtyID('Vitreoretinal');
-      $disorder_data = $this->getDisorders($subspecialty_id);
-      $clinical_data = array(
-          'title' => 'Disorders Section',
-          'x' => $disorder_data['x'],
-          'y' => $disorder_data['y'],
-          'text' => $disorder_data['text']
-      );
-      $this->render('/analytics/analytics_container',
-        array(
-            'specialty'=>'Vitreoretinal',
-            'clinical_data'=> $clinical_data,
-            'service_data'=> array(),
-            'custom_data' => array(),
-            'patient_list' => $this->patient_list
-        )
-    );
-  }
-
-  public function actionAd(){
-    $this->render('/analytics/analytics_container',
-        array(
-            'specialty'=>'AD',
-            'clinical_data'=> array(),
-            'service_data'=> array(),
-            'custom_data' => array()
-        )
-    );
-  }
 
   public function sortByTime($a, $b){
       if($a['event_time']==$b['event_time'])

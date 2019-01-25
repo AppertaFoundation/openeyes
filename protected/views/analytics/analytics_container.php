@@ -1,5 +1,5 @@
 
-
+<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 
 <main class="oe-analytics flex-layout flex-top " style="width: 1440px;">

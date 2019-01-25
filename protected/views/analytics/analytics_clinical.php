@@ -1,4 +1,3 @@
-<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <button id="js-back-to-common-disorder" class="selected" style="display: none">Back to common disorders</button>
 <div id="js-hs-chart-analytics-clinical" style="display: none">
 </div>

@@ -1,9 +1,4 @@
 
-
-<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
-<?php
-?>
-
 <div id="js-hs-chart-analytics-custom-right" style="display: none">
 
 </div>

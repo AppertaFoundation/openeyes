@@ -1,5 +1,3 @@
-<script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
-
 <div id="js-hs-chart-analytics-service">
 </div>
 
