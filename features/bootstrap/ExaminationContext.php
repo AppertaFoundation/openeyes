@@ -217,7 +217,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination = $this->getPage('Examination');
-        $examination->openHistory();
+//        $examination->openHistory();
         $examination->openAllergies();
     }
 
