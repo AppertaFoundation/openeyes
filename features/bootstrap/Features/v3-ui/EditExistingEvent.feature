@@ -16,8 +16,11 @@ Feature: Document test
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
     Then I select the event "<event_id>"
-    Then I edit the event
+    Then I edit the existing event
+    Then I Add Allergy "<allergy>"
+    Then I Save the Event
+
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|      event_id      |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |    4686458         |
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|    event_id      | allergy |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |    3686613       |Other    |
