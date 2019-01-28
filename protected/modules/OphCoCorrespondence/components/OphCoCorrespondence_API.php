@@ -170,7 +170,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefraction(\Patient $patient, $side, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return Yii::app()->format->text($element->getCombined($side));
         }
         return null;
@@ -185,7 +186,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefractionDate(\Patient $patient, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return $element->event->event_date;
         }
         return null;
@@ -200,7 +202,8 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
-        if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+        $element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context);
+        if ($element){
             return $element->eye->adjective;
         }
     }
