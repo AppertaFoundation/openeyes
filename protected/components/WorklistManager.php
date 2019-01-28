@@ -895,7 +895,7 @@ class WorklistManager extends CComponent
         if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
             $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
 
-            return $this->renderPartial('//worklist/dashboard', array(
+            return $this->renderPartial('//worklist/_worklist', array(
                     'worklist' => $worklist,
                     'worklist_patients' => $this->getPatientsForWorklist($worklist),
                 )
