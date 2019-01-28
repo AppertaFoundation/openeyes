@@ -35,7 +35,7 @@ $required_risk_ids = array_map(function ($r) {
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <table
-        class="<?= $model_name ?>_entry_table cols-full <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : '' ?>">
+        class="<?= $model_name ?>_entry_table cols-full">
       <colgroup>
         <col class="cols-3">
         <col class="cols-4">
@@ -52,6 +52,7 @@ $required_risk_ids = array_map(function ($r) {
               </label>
          </td>
       </tr>
+      <?php if (count($element->entries) || count($missing_req_risks)): ?>
       <?php
       $row_count = 0;
       foreach ($missing_req_risks as $entry) {
@@ -85,8 +86,8 @@ $required_risk_ids = array_map(function ($r) {
               )
           );
           $row_count++;
-      }
-      ?>
+      } ?>
+      <?php endif ?>
       </tbody>
     </table>
   </div>
