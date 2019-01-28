@@ -143,7 +143,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
         }, $element->drugTypes())
     ) ?>;
 
+    <?php if(isset($this->patient)){ ?>
     var patientAllergies = <?= CJSON::encode( $this->patient->getAllergiesId()); ?>
+    <?php } ?>
 
 </script>
 
