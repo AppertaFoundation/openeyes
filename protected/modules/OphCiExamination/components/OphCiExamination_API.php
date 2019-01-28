@@ -3139,7 +3139,7 @@ class OphCiExamination_API extends \BaseAPI
         ?>
         <table class="standard borders current-ophtalmic-drugs">
             <colgroup>
-                <col class="cols-7">
+                <col class="cols-5">
             </colgroup>
             <thead>
                 <tr>
@@ -3147,6 +3147,7 @@ class OphCiExamination_API extends \BaseAPI
                     <th>Dose (unit)</th>
                     <th>Eye</th>
                     <th>Frequency</th>
+                    <th>Until</th>
                 </tr>
             </thead>
             <tbody>
@@ -3163,6 +3164,7 @@ class OphCiExamination_API extends \BaseAPI
                         <td>
                             <?=$entry->frequency ? $entry->frequency : '';?>
                         </td>
+                        <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
