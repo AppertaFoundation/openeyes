@@ -27,7 +27,7 @@ class EventImageController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('view', 'create','getImageInfo', 'getImageUrl'),
+                'actions' => array('view', 'create','getImageInfo', 'getImageUrl', 'getImageUrlsBulk'),
                 'users' => array('@'),
             ),
             array(
@@ -40,13 +40,15 @@ class EventImageController extends BaseController
     public function actionGetImageUrl($event_id, $return_value = false)
     {
         $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-        // If the event image doesn't already exist
         $event_image = EventImage::model()->find('event_id = ? AND status_id = ?',
             array($event_id, $created_image_status_id));
         $event = Event::model()->findByPk($event_id);
-        if (!isset($event_image) || isset($event) && $event_image->last_modified_date < $event->last_modified_date) {
+        // If the event image doesn't already exist
+        if (!isset($event_image) ||
+            (isset($event) && ($event_image->last_modified_date < $event->last_modified_date))
+        ) {
             // Then try to make it
-            EventImageManager::actionGenerateImage($event);
+            EventImageManager::actionGenerateImage($event->id);
         }
 
         // Check again to see if it exists (an error might have occurred during generation)
@@ -62,6 +64,51 @@ class EventImageController extends BaseController
         }
         // otherwise return nothing
         return '';
+    }
+
+    /**
+     * Get all the event image urls that are current and the remaining event ids
+     *
+     * @uses $_GET['event_ids']
+     *
+     * @return string {"done_urs":[], "remaining_event_ids":[]}
+     */
+    public function actionGetImageUrlsBulk(){
+        $event_ids = CJSON::decode($_GET['event_ids']);
+        $remaining_event_ids = null;
+        $generated_image_event_ids = array();
+        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
+
+        $criteria = new CDbCriteria();
+        $criteria->select = 't.event_id';
+        $criteria->compare('status_id', $created_image_status_id);
+        $criteria->addInCondition('event_id', $event_ids);
+        $criteria->compare('t.last_modified_date', '>= e.last_modified_date');
+        $criteria->addCondition('(t.page = 0 OR t.page IS NULL)');
+        $criteria->join = 'join event e on t.event_id = e.id ';
+        $criteria->order = 'event_date DESC';
+
+        /**
+         * @var $event_images CActiveRecord
+         */
+        $event_images = EventImage::model()->findAll($criteria);
+
+        foreach ($event_images as $event_image){
+            $generated_image_event_ids[] = $event_image->event_id;
+        }
+
+        $remaining_event_ids = array_diff($event_ids, $generated_image_event_ids);
+        $generated_image_urls = array();
+        foreach ($generated_image_event_ids as $id){
+            $generated_image_urls[$id] = $this->createUrl('view', array('id' => $id));
+        }
+
+        echo \CJSON::encode(
+            array(
+                'generated_image_urls' => $generated_image_urls,
+                'remaining_event_ids' => $remaining_event_ids
+            )
+        );
     }
 
     public function actionGetImageInfo($event_id)

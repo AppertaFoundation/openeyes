@@ -137,7 +137,9 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
           this.$table.find('tbody').append(rows[i]);
 
           let $operation = this.$table.find('tbody tr:last').find('.common-operation');
-          $operation.prop('readonly' , $operation.val());
+            if (!$operation.val()) {
+                $operation.prop('type', 'text');
+            }
 
           this.setDatepicker();
         }

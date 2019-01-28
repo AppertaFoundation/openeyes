@@ -9,4 +9,14 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    $('textarea').autosize();
+
+    // restrict the number of characters to be inserted into the textarea
+    $('#Element_OphInLabResults_Inr_comment').live("keypress", function(e) {
+        // carriage return /r/n is considered 2 characters; compute the real length
+        let countCharacters = $(this).val().replace(/(\r\n|\n|\r)/g, '--').length;
+        if (countCharacters >= 254) {
+            e.preventDefault();
+        }
+    });
 });

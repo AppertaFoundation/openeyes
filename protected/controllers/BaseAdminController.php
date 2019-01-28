@@ -90,6 +90,7 @@ class BaseAdminController extends BaseController
             'label_extra_field' => false,
             'description' => '',
             'div_wrapper_class' => 'cols-full',
+            'return_url' => false,
         ), $options);
 
         $columns = $model::model()->metadata->columns;
@@ -235,7 +236,12 @@ class BaseAdminController extends BaseController
 
                         Yii::app()->user->setFlash('success', 'List updated.');
 
-                        $this->redirect(Yii::app()->request->url);
+                        if($options['return_url']) {
+                            $this->redirect($options['return_url']);
+                        } else {
+                            $this->redirect(Yii::app()->request->url);
+                        }
+
                     } else {
                         $tx->rollback();
                     }

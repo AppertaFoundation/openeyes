@@ -36,6 +36,7 @@ foreach ($this->patient->episodes as $ep) {
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
             'subspecialty' => $ep->getSubspecialtyText(),
+            'is_glaucoma' => isset($diagnosis->term)? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
         ];
     }
 }
@@ -47,6 +48,7 @@ foreach ($this->patient->episodes as $ep) {
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
     <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="glaucoma_diagnoses[]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
@@ -150,6 +152,7 @@ foreach ($this->patient->episodes as $ep) {
         itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($disorder_item) {
                 return [
+                        'type' => $disorder_item['type'],
                         'label' => $disorder_item['label'],
                     'id' => $disorder_item['id'] ,
                     'is_glaucoma' => $disorder_item['is_glaucoma'],
@@ -161,8 +164,22 @@ foreach ($this->patient->episodes as $ep) {
         searchOptions: {
           searchSource: diagnosesController.options.searchSource,
         },
-        onReturn: function (adderDialog, selectedItems) {
-          diagnosesController.addEntry(selectedItems);
+        onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+            var diag = [];
+            for (let i in selectedItems) {
+                let item = selectedItems[i];
+                // If common item is a 'finding', we add it to the findings element instead
+                // Otherwise treat it as a diagnosis
+                if (item.type === 'finding') {
+                    OphCiExamination_AddFinding(item.id, item.label);
+                } else {
+                    diag.push(item);
+                }
+            }
+            diagnosesController.addEntry(diag);
+            if(selectedAdditions){
+              diagnosesController.addEntry(selectedAdditions);
+            }
           return true;
         }
       });

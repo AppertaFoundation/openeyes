@@ -1102,6 +1102,7 @@ $(document).ready(function() {
 
         OphCiExamination_RefreshCommonOphDiagnoses();
 
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
         return false;
     });
 
@@ -1957,6 +1958,10 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
                 break;
+            case 'reset':
+            case 'resetEdit':
+                $(drawing.canvasParent).closest('.ed-body').find('select.gonioExpert').val(2).trigger('change');
+            break;
         }
     };
     drawing.registerForNotifications(this);
