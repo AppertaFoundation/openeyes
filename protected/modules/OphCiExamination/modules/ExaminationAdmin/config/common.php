@@ -16,7 +16,7 @@
 $config = [
     'params' => [
         'admin_menu' => [
-            'Element Attributes' => array('OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'),
+            'Element Attributes' => ['OphCiExamination' => '/oeadmin/ExaminationElementAttributes/list'],
             'Workflows' => '/OphCiExamination/admin/viewWorkflows',
             'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
             'Allergies' => '/OphCiExamination/admin/Allergies',
@@ -25,7 +25,7 @@ $config = [
             'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',
             'Required Systemic Diagnoses Assignment' => '/OphCiExamination/admin/systemicDiagAssignment/index',
             'Required Surgical History Assignment' => '/OphCiExamination/admin/SurgicalHistoryAssignment/index',
-            'Surgical History' => array('OphCiExamination' => '/admin/editpreviousoperation'),
+            'Surgical History' => ['OphCiExamination' => '/admin/editpreviousoperation'],
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',
             'Comorbidities' => '/OphCiExamination/admin/manageComorbidities',
