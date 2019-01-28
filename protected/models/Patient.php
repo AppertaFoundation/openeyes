@@ -293,10 +293,10 @@ class Patient extends BaseActiveRecordVersioned
             'date_of_death' => 'Date of Death',
             'gender' => 'Gender',
             'ethnic_group_id' => 'Ethnic Group',
-            'hos_num' => 'Hospital Number',
-            'nhs_num' => Yii::app()->params['nhs_num_label'].' Number',
+            'hos_num' => Yii::app()->params['hos_num_label'],
+            'nhs_num' => Yii::app()->params['nhs_num_label'],
             'deleted' => 'Is Deleted',
-            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Number Status',
+            'nhs_num_status_id' => Yii::app()->params['nhs_num_label'].' Status',
             'gp_id' => Yii::app()->params['general_practitioner_label'],
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient?',
@@ -961,8 +961,8 @@ class Patient extends BaseActiveRecordVersioned
         if (!$info) {
             $info = new PatientOphInfo();
             $info->patient_id = $this->id;
-            // only interested in yyyy mm dd for the cvi date
-            $info->cvi_status_date = substr($this->created_date, 0, 10);
+            // date is unknown, set as null
+            $info->cvi_status_date = null;
             $info->cvi_status_id = 1;
         }
 

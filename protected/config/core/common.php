@@ -313,6 +313,8 @@ return array(
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
+            'extended_valid_elements' => 'i[*]',
+            'valid_elements' => '*[*]',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
@@ -365,6 +367,12 @@ return array(
                     'uri' => 'patient/create',
                     'position' => 46,
                     'restricted' => array('TaskAddPatient'),
+                ),
+                'practices' => array(
+                    'title' => 'Practices',
+                    'uri' => 'practice/index',
+                    'position' => 11,
+                    'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
                 ),
                 'forum' => array(
                     'title' => 'FORUM',
@@ -576,7 +584,8 @@ return array(
                 // 'display_if_empty' => false,
             ),
         ),*/
-
+        'hos_num_label' => 'Hospital',
+        'nhs_num_label' => 'NHS',
       'ethnic_group_filters' => array(
         'Indigenous Australian',
         'Greek',

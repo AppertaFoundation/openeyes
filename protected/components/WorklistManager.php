@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -895,7 +895,7 @@ class WorklistManager extends CComponent
         if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
             $this->yii->assetManager->registerScriptFile('js/worklist-dashboard.js', null, null, AssetManager::OUTPUT_SCREEN);
 
-            return $this->renderPartial('//worklist/dashboard', array(
+            return $this->renderPartial('//worklist/_worklist', array(
                     'worklist' => $worklist,
                     'worklist_patients' => $this->getPatientsForWorklist($worklist),
                 )

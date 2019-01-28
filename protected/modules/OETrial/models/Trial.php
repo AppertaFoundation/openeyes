@@ -17,6 +17,7 @@
  * @property string $last_modified_user_id
  * @property int $created_user_id
  * @property string $created_date
+ * @property int $ethics_number
  *
  * The followings are the available model relations:
  * @property TrialType $trialType
@@ -83,7 +84,7 @@ class Trial extends BaseActiveRecordVersioned
         'max' => 10,
       ),
       array('started_date, closed_date', 'OEDateValidator', 'on' => 'manual'),
-      array('description, last_modified_date, created_date', 'safe'),
+      array('description, last_modified_date, created_date, ethics_number', 'safe'),
     );
   }
 
@@ -113,6 +114,13 @@ class Trial extends BaseActiveRecordVersioned
     }
 
     return 'present';
+  }
+
+  /*
+  * Get the ethics number as a string
+  */
+  public function getEthicsNumberForDisplay() {
+      return $this->ethics_number === null ? 'NA' : $this-> ethics_number;
   }
 
   /**
@@ -150,6 +158,7 @@ class Trial extends BaseActiveRecordVersioned
       'created_user_id' => 'Created User',
       'created_date' => 'Created Date',
       'external_data_link' => 'External Data Link',
+      'ethics_number' => 'Ethics Number',
     );
   }
 

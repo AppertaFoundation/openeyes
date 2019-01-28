@@ -67,6 +67,12 @@
               <?php endif; ?>
           </td>
         </tr>
+        <tr>
+            <td>Ethics Number</td>
+            <td>
+                <?= $trial->getEthicsNumberForDisplay(); ?>
+            </td>
+        </tr>
         <?php if ($trial->external_data_link !== ''): ?>
           <tr class="col-gap">
             <td><?= $trial->getAttributeLabel('external_data_link') ?></td>
@@ -223,6 +229,62 @@
       }
     });
   });
+    $(document).on('keyup', '.js-comment-trial-patient', function () {
+        var $container=$(this).closest('.js-trial-patient-comment-tr');
+        $container.find('.js-comment-trial-patient-actions').show();
+    });
+
+    $(document).on('click', '.js-cancel-comment-trial-patient', function () {
+        var $container=$(this).closest('.js-trial-patient-comment-tr');
+        var oldComment = $container.find('.js-hidden-comment-trial-patient').val();
+        $container.find('.js-comment-trial-patient').val(oldComment);
+        $container.find('.js-comment-trial-patient-actions').hide();
+    });
+
+    $(document).on('click', '.js-save-comment-trial-patient', function () {
+        var $container=$(this).closest('.js-trial-patient-comment-tr');
+        var $actions = $(this).closest('.js-comment-trial-patient-actions');
+        var trialPatientId = $(this).closest('.js-trial-patient-comment-tr').data('trial-patient-id');
+        var comment = $container.find('.js-comment-trial-patient').val();
+        var $spinner = $actions.find('.js-spinner-as-icon');
+        $spinner.show();
+
+        $.ajax({
+            url: '<?= Yii::app()->controller->createUrl('/OETrial/trialPatient/updateComment'); ?>',
+            data: {id: trialPatientId, new_comment: comment, YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+            type: 'POST',
+            complete: function (response) {
+                $spinner.hide();
+            },
+            success: function (response) {
+                $container.find('.js-hidden-comment-trial-patient').val(comment);
+                $actions.hide();
+            },
+            error: function (response) {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Sorry, an internal error occurred and we were unable to change the comment.\n\nPlease contact support for assistance."
+                }).open();
+            }
+        });
+    });
+
+    $(document).on('click','#trial_patient_comment_button',function () {
+        var $container = $(this).closest('.js-trial-patient').next('.js-trial-patient-comment-tr');
+        if ($container.is(":visible")) {
+            $container.hide();
+        }else{
+            $container.show();
+        }
+    });
+
+    $(document).on('click','.js-remove-trial-patient-comments',function () {
+        var $container = $(this).closest('.js-trial-patient-comment-tr');
+        if ($container.is(":visible")) {
+            $container.hide();
+        }
+    });
+
+
 
   $(function () {
     $(".icon-alert-warning").hover(function () {

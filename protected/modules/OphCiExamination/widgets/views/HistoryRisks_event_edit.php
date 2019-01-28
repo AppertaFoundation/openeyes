@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -31,13 +31,6 @@ $required_risk_ids = array_map(function ($r) {
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
   <div class="data-group cols-10">
-    <div
-        class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
-         <label for="<?= $model_name ?>_no_risks" class="inline highlight">
-            <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false, array('class' => $model_name . '_no_risks')); ?>
-            Confirm patient has no risks
-         </label>
-    </div>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
@@ -50,6 +43,15 @@ $required_risk_ids = array_map(function ($r) {
         <col class="cols-1">
       </colgroup>
       <tbody>
+      <tr class="cols-full <?= (count($element->entries) + count($missing_req_risks)) ? ' hidden' : '' ?> <?= $model_name ?>_no_risks_wrapper">
+         <td colspan="5" class="align-left">
+              <label class="inline highlight" for="<?= $model_name ?>_no_risks">
+              <?= \CHtml::checkBox($model_name . '[no_risks]', $element->no_risks_date ? true : false,
+                  array('class' => $model_name . '_no_risks')); ?>
+                  Confirm patient has no risks
+              </label>
+         </td>
+      </tr>
       <?php
       $row_count = 0;
       foreach ($missing_req_risks as $entry) {
