@@ -158,8 +158,10 @@ class HistoryMedicationsEntry extends \BaseElement
         if (!$this->end_date) {
             $end_date = $item->stopDateFromDuration();
 
-            if ($end_date !== null && strtotime($end_date->format('Y-m-d')) < time()) {
-                $this->originallyStopped = true;
+            if ($end_date !== null) {
+                if(strtotime($end_date->format('Y-m-d')) < time()){
+                    $this->originallyStopped = true;
+                }
                 $this->end_date = $end_date->format('Y-m-d');
             }
         }
