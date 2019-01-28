@@ -14,6 +14,10 @@
  */
 
 $config = array(
+    'aliases' => array(
+        'DidNotAttendAdmin' => 'OEModule.DidNotAttend.modules.DidNotAttendAdmin',
+    ),
+
     'modules' => array('DidNotAttendAdmin'),
 );
 

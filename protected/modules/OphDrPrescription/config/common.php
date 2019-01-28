@@ -23,5 +23,9 @@ return array(
             ),
         ),
 
+    'aliases' => array(
+        'OphDrPrescriptionAdmin' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionAdmin',
+    ),
+
     'modules' => array('OphDrPrescriptionAdmin'),
 );
