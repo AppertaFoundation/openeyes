@@ -92,7 +92,7 @@ $required_risk_ids = array_map(function ($r) {
     </table>
   </div>
   <div class="add-data-actions flex-item-bottom" id="add-history-risk-popup"
-       style="visibility: <?php echo $element->no_risks_date ? 'hidden' : ''; ?>">
+       style="display: <?php echo $element->no_risks_date ? 'none' : ''; ?>">
     <button id="show-add-risk-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>

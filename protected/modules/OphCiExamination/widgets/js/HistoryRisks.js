@@ -130,7 +130,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$table.find('tr:not(:first-child)').hide();
                 controller.$popupSelector.hide();
             }
-            controller.updateNoRisksState();
         });
 
         controller.$table.on('change', 'input[type=radio]', function () {
