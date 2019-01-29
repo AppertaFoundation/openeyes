@@ -102,7 +102,7 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
     {
         $ops = array(
             '<=' => 'Younger than',
-            '>=' => 'Older than',
+            '>' => 'Older than',
             'BETWEEN' => 'Between',
         );
         ?>
@@ -152,8 +152,8 @@ class PatientAgeParameter extends CaseSearchParameter implements DBProviderInter
             case 'BETWEEN':
                 $op = 'BETWEEN';
                 break;
-            case '>=':
-                $op = '>=';
+            case '>':
+                $op = '>';
                 break;
             case '<=':
                 $op = '<=';
