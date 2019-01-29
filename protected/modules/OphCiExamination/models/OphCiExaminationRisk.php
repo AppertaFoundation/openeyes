@@ -96,6 +96,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'medicationSets' => 'Drug sets'
         );
     }
 

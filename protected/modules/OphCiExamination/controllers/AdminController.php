@@ -921,14 +921,14 @@ class AdminController extends \ModuleAdminController
     {
         $extra_fields = array(
             array(
-                'field' => 'tags',
+                'field' => 'medicationSets',
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'No Tags',
                 'htmlOptions' => array(
                     'empty' => '- Please Select -',
                     'nowrapper' => true,
                 ),
-                'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
+                'options' => \CHtml::listData(\MedicationSet::model()->findAll(), 'id', 'name')
             )
         );
 
