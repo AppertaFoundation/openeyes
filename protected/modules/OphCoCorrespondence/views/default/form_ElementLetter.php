@@ -491,8 +491,6 @@ $creating = isset($creating) ? $creating : false;
           nickname = $('#DocumentTarget_0_attributes_contact_nickname').val();
           if(nickname.length > 0){
             addressee = nickname;
-          } else {
-            addressee = 'Sir/Madam';
           }
         }
       }
