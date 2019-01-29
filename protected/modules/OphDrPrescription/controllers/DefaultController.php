@@ -165,7 +165,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found: '.$id);
         }
         $prescription->printed = 1;
-        if (!$prescription->update()) {
+        if (!$prescription->update(["printed"])) {
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
@@ -511,7 +511,7 @@ class DefaultController extends BaseEventTypeController
         if ($prescription->print == 1) {
             $prescription->print = 0;
 
-            if (!$prescription->update()) {
+            if (!$prescription->update(["printed"])) {
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }
