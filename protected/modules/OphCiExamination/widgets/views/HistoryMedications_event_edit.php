@@ -149,4 +149,10 @@ $element_errors = $element->getErrors();
       });
   });
 
+      $(".js-end-date-display").on("click", 'button.js-change-end-date', function (event) {
+          event.preventDefault();
+          $(this).closest(".js-end-date-display").hide();
+          $(this).closest(".js-stop-date").find("[id ^= 'js-stop-date-toolkit-']").show();
+      });
+
 </script>
