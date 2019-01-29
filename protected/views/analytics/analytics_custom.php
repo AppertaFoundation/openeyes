@@ -8,7 +8,6 @@
     $(document).ready(function () {
         custom_layout = JSON.parse(JSON.stringify(analytics_layout));
         custom_data = <?= CJavaScript::encode($custom_data); ?>;
-        custom_layout['title'] = "Custom Section";
         custom_layout['xaxis']['rangeslider'] = {};
         custom_layout['yaxis2'] = {
             side: 'right',
@@ -20,9 +19,11 @@
     function plot(right,custom_layout, custom_data){
         var id;
         if (right){
-            id = 'js-hs-chart-analytics-custom-right'
+            id = 'js-hs-chart-analytics-custom-right';
+            custom_layout['title'] = "Custom Section (Right Eye)";
         } else {
-            id = 'js-hs-chart-analytics-custom-left'
+            id = 'js-hs-chart-analytics-custom-left';
+            custom_layout['title'] = "Custom Section (Left Eye)";
         }
 
         var custom_plot = document.getElementById(id);
