@@ -72,7 +72,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, tags, gender, age_min, age_max', 'safe'),
+            array('name, tags, medicationSets, gender, age_min, age_max', 'safe'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
