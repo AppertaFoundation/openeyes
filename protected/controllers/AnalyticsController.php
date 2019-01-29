@@ -655,13 +655,13 @@ class AnalyticsController extends BaseController
       //get all the diagnoses and the patient list
       $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
       foreach ($diagnoses_elements as $diagnosis_element_item){
+          if (isset($this->surgeon)){
+              if ($this->surgeon !== $diagnosis_element_item->created_user_id){
+                  continue;
+              }
+          }
           $current_event = $diagnosis_element_item->event;
           if(isset($current_event->episode)) {
-              if (isset($this->surgeon)){
-                  if ($this->surgeon !== $current_event->created_user_id){
-                      continue;
-                  }
-              }
               $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
               if( ($start_date && $current_time < $start_date) ||
                   ($end_date && $current_time > $end_date))
@@ -675,6 +675,7 @@ class AnalyticsController extends BaseController
 
               $diagnoses = $diagnosis_element_item->diagnoses;
               foreach($diagnoses as $diagnosis_item){
+
                   $disorder_id = $diagnosis_item->disorder->id;
                   if (array_key_exists($disorder_id, $disorder_patient_list)){
                       if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
@@ -790,7 +791,6 @@ class AnalyticsController extends BaseController
       }
       $subspecialty_id = $this->getSubspecialtyID($specialty);
       $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
-
       $clinical_data = array(
           'x' => $disorder_data['x'],
           'y' => $disorder_data['y'],

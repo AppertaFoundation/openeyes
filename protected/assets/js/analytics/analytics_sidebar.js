@@ -110,7 +110,6 @@ $(document).ready(function () {
             $('#'+textID).text( $(this).text() );
             $allListElements.removeClass('selected');
             $(this).addClass('selected');
-
         });
     }
 
