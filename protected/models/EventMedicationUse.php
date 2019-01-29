@@ -321,20 +321,15 @@ class EventMedicationUse extends BaseElement
 
     public function hasRisk()
     {
-        // TODO Rewrite once tags support is implemented for RefMediaction
-        /*
-        $med = $this->drug ? : $this->medication_drug ? : null;
-
-        if ($med) {
-            return count(OphCiExaminationRisk::findForTagIds(array_map(
+        if ($this->medication) {
+            return count(OEModule\OphCiExamination\models\OphCiExaminationRisk::findForMedicationSetIds(array_map(
                     function($t) {
                         return $t->id;
-                    }, $med->tags
+                    }, $this->medication->medicationSets
                 ))) > 0;
         } else {
             return false;
-        }*/
-        return false;
+        }
     }
 
     /**

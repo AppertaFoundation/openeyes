@@ -126,6 +126,23 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     }
 
     /**
+     * @param array $medication_set_ids
+     * @return static[]
+     */
+
+    public static function findForMedicationSetIds($medication_set_ids)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addInCondition('medicationSets.id', $medication_set_ids);
+        return static::model()->with(array(
+                'medicationSets' => array(
+                    'select' => false,
+                    'joinType' => 'INNER JOIN',
+                ))
+        )->findAll($criteria);
+    }
+
+    /**
      * @TODO: replace with DB property
      * @return bool
      */

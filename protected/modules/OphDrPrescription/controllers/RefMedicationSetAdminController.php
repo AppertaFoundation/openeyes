@@ -58,7 +58,7 @@ class RefMedicationSetAdminController extends BaseAdminController
     {
         $admin = new Admin(MedicationSetItem::model(), $this);
 
-        $ref_set_id =  Yii::app()->request->getParam('default')['ref_set_id'];
+        $ref_set_id =  Yii::app()->request->getParam('default')['medication_set_id'];
         $medSet = MedicationSet::model()->findByPk($ref_set_id);
 
         $admin->setEditFields(array(
