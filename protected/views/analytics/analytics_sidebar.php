@@ -375,7 +375,8 @@
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             Plotly.redraw(chart);
         }
-        <?php if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id))){?>
+        <?php if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id)
+            || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
         var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
         var clinical_data = data[1];
         clinical_chart.data[0]['x'] = clinical_data.x;
@@ -383,7 +384,7 @@
         clinical_chart.data[0]['customdata'] = clinical_data.customdata;
         clinical_chart.data[0]['text'] = clinical_data.text;
         Plotly.redraw(clinical_chart);
-        <?php }?>
+        <?php } ?>
         //update the service data
         constructPlotlyData(data[2]);
 }
