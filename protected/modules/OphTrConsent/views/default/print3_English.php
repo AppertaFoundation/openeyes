@@ -60,7 +60,7 @@
     <div class="group flex-layout">
                 <span class="nowrap">
                     <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->information ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                    <span class="dotted-write"></span>
+                    <?php echo $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
                 </span>
     </div>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
