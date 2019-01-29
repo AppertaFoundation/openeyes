@@ -1,6 +1,6 @@
 
 <div id="js-hs-chart-analytics-custom">
-    <div id="js-hs-chart-analytics-custom-right" style="display: none"></div>
+    <div id="js-hs-chart-analytics-custom-right" style="display: block"></div>
     <div id="js-hs-chart-analytics-custom-left" style="display: none"></div>
 </div>
 <script type="text/javascript">

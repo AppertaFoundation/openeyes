@@ -83,7 +83,7 @@
                     Service
                 </button>
                 <button class="analytics-section pro-theme cols-3" id="js-btn-custom"
-                        data-section="#js-hs-chart-analytics-custom-right"
+                        data-section="#js-hs-chart-analytics-custom"
                         data-tab="#js-custom-data-filter">
                     Custom
                 </button>
