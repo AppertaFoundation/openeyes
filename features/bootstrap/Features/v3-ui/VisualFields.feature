@@ -25,6 +25,7 @@ Feature: Visual Fields Test
     Then I write result comment "<result_other>"
 
     Then I save the VisualField Event and confirm it has been created successfully
+    Then I delete the event
 
 
     Examples:

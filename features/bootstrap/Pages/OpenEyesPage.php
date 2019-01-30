@@ -11,10 +11,6 @@ abstract class OpenEyesPage extends Page {
 	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
     {
         parent::__construct($session, $pageFactory, $parameters);
-
-        // this should obviously be configurable, but I've put this in to ensure that we are able
-        // to always see the save button.
-        $this->getDriver()->resizeWindow(1280,800);
     }
 
     /**
