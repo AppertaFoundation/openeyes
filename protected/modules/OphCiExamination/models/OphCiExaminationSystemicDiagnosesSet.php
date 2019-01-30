@@ -122,4 +122,17 @@ class OphCiExaminationSystemicDiagnosesSet extends \BaseActiveRecordVersioned
 	{
 		return parent::model($className);
 	}
+
+    public function beforeDelete()
+    {
+        foreach ($this->set_assignments as $set_assignment) {
+            $set_assignment->delete();
+        }
+
+        foreach ($this->entries as $set_entry) {
+            $set_entry->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }
