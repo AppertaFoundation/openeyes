@@ -3,7 +3,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,7 +15,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -61,8 +61,7 @@ class OphCiExaminationSystemicDiagnosesSet extends \BaseActiveRecordVersioned
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'last_modified_user' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetAssignment', 'systemic_diagnoses_set_id'),
-            'entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry', 'systemic_diagnoses_set_entry_id', 'through' => 'set_assignments'),
+            'entries' => array(self::HAS_MANY, OphCiExaminationSystemicDiagnosesSetEntry::class, 'set_id'),
 		);
 	}
 
