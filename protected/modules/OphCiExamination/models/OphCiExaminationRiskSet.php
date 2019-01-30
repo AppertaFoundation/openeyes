@@ -149,4 +149,17 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
+    public function beforeDelete()
+    {
+        foreach ($this->ophciexamination_risk_set_assignments as $risk_set_assignment) {
+            $risk_set_assignment->delete();
+        }
+
+        foreach ($this->ophciexamination_risks_entry as $risks_set_entry) {
+            $risks_set_entry->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }
