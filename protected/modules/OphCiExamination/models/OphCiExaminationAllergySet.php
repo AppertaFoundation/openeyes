@@ -132,4 +132,17 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 	{
 		return parent::model($className);
 	}
+
+    public function beforeDelete()
+    {
+        foreach ($this->allergy_set_assignments as $allergy_set_assignment) {
+            $allergy_set_assignment->delete();
+        }
+
+        foreach ($this->allergy_set_entries as $allergy_set_entry) {
+            $allergy_set_entry->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }

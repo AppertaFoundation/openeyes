@@ -190,11 +190,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * if any of the values are checked to Yes or Not Checked
      */
     HistoryRisksController.prototype.updateNoRisksState = function () {
-        if (this.$noRisksFld.prop('checked')) {
+        if (this.$noRisksFld.prop('checked') && this.isRisksChecked(this.riskNotCheckedValue)) {
             this.$noRisksFld.prop('checked', false);
             this.$popupSelector.show();
         }
-        if (this.isRisksChecked(this.riskYesValue)) {
+        if (this.isRisksChecked(this.riskYesValue) || this.isRisksChecked(this.riskNotCheckedValue)) {
             this.$noRisksWrapper.hide();
             this.$popupSelector.show();
             this.$noRisksFld.prop('checked', false);
