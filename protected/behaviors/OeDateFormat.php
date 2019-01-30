@@ -73,6 +73,7 @@ class OeDateFormat extends CActiveRecordBehavior
         if ($year === '') {
             return '-';
         }
+        $day = ltrim($day, "0");
         return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .
                ($month !== '' ? '<span class="mth">'.$month.'</span>' : '') .
                ($year  !== '' ? '<span class="yr">'.$year.'</span>' : '');
