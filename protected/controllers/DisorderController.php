@@ -26,7 +26,7 @@ class DisorderController extends BaseController
             array(
                 'allow',
                 'actions' => array('index', 'view'),
-                'roles' => array('TaskViewDisorder', 'TaskCreateDisorder'),
+                'roles' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
                 'actions'=>array('create','update','index','view', 'delete'),
