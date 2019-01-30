@@ -351,12 +351,12 @@ class HistoryMedicationsEntry extends \BaseElement
         return implode(' ', $res);
     }
 
-    public function getEndDateDisplay()
+    public function getEndDateDisplay($empty_text = '')
     {
         if ($this->end_date) {
             return \Helper::formatFuzzyDate($this->end_date);
         } else {
-            return '';
+            return $empty_text;
         }
     }
 

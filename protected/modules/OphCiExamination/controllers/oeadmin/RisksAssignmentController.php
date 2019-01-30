@@ -204,12 +204,11 @@ class RisksAssignmentController extends \ModuleAdminController
     {
         $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSet', array());
 
-        foreach($model_ids as $model_id){
-
+        foreach ($model_ids as $model_id) {
             $model = $this->loadModel($model_id);
-            if(!$model->ophciexamination_risks_entry){
+            try {
                 $model->delete();
-            } else {
+            } catch (Exception $exception) {
                 echo "0";
                 \Yii::app()->end();
             }

@@ -47,9 +47,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         </span>
       </span>
 		<input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>"/>
-		<?php if ($entry->originallyStopped) { ?>
-			<i class="oe-i stop small pad"></i>
-		<?php } ?>
 	</td>
 	<td>
 		<div class="data-group">
@@ -84,7 +81,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 						<tr class="js-end-date-display">
 							<td>
 						<button class="js-change-end-date">
-							<i class="oe-i start small pad "></i>
+							<i class="oe-i stop small pad "></i>
 						</button>
 							</td>
 							<td>
