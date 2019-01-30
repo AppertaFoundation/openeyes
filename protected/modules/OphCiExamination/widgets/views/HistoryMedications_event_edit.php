@@ -138,8 +138,13 @@ $element_errors = $element->getErrors();
                   return ['label' => $medication['value'], 'id' => $medication['id'], 'tags' => $medication['tags']];
               }, array_keys($medications), $medications)
           ) ?>, {'multiSelect': true})],
-          onReturn: function (adderDialog, selectedItems) {
-              medicationsController.addEntry(selectedItems);
+          onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+              if (selectedItems.length !== 0) {
+                  medicationsController.addEntry(selectedItems);
+              }
+              if (selectedAdditions.length !== 0) {
+                  medicationsController.addEntry(selectedAdditions);
+              }
               return true;
           },
           searchOptions: {
@@ -148,5 +153,11 @@ $element_errors = $element->getErrors();
           enableCustomSearchEntries: true,
       });
   });
+
+      $(".js-end-date-display").on("click", 'button.js-change-end-date', function (event) {
+          event.preventDefault();
+          $(this).closest(".js-end-date-display").hide();
+          $(this).closest(".js-stop-date").find("[id ^= 'js-stop-date-toolkit-']").show();
+      });
 
 </script>
