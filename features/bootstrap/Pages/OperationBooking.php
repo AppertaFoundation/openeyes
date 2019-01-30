@@ -241,8 +241,6 @@ class OperationBooking extends OpenEyesPage {
 		}
 	}
 	public function procedure($procedure) {
-        $this->getSession()->getDriver()->maximizeWindow();
-        //$this->getElement ( 'operationProcedure' )->setValue ( $procedure );
         $this->getSession ()->wait ( 2000 );
         $this->getElement('add_procedure_btn')->click();
         $this->addSelection($procedure);

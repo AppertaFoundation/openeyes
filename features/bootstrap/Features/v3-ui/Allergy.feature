@@ -23,6 +23,7 @@ Feature: Allergy test
     Then I Add Allergy "<allergy>"
 
     Then I Save the Event and confirm it has been created successfully
+    Then I delete the event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | allergy |

@@ -31,6 +31,7 @@ Feature: Phasing Test
     Then I add left eye comments of "<left_comment>"
 
     Then I Save the Phasing Event and confirm it has been created successfully
+    Then I delete the event
 
 
 

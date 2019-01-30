@@ -21,6 +21,7 @@ Feature: Document test
     #Then I click on double document upload left
     Then I upload single file "<file_path>"
     Then I save document event and confirm it saved successfully
+    Then I delete the event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                     |

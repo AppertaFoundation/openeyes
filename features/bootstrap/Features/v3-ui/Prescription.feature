@@ -31,6 +31,7 @@ Feature: Prescription Test
     Given I add Prescription comments of "<comment>"
 
     Then I Save the Prescription Draft and confirm it has been created successfully
+    Then I delete the event
 
 
 

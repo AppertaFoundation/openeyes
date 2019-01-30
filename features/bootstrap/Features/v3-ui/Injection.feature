@@ -45,6 +45,7 @@ Feature: Intravitreal Injection Test
     #Then I add Left Complications Comments of "<left_comment>"
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
+    Then I delete the event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event                            |right_agent   |right_pre_antiseptic |right_pre_skin |right_drug |right_batch_number |right_injection_by |right_post_drop|right_comment|left_agent   |left_pre_antiseptic |left_pre_skin |left_drug                   |left_batch_number |left_injection_by |left_post_drop                               |left_comment     |
