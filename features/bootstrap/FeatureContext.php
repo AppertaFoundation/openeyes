@@ -46,7 +46,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('DocumentContext',new DocumentContext($parameters));
         $this->useContext('VisualFieldContext',new VisualFieldContext($parameters));
         $this->useContext('EditExistingEventContext',new EditExistingEventContext($parameters));
-
+        $this->useContext('DidNotAttendContext.php',new DidNotAttendContext($parameters));
         $this->loadModuleContextsPages ( $parameters );
 		
 		$this->screenshots = array ();
