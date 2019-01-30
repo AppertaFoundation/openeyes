@@ -30,9 +30,10 @@ $required_allergy_ids = array_map(function ($r) {
 
     <table id="<?= $model_name ?>_entry_table" class="cols-10">
         <colgroup>
-            <col class="cols-7">
+            <col class="cols-3">
+            <col class="cols-3">
             <col class="cols-4">
-            <col class="cols-1">
+            <col class="cols-2">
         </colgroup>
         <tbody>
         <?php if(count($missing_req_allergies) == 0){?>
