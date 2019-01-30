@@ -25,16 +25,12 @@ class DisorderController extends BaseController
         return array(
             array(
                 'allow',
-                'roles' => array('OprnViewClinical'),
-            ),
-            array('allow', // allow clinicians user to perform 'create' and 'update' actions
-                'actions'=>array('create','update','index','view'),
-                'users'=>array('@'),
-                'roles' => array('OprnViewClinical'),
+                'actions' => array('index', 'view'),
+                'roles' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions'=>array('admin','delete'),
-                'users'=>array('admin'),
+                'actions'=>array('create','update','index','view', 'delete'),
+                'users'=>array('TaskCreateDisorder', 'admin'),
             ),
             array('deny',  // deny all users
                 'users'=>array('*'),
@@ -613,25 +609,20 @@ class DisorderController extends BaseController
      */
     public function actionIndex()
     {
-        $dataProvider=new CActiveDataProvider('Disorder');
-        $this->render('index',array(
-            'dataProvider'=>$dataProvider,
-        ));
-    }
-
-    /**
-     * Manages all models.
-     */
-    public function actionAdmin()
-    {
         $model=new Disorder('search');
         $model->unsetAttributes();  // clear any default values
         if(isset($_GET['Disorder']))
             $model->attributes=$_GET['Disorder'];
 
-        $this->render('admin',array(
-            'model'=>$model,
-        ));
+        if(Yii::app()->user->checkAccess('TaskCreateDisorder') || Yii::app()->user->checkAccess('admin')){
+            $this->render('admin',array(
+                'model'=>$model,
+            ));
+        } else {
+            $this->render('index',array(
+                'model'=>$model,
+            ));
+        }
     }
 
     /**
