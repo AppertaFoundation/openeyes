@@ -42,8 +42,11 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
-
-        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        
+        $this->editable = $model->isEditable();
+        if( $this->editable == true ){
+            $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        }
         return parent::actionView($id);
     }
 
@@ -551,7 +554,7 @@ class DefaultController extends BaseEventTypeController
     {
         return $this->checkAccess('OprnEditPrescription', $this->firm, $this->event);
     }
-
+    
     /**
      * @return MedicationSet
      */

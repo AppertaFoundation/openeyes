@@ -71,6 +71,7 @@ class OphDrPrescription_Item extends EventMedicationUse
             ),
             'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
             'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'parent' => array(self::HAS_MANY, OphDrPrescription_Item::class, 'prescription_item_id'),
         ));
     }
 
