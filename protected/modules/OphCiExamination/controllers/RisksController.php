@@ -58,6 +58,11 @@ class RisksController extends \BaseController
         echo \CJSON::encode($this->riskIdsForTagIds(explode(",", $tag_ids)));
     }
 
+    public function actionForSets($set_ids)
+    {
+        echo \CJSON::encode($this->riskIdsForMedicationSetIds(explode(",", $set_ids)));
+    }
+
     /**
      * @param array $medication_set_ids
      * @return array
@@ -66,7 +71,7 @@ class RisksController extends \BaseController
     protected function riskIdsForMedicationSetIds($medication_set_ids = array())
     {
         return array_map(
-            function($r) { return $r->id; },
+            function($r) { return $r->getAttributes(); },
             OphCiExaminationRisk::findForMedicationSetIds($medication_set_ids)
         );
     }

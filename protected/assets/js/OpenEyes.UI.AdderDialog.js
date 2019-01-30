@@ -52,7 +52,8 @@
       width: null,
       createBlackoutDiv: true,
       enableCustomSearchEntries: false,
-      searchAsTypedPrefix: 'As typed: '
+      searchAsTypedPrefix: 'As typed: ',
+      searchAsTypedItemProperties: {},
   };
 
   /**
@@ -421,10 +422,11 @@
     };
 
     AdderDialog.prototype.appendCustomEntryOption = function (text, dialog) {
-        let custom_entry = AdderDialog.prototype.constructDataset({
+        let new_entry_data = $.extend({
             label: text,
             type: 'custom'
-        });
+        }, dialog.options.searchAsTypedItemProperties);
+        let custom_entry = AdderDialog.prototype.constructDataset(new_entry_data);
         let item = $("<li />", custom_entry).text(dialog.options.searchAsTypedPrefix)
             .append($('<span />', {class: 'auto-width'}).text(text));
 

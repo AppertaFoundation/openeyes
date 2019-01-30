@@ -44,6 +44,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           'prescription_item_id',
           'to_be_copied',
           'prepended_markup',
+          'set_ids',
       ];
 
     this.initialiseFilters();
@@ -429,15 +430,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * From the tags on the given item, retrieve the associated risks and update the core
    * register accordingly.
    *
-   * @param item
+   * @param setIds
+   * @param drug_name
    */
-  HistoryMedicationsController.prototype.processRisks = function(tagIds , drug_name)
+  HistoryMedicationsController.prototype.processRisks = function(setIds , drug_name)
   {
-      if (!tagIds) {
+      if (setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
           return;
       }
       var self = this;
-      $.getJSON('/OphCiExamination/Risks/forTags', { tag_ids: tagIds }, function (res) {
+      $.getJSON('/OphCiExamination/Risks/forSets', { set_ids: setIds }, function (res) {
           self.addDrugForRisks(drug_name, res);
       });
   };
@@ -450,11 +452,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
   {
-      risksMap = [];
-      for (var i in risks) {
-          if (risks.hasOwnProperty(i)) {
-              risksMap.push({id: risks[i], comments: [drugName]});
-          }
+      var risksMap = [];
+      for (var i=0; i < risks.length; i++) {
+          risksMap.push({id: risks[i].id, comments: [drugName], risk_name: risks[i].name});
       }
 
       //checking the risksMap.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
@@ -480,6 +480,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
     $wrapper.hide();
+    var $fuzzyFieldset = $wrapper.parents('fieldset');
     var $fuzzyFieldset = $wrapper.parents('fieldset');
     $fuzzyFieldset.find('input[type="hidden"]').val('');
     $fuzzyFieldset.find('.enable').show();
@@ -533,7 +534,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     for (var i in medications) {
       data = medications[i];
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      this.processRisks(medications[i]['tags'], medications[i]['medication_name']);
+      this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       newRows.push(Mustache.render(
           template,
           data ));
@@ -548,9 +549,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var medication = [];
 
         $.each(selectedItems, function (i, e) {
-
-            console.log(selectedItems[i]);
-
             medication[i] = {
                 medication_id: selectedItems[i].id,
                 default_form: selectedItems[i].default_form,
@@ -561,7 +559,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 frequency_id: selectedItems[i].frequency,
                 will_copy: selectedItems[i].will_copy,
                 to_be_copied: selectedItems[i].will_copy,
-                prepended_markup: selectedItems[i].prepended_markup
+                prepended_markup: selectedItems[i].prepended_markup,
+                set_ids: selectedItems[i].set_ids,
             };
         });
 

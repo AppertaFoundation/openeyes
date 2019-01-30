@@ -232,6 +232,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @returns {*}
      */
     HistoryRisksController.prototype.createRow = function (risk_id, risk_name) {
+
         let template = this.templateText;
         let tableSelector = this.tableSelector;
         let data = {};
@@ -286,11 +287,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * Update the risks table with the given list of risks with comments
      */
     HistoryRisksController.prototype.addRisks = function (risks, sourceName) {
+        var risk_id;
+        var risk_name;
         for (var idx in risks) {
             if (risks.hasOwnProperty(idx)) {
                 risk_id = risks[idx].id;
+                risk_name = risks[idx].risk_name;
                 // add to table if not present
-                var rowEntry = this.getTableRowForRisk(risk_id);
+                var rowEntry = this.getTableRowForRisk(risk_id, risk_name);
                 // set the risk and comment
                 this.setHasRiskAndComments(rowEntry, risks[idx].comments);
             }
@@ -318,11 +322,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * get or create a table row for the given risk
      */
-    HistoryRisksController.prototype.getTableRowForRisk = function (risk_id) {
+    HistoryRisksController.prototype.getTableRowForRisk = function (risk_id, risk_name) {
         var self = this;
         var row = self.findTableRowForRisk(risk_id);
         if (row === undefined) {
-            self.addEntry(null, null);
+            self.addEntry(null, risk_name);
             row = self.$table.find('tbody tr:last');
             row.find(self.riskSelector).val(risk_id);
         }

@@ -50,6 +50,12 @@ use \OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 
 class EventMedicationUse extends BaseElement
 {
+    /** This ID is used as medication_id when the user is adding a new medication using the adder dialog */
+    const USER_MEDICATION_ID = -1;
+
+    const USER_MEDICATION_SOURCE_TYPE = "LOCAL";
+    const USER_MEDICATION_SOURCE_SUBTYPE = "UNMAPPED";
+
     /** @var bool Tracking variable used when creating/editing entries */
     public $originallyStopped = false;
 
@@ -63,6 +69,7 @@ class EventMedicationUse extends BaseElement
     public $group;
     public $chk_prescribe;
     public $chk_stop;
+    public $medication_name;
 
     public function getOriginalAttributes()
     {
@@ -538,5 +545,26 @@ class EventMedicationUse extends BaseElement
                 $this->end_date = $end_date;
             }
         }
+    }
+
+    public function beforeValidate()
+    {
+        if($this->medication_id == self::USER_MEDICATION_ID) {
+            $medication = new Medication();
+            $medication->preferred_term = $this->medication_name;
+            $medication->short_term = $this->medication_name;
+            $medication->source_type = self::USER_MEDICATION_SOURCE_TYPE;
+            $medication->source_subtype = self::USER_MEDICATION_SOURCE_SUBTYPE;
+            $medication->preferred_code = self::USER_MEDICATION_SOURCE_SUBTYPE;
+            if($medication->save()) {
+                $medication->addDefaultSearchIndex();
+                $this->medication_id = $medication->id;
+            }
+            else {
+                $this->addError("medication_id", "There has been an error while saving the new medication '".$this->medication_name."'");
+            }
+        }
+
+        return parent::beforeValidate();
     }
 }

@@ -106,6 +106,8 @@ abstract class BaseMedicationWidget extends \BaseEventElementWidget
                     }
                 }
 
+                $entry->medication_name = isset($entry_data['medication_name']) ? $entry_data['medication_name'] : null;
+
                 if(is_a($entry, MedicationManagementEntry::class)) {
                     $entry->prescribe = $entry_data['prescribe'];
                 }

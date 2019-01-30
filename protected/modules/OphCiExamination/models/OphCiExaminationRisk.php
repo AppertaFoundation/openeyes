@@ -148,6 +148,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     {
         $criteria = new \CDbCriteria();
         $criteria->addInCondition('medicationSets.id', $medication_set_ids);
+        $criteria->addCondition("active = 1");
         return static::model()->with(array(
                 'medicationSets' => array(
                     'select' => false,

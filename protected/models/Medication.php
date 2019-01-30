@@ -298,7 +298,9 @@ class Medication extends BaseActiveRecordVersioned
                     'frequency_id' => $item->default_frequency_id,
                     'route' => $item->default_route_id,
                     'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
-                    'tags' => array()
+                    'set_ids' =>  array_map(function ($e){
+                        return $e->id;
+                    } , $item->medication->getMedicationSetsForCurrentSubspecialty())
                 );
                 $ids[] = $item->medication->id;
             }
@@ -363,6 +365,14 @@ class Medication extends BaseActiveRecordVersioned
         }
 
         return false;
+    }
+
+    public function addDefaultSearchIndex()
+    {
+        $searchIndex = new MedicationSearchIndex();
+        $searchIndex->medication_id = $this->id;
+        $searchIndex->alternative_term = $this->preferred_term;
+        $searchIndex->save();
     }
 
 }

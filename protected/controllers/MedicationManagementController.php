@@ -84,7 +84,10 @@
                             'route_id' => $med_set_item->default_route_id,
                             'tabsize' => $tabsize,
                             'will_copy' => $med->getToBeCopiedIntoMedicationManagement(),
-                            'prepended_markup' => $tooltip
+                            'prepended_markup' => $tooltip,
+                            'set_ids' => array_map(function ($e){
+                                return $e->id;
+                            } , $med->getMedicationSetsForCurrentSubspecialty())
                         ]
                     );
                 }
