@@ -57,12 +57,14 @@
         I have also discussed what the procedure is likely to involve, the benefits and risks of any available
         alternative treatments (including no treatment) and any particular concerns of those involved.
     </p>
-    <div class="group flex-layout">
+    <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
+        <div class="group flex-layout">
                 <span class="nowrap">
-                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->information ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
                     <?php echo $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
                 </span>
-    </div>
+        </div>
+    <?php } ?>
     <?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant)) ?>
     <div class="break"></div>
     <?php if ($elements['Element_OphTrConsent_Other']->interpreter_required) { ?>
