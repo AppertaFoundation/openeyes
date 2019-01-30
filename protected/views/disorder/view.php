@@ -9,7 +9,7 @@ $this->breadcrumbs=array(
 
 ?>
 <?php
-echo CHtml::link('Back to Disorder list', array('disorder/admin'),
+echo CHtml::link('Back to Disorder list', array('disorder/index'),
         array('class' => 'button small')) . ' ';
 ?>
 
