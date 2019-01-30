@@ -103,7 +103,6 @@
 
             <div id="js-charts-service">
                 <ul class="charts">
-                    <li><a href="#" id="js-hs-app-new">Appointments: New</a></li>
                     <li><a href="#" id="js-hs-app-follow-up-coming">Appointments: Follow Up</a></li>
                     <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Appointments: Delayed</a></li>
                 </ul>
