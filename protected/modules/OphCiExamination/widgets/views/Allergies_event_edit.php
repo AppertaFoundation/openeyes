@@ -36,7 +36,6 @@ $required_allergy_ids = array_map(function ($r) {
             <col class="cols-2">
         </colgroup>
         <tbody>
-        <?php if(count($missing_req_allergies) == 0){?>
         <tr <?= $this->isAllergiesSetYes($element) ? 'style="display:none"' : '' ?>
             id="<?= $model_name ?>_no_allergies_wrapper">
             <td colspan="5" class="align-left">
@@ -46,8 +45,6 @@ $required_allergy_ids = array_map(function ($r) {
                 </label>
             </td>
         </tr>
-        <?php } ?>
-
         <?php
             $row_count = 0;
             foreach ($missing_req_allergies as $entry) {
