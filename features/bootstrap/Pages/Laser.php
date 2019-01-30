@@ -125,11 +125,7 @@ class Laser extends OpenEyesPage {
 		$this->getElement ( 'saveLaser' )->click ();
 
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if ($this->hasLaserSaved ()) {
-			print "Laser has been saved OK";
-		} 
-
-		else {
+		if (!$this->hasLaserSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Laser has NOT been saved!!  WARNING!!" );
 		}
 	}
@@ -142,9 +138,7 @@ class Laser extends OpenEyesPage {
 } */
 	
 	public function laserValidationCheck() {
-		if ($this->laserValidationError ()) {
-			print "Laser validation errors have been displayed correctly";
-		} else {
+		if (!$this->laserValidationError ()) {
 			throw new BehaviorException ( "LASER VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY" );
 		}
 	}

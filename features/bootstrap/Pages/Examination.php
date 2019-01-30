@@ -956,9 +956,6 @@ class Examination extends OpenEyesPage {
 			$this->getElement('examinationSectionListHeader')->click();
 			sleep(3);
 		}
-		else{
-			print "Section Already Open!";
-		}
 	}
 
 
@@ -1194,11 +1191,7 @@ class Examination extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'dilationTimeErrorLeft' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'dilationTimeErrorRight' )->getXpath () );
 	}
 	public function dilationTimeErrorValidation() {
-		if ($this->hasDilationTimeErrorDisplayed ()) {
-			print "Dilation Invalid time error displayed OK";
-		}
-
-		else {
+		if (!$this->hasDilationTimeErrorDisplayed ()) {
 			throw new BehaviorException ( "WARNING!!!  Dilation Invalid time error NOT displayed WARNING!!!" );
 		}
 	}
@@ -1647,16 +1640,12 @@ class Examination extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'existingLeftAxisCheck' )->getXpath () );
 	}
 	public function rightAxisCheck() {
-		if ($this->doesRightAxisExist ()) {
-			print "Right Axis has been Saved";
-		} else {
+		if (!$this->doesRightAxisExist ()) {
 			throw new BehaviorException ( "RIGHT AXIS NOT SAVED!!!" );
 		}
 	}
 	public function leftAxisCheck() {
-		if ($this->doesLeftAxisExist ()) {
-			print "Left Axis has been Saved";
-		} else {
+		if (!$this->doesLeftAxisExist ()) {
 			throw new BehaviorException ( "LEFT AXIS NOT SAVED!!!" );
 		}
 	}
@@ -1675,9 +1664,7 @@ class Examination extends OpenEyesPage {
 		// These keep changing every release so I have only enabled the History until the exact ones are confirmed
 	}
 	public function addAllElementsValidationCheck() {
-		if ($this->addAllElementsValidationError ()) {
-			print "Add All errors have been displayed correctly";
-		} else {
+		if (!$this->addAllElementsValidationError ()) {
 			throw new BehaviorException ( "ADD ALL ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY" );
 		}
 	}
@@ -1695,9 +1682,7 @@ class Examination extends OpenEyesPage {
 	}
 	public function removeAllValidationCheck() {
 		sleep(40);
-		if ($this->removeAllValidationError ()) {
-			print "Remove All error has been displayed";
-		} else {
+		if (!$this->removeAllValidationError ()) {
 			throw new BehaviorException ( "REMOVE ALL ERROR HAS NOT BEEN DISPLAYED!!!" );
 		}
 	}
@@ -1706,9 +1691,7 @@ class Examination extends OpenEyesPage {
 	}
 	public function historyValidationCheck() {
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if ($this->historyValidationError ()) {
-			print "History Validation error has been displayed";
-		} else {
+		if (!$this->historyValidationError ()) {
 			throw new BehaviorException ( "HISTORY VALIDATION ERROR!!!" );
 		}
 	}
@@ -1719,9 +1702,7 @@ class Examination extends OpenEyesPage {
 
 	}
 	public function conclusionValidationCheck() {
-		if ($this->conclusionValidationError ()) {
-			print "Conclusion Validation error has been displayed";
-		} else {
+		if (!$this->conclusionValidationError ()) {
 			throw new BehaviorException ( "CONCLUSION VALIDATION ERROR!!!" );
 		}
 	}
@@ -1741,9 +1722,7 @@ class Examination extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'dilationValidationErrorLeft' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'dilationValidationErrorRight' )->getXpath () );
 	}
 	public function dilationValidationCheck() {
-		if ($this->dilationValidationError ()) {
-			print "Dilation Validation error has been displayed";
-		} else {
+		if (!$this->dilationValidationError ()) {
 			throw new BehaviorException ( "DILATION VALIDATION ERROR!!!" );
 		}
 	}
@@ -2011,10 +1990,7 @@ class Examination extends OpenEyesPage {
 		sleep(3);
 	}
 	public function onPCRReferencePage(){
-		if($this->getElement('referencePage')->isVisible()){
-			print "Reference Page link Displayed";
-		}
-		else{
+		if(!$this->getElement('referencePage')->isVisible()){
 			throw new BehaviorException ( "Page not Displayed!!" );
 		}
 	}
