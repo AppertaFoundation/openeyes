@@ -138,8 +138,13 @@ $element_errors = $element->getErrors();
                   return ['label' => $medication['value'], 'id' => $medication['id'], 'tags' => $medication['tags']];
               }, array_keys($medications), $medications)
           ) ?>, {'multiSelect': true})],
-          onReturn: function (adderDialog, selectedItems) {
-              medicationsController.addEntry(selectedItems);
+          onReturn: function (adderDialog, selectedItems, selectedAdditions) {
+              if (selectedItems.length !== 0) {
+                  medicationsController.addEntry(selectedItems);
+              }
+              if (selectedAdditions.length !== 0) {
+                  medicationsController.addEntry(selectedAdditions);
+              }
               return true;
           },
           searchOptions: {
