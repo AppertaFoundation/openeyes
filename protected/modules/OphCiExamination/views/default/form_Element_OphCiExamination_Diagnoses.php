@@ -36,6 +36,7 @@ foreach ($this->patient->episodes as $ep) {
             'diagnosis' => $diagnosis,
             'eye' => Eye::methodPostFix($ep->eye_id),
             'subspecialty' => $ep->getSubspecialtyText(),
+            'is_glaucoma' => isset($diagnosis->term)? (strpos(strtolower($diagnosis->term), 'glaucoma')) !== false : false,
         ];
     }
 }
@@ -47,6 +48,7 @@ foreach ($this->patient->episodes as $ep) {
 
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
     <input type="hidden" name="<?=\CHtml::modelName($element); ?>[force_validation]"/>
+    <input type="hidden" name="glaucoma_diagnoses[]"/>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 

@@ -18,7 +18,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\controllers;
+namespace OEModule\OphCiExamination\controllers\oeadmin;
 
 use OEModule\OphCiExamination\models;
 
@@ -204,12 +204,11 @@ class RisksAssignmentController extends \ModuleAdminController
     {
         $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSet', array());
 
-        foreach($model_ids as $model_id){
-
+        foreach ($model_ids as $model_id) {
             $model = $this->loadModel($model_id);
-            if(!$model->ophciexamination_risks_entry){
+            try {
                 $model->delete();
-            } else {
+            } catch (Exception $exception) {
                 echo "0";
                 \Yii::app()->end();
             }
