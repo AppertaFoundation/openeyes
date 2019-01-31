@@ -80,11 +80,11 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
       		let endTrimmed = inputText.val().trimEnd();
       		inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
 				}
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ?
-            inputText.val() + item['label'] : item['label']
-          );
-        });
+				let textToAdd = '';
+				$(selectedItems).each(function (key, item) {
+					textToAdd += item['label'];
+				});
+				inputText.val(inputText.val() + textToAdd);
 
         inputText.trigger('oninput');
 

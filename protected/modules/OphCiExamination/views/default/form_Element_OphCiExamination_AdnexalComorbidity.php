@@ -70,10 +70,11 @@
 								let endTrimmed = inputText.val().trimEnd();
 								inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
 							}
+							let textToAdd = '';
               $(selectedItems).each(function (key, item) {
-                inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
-                );
+                 textToAdd += item['label'];
               });
+							inputText.val(inputText.val() + textToAdd);
               inputText.trigger('oninput');
               return true;
             }
