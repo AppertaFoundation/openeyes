@@ -118,15 +118,19 @@
             <p>
                 I have also discussed what the procedure is likely to involve, the benefits and risks of any available alternative treatments (including no treatment) and any particular concerns of this patient. I assess that this patient has the capacity to give valid consent.
             </p>
+        <?php if ($elements['Element_OphTrConsent_Leaflets']->leaflets) { ?>
             <div class="group flex-layout">
                 <span class="nowrap">
-                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->information ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
-                    <span class="dotted-write"></span>
+                    <span class="checkbox <?php echo $elements['Element_OphTrConsent_Leaflets']->leaflets ? 'checked' : '' ?>"> </span>The following informational leaflets have been provided:
+                    <?php echo $this->renderPartial('view_Element_OphTrConsent_Leaflets', ['element' => $elements['Element_OphTrConsent_Leaflets']]) ?>
                 </span>
             </div>
+        <?php } ?>
+        <?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) { ?>
             <div class="group">
                 <span class="checkbox <?php echo $elements['Element_OphTrConsent_Other']->anaesthetic_leaflet ? 'checked' : '' ?>"></span> Anaesthesia leaflet has been provided
             </div>
+        <?php } ?>
             <div class="group">
                 This procedure will involve: <span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA') ? 'checked' : '' ?>"></span>
                 general and/or regional anaesthesia&nbsp;&nbsp;<span class="checkbox <?php echo $elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS')) ? 'checked' : '' ?>"></span>
