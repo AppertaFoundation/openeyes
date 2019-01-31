@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -14,64 +14,67 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
 <div class="cols-5">
 
+    <div class="row divider">
+        <h2>Required Surgical History Sets</h2>
+    </div>
+
     <?php
-    $columns = array(
-        'checkboxes' => array(
+    $columns = [
+        'checkboxes' => [
             'header' => '',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::checkBox(
-                    "OEModule_OphCiExamination_models_OphCiExaminationAllergySet[][id]",
+                    "OEModule_OphCiExamination_models_SurgicalHistorySet[]",
                     false,
                     ['value' => $data->id]
                 );
             },
             'cssClassExpression' => '"checkbox"',
-        ),
+        ],
         'name',
-        array(
+        [
             'header' => 'Subspecialty',
             'name' => 'subspecialty_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return $data->subspecialty ? $data->subspecialty->name : null;
             },
-        ),
-        array(
+        ],
+        [
             'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                return $data->firm_id ? $data->getFirm()->name : null;
+                return $data->firm ? $data->firm->name : null;
             }
-        ),
-    );
+        ],
+    ];
 
     $dataProvider = $model->search();
     $dataProvider->pagination = false;
+
     ?>
 
     <form id="generic-admin-form"><?php
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
-            //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => '["data-row"=>$row, "data-id" => $data->id]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowHtmlOptionsExpression' => 'array("data-id" => $data->id)',
-            'rowCssClass' => array('clickable'),
-        ));
+            'rowCssClass' => ['clickable'],
+        ]);
         ?>
     </form>
 
@@ -80,7 +83,7 @@
         [
             'class' => 'button large',
             'name' => 'add',
-            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/create/',
+            'data-uri' => '/OphCiExamination/admin/SurgicalHistoryAssignment/create',
             'id' => 'et_add'
         ]
     ); ?>
@@ -90,7 +93,7 @@
         [
             'class' => 'button large',
             'name' => 'delete',
-            'data-uri' => '/OphCiExamination/oeadmin/AllergyAssignment/delete',
+            'data-uri' => '/OphCiExamination/admin/SurgicalHistoryAssignment/delete',
             'id' => 'et_delete'
         ]
     ); ?>
@@ -101,7 +104,7 @@
     $(document).ready(function () {
         $('table.generic-admin tbody').on('click', 'tr td:not(".checkbox")', function () {
             var id = $(this).closest('tr').data('id');
-            window.location.href = '/OphCiExamination/oeadmin/AllergyAssignment/update/' + id;
+            window.location.href = '/OphCiExamination/admin/SurgicalHistoryAssignment/update/' + id;
         });
     });
 </script>

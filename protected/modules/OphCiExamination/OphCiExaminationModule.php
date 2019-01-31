@@ -21,4 +21,10 @@ namespace OEModule\OphCiExamination;
 class OphCiExaminationModule extends \BaseEventTypeModule
 {
     public $controllerNamespace = '\OEModule\OphCiExamination\controllers';
+
+    public function init()
+    {
+        $this->setModules(['ExaminationAdmin']);
+        parent::init();
+    }
 }
