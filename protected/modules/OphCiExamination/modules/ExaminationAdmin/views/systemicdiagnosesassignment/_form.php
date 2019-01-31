@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -14,22 +14,22 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
 <?=\CHtml::errorSummary(
-    array_merge(array($model), $model->entries),
+    array_merge([$model], $model->entries),
     null,
     null,
-    array("class" => "alert-box alert with-icon")
+    ["class" => "alert-box alert with-icon"]
 ); ?>
 
 <div class="cols-5">
 
     <div class="row divider">
-        <h2><?php echo $title ?></h2>
+        <h2><?=$title ?></h2>
     </div>
 
     <table class="standard cols-full">
@@ -66,8 +66,8 @@
 
     <div id="risks" class="data-group">
         <?php
-        $columns = array(
-            array(
+        $columns = [
+            [
                 'header' => 'Diagnosis',
                 'name' => 'Diagnosis',
                 'type' => 'raw',
@@ -83,55 +83,55 @@
                             ], JSON_HEX_QUOT | JSON_HEX_APOS) : ''
                         ]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Sex Specific',
                 'name' => 'gender',
                 'type' => 'raw',
                 'value' => function ($data, $row) use ($gender_options) {
-                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
+                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][gender]", $data->gender, $gender_options, ['empty' => '-- select --']);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Min)',
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_min]", $data->age_min, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => 'Age Specific (Max)',
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_max]", $data->age_max, array("style" => "width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;"]);
                 }
-            ),
-            array(
+            ],
+            [
                 'header' => '',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::link('remove', '#', array('class' => 'remove_risk_entry'));
+                    return CHtml::link('remove', '#', ['class' => 'remove_risk_entry']);
                 }
-            ),
+            ],
 
-        );
+        ];
 
         $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry');
         $dataProvider->setData($model->entries);
-        $this->widget('zii.widgets.grid.CGridView', array(
+        $this->widget('zii.widgets.grid.CGridView', [
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin standard',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression' => 'array("data-row" => $row, "data-key" => $row)',
+            'rowHtmlOptionsExpression' => '["data-row" => $row, "data-key" => $row]',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
             'id' => 'OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_diagnoses_table'
 
-        ));
+        ]);
         ?>
 
         <?=\CHtml::button(
@@ -158,14 +158,15 @@
                 'class' => 'button large',
                 'type' => 'button',
                 'name' => 'cancel',
-                'id' => 'et_cancel'
+                'id' => 'et_cancel',
+                'data-uri' => '/OphCiExamination/admin/SystemicDiagAssignment/index',
             ]
         ); ?>
     </div>
 </div>
 
 <?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1); ?>
-<script type="text/javascript" src="<?= $js_path; ?>"></script>
+<script src="<?=$js_path; ?>"></script>
 
 <script type="text/template" id="new_risk_entry" class="hidden">
     <tr data-row="{{row}}" data-key="{{row}}">
@@ -176,7 +177,7 @@
         </td>
         <td>
             <?php
-            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+            echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][gender]", null, $gender_options, ['empty' => '-- select --']);
             ?>
         </td>
         <td>
@@ -241,14 +242,6 @@
         $.each($table.find('tr'), function (i, tr) {
             var $tr = $(tr);
             initDiagnosesSearchController($tr);
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#et_cancel').click(function () {
-            window.location.href = '/OphCiExamination/oeadmin/SystemicDiagAssignment/';
         });
     });
 </script>
