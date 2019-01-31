@@ -57,7 +57,10 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         var inputText = investigationDiv.find(
           '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
         );
-
+				if(inputText.val()){
+					let endTrimmed = inputText.val().trimEnd();
+					inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
+				}
         $(selectedItems).each(function (key, item) {
           inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']);
         });

@@ -66,6 +66,10 @@
                 return new OpenEyes.UI.AdderDialog.ItemSet($itemSet.items, {'header': $itemSet.header,'multiSelect': $itemSet.multiSelect });
             }),
             onReturn: function (adderDialog, selectedItems) {
+							if(inputText.val()){
+								let endTrimmed = inputText.val().trimEnd();
+								inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
+							}
               $(selectedItems).each(function (key, item) {
                 inputText.val(inputText.val() ? inputText.val() + item['label'] : item['label']
                 );

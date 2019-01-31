@@ -76,7 +76,10 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-
+      	if(inputText.val()){
+      		let endTrimmed = inputText.val().trimEnd();
+      		inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
+				}
         $(selectedItems).each(function (key, item) {
           inputText.val(inputText.val() ?
             inputText.val() + item['label'] : item['label']
