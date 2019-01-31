@@ -34,6 +34,7 @@ class RefMedicationAdminController extends BaseAdminController
         $admin->setListFields(array(
             'id',
             'source_type',
+            'source_subtype',
             'preferred_term',
             'alternativeTerms',
             'vtm_term',
@@ -59,7 +60,8 @@ class RefMedicationAdminController extends BaseAdminController
 
     protected function _getEditAdmin($id)
     {
-        $admin = new Admin(Medication::model(), $this);
+        $model = new Medication();
+        $admin = new Admin($model, $this);
 
         if(!is_null($id)) {
             $search_indexes = Medication::model()->findByPk($id)->medicationSearchIndexes;
@@ -72,7 +74,7 @@ class RefMedicationAdminController extends BaseAdminController
             'preferred_term'=>'Preferred term',
             'short_term'=>'Short term',
             'preferred_code'=>'Preferred code',
-            'source_type'=>'Source type',
+            'source_type' => 'Source type',
             'source_subtype'=>'Source subtype',
             'vtm_term' => 'VTM term',
             'vtm_code' => 'VTM code',
@@ -96,40 +98,39 @@ class RefMedicationAdminController extends BaseAdminController
         ));
 
         $admin->setModelDisplayName("Medication");
+
         if($id) {
             $admin->setModelId($id);
         }
+        else {
+            // set default source_type
+            if(!is_null($this->source_type)) {
+                $model->source_type = $this->source_type;
+            }
+        }
 
-        $admin->setCustomSaveURL('/OphDrPrescription/refMedicationAdmin/save/'.$id);
+        $admin->setCustomSaveURL('/OphDrPrescription/'.$this->id.'/save/'.$id);
 
         return $admin;
     }
 
-    public function actionSave($id)
+    public function actionSave($id = null)
     {
         $admin = $this->_getEditAdmin($id);
 
-        if(is_null($id)) {
-            $model = new Medication();
-        }
-        else {
-            if(!$model = Medication::model()->findByPk($id)) {
-                throw new CHttpException(404, 'Page not found');
-            }
-        }
+        $model = $admin->getModel();
 
         /** @var Medication $model */
 
         $data = Yii::app()->request->getPost('Medication');
         $model->setAttributes($data);
 
-        if(!$model->validate()) {
+        if(!$model->validate() || !$model->save(false)) {
             $errors = $model->getErrors();
             $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $errors));
             exit;
         }
 
-        $model->save();
 
         $existing_ids = array();
         $updated_ids = array();
@@ -162,7 +163,7 @@ class RefMedicationAdminController extends BaseAdminController
             MedicationSearchIndex::model()->deleteByPk($deleted_ids);
         }
 
-        $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
+        $this->redirect('/OphDrPrescription/'.$this->id.'/list');
 
     }
 
@@ -278,5 +279,24 @@ class RefMedicationAdminController extends BaseAdminController
         Yii::app()->request->sendFile("refMedExport.xlsx", @file_get_contents('/tmp/refMedExport.xlsx'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', false);
     }
 
+    public function actionDelete()
+    {
+        try {
+            foreach (Yii::app()->request->getPost('Medication')['id'] as $id) {
+                $medication = Medication::model()->findByPk($id);
+                /** @var Medication $medication*/
+                foreach ($medication->medicationSearchIndexes as $index) {
+                    $index->delete();
+                }
+                $medication->delete();
+            }
+        }
+        catch (Exception $e) {
+            echo "0";
+            exit;
+        }
 
+        echo "1";
+        exit;
+    }
 }
