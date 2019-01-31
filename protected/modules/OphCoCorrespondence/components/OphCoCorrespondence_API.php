@@ -170,7 +170,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefraction(\Patient $patient, $side, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return Yii::app()->format->text($element->getCombined($side));
         }
         return null;
@@ -185,7 +186,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefractionDate(\Patient $patient, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return $element->event->event_date;
         }
         return null;
@@ -200,7 +202,8 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
-        if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+        $element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context);
+        if ($element){
             return $element->eye->adjective;
         }
     }
@@ -354,6 +357,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if (isset($contact)) {
             $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
+            $data['to']['contact_nickname'] = $this->getNickname($contact->contact->id);
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -679,6 +683,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'contact_type' => $contact_type,
             'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
             'contact_name' => $correspondence_name,
+            'contact_nickname' => isset($contact->contact->nick_name) ? $contact->contact->nick_name : null,           
             'address' => $address ? $address : "The contact does not have a valid address.",
             'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
@@ -894,5 +899,21 @@ class OphCoCorrespondence_API extends BaseAPI
 
         }
         return '';
+    }
+
+    public function getNickname($identify_with)
+    {
+        if(is_numeric($identify_with)){
+            $contact_id = $identify_with;
+        }
+
+        if(isset($contact_id)){
+            $contact = Contact::model()->find('id=?', array($contact_id));
+            if($contact){
+                return $contact->nick_name;
+            }
+        }
+        
+        return;
     }
 }

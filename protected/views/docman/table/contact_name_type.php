@@ -39,6 +39,7 @@
 				'style' => (!$is_editable_contact_targets ? 'background-color: lightgray' : ''),
 			)
 		);
+        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_nickname]', (isset($contact_nickname) ? $contact_nickname : ''));
 		echo \CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full', 'placeholder' => 'Name'));
     echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
         [       'empty' => '- Type -',
