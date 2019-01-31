@@ -435,8 +435,6 @@
             context_id: self.content.find('.step-2.selected').data('context-id')
         };
 
-
-
         var subspecialty = self.content.find('.oe-specialty-service.selected');
         if (subspecialty.hasClass('new-added-subspecialty-service')) {
             requestParams['service_id'] = subspecialty.data('service-id');
