@@ -120,7 +120,7 @@
     </div>
 
     <?=\CHtml::button(
-        'Add Allergy',
+        'Add Risk',
         [
             'class' => 'button large',
             'type' => 'button',

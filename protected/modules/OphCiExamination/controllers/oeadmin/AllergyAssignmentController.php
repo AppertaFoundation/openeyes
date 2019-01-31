@@ -205,11 +205,10 @@ class AllergyAssignmentController extends \ModuleAdminController
         $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySet', array());
 
         foreach ($model_ids as $model_id) {
-
             $model = $this->loadModel($model_id);
-            if (!$model->allergy_set_entries) {
+            try {
                 $model->delete();
-            } else {
+            } catch (Exception $exception) {
                 echo "0";
                 \Yii::app()->end();
             }
