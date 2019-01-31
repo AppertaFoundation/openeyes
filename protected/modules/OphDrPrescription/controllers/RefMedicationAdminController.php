@@ -21,6 +21,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class RefMedicationAdminController extends BaseAdminController
 {
+    /*
+       Filter that can be applied to items in order to
+       create admin screens for specific subsets of drugs
+    */
+    protected $source_type;
+    protected $display_name;
+
     public function actionList()
     {
         $admin = new Admin(Medication::model(), $this);
@@ -34,19 +41,23 @@ class RefMedicationAdminController extends BaseAdminController
             'amp_term',
         ));
 
+        if(!is_null($this->source_type)) {
+            $admin->getSearch()->getCriteria()->addColumnCondition(['source_type' => $this->source_type]);
+        }
+
         $admin->getSearch()->addSearchItem('preferred_term');
 
-        $admin->setModelDisplayName('All Medications');
+        $admin->setModelDisplayName($this->display_name);
 
         $admin->listModel();
     }
 
-    public function actionEdit($id)
+    public function actionEdit($id = null)
     {
         $this->_getEditAdmin($id)->editModel();
     }
 
-    private function _getEditAdmin($id)
+    protected function _getEditAdmin($id)
     {
         $admin = new Admin(Medication::model(), $this);
 
