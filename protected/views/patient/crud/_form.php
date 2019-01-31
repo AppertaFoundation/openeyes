@@ -322,7 +322,7 @@ foreach ($ethnic_list as $key=>$item){
             <table class="standard highlight-rows">
                 <tbody>
                 <tr>
-                    <td>
+                    <td class="<?= $patient->getScenario() === 'referral'? 'required':'' ?>">
                         <?= $form->label($patient, 'gp_id') ?>
                         <br/>
                         <?= $form->error($patient, 'gp_id') ?>
