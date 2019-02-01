@@ -143,7 +143,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     {
         if (!(isset($this->$attribute) && $this->$attribute) &&
             isset($this->{'lens_id_' . $params['side']}) && $this->{'lens_id_' . $params['side']}) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank ' . '(' . $params['side'] . ' side).');
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank (' . $params['side'] . ' side).');
         }
     }
 
