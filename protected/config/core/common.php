@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201812061722',
+            'time' => '201901011500',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -591,6 +591,6 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1',
+      'oe_version' => '3.1rc',
     ),
 );
