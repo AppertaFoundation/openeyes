@@ -12,32 +12,12 @@ $this->menu=array(
 	array('label'=>'Create Disorder', 'url'=>array('create')),
 );
 
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#disorder-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 ?>
 
-
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'button large search-button')); ?>
-<div class="search-form " style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
 <div class="find-by" style="font-size: 0.6875rem; font-weight: 400; color: #8c8c8c;">
     You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
     or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
 </div>
-
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'disorder-grid',
 	'dataProvider'=>$model->search(),
