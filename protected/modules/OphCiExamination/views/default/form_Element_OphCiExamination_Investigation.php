@@ -57,15 +57,14 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         var inputText = investigationDiv.find(
           '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
         );
-				if(inputText.val()){
-					let endTrimmed = inputText.val().trimEnd();
-					inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
+				let newInputTextVal = inputText.val().trimEnd();
+				if(newInputTextVal){
+					newInputTextVal += newInputTextVal.slice(-1) === ',' ? ' ' : ', ';
 				}
-				let textToAdd = '';
 				$(selectedItems).each(function (key, item) {
-					textToAdd += item['label'];
+					newInputTextVal += item['label'];
 				});
-				inputText.val(inputText.val() + textToAdd);
+				inputText.val(newInputTextVal);
         inputText.trigger('oninput');
         return true;
       }

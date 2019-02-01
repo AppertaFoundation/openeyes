@@ -59,16 +59,14 @@
           },array_keys($instru_list), $instru_list)) ?>, {'multiSelect': true})
       ],
       onReturn: function (adderDialog, selectedItems) {
-				if(inputText.val()){
-					let endTrimmed = inputText.val().trimEnd();
-					inputText.val(endTrimmed.slice(-1) === ',' ? endTrimmed + ' ' : endTrimmed + ', ');
+				let newInputTextVal = inputText.val().trimEnd();
+				if(newInputTextVal){
+					newInputTextVal += newInputTextVal.slice(-1) === ',' ? ' ' : ', ';
 				}
-				let textToAdd = '';
 				$(selectedItems).each(function (key, item) {
-					textToAdd += item['label'];
+					newInputTextVal += item['label'];
 				});
-				inputText.val(inputText.val() + textToAdd);
-
+				inputText.val(newInputTextVal);
         inputText.trigger('oninput');
         return true;
       }
