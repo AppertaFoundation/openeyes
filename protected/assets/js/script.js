@@ -485,7 +485,9 @@ function formatStringToEndWithCommaAndWhitespace(value){
 function concatenateArrayItemLabels(arrayItems){
 	let outputString = '';
 	$(arrayItems).each(function (key, item) {
-		outputString += item['label'];
+		if(item['label']){
+			outputString += item['label'];
+		}
 	});
 	return outputString;
 }
