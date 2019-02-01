@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="oe-full-content subgrid oe-admin flex-layout flex-top">
+        <div class="oe-full-content oe-new-patient flex-layout flex-top">
 
             <main class="oe-full-main admin-main">
                 <?php echo $content; ?>
