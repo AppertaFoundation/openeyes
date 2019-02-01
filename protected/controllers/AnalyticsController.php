@@ -16,25 +16,35 @@ class AnalyticsController extends BaseController
   protected $filters;
   protected $surgeon;
 
+    /**
+     * @param $subspecialty_name
+     * @return int
+     * Get subspecialty ID by name, used in each actionXXX function to filter data by subspecialty.
+     */
   protected function getSubspecialtyID($subspecialty_name){
       return Subspecialty::model()->findByAttributes(array('name'=>$subspecialty_name))->id;
   }
+
   public function accessRules()
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'vitreoretinal', 'ad','updateData',),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'updateData',),
         'users'=> array('@')
       ),
     );
   }
 
+    /**
+     * Function actionCataract(), actionMedicalRetina(), actionGlaucoma() are the main function for those three subspecialties
+     * The function grab data for all the plots.
+     */
   public function actionCataract(){
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
       $subspecialty_id = $this->getSubspecialtyID('Cataract');
       $this->getDisorders($subspecialty_id);
-      $this->patient_list = $this->queryCataractEventList();
+      $this->patient_list = $this->queryCataractEventList();  //Elements for the drill down page, but this is not actually patient list, should named event_list.
       $current_user = User::model()->findByPk(Yii::app()->user->id);
       if (isset($this->surgeon)){
           $user_list = null;
@@ -153,7 +163,6 @@ class AnalyticsController extends BaseController
         )
     );
   }
-
   public function actionGlaucoma(){
       $this->checkAuth();
       $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
@@ -247,13 +256,22 @@ class AnalyticsController extends BaseController
     );
   }
 
-
   public function sortByTime($a, $b){
       if($a['event_time']==$b['event_time'])
           return 0;
       return ($a['event_time']<$b['event_time'])? -1: 1;
   }
 
+    /**
+     * @param $data_list
+     * @param $sum
+     * @param $count
+     * @return float
+     * This function is used to calculate the standard deviation of an array.
+     * Used for Glaucuoma and MR subspecialties VA/IOP/CRT plots.
+     * Normally we don't need the sum and number count passed as variables because they are can be get from the original array
+     * But in this situation, we get the sum and count from the upper function, pass and use them directly will cause less calculations.
+     */
   public function calculateStandardDeviation($data_list, $sum, $count){
       $variance = 0;
       $average = $sum/$count;
@@ -267,10 +285,15 @@ class AnalyticsController extends BaseController
       return $standard_deviation;
   }
 
-
+    /**
+     * @param $subspecialty_id
+     * @return array
+     * Functions getCustomVA(), getCustomCRT(), getCustomIOP() is used to get VA, CRT, and IOP values for corresponding subspecialty
+     * Return arraies for left and right eye side which can be easily transformed to plotly readable data format.
+     * Note: the name getCustomXXX() because we thought they are for custom section, but seems not, names will be changed if needed.
+     */
   public function getCustomVA($subspecialty_id) {
-//      $va_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity::model()->findAll();
-//      return $this->getCustomDataList($va_elements,"VA");
+      //As the dataset is huge and to speed up the performance, sql queries are used to get all data.
       $va_elements = $this->queryVA($subspecialty_id);
       return $this->getCustomDataListQuery($va_elements,"VA",$this->surgeon);
   }
@@ -280,14 +303,18 @@ class AnalyticsController extends BaseController
       return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id, $this->surgeon);
   }
 
-
   public function getCustomIOP($subspecialty_id){
-//      $iop_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure::model()->findAll();
-//      return $this->getCustomDataList($iop_elements,'IOP');
       $iop_elements = $this->queryIOP($subspecialty_id);
       return $this->getCustomDataListQuery($iop_elements,"IOP",$this->surgeon);
   }
 
+    /**
+     * @param $age
+     * @param $protocol Todo: seems this parameter is never used, need specify.
+     * @param $date
+     * @return bool
+     *
+     */
   public function validateFilters($age, $protocol, $date){
       $return_value = true;
       if (isset($this->filters['age_min'])){
@@ -302,14 +329,18 @@ class AnalyticsController extends BaseController
       if (isset($this->filters['date_from']) && $return_value){
           $return_value = ($date > $this->filters['date_from']);
       }
-
       return $return_value;
-
   }
 
-  public function queryVA($subspecialty_id){
-      $command =  Yii::app()->db->createCommand()
-          ->select('e2.patient_id as patient_id, e.created_user_id as created_user_id,
+    /**
+     * @param $subspecialty_id
+     * @return mixed
+     * Function queryVA() and queryIOP() to get all data from visual acuity element and intraocular pressure element
+     * Return the record in dataset, used by getCustomVA() and getCustomIOP() functions.
+     */
+    public function queryVA($subspecialty_id){
+        $command =  Yii::app()->db->createCommand()
+            ->select('e2.patient_id as patient_id, e.created_user_id as created_user_id,
           eov.id as va_id, 
           d.term as term, 
           AVG(ovr.value) as reading, 
@@ -318,42 +349,26 @@ class AnalyticsController extends BaseController
           ovr.side as side, 
           IF(ovr.side=1, AVG(ovr.value), null) AS left_reading, 
           IF(ovr.side=0, AVG(ovr.value), null) AS right_reading')
-          ->from('et_ophciexamination_visualacuity eov')
-          ->join('ophciexamination_visualacuity_reading ovr','eov.id = ovr.element_id')
-          ->join('event e','eov.event_id = e.id')
-          ->join('episode e2','e.episode_id = e2.id')
-          ->leftJoin('et_ophciexamination_diagnoses eod','e.id = eod.event_id')
-          ->leftJoin('ophciexamination_diagnosis od','od.element_diagnoses_id = eod.id')
-          ->leftJoin('disorder d','od.disorder_id = d.id')
-          ->leftJoin('firm','e2.firm_id = firm.id')
-          ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
-          ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
-          ->group('va_id, side');
+            ->from('et_ophciexamination_visualacuity eov')
+            ->join('ophciexamination_visualacuity_reading ovr','eov.id = ovr.element_id')
+            ->join('event e','eov.event_id = e.id')
+            ->join('episode e2','e.episode_id = e2.id')
+            ->leftJoin('et_ophciexamination_diagnoses eod','e.id = eod.event_id')
+            ->leftJoin('ophciexamination_diagnosis od','od.element_diagnoses_id = eod.id')
+            ->leftJoin('disorder d','od.disorder_id = d.id')
+            ->leftJoin('firm','e2.firm_id = firm.id')
+            ->leftJoin('service_subspecialty_assignment ssa', 'ssa.id = firm.service_subspecialty_assignment_id')
+            ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
+            ->group('va_id, side');
 
-      if(isset($this->filters['diagnosis'])){
-          foreach ($this->filters['diagnosis'] as $diagnosis){
-              $command->andWhere(array('like','term',$diagnosis));
-          }
-      }
-
-      return $command->queryAll();
-  }
-
-    public function getPatientsListBySurgeon($surgeon_id){
-        $command = Yii::app()->db->createCommand()
-            ->select('e2.patient_id as patient_id')
-            ->from('et_ophtroperationnote_surgeon surgeon')
-            ->join('event e','e.id = surgeon.event_id')
-            ->join('episode e2','e2.id = e.episode_id')
-            ->where('surgeon.surgeon_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
-        $query_list= $command->queryAll();
-        $patients_list = array();
-        foreach ($query_list as $patient){
-            $patients_list[] = $patient['patient_id'];
+        if(isset($this->filters['diagnosis'])){
+            foreach ($this->filters['diagnosis'] as $diagnosis){
+                $command->andWhere(array('like','term',$diagnosis));
+            }
         }
-        return $patients_list;
-  }
 
+        return $command->queryAll();
+    }
     public function queryIOP($subspecialty_id){
         $command =  Yii::app()->db->createCommand()
             ->select('e2.patient_id as patient_id, e.created_user_id as created_user_id,
@@ -380,7 +395,35 @@ class AnalyticsController extends BaseController
         return $command->queryAll();
     }
 
-    public function getCustomDataListQuery($elements,$type,$surgeon_id=null,$readings = null){
+    /**
+     * @return mixed
+     * Get all the cataract elements in operation note event
+     * Used for the drill down list.
+     */
+    public function queryCataractEventList(){
+        $command = Yii::app()->db->createCommand()
+            ->select('event_id')
+            ->from('et_ophtroperationnote_cataract');
+
+        return $command->queryAll();
+    }
+
+    public function getPatientsListBySurgeon($surgeon_id){
+        $command = Yii::app()->db->createCommand()
+            ->select('e2.patient_id as patient_id')
+            ->from('et_ophtroperationnote_surgeon surgeon')
+            ->join('event e','e.id = surgeon.event_id')
+            ->join('episode e2','e2.id = e.episode_id')
+            ->where('surgeon.surgeon_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+        $query_list= $command->queryAll();
+        $patients_list = array();
+        foreach ($query_list as $patient){
+            $patients_list[] = $patient['patient_id'];
+        }
+        return $patients_list;
+  }
+
+  public function getCustomDataListQuery($elements,$type,$surgeon_id=null,$readings = null){
         $patient_list = array();
         $left_list = array();
         $right_list = array();
@@ -393,6 +436,8 @@ class AnalyticsController extends BaseController
                 $left_reading = $element['left_reading'];
                 $right_reading = $element['right_reading'];
             }
+
+            /*Only use data which is created by the selected surgeon*/
             if (isset($surgeon_id)){
                 if ($surgeon_id !== $element['created_user_id']){
                     continue;
@@ -401,7 +446,9 @@ class AnalyticsController extends BaseController
             $current_protocol = null;
                 $current_patient = Patient::model()->findByPk($element['patient_id']);
                 $current_time = Helper::mysqlDate2JsTimestamp($element['date']);
-                // eye 1 left, 2 right, 3 both
+
+                /* Add patient in this->patient_list if not exist, prepare for drill down list,
+                Get each patient's left and right eye readings as well as event time */
                 if ($this->validateFilters( $current_patient->getAge(), $current_protocol, $current_time)) {
                     if (!array_key_exists($current_patient->id, $this->patient_list)) {
                         $this->patient_list[$current_patient->id] = $current_patient;
@@ -410,6 +457,7 @@ class AnalyticsController extends BaseController
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
                     }
+                    // eye 1 left, 2 right, 3 both
                     if (isset($this->filters['diagnosis'])){
                         if ($element['eye_id'] == 1){
                             $right_reading = null;
@@ -428,6 +476,10 @@ class AnalyticsController extends BaseController
                 }
         }
 
+        /* Sort all the data of each patient by time
+        Then calculate each record's weeks from the start time
+        Re-structure the data by using weeks as key
+        Calculate the record count and sum at the same time for later use. */
         foreach ($patient_list as $patient_id => &$patient_data){
             usort($patient_data, array($this, 'sortByTime'));
             $start_time = $patient_data[0]['event_time']/1000;
@@ -455,6 +507,7 @@ class AnalyticsController extends BaseController
             }
         }
 
+        /* Use data above to calculate average and SD value */
         foreach (['left', 'right'] as $side){
             foreach (${$side.'_list'} as &$data_item){
                 if ($data_item['count']>1){
@@ -725,13 +778,10 @@ class AnalyticsController extends BaseController
 
       return $disorder_list;
   }
-  public function queryCataractEventList(){
-      $command = Yii::app()->db->createCommand()
-          ->select('event_id')
-          ->from('et_ophtroperationnote_cataract');
 
-      return $command->queryAll();
-  }
+    /**
+     * Get all filters from sidebar, used together with actionUpdateData()
+     */
   public function obtainFilters(){
       $diagnoses_MR = array("Age related macular degeneration","Branch retinal vein occlusion with macular oedema","Central retinal vein occlusion with macular oedema","Diabetic macular oedema");
       $specialty = Yii::app()->request->getParam('specialty');
@@ -774,6 +824,9 @@ class AnalyticsController extends BaseController
       );
   }
 
+    /**
+     * After "Update Chart" button is created, this function is called to get updated data based on current filters.
+     */
   public function actionUpdateData(){
       $this->checkAuth();
       $specialty = Yii::app()->request->getParam('specialty');
@@ -781,7 +834,7 @@ class AnalyticsController extends BaseController
       if (!isset($this->surgeon)&&isset($surgeon_id)){
           $this->surgeon = $surgeon_id;
       }
-      $this->obtainFilters();
+      $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
       $subspecialty_id = $this->getSubspecialtyID($specialty);
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       if ($specialty === "Glaucoma"){
@@ -855,6 +908,12 @@ class AnalyticsController extends BaseController
       $this->renderJSON(array($custom_data,$clinical_data, $service_data));
   }
 
+    /**
+     * @param $period_name
+     * @return int
+     * This function is used to transfer different period type from follow up into number of days
+     * Called in getFollowUps() function
+     */
   public function getPeriodDate($period_name){
       switch ($period_name) {
           case 'days':
@@ -876,6 +935,15 @@ class AnalyticsController extends BaseController
       return $period;
   }
 
+    /**
+     * @param $subspecialty_id
+     * @param null $start_date
+     * @param null $end_date
+     * @return array
+     * This function is used to get three followup data (overdue, coming, waiting) for "Service" section
+     * Todo: split this function into small chunk of code to make it more readable
+     *
+     */
   public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null){
 
       $followup_patient_list = array(
@@ -897,6 +965,7 @@ class AnalyticsController extends BaseController
                   }
               }
 
+              /* Calculate the coming and overdue followups */
               $event_time = Helper::mysqlDate2JsTimestamp($current_event->event_date)/1000;
               if( ($start_date && $event_time < $start_date) ||
                   ($end_date && $event_time > $end_date))
@@ -993,6 +1062,9 @@ class AnalyticsController extends BaseController
               }
           }
       }
+
+      /* Get the waiting follow up data, uses Document event with referral letter type and worklist time
+      To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
       $referral_document_elements = Element_OphCoDocument_Document::model()->findAll();
 
       foreach ($referral_document_elements as $referral_element){
@@ -1038,6 +1110,12 @@ class AnalyticsController extends BaseController
       ksort($followup_patient_list['coming']);
       return $followup_patient_list;
   }
+
+    /**
+     * @param $events
+     * @return mixed
+     * This function is writen for the use of php usort() function
+     */
   protected function sortEventByEventDate($events){
       for($i=0;$i<count($events);$i++){
           $val = $events[$i];
@@ -1061,6 +1139,11 @@ class AnalyticsController extends BaseController
       }
       return $latest_date;
   }
+
+    /**
+     * Check user roles, user with "Service Manager" role can view all the data for all surgeons.
+     * Otherwise, it can only view the data created by himself.
+     */
   protected function checkAuth()
   {
       if (Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)) {
