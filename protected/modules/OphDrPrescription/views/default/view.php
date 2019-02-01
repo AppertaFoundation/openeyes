@@ -24,9 +24,9 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 	<?php
         // Event actions
         $elementEditable = $Element->isEditableByMedication();
-        if( !$elementEditable ){
+        if(($Element->draft ) && (!$elementEditable )){
             $this->event_actions[] = EventAction::button(
-                'Save', 
+                'Save as final', 
                 'save', 
                 array('level' => 'secondary'), 
                 array(
@@ -54,7 +54,7 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 		<div class="alert-box alert with-icon">
                     This prescription is a draft and can still be edited
 		</div>
-	<?php } if( !$elementEditable ){?>
+	<?php } if(($Element->draft) && (!$elementEditable )){?>
                 <div class="alert-box alert with-icon">
                     This prescription is created as the result of a medication management element
 		</div>

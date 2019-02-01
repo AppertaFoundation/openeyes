@@ -59,7 +59,7 @@ $(document).ready(function () {
             element: $(this).data('element'),
             event: OE_event_id
         };
-        
+        disableButtons();
         $.ajax({
             'type': 'POST',
             'url': baseUrl + '/OphDrPrescription/default/finalize/',
@@ -68,8 +68,11 @@ $(document).ready(function () {
             'success': function ( response ) {
                 if(response.success === 0){
                     new OpenEyes.UI.Dialog.Alert({
-                        content: "Still not working!"
+                        content: "There was an unexpected error save the prescription, please try again or contact support for assistance."
                     }).open();
+                    enableButtons();
+                } else {
+                    window.location.reload();
                 }
             }
         });
