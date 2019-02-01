@@ -472,7 +472,7 @@ function arrayIndex(needle, haystack) {
 }
 
 function formatStringToEndWithCommaAndWhitespace(value){
-	if (typeof string !== 'string'){
+	if (typeof value !== 'string'){
 		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
 	}
 	let outputString = value.trimEnd();
