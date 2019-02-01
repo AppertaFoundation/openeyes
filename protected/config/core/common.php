@@ -382,7 +382,7 @@ return array(
                 ),
                 'disorder' => array(
                     'title' => 'Manage Disorders',
-                    'uri' => "/disorder/admin",
+                    'uri' => "/disorder/index",
                     'requires_setting' => array('setting_key'=>'user_add_disorder', 'required_value'=>'on'),
                     'position' => 91,
             ),
