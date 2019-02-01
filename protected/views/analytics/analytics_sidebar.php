@@ -103,9 +103,9 @@
 
             <div id="js-charts-service">
                 <ul class="charts">
-                    <li><a href="#" id="js-hs-app-follow-up-coming">Appointments: Follow Up</a></li>
-                    <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Appointments: Delayed</a></li>
-                    <li><a href="#" id="js-hs-app-follow-up-waiting" >Appointments: Waiting Time</a></li>
+                    <li><a href="#" id="js-hs-app-follow-up-coming">Follow-Up</a></li>
+                    <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Delayed</a></li>
+                    <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting Time</a></li>
                 </ul>
                 <div id="js-service-data-filter"  style="display: none">
                     <h3>Service Data Filters</h3>

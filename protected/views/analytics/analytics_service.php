@@ -65,9 +65,9 @@
             'js-hs-chart-analytics-service', first_plot_data ,service_layout, analytics_options
         );
 
-        $('#js-hs-app-follow-up-coming').html('Appointments: Follow Up(' + coming_count + ')');
-        $('#js-hs-app-follow-up-overdue').html('Appointments: Delayed(' + overdue_count + ')');
-        $('#js-hs-app-follow-up-waiting').html('Appointments: Waiting time(' + waiting_count + ')');
+        $('#js-hs-app-follow-up-coming').html('Follow-Up(' + coming_count + ')');
+        $('#js-hs-app-follow-up-overdue').html('Delayed(' + overdue_count + ')');
+        $('#js-hs-app-follow-up-waiting').html('Waiting time(' + waiting_count + ')');
         $('#js-hs-app-follow-up-coming').on('click', function () {
             $(this).addClass('selected');
             $('#js-hs-app-follow-up-overdue').removeClass('selected');
