@@ -3,7 +3,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,15 +12,14 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
 
-use OEModule\OphCiExamination\models\OphCiExaminationAllergySetAssignment;
 
-class OphCiExaminationAllergySet extends \BaseEventTypeElement
+class OphCiExaminationAllergySet extends \BaseActiveRecordVersioned
 {
 	/**
 	 * @return string the associated database table name
@@ -39,6 +38,7 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 		// will receive user inputs.
 		return array(
 			array('name', 'length', 'max'=>255),
+            array('name', 'required'),
 			array('firm_id, subspecialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
@@ -59,8 +59,7 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'allergy_set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetAssignment', 'allergy_set_id'),
-            'allergy_set_entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry', 'ophciexamination_allergy_entry_id', 'through' => 'allergy_set_assignments'),
+            'entries' => array(self::HAS_MANY, OphCiExaminationAllergySetEntry::class, 'set_id'),
 		);
 	}
 
@@ -132,4 +131,17 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 	{
 		return parent::model($className);
 	}
+
+    public function beforeDelete()
+    {
+        foreach ($this->allergy_set_assignments as $allergy_set_assignment) {
+            $allergy_set_assignment->delete();
+        }
+
+        foreach ($this->allergy_set_entries as $allergy_set_entry) {
+            $allergy_set_entry->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }
