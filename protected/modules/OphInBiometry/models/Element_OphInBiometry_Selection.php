@@ -123,7 +123,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
                 if (((empty($this->formula_id_right)) && ((!empty($this->lens_id_right))))
                     || ((!empty($this->formula_id_right)) && ((empty($this->lens_id_right))))
                 ) {
-                    if (empty($this->lens_id_right) ) {
+                    if (empty($this->lens_id_right)) {
                         $this->addError('lens_id_right', 'Lens and Formula must be selected or left blank (Right side).');
                     }
                 }
@@ -142,7 +142,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
     public function requiredIfLensSelected($attribute, $params)
     {
         if (!(isset($this->$attribute) && $this->$attribute) &&
-            isset($this->{'lens_id_' . $params['side']}) && $this->{'lens_id_' . $params['side']} && $this->{'lens_id_' . $params['side']} != 0) {
+            isset($this->{'lens_id_' . $params['side']}) && $this->{'lens_id_' . $params['side']}) {
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank ' . '(' . $params['side'] . ' side).');
         }
     }
