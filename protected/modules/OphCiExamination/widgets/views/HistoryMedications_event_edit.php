@@ -165,16 +165,25 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
     };
       <?php
 
-      $medications = Medication::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID() , true);
-      foreach ($medications as &$medication) {
+      $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+      foreach ($common_systemic as &$medication) {
           $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
       }
 
+      $common_ophthalmic = Medication::model()->listCommonOphThalmicMedications(true);
+      foreach ($common_ophthalmic as &$medication) {
+          $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+      }
       ?>
     new OpenEyes.UI.AdderDialog({
       openButton: $('#add-medication-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          $medications) ?>, {'multiSelect': true})],
+      itemSets: [
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+        ,
+          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+          $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+      ],
       onReturn: function (adderDialog, selectedItems) {
         medicationsController.addEntry(selectedItems);
         return true;

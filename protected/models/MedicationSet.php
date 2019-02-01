@@ -44,7 +44,7 @@ class MedicationSet extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('antecedent_medicaion_set_id, display_order', 'numerical', 'integerOnly'=>true),
+			array('antecedent_medication_set_id, display_order', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('deleted_date, last_modified_date, created_date', 'safe'),

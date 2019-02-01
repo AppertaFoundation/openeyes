@@ -271,11 +271,13 @@ class Medication extends BaseActiveRecordVersioned
         return implode(", ", $terms);
     }
 
-    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false)
     {
         $criteria = new CDbCriteria();
-        $criteria->compare('medicationSetRules.usage_code',"Common subspecialty medications");
-        $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
+        $criteria->compare('medicationSetRules.usage_code',$usage_code);
+        if(!is_null($subspecialty_id)) {
+            $criteria->compare('medicationSetRules.subspecialty_id', $subspecialty_id);
+        }
         $sets = MedicationSet::model()->with('medicationSetRules')->findAll($criteria);
 
         $return = [];
@@ -311,6 +313,21 @@ class Medication extends BaseActiveRecordVersioned
         });
 
         return $raw ? $return : CHtml::listData($return, 'id', 'label');
+    }
+
+    public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false)
+    {
+        return $this->listByUsageCode("Common subspecialty medications", $subspecialty_id, $raw);
+    }
+
+    public function listCommonSystemicMedications($raw = false)
+    {
+        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
+    }
+
+    public function listCommonOphThalmicMedications($raw = false)
+    {
+        return $this->listByUsageCode("COMMON_OPH", null, $raw);
     }
 
     public function getMedicationSetsForCurrentSubspecialty()
