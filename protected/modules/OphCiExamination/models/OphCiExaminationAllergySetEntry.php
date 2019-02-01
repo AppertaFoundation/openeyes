@@ -59,7 +59,8 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('ophciexamination_allergy_id', 'numerical', 'integerOnly'=>true),
+			array('ophciexamination_allergy_id', 'required'),
+            array('ophciexamination_allergy_id', 'numerical', 'integerOnly'=>true),
 			array('gender', 'length', 'max'=>1),
 			array('age_min, age_max', 'length', 'max'=>3),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
@@ -78,7 +79,6 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'ophciexaminationAllergySetAssignments' => array(self::HAS_MANY, 'OphciexaminationAllergySetAssignment', 'ophciexamination_allergy_entry_id'),
 			'ophciexaminationAllergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'ophciexamination_allergy_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -102,6 +102,23 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
 			'created_date' => 'Created Date',
 		);
 	}
+
+    public function beforeSave()
+    {
+        if(!$this->age_min || $this->age_min === 0){
+            $this->age_min = null;
+        }
+
+        if(!$this->age_max || $this->age_max === 0){
+            $this->age_max = null;
+        }
+
+        if(!$this->gender){
+            $this->gender = null;
+        }
+
+        return parent::beforeSave();
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

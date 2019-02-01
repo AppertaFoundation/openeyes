@@ -284,7 +284,7 @@ var docman = (function() {
             if(selected_type){
                 other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
         }
-1
+
             if(contact_id != 'OTHER' ){
             	if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
@@ -302,6 +302,7 @@ var docman = (function() {
 
             } else if(contact_id.toUpperCase() === 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
 								$('#Document_Target_Address_' + rowindex).trigger('autosize');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
@@ -312,6 +313,7 @@ var docman = (function() {
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
+                $('#ElementLetter_use_nickname').prop('checked','');
             }
         },
         
@@ -344,6 +346,7 @@ var docman = (function() {
                     $('#Document_Target_Address_' + rowindex).val(resp.address);
 										$('#Document_Target_Address_' + rowindex).trigger('autosize');
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_nickname').val(resp.contact_nickname);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
                     $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
 
@@ -355,6 +358,7 @@ var docman = (function() {
                     }
 
                     if(rowindex === 0){
+                        $('#ElementLetter_use_nickname').prop('checked','');
                         $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
                     }
                     $('#docman_recipient_' + rowindex).val('');
