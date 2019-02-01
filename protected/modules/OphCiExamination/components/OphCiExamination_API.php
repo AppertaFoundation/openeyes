@@ -3136,7 +3136,7 @@ class OphCiExamination_API extends \BaseAPI
         $entries = $widget->getMergedEntries();
 
         $route_filter = function ($entry) {
-            return $entry['route_id'] == 1;
+            return $entry['route']['name'] == 'Eye';
         };
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
@@ -3192,7 +3192,7 @@ class OphCiExamination_API extends \BaseAPI
 
         $route_filter = function ($entry) {
             // route should be different than eye
-            return $entry['route_id'] != 1;
+            return $entry['route']['name'] != 'Eye';
         };
         $current_systemic_meds = array_filter($entries['current'], $route_filter);
 
