@@ -4,7 +4,7 @@ Feature: Prescription Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a prescription event, check the other option appears after already being selected
+  Route 1: Login and create a prescription event, add drug and usage options and save the event, then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 

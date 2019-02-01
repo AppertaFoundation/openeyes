@@ -4,7 +4,7 @@ Feature: Laser test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a Laser event, check the other option appears after already being selected
+  Route 1: Login and create a Laser event, select several options and save the event, then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 

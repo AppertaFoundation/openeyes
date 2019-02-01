@@ -4,7 +4,7 @@ Feature: Operation Booking Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a operation booking event, check the other option appears after already being selected
+  Route 1: Login and create a operation booking event, select necessary options
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 

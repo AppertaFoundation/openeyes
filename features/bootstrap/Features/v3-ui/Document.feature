@@ -4,7 +4,7 @@ Feature: Document test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a Document event, check the other option appears after already being selected
+  Route 1: Login and create a Document event, select document type and upload file, save the event then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 

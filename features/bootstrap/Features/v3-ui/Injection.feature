@@ -4,7 +4,7 @@ Feature: Intravitreal Injection Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a injection event, check the other option appears after already being selected
+  Route 1: Login and create a injection event, select all necessary right and left options and create the event, then delete it.
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 
@@ -15,10 +15,10 @@ Feature: Intravitreal Injection Test
     Then I select a firm of "<firmName/Number>"
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
+    And I select the Medical Retina option in the sidebar
 
     And I add a New Event "<event>"
-
-
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Delivery of Topical
     Then I choose Right Anaesthetic Agent "<right_agent>"
     Then I choose Right Pre Injection Antiseptic "<right_pre_antiseptic>"
@@ -31,7 +31,7 @@ Feature: Intravitreal Injection Test
     Then I choose Right Post Injection Drops "<right_post_drop>"
     #Then I add Right Complications Comments of "<right_comment>"
 
-
+    Then I select Add Right Side
     Then I choose Left Anaesthetic Delivery of Topical
     Then I choose Left Anaesthetic Agent "<left_agent>"
     Then I choose Left Pre Injection Antiseptic "<left_pre_antiseptic>"

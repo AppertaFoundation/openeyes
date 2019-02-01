@@ -4,7 +4,7 @@ Feature: Phasing Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a Phasing event, check the other option appears after already being selected
+  Route 1: Login and create a Phasing event, select necessary options and input comments, save the event then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 

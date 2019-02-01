@@ -4,7 +4,7 @@ Feature: Visual Fields Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a therapy application event, check the other option appears after already being selected
+  Route 1: Login and create a therapy application event, select necessary options and save the event then delete it.
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 
