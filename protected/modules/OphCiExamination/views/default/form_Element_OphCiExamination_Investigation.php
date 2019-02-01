@@ -57,9 +57,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         var inputText = investigationDiv.find(
           '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
         );
-				let inputTextVal = formatStringToEndWithCommaAndWhitespace(inputText.val());
-				let textToAdd = concatenateArrayItemLabels(selectedItems);
-				inputText.val(inputTextVal + textToAdd);
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }

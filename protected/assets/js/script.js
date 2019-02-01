@@ -471,8 +471,11 @@ function arrayIndex(needle, haystack) {
 	return false;
 }
 
-function formatStringToEndWithCommaAndWhitespace(string){
-	let outputString = string.trimEnd();
+function formatStringToEndWithCommaAndWhitespace(value){
+	if (typeof string !== 'string'){
+		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
+	}
+	let outputString = value.trimEnd();
 	if(outputString){
 		outputString += outputString.slice(-1) === ',' ? ' ' : ', ';
 	}

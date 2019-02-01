@@ -76,9 +76,7 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-				let inputTextVal = formatStringToEndWithCommaAndWhitespace(inputText.val());
-				let textToAdd = concatenateArrayItemLabels(selectedItems);
-				inputText.val(inputTextVal + textToAdd);
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
         return true;
       }
