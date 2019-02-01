@@ -57,14 +57,9 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
         var inputText = investigationDiv.find(
           '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
         );
-				let newInputTextVal = inputText.val().trimEnd();
-				if(newInputTextVal){
-					newInputTextVal += newInputTextVal.slice(-1) === ',' ? ' ' : ', ';
-				}
-				$(selectedItems).each(function (key, item) {
-					newInputTextVal += item['label'];
-				});
-				inputText.val(newInputTextVal);
+				let inputTextVal = formatStringToEndWithCommaAndWhitespace(inputText.val());
+				let textToAdd = concatenateArrayItemLabels(selectedItems);
+				inputText.val(inputTextVal + textToAdd);
         inputText.trigger('oninput');
         return true;
       }
