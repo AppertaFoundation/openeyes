@@ -39,19 +39,46 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('click', '#et_save', function (e) {
-    $('#Element_OphDrPrescription_Details_draft').val(0);
-    if (!checkPrescriptionLength()) {
-      e.preventDefault();
-    }
-  });
-
-  $(document).on('click', '#et_save_draft', function (e) {
-    $('#Element_OphDrPrescription_Details_draft').val(1);
-    if (!checkPrescriptionLength()) {
-      e.preventDefault();
-    }
-  });
+    $(document).on('click', '#et_save', function (e) {
+        $('#Element_OphDrPrescription_Details_draft').val(0);
+        if (!checkPrescriptionLength()) {
+          e.preventDefault();
+        }
+    });
+    
+    $(document).on('click', '#et_save_draft', function (e) {
+        $('#Element_OphDrPrescription_Details_draft').val(1);
+        if (!checkPrescriptionLength()) {
+            e.preventDefault();
+        }
+    });
+    
+    $(document).on('click', '#et_save_final', function (e) {
+        var data = {
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+            element: $(this).data('element'),
+            event: OE_event_id
+        };
+        disableButtons();
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphDrPrescription/default/finalize/',
+            'data': data,
+            'dataType':'json',
+            'success': function ( response ) {
+                if(response.success === 0){
+                    new OpenEyes.UI.Dialog.Alert({
+                        content: "There was an unexpected error save the prescription, please try again or contact support for assistance."
+                    }).open();
+                    enableButtons();
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        
+        e.preventDefault();
+    });
 
   $(document).on('click', '#et_print', function (e) {
     if ($('#et_ophdrprescription_draft').val() == 1) {

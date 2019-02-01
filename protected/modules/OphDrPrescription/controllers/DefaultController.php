@@ -26,6 +26,7 @@ class DefaultController extends BaseEventTypeController
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
+        'finalize' => self::ACTION_TYPE_FORM,
     );
 
     private function userIsAdmin()
@@ -42,8 +43,11 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
-
-        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        
+        $this->editable = $model->isEditableByMedication();
+        if( $this->editable == true ){
+            $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        }
         return parent::actionView($id);
     }
 
@@ -551,7 +555,7 @@ class DefaultController extends BaseEventTypeController
     {
         return $this->checkAccess('OprnEditPrescription', $this->firm, $this->event);
     }
-
+    
     /**
      * @return MedicationSet
      */
@@ -701,7 +705,43 @@ class DefaultController extends BaseEventTypeController
             parent::actionUpdate($id);
         }
     }
+    
+    /*
+     * Finalize as "Save as final" prescription event, 
+     * when a prescription event is created as the result of a medication management element from an examination event
+     * 
+     * @param       integer     event_id    
+     * @param       integer     element_id
+     * @return      json_array       
+     */
+    public function actionFinalize()
+    {
+        if( Yii::app()->request->isPostRequest ){
+            $eventID =  Yii::app()->request->getPost('event');
+            $elementID = Yii::app()->request->getPost('element');
+            
+            $model = Element_OphDrPrescription_Details::model()->findBySql('
+                SELECT * FROM et_ophdrprescription_details 
+                WHERE id = :id AND event_id = :event_id ', 
+                [':event_id'=>$eventID , ':id' => $elementID]
+            );
 
+            if($model){
+                $model->draft = 0;
+                $model->update();
+                $result = [
+                    'success' => 1
+                ];
+            } else {
+                $result = [
+                    'success' => 0
+                ];
+            }
+            
+            echo json_encode($result);
+        }
+       
+    }
 
     /**
      * Group the different kind of drug items for the printout

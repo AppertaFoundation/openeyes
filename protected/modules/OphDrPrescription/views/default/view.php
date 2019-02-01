@@ -23,9 +23,25 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 
 	<?php
         // Event actions
+        $elementEditable = $Element->isEditableByMedication();
+        if(($Element->draft ) && (!$elementEditable )){
+            $this->event_actions[] = EventAction::button(
+                'Save as final', 
+                'save', 
+                array('level' => 'secondary'), 
+                array(
+                    'id' => 'et_save_final', 
+                    'class' => 'button small', 
+                    'type' => 'button',
+                    'data-element' => $Element->id
+                )
+            );
+        }
+        
         if ($this->checkPrintAccess()) {
             $this->event_actions[] = EventAction::printButton();
         }
+        
     ?>
 
 	<?php $this->renderPartial('//base/_messages'); ?>
@@ -34,12 +50,15 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 		<div class="alert-box alert with-icon">
 			This event is pending deletion and has been locked.
 		</div>
-	<?php } elseif ($Element->draft) {?>
+	<?php } elseif (($Element->draft) && ( $elementEditable )) {?>
 		<div class="alert-box alert with-icon">
-			This prescription is a draft and can still be edited
+                    This prescription is a draft and can still be edited
 		</div>
-	<?php }?>
-
+	<?php } if(($Element->draft) && (!$elementEditable )){?>
+                <div class="alert-box alert with-icon">
+                    This prescription is created as the result of a medication management element
+		</div>
+        <?php } ?>
 	<?php $this->renderOpenElements($this->action->id); ?>
 	<?php $this->renderOptionalElements($this->action->id); ?>
 
@@ -53,6 +72,6 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 		});
 		<?php } ?>
 	</script>
-<?php $this->renderPartial('//default/delete');?>
+
 <?php $this->endContent();?>
 

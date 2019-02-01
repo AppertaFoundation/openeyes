@@ -220,15 +220,25 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         )), 'id', 'name');
     }
 
-    /**
-     * Prescription is always editable.
-     *
+    /*
+     * When a prescription event is created as the result of a medication 
+     * management element from an examination event,the prescription event 
+     * should be locked for editing.
+     * The only available action will be to save as final (or print final) or delete
+     * 
      * @return bool
      */
-    public function isEditable()
+    
+    public function isEditableByMedication()
     {
+        foreach ($this->items as $key => $item) {
+            if($item->parent){
+                return false;
+            }  
+        }
         return true;
     }
+    
 
     /**
      * Validate prescription items.
