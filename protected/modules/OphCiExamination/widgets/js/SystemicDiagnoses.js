@@ -49,6 +49,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$table.on('click', 'i.trash', function (e) {
       e.preventDefault();
       $(e.target).parents('tr').remove();
+      $(":input[name^='diabetic_diagnoses']").trigger('change');
     });
 
     // setup current table row behaviours

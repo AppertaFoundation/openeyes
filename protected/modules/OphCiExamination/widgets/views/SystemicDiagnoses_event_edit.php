@@ -34,6 +34,7 @@ $required_diagnoses_ids = array_map(function ($r) {
 <div class="element-fields flex-layout full-width" id="<?= CHtml::modelName($element); ?>_element">
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
+    <input type="hidden" name="diabetic_diagnoses[]"/>
   <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
     <colgroup>
       <col class="cols-3">
