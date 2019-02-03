@@ -17,6 +17,8 @@
  */
 Yii::import('application.controllers.*');
 
+$navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
+
 /**
  * Class PatientController
  *
@@ -2201,7 +2203,10 @@ class PatientController extends BaseController
      */
     public function actionPerformReferralDoc($patient, $referral)
     {
+        // To get allowed file types from the model
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+
+        $navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
         $firm_id = Yii::app()->session['selected_firm_id'];
         //Get or Create an episode
@@ -2231,8 +2236,7 @@ class PatientController extends BaseController
             $p_file->name = $file["name"]["uploadedFile"];
 
             if(!in_array($p_file->mimetype,$allowed_file_types) ) {
-                $tooltip = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
-                $message = '<div class="tooltip">The root name of the new element</div>';
+                $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $allowed_file_types) ) . '.';
                 $referral->addError('uploadedFile', $message);
             }
 
