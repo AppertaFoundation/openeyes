@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="alert-box warning" style="display:none;">
-                <p id="errors">Please enter the mandatory fields.</p>
+                <p id="errors"></p>
             </div>
             <table class="standard row">
                 <tbody>
@@ -129,7 +129,8 @@
                                     'type' => 'POST',
                                     'error' => 'js:function(error){
                                 event.preventDefault();
-                                $("#errors").text("First name and Last name cannot be blank.");
+                                let $alertBox = $(".alert-box"); 
+                                $alertBox.find("#errors").text("First name and Last name cannot be blank.");
                                 $(".alert-box").css("display","");
                               }',
                                     'success' => 'js:function(event){
