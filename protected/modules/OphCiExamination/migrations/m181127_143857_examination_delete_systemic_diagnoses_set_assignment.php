@@ -2,7 +2,7 @@
 
 class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extends \OEMigration
 {
-    public function up()
+    public function safeUp()
     {
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry_version', 'set_id', 'int(11)');
         $this->addColumn('ophciexamination_systemic_diagnoses_set_entry', 'set_id', 'int(11)');
@@ -18,7 +18,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             ->queryAll();
 
         foreach ($assignments as $assignment) {
-            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['ophciexamination_systemic_diagnoses_set_entry_id']);
+            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['systemic_diagnoses_set_entry_id']);
             $systemic_diagnoses_set_entry->set_id = $assignment['systemic_diagnoses_set_id'];
             $systemic_diagnoses_set_entry->save();
         }
@@ -29,7 +29,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
         $this->dropTable('ophciexamination_systemic_diagnoses_set_assignment_version');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->createOETable('ophciexamination_systemic_diagnoses_set_assignment',
             array(
