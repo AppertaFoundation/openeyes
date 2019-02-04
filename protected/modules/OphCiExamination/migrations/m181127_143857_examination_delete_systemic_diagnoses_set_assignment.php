@@ -18,7 +18,7 @@ class m181127_143857_examination_delete_systemic_diagnoses_set_assignment extend
             ->queryAll();
 
         foreach ($assignments as $assignment) {
-            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['ophciexamination_systemic_diagnoses_entry_id']);
+            $systemic_diagnoses_set_entry = \OEModule\OphCiExamination\models\OphCiExaminationSystemicDiagnosesSetEntry::model()->findByPk($assignment['ophciexamination_systemic_diagnoses_set_entry_id']);
             $systemic_diagnoses_set_entry->set_id = $assignment['systemic_diagnoses_set_id'];
             $systemic_diagnoses_set_entry->save();
         }
