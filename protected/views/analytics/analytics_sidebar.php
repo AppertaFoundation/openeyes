@@ -109,7 +109,7 @@
                 </ul>
                 <div id="js-service-data-filter" class=""  style="display: block">
                     <h3>Service Data Filters</h3>
-                    <div class="service-filters flex-layout">
+                    <div class="service-filters custom-filters flex-layout">
                     <div class="service-filters flex-layout cols-9">
                         <ul class="filters-selected cols-9">
                             <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
@@ -396,7 +396,6 @@
         if ($('#js-chart-filter-age').html() == "Range") {
             filters += "&age-min=" + $('#js-chart-filter-age-min').val() + "&age-max=" + $('#js-chart-filter-age-max').val()
         }
-        console.log(filters);
         return filters;
     }
     function plotUpdate(data){
