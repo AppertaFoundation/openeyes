@@ -15,8 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<?php
+
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
 //Reverse the unit values to ensure bigger value display first.
 $values = array_reverse($values, true);
@@ -25,8 +24,25 @@ $unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::m
 $default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id'=>$unit_id, 'value'=>'6/6'))->base_value;
 
 $methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
-  'id', 'name');
+	'id', 'name');
 $key = 0;
+
+if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0) {
+    ?>
+    <script type="text/javascript">
+			var valOptions = <?= CJSON::encode($val_options)?>;
+			var OE_patient_firstname = "<?php echo $this->patient->first_name; ?>";
+			var OE_patient_lastname = "<?php echo $this->patient->last_name; ?>";
+			var OE_patient_dob = "<?php echo str_replace("-","",$this->patient->dob); ?>";
+			var OE_patient_address = "<?php echo $this->patient->getSummaryAddress("^"); ?>";
+			var OE_patient_gender = "<?php echo $this->patient->gender; ?>";
+			var OE_COMPLog_port = <?php echo Yii::app()->params['COMPLog_port']; ?>;
+    </script>
+<?php
+    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CompLog.js", CClientScript::POS_END);
+}
+
+
 ?>
 <div class="element-both-eyes">
   <div>
@@ -40,7 +56,17 @@ $key = 0;
             <span class="js-has-tooltip fa oe-i info small"
                   data-tooltip-content="<?php echo $element->unit->information ?>"></span>
           <?php }
-      } ?>
+      }
+
+      if(isset(Yii::app()->params['COMPLog_port']) && Yii::app()->params['COMPLog_port'] > 0)
+      {
+      ?>
+          <button class="button blue hint" name="complog" id="et_complog">Measure in COMPLog</button>
+          <iframe id="complog_launcher" src="" width="0" height="0" style="display:none;">
+          </iframe>
+      <?php
+      }
+      ?>
       </div>
 </div>
 
@@ -128,15 +154,15 @@ if ($cvi_api) {
           var tableSelector = $('.<?= $eye_side ?>-eye .va_readings');
           if(selectedItems.length==2){
             var selected_data = {};
-            for (i in selectedItems) {
-              if(selectedItems[i]['itemSet'].options['id'] == 'reading_val'){
-                selected_data.reading_value = selectedItems[i]['id'];
-                selected_data.reading_display = selectedItems[i]['label'];
-                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[selectedItems[i]['id']]['data-tooltip']
+            for (let item of selectedItems) {
+              if(item['itemSet'].options['id'] == 'reading_val'){
+                selected_data.reading_value = item['id'];
+                selected_data.reading_display = item['label'];
+                selected_data.tooltip =  <?= CJSON::encode($val_options)?>[item['id']]['data-tooltip'];
               }
-              if(selectedItems[i]['itemSet'].options['id'] == 'method'){
-                selected_data.method_id = selectedItems[i]['id'];
-                selected_data.method_display = selectedItems[i]['label'];
+              if(item['itemSet'].options['id'] == 'method'){
+                selected_data.method_id = item['id'];
+                selected_data.method_display = item['label'];
               }
             }
             OphCiExamination_VisualAcuity_addReading('<?= $eye_side ?>', selected_data);

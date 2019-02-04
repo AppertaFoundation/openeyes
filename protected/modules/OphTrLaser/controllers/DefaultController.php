@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2018, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends BaseEventTypeController
@@ -146,7 +146,11 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        foreach ($this->getChildElements($element->elementType) as $child) {
+        foreach ($this->getElements($element->elementType) as $child) {
+            if(!is_subclass_of($child, 'SplitEventTypeElement')) {
+                continue;
+            }
+
             if ($child->hasRight() && !$element->hasRight()) {
                 $errors[$child->elementTypeName][] = "Can't have right side without procedures on right eye";
             }

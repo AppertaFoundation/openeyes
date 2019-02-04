@@ -9,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
@@ -70,7 +70,7 @@
                     'default_frequency_id',
                     CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
                     [
-                        'empty' => '-- Please select --',
+                        'empty' => 'Select',
                         'class' => 'cols-full'
                     ]
                 ); ?>
@@ -84,7 +84,7 @@
                     'default_duration_id',
                     CHtml::listData(DrugFrequency::model()->findAll(), 'id', 'name'),
                     [
-                        'empty' => '-- Please select --',
+                        'empty' => 'Select',
                         'class' => 'cols-full'
                     ]
                 ); ?>

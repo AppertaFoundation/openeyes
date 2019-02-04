@@ -108,7 +108,7 @@ class DefaultController extends \BaseEventTypeController
      * @param \BaseEventTypeElement[] $elements
      * @return boolean
      */
-    protected function checkChildElementsForData($elements)
+    protected function checkElementsForData($elements)
     {
         foreach($elements as $element)
         {
@@ -150,7 +150,7 @@ class DefaultController extends \BaseEventTypeController
         $final = array();
         foreach ($elements as $el) {
             if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
+                if($el->id > null || $this->checkElementsForData($this->getElements($el->getElementType()))) {
                     $final[] = $el;
                 }
             }else{
@@ -462,18 +462,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * extends standard method to filter elements.
-     *
-     * (non-PHPdoc)
-     *
-     * @see NestedElementsEventTypeController::getChildOptionalElements()
-     */
-    public function getChildOptionalElements($parent_type)
-    {
-        return $this->filterElements(parent::getChildOptionalElements($parent_type));
-    }
-
-    /**
      * Get the first workflow step using rules.
      *
      * @return OphCiExamination_ElementSet
@@ -539,13 +527,12 @@ class DefaultController extends \BaseEventTypeController
      * Merge workflow next step elements into existing elements.
      *
      * @param array       $elements
-     * @param ElementType $parent
      *
      * @throws \CException
      *
      * @return array
      */
-    protected function mergeNextStep($elements, $parent = null)
+    protected function mergeNextStep($elements)
     {
         if (!$event = $this->event) {
             throw new \CException('No event set for step merging');
@@ -554,9 +541,8 @@ class DefaultController extends \BaseEventTypeController
             throw new \CException('No next step available');
         }
 
-        $parent_id = ($parent) ? $parent->id : null;
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode, $parent_id);
+        $extra_elements = $this->getElementsByWorkflow($next_step, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {
@@ -593,15 +579,13 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Get the array of elements for the current site, subspecialty, episode status and workflow position
-     * If $parent_id is provided, restrict to children of that element_type id.
      *
      * @param OphCiExamination_ElementSet $set
      * @param Episode $episode
-     * @param int $parent_id
      * @return \BaseEventTypeElement[]
      * @throws \CException
      */
-    protected function getElementsByWorkflow($set = null, $episode = null, $parent_id = null)
+    protected function getElementsByWorkflow($set = null, $episode = null)
     {
         $elements = array();
         if (!$set) {
@@ -614,9 +598,7 @@ class DefaultController extends \BaseEventTypeController
         if ($set) {
             $element_types = $set->DefaultElementTypes;
             foreach ($element_types as $element_type) {
-                if (!$parent_id || ($parent_id && $element_type->parent_element_type_id == $parent_id)) {
                     $elements[$element_type->id] = $element_type->getInstance();
-                }
             }
             $this->mandatoryElements = $set->MandatoryElementTypes;
         }
@@ -1283,38 +1265,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Render the optional child elements for the given parent element type.
-     *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
-     *
-     * @throws Exception
-     */
-    public function renderChildOptionalElements($parent_element, $action, $form = null, $data = null)
-    {
-        $this->setCurrentSet();
-        $elements = $this->getChildOptionalElements($parent_element->getElementType());
-        $this->filterElements($elements);
-        foreach ($elements as $element) {
-            $this->renderOptionalElement($element, $action, $form, $data);
-        }
-    }
-
-    /**
-     * Render the open child elements for the given parent element type;
-     * @param \BaseEventTypeElement $parent_element
-     * @param string $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param Array $data
-     */
-    public function renderSingleChildOpenElements($element, $action, $form = null, $data = null)
-    {
-            $this->renderElement($element, $action, $form, $data);
-    }
-
-    /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *
@@ -1328,7 +1278,7 @@ class DefaultController extends \BaseEventTypeController
         if (isset($this->mandatoryElements)) {
             foreach ($this->mandatoryElements as $mandatoryElement) {
                 $class_name = get_class($element);
-                if ($class_name === $mandatoryElement->class_name || ($mandatoryElement->parent_element_type && ($class_name === $mandatoryElement->parent_element_type->class_name))) {
+                if ($class_name === $mandatoryElement->class_name) {
                     return true;
                 }
             }
@@ -1344,8 +1294,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if (!$this->set) {
             /*@TODO: probably the getNextStep() should be able to recognize if there were no steps completed before and return the first step
-              @TODO: note, getCurrentStep() will return firstStep if there were no steps before */
-            $this->set = $this->getElementSetAssignment() ? $this->getNextStep() : $this->getFirstStep();
+              Note: getCurrentStep() will return firstStep if there were no steps before */
+            $this->set = $this->getElementSetAssignment() && $this->action->id != 'update' ? $this->getNextStep() : $this->getCurrentStep();
 
             //if $this->set is null than no workflow rule to apply
             $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;

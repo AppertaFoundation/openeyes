@@ -248,7 +248,7 @@
      * @public
      */
     Dialog.prototype.setTitle = function (title) {
-        $(this.content).find('.title').val(title);
+        $(this.content).find('.title').text(title);
     };
 
     /**

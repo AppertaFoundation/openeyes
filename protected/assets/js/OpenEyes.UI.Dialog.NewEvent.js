@@ -281,7 +281,7 @@
         var self = this;
         var select = self.content.find(selectors.serviceList);
         select.html('');
-        var options = '<option value="">- Please Select -</option>';
+        var options = '<option value="">Select</option>';
         for (var i in services) {
             options += '<option value="' + services[i].id + '"';
             // default to current runtime firm
@@ -426,6 +426,8 @@
      * @param eventTypeId
      */
     NewEventDialog.prototype.createEvent = function (eventTypeId) {
+        // Stop ongoing backround tasks such as lightning image loading. Otherwise user has to wait
+        window.stop();
         var self = this;
         // build params for the new event request
         var requestParams = {

@@ -15,43 +15,43 @@
  */
 
 (function (exports) {
-  /**
-   * EpisodeSideBar constructor. The EpisodeSideBar manages the controls of the patient episode side bar when in single
-   * episode behaviour, managing the sorting and grouping of the patient events.
-   *
-   * @param options
-   * @constructor
-   */
-  function EpisodeSidebar(element, options) {
-    this.element = $(element);
-    this.options = $.extend(true, {}, EpisodeSidebar._defaultOptions, options);
-    this.create();
-  }
+    /**
+     * EpisodeSideBar constructor. The EpisodeSideBar manages the controls of the patient episode side bar when in single
+     * episode behaviour, managing the sorting and grouping of the patient events.
+     *
+     * @param options
+     * @constructor
+     */
+    function EpisodeSidebar(element, options) {
+        this.element = $(element);
+        this.options = $.extend(true, {}, EpisodeSidebar._defaultOptions, options);
+        this.create();
+    }
 
-  var groupings = [
-    {id: 'none', label: 'Events by date'},
-    {id: 'event-year-display', label: 'Events by year'},
-    // removed due to similiarity to Year filtering
-    //{id: 'event-date-display', label: 'Date'},
-    {id: 'event-type', label: 'Events by type'},
-    {id: 'subspecialty', label: 'Specialty'}
-  ];
+    var groupings = [
+        {id: 'none', label: 'Events by date'},
+        {id: 'event-year-display', label: 'Events by year'},
+        // removed due to similiarity to Year filtering
+        //{id: 'event-date-display', label: 'Date'},
+        {id: 'event-type', label: 'Events by type'},
+        {id: 'subspecialty', label: 'Specialty'}
+    ];
 
-  EpisodeSidebar._defaultOptions = {
-    switch_firm_text: 'Please switch firm to add an event to this episode',
-    user_context: null,
-    event_button_selector: '#add-event',
-    subspecialty_labels: {},
-    event_list_selector: '.events li',
-    grouping_picker_class: 'grouping-picker',
-    default_sort: 'desc',
-    scroll_selector: 'div.oe-scroll-wrapper'
-  };
+    EpisodeSidebar._defaultOptions = {
+        switch_firm_text: 'Please switch firm to add an event to this episode',
+        user_context: null,
+        event_button_selector: '#add-event',
+        subspecialty_labels: {},
+        event_list_selector: '.events li',
+        grouping_picker_class: 'grouping-picker',
+        default_sort: 'desc',
+        scroll_selector: 'div.oe-scroll-wrapper'
+    };
 
-  var sidebarCookie = 'oe-sidebar-state';
+    var sidebarCookie = 'oe-sidebar-state';
 
-  /**
-   * Load the previous state of the sidebar from cookie storage
+    /**
+     * Load the previous state of the sidebar from cookie storage
    */
   EpisodeSidebar.prototype.loadState = function () {
     var self = this;
@@ -59,16 +59,16 @@
       state = sessionStorage.getItem(sidebarCookie);
       if (state) {
         stateObj = JSON.parse(state);
-        if (stateObj.sortOrder)
-          self.sortOrder = stateObj.sortOrder;
-        if (stateObj.grouping)
-          self.grouping = stateObj.grouping;
-      }
-    }
-  };
+                if (stateObj.sortOrder)
+                    self.sortOrder = stateObj.sortOrder;
+                if (stateObj.grouping)
+                    self.grouping = stateObj.grouping;
+            }
+        }
+    };
 
-  /**
-   * Save the current sidebar state to cookie storage
+    /**
+     * Save the current sidebar state to cookie storage
    */
   EpisodeSidebar.prototype.saveState = function () {
     var self = this;
@@ -76,13 +76,13 @@
       var state = {
         sortOrder: self.sortOrder,
         grouping: self.grouping
-      };
-      sessionStorage.setItem(sidebarCookie, JSON.stringify(state));
-    }
-  };
+            };
+            sessionStorage.setItem(sidebarCookie, JSON.stringify(state));
+        }
+    };
 
-  EpisodeSidebar.prototype.create = function () {
-    var self = this;
+    EpisodeSidebar.prototype.create = function () {
+        let self = this;
 
     if (self.options.default_sort == 'asc') {
       self.sortOrder = 'asc';
@@ -91,28 +91,33 @@
       self.sortOrder = 'desc';
     }
     self.grouping = {
-      id: groupings[0].id
-    };
+            id: groupings[0].id
+        };
 
-    var $scrollElement = self.element.parents(self.options.scroll_selector + ':first');
-    if ($scrollElement.length) {
-      // if the scrollbar controller is in place, then when we have changed the content
-      // we want to trigger the resize event, as the element list may be longer than the
-      // original contents.
-      self.sidebarController = $scrollElement.data('sidebar');
-    }
+        var $scrollElement = self.element.parents(self.options.scroll_selector + ':first');
+        if ($scrollElement.length) {
+            // if the scrollbar controller is in place, then when we have changed the content
+            // we want to trigger the resize event, as the element list may be longer than the
+            // original contents.
+            self.sidebarController = $scrollElement.data('sidebar');
+        }
 
-    self.lastSort = null;
-    self.loadState();
+        self.lastSort = null;
+        self.loadState();
 
-    self.addControls();
+        self.addControls();
 
-    self.updateGrouping();
+        self.updateGrouping();
 
-    self.element.on('click', '.collapse-all', function (e) {
-      self.collapseAll();
-      e.preventDefault();
-    });
+        self.element.on('click', '.collapse-all', function (e) {
+            self.collapseAll();
+            e.preventDefault();
+        });
+
+        self.element.on('click', '.expand-all', function (e) {
+            self.expandAll();
+            e.preventDefault();
+        });
 
     self.element.on('click', '.expand-all', function (e) {
       self.expandAll();
@@ -129,115 +134,151 @@
       e.preventDefault();
     });
 
-      function getFirstImageToLoadIndex(index, imageCount) {
-          let halfImageCount = imageCount / 2;
-          if (halfImageCount >= index) {
-              return 1;
-          } else {
-              return index - halfImageCount;
-          }
-      }
+    let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
+    let li_height = $selected_event.height();
+    let min_viewport_height = $(window).height() - (li_height*3);
 
-      function loadClosestImages(index, numberOfImagesToLoad) {
-          let startingIndex = getFirstImageToLoadIndex(index, numberOfImagesToLoad);
-          let lastImageIndex = startingIndex + numberOfImagesToLoad;
-          let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+    if ($selected_event.length) {
+        let li_offset_top = $selected_event[0].offsetTop;
+        let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
 
-          for (let imageIndex = startingIndex; imageIndex < lastImageIndex; imageIndex++) {
-              let $image = $screenshots.find('img[data-index="' + imageIndex + '"]');
-              if ($image && $image.data('src')) {
-                  $image.attr('src', $image.data('src'));
-              }
-          }
-      }
+        if (li_offset_top && li_offset_top >= min_viewport_height) {
+            this.element[0].scrollTop = (li_offset_top - (height_offset + (li_height*10)));
+        }
+    }
 
-      self.element.one('mouseenter', '.event-type' , function(){
-          let $screenshots = $('.oe-event-quickview .quickview-screenshots');
-          let $loader = $('.oe-event-quickview .spinner');
-          $screenshots.find('img').each(function () {
-              $(this).load(function () {
-                  $(this).data('loaded', true);
-                  if ($(this).css('display') !== 'none') {
-                      $loader.hide();
-                  }
-              });
-          });
-      });
+        self.element.on('click', '.collapse-group-icon i.plus', function (e) {
+            self.expandGrouping($(e.target).parents('.collapse-group'));
+            e.preventDefault();
+        });
 
-      self.element.on('mouseenter', '.event-type', function (e) {
-          var $iconHover = $(e.target);
-          var $li = $iconHover.parent().parents('li:first');
-          $li.find('.quicklook').show();
+        self.element.on('mouseenter', '.event-type', function (e) {
+            var $iconHover = $(e.target);
+            var $li = $iconHover.parent().parents('li:first');
+            $li.find('.quicklook').show();
 
-          var $screenshots = $('.oe-event-quickview .quickview-screenshots');
-          $screenshots.find('img').hide();
-          var $img = $screenshots.find('img[data-event-id="' + $li.data('event-id') + '"]');
-          var $loader = $('.oe-event-quickview .spinner');
-          var $noImage = $('.oe-event-quickview .quickview-no-data-found').hide();
+            var $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            $screenshots.find('img').hide();
 
-          $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
-          $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
-          $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
-              $(this).show();
-          });
+            $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
+            $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
+            $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
+                $(this).show();
+            });
+            $('.oe-event-quickview').data('current_event', $li.data('event-id'));
 
-          if ($li.data('event-image-url')) {
-              if (!$img.data('loaded')) {
-                  $loader.show();
-              } else {
-                  $loader.hide();
-              }
-              $img.attr('src', $img.data('src'));
-              $img.show();
-          } else {
-              if (self.imageLookupRequest) {
-                  self.imageLookupRequest.abort();
-              }
+            showCurrentEventImage();
+        });
 
-              $img.hide();
-              $loader.show();
+        self.element.on('mouseleave', '.event-type', function (e) {
+            var $iconHover = $(e.target);
+            $iconHover.parents('li:first').find('.quicklook').hide();
+            $('.oe-event-quickview').stop().fadeTo(150, 0, function () {
+                $(this).hide();
+            });
+        });
 
-              // If the event image doesn't exist yet, maybe it is was still begin generated in the background when the page was loaded
-              // So we'll send an ajax request to try and get the url of the image
-              self.imageLookupRequest = $.ajax({
-                  type: 'GET',
-                  url: '/eventImage/getImageUrl',
-                  data: {'event_id': $li.data('event-id')},
-              }).success(function (response) {
-                  if (response) {
-                      // if that URL exists, then set up the image
-                      $li.data('event-image-url', response);
-                      $img.attr('src', response);
-                      $img.show();
-                  } else {
-                      // Otherwise display a message in place of the image
-                      $noImage.show();
-                  }
-              }).complete(function () {
-                  $loader.hide();
-              });
-          }
-          loadClosestImages($img.data('index'), 10);
-      });
 
-    self.element.on('mouseleave', '.event-type', function (e) {
-      var $iconHover = $(e.target);
-      $iconHover.parents('li:first').find('.quicklook').hide();
-      $('.oe-event-quickview').stop().fadeTo(150, 0, function () {
-        $(this).hide();
-      });
-    });
 
-    // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
+        //Shows the current event image if it's loaded and the quickview is open
+        function showCurrentEventImage() {
+            //First check the parent element is visible
+            let quickview = $('.oe-event-quickview');
+            let loader = quickview.find('.spinner');
+            let event_id = quickview.data('current_event');
+            if (quickview.is(':visible') && event_id) {
+                let img = quickview.find('img[data-event-id=' + event_id + ']');
+                if (img.data('loaded')){
+                    img.show();
+                    loader.hide();
+                } else {
+                    loader.show();
+                }
+            }
+        }
+
+        function setEventImageSrc(event_id, url){
+            let img = $('img[data-event-id=' + event_id + ']');
+            img.attr('src', url);
+            img.data('src', url);
+        }
+
+
+        $(document).ready(function () {
+            setTimeout(function () {
+
+                let events = [];
+                $('.event-type').each(function () {
+                    events.push($(this).parents('li:first'));
+                });
+
+                var event_ids = [];
+                events.forEach(function (event) {
+                    event_ids.push(event.data('event-id'));
+                });
+
+                let bulkURLFunc = function (response) {
+                    let data = JSON.parse(response);
+                    //Set the event image source urls for events which are already generated
+                    if(data.generated_image_urls){
+                        for (let event_id in data.generated_image_urls) {
+                            if (data.generated_image_urls.hasOwnProperty(event_id)) {
+                                setEventImageSrc(event_id, data.generated_image_urls[event_id]);
+                            }
+                        }
+                    }
+
+                    //Send a parallel request for each of the remaining events
+                    // In production this would almost never be more than one but demo data would have no images
+                    if (data.remaining_event_ids) {
+                        let remaining_events = data.remaining_event_ids;
+                        for (let event in remaining_events) {
+                            if (remaining_events.hasOwnProperty(event)) {
+                                let event_id = remaining_events[event];
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/eventImage/getImageUrl',
+                                    data: {'event_id': event_id},
+                                }).success(function(response){
+                                    setEventImageSrc(event_id, response);
+                                });
+                            }
+                        }
+                    }
+
+                };
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/eventImage/getImageUrlsBulk',
+                    data: {'event_ids': JSON.stringify(event_ids)},
+                }).success(bulkURLFunc);
+            }, 0);
+
+            let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            let $loader = $('.oe-event-quickview .spinner');
+            $screenshots.find('img').each(function () {
+                $(this).load(function () {
+                    $(this).data('loaded', true);
+                    if ($(this).css('display') !== 'none') {
+                        $loader.hide();
+                    }
+                    showCurrentEventImage();
+                });
+            });
+
+        });
+
+        // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
         let counter = 1;
-    this.element.find(this.options.event_list_selector).each(function () {
-      var $container = $('.oe-event-quickview .quickview-screenshots');
-      if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
-        return;
-      }
+        this.element.find(this.options.event_list_selector).each(function () {
+            var $container = $('.oe-event-quickview .quickview-screenshots');
+            if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
+                return;
+            }
 
-        var $img = $('<img />', {
-            class: 'js-quickview-image',
+            var $img = $('<img />', {
+                class: 'js-quickview-image',
             style: 'display: none;',
             'data-event-id': $(this).data('event-id'),
             'data-src': $(this).data('event-image-url'),
@@ -245,27 +286,27 @@
         });
 
       counter++;
-      $img.appendTo($container);
-    });
-  };
+            $img.appendTo($container);
+        });
+    };
 
-  EpisodeSidebar.prototype.orderEvents = function () {
-    var self = this;
-    if (self.lastSort == self.sortOrder)
-      return;
+    EpisodeSidebar.prototype.orderEvents = function () {
+        var self = this;
+        if (self.lastSort == self.sortOrder)
+            return;
 
-    var items = this.element.find(this.options.event_list_selector);
+        var items = this.element.find(this.options.event_list_selector);
 
-    var parent = items.parent();
+        var parent = items.parent();
 
-    function dateSort(b, a) {
-      var edA = (new Date($(a).data('event-date'))).getTime();
-      var cdA = (new Date($(a).data('created-date'))).getTime();
-      var edB = (new Date($(b).data('event-date'))).getTime();
-      var cdB = (new Date($(b).data('created-date'))).getTime();
-      var ret = null;
-      // for some reason am unable to do a chained ternery operator for the comparison, hence the somewhat convoluted
-      // if statements to perform the comparison here.
+        function dateSort(b, a) {
+            var edA = (new Date($(a).data('event-date'))).getTime();
+            var cdA = (new Date($(a).data('created-date'))).getTime();
+            var edB = (new Date($(b).data('event-date'))).getTime();
+            var cdB = (new Date($(b).data('created-date'))).getTime();
+            var ret = null;
+            // for some reason am unable to do a chained ternery operator for the comparison, hence the somewhat convoluted
+            // if statements to perform the comparison here.
       if (edA === edB) {
         if (cdA === cdB) {
           ret = 0;
@@ -278,90 +319,90 @@
         ret = edA < edB ? -1 : 1;
       }
       return ret;
+        }
+
+        var sorted = items.sort(dateSort);
+
+        if (self.sortOrder == 'asc')
+            sorted = sorted.get().reverse();
+
+        self.lastSort = self.sortOrder;
+
+        parent.empty().append(sorted);
+    };
+
+    EpisodeSidebar.prototype.addControls = function () {
+        var self = this;
+        var controls = '';
+        controls += self.getGroupingPicker();
+
+        $(controls).insertBefore(self.element.find('.events'));
+        $(self.getListControls()).insertBefore(self.element.find('.events'));
+
+        self.element.on('change', '.' + self.options.grouping_picker_class, function (e) {
+            self.grouping.id = $(e.target).val();
+            self.grouping.state = null;
+            self.updateGrouping();
+            self.saveState();
+        });
+
+        self.element.on('click', '.sorting-order.asc', function (e) {
+            e.preventDefault();
+            self.sortOrder = 'asc';
+            self.updateGrouping();
+            self.saveState();
+        });
+
+        self.element.on('click', '.sorting-order.desc', function (e) {
+            e.preventDefault();
+            self.sortOrder = 'desc';
+            self.updateGrouping();
+            self.saveState();
+        });
     }
 
-    var sorted = items.sort(dateSort);
+    EpisodeSidebar.prototype.getGroupingPicker = function () {
+        var self = this;
+        var select = '<div class="sidebar-grouping">';
+        select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
+        $(groupings).each(function () {
+            select += '<option value="' + this.id + '"';
+            if (self.grouping && self.grouping.id == this.id)
+                select += ' selected';
+            select += '>' + this.label + '</option>';
+        });
+        select += '</select></span>';
 
-    if (self.sortOrder == 'asc')
-      sorted = sorted.get().reverse();
+        return select;
+    };
 
-    self.lastSort = self.sortOrder;
+    EpisodeSidebar.prototype.getListControls = function () {
+        var controls = '<div class="list-controls">';
+        controls += '<span class="sorting-order asc"><i class="oe-i arrow-up pro-theme"></i></span>';
+        controls += '<span class="sorting-order desc"><i class="oe-i arrow-down pro-theme"></i></span>';
+        controls += '<div class="right">';
+        controls += '<span class="expand-all"><i class="oe-i plus pro-theme"></i></span>';
+        controls += '<span class="collapse-all"><i class="oe-i minus pro-theme"></i></span>';
+        controls += '</div>';
+        controls += '</div>';
+        return controls;
+    };
 
-    parent.empty().append(sorted);
-  };
+    EpisodeSidebar.prototype.resetGrouping = function () {
+        this.element.find('.collapse-group').remove();
+        this.orderEvents();
+        this.element.find(this.options.event_list_selector).parent().show();
+    };
 
-  EpisodeSidebar.prototype.addControls = function () {
-    var self = this;
-    var controls = '';
-    controls += self.getGroupingPicker();
+    EpisodeSidebar.prototype.updateGrouping = function () {
+        var self = this;
+        self.resetGrouping();
+        if (self.grouping.id == 'none')
+            return;
 
-    $(controls).insertBefore(self.element.find('.events'));
-    $(self.getListControls()).insertBefore(self.element.find('.events'));
-
-    self.element.on('change', '.' + self.options.grouping_picker_class, function (e) {
-      self.grouping.id = $(e.target).val();
-      self.grouping.state = null;
-      self.updateGrouping();
-      self.saveState();
-    });
-
-    self.element.on('click', '.sorting-order.asc', function (e) {
-      e.preventDefault();
-      self.sortOrder = 'asc';
-      self.updateGrouping();
-      self.saveState();
-    });
-
-    self.element.on('click', '.sorting-order.desc', function (e) {
-      e.preventDefault();
-      self.sortOrder = 'desc';
-      self.updateGrouping();
-      self.saveState();
-    });
-  }
-
-  EpisodeSidebar.prototype.getGroupingPicker = function () {
-    var self = this;
-    var select = '<div class="sidebar-grouping">';
-    select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
-    $(groupings).each(function () {
-      select += '<option value="' + this.id + '"';
-      if (self.grouping && self.grouping.id == this.id)
-        select += ' selected';
-      select += '>' + this.label + '</option>';
-    });
-    select += '</select></span>';
-
-    return select;
-  };
-
-  EpisodeSidebar.prototype.getListControls = function () {
-    var controls = '<div class="list-controls">';
-    controls += '<span class="sorting-order asc"><i class="oe-i arrow-up pro-theme"></i></span>';
-    controls += '<span class="sorting-order desc"><i class="oe-i arrow-down pro-theme"></i></span>';
-    controls += '<div class="right">';
-    controls += '<span class="expand-all"><i class="oe-i plus pro-theme"></i></span>';
-    controls += '<span class="collapse-all"><i class="oe-i minus pro-theme"></i></span>';
-    controls += '</div>';
-    controls += '</div>';
-    return controls;
-  };
-
-  EpisodeSidebar.prototype.resetGrouping = function () {
-    this.element.find('.collapse-group').remove();
-    this.orderEvents();
-    this.element.find(this.options.event_list_selector).parent().show();
-  };
-
-  EpisodeSidebar.prototype.updateGrouping = function () {
-    var self = this;
-    self.resetGrouping();
-    if (self.grouping.id == 'none')
-      return;
-
-    itemsByGrouping = {};
-    groupingVals = [];
-    self.element.find(self.options.event_list_selector).each(function () {
+        itemsByGrouping = {};
+        groupingVals = [];
+        self.element.find(self.options.event_list_selector).each(function () {
       var groupingVal = $(this).data(self.grouping.id);
       if (!groupingVal) {
         console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
@@ -375,88 +416,88 @@
           itemsByGrouping[groupingVal].push(this);
         }
       }
-    });
+        });
 
-    var groupingElements = '<div class="groupings">';
-    $(groupingVals).each(function () {
-      var grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
-        '<div class="collapse-group-icon">' +
-        '<i class="oe-i minus pro-theme"></i>' +
-        '<i class="oe-i plus pro-theme"></i>' +
-        '</div>' +
-        '<h3 class="collapse-group-header">' +
-        this + ' <span class="count">(' + itemsByGrouping[this].length.toString() + ')</span>' +
-        '</h3>' +
-        '<ol class="events">';
+        var groupingElements = '<div class="groupings">';
+        $(groupingVals).each(function () {
+            var grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
+                '<div class="collapse-group-icon">' +
+                '<i class="oe-i minus pro-theme"></i>' +
+                '<i class="oe-i plus pro-theme"></i>' +
+                '</div>' +
+                '<h3 class="collapse-group-header">' +
+                this + ' <span class="count">(' + itemsByGrouping[this].length.toString() + ')</span>' +
+                '</h3>' +
+                '<ol class="events">';
 
-      $(itemsByGrouping[this]).each(function () {
-        grouping += $(this).prop('outerHTML');
-      });
-      grouping += '</ol></div>';
-      groupingElements += grouping;
-    });
-    groupingElements += '</div>';
+            $(itemsByGrouping[this]).each(function () {
+                grouping += $(this).prop('outerHTML');
+            });
+            grouping += '</ol></div>';
+            groupingElements += grouping;
+        });
+        groupingElements += '</div>';
 
-    $(groupingElements).insertAfter(self.element.find(this.options.event_list_selector).parent());
-    self.element.find(this.options.event_list_selector).parent().hide();
-    // TODO: here we should expand or collapse based on current state
-    self.processGroupingState();
+        $(groupingElements).insertAfter(self.element.find(this.options.event_list_selector).parent());
+        self.element.find(this.options.event_list_selector).parent().hide();
+        // TODO: here we should expand or collapse based on current state
+        self.processGroupingState();
 
-  };
+    };
 
-  EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {
-    if (this.grouping.state == undefined)
-      this.grouping.state = {};
-    this.grouping.state[groupingValue] = state;
-  };
+    EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {
+        if (this.grouping.state == undefined)
+            this.grouping.state = {};
+        this.grouping.state[groupingValue] = state;
+    };
 
-  EpisodeSidebar.prototype.expandGrouping = function (element, saveState) {
-    var self = this;
-    if (saveState == undefined)
-      saveState = true;
+    EpisodeSidebar.prototype.expandGrouping = function (element, saveState) {
+        var self = this;
+        if (saveState == undefined)
+            saveState = true;
 
-    element.find('ol.events').show();
+        element.find('ol.events').show();
 
-    element.find('.collapse-group-icon i.plus').hide();
-    element.find('.collapse-group-icon i.minus').show();
+        element.find('.collapse-group-icon i.plus').hide();
+        element.find('.collapse-group-icon i.minus').show();
 
-    element.each(function () {
-      self.setGroupingState($(this).data('grouping-val'), 'expand');
-    });
+        element.each(function () {
+            self.setGroupingState($(this).data('grouping-val'), 'expand');
+        });
 
-    if (saveState)
-      this.saveState();
-  };
+        if (saveState)
+            this.saveState();
+    };
 
-  EpisodeSidebar.prototype.collapseGrouping = function (element, saveState) {
-    var self = this;
-    if (saveState == undefined)
-      saveState = true;
+    EpisodeSidebar.prototype.collapseGrouping = function (element, saveState) {
+        var self = this;
+        if (saveState == undefined)
+            saveState = true;
 
-    element.find('ol.events').hide();
+        element.find('ol.events').hide();
 
-    element.find('.collapse-group-icon i.minus').hide();
-    element.find('.collapse-group-icon i.plus').show();
+        element.find('.collapse-group-icon i.minus').hide();
+        element.find('.collapse-group-icon i.plus').show();
 
-    element.each(function () {
-      self.setGroupingState($(this).data('grouping-val'), 'collapse');
-    });
+        element.each(function () {
+            self.setGroupingState($(this).data('grouping-val'), 'collapse');
+        });
 
-    if (saveState)
-      this.saveState();
-  };
+        if (saveState)
+            this.saveState();
+    };
 
-  EpisodeSidebar.prototype.expandAll = function () {
-    this.expandGrouping(this.element.find('.collapse-group'), false);
-    this.saveState();
-  };
+    EpisodeSidebar.prototype.expandAll = function () {
+        this.expandGrouping(this.element.find('.collapse-group'), false);
+        this.saveState();
+    };
 
-  EpisodeSidebar.prototype.collapseAll = function () {
-    this.collapseGrouping(this.element.find('.collapse-group'), false);
-    this.saveState();
-  };
-  //TODO: loading is not working, need to verify where we're at!!
-  EpisodeSidebar.prototype.processGroupingState = function () {
+    EpisodeSidebar.prototype.collapseAll = function () {
+        this.collapseGrouping(this.element.find('.collapse-group'), false);
+        this.saveState();
+    };
+    //TODO: loading is not working, need to verify where we're at!!
+    EpisodeSidebar.prototype.processGroupingState = function () {
     var self = this;
     if (self.grouping.state == undefined) {
       self.expandAll();
@@ -470,9 +511,9 @@
           self.expandGrouping($(this), false);
         }
       });
-    }
-  };
+        }
+    };
 
-  exports.EpisodeSidebar = EpisodeSidebar;
+    exports.EpisodeSidebar = EpisodeSidebar;
 
 }(OpenEyes.UI));

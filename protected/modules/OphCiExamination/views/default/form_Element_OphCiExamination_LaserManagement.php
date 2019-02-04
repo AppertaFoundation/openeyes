@@ -18,13 +18,13 @@
 ?>
 <?php
 $statuses = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->activeOrPk(array($element->left_laser_status_id, $element->right_laser_status_id))->findAll();
-$status_options = array('empty' => '- Please select -', 'options' => array());
+$status_options = array('empty' => 'Select', 'options' => array());
 foreach ($statuses as $opt) {
     $status_options['options'][(string) $opt->id] = array('data-deferred' => $opt->deferred, 'data-book' => $opt->book, 'data-event' => $opt->event);
 }
 
 $deferrals = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk(array($element->left_laser_deferralreason_id, $element->right_laser_deferralreason_id))->findAll();
-$deferral_options = array('empty' => '- Please select -', 'options' => array());
+$deferral_options = array('empty' => 'Select', 'options' => array());
 foreach ($deferrals as $opt) {
     $deferral_options['options'][(string) $opt->id] = array('data-other' => $opt->other);
 }

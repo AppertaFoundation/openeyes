@@ -683,26 +683,6 @@ class PatientMergeTest extends CDbTestCase
 
     }
 
-    public function testIsSecondaryPatientDeleted()
-    {
-    }
-
-    public function testUpdateEpisodesPatientId()
-    {
-    }
-
-    public function testUpdateEventsEpisodeId()
-    {
-    }
-
-    public function testLoad()
-    {
-    }
-
-    public function testMerge()
-    {
-    }
-
     public function tearDown()
     {
         parent::tearDown();

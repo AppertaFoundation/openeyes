@@ -143,7 +143,7 @@
                       array('order' => 'first_name asc,last_name asc')),
                       'id',
                       'fullName'),
-                  array('empty' => '--- Please select ---')) ?>
+                  array('empty' => 'Select')) ?>
           <?php else: ?>
               <?php
               $user = User::model()->findByPk(Yii::app()->user->id);
@@ -165,7 +165,7 @@
               'OphCoCorrespondence_ReportLetters[site_id]',
               '',
               Site::model()->getListForCurrentInstitution(),
-              array('empty' => '--- Please select ---')) ?>
+              array('empty' => 'Select')) ?>
       </td>
     </tr>
   </table>

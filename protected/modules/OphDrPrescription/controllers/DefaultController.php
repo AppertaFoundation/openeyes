@@ -165,7 +165,7 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Prescription not found: '.$id);
         }
         $prescription->printed = 1;
-        if (!$prescription->save()) {
+        if (!$prescription->update(["printed"])) {
             throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
@@ -284,9 +284,12 @@ class DefaultController extends BaseEventTypeController
                 
                 foreach ($drugs as $drug) {
                     $return[] = array(
-                            'label' => $drug->tallmanlabel,
-                            'value' => $drug->tallman,
-                            'id' => $drug->id,
+                        'label' => $drug->tallmanlabel,
+                        'value' => $drug->tallman,
+                        'id' => $drug->id,
+                        'allergies' => CJSON::encode(array_map(function ($allergy) {
+                            return $allergy->id;
+                        }, $drug->allergies))
                     );
                 }
             }
@@ -511,7 +514,7 @@ class DefaultController extends BaseEventTypeController
         if ($prescription->print == 1) {
             $prescription->print = 0;
 
-            if (!$prescription->save()) {
+            if (!$prescription->update(["printed"])) {
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }
@@ -665,7 +668,6 @@ class DefaultController extends BaseEventTypeController
             parent::actionUpdate($id);
         }
     }
-
 
     /**
      * Group the different kind of drug items for the printout

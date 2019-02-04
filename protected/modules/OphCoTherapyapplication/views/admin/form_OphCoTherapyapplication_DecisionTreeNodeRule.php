@@ -23,7 +23,7 @@
 
 <div class="data-group outcomeAdmin parent_check eventDetail">
 	<div class="label"><?php echo $form->labelEx($model, 'parent_check'); ?></div>
-	<div class="data"><?php echo $form->dropdownlist($model, 'parent_check', $model->COMPARATORS, array('empty' => '- Please select -', 'nowrapper' => true)); ?></div>
+	<div class="data"><?php echo $form->dropdownlist($model, 'parent_check', $model->COMPARATORS, array('empty' => 'Select', 'nowrapper' => true)); ?></div>
 	<?php echo $form->error($model, 'parent_check'); ?>
 </div>
 

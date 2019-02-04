@@ -23,6 +23,7 @@ class GenericAdmin extends BaseCWidget
     public $cannot_add = false;
     public $cannot_delete = false;
     public $div_wrapper_class = 'cols-full';
+    public $return_url;
 
     public function init()
     {

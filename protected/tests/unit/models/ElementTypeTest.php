@@ -76,20 +76,6 @@ class ElementTypeTest extends CDbTestCase
     }
 
     /**
-     * @covers ElementType::getDescendents
-     *
-     * @todo   Implement testGetDescendents().
-     */
-    public function testGetDescendents()
-    {
-        $result = $this->model->getDescendents();
-
-        $expected = array();
-
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
      * @covers ElementType::search
      */
     public function testSearch()

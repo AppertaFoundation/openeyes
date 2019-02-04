@@ -1,3 +1,0 @@
-# /etc/cron.d/hotlist: hotlist item closer
-# Run a job every day (unless the job is already running) to update out of date event preview images
-0 1 * * *	root	source /etc/profile.d/openeyes-env.sh && /usr/bin/flock -n /tmp/eventimage.lockfile php $WROOT/protected/yiic eventimage create >/dev/null 2>&1

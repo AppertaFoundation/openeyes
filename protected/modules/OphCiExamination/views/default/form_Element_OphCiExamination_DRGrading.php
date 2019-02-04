@@ -90,3 +90,7 @@ function getLevelColour($risk_level){
   </div>
   <?php endforeach; ?>
 </div>
+
+<script type="text/javascript">
+    OphCiExamination_DRGrading_init();
+</script>
