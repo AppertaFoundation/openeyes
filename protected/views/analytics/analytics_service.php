@@ -26,7 +26,7 @@
             y: Object.values(service_data['coming']).map(function (item, index) {
                 return item.length;
             }),
-            customdata: Object.values(service_data['overdue']),
+            customdata: Object.values(service_data['coming']),
             type: 'bar',
         };
         if (coming_data['x'].length < 10 ) {

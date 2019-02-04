@@ -1016,6 +1016,7 @@ class AnalyticsController extends BaseController
       $patientticket_api = new \OEModule\PatientTicketing\components\PatientTicketing_API();
       foreach ($patient_tickets as $ticket) {
           $ticket_followup = $patientticket_api->getFollowUp($ticket->id);
+          $current_event = $ticket->event;
           $assignment_time = Helper::mysqlDate2JsTimestamp($ticket_followup['assignment_date']) / 1000;
           if( ($start_date && $assignment_time < $start_date) ||
               ($end_date && $assignment_time > $end_date))
@@ -1025,6 +1026,7 @@ class AnalyticsController extends BaseController
                   continue;
               }
           }
+          $current_episode = $current_event->episode;
           $current_subspecialty = $current_episode->getSubspecialtyID();
           if($current_subspecialty!=$subspecialty_id)
               continue;
@@ -1033,7 +1035,6 @@ class AnalyticsController extends BaseController
           $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
           $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
           $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
-
           $quantity = $ticket_followup['followup_quantity'];
           if ($quantity > 0) {
               $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
