@@ -412,17 +412,23 @@ class AnalyticsController extends BaseController
         return $command->queryAll();
     }
 
-    public function getPatientsListBySurgeon($surgeon_id){
+    public function getPatientsListBySurgeon($surgeon_id = null){
         $command = Yii::app()->db->createCommand()
             ->select('e2.patient_id as patient_id')
             ->from('et_ophtroperationnote_surgeon surgeon')
             ->join('event e','e.id = surgeon.event_id')
-            ->join('episode e2','e2.id = e.episode_id')
-            ->where('surgeon.surgeon_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+            ->join('episode e2','e2.id = e.episode_id');
+        if (isset($surgeon_id)){
+            $command->where('surgeon.surgeon_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+        }
         $query_list= $command->queryAll();
         $patients_list = array();
         foreach ($query_list as $patient){
             $patients_list[] = $patient['patient_id'];
+            if (!array_key_exists($patient['patient_id'], $this->patient_list)){
+                $this->patient_list[$patient['patient_id']] = Patient::model()->findByPk($patient['patient_id']);
+            }
+            
         }
         return $patients_list;
   }
@@ -725,6 +731,7 @@ class AnalyticsController extends BaseController
 
       //get all the diagnoses and the patient list
       $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
+      $all_patients = $this->getPatientsListBySurgeon($this->surgeon);
       foreach ($diagnoses_elements as $diagnosis_element_item){
           if (isset($this->surgeon)){
               if ($this->surgeon !== $diagnosis_element_item->created_user_id){
@@ -743,7 +750,9 @@ class AnalyticsController extends BaseController
               if (!array_key_exists($current_patient->id, $this->patient_list)){
                   $this->patient_list[$current_patient->id] = $current_patient;
               }
-
+              if (in_array($current_patient->id, $all_patients)){
+                    $all_patients = array_diff($all_patients,array(($current_patient->id)));
+              }
               $diagnoses = $diagnosis_element_item->diagnoses;
               foreach($diagnoses as $diagnosis_item){
 
@@ -773,11 +782,16 @@ class AnalyticsController extends BaseController
 
       $i=0;
       foreach ($disorder_patient_list as $key=>$value){
-          $disorder_list['y'][] = $i;
-          $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
-          $disorder_list['text'][] = $disorder_patient_list[$key]['short_name'];
-          $disorder_list['customdata'][] = $disorder_patient_list[$key]['patient_list'];
-          $i++;
+          if (count($disorder_patient_list[$key]['patient_list']) || $disorder_patient_list[$key]['short_name'] == "No abnormality detected"){
+              $disorder_list['y'][] = $i;
+              if ($disorder_patient_list[$key]['short_name'] == "No abnormality detected"){
+                  $disorder_patient_list[$key]['patient_list'] = array_merge_recursive( $disorder_patient_list[$key]['patient_list'],$all_patients);
+              }
+              $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
+              $disorder_list['text'][] = $disorder_patient_list[$key]['short_name'];
+              $disorder_list['customdata'][] = $disorder_patient_list[$key]['patient_list'];
+              $i++;
+          }
       }
 
       $j=0;
