@@ -3,9 +3,17 @@
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
 
 <main class="oe-analytics flex-layout flex-top " style="width: 1440px;">
-    <?php $this->renderPartial('//analytics/analytics_sidebar',
-        array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
-    ); ?>
+    <?php
+        if ($specialty === 'Cataract'){
+            $this->renderPartial('//analytics/analytics_sidebar',
+                array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user)
+            );
+        }else{
+            $this->renderPartial('//analytics/analytics_sidebar',
+                array('specialty'=>$specialty,'user_list'=>$user_list,'current_user'=>$current_user, 'common_disorders'=>$common_disorders)
+            );
+        }
+ ?>
     <div class="analytics-charts">
         <?php if ($specialty === 'Cataract'){ ?>
         <div class="mdl-layout__container" style="width: 60%">
@@ -14,7 +22,7 @@
         </div>
         <?php } else {
             $this->renderPartial('//analytics/analytics_service',
-                array('service_data'=>$service_data));
+                array('service_data'=>$service_data,'common_disorders'=>$common_disorders));
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 $this->renderPartial('//analytics/analytics_clinical',
                     array('clinical_data'=>$clinical_data));

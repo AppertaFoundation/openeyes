@@ -107,13 +107,45 @@
                     <li><a href="#" id="js-hs-app-follow-up-overdue" class="selected">Delayed</a></li>
                     <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting Time</a></li>
                 </ul>
-                <div id="js-service-data-filter"  style="display: none">
+                <div id="js-service-data-filter" class=""  style="display: block">
                     <h3>Service Data Filters</h3>
+                    <div class="service-filters flex-layout">
                     <div class="service-filters flex-layout cols-9">
-                        <input type="checkbox" id="js-chart-filter-service-unbooked-only" checked>Unbooked Only
+                        <ul class="filters-selected cols-9">
+                            <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
+                            <li>Diagnosis: <span id="js-chart-filter-service-diagnosis">All</span></li>
+                        </ul>
+                    </div>
+                    <div class="flex-item-bottom"><!-- OE UI Filter options (id: service-filters) -->
+                            <div class="oe-filter-options" id="oe-filter-options-service-filters"
+                                 data-filter-id="service-filters"><!-- simple button to popup filter options -->
+                                <button class="oe-filter-btn green hint" id="oe-filter-btn-service-filters">
+                                    <i class="oe-i filter pro-theme"></i>
+                                </button>
+                                <!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
+                                <div class="filter-options-popup" id="filter-options-popup-service-filters"
+                                     style="display: none;">
+                                    <!-- provide close (for touch) -->
+                                    <div class="close-icon-btn">
+                                        <i class="oe-i remove-circle medium pro-theme"></i>
+                                    </div>
+                                    <div class="flex-layout flex-top">
+                                        <div class="options-group" data-filter-ui-id="js-chart-filter-service-diagnosis">
+                                            <h3>Diagnosis</h3>
+                                            <ul class="btn-list">
+                                                <li class="selected">All</li>
+                                                <?php foreach ($common_disorders as $id=>$diagnosis) { ?>
+                                                    <li><?= $diagnosis; ?></li>
+                                                <?php } ?>
+                                            </ul>
+                                        </div><!-- options-group -->
+                                    </div><!-- .flex -->
+                                </div><!-- filter-options-popup -->
+                            </div><!-- .oe-filter-options -->
+                        </div>
                     </div>
                 </div>
-            </div>
+             </div>
 
             <div id="js-custom-data-filter" style="display: none;">
                 <h3>Custom Data Filters</h3>
@@ -324,6 +356,7 @@
     function getDataFilters(){
         var specialty = "<?=$specialty;?>";
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
+        var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
         var side_bar_user_filter_content = $('#js-service-selected-filter').html();
         var filters = "&specialty=" + specialty;
         if (side_bar_user_list !== null && side_bar_user_filter_content !== "All"){
@@ -343,9 +376,12 @@
                 }
             }
         }
+        if ($('#js-chart-filter-service-diagnosis').html() !== "All"){
+            filters += "&serviceDiagnosis="+ Object.keys(service_common_disorders).find(key => service_common_disorders[key] ===$('#js-chart-filter-service-diagnosis').html());
+        }
 
         if ($('#js-chart-filter-protocol').html() !== "ALL") {
-            filters = +"&protocol=" + $('#js-chart-filter-protocol').html()
+            filters += "&protocol=" + $('#js-chart-filter-protocol').html()
         }
 
         var plot_va = "&plot-va=" + $('#js-chart-filter-plot').html();
@@ -360,6 +396,7 @@
         if ($('#js-chart-filter-age').html() == "Range") {
             filters += "&age-min=" + $('#js-chart-filter-age-min').val() + "&age-max=" + $('#js-chart-filter-age-max').val()
         }
+        console.log(filters);
         return filters;
     }
     function plotUpdate(data){

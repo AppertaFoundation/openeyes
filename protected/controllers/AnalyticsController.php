@@ -77,6 +77,7 @@ class AnalyticsController extends BaseController
       );
 
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
+      $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
 
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id);
@@ -160,6 +161,7 @@ class AnalyticsController extends BaseController
             'patient_list' => $this->patient_list,
             'user_list' => $user_list,
             'current_user'=> $current_user,
+            'common_disorders'=> $common_ophthalmic_disorders,
         )
     );
   }
@@ -174,6 +176,7 @@ class AnalyticsController extends BaseController
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       $disorder_data = $this->getDisorders($subspecialty_id);
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
+      $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
 
       $current_user = User::model()->findByPk(Yii::app()->user->id);
       if (isset($this->surgeon)){
@@ -252,6 +255,7 @@ class AnalyticsController extends BaseController
             'patient_list' => $this->patient_list,
             'user_list' => $user_list,
             'current_user'=> $current_user,
+            'common_disorders'=> $common_ophthalmic_disorders,
         )
     );
   }
@@ -672,6 +676,22 @@ class AnalyticsController extends BaseController
       return [$left_list,$right_list];
   }
 
+  public function getCommonDisorders($subspecialty_id, $only_name = false){
+      $criteria = new CDbCriteria();
+      $criteria->compare('subspecialty_id', $subspecialty_id);
+      $common_ophthalmic_disorders= CommonOphthalmicDisorder::model()->findAll($criteria);
+      $common_ophthalmic_disorders_only_name = array();
+      if ($only_name){
+           foreach ($common_ophthalmic_disorders as $disorder){
+               if(isset($disorder->disorder->id)) {
+                   $common_ophthalmic_disorders_only_name[$disorder->disorder->id] = $disorder->disorder->term;
+               }
+           }
+           $common_ophthalmic_disorders = $common_ophthalmic_disorders_only_name;
+      }
+      return $common_ophthalmic_disorders;
+  }
+
   public function getDisorders($subspecialty_id, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
@@ -690,9 +710,7 @@ class AnalyticsController extends BaseController
       $other_disorder_list = array();
 
       //get common ophthalmic disorders for given subspecialty
-      $criteria = new CDbCriteria();
-      $criteria->compare('subspecialty_id', $subspecialty_id);
-      $common_ophthalmic_disorders = CommonOphthalmicDisorder::model()->findAll($criteria);
+      $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id);
       foreach ($common_ophthalmic_disorders as $disorder){
           if(isset($disorder->disorder->id)){
               if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
@@ -790,6 +808,8 @@ class AnalyticsController extends BaseController
       $ageMin = Yii::app()->request->getParam('age-min');
       $ageMax = Yii::app()->request->getParam('age-max');
       $diagnosis = Yii::app()->request->getParam('diagnosis');
+      $service_diagnosis = Yii::app()->request->getParam('serviceDiagnosis');
+
       if (isset($diagnosis)){
           if ($specialty === "Medical Retina"){
               $diagnosis = array($diagnoses_MR[$diagnosis]);
@@ -821,6 +841,7 @@ class AnalyticsController extends BaseController
           'protocol'=>$protocol,
           'plot-va'=>$plotVA,
           'treatment'=>$treatment,
+          'service_diagnosis'=>$service_diagnosis,
       );
   }
 
@@ -904,7 +925,7 @@ class AnalyticsController extends BaseController
           );
       }
 
-      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000);
+      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
       $this->renderJSON(array($custom_data,$clinical_data, $service_data));
   }
 
@@ -944,7 +965,7 @@ class AnalyticsController extends BaseController
      * Todo: split this function into small chunk of code to make it more readable
      *
      */
-  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null){
+  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis=null){
 
       $followup_patient_list = array(
           'overdue' => array(),
@@ -974,6 +995,12 @@ class AnalyticsController extends BaseController
               $current_subspecialty = $current_episode->getSubspecialtyID();
               if ($current_subspecialty == $subspecialty_id){
                   $current_patient = $current_episode->patient;
+                  if ($diagnosis){
+                      $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
+                      if (!in_array($diagnosis,$current_patient_diagnoses)){
+                          continue;
+                      }
+                  }
                   $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
                   $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
                   $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
@@ -1032,6 +1059,12 @@ class AnalyticsController extends BaseController
               continue;
 
           $current_patient = $ticket->patient;
+          if ($diagnosis){
+              $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
+              if (!in_array($diagnosis,$current_patient_diagnoses)){
+                  continue;
+              }
+          }
           $latest_worklist_time = $this->checkPatientWorklist($current_patient->id)/1000;
           $latest_examination = Helper::mysqlDate2JsTimestamp($current_patient->getLatestExaminationEvent()->event_date)/1000;
           $latest_time = isset($latest_worklist_time)? max($latest_examination, $latest_worklist_time):$latest_examination;
@@ -1085,6 +1118,12 @@ class AnalyticsController extends BaseController
                   }
               }
               $current_patient = $current_episode->patient;
+              if (isset($diagnosis)){
+                  $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
+                  if (!in_array($diagnosis,$current_patient_diagnoses)){
+                      continue;
+                  }
+              }
               $current_referral_date = Helper::mysqlDate2JsTimestamp($referral_element->created_date) / 1000;
               if( ($start_date && $current_referral_date < $start_date) ||
                   ($end_date && $current_referral_date > $end_date))
@@ -1112,6 +1151,25 @@ class AnalyticsController extends BaseController
       return $followup_patient_list;
   }
 
+  protected function queryAllDiagnosisForPatient($patient_id){
+      $command = Yii::app()->db->createCommand()
+          ->select('od.disorder_id AS disorder_id')
+          ->from('episode e')
+          ->leftJoin('event e2','e2.episode_id = e.id')
+          ->leftJoin('et_ophciexamination_diagnoses eod','eod.event_id = e2.id')
+          ->leftJoin('ophciexamination_diagnosis od','eod.id = od.element_diagnoses_id')
+          ->where('od.id IS NOT NULL')
+          ->andWhere('e.patient_id =:patient_id', array(':patient_id'=>$patient_id))
+          ->group('od.id');
+      $diagnoses = $command->queryAll();
+      $return_data = array();
+      foreach ($diagnoses as $diagnosis){
+          if (!in_array($diagnosis['disorder_id'],$return_data)){
+              $return_data[] = $diagnosis['disorder_id'];
+          }
+      }
+      return $return_data;
+  }
     /**
      * @param $events
      * @return mixed
