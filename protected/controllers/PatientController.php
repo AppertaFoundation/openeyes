@@ -2199,14 +2199,14 @@ class PatientController extends BaseController
      */
     public function actionPerformReferralDoc($patient, $referral)
     {
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $firm_id = Yii::app()->session['selected_firm_id'];
         //Get or Create an episode
-        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm);
+        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
 
 
         $event = new Event();
         $event->episode_id = $episode->id;
-        $event->firm = $firm;
+        $event->firm_id = $firm_id;
         $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
         $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
@@ -2272,18 +2272,18 @@ class PatientController extends BaseController
 
     /**
      * @param Patient $patient
-     * @param Firm $firm Firm under which the episode should be
+     * @param integer $firm_id Firm under which the episode should be
      * @return array(Episode, bool) The created or found episode and whether or not is was created
      * @throws Exception If a episode could not be found or created
      */
-    private function getOrCreateEpisode($patient, $firm){
-        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm->id, 'patient_id' => $patient->id));
+    private function getOrCreateEpisode($patient, $firm_id){
+        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
         $episode_is_new = false;
         if (!$episode){
             $episode_is_new = true;
             $episode = new Episode();
             $episode->patient_id = $patient->id;
-            $episode->firm = $firm;
+            $episode->firm_id = $firm_id;
             $episode->support_services = false;
             $episode->start_date = date('Y-m-d H:i:s');
             if (!$episode->save()){
