@@ -17,8 +17,6 @@
  */
 Yii::import('application.controllers.*');
 
-$navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
-
 /**
  * Class PatientController
  *
@@ -2205,8 +2203,6 @@ class PatientController extends BaseController
     {
         // To get allowed file types from the model
         $allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
-
-        $navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
         $firm_id = Yii::app()->session['selected_firm_id'];
         //Get or Create an episode
