@@ -131,7 +131,7 @@ class DefaultController extends BaseEventTypeController
                 return $message;
 			break;
 			default:
-				$message = 'Unknow error! Please try again!';
+				$message = 'Unknown error! Please try again!';
                 return $message;
 		}
 
