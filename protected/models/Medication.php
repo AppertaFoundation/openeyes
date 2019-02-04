@@ -28,6 +28,10 @@
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
  * @property MedicationSearchIndex[] $medicationSearchIndexes
+ * @property MedicationAttribute[] $medicationAttributes
+ * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
+ *
+ * @method  MedicationAttribute[] medicationAttributes($opts)
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -71,6 +75,8 @@ class Medication extends BaseActiveRecordVersioned
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
+            'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
+            'medicationAttributes' => array(self::HAS_MANY, MedicationAttribute::class, 'medication_attribute_assignment(medication_id,medication_attribute_id)')
 		);
 	}
 
@@ -392,4 +398,35 @@ class Medication extends BaseActiveRecordVersioned
         $searchIndex->save();
     }
 
+    /**
+     * Returns all attributes as name=>value pairs
+     *
+     * @return array
+     */
+
+    public function getAttrs()
+    {
+        $ret = array();
+        foreach ($this->medicationAttributeAssignments as $attr_assignment) {
+            $ret[$attr_assignment->medicationAttribute->name] = $attr_assignment->value;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Returns drug attribute(s) by name
+     *
+     * @param $attr_name
+     * @return MedicationAttribute[]
+     */
+
+    public function getAttr($attr_name)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = "name = :name";
+        $criteria->params['name'] = $attr_name;
+        $criteria->with = 'medication_attribute_assignment';
+        return $this->medicationAttributes($criteria);
+    }
 }
