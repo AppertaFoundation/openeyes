@@ -3056,7 +3056,7 @@ class OphCiExamination_API extends \BaseAPI
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
             /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
-            $meds = $element->getEntriesStartedToday();
+            $meds = $element->getEntriesStoppedToday();
             return implode(PHP_EOL, array_map(function($med){
                 /** @var \EventMedicationUse $med */
                 return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
@@ -3085,6 +3085,58 @@ class OphCiExamination_API extends \BaseAPI
             }, $meds));
         }
 
+        return "";
+    }
+    
+    /**
+     * Handler routine for MMS shortcode
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getMedicationManagementSummary( $patient, $use_context = false )
+    {
+        $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
+        
+        if(!is_null($element)) {
+            
+            $medStartedRow = '<td></td>';
+            $medStarted = $element->getEntriesStartedToday();
+            if($medStarted){
+                foreach($medStarted as $med){
+                    $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                } 
+            }
+            
+            $medStoppedRow = '<td></td>';
+            $medStopped = $element->getEntriesStoppedToday();
+            if($medStopped){
+                foreach($medStopped as $med){
+                    $medStoppedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                }
+            }
+
+            $medContinuedRow = '<td></td>';
+            $medContinued = $element->getContinuedEntries();
+            if($medContinued){
+                foreach($medContinued as $med){
+                    $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                } 
+            }
+            
+            if(($medStarted) || ($medStopped) || ($medContinued)){
+                return '<table>
+                    <thead>
+                        <tr>
+                            <th>New drugs started today</th>
+                            <th>Drugs stopped today</th>
+                            <th>Existing drugs to continue</th>
+                        </tr>
+                    </thead>
+                <tbody><tr>'.$medStartedRow.$medStoppedRow.$medContinuedRow.'</tr></tbody></table>';
+            }
+        }
+        
         return "";
     }
 }
