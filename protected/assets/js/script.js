@@ -470,3 +470,24 @@ function arrayIndex(needle, haystack) {
 	}
 	return false;
 }
+
+function formatStringToEndWithCommaAndWhitespace(value){
+	if (typeof value !== 'string'){
+		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
+	}
+	let outputString = value.trimEnd();
+	if(outputString){
+		outputString += outputString.slice(-1) === ',' ? ' ' : ', ';
+	}
+	return outputString;
+}
+
+function concatenateArrayItemLabels(arrayItems){
+	let outputString = '';
+	$(arrayItems).each(function (key, item) {
+		if(item['label']){
+			outputString += item['label'];
+		}
+	});
+	return outputString;
+}

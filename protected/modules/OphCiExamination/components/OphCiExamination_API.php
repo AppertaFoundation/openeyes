@@ -3136,7 +3136,7 @@ class OphCiExamination_API extends \BaseAPI
         $entries = $widget->getMergedEntries();
 
         $route_filter = function ($entry) {
-            return $entry['route_id'] == 1;
+            return $entry['route']['name'] == 'Eye';
         };
         $current_eye_meds = array_filter($entries['current'], $route_filter);
 
@@ -3176,6 +3176,55 @@ class OphCiExamination_API extends \BaseAPI
                         <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
                     </tr>
                 <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
+    }
+
+    public function getCurrentSystemicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            // route should be different than eye
+            return $entry['route']['name'] != 'Eye';
+        };
+        $current_systemic_meds = array_filter($entries['current'], $route_filter);
+
+        if (!$current_systemic_meds) {
+            return "(no current systemic medications)";
+        }
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="empty"></th>
+                <th>Dose (unit)</th>
+                <th>Frequency</th>
+                <th>Until</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($current_systemic_meds as $entry) : ?>
+                <tr>
+                    <td><?=$entry->getMedicationDisplay() ?></td>
+                    <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                    <td>
+                        <?=$entry->frequency ? $entry->frequency : '';?>
+                    </td>
+                    <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
 
