@@ -1,46 +1,39 @@
 <?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-return array(
-    'params' => array(
+/**
+ * Model behavior for OpenEyes standard dates.
+ */
+class OeAnaestheticFormat extends CActiveRecordBehavior
+{
+	function convertToString($anaesthetic_element){
+		$toreturn = implode(', ', array_map(function ($element) {
+			return $element->name;
+		}, $anaesthetic_element));
 
-        'patient_summary_render' => array(
-            'cvi_status' => array(
-                'module' => 'OphCoCvi',
-                'method' => 'patientSummaryRender'
-            )
-        ),
-        'additional_rulesets' => array(
-            array(
-                'namespace' => 'OphCoCvi',
-                'class' => 'OEModule\OphCoCvi\components\OphCoCvi_AuthRules'
-            ),
-        ),
-        'ophcocvi_allow_all_consultants' => false,
-        'thresholds' => array(
-            'visualAcuity' => array(
-                'alert_base_value' => 81
-            )
-        ),
-    ),
+		return $toreturn ?: 'None';
+	}
 
-    'aliases' => array(
-        'CviAdmin' => 'OEModule.OphCoCvi.modules.CviAdmin',
-    ),
+	function convertToList($anaesthetic_element){
+		$toreturn = implode('</li><li>', array_map(function ($element) {
+			return $element->name;
+		}, $anaesthetic_element));
 
-    'modules' => array('CviAdmin'),
-);
+		return '<li>'.($toreturn ?: 'None').'</li>';
+	}
+}

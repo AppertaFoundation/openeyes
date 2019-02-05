@@ -75,16 +75,7 @@
                   echo implode(', ', $driving_statuses);
               } ?>
           </div>
-          <?= $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[driving_statuses]',
-              'driving_statuses',
-              'id',
-              CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-              array(),
-              ['empty' => '- Select -'],
-              true
-          ); ?>
+
       </td>
     </tr>
     <tr>

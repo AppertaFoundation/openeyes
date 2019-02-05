@@ -24,6 +24,7 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'is_diabetes' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'diabetes')) !== false : false,
         'has_disorder' => $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'N/A',

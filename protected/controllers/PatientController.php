@@ -138,65 +138,7 @@ class PatientController extends BaseController
      */
     public function actionView($id)
     {
-        Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
-
-        $this->patient = $this->loadModel($id);
-
-        if($merged = $this->patient->isMergedInto()){
-            $primary_patient = $this->loadModel($merged->primary_id);
-
-            //display the flash message
-            Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
-
-            $this->redirect(array('/patient/view/' . $primary_patient->id));
-        }
-
-        $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
-        $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
-
-        $episodes = $this->patient->episodes;
-        // TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-        $ordered_episodes = $this->patient->getOrderedEpisodes();
-
-        $legacyepisodes = $this->patient->legacyepisodes;
-        // NOTE that this is not being used in the render
-        $supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-        $properties['patient_id'] = $this->patient->id;
-        Audit::add('patient summary', 'view', $id, '', $properties);
-
-        $this->logActivity('viewed patient');
-
-        $episodes_open = 0;
-        $episodes_closed = 0;
-
-        foreach ($episodes as $episode) {
-            if ($episode->end_date === null) {
-                ++$episodes_open;
-            } else {
-                ++$episodes_closed;
-            }
-        }
-
-        $this->jsVars['currentContacts'] = $this->patient->currentContactIDS();
-
-        $this->breadcrumbs = array(
-            $this->patient->first_name.' '.$this->patient->last_name.'('.$this->patient->hos_num.')',
-        );
-
-        $this->checkImportedBiometryEvent();
-
-        $this->render('view', array(
-            'tab' => $tabId,
-            'event' => $eventId,
-            'episodes' => $episodes,
-            'ordered_episodes' => $ordered_episodes,
-            'legacyepisodes' => $legacyepisodes,
-            'episodes_open' => $episodes_open,
-            'episodes_closed' => $episodes_closed,
-            'firm' => $this->firm,
-            'supportserviceepisodes' => $supportserviceepisodes,
-        ));
+        $this->redirect(array('episodes', 'id' => $id));
     }
 
     public function actionSearch()
@@ -2257,14 +2199,14 @@ class PatientController extends BaseController
      */
     public function actionPerformReferralDoc($patient, $referral)
     {
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $firm_id = Yii::app()->session['selected_firm_id'];
         //Get or Create an episode
-        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm);
+        list($episode, $episode_is_new) = $this->getOrCreateEpisode($patient, $firm_id);
 
 
         $event = new Event();
         $event->episode_id = $episode->id;
-        $event->firm = $firm;
+        $event->firm_id = $firm_id;
         $event->event_type_id = EventType::model()->findByAttributes(array('name' => 'Document'))->id;
         $referral_letter_type_id = OphCoDocument_Sub_Types::model()->findByAttributes(array('name' => 'Referral Letter'))->id;
 
@@ -2330,18 +2272,18 @@ class PatientController extends BaseController
 
     /**
      * @param Patient $patient
-     * @param Firm $firm Firm under which the episode should be
+     * @param integer $firm_id Firm under which the episode should be
      * @return array(Episode, bool) The created or found episode and whether or not is was created
      * @throws Exception If a episode could not be found or created
      */
-    private function getOrCreateEpisode($patient, $firm){
-        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm->id, 'patient_id' => $patient->id));
+    private function getOrCreateEpisode($patient, $firm_id){
+        $episode = Episode::model()->findByAttributes(array('firm_id' => $firm_id, 'patient_id' => $patient->id));
         $episode_is_new = false;
         if (!$episode){
             $episode_is_new = true;
             $episode = new Episode();
             $episode->patient_id = $patient->id;
-            $episode->firm = $firm;
+            $episode->firm_id = $firm_id;
             $episode->support_services = false;
             $episode->start_date = date('Y-m-d H:i:s');
             if (!$episode->save()){

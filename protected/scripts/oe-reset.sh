@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 ## If the OE_NO_DB build parameter is set, then this script will not be run
 if [ "$OE_NO_DB" == "true" ]; then
@@ -198,7 +198,7 @@ if ps ax | grep -v grep | grep run-dicom-service.sh > /dev/null; then
 		sudo service dicom-file-watcher stop
 fi
 
-if [ ! "$branch" = "0" ]; then
+if [[ ! "$branch" = "0"  || ! -d $WROOT/protected/modules/sample/sql ]]; then
 	## Checkout new sample database branch
 	echo "Downloading database for $branch"
 

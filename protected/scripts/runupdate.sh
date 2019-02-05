@@ -206,8 +206,7 @@ for module in ${modules[@]}; do
             git -C $MODGITROOT reset --hard
         fi
 		git -C $MODGITROOT pull
-		git -C $MODGITROOT submodule init
-		git -C $MODGITROOT submodule update
+		git -C $MODGITROOT submodule update --init --force
 	fi
 
 done

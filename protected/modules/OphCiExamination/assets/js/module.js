@@ -295,6 +295,7 @@ $(document).ready(function() {
     $(this).delegate('#js-search-in-event', 'click', function (e) {
       showSearch();
       $('#js-search-in-event').addClass('selected');
+      $('.main-event').addClass('examination-search-active');
     });
 
   // popup
@@ -302,6 +303,7 @@ $(document).ready(function() {
     $('#js-search-in-event-popup').show();
 
     $('.close-icon-btn').click(function(){
+      $('.main-event').removeClass('examination-search-active');
       $('#js-search-in-event-popup').hide();
       $('#js-search-in-event').removeClass('selected');
       $('#js-search-event-input-right').val('');
@@ -1100,6 +1102,7 @@ $(document).ready(function() {
 
         OphCiExamination_RefreshCommonOphDiagnoses();
 
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
         return false;
     });
 
@@ -1955,6 +1958,10 @@ function OphCiExamination_Gonioscopy_Eyedraw_Controller(drawing) {
                     OphCiExamination_Gonioscopy_switch_mode(drawing.canvas, message.object.value);
                 }
                 break;
+            case 'reset':
+            case 'resetEdit':
+                $(drawing.canvasParent).closest('.ed-body').find('select.gonioExpert').val(2).trigger('change');
+            break;
         }
     };
     drawing.registerForNotifications(this);

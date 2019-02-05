@@ -58,18 +58,47 @@ class OeDateFormat extends CActiveRecordBehavior
         return $this->formatFuzzyDateToHtml();
     }
 
+    public function getFormatedDate()
+    {
+        return $this->formatFuzzyDate();
+    }
+
     /**
      * Converts ISO 9075 dates to an html.
      * @return string
      */
     private function formatFuzzyDateToHtml()
     {
+        list($day, $month, $year) = $this->formatFuzzyDateSplit();
+        if ($year === '') {
+            return '-';
+        }
+        return ($day   !== '' ? '<span class="day">'.$day.'</span>'   : '') .
+               ($month !== '' ? '<span class="mth">'.$month.'</span>' : '') .
+               ($year  !== '' ? '<span class="yr">'.$year.'</span>' : '');
+
+    }
+
+    /**
+     * Converts ISO 9075 dates to a string.
+     * @return string
+     */
+    private function formatFuzzyDate() {
+        list($day, $month, $year) = $this->formatFuzzyDateSplit();
+        return $day . $month . $year;
+    }
+
+    /**
+     * Extract day, month and year from the date in the database
+     * @return array
+     */
+    private function formatFuzzyDateSplit() {
         // get date from model
         $date = $this->Owner->{$this->fuzzy_date_field};
 
         // check date format
         if (!strtotime($date)) {
-            return '';
+            return ['', '', ''];
         }
 
         // get month and day
@@ -81,9 +110,8 @@ class OeDateFormat extends CActiveRecordBehavior
         preg_match('/\b\d{4}\b/', $date, $matches);
         $year = isset($matches[0]) ? $matches[0] : '00';
 
-        return ($day   !== '00' ? '<span class="day">'.$day.'</span>'   : '') .
-               ($month !== '00' ? '<span class="mth">'.date("M", mktime(0, 0, 0, $month, 1)).'</span>' : '') .
-               ($year  !== '0000' ? '<span class="yr">'.$year.'</span>' : '');
-
+        return [$day  !== '00' ? $day . ' ' : '',
+            $month !== '00' ? date("M", mktime(0, 0, 0, $month, 1)) . ' ' : '',
+            $year  !== '0000' ? $year : ''];
     }
 }
