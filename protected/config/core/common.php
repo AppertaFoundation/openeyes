@@ -591,6 +591,6 @@ return array(
         'Greek',
         'Italian'
       ),
-      'oe_version' => '3.1rc',
+      'oe_version' => '3.1',
     ),
 );
