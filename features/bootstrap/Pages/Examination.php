@@ -1062,7 +1062,6 @@ class Examination extends OpenEyesPage {
     }
 
     public function addAllergyReading($allergy){
-	    $this->getDriver()->maximizeWindow();
         $this->getElementAtChain(['Allergy', 'addAllergyBtn'])->click();
         $this->elements['Allergy_val'] = array(
             'css' => 'li[data-label='.$allergy.']'
@@ -1935,7 +1934,10 @@ class Examination extends OpenEyesPage {
 	}
 
 	public function openHistory(){
-        $this->getElement('expandHistory')->click();
+        $history_element = $this->getElement('expandHistory');
+        if ($history_element->getAttribute('data-collapse')){
+            $history_element->click();
+        }
     }
 
 	public function openColourVision() {
