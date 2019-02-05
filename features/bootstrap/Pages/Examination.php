@@ -1062,7 +1062,6 @@ class Examination extends OpenEyesPage {
     }
 
     public function addAllergyReading($allergy){
-	    $this->getDriver()->maximizeWindow();
         $this->getElementAtChain(['Allergy', 'addAllergyBtn'])->click();
         $this->elements['Allergy_val'] = array(
             'css' => 'li[data-label='.$allergy.']'
