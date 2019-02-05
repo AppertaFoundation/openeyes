@@ -3033,12 +3033,21 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
-            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
+            
             $meds = $element->getEntriesStartedToday();
-            return implode(PHP_EOL, array_map(function($med){
-                /** @var EventMedicationUse $med */
-                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
-            }, $meds));
+            if($meds){
+                foreach( $meds as $med ){
+                    $medStartedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                }
+                
+                return '<table>
+                    <thead>
+                        <tr>
+                            <th>New drugs started today</th>
+                        </tr>
+                    </thead>
+                <tbody><tr>'.$medStartedRow.'</tr></tbody></table>';
+            }
         }
 
         return "";
@@ -3055,12 +3064,21 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
-            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
-            $meds = $element->getEntriesStoppedToday();
-            return implode(PHP_EOL, array_map(function($med){
-                /** @var \EventMedicationUse $med */
-                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
-            }, $meds));
+           
+            $medStopped = $element->getEntriesStoppedToday();
+            if($medStopped){
+                foreach($medStopped as $med){
+                    $medStoppedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                }
+                
+                return '<table>
+                    <thead>
+                        <tr>
+                            <th>Drugs stopped today</th>
+                        </tr>
+                    </thead>
+                <tbody><tr>'.$medStoppedRow.'</tr></tbody></table>';
+            }
         }
 
         return "";
@@ -3077,12 +3095,21 @@ class OphCiExamination_API extends \BaseAPI
     {
         $element = $this->getLatestElement('models\MedicationManagement', $patient, $use_context);
         if(!is_null($element)) {
-            /** @var \OEModule\OphCiExamination\models\MedicationManagement $element */
-            $meds = $element->getContinuedEntries();
-            return implode(PHP_EOL, array_map(function($med){
-                /** @var \EventMedicationUse $med */
-                return $med->getMedicationDisplay().": ".$med->getAdministrationDisplay();
-            }, $meds));
+            $medContinued = $element->getContinuedEntries();
+            if($medContinued){
+                foreach($medContinued as $med){
+                    $medContinuedRow = '<td>'.$med->getMedicationDisplay().': '.$med->getAdministrationDisplay().'</td>';
+                } 
+            
+            
+            return '<table>
+                    <thead>
+                        <tr>
+                            <th>Existing drugs to continue</th>
+                        </tr>
+                    </thead>
+                <tbody><tr>'.$medContinuedRow.'</tr></tbody></table>';
+            }
         }
 
         return "";
