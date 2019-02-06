@@ -28,10 +28,8 @@
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
  * @property MedicationSearchIndex[] $medicationSearchIndexes
- * @property MedicationAttribute[] $medicationAttributes
+ * @property MedicationAttributeOption[] $medicationAttributeOptions
  * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
- *
- * @method  MedicationAttribute[] medicationAttributes($opts)
  */
 class Medication extends BaseActiveRecordVersioned
 {
@@ -76,7 +74,7 @@ class Medication extends BaseActiveRecordVersioned
 			'medicationSets' => array(self::MANY_MANY, MedicationSet::class, 'medication_set_item(medication_id, medication_set_id)'),
 			'medicationSearchIndexes' => array(self::HAS_MANY, MedicationSearchIndex::class, 'medication_id'),
             'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_id'),
-            'medicationAttributes' => array(self::HAS_MANY, MedicationAttribute::class, 'medication_attribute_assignment(medication_id,medication_attribute_id)')
+            'medicationAttributeOptions' => array(self::HAS_MANY, MedicationAttributeOption::class, 'medication_attribute_assignment(medication_id,medication_attribute_option_id)')
 		);
 	}
 
@@ -394,34 +392,26 @@ class Medication extends BaseActiveRecordVersioned
     }
 
     /**
-     * Returns all attributes as name=>value pairs
+     * Returns all attributes as [['attr_name'=> $attr_name, 'value'=> $value, 'description' => $description], [...]]
      *
+     * @param string $attr_name     If set, the result will be filtered to this attribute
      * @return array
      */
 
-    public function getAttrs()
+    public function getAttrs($attr_name = null)
     {
         $ret = array();
         foreach ($this->medicationAttributeAssignments as $attr_assignment) {
-            $ret[$attr_assignment->medicationAttribute->name] = $attr_assignment->value;
+            $aname = $attr_assignment->medicationAttributeOption->medicationAttribute->name;
+            if(is_null($attr_name) || $aname == $attr_name) {
+                $ret[] = array(
+                    'attr_name' => $aname,
+                    'value' => $attr_assignment->medicationAttributeOption->value,
+                    'description' => $attr_assignment->medicationAttributeOption->description,
+                );
+            }
         }
 
         return $ret;
-    }
-
-    /**
-     * Returns drug attribute(s) by name
-     *
-     * @param $attr_name
-     * @return MedicationAttribute[]
-     */
-
-    public function getAttr($attr_name)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->condition = "name = :name";
-        $criteria->params['name'] = $attr_name;
-        $criteria->with = 'medication_attribute_assignment';
-        return $this->medicationAttributes($criteria);
     }
 }
