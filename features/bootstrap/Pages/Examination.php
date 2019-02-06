@@ -1620,8 +1620,9 @@ class Examination extends OpenEyesPage {
 		;
 	}
 	public function saveExaminationAndConfirm() {
-		$this->getElement ( 'saveExamination' )->click ();
-		$this->waitForElementDisplayBlock('examSavedOk');
+        sleep(5);
+        $this->getElement ( 'saveExamination' )->click ();
+        $this->waitForElementDisplayBlock('examSavedOk');
 		if (!$this->hasExaminationSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Examination has NOT been saved!!  WARNING!!" );
 		}
