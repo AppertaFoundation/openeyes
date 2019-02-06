@@ -14,8 +14,7 @@
  * The followings are the available model relations:
  * @property User $createdUser
  * @property User $lastModifiedUser
- * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
- * @property Medication[] $medications
+ * @property MedicationAttributeOption[] $medicationAttributeOptions
  */
 class MedicationAttribute extends BaseActiveRecordVersioned
 {
@@ -35,8 +34,8 @@ class MedicationAttribute extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-		    array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+			array('name', 'length', 'max'=>64),
+			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -54,8 +53,7 @@ class MedicationAttribute extends BaseActiveRecordVersioned
 		return array(
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'medicationAttributeAssignments' => array(self::HAS_MANY, MedicationAttributeAssignment::class, 'medication_attribute_id'),
-            'medications' => array(self::HAS_MANY, Medication::class, 'medication_attribute_assignment(medication_attribute_id,medication_id)'),
+			'medicationAttributeOptions' => array(self::HAS_MANY, 'MedicationAttributeOption', 'medication_attribute_id'),
 		);
 	}
 

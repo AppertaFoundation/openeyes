@@ -1,31 +1,32 @@
 <?php
 
 /**
- * This is the model class for table "medication_attribute_assignment".
+ * This is the model class for table "medication_attribute_option".
  *
- * The followings are the available columns in table 'medication_attribute_assignment':
+ * The followings are the available columns in table 'medication_attribute_option':
  * @property integer $id
- * @property integer $medication_id
- * @property integer $medication_attribute_option_id
+ * @property integer $medication_attribute_id
+ * @property string $value
+ * @property string $description
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property Medication $medication
- * @property MedicationAttributeOption $medicationAttributeOption
+ * @property MedicationAttributeAssignment[] $medicationAttributeAssignments
+ * @property MedicationAttribute $medicationAttribute
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
-class MedicationAttributeAssignment extends BaseActiveRecordVersioned
+class MedicationAttributeOption extends BaseActiveRecordVersioned
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'medication_attribute_assignment';
+		return 'medication_attribute_option';
 	}
 
 	/**
@@ -36,12 +37,15 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('medication_id, medication_attribute_option_id', 'numerical', 'integerOnly'=>true),
+			array('medication_attribute_id', 'required'),
+			array('medication_attribute_id', 'numerical', 'integerOnly'=>true),
+			array('value', 'length', 'max'=>64),
+			array('description', 'length', 'max'=>256),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, medication_id, medication_attribute_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, medication_attribute_id, value, description, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,8 +57,8 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'medication' => array(self::BELONGS_TO, 'Medication', 'medication_id'),
-			'medicationAttributeOption' => array(self::BELONGS_TO, 'MedicationAttributeOption', 'medication_attribute_option_id'),
+			'medicationAttributeAssignments' => array(self::HAS_MANY, 'MedicationAttributeAssignment', 'medication_attribute_option_id'),
+			'medicationAttribute' => array(self::BELONGS_TO, 'MedicationAttribute', 'medication_attribute_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
@@ -67,8 +71,9 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'medication_id' => 'Medication',
-			'medication_attribute_option_id' => 'Medication Attribute Option',
+			'medication_attribute_id' => 'Medication Attribute',
+			'value' => 'Value',
+			'description' => 'Description',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -95,8 +100,9 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('medication_id',$this->medication_id);
-		$criteria->compare('medication_attribute_option_id',$this->medication_attribute_option_id);
+		$criteria->compare('medication_attribute_id',$this->medication_attribute_id);
+		$criteria->compare('value',$this->value,true);
+		$criteria->compare('description',$this->description,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
@@ -111,7 +117,7 @@ class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return MedicationAttributeAssignment the static model class
+	 * @return MedicationAttributeOption the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
