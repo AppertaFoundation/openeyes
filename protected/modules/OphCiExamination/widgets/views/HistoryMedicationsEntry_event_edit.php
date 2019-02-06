@@ -54,7 +54,7 @@ $is_posting = Yii::app()->request->getIsPostRequest();
 
 ?>
 
-<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?=$is_last ? " divider" : ""?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
+<tr data-key="<?=$row_count?>" data-event-medication-use-id="<?php echo $entry->id; ?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?><?= $row_type == 'closed' ? ' stopped' : '' ?>" <?= $row_type == 'closed' ? ' style="display:none;"' : '' ?>>
 
     <td>
         <div class="medication-display">

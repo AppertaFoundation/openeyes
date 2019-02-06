@@ -138,10 +138,11 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
     </script>
 </div>
 <script type="text/javascript">
-  var medicationsController;$(document).ready(function() {
-    medicationsController =new OpenEyes.OphCiExamination.HistoryMedicationsController({
-      element: $('#<?=$model_name?>_element'),
-    onInit: function(controller) {
+    var medicationsController;
+    $(document).ready(function () {
+        medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
+            element: $('#<?=$model_name?>_element'),
+            onInit: function (controller) {
                 registerElementController(controller, "HMController", "MMController");
                 /* Don't add automatically
                 if(typeof controller.MMController === "undefined" && $("#OEModule_OphCiExamination_models_MedicationManagement_element").length === 0)  {
@@ -149,50 +150,61 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
                     sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_MedicationManagement');
                 }
                 */
+            },
+            onAddedEntry: function ($row, controller) {
+                if(typeof controller.MMController !== "undefined") {
+                    $new_row = controller.MMController.addEntry([$row.data("medication")], false);
+                    controller.bindEntries($row, $new_row);
+                }
             }
         });
 
-        $(document).on("click", ".alt-display-trigger", function(e){
-           e.preventDefault();
-           $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
+        $(document).on("click", ".alt-display-trigger", function (e) {
+            e.preventDefault();
+            $(e.target).prev(".alternative-display").find(".textual-display").trigger("click");
         });
 
-    window.switch_alternative = function(anchor) {
-            var $wrapper = $(anchor).closest(".alternative-display-element");
-            $wrapper.hide();
-            $wrapper.siblings(".alternative-display-element").show();
-            $wrapper.closest(".alternative-display").next(".alt-display-trigger").hide();
-    };
-      <?php
+        <?php
 
-      $common_systemic = Medication::model()->listCommonSystemicMedications(true);
-      foreach ($common_systemic as &$medication) {
-          $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
-      }
+        $common_systemic = Medication::model()->listCommonSystemicMedications(true);
+        foreach ($common_systemic as &$medication) {
+            $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+        }
 
-      $common_ophthalmic = Medication::model()->listCommonOphThalmicMedications(true);
-      foreach ($common_ophthalmic as &$medication) {
-          $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
-      }
-      ?>
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-medication-btn'),
-      itemSets: [
-          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
-        ,
-          new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
-      ],
-      onReturn: function (adderDialog, selectedItems) {
-        medicationsController.addEntry(selectedItems);
-        return true;
-      },
-      searchOptions: {
-        searchSource: medicationsController.options.searchSource,
-      },
-        enableCustomSearchEntries: true,
-        searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"}
+        $firm_id = $this->getApp()->session->get('selected_firm_id');
+        if ($firm_id) {
+            /** @var Firm $firm */
+            $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+            $subspecialty_id = $firm->subspecialty_id;
+
+            $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true);
+            foreach ($common_ophthalmic as &$medication) {
+                $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
+            }
+        } else {
+            $common_ophthalmic = array();
+        }
+
+
+        ?>
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-medication-btn'),
+            itemSets: [
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    $common_systemic) ?>, {'multiSelect': true, header: "Common Systemic"})
+                ,
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    $common_ophthalmic) ?>, {'multiSelect': true, header: "Common Ophthalmic"})
+            ],
+            onReturn: function (adderDialog, selectedItems) {
+                medicationsController.addEntry(selectedItems, true);
+                return true;
+            },
+            searchOptions: {
+                searchSource: medicationsController.options.searchSource,
+            },
+            enableCustomSearchEntries: true,
+            searchAsTypedItemProperties: {id: "<?php echo EventMedicationUse::USER_MEDICATION_ID ?>"}
+        });
     });
-  });
 </script>

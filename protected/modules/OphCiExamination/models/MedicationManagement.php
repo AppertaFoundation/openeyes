@@ -91,7 +91,7 @@ class MedicationManagement extends BaseMedicationElement
      * @return MedicationManagementEntry[]
      */
 
-    public function getContinuedEntries($debug = false)
+    public function getContinuedEntries()
     {
         $event_date = $this->event->event_date;
         $event_date_YYYYMMDD = substr($event_date, 0, 4).substr($event_date, 5, 2).substr($event_date, 8, 2);
@@ -151,6 +151,22 @@ class MedicationManagement extends BaseMedicationElement
         });
     }
 
+    public function getOtherEntries()
+    {
+        $continued = array_map(function($e){ return $e->id; }, $this->getContinuedEntries());
+        $stopped = array_map(function($e){ return $e->id; }, $this->getStoppedEntries());
+        $prescribed = array_map(function($e){ return $e->id; }, $this->getPrescribedEntries());
+        $exclude = array_merge($continued, $stopped, $prescribed);
+        $other = array();
+        foreach ($this->visible_entries as $entry) {
+            if(!in_array($entry->id, $exclude)) {
+                $other[] = $entry;
+            }
+        }
+
+        return $other;
+    }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -185,6 +201,7 @@ class MedicationManagement extends BaseMedicationElement
         $orig_entries = MedicationManagementEntry::model()->findAll($criteria);
         $saved_ids = array();
         $class = self::$entry_class;
+
         foreach ($this->entries as $entry) {
             /** @var MedicationManagementEntry $entry */
             $entry->event_id = $this->event->id;
@@ -192,6 +209,10 @@ class MedicationManagement extends BaseMedicationElement
             /* Why do I have to do this? */
             if(isset($entry->id) && $entry->id > 0) {
                 $entry->setIsNewRecord(false);
+                $is_new = false;
+            }
+            else {
+                $is_new = true;
             }
 
             /* ensure corrent usage type and subtype */
@@ -205,10 +226,10 @@ class MedicationManagement extends BaseMedicationElement
                 return false;
             }
 
-            /* Why do I have to do this? */
-
-            $id = \Yii::app()->db->getLastInsertID();;
-            $entry->id = $id;
+            if($is_new) {
+                $id = \Yii::app()->db->getLastInsertID();;
+                $entry->id = $id;
+            }
 
             $saved_ids[] = $entry->id;
 
