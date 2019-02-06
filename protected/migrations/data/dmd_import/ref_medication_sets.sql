@@ -12,16 +12,16 @@ SELECT
   mf.id AS formId,
   mr.id AS RouteId
 INTO OUTFILE '/tmp/medication_set.csv'
-FROM openeyes.medication rm
+FROM medication rm
 
-  LEFT JOIN drugs2.f_amp_amps amp2 ON amp2.apid = rm.amp_code
-  LEFT JOIN drugs2.f_vmp_drug_form dft ON dft.vpid = amp2.vpid
-  LEFT JOIN drugs2.f_lookup_form fhit ON fhit.cd = dft.formcd
-  LEFT JOIN openeyes.medication_form mf ON mf.term = fhit.desc AND mf.source_type = 'DM+D'
+  LEFT JOIN {prefix}amp_amps amp2 ON amp2.apid = rm.amp_code
+  LEFT JOIN {prefix}vmp_drug_form dft ON dft.vpid = amp2.vpid
+  LEFT JOIN {prefix}lookup_form fhit ON fhit.cd = dft.formcd
+  LEFT JOIN medication_form mf ON mf.term = fhit.desc AND mf.source_type = 'DM+D'
 
-  LEFT JOIN drugs2.f_vmp_drug_route drt ON drt.vpid = amp2.vpid
-  LEFT JOIN drugs2.f_lookup_route lr ON lr.cd = drt.routecd
-  LEFT JOIN openeyes.medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
+  LEFT JOIN {prefix}vmp_drug_route drt ON drt.vpid = amp2.vpid
+  LEFT JOIN {prefix}lookup_route lr ON lr.cd = drt.routecd
+  LEFT JOIN medication_route mr ON mr.term COLLATE utf8_general_ci = lr.desc AND mr.source_type = 'DM+D'
 
 WHERE
   rm.source_type='DM+D';

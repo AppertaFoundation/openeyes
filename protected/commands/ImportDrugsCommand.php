@@ -431,8 +431,46 @@ EOD;
         foreach ($scripts as $script) {
             $cmd = file_get_contents(Yii::getPathOfAlias('application').'/migrations/data/dmd_import/'.$script.'.sql');
             echo $script;
+            $cmd = str_replace(['{prefix}'], [$this->tablePrefix], $cmd);
             Yii::app()->db->createCommand($cmd)->execute();
             echo " OK".PHP_EOL;
+        }
+
+        echo "attributes";
+        
+        $lookup_tables = [
+            'COMBINATION_PACK_IND',
+            'COMBINATION_PROD_IND',
+            'BASIS_OF_NAME',
+            'NAMECHANGE_REASON',
+            'VIRTUAL_PRODUCT_PRES_STATUS',
+            'CONTROL_DRUG_CATEGORY',
+            'LICENSING_AUTHORITY',
+            'UNIT_OF_MEASURE',
+            'FORM',
+            'ONT_FORM_ROUTE',
+            'ROUTE',
+            'DT_PAYMENT_CATEGORY',
+            'SUPPLIER',
+            'FLAVOUR',
+            'COLOUR',
+            'BASIS_OF_STRNTH',
+            'REIMBURSEMENT_STATUS',
+            'SPEC_CONT',
+            'DND',
+            'VIRTUAL_PRODUCT_NON_AVAIL',
+            'DISCONTINUED_IND',
+            'DF_INDICATOR',
+            'PRICE_BASIS',
+            'LEGAL_CATEGORY',
+            'AVAILABILITY_RESTRICTION',
+            'LICENSING_AUTHORITY_CHANGE_REASON'
+        ];
+
+        $cmd = "INSERT INTO  medication_attribute (`name`) VALUES ".implode(",", array_map(function($e){ return "('$e')";}, $lookup_tables));
+        Yii::app()->db->createCommand($cmd)->execute();
+        foreach ($lookup_tables as $table) {
+            $cmd = "INSERT INTO ";
         }
 
         unlink('/tmp/ref_medication_set.csv');

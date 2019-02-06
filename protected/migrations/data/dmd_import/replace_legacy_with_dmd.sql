@@ -1,6 +1,5 @@
 INSERT INTO medication_set_item (medication_id, medication_set_id, default_form_id, default_route_id)
 
-
 SELECT t2.id,
       rms.medication_id,
       rms.default_form_id,

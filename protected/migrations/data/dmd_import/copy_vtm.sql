@@ -8,4 +8,4 @@ INSERT INTO openeyes.medication (source_type,source_subtype,preferred_term,prefe
 
     vtm.nm AS vtm_term,
     vtm.vtmid AS vtm_code
-  FROM drugs2.f_vtm_vtm vtm;
+  FROM {prefix}vtm_vtm vtm;
