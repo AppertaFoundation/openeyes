@@ -322,12 +322,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function listCommonSystemicMedications($raw = false)
     {
-        return $this->listByUsageCode("COMMON_SYSTEMIC", null, $raw);
-    }
-
-    public function listCommonOphThalmicMedications($raw = false)
-    {
-        return $this->listByUsageCode("COMMON_OPH", null, $raw);
+        return $this->listByUsageCode("Common systemic medications", null, $raw);
     }
 
     public function getMedicationSetsForCurrentSubspecialty()
