@@ -409,7 +409,9 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
     if(addButtons !== null){
         addButtons.click(function closeAndAdd(){
             adderDiv.hide();
-            callback();
+            if(typeof callback === 'function'){
+            	callback();
+            }
         });
     }
 
