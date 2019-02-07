@@ -17,7 +17,7 @@
  */
 ?>
 <div class="sub-element-fields">
-  <div class="data-group">
+  <div class="data-group" style="position: relative; z-index: 3">
       <?php echo $form->radioButtons($element, 'eye_id',
           CHtml::listData(
               \OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_Eye::model()->findAll(),
