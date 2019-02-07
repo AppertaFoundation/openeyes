@@ -31,7 +31,7 @@ Feature: Intravitreal Injection Test
     Then I choose Right Post Injection Drops "<right_post_drop>"
     #Then I add Right Complications Comments of "<right_comment>"
 
-    Then I select Add Right Side
+    Then I select Add Left Side
     Then I choose Left Anaesthetic Delivery of Topical
     Then I choose Left Anaesthetic Agent "<left_agent>"
     Then I choose Left Pre Injection Antiseptic "<left_pre_antiseptic>"
