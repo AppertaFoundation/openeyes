@@ -57,6 +57,8 @@ Feature: Operation Booking Test
     Then I enter collector name "<name>"
     #contact collect number
     Then I enter collector number "<number>"
+    Then I Save the Operation Booking and confirm it saved correctly
+    Then I delete the event
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event                            |diagnosis_eye|operation_eye|complexity |procedure          |operation_site|equipment_details|operation_comment|rtt_comment|schedule_option|name   |number   |Ana_type|overnight_option|diagnosis|

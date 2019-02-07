@@ -7,6 +7,9 @@ class OperationBooking extends OpenEyesPage
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
     protected $elements = array(
 
+        'saveOK' => array (
+            'xpath' => "//*[@id='flash-success']"
+        ),
         'diagnosisRightEye' => array(
             'xpath' => "//input[@id='Element_OphTrOperationbooking_Diagnosis_eye_id_2']"
         ),
@@ -116,7 +119,7 @@ class OperationBooking extends OpenEyesPage
             'xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"
         ),
         'scheduleLater' => array(
-            'xpath' => "//*[@id='et_schedulelater']"
+            'xpath' => "//*[@id='et_save_and_schedule_later']"
         ),
         'scheduleNow' => array(
             //'xpath' => "//*[@id='et_save_and_schedule']"
@@ -597,5 +600,14 @@ class OperationBooking extends OpenEyesPage
         }
     }
 
-
+    /**
+     * @throws BehaviorException when save fails
+     */
+    public function saveAndScheduleLater(){
+        $this->getElement('scheduleLater')->click();
+        $this->waitForElementDisplayBlock('saveOk');
+        if (!$this->find('xpath', $this->getElement('saveOK')->getXpath())){
+            throw new BehaviorException('Could not save Operation Booking');
+        }
+    }
 }

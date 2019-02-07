@@ -24,5 +24,5 @@ Feature: Document test
     Then I delete the event
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                     |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/assets/index.jpg|
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                        |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/features/data/assets/index.jpg |

@@ -577,5 +577,16 @@ class OperationBookingContext extends PageObjectContext {
         $operationBooking->overnightRequiredOption($option);
     }
 
+    /**
+     * @Then /^I Save the Operation Booking and confirm it saved correctly$/
+     */
+    public function iSaveTheOperationBookingAndConfirmItSavedCorrectly()
+    {
+        /**
+         * @var OperationBooking $ob
+         */
+        $ob = $this->getPage('OperationBooking');
+        $ob->saveAndScheduleLater();
+    }
 
 }
