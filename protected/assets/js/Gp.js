@@ -8,7 +8,7 @@ function addItem(wrapper_id, ui){
     var $wrapper = $('#' + wrapper_id);
     $wrapper.find('.js-name').text(ui.item.label);
     $wrapper.show();
-    $wrapper.find('.hidden_id').val(ui.item.value);
+    $wrapper.find('.hidden_id').val(ui.item.id ? ui.item.id : ui.item.value);
 }
 $(document).ready(function () {
     $('#selected_contact_label_wrapper').on('click', '.remove', function () {

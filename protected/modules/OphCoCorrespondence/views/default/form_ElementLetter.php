@@ -318,6 +318,7 @@ $creating = isset($creating) ? $creating : false;
 
                   $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
                   $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
+                  $contact_nickname = isset($address_data['contact_nickname']) ? $address_data['contact_nickname'] : null;
                   $address = isset($address_data['address']) ? $address_data['address'] : null;
 
                   $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
@@ -334,6 +335,7 @@ $creating = isset($creating) ? $creating : false;
                               'contact_type' => \Yii::app()->params['gp_label'],
                               'contact_name' => $contact_name,
                               'address' => $address,
+                              'contact_nickname' => $contact_nickname,
                           ),
                           'Cc' => array(
                               'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
@@ -475,6 +477,26 @@ $creating = isset($creating) ? $creating : false;
         let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
         $('#ElementLetter_footer').val(AutoCompleteResponse.correspondence_footer_text);
       }
+    });
+    $('#ElementLetter_use_nickname').on('click', function(){
+      let nickname_check = $(this).is(':checked');
+      let addressee = $('#DocumentTarget_0_attributes_contact_name').val();
+      let recipient_to = addressee.split(' ');
+      let nickname;
+
+      if(recipient_to.length > 1){
+        addressee = recipient_to[0]+' '+(recipient_to[2] !== undefined ? recipient_to[2] : recipient_to[1]);
+
+        if(nickname_check){
+          nickname = $('#DocumentTarget_0_attributes_contact_nickname').val();
+          if(nickname.length > 0){
+            addressee = nickname;
+          }
+        }
+      }
+
+      $('#ElementLetter_introduction').val('Dear '+addressee+',');
+
     });
   });
 </script>

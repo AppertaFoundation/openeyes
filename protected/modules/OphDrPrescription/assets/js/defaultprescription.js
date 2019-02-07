@@ -228,26 +228,33 @@ $(function () {
     width: 600,
     deselectOnReturn: false,
     onReturn: function (adderDialog, selectedItems) {
+      
+        if(typeof patientAllergies === 'undefined'){
+          patientAllergies = false;    
+        }
+
         let allergicDrugsController = new OpenEyes.OphDrPrescription.AllergicDrugsController(patientAllergies);
         allergicDrugsController.addEntries(selectedItems);
         let allergicDrugs = allergicDrugsController.getAllergicDrugs();
-      if(allergicDrugs){
-          let dialog = new OpenEyes.UI.Dialog.Confirm({
-              content: "Patient is allergic to " +
-                  allergicDrugs.join() +
-                  ". Are you sure you want to add them?"
-          });
-          dialog.on('ok', function () {
-              addItems(selectedItems);
-          }.bind(this));
+        if(allergicDrugs){
+            let dialog = new OpenEyes.UI.Dialog.Confirm({
+                content: "Patient is allergic to " +
+                    allergicDrugs.join() +
+                    ". Are you sure you want to add them?"
+            });
+            dialog.on('ok', function () {
+                addItems(selectedItems);
+            }.bind(this));
 
-          dialog.on('cancel' , function(){
-            addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs);
-          }.bind(this));
-          dialog.open();
-      } else {
-          addItems(selectedItems);
-      }
+            dialog.on('cancel' , function(){
+              addItemsWithoutAllergicDrugs(selectedItems , allergicDrugs);
+            }.bind(this));
+            dialog.open();
+        } else {
+            addItems(selectedItems);
+        }          
+        
+
     },
   });
 

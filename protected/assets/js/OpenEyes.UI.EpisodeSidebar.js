@@ -83,14 +83,6 @@
 
     EpisodeSidebar.prototype.create = function () {
         let self = this;
-        let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
-
-        if ($selected_event.length) {
-            let li_offset_top = $selected_event[0].offsetTop;
-            if (li_offset_top) {
-                this.element[0].scrollTop = (this.element[0].scrollHeight - li_offset_top);
-            }
-        }
 
     if (self.options.default_sort == 'asc') {
       self.sortOrder = 'asc';
@@ -127,10 +119,33 @@
             e.preventDefault();
         });
 
-        self.element.on('click', '.collapse-group-icon i.minus', function (e) {
-            self.collapseGrouping($(e.target).parents('.collapse-group'));
-            e.preventDefault();
-        });
+    self.element.on('click', '.expand-all', function (e) {
+      self.expandAll();
+      e.preventDefault();
+    });
+
+    self.element.on('click', '.collapse-group-icon i.minus', function (e) {
+      self.collapseGrouping($(e.target).parents('.collapse-group'));
+      e.preventDefault();
+    });
+
+    self.element.on('click', '.collapse-group-icon i.plus', function (e) {
+      self.expandGrouping($(e.target).parents('.collapse-group'));
+      e.preventDefault();
+    });
+
+    let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
+    let li_height = $selected_event.height();
+    let min_viewport_height = $(window).height() - (li_height*3);
+
+    if ($selected_event.length) {
+        let li_offset_top = $selected_event[0].offsetTop;
+        let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
+
+        if (li_offset_top && li_offset_top >= min_viewport_height) {
+            this.element[0].scrollTop = (li_offset_top - (height_offset + (li_height*10)));
+        }
+    }
 
         self.element.on('click', '.collapse-group-icon i.plus', function (e) {
             self.expandGrouping($(e.target).parents('.collapse-group'));

@@ -42,7 +42,6 @@
 
   <div class="cols-6">
     <fieldset>
-        <?php echo $form->checkBox($element, 'information', array('nowrapper' => true)) ?>
         <?php echo $form->checkBox($element, 'anaesthetic_leaflet', array('nowrapper' => true)) ?>
         <?php echo $form->checkBox($element, 'witness_required', array('nowrapper' => true)) ?>
         <?php $hideWitnessName = (!@$_POST['Element_OphTrConsent_Other']['witness_required'] && !$element->witness_name); ?>

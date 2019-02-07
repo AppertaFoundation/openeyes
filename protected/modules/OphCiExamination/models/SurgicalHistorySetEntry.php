@@ -14,7 +14,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -88,7 +88,7 @@ class SurgicalHistorySetEntry extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'surgical_history_set' => array(self::BELONGS_TO, SurgicalHistorySet::class, 'surgical_history_set_id'),
+            'surgical_history_set' => array(self::BELONGS_TO, SurgicalHistorySet::class, 'set_id'),
             'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'last_modified_user' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

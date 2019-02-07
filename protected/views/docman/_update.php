@@ -67,11 +67,13 @@
 											<?php
 											$contact_type = strtoupper($target->contact_type);
 											$contact_type = $contact_type == 'PRACTICE' ? Yii::app()->params['gp_label'] : $contact_type;
+                                            $contact_nick_name = $contact_type === 'GP' ? $element['event']['episode']['patient']['gp']['contact']->nick_name : $element['event']['episode']['patient']['contact']->nick_name;
 
 											$this->renderPartial('//docman/table/contact_name_type', array(
 												'address_targets' => $element->address_targets,
 												'contact_id' => $target->contact_id,
 												'contact_name' => $target->contact_name,
+                                                'contact_nickname' =>$contact_nick_name ,
 												'contact_type' => $contact_type,
 												// Internal referral will always be the first row - indexed 0
 												'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),

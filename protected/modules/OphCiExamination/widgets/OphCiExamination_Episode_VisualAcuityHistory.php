@@ -72,15 +72,21 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      */
     public function configureChart() {
         $va_ticks = $this->getChartTicks();
+        $va_len = sizeof($va_ticks);
+        $step = $va_len/20;
+        $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
+        $this->va_ticks = array_slice($va_ticks, 0,$no_numeric_val_count);
 
-        $this->va_ticks = $va_ticks;
+        for ($i = $no_numeric_val_count+1; $i<=$va_len-$step; $i+=$step){
+            array_push($this->va_ticks, $va_ticks[$i]);
+        }
+
         $this->va_axis = (string)$this->va_unit->name;
-
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
             ->configureYAxis(
                 $this->va_axis,
-                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $va_ticks)
+                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $this->va_ticks)
             )
             ->configureSeries('Visual Acuity (right)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('Visual Acuity (left)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));

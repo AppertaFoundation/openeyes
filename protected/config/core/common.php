@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201812061722',
+            'time' => '201901011500',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -313,6 +313,8 @@ return array(
             'paste_as_text' => true,
             'table_toolbar' => "tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
             'browser_spellcheck' => true,
+            'extended_valid_elements' => 'i[*]',
+            'valid_elements' => '*[*]',
         ),
         'menu_bar_items' => array(
                 'admin' => array(
