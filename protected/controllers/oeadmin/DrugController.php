@@ -112,7 +112,7 @@ class DrugController extends BaseAdminController
         if ($request->getIsPostRequest()) {
             $drug->attributes = $_POST['Drug'];
             $drug['tags'] = $_POST['Drug']['tags'];
-            $drug['allergies'] = $_POST['Drug']['allergies'];
+            $drug['allergies'] = isset($_POST['Drug']['allergies']) ? $_POST['Drug']['allergies'] : "";
 
             if (!$drug->save()) {
                 throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
