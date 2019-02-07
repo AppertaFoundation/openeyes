@@ -799,10 +799,12 @@ class DefaultController extends \BaseEventTypeController
             $checker = 'has'.ucfirst($side);
             if ($element->$checker()) {
                 if (isset($data[$model_name][$side.'_treatments'])) {
-                    foreach ($data[$model_name][$side.'_treatments'] as $idx => $p_treat) {
+                    foreach ($data[$model_name][$side . '_treatments'] as $idx => $p_treat) {
+                        $dilation = null;
                         if (@$p_treat['id']) {
                             $dilation = models\OphCiExamination_Dilation_Treatment::model()->findByPk($p_treat['id']);
-                        } else {
+                        }
+                        if ($dilation == null) {
                             $dilation = new models\OphCiExamination_Dilation_Treatment();
                         }
                         $dilation->attributes = $p_treat;
