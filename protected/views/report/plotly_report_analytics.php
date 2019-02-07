@@ -19,8 +19,10 @@
     layout['font'] = {
             color: '#fff'
         };
-    layout['paper_bgcolor'] = '#141e2b';
-    layout['plot_bgcolor'] = '#141e2b';
+    layout['paper_bgcolor'] = '#101925';
+    layout['plot_bgcolor'] = '#101925';
+    layout['width'] = '1460';
+    layout['height'] = '800';
     layout['xaxis']['linecolor'] = '#fff';
     layout['yaxis']['linecolor'] = '#fff';
     if (layout['yaxis']['showgrid']){
