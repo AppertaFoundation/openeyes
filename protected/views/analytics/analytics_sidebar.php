@@ -5,6 +5,9 @@
         <h3>Select options</h3>
         <ul class="oescape-icon-btns">
             <li class="icon-btn">
+                <a href="/analytics/allSubspecialties" class="active <?= $specialty == 'All' ? 'selected' : '' ?>">All</a>
+            </li>
+            <li class="icon-btn">
                 <a href="/analytics/cataract" class="active <?= $specialty == 'Cataract' ? 'selected' : '' ?>">CA</a>
             </li>
             <li class="icon-btn">
@@ -19,7 +22,6 @@
     </div>
 
     <div class="specialty"><?= $specialty ?></div>
-    <?php if ($specialty !== 'Cataract'){?>
     <div>
         <input type="checkbox" id="js-chart-filter-global-anonymise">Anonymise
     </div>
@@ -56,42 +58,35 @@
         </div><!-- .oe-filter-options -->
         <?php }?>
     </div>
-    <?php }?>
     <div class="specialty-options">
-        <?php if ($specialty === 'Cataract') { ?>
-            <div style="<?= $specialty !== 'Cataract' ? 'display: none' : '' ?>">
-                <?= CHtml::dropDownList(
-                    'js-chart-CA-selection', null,
-                    array('PCR Risk', 'Complication Profile', 'Visual Acuity', 'Refractive Outcome'),
-                    array('style' => 'font-size: 1em; width: inherit')
-                ); ?>
-            </div>
-        <?php } else { ?>
             <div class="view-mode flex-layout">
                 <?php $clinical_button_disable = true;
                 if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                     $clinical_button_disable = false;
                 }?>
-                <button class="analytics-section pro-theme cols-3 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
+                <?php if ($specialty === 'All'){?>
+                    <button class="analytics-section pro-theme cols-4 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                         data-section="#js-hs-chart-analytics-clinical-main"
                         data-tab="#js-charts-clinical">
-                    Clinical
-                </button>
-                <button class="analytics-section pro-theme cols-3 selected" id="js-btn-service"
+                            Clinical
+                    </button>
+                <?php }else{?>
+                    <button class="analytics-section pro-theme cols-4" id="js-btn-custom"
+                            data-section="#js-hs-chart-analytics-clinical-others"
+                            data-tab="#js-custom-data-filter">
+                        Clinical
+                    </button>
+                <?php }?>
+                <button class="analytics-section pro-theme cols-4 selected" id="js-btn-service"
                         data-section="#js-hs-chart-analytics-service"
                         data-tab="#js-charts-service">
                     Service
                 </button>
-                <button class="analytics-section pro-theme cols-3" id="js-btn-custom"
-                        data-section="#js-hs-chart-analytics-custom"
-                        data-tab="#js-custom-data-filter">
-                    Custom
-                </button>
-                <button class="analytics-section pro-theme cols-3 disabled" id="js-btn-research">
+
+                <button class="analytics-section pro-theme cols-4 disabled" id="js-btn-research">
                     Research
                 </button>
             </div>
-
             <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
@@ -146,9 +141,9 @@
                     </div>
                 </div>
              </div>
-
+            <?php if($specialty !== 'All'){?>
             <div id="js-custom-data-filter" style="display: none;">
-                <h3>Custom Data Filters</h3>
+                <h3>Clinical Data Filters</h3>
                 <div class="custom-filters flex-layout">
                     <ul class="filters-selected cols-9">
                         <li id="js-chart-filter-eye-side">Eyes:
@@ -216,6 +211,7 @@
                                         <?php } elseif ($specialty === 'Glaucoma') {
                                             $analytics_diagnoses = array('Macular degeneration', 'Diabetic Macular Oedema', 'BRVO', 'CRVO', 'Hemivein');
                                         } ?>
+
                                         <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
                                             <h3>Diagnosis</h3>
                                             <ul class="btn-list">
@@ -249,11 +245,7 @@
         <?php } ?>
 
         <form id="search-form">
-            <?php if ($specialty === "Cataract") { ?>
-                <div id="search-form-report-search-section"></div>
-            <?php } else { ?>
-                <input type="hidden" name="specialty" value="<?= $specialty; ?>">
-            <?php } ?>
+            <input type="hidden" name="specialty" value="<?= $specialty; ?>">
             <h3>Filter by Date</h3>
             <div class="flex-layout">
                 <input name="from" type="text" class="pro-theme cols-5"
@@ -273,12 +265,6 @@
             <div class="row">
                 <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()">View all dates</button>
             </div>
-            <?php if ($specialty === "Cataract") { ?>
-                <div class="row">
-                    <button id="js-all-surgeons" class="pro-theme" onclick="viewAllSurgeons()">View all surgeons
-                    </button>
-                </div>
-            <?php } ?>
             <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
         </form>
 
@@ -299,31 +285,13 @@
             $side_bar_user_list = null;
         }
     ?>
-    <?php if ($specialty === 'Cataract'){?>
-    $('#search-form').on('submit', function (e) {
-        e.preventDefault();
-
-        $('.report-search-form').trigger('submit');
-
-    });
-
-    function viewAllSurgeons() {
-        if ($('#analytics_allsurgeons').val() == 'on') {
-            $('#analytics_allsurgeons').val('');
-            $('#js-all-surgeons').html('View all surgeons');
-        } else {
-            $('#analytics_allsurgeons').val('on');
-            $('#js-all-surgeons').html('View current surgeons');
-        }
-    }
-    <?php } else{
-    $filter_eye_side = array('left' => 'right', 'right' => 'left');
+    <?php $filter_eye_side = array('left' => 'right', 'right' => 'left');
     foreach(array_keys($filter_eye_side) as $side){?>
     $('#js-chart-filter-eye-side-' + '<?=$side;?>').click(function () {
         if (this.checked) {
             $('#js-chart-filter-eye-side-' + '<?=$filter_eye_side[$side];?>').attr('checked', false);
-            $('#js-hs-chart-analytics-custom-' + '<?=$side;?>').show();
-            $('#js-hs-chart-analytics-custom-' + '<?=$filter_eye_side[$side];?>').hide();
+            $('#js-hs-chart-analytics-clinical-others-' + '<?=$side;?>').show();
+            $('#js-hs-chart-analytics-clinical-others-' + '<?=$filter_eye_side[$side];?>').hide();
         }
     });
     <?php }?>
@@ -358,7 +326,7 @@
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
         var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
         var side_bar_user_filter_content = $('#js-service-selected-filter').html();
-        var filters = "&specialty=" + specialty;
+        var filters ="";
         if (side_bar_user_list !== null && side_bar_user_filter_content !== "All"){
             filters += "&surgeon_id="+side_bar_user_list[side_bar_user_filter_content];
         }
@@ -399,10 +367,21 @@
         return filters;
     }
     function plotUpdate(data){
-        var custom_charts = ['js-hs-chart-analytics-custom-left','js-hs-chart-analytics-custom-right'];
+        <?php if ($specialty === 'All'){
+            if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
+                var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
+                var clinical_data = data[0];
+                clinical_chart.data[0]['x'] = clinical_data.x;
+            clinical_chart.data[0]['y'] = clinical_data.y;
+            clinical_chart.data[0]['customdata'] = clinical_data.customdata;
+            clinical_chart.data[0]['text'] = clinical_data.text;
+            Plotly.redraw(clinical_chart);
+        <?php }}else{?>
+        var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
         var custom_data = data[0];
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
+            chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
             chart.data[0]['x'] = custom_data[i][0]['x'];
             chart.data[0]['y'] = custom_data[i][0]['y'];
             chart.data[0]['customdata'] = custom_data[i][0]['customdata'];
@@ -411,20 +390,10 @@
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             Plotly.redraw(chart);
         }
-        <?php if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id)
-            || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
-        var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
-        var clinical_data = data[1];
-        clinical_chart.data[0]['x'] = clinical_data.x;
-        clinical_chart.data[0]['y'] = clinical_data.y;
-        clinical_chart.data[0]['customdata'] = clinical_data.customdata;
-        clinical_chart.data[0]['text'] = clinical_data.text;
-        Plotly.redraw(clinical_chart);
-        <?php } ?>
+        <?php }?>
         //update the service data
-        constructPlotlyData(data[2]);
-}
-<?php }?>
+        constructPlotlyData(data[1]);
+    }
     function viewAllDates() {
         $('#analytics_datepicker_from').val("");
         $('#analytics_datepicker_to').val("");

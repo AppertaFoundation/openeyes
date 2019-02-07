@@ -29,7 +29,7 @@ class AnalyticsController extends BaseController
   {
     return array(
       array('allow',
-        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'updateData',),
+        'actions' => array('cataract', 'medicalRetina', 'glaucoma', 'updateData','allSubspecialties'),
         'users'=> array('@')
       ),
     );
@@ -39,13 +39,53 @@ class AnalyticsController extends BaseController
      * Function actionCataract(), actionMedicalRetina(), actionGlaucoma() are the main function for those three subspecialties
      * The function grab data for all the plots.
      */
+    public function actionAllSubspecialties(){
+        $this->checkAuth();
+        $subspecialty_id = null;
+        $this->current_user = User::model()->findByPk(Yii::app()->user->id);
+        $disorder_data = $this->getDisorders($subspecialty_id);
+        $this->filters = array(
+            'date_from' => 0,
+            'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+        );
+
+        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
+        $clinical_data = array(
+            'title' => 'Disorders Section',
+            'x' => $disorder_data['x'],
+            'y' => $disorder_data['y'],
+            'text' => $disorder_data['text'],
+            'customdata' =>$disorder_data['customdata']
+        );
+
+        $current_user = User::model()->findByPk(Yii::app()->user->id);
+        if (isset($this->surgeon)){
+            $user_list = null;
+        }else{
+            $user_list = User::model()->findAll();
+        }
+
+
+        $this->render('/analytics/analytics_container',
+            array(
+                'specialty'=>'All',
+                'service_data'=> $follow_patient_list,
+                'clinical_data' => $clinical_data,
+                'patient_list' => $this->patient_list,
+                'user_list' => $user_list,
+                'current_user'=> $current_user,
+                'common_disorders'=> $common_ophthalmic_disorders,
+            )
+        );
+    }
   public function actionCataract(){
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
       $subspecialty_id = $this->getSubspecialtyID('Cataract');
       $this->getDisorders($subspecialty_id);
-      $this->patient_list = $this->queryCataractEventList();  //Elements for the drill down page, but this is not actually patient list, should named event_list.
       $current_user = User::model()->findByPk(Yii::app()->user->id);
+      $this->patient_list = $this->queryCataractEventList();
       if (isset($this->surgeon)){
           $user_list = null;
       }else{
@@ -67,9 +107,6 @@ class AnalyticsController extends BaseController
       $this->checkAuth();
       $subspecialty_id = $this->getSubspecialtyID('Medical Retina');
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
-      $roles = Yii::app()->user->getRole(Yii::app()->user->id);
-      $disorder_data = $this->getDisorders($subspecialty_id);
-      $follow_patient_list = $this->getFollowUps($subspecialty_id);
 
       $this->filters = array(
           'date_from' => 0,
@@ -88,14 +125,6 @@ class AnalyticsController extends BaseController
       }else{
           $user_list = User::model()->findAll();
       }
-
-      $clinical_data = array(
-          'title' => 'Disorders Section',
-          'x' => $disorder_data['x'],
-          'y' => $disorder_data['y'],
-          'text' => $disorder_data['text'],
-          'customdata' =>$disorder_data['customdata']
-      );
 
       $custom_data = array();
       foreach (['left','right'] as $side){
@@ -155,7 +184,6 @@ class AnalyticsController extends BaseController
     $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Medical Retina',
-            'clinical_data'=> $clinical_data,
             'service_data'=> $follow_patient_list,
             'custom_data' => $custom_data,
             'patient_list' => $this->patient_list,
@@ -174,7 +202,6 @@ class AnalyticsController extends BaseController
       );
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
-      $disorder_data = $this->getDisorders($subspecialty_id);
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
       $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
 
@@ -184,13 +211,6 @@ class AnalyticsController extends BaseController
       }else{
           $user_list = User::model()->findAll();
       }
-      $clinical_data = array(
-          'title' => 'Disorders Section',
-          'x' => $disorder_data['x'],
-          'y' => $disorder_data['y'],
-          'text' => $disorder_data['text'],
-          'customdata' =>$disorder_data['customdata']
-      );
       $custom_data = array();
       foreach (['left','right'] as $side){
           $custom_data[] = array(
@@ -249,7 +269,6 @@ class AnalyticsController extends BaseController
     $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Glaucoma',
-            'clinical_data'=> $clinical_data,
             'service_data'=> $follow_patient_list,
             'custom_data' => $custom_data,
             'patient_list' => $this->patient_list,
@@ -684,7 +703,9 @@ class AnalyticsController extends BaseController
 
   public function getCommonDisorders($subspecialty_id, $only_name = false){
       $criteria = new CDbCriteria();
-      $criteria->compare('subspecialty_id', $subspecialty_id);
+      if (isset($criteria)){
+          $criteria->compare('subspecialty_id', $subspecialty_id);
+      }
       $common_ophthalmic_disorders= CommonOphthalmicDisorder::model()->findAll($criteria);
       $common_ophthalmic_disorders_only_name = array();
       if ($only_name){
@@ -870,77 +891,81 @@ class AnalyticsController extends BaseController
           $this->surgeon = $surgeon_id;
       }
       $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
-      $subspecialty_id = $this->getSubspecialtyID($specialty);
-      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
-      if ($specialty === "Glaucoma"){
-          list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id);
-      }elseif ($specialty === "Medical Retina"){
-          list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id);
-      }
-      $subspecialty_id = $this->getSubspecialtyID($specialty);
-      $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
-      $clinical_data = array(
-          'x' => $disorder_data['x'],
-          'y' => $disorder_data['y'],
-          'text' => $disorder_data['text'],
-          'customdata' =>$disorder_data['customdata']
-      );
 
-      $custom_data = array();
-      foreach (['left','right'] as $side){
-          $custom_data[] = array(
-              array(
-                  'x' => array_keys(${$side.'_va_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_va_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_va_list'})),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
+      if ($specialty == 'All'){
+          $subspecialty_id = null;
+          $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
+          $clinical_data = array(
+              'x' => $disorder_data['x'],
+              'y' => $disorder_data['y'],
+              'text' => $disorder_data['text'],
+              'customdata' =>$disorder_data['customdata']
+          );
+      }else{
+          $subspecialty_id = $this->getSubspecialtyID($specialty);
+          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+          if ($specialty === "Glaucoma"){
+              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id);
+          }elseif ($specialty === "Medical Retina"){
+              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id);
+          }
+          $clinical_data = array();
+          foreach (['left','right'] as $side){
+              $clinical_data[] = array(
+                  array(
+                      'x' => array_keys(${$side.'_va_list'}),
+                      'y' => array_map(
+                          function ($item){
+                              return $item['average'];
+                          }, array_values(${$side.'_va_list'})),
+                      'customdata'=>array_map(
                           function($item){
-                              return $item['SD'];
+                              return $item['patients'];
                           },
                           array_values(${$side.'_va_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-              array(
-                  'yaxis' => 'y2',
-                  'x' => array_keys(${$side.'_second_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_second_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_second_list'})),
-                  'error_y' => array(
-                      'type' => 'data',
-                      'array' => array_map(
+                      'error_y'=> array(
+                          'type'=> 'data',
+                          'array' => array_map(
+                              function($item){
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_va_list'})),
+                          'visible' => true,
+                          'color' => '#aaa',
+                          'thickness' => 1
+                      )
+                  ),
+                  array(
+                      'yaxis' => 'y2',
+                      'x' => array_keys(${$side.'_second_list'}),
+                      'y' => array_map(
+                          function ($item){
+                              return $item['average'];
+                          }, array_values(${$side.'_second_list'})),
+                      'customdata'=>array_map(
                           function($item){
-                              return $item['SD'];
+                              return $item['patients'];
                           },
                           array_values(${$side.'_second_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
+                      'error_y' => array(
+                          'type' => 'data',
+                          'array' => array_map(
+                              function($item){
+                                  return $item['SD'];
+                              },
+                              array_values(${$side.'_second_list'})),
+                          'visible' => true,
+                          'color' => '#aaa',
+                          'thickness' => 1
+                      )
                   )
-              )
-          );
+              );
+          }
       }
-
       $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
-      $this->renderJSON(array($custom_data,$clinical_data, $service_data));
+
+
+      $this->renderJSON(array($clinical_data, $service_data));
   }
 
     /**
@@ -1007,7 +1032,7 @@ class AnalyticsController extends BaseController
                   continue;
               $current_episode = $current_event->episode;
               $current_subspecialty = $current_episode->getSubspecialtyID();
-              if ($current_subspecialty == $subspecialty_id){
+              if ($current_subspecialty == $subspecialty_id || !isset($subspecialty_id)){
                   $current_patient = $current_episode->patient;
                   if ($diagnosis){
                       $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient->id);
@@ -1069,7 +1094,7 @@ class AnalyticsController extends BaseController
           }
           $current_episode = $current_event->episode;
           $current_subspecialty = $current_episode->getSubspecialtyID();
-          if($current_subspecialty!=$subspecialty_id)
+          if($current_subspecialty!=$subspecialty_id && isset($subspecialty_id))
               continue;
 
           $current_patient = $ticket->patient;
@@ -1123,7 +1148,7 @@ class AnalyticsController extends BaseController
           if (isset($current_event)){
               $current_episode = $current_event->episode;
               $current_subspecialty = $current_episode->getSubspecialtyID();
-              if ($current_subspecialty !== $subspecialty_id || !isset($current_episode->firm_id)){
+              if (($current_subspecialty !== $subspecialty_id && isset($subspecialty_id)) || !isset($current_episode->firm_id) ){
                   continue;
               }
               if (isset($this->surgeon)){

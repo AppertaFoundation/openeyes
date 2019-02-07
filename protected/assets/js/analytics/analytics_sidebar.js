@@ -14,43 +14,7 @@ $(document).ready(function () {
         default_date: false,
     });
 
-    //cataract plot change
-    $('#js-chart-CA-selection').on('change', function () {
 
-        $('#pcr-risk-grid').html("");
-        $('#cataract-complication-grid').html("");
-        $('#visual-acuity-grid').html("");
-        $('#refractive-outcome-grid').html("");
-        $('#analytics_datepicker_from').val("");
-        $('#analytics_datepicker_to').val("");
-        $('#analytics_allsurgeons').val("");
-        $('.analytics-event-list-row').hide();
-        $('.analytics-event-list').hide();
-        $('#js-back-to-chart').hide();
-        $('#js-all-surgeons').html('View all surgeons');
-        var selected_value = $(this).val();
-        switch (selected_value) {
-            case '0':
-                OpenEyes.Dash.init('#pcr-risk-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=PcrRisk&template=analytics', null, 10);
-                break;
-            case '1':
-                OpenEyes.Dash.init('#cataract-complication-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=CataractComplications&template=analytics', null,10);
-                break;
-            case '2':
-                OpenEyes.Dash.init('#visual-acuity-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\VisualOutcome&template=analytics', null, 10);
-                break;
-            case '3':
-                OpenEyes.Dash.init('#refractive-outcome-grid');
-                OpenEyes.Dash.addBespokeReport('/report/ajaxReport?report=\\OEModule\\OphCiExamination\\components\\RefractiveOutcome&template=analytics', null, 10);
-                break;
-        }
-        $('.mdl-cell').css('height','600px');
-        $('.mdl-cell').css('width','1000px');
-
-    });
     //select tag between clinic, custom and service
     $('.analytics-section').on('click', function () {
         $('.analytics-section').each(function () {

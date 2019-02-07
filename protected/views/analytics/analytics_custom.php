@@ -1,7 +1,7 @@
 
-<div id="js-hs-chart-analytics-custom" style="display: none;">
-    <div id="js-hs-chart-analytics-custom-right" style="display: block"></div>
-    <div id="js-hs-chart-analytics-custom-left" style="display: none"></div>
+<div id="js-hs-chart-analytics-clinical-others" style="display: none;">
+    <div id="js-hs-chart-analytics-clinical-others-right" style="display: block"></div>
+    <div id="js-hs-chart-analytics-clinical-others-left" style="display: none"></div>
 </div>
 <script type="text/javascript">
     var custom_layout, custom_data;
@@ -19,11 +19,11 @@
     function plot(right,custom_layout, custom_data){
         var id;
         if (right){
-            id = 'js-hs-chart-analytics-custom-right';
-            custom_layout['title'] = "Custom Section (Right Eye)";
+            id = 'js-hs-chart-analytics-clinical-others-right';
+            custom_layout['title'] = "Clinical Section (Right Eye)";
         } else {
-            id = 'js-hs-chart-analytics-custom-left';
-            custom_layout['title'] = "Custom Section (Left Eye)";
+            id = 'js-hs-chart-analytics-clinical-others-left';
+            custom_layout['title'] = "Clinical Section (Left Eye)";
         }
 
         var custom_plot = document.getElementById(id);
