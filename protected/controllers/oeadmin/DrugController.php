@@ -111,7 +111,7 @@ class DrugController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $drug->attributes = $_POST['Drug'];
-            $drug['tags'] = $_POST['Drug']['tags'];
+            $drug['tags'] = isset($_POST['Drug']['tags']) ? $_POST['Drug']['tags'] : "";
             $drug['allergies'] = isset($_POST['Drug']['allergies']) ? $_POST['Drug']['allergies'] : "";
 
             if (!$drug->save()) {
