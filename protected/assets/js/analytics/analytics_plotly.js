@@ -5,15 +5,15 @@ var analytics_layout = {
     },
     autosize: false,
     height: 800,
-    width:1000,
+    width: 1460,
     margin:{
         l:50,
         t:30,
         b: 50,
         pad:4,
     },
-    paper_bgcolor: '#141e2b',
-    plot_bgcolor: '#141e2b',
+    paper_bgcolor: '#101925',
+    plot_bgcolor: '#101925',
     /* legend settings */
     showlegend: true,
     legend: {

@@ -15,6 +15,7 @@ class AnalyticsController extends BaseController
   protected $patient_list = array();
   protected $filters;
   protected $surgeon;
+  public $fixedHotlist = false;
 
     /**
      * @param $subspecialty_name
