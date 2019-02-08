@@ -20,8 +20,11 @@
 $glaucoma_subspecialty = Subspecialty::model()->findByAttributes(['name' => 'Glaucoma']);
 $subspecialty = Firm::model()->findByPk($this->selectedFirmId)->getSubspecialtyID();
 $mode = 'Basic';
-if($subspecialty == $glaucoma_subspecialty->id && SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $glaucoma_subspecialty->id, 'key' => 'expert'])->value){
-    $mode = 'Expert';
+if($subspecialty == $glaucoma_subspecialty->id){
+    $expert = SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $glaucoma_subspecialty->id, 'key' => 'expert'])->value;
+    if($expert){
+        $mode = 'Expert';
+    }
 }
 
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
