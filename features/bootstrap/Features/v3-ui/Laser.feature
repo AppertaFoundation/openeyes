@@ -26,6 +26,7 @@ Feature: Laser test
 
     Then I save the Laser Event and confirm it has been created successfully
     Then I delete the event
+    Then I logout
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | Laser_site | Laser| Laser_operator| Procedure| Procedure_id| New_Procedure|

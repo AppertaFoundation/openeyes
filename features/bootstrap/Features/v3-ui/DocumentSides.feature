@@ -22,6 +22,7 @@ Feature: Document test
     Then I upload right file "<file_path>"
     Then I save document event and confirm it saved successfully
     Then I delete the event
+    Then I logout
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                        |

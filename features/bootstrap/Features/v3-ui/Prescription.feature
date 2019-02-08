@@ -32,6 +32,7 @@ Feature: Prescription Test
 
     Then I Save the Prescription Draft and confirm it has been created successfully
     Then I delete the event
+    Then I logout
 
 
 

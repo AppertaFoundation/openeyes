@@ -6,8 +6,8 @@ use Behat\Mink\Session;
 use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
 
 
-abstract class OpenEyesPage extends Page {
-	
+class OpenEyesPage extends Page {
+
 	public function __construct(Session $session, PageFactoryInterface $pageFactory, array $parameters = array())
     {
         parent::__construct($session, $pageFactory, $parameters);
@@ -166,4 +166,8 @@ JS;
         }
     }
 
+    public function logout()
+    {
+        $this->getDriver()->visit($this->getParameter('base_url').'/site/logout');
+    }
 }

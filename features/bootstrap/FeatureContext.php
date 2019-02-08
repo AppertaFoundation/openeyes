@@ -276,4 +276,17 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	public function iSaveTheTherapyApplication() {
 		throw new PendingException ();
 	}
+
+    /**
+     * @Then /^I logout$/
+     */
+    public function iLogout()
+    {
+        /*
+         * @var $page OpenEyesPage
+         */
+        $page = $this->getPage('OpenEyesPage');
+        $page->logout();
+    }
+
 }

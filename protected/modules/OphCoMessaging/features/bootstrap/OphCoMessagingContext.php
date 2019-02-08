@@ -189,18 +189,6 @@ class OphCoMessagingContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I logout$/
-     */
-    public function iLogout()
-    {
-        /*
-         * @var OphCoMessaging
-         */
-        $message = $this->getPage('OphCoMessaging');
-        $message->logout();
-    }
-
-    /**
      * @Given /^I see I have messages in the messages dashboard$/
      */
     public function iSeeIHaveMessagesInTheMessagesDashboard()

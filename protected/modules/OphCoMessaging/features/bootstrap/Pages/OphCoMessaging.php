@@ -61,9 +61,6 @@ class OphCoMessaging extends OpenEyesPage
         'message_text_display' => array(
             'xpath' => "//section[contains(@class,'Element_OphCoMessaging_Message')]//div[@class='row data-row'][3]//div[contains(@class,'data-value')]",
         ),
-        'logout' => array(
-            'xpath' => "//ul[contains(@class,'navigation')]//a[text()='Logout']",
-        ),
         'dashboard' => array(
             'xpath' => "//div[@id='inbox-table']",
         ),
@@ -291,14 +288,6 @@ class OphCoMessaging extends OpenEyesPage
     {
         $current_url = $this->getDriver()->getCurrentUrl();
         $this->bookmarks[$name] = str_replace($this->getMinkParameter('base_url'), '', $current_url);
-    }
-
-    /**
-     * @TODO: move to core
-     */
-    public function logout()
-    {
-        $this->getElement('logout')->click();
     }
 
     /**

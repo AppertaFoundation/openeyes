@@ -30,8 +30,9 @@ Feature: Phasing Test
     Then I choose a left eye Intraocular Pressure Reading of "<left_reading>"
     Then I add left eye comments of "<left_comment>"
 
-    Then I Save the Phasing Event and confirm it has been created successfully
+    Then I Save the Event and confirm it has been created successfully
     Then I delete the event
+    Then I logout
 
 
 
