@@ -36,6 +36,21 @@ class ImportDrugsCommand extends CConsoleCommand
         'ingredient' => ['INGREDIENT_SUBSTANCES',null],
     ];
 
+    private $attribs = [
+        'FLAVOURCD'  => 'FLAVOUR.CD',
+        'BASISCD' => 'BASIS_OF_NAME.CD',
+        'NMCHANGECD' => 'NAMECHANGE_REASON.CD',
+        'COMBPRODCD' => 'COMBINATION_PROD_IND.CD',
+        'PRES_STATCD' => 'VIRTUAL_PRODUCT_PRES_STATUS.CD',
+        'DF_INDCD' => 'DF_INDICATOR.CD',
+        'AVAIL_RESTRICTCD' => 'AVAILABILITY_RESTRICTION.CD',
+        'LIC_AUTHCD' => 'LICENSING_AUTHORITY.CD',
+        'LIC_AUTHCHANGECD' => 'LICENSING_AUTHORITY_CHANGE_REASON.CD',
+        'SUPPCD' => 'SUPPLIER.CD',
+    ];
+
+    private $tableData = [];
+
     /* SQL TEMPLATES */
     private $createTableTemplate = 'CREATE TABLE IF NOT EXISTS `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
     private $truncateTableTemplate = 'TRUNCATE TABLE `%s`;';
@@ -207,7 +222,13 @@ EOD;
         return $structure;
     }
 
-    public function createTableData(){
+    public function createTableData()
+    {
+        // return cached if possible
+        if(!empty($this->tableData)) {
+            return $this->tableData;
+        }
+
         $tablesData = [];
         $XSDdir = $this->_getImportDir();
         $XSDs = $this->getAllXsdFromDir($XSDdir);
@@ -218,6 +239,7 @@ EOD;
             $tablesData = array_merge($tablesData,$structure);
         }
 
+        $this->tableData = $tablesData;
         return $tablesData;
     }
 
@@ -470,10 +492,96 @@ EOD;
         $cmd = "INSERT INTO  medication_attribute (`name`) VALUES ".implode(",", array_map(function($e){ return "('$e')";}, $lookup_tables));
         Yii::app()->db->createCommand($cmd)->execute();
         foreach ($lookup_tables as $table) {
-            $cmd = "INSERT INTO ";
+            $tbl_name = $this->tablePrefix."lookup_".strtolower($table);
+            $cmd = "INSERT INTO medication_attribute_option (medication_attribute_id, `value`, `description`)
+                    SELECT
+                        (SELECT id FROM medication_attribute WHERE `name` = '{$table}'),
+                        {$tbl_name}.cd,
+                        {$tbl_name}.desc
+                        FROM {$tbl_name}";
+            Yii::app()->db->createCommand($cmd)->execute();
         }
 
-        unlink('/tmp/ref_medication_set.csv');
+        echo " OK".PHP_EOL;
+        echo "Importing VMP form information";
+
+        $cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+					SELECT 
+						med.id,
+						mao.id
+						FROM medication AS med
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_drug_form AS df ON df.vpid = vmp.vpid
+						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = df.formcd COLLATE utf8_general_ci
+						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+						WHERE med.source_subtype = 'VMP' AND attr.`name` = 'FORM'
+					";
+
+		Yii::app()->db->createCommand($cmd)->execute();
+		echo " OK".PHP_EOL;
+
+		echo "Importing VMP route information";
+
+		$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id) 
+					SELECT 
+						med.id,
+						mao.id
+						FROM medication AS med
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_drug_route AS dr ON dr.vpid = vmp.vpid
+						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = dr.routecd COLLATE utf8_general_ci
+						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
+						WHERE med.source_subtype = 'VMP' AND attr.`name` = 'ROUTE'
+					";
+
+		Yii::app()->db->createCommand($cmd)->execute();
+		echo " OK".PHP_EOL;
+
+        $tables = [
+        	$this->tablePrefix."amp_amps" => "apid",
+			$this->tablePrefix."vmp_vmps" => "vpid",
+			$this->tablePrefix."vtm_vtm"  => "vtmid",
+		];
+
+        foreach ($tables as $table => $id_col)
+		{
+			// AMPs
+			echo "Importing attributes for $table ..".str_repeat(" ", 14);
+			$cmd = "SELECT * FROM $table";
+			$amps = Yii::app()->db->createCommand($cmd)->queryAll();
+			$total = count($amps);
+			$progress = 1;
+			foreach ($amps as $amp) {
+				foreach ($this->attribs as $attr_key => $attrib) {
+
+					$attr_name_parts = explode(".", $attrib);
+					$attr_name = $attr_name_parts[0];
+					$attr_key = strtolower($attr_key);
+
+					if(array_key_exists($attr_key, $amp) && !empty($amp[$attr_key])) {
+						$attr_value = $amp[$attr_key];
+
+						$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
+								VALUES ( 
+								(SELECT id FROM medication WHERE preferred_code = '{$amp[$id_col]}'),
+								(SELECT mao.id 
+									FROM medication_attribute_option mao
+									LEFT JOIN medication_attribute ma ON ma.id = mao.medication_attribute_id 
+									WHERE mao.`value`='{$attr_value}' AND ma.name = '{$attr_name}'
+								)
+								)";
+
+						Yii::app()->db->createCommand($cmd)->execute();
+					}
+				}
+				$progress++;
+				echo str_repeat("\x08", 14) . str_pad("$progress/$total", 14, " ", STR_PAD_LEFT);
+			}
+
+			echo PHP_EOL;
+		}
+
+        @unlink('/tmp/ref_medication_set.csv');
 
         echo "Data imported to OE.".PHP_EOL;
     }

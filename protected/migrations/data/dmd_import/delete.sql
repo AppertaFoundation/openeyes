@@ -6,3 +6,6 @@ DELETE FROM medication_form WHERE source_type = 'DM+D';
 DELETE FROM medication_route WHERE source_type = 'DM+D';
 DELETE FROM medication WHERE source_type = 'DM+D';
 DELETE FROM medication_set WHERE `name` IN ('DM+D AMP', 'DM+D VMP', 'DM+D VTM');
+TRUNCATE TABLE medication_attribute_assignment;
+TRUNCATE TABLE medication_attribute_option;
+TRUNCATE TABLE medication_attribute;
