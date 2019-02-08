@@ -17,6 +17,13 @@
  */
 ?>
 <?php
+$glaucoma_subspecialty = Subspecialty::model()->findByAttributes(['name' => 'Glaucoma']);
+$subspecialty = Firm::model()->findByPk($this->selectedFirmId)->getSubspecialtyID();
+$mode = 'Basic';
+if($subspecialty == $glaucoma_subspecialty->id && SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $glaucoma_subspecialty->id, 'key' => 'expert'])->value){
+    $mode = 'Expert';
+}
+
 $doodleToolBarArray = array('AngleNV', 'AntSynech', 'AngleRecession');
 $bindingArray = array(
     'Gonioscopy' => array(
@@ -24,7 +31,7 @@ $bindingArray = array(
     ),
 );
 $onReadyCommandArray = array(
-    array('addDoodle', array('Gonioscopy', array('mode' => 'Basic'))),
+    array('addDoodle', array('Gonioscopy', array('mode' => $mode))),
 );
 foreach (array('AngleGradeNorth' => 'sup', 'AngleGradeEast' => 'nas', 'AngleGradeSouth' => 'inf', 'AngleGradeWest' => 'tem') as $doodleClass => $position) {
     $bindingArray[$doodleClass]['grade'] = array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_'.$side.'_gonio_'.$position.'_id', 'attribute' => 'data-value');
@@ -50,5 +57,6 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'form' => $form,
         'side' => $side,
         'element' => $element,
+        'mode' => $mode
     ), true),
 ))?>
