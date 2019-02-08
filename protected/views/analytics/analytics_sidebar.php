@@ -22,10 +22,7 @@
     </div>
 
     <div class="specialty"><?= $specialty ?></div>
-    <div>
-        <input type="checkbox" id="js-chart-filter-global-anonymise">Anonymise
-    </div>
-    <div class="service flex-layout">
+      <div class="service flex-layout">
         <?php if(isset($user_list)){?>
             <div class="service-selected" id="js-service-selected-filter">All</div>
         <?php }else{?>
@@ -59,7 +56,7 @@
         <?php }?>
     </div>
     <div class="specialty-options">
-            <div class="view-mode flex-layout">
+            <div class="view-mode">
                 <?php $clinical_button_disable = true;
                 if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                     $clinical_button_disable = false;
@@ -82,10 +79,6 @@
                         data-tab="#js-charts-service">
                     Service
                 </button>
-
-                <button class="analytics-section pro-theme cols-4 disabled" id="js-btn-research">
-                    Research
-                </button>
             </div>
             <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
@@ -103,7 +96,7 @@
                     <li><a href="#" id="js-hs-app-follow-up-waiting" >Waiting Time</a></li>
                 </ul>
                 <div id="js-service-data-filter" class=""  style="display: block">
-                    <h3>Service Data Filters</h3>
+                    <h3>Filters</h3>
                     <div class="service-filters custom-filters flex-layout">
                     <div class="service-filters flex-layout cols-9">
                         <ul class="filters-selected cols-9">
@@ -146,10 +139,7 @@
                 <h3>Clinical Data Filters</h3>
                 <div class="custom-filters flex-layout">
                     <ul class="filters-selected cols-9">
-                        <li id="js-chart-filter-eye-side">Eyes:
-                            <input type="checkbox" id="js-chart-filter-eye-side-right" checked>Right
-                            <input type="checkbox" id="js-chart-filter-eye-side-left">Left
-                        </li>
+                        <li>Eye: <span id="js-chart-filter-eye-side">Right</span></li>
                         <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age">All</span></li>
                         <li id="js-chart-filter-age-range" style="display: none;">Ages:
                             <select id="js-chart-filter-age-min" style="font-size: 1em; width: inherit">
@@ -186,13 +176,6 @@
                                     <i class="oe-i remove-circle medium pro-theme"></i>
                                 </div>
                                 <div class="flex-layout flex-top">
-                                    <div class="options-group" data-filter-ui-id="js-chart-filter-age">
-                                        <h3>Age</h3>
-                                        <ul class="btn-list">
-                                            <li class="selected">All</li>
-                                            <li>Range</li>
-                                        </ul>
-                                    </div><!-- options-group -->
                                     <?php if ($specialty !== "Cataract") { ?>
                                         <?php
                                         if ($specialty === 'Medical Retina') {
@@ -222,6 +205,13 @@
                                             </ul>
                                         </div><!-- options-group -->
                                     <?php } ?>
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-age">
+                                        <h3>Age</h3>
+                                        <ul class="btn-list">
+                                            <li class="selected">All</li>
+                                            <li>Range</li>
+                                        </ul>
+                                    </div><!-- options-group -->
                                     <div class="options-group" data-filter-ui-id="js-chart-filter-plot">
                                         <h3>Plot</h3>
                                         <ul class="btn-list">
@@ -236,6 +226,13 @@
                                             <li class="selected">ALL</li>
                                         </ul>
                                     </div><!-- options-group -->
+                                    <div class="options-group" data-filter-ui-id="js-chart-filter-eye-side">
+                                        <h3>Eye</h3>
+                                        <ul class="btn-list" id="js-btn-selected-eye">
+                                            <li class="selected">Right</li>
+                                            <li>Left</li>
+                                        </ul>
+                                    </div>
                                 </div><!-- .flex -->
                             </div><!-- filter-options-popup -->
                         </div><!-- .oe-filter-options -->
@@ -270,8 +267,10 @@
 
 
         <div class="extra-actions">
-            <button id="js-download-csv" class="pro-theme cols-full">Download (CSV)</button>
+            <button id="js-download-csv" data-value="aaa" class="pro-theme cols-full">Download (CSV)</button>
+            <button id="js-download-anonymized-csv" class="pro-theme cols-full">Download (CSV - Anonymized)</button>
         </div>
+
     </div><!-- .specialty-options -->
 </div>
 <script type="text/javascript">
@@ -285,17 +284,16 @@
             $side_bar_user_list = null;
         }
     ?>
-    <?php $filter_eye_side = array('left' => 'right', 'right' => 'left');
-    foreach(array_keys($filter_eye_side) as $side){?>
-    $('#js-chart-filter-eye-side-' + '<?=$side;?>').click(function () {
-        if (this.checked) {
-            $('#js-chart-filter-eye-side-' + '<?=$filter_eye_side[$side];?>').attr('checked', false);
-            $('#js-hs-chart-analytics-clinical-others-' + '<?=$side;?>').show();
-            $('#js-hs-chart-analytics-clinical-others-' + '<?=$filter_eye_side[$side];?>').hide();
-        }
-    });
-    <?php }?>
 
+    $('#js-btn-selected-eye').click(function(e){
+        $('#js-chart-filter-eye-side').trigger( "changeEyeSide" );
+    });
+    $('#js-chart-filter-eye-side').bind( "changeEyeSide", function(){
+        var side = $('#js-chart-filter-eye-side').text().toLowerCase();
+        var opposite_side = side == 'left' ? 'right' : 'left';
+        $('#js-hs-chart-analytics-clinical-others-' + side).show();
+        $('#js-hs-chart-analytics-clinical-others-' + opposite_side).hide();
+    });
 
     $('#js-chart-filter-age').on('DOMSubtreeModified', function () {
         if ($('#js-chart-filter-age').html() == "Range") {
@@ -353,6 +351,8 @@
         }
 
         var plot_va = "&plot-va=" + $('#js-chart-filter-plot').html();
+
+        var eye = "&eye=" + $('#js-chart-filter-eye-side').html();
 
 
         if (specialty == "Medical Retina") {

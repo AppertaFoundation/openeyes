@@ -32,9 +32,6 @@
                     data-tab="#js-charts-clinical">
                     Clinical
             </button>
-            <button class="analytics-section pro-theme cols-6 disabled" id="js-btn-research">
-                Research
-            </button>
         </div>
         <div id="js-charts-clinical">
             <br>
