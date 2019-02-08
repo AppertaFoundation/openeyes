@@ -52,18 +52,17 @@ function csv_export(filename,data){
 }
 
 $('#js-download-csv').click(function () {
-    console.log($('#js-chart-CA-selection').val());
-    switch($('#js-chart-CA-selection').val()) {
-        case '0':
+    switch($('.js-cataract-report-type.selected').data('report')) {
+        case 'PCR':
             pcr_risk_to_csv();
             break;
-        case '1':
+        case 'CP':
             complication_profile_to_csv();
             break;
-        case '2':
+        case 'VA':
             visual_acuity_to_csv();
             break;
-        case '3':
+        case 'RO':
             refractive_outcome_to_csv();
             break;
     }
