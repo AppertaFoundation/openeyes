@@ -1,25 +1,7 @@
 <div class="analytics-options">
 
-    <div class="select-analytics flex-layout">
+    <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
 
-        <h3>Select options</h3>
-        <ul class="oescape-icon-btns">
-            <li class="icon-btn">
-                <a href="/analytics/allSubspecialties" class="active <?= $specialty == 'All' ? 'selected' : '' ?>">All</a>
-            </li>
-            <li class="icon-btn">
-                <a href="/analytics/cataract" class="active <?= $specialty == 'Cataract' ? 'selected' : '' ?>">CA</a>
-            </li>
-            <li class="icon-btn">
-                <a href="/analytics/glaucoma" class="active <?= $specialty == 'Glaucoma' ? 'selected' : '' ?>">GL</a>
-            </li>
-            <li class="icon-btn analytics-btn" data-specialty="Medical Retina">
-                <a href="/analytics/medicalRetina"
-                   class="active <?= $specialty == 'Medical Retina' ? 'selected' : '' ?>">MR</a>
-            </li>
-        </ul>
-        <!-- icon-btns -->
-    </div>
     <div class="specialty"><?= $specialty ?></div>
     <div class="specialty-options">
         <div class="view-mode flex-layout">

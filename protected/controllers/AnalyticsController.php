@@ -16,6 +16,7 @@ class AnalyticsController extends BaseController
   protected $filters;
   protected $surgeon;
   public $fixedHotlist = false;
+  protected $custom_csv_data = array();
 
     /**
      * @param $subspecialty_name
@@ -57,7 +58,8 @@ class AnalyticsController extends BaseController
             'x' => $disorder_data['x'],
             'y' => $disorder_data['y'],
             'text' => $disorder_data['text'],
-            'customdata' =>$disorder_data['customdata']
+            'customdata' =>$disorder_data['customdata'],
+            'csv_data'=>$disorder_data['csv_data'],
         );
 
         $current_user = User::model()->findByPk(Yii::app()->user->id);
@@ -83,8 +85,6 @@ class AnalyticsController extends BaseController
   public function actionCataract(){
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
-      $subspecialty_id = $this->getSubspecialtyID('Cataract');
-      $this->getDisorders($subspecialty_id);
       $current_user = User::model()->findByPk(Yii::app()->user->id);
       $this->patient_list = $this->queryCataractEventList();
       if (isset($this->surgeon)){
@@ -108,7 +108,7 @@ class AnalyticsController extends BaseController
       $this->checkAuth();
       $subspecialty_id = $this->getSubspecialtyID('Medical Retina');
       $this->current_user = User::model()->findByPk(Yii::app()->user->id);
-
+      $this->custom_csv_data = array();
       $this->filters = array(
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
@@ -181,7 +181,7 @@ class AnalyticsController extends BaseController
               )
           );
       }
-
+    $custom_data['csv_data'] = $this->custom_csv_data;
     $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Medical Retina',
@@ -201,6 +201,7 @@ class AnalyticsController extends BaseController
           'date_from' => 0,
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
+      $this->custom_csv_data = array();
       list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
       list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
       $follow_patient_list = $this->getFollowUps($subspecialty_id);
@@ -266,7 +267,7 @@ class AnalyticsController extends BaseController
               )
           );
       }
-
+      $custom_data['csv_data'] = $this->custom_csv_data;
     $this->render('/analytics/analytics_container',
         array(
             'specialty'=>'Glaucoma',
@@ -290,7 +291,7 @@ class AnalyticsController extends BaseController
      * @param $data_list
      * @param $sum
      * @param $count
-     * @return float
+     * @return floatcustom_csv_data
      * This function is used to calculate the standard deviation of an array.
      * Used for Glaucuoma and MR subspecialties VA/IOP/CRT plots.
      * Normally we don't need the sum and number count passed as variables because they are can be get from the original array
@@ -487,6 +488,26 @@ class AnalyticsController extends BaseController
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
                     }
+                    if  (!array_key_exists($current_patient->id, $this->custom_csv_data)){
+                        $this->custom_csv_data[$current_patient->id] = array(
+                            'first_name'=>$current_patient->getFirst_name(),
+                            'second_name'=>$current_patient->getLast_name(),
+                            'hos_num'=>$current_patient->hos_num,
+                            'dob'=>$current_patient->dob,
+                            'age'=>$current_patient->getAge(),
+                            'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+                            'left'=>array(
+                                "VA"=>array(),
+                                "CRT"=>array(),
+                                "IOP"=>array(),
+                            ),
+                            'right'=>array(
+                                "VA"=>array(),
+                                "CRT"=>array(),
+                                "IOP"=>array(),
+                            ),
+                        );
+                    }
                     // eye 1 left, 2 right, 3 both
                     if (isset($this->filters['diagnosis'])){
                         if ($element['eye_id'] == 1){
@@ -495,7 +516,12 @@ class AnalyticsController extends BaseController
                             $left_reading = null;
                         }
                     }
-
+                    if (isset($right_reading)){
+                        array_push($this->custom_csv_data[$current_patient->id]['right'][$type],$right_reading);
+                    }
+                    if (isset($left_reading)){
+                        array_push($this->custom_csv_data[$current_patient->id]['left'][$type],$left_reading);
+                    }
                     array_push($patient_list[$current_patient->id], array(
                             'left_reading' => $left_reading,
                             'right_reading' => $right_reading,
@@ -611,6 +637,26 @@ class AnalyticsController extends BaseController
                       if (!array_key_exists($current_patient->id, $patient_list)) {
                           $patient_list[$current_patient->id] = array();
                       }
+                      if  (!array_key_exists($current_patient->id, $this->custom_csv_data)){
+                          $this->custom_csv_data[$current_patient->id] = array(
+                              'first_name'=>$current_patient->getFirst_name(),
+                              'second_name'=>$current_patient->getLast_name(),
+                              'hos_num'=>$current_patient->hos_num,
+                              'dob'=>$current_patient->dob,
+                              'age'=>$current_patient->getAge(),
+                              'diagnoses'=>$current_patient->getDiagnosesTermsArray(),
+                              'left'=>array(
+                                  "VA"=>array(),
+                                  "CRT"=>array(),
+                                  "IOP"=>array(),
+                              ),
+                              'right'=>array(
+                                  "VA"=>array(),
+                                  "CRT"=>array(),
+                                  "IOP"=>array(),
+                              ),
+                          );
+                      }
 
                       if (isset($this->filters['diagnosis'])){
                           if (!empty($current_diagnoses_left)){
@@ -643,6 +689,12 @@ class AnalyticsController extends BaseController
                           }else{
                               $right_reading = false;
                           }
+                      }
+                      if ($right_reading){
+                          array_push($this->custom_csv_data[$current_patient->id]['right'][$type],$right_reading);
+                      }
+                      if ($left_reading){
+                          array_push($this->custom_csv_data[$current_patient->id]['left'][$type],$left_reading);
                       }
 
                       array_push($patient_list[$current_patient->id], array(
@@ -736,7 +788,7 @@ class AnalyticsController extends BaseController
       $disorder_patient_list = array();
       $other_patient_list = array();
       $other_disorder_list = array();
-
+      $disorder_list_csv = array();
       //get common ophthalmic disorders for given subspecialty
       $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id);
       foreach ($common_ophthalmic_disorders as $disorder){
@@ -779,6 +831,8 @@ class AnalyticsController extends BaseController
               foreach($diagnoses as $diagnosis_item){
 
                   $disorder_id = $diagnosis_item->disorder->id;
+                  array_push($disorder_list_csv,array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->disorder->term));
+
                   if (array_key_exists($disorder_id, $disorder_patient_list)){
                       if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
                           array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
@@ -829,7 +883,7 @@ class AnalyticsController extends BaseController
       $disorder_list['x'][] = count($other_patient_list);
       $disorder_list['text'][] = 'Other';
       $disorder_list['customdata'][] = $other_drill_down_list;
-
+      $disorder_list['csv_data'] = $disorder_list_csv;
       return $disorder_list;
   }
 
@@ -891,6 +945,7 @@ class AnalyticsController extends BaseController
       if (!isset($this->surgeon)&&isset($surgeon_id)){
           $this->surgeon = $surgeon_id;
       }
+      $this->custom_csv_data = array();
       $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
 
       if ($specialty == 'All'){
@@ -900,7 +955,8 @@ class AnalyticsController extends BaseController
               'x' => $disorder_data['x'],
               'y' => $disorder_data['y'],
               'text' => $disorder_data['text'],
-              'customdata' =>$disorder_data['customdata']
+              'customdata' =>$disorder_data['customdata'],
+              'csv_data' => $disorder_data['csv_data'],
           );
       }else{
           $subspecialty_id = $this->getSubspecialtyID($specialty);
@@ -962,6 +1018,7 @@ class AnalyticsController extends BaseController
                   )
               );
           }
+          $clinical_data['csv_data']=$this->custom_csv_data;
       }
       $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
 
@@ -1012,6 +1069,11 @@ class AnalyticsController extends BaseController
           'coming' => array(),
           'waiting' => array(),
       );
+      $followup_csv_data = array(
+          'overdue' => array(),
+          'coming' => array(),
+          'waiting' => array(),
+      );
 
       $followup_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->findAll();
 
@@ -1058,6 +1120,7 @@ class AnalyticsController extends BaseController
                               continue;
                           //Follow up is overdue
                           $over_weeks = intval(($current_time - $due_time)/self::DAYTIME_ONE / self::PERIOD_WEEK);
+                          array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$over_weeks));
                           if(!array_key_exists($over_weeks, $followup_patient_list['overdue'])){
                               $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
                           } else {
@@ -1068,6 +1131,7 @@ class AnalyticsController extends BaseController
                           if ($latest_worklist_time >$current_time && $latest_worklist_time < $due_time)
                               continue;
                           $coming_weeks = intval(($due_time - $current_time)/self::DAYTIME_ONE/self::PERIOD_WEEK);
+                          array_push($followup_csv_data['coming'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
                           if(!array_key_exists($coming_weeks, $followup_patient_list['coming'])){
                               $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
                           } else {
@@ -1118,6 +1182,7 @@ class AnalyticsController extends BaseController
                       continue;
                   //Follow up is overdue
                   $over_weeks = intval(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                  array_push($followup_csv_data['overdue'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
                   if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
                       $followup_patient_list['overdue'][$over_weeks] = array($current_patient->id);
                   } else {
@@ -1128,6 +1193,7 @@ class AnalyticsController extends BaseController
                       continue;
 
                   $coming_weeks = intval(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
+                  array_push($followup_csv_data['coming'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$coming_weeks));
                   if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
                       $followup_patient_list['coming'][$coming_weeks] = array($current_patient->id);
                   } else {
@@ -1173,6 +1239,7 @@ class AnalyticsController extends BaseController
                   $appointment_time = Helper::mysqlDate2JsTimestamp($current_patient_on_worklist->when)/1000;
                   if($appointment_time >= $current_referral_date){
                       $waiting_time = ceil((($appointment_time - $current_referral_date)/(self::WEEKTIME)));
+                      array_push($followup_csv_data['waiting'],array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$current_patient->getDiagnosesTermsArray(),$waiting_time));
                       if (! isset($followup_patient_list['waiting'][$waiting_time])){
                           $followup_patient_list['waiting'][$waiting_time]= array();
                       }
@@ -1188,7 +1255,10 @@ class AnalyticsController extends BaseController
       ksort($followup_patient_list['waiting']);
       ksort($followup_patient_list['overdue']);
       ksort($followup_patient_list['coming']);
-      return $followup_patient_list;
+      return array(
+          'plot_data'=>$followup_patient_list,
+          'csv_data'=>$followup_csv_data,
+          );
   }
 
   protected function queryAllDiagnosisForPatient($patient_id){

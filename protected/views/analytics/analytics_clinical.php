@@ -9,6 +9,7 @@
     $(document).ready(function () {
         var clinical_layout = JSON.parse(JSON.stringify(analytics_layout));
         var clinical_data = <?= CJavaScript::encode($clinical_data); ?>;
+        window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
         var data = [{
             name: clinical_data['title'],
             x: clinical_data['x'],

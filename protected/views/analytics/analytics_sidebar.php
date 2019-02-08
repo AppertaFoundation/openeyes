@@ -1,25 +1,6 @@
 <div class="analytics-options">
 
-    <div class="select-analytics flex-layout">
-
-        <h3>Select options</h3>
-        <ul class="oescape-icon-btns">
-            <li class="icon-btn">
-                <a href="/analytics/allSubspecialties" class="active <?= $specialty == 'All' ? 'selected' : '' ?>">All</a>
-            </li>
-            <li class="icon-btn">
-                <a href="/analytics/cataract" class="active <?= $specialty == 'Cataract' ? 'selected' : '' ?>">CA</a>
-            </li>
-            <li class="icon-btn">
-                <a href="/analytics/glaucoma" class="active <?= $specialty == 'Glaucoma' ? 'selected' : '' ?>">GL</a>
-            </li>
-            <li class="icon-btn analytics-btn" data-specialty="Medical Retina">
-                <a href="/analytics/medicalRetina"
-                   class="active <?= $specialty == 'Medical Retina' ? 'selected' : '' ?>">MR</a>
-            </li>
-        </ul>
-        <!-- icon-btns -->
-    </div>
+    <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
 
     <div class="specialty"><?= $specialty ?></div>
       <div class="service flex-layout">
@@ -371,14 +352,16 @@
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
                 var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
                 var clinical_data = data[0];
+                window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
                 clinical_chart.data[0]['x'] = clinical_data.x;
-            clinical_chart.data[0]['y'] = clinical_data.y;
-            clinical_chart.data[0]['customdata'] = clinical_data.customdata;
-            clinical_chart.data[0]['text'] = clinical_data.text;
-            Plotly.redraw(clinical_chart);
+                clinical_chart.data[0]['y'] = clinical_data.y;
+                clinical_chart.data[0]['customdata'] = clinical_data.customdata;
+                clinical_chart.data[0]['text'] = clinical_data.text;
+                Plotly.redraw(clinical_chart);
         <?php }}else{?>
         var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
         var custom_data = data[0];
+        window.csv_data_for_report['clinical_data'] = custom_data['csv_data'];
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
             chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
@@ -392,7 +375,8 @@
         }
         <?php }?>
         //update the service data
-        constructPlotlyData(data[1]);
+        constructPlotlyData(data[1]['plot_data']);
+        window.csv_data_for_report['service_data'] = data[1]['csv_data'];
     }
     function viewAllDates() {
         $('#analytics_datepicker_from').val("");

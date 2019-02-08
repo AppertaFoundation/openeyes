@@ -1,7 +1,9 @@
 
 <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_plotly.js')?>"></script>
 <?php $this->renderPartial('//analytics/analytics_header', array());?>
-
+<script>
+    window.csv_data_for_report = {};
+</script>
 <main class="oe-analytics flex-layout flex-top " style="width: 100%;">
     <?php
         if ($specialty === 'Cataract'){

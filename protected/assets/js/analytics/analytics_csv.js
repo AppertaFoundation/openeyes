@@ -1,66 +1,71 @@
 
-
-function current_service_data_to_csv(anonymize){
-    var data = $('#js-hs-chart-analytics-service')[0].data[0];
-    data.y = Array(data.y.length).fill('');
-    var file_name = data.name;
-    csv_export(file_name,data,',weeks', anonymize);
-}
-function current_custom_data_to_csv(anonymize){
-    var side = ($('#js-chart-filter-eye-side-right').is(':checked')) ? 'right': 'left';
-    var data = $('#js-hs-chart-analytics-custom-'+side)[0].data;
-    var file_name = 'custom_data_'+side;
-    if($('#side-bar-subspecialty-id').val() == 0) {
-        csv_export('va', data[0], ',week,va', anonymize);
-        csv_export('crt', data[1], ',week,crt', anonymize);
-    }else {
-        csv_export('va', data[0], ',week,va', anonymize);
-        csv_export('iop', data[1], ',week,iop', anonymize);
+function current_service_data_to_csv(){
+    if ($('#js-hs-app-follow-up-overdue').hasClass('selected')){
+        var data = window.csv_data_for_report['service_data']['overdue'];
+        var file_name = "service_overdue_followups";
+    }else if ($('#js-hs-app-follow-up-coming').hasClass('selected')){
+        var data = window.csv_data_for_report['service_data']['coming'];
+        var file_name = "service_coming_followups";
+    } else{
+        var data = window.csv_data_for_report['service_data']['waiting'];
+        var file_name = "service_waiting_followups";
     }
-}
-function current_clinical_data_to_csv(anonymize){
-    var data = $('#js-hs-chart-analytics-clinical')[0].data[0];
-    var yaxis_text = $('#js-hs-chart-analytics-clinical')[0].layout.yaxis.ticktext;
-    data.x = Array(data.x.length).fill('');
-    data.y = yaxis_text;
-    var file_name = data.name;
-    csv_export(file_name,data,',diagnosis', anonymize);
-}
-function csv_export(filename,data,csv_extra_column, anonymize){
-    var id_check = [];
-    var processData = function (x, y, customdata) {
-        var finalVal = '';
-        if (customdata.length > 0){
-            for (var i = 0; i < customdata.length; i++) {
-                id_check.push(customdata[i]);
-                finalVal += id_check.length+',';
-                var row = document.getElementById(customdata[i]);
-                var cells = anonymize ? row.getElementsByClassName('js-anonymise'):row.getElementsByClassName('js-csv-data');
-                for (j = 0;j < cells.length; j++){
-                    finalVal += cells[j].innerHTML + ',';
-                }
-                if (x !== ''){
-                    finalVal += x + ',';
-                }
-                if (y !== ''){
-                    finalVal += y;
-                }
-                finalVal += '\n';
+    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, Weeks\n";
+     data.forEach(function (item) {
+        item.forEach(function (element) {
+            if (Array.isArray(element)){
+                csv_file = convert_array_to_string_in_csv(csv_file,element);
+            } else{
+                csv_file += element + ",";
             }
-        }
-        return finalVal;
-    };
+        });
+         csv_file = csv_file.replace(/.$/ , "\n");
+     });
 
-    var csvFile = anonymize ? 'record_num, gender, age'+csv_extra_column+'\n' : 'record_num, hos_num, firstname, surname, dob, gender, age'+csv_extra_column+'\n';
-    for (var i = 0; i < data.customdata.length; i++) {
-        var current_customdata = null;
-        if (data.hasOwnProperty('customdata')){
-            current_customdata = data.customdata[i];
-        }
-        csvFile +=  processData(data.x[i],data.y[i],current_customdata);
+    csv_export(file_name,csv_file);
+}
+
+function current_custom_data_to_csv(additional_type){
+    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
+    var data = Object.values(window.csv_data_for_report['clinical_data']);
+    var file_name = "clinical_data";
+    data.forEach(function (item) {
+        csv_file += item['first_name']+","+item['second_name']+","+item['hos_num']+","+item['dob']+","+item['age']+",";
+        csv_file = convert_array_to_string_in_csv(csv_file,item['diagnoses']);
+        csv_file = convert_array_to_string_in_csv(csv_file,item['left']['VA']);
+        csv_file = convert_array_to_string_in_csv(csv_file,item['left'][additional_type]);
+        csv_file = convert_array_to_string_in_csv(csv_file,item['right']['VA']);
+        csv_file = convert_array_to_string_in_csv(csv_file,item['right'][additional_type]);
+        csv_file = csv_file.replace(/.$/ , "\n");
+    });
+
+    csv_export(file_name,csv_file);
+}
+function convert_array_to_string_in_csv(csv,item) {
+    item.forEach(function (element) {
+        csv += element+"|";
+    });
+    if (item.length == 0){
+        csv += "|";
     }
+    return csv.replace(/.$/,",")
+}
 
-    var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+function current_clinical_data_to_csv(){
+    var data = window.csv_data_for_report['clinical_data'];
+    var file_name = "clinical_diagnoses";
+    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnosis\n";
+    data.forEach(function (item) {
+        item.forEach(function (element) {
+            csv_file += element + ",";
+        });
+        csv_file = csv_file.replace(/.$/ , "\n");
+    });
+    csv_export(file_name,csv_file);
+}
+
+function csv_export(filename,csv_file){
+    var blob = new Blob([csv_file], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) {
         navigator.msSaveBlob(blob, filename+'.csv');
     } else {
@@ -76,17 +81,18 @@ function csv_export(filename,data,csv_extra_column, anonymize){
         }
     }
 }
-
-function csv_download(anonymize = false) {
-     if ($('#js-btn-service').hasClass('selected')) {
-        current_service_data_to_csv(anonymize);
-    } else if ($('#js-btn-clinical').hasClass('selected')) {
-        current_clinical_data_to_csv(anonymize);
-    }
-}
-
 $('#js-download-csv').click(function () {
-    csv_download();
+    if($('#js-btn-service').hasClass('selected')){
+        current_service_data_to_csv();
+    }else if($('#js-btn-clinical').hasClass('selected')){
+            current_clinical_data_to_csv();
+    }else if($('#js-btn-custom').hasClass("selected")){
+        if ($('#js-mr-specialty-tab').hasClass('selected')){
+            current_custom_data_to_csv("CRT");
+        }else{
+            current_custom_data_to_csv("IOP");
+        }
+    }
 });
 
 $('#js-download-anonymized-csv').click(function () {
