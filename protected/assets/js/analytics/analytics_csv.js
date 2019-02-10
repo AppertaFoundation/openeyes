@@ -16,7 +16,9 @@ function current_service_data_to_csv(anonymized = false){
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, Weeks\n";
     }
      data.forEach(function (item) {
-        item = item.splice(3);
+         if(anonymized){
+             item = item.slice(3);
+         }
         item.forEach(function (element) {
             if (Array.isArray(element)){
                 csv_file = convert_array_to_string_in_csv(csv_file,element);
@@ -71,9 +73,10 @@ function current_clinical_data_to_csv(anonymized = false){
     } else {
         var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses\n";
     }
-    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnosis\n";
     data.forEach(function (item) {
-        item = item.splice(3);
+        if (anonymized){
+            item = item.slice(3);
+        }
         item.forEach(function (element) {
             csv_file += element + ",";
         });
