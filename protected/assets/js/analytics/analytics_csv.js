@@ -1,5 +1,5 @@
 
-function current_service_data_to_csv(){
+function current_service_data_to_csv(anonymized = false){
     if ($('#js-hs-app-follow-up-overdue').hasClass('selected')){
         var data = window.csv_data_for_report['service_data']['overdue'];
         var file_name = "service_overdue_followups";
@@ -10,8 +10,13 @@ function current_service_data_to_csv(){
         var data = window.csv_data_for_report['service_data']['waiting'];
         var file_name = "service_waiting_followups";
     }
-    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, Weeks\n";
+    if (anonymized){
+        var csv_file = "DOB, Age, Diagnoses, Weeks\n";
+    } else {
+        var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, Weeks\n";
+    }
      data.forEach(function (item) {
+        item = item.splice(3);
         item.forEach(function (element) {
             if (Array.isArray(element)){
                 csv_file = convert_array_to_string_in_csv(csv_file,element);
@@ -25,12 +30,19 @@ function current_service_data_to_csv(){
     csv_export(file_name,csv_file);
 }
 
-function current_custom_data_to_csv(additional_type){
-    var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
+function current_custom_data_to_csv(additional_type,anonymized=false){
+    if (anonymized){
+        var csv_file = "DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
+    } else {
+        var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses, VA-L, "+additional_type+"-L, VA-R,"+additional_type+"-R\n";
+    }
     var data = Object.values(window.csv_data_for_report['clinical_data']);
     var file_name = "clinical_data";
     data.forEach(function (item) {
-        csv_file += item['first_name']+","+item['second_name']+","+item['hos_num']+","+item['dob']+","+item['age']+",";
+        if (!anonymized){
+            csv_file += item['first_name']+","+item['second_name']+","+item['hos_num']+",";
+        }
+        csv_file += item['dob']+","+item['age']+",";
         csv_file = convert_array_to_string_in_csv(csv_file,item['diagnoses']);
         csv_file = convert_array_to_string_in_csv(csv_file,item['left']['VA']);
         csv_file = convert_array_to_string_in_csv(csv_file,item['left'][additional_type]);
@@ -51,11 +63,17 @@ function convert_array_to_string_in_csv(csv,item) {
     return csv.replace(/.$/,",")
 }
 
-function current_clinical_data_to_csv(){
+function current_clinical_data_to_csv(anonymized = false){
     var data = window.csv_data_for_report['clinical_data'];
     var file_name = "clinical_diagnoses";
+    if (anonymized){
+        var csv_file = "DOB, Age, Diagnoses\n";
+    } else {
+        var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnoses\n";
+    }
     var csv_file = "First Name, Second Name, Hos Num, DOB, Age, Diagnosis\n";
     data.forEach(function (item) {
+        item = item.splice(3);
         item.forEach(function (element) {
             csv_file += element + ",";
         });
@@ -96,5 +114,14 @@ $('#js-download-csv').click(function () {
 });
 
 $('#js-download-anonymized-csv').click(function () {
-    csv_download(true);
-});
+    if($('#js-btn-service').hasClass('selected')){
+        current_service_data_to_csv(true);
+    }else if($('#js-btn-clinical').hasClass('selected')){
+        current_clinical_data_to_csv(true);
+    }else if($('#js-btn-custom').hasClass("selected")){
+        if ($('#js-mr-specialty-tab').hasClass('selected')){
+            current_custom_data_to_csv("CRT",true);
+        }else{
+            current_custom_data_to_csv("IOP",true);
+        }
+}});
