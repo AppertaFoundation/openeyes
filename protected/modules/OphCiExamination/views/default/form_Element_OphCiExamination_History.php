@@ -76,15 +76,8 @@ foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignme
       }),
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
-
-        $(selectedItems).each(function (key, item) {
-          inputText.val(inputText.val() ?
-            inputText.val() + item['label'] : item['label']
-          );
-        });
-
+				inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
         inputText.trigger('oninput');
-
         return true;
       }
     });
