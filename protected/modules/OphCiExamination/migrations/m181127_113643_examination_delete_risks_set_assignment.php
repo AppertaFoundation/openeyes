@@ -12,7 +12,7 @@ class m181127_113643_examination_delete_risks_set_assignment extends \OEMigratio
             'ophciexamination_risk_set',
             'id');
 
-        $assignments = Yii::app()->db->createCommand()
+        $assignments = $this->dbConnection->createCommand()
             ->select('*')
             ->from('ophciexamination_risk_set_assignment')
             ->queryAll();
@@ -54,7 +54,7 @@ class m181127_113643_examination_delete_risks_set_assignment extends \OEMigratio
                 ":ophciexamination_risk_entry_id"=>$risk_entry->id,
                 ':risk_set_id' => $risk_entry->set_id
             ];
-            Yii::app()->db->createCommand($sql)->execute($parameters);
+            $this->dbConnection->createCommand($sql)->execute($parameters);
         }
 
         $this->dropColumn('ophciexamination_risk_set_entry_version', 'set_id');
