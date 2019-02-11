@@ -10,7 +10,7 @@ class Intravitreal extends OpenEyesPage
         // Anaesthetic Right
 
         'addRightSide' => array(
-            'xpath' => "//*[@class='js-element-eye right-eye left side column inactive']//*[contains(text(),'Add right side')]"
+            'css' => '.js-element-eye.right-eye .add-side a'
         ),
         'removeRightSide' => array(
             'xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail']//*[@class='removeSide']"
@@ -49,7 +49,7 @@ class Intravitreal extends OpenEyesPage
 
         // Anaesthetic Left
         'addLeftSide' => array(
-            'xpath' => "//*[@class='js-element-eye left-eye right side column inactive']//*[contains(text(),'Add left side')]"
+            'css' => '.js-element-eye.left-eye .add-side a'
         ),
         'leftAnaestheticTopical' => array(
             'xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_1']"
@@ -295,45 +295,21 @@ class Intravitreal extends OpenEyesPage
 
     );
 
-    protected function isRightSideOpen()
-    {
-        return ( bool )$this->find('xpath', $this->getElement('addRightSide')->getXpath());
+    public function isSideOpen($eye){
+        $eye = ucfirst($eye);
+        return !(( bool )$this->getElement('add'.$eye.'Side')->isVisible());
     }
 
-    public function removeRightSide()
-    {
-        $this->getElement('removeRightEye')->click();
-    }
-
-    public function addRightSide()
-    {
-        if ($this->isRightSideOpen()) {
-            //$element =
-            $this->getElement('addRightSide')->click();
-            //$this->scrollWindowToElement ( $element );
-            //$element->click ();
-            $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+    public function addSide($eye){
+        $eye = ucfirst($eye);
+        if(!$this->isSideOpen($eye)){
+            $this->getElement('add'.$eye.'Side')->click();
         }
-
-        $this->getSession()->wait(2000);
     }
 
-    protected function isLeftSideOpen()
-    {
-        return ( bool )$this->find('xpath', $this->getElement('addLeftSide')->getXpath());
-    }
-
-    public function removeLeftside()
-    {
-        $this->getElement('removeLeftEye')->click();
-    }
-
-    public function addLeftSide()
-    {
-        if ($this->isLeftSideOpen()) {
-            $this->getElement('addLeftSide')->click();
-            $this->getSession()->wait(5000, 'window.$ && $.active == 0');
-        }
+    public function removeSide($eye){
+        $eye = ucfirst($eye);
+        $this->getElement('remove'.$eye.'Eye')->click();
     }
 
     protected function doesAllergyWarningExist()
@@ -582,7 +558,9 @@ class Intravitreal extends OpenEyesPage
 
     public function rightPostInjectionDrops($drops)
     {
-        $this->getElement('rightPostInjectionDrops')->selectOption($drops);
+        $element = $this->getElement('rightPostInjectionDrops');
+        $this->scrollWindowToElement($element);
+        $element->selectOption($drops);
     }
 
     public function leftCountingFingersYes()

@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -47,9 +47,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         </span>
       </span>
 		<input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>"/>
-		<?php if ($entry->originallyStopped) { ?>
-			<i class="oe-i stop small pad"></i>
-		<?php } ?>
 	</td>
 	<td>
 		<div class="data-group">
@@ -84,7 +81,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 						<tr class="js-end-date-display">
 							<td>
 						<button class="js-change-end-date">
-							<i class="oe-i start small pad "></i>
+							<i class="oe-i stop small pad "></i>
 						</button>
 							</td>
 							<td>

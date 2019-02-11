@@ -24,6 +24,7 @@ Feature: Near Visual Acuity test
 
     Then I Save the Event and confirm it has been created successfully
     Then I delete the event
+    Then I logout
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            |

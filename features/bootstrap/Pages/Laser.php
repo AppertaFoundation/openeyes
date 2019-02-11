@@ -122,6 +122,7 @@ class Laser extends OpenEyesPage {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'saveLaserOK' )->getXpath () );
 	}
 	public function saveLaserAndConfirm() {
+	    sleep(5);
 		$this->getElement ( 'saveLaser' )->click ();
 
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );

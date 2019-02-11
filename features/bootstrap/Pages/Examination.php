@@ -83,7 +83,8 @@ class Examination extends OpenEyesPage {
 			'xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Anterior Segment')]"
 		),
 		'expandVisualFunction' => array (
-			'xpath' => "//*[@class='collapse-group-header'][contains(text(),'Visual Function')]"
+//			'xpath' => "//*[@class='collapse-group-header'][contains(text(),'Visual Function')]"
+            'css' => ".collapse-group-header:contains('Visual Function')"
 		),
         'expandHistory' => array (
             'xpath' => "//*[@class='collapse-group-header'][contains(text(),'History')]"
@@ -991,6 +992,7 @@ class Examination extends OpenEyesPage {
 	}
 
 	public function openNearVisualAcuity() {
+	    $this->openVisualFunction();
 		$element = $this->getElement ( 'expandNearVisualAcuity' );
 
 		$element->click ();
@@ -1022,7 +1024,6 @@ class Examination extends OpenEyesPage {
 	public function openVisualFunction() {
 		if ($this->isVisualFunctionCollapsed ()) {
 			$element = $this->getElement ( 'expandVisualFunction' );
-			//$this->scrollWindowToElement ( $element );
 			$element->click ();
 			$this->getSession ()->wait ( 1000, 'window.$ && $.active == 0' );
 		}
@@ -1620,8 +1621,9 @@ class Examination extends OpenEyesPage {
 		;
 	}
 	public function saveExaminationAndConfirm() {
-		$this->getElement ( 'saveExamination' )->click ();
-		$this->waitForElementDisplayBlock('examSavedOk');
+        sleep(5);
+        $this->getElement ( 'saveExamination' )->click ();
+        $this->waitForElementDisplayBlock('examSavedOk');
 		if (!$this->hasExaminationSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Examination has NOT been saved!!  WARNING!!" );
 		}

@@ -173,8 +173,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		}
 	}
 	private function saveScreenshots() {
-
-        foreach ( $this->screenshots as $screenshot ) {
+//	    echo 'There is an unknown error in the permissions for this function (saveScreenshots), for now it\'s disabled';
+//	    return;
+		foreach ( $this->screenshots as $screenshot ) {
 			try {
 				if (! @is_dir ( dirname ( $screenshot ['filename'] ) )) {
 					echo "\n\nCreating dir " . dirname ( $screenshot ['filename'] ) . " \n";
@@ -275,4 +276,17 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	public function iSaveTheTherapyApplication() {
 		throw new PendingException ();
 	}
+
+    /**
+     * @Then /^I logout$/
+     */
+    public function iLogout()
+    {
+        /*
+         * @var $page OpenEyesPage
+         */
+        $page = $this->getPage('OpenEyesPage');
+        $page->logout();
+    }
+
 }

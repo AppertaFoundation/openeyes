@@ -4,7 +4,7 @@ Feature: Document test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a Document event, check the other option appears after already being selected
+  Route 1: Login and create a Document event, select document type and upload file, save the event then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 
@@ -22,7 +22,8 @@ Feature: Document test
     Then I upload single file "<file_path>"
     Then I save document event and confirm it saved successfully
     Then I delete the event
+    Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                      |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/pdf/OpenEyesOnlineHelp.pdf   |
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | event_sub_type|file_path                                        |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCoDocument    | OCT           |/var/www/openeyes/features/data/assets/index.jpg |

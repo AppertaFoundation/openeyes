@@ -19,6 +19,8 @@ Feature: DidNotAttend test
     And I add a New Event "<event>"
     Then I add not attend comments of "<comments>"
     Then I Save the Event and confirm it has been created successfully
+    Then I delete the event
+    Then I logout
 
     Examples:
       |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event             | comments                                          |

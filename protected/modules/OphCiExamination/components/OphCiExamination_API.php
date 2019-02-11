@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\components;
 
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
+use OEModule\OphCiExamination\widgets\HistoryMedications;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -2623,7 +2624,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'ophciexamination_risks_entry' => array(
+            'entries' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -2640,10 +2641,12 @@ class OphCiExamination_API extends \BaseAPI
 
         $required = array();
         foreach($sets as $set){
-            if($set->ophciexamination_risks_entry){
-                foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
+            if($set->entries){
+                foreach($set->entries as $ophciexamination_risks){
                     $risk = $ophciexamination_risks->ophciexamination_risk;
-                    $required[$risk->id] = $risk;
+                    if(isset($risk) && isset($risk->id)) {
+                        $required[$risk->id] = $risk;
+                    }
                 }
             }
         }
@@ -2667,7 +2670,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'allergy_set_entries' => array(
+            'entries' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -2684,10 +2687,13 @@ class OphCiExamination_API extends \BaseAPI
 
         $required = array();
         foreach($sets as $set){
-            if($set->allergy_set_entries){
-                foreach($set->allergy_set_entries as $allergy_entry){
+            if($set->entries){
+                foreach($set->entries as $allergy_entry){
                     $allergy = $allergy_entry->ophciexaminationAllergy;
-                    $required[$allergy->id] = $allergy;
+                    if(isset($allergy) && isset($allergy->id)) {
+                        $required[$allergy->id] = $allergy;
+                    }
+
                 }
             }
         }
@@ -2732,7 +2738,9 @@ class OphCiExamination_API extends \BaseAPI
             if($set->entries){
                 foreach($set->entries as $entry){
                     $disorder = $entry->disorder;
-                    $required[$disorder->id] = $disorder;
+                    if(isset($disorder) && isset($disorder->id)) {
+                        $required[$disorder->id] = $disorder;
+                    }
                 }
             }
         }
@@ -2772,7 +2780,9 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->entries){
                 foreach($set->entries as $entry){
-                    $required[] = $entry->operation;
+                    if(isset($entry) && isset($entry->operation)) {
+                        $required[] = $entry->operation;
+                    }
                 }
             }
         }
@@ -3115,5 +3125,109 @@ class OphCiExamination_API extends \BaseAPI
             ';
         }
         return $result;
+    }
+
+    public function getCurrentOphthalmicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            return $entry['route']['name'] == 'Eye';
+        };
+        $current_eye_meds = array_filter($entries['current'], $route_filter);
+
+        if (!$current_eye_meds) {
+            return "(no current eye medications)";
+        }
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="empty"></th>
+                    <th>Dose (unit)</th>
+                    <th>Eye</th>
+                    <th>Frequency</th>
+                    <th>Until</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($current_eye_meds as $entry) : ?>
+                    <tr>
+                        <td><?=$entry->getMedicationDisplay() ?></td>
+                        <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                        <td>
+                            <?php
+                                $laterality = $entry->getLateralityDisplay();
+                                \Yii::app()->controller->widget('EyeLateralityWidget', array('laterality' => $laterality));
+                            ?>
+                        </td>
+                        <td>
+                            <?=$entry->frequency ? $entry->frequency : '';?>
+                        </td>
+                        <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
+    }
+
+    public function getCurrentSystemicDrugs(\Patient $patient, $use_context = false)
+    {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryMedications',
+            array('mode' => HistoryMedications::$DATA_MODE, 'patient' => $patient));
+
+        $entries = $widget->getMergedEntries();
+
+        $route_filter = function ($entry) {
+            // route should be different than eye
+            return $entry['route']['name'] != 'Eye';
+        };
+        $current_systemic_meds = array_filter($entries['current'], $route_filter);
+
+        if (!$current_systemic_meds) {
+            return "(no current systemic medications)";
+        }
+
+        ob_start();
+        ?>
+        <table class="standard borders current-ophtalmic-drugs">
+            <colgroup>
+                <col class="cols-5">
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="empty"></th>
+                <th>Dose (unit)</th>
+                <th>Frequency</th>
+                <th>Until</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($current_systemic_meds as $entry) : ?>
+                <tr>
+                    <td><?=$entry->getMedicationDisplay() ?></td>
+                    <td><?=$entry->dose . ($entry->units ? (' ' . $entry->units) : '')?></td>
+                    <td>
+                        <?=$entry->frequency ? $entry->frequency : '';?>
+                    </td>
+                    <td><?=$entry->getEndDateDisplay('Ongoing');?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php return ob_get_clean();
     }
 }

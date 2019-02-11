@@ -4,7 +4,7 @@ Feature: Phasing Test
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a Phasing event, check the other option appears after already being selected
+  Route 1: Login and create a Phasing event, select necessary options and input comments, save the event then delete it
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 
@@ -30,8 +30,9 @@ Feature: Phasing Test
     Then I choose a left eye Intraocular Pressure Reading of "<left_reading>"
     Then I add left eye comments of "<left_comment>"
 
-    Then I Save the Phasing Event and confirm it has been created successfully
+    Then I Save the Event and confirm it has been created successfully
     Then I delete the event
+    Then I logout
 
 
 

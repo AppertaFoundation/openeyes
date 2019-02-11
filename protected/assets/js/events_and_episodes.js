@@ -16,8 +16,6 @@
  */
 
 $(document).ready(function(){
-	$collapsed = true;
-
 	$(document).keydown(function(event){
 		if(event.keyCode == 13 && $(event.target).is(':not(textarea)')) {
 			event.preventDefault();
@@ -171,13 +169,13 @@ $(document).ready(function(){
   });
 
   $(this).on('click', '.js-tiles-collapse-btn', function () {
-    var $tileGroup = $(this).closest('.element-tile-group');
-    var showGroup = $tileGroup.hasClass('collapse');
+    let $tileGroup = $(this).closest('.element-tile-group');
+    let isCollapsedGroup = $tileGroup.hasClass('collapse');
     $tileGroup.toggleClass('collapse');
-    $tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(showGroup);
-    $(this).toggleClass('expand collapse');
+    $tileGroup.find('.element.tile .element-data, .element.tile .tile-more-data-flag').toggle(isCollapsedGroup);
+    $(this).toggleClass('reduce-height increase-height');
 
-    if (!showGroup) {
+    if (!isCollapsedGroup) {
       $tileGroup.find('.element').each(function () {
 
         // Skip titles that already have a count from Tile Data Overflow
@@ -185,8 +183,8 @@ $(document).ready(function(){
           return true;
         }
 
-        var rowCount = $(this).find('tr').length;
-        var $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
+        let rowCount = $(this).find('tr').length;
+        let $countDisplay = $('<small />', {class: 'js-data-hidden-state'}).text(' [' + rowCount + ']');
         $(this).find('.element-title').append($countDisplay);
       });
     } else {
@@ -196,17 +194,17 @@ $(document).ready(function(){
 
   // Tile Data Overflow
   $('.element.tile').each(function () {
-    var h = $(this).find('.data-value').height();
+    let h = $(this).find('.data-value').height();
 
     // CSS is set to max-height:180px;
     if (h > 179) {
       // it's scrolling, so flag it
-      var flag = $('<div/>', {class: "tile-more-data-flag"});
-      var icon = $('<i/>', {class: "oe-i arrow-down-bold medium selected"});
+      let flag = $('<div/>', {class: "tile-more-data-flag"});
+      let icon = $('<i/>', {class: "oe-i arrow-down-bold medium selected"});
       flag.append(icon);
       $(this).prepend(flag);
 
-      var tileOverflow = $('.tile-data-overflow', this);
+      let tileOverflow = $('.tile-data-overflow', this);
 
       flag.click(function () {
         tileOverflow.animate({
@@ -222,15 +220,13 @@ $(document).ready(function(){
 
       if ($(this).find('tbody').length > 0) {
         // Assuming it's a table!...
-        var trCount = $(this).find('tbody').get(0).childElementCount;
+        let trCount = $(this).find('tbody').get(0).childElementCount;
         // and then set the title to show total data count
-
-        var title = $('.element-title', this);
+        let title = $('.element-title', this);
         title.html(title.text() + ' <small>[' + trCount + ']</small>');
       }
     }
   });
-
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -413,7 +409,9 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
     if(addButtons !== null){
         addButtons.click(function closeAndAdd(){
             adderDiv.hide();
-            callback();
+            if(typeof callback === 'function'){
+            	callback();
+            }
         });
     }
 
