@@ -29,7 +29,7 @@ return [
             'rules' => [
                 // add a rule so that letters can be used in the external id for the resource
                 ['PASAPI/V1/update', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'PUT'],
-                ['PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>/<id:\w+>', 'verb' => 'DELETE'],
+                ['PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/<resource_type:\w+>/<id:\w+>', 'verb' => 'DELETE'],
             ],
         ],
 
