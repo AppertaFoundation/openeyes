@@ -24,9 +24,9 @@
             }
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 if ($specialty === 'Cataract'){?>
-                    <div class="mdl-layout__container" style="width: 60%">
+                    <div class="mdl-layout__container">
                     <?php  $this->renderPartial('//analytics/analytics_cataract',
-                    array('event_list'=> $patient_list)); ?>
+                    array('event_list'=> $event_list)); ?>
                     </div>
                 <?php }elseif ($specialty === 'All'){
                     $this->renderPartial('//analytics/analytics_clinical',

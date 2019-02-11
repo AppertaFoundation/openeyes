@@ -17,24 +17,24 @@
         </colgroup>
         <thead>
         <tr>
-            <th class="drill_down_patient_list">Hospital No</th>
-            <th class="drill_down_patient_list">Name</th>
-            <th>DOB</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Diagnoses</th>
-            <th>Procedures</th>
+            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Hospital No</th>
+            <th class="drill_down_patient_list" style="text-align: center;vertical-align: center;">Name</th>
+            <th style="text-align: center;vertical-align: center;">DOB</th>
+            <th style="text-align: center;vertical-align: center;">Age</th>
+            <th style="text-align: center;vertical-align: center;">Gender</th>
+            <th style="text-align: center;vertical-align: center;">Diagnoses</th>
+            <th style="text-align: center;vertical-align: center;">Procedures</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($patient_list as $patient) { ?>
             <tr id="<?=$patient->id?>" class="analytics-patient-list-row clickable" data-link="<?=$coreAPI->generateEpisodeLink($patient)?>" style="display: none">
-                <td class="drill_down_patient_list js-csv-data"><?= $patient->hos_num; ?></td>
-                <td class="drill_down_patient_list"><?= $patient->getFullName(); ?></td>
-                <td><?=$patient->dob?></td>
-                <td class="js-anonymise js-csv-data"><?= $patient->getAge(); ?></td>
-                <td class="js-anonymise js-csv-data"><?= $patient->gender; ?></td>
-                <td><?= $patient->getUniqueDiagnosesString();?></td>
+                <td class="drill_down_patient_list js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->hos_num; ?></td>
+                <td class="drill_down_patient_list" style="text-align: center;vertical-align: center;"><?= $patient->getFullName(); ?></td>
+                <td style="text-align: center;vertical-align: center;"><?=$patient->dob?></td>
+                <td class="js-anonymise js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->getAge(); ?></td>
+                <td class="js-anonymise js-csv-data" style="text-align: center;vertical-align: center;"><?= $patient->gender; ?></td>
+                <td style="text-align: center;vertical-align: center;"><?= $patient->getUniqueDiagnosesString();?></td>
                 <?php
                     $operations = $operation_API->getOperationsSummaryData($patient);
                     $procedure_lists = "";
@@ -43,7 +43,7 @@
                     }
                     $procedure_lists = substr($procedure_lists,0,-1);
                 ?>
-                <td><?=$procedure_lists; ?></td>
+                <td style="text-align: center;vertical-align: center;"><?=$procedure_lists; ?></td>
             </tr>
         <?php } ?>
         </tbody>

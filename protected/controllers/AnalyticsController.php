@@ -86,7 +86,7 @@ class AnalyticsController extends BaseController
       $assetManager = Yii::app()->getAssetManager();
       $assetManager->registerScriptFile('js/dashboard/OpenEyes.Dash.js', null, null, AssetManager::OUTPUT_ALL, false);
       $current_user = User::model()->findByPk(Yii::app()->user->id);
-      $this->patient_list = $this->queryCataractEventList();
+      $event_list = $this->queryCataractEventList();
       if (isset($this->surgeon)){
           $user_list = null;
       }else{
@@ -98,7 +98,7 @@ class AnalyticsController extends BaseController
               'clinical_data'=> array(),
               'service_data'=> array(),
               'custom_data' => array(),
-              'patient_list' => $this->patient_list,
+              'event_list' => $event_list,
               'user_list' => $user_list,
               'current_user'=>$current_user,
           )
@@ -426,11 +426,30 @@ class AnalyticsController extends BaseController
      * Used for the drill down list.
      */
     public function queryCataractEventList(){
+        $return_data = array();
         $command = Yii::app()->db->createCommand()
-            ->select('event_id')
-            ->from('et_ophtroperationnote_cataract');
-
-        return $command->queryAll();
+            ->select('eoc.event_id as event_id, CONCAT(c.first_name, " ", c.last_name) as patient_name, proc.term as event_procedure')
+            ->from('et_ophtroperationnote_cataract eoc')
+            ->join('event e', 'e.id = eoc.event_id')
+            ->join('episode ep', 'ep.id = e.episode_id')
+            ->join('patient p','p.id = ep.patient_id')
+            ->join('contact c', 'c.id = p.contact_id')
+            ->join('et_ophtroperationnote_procedurelist eop','eop.event_id = eoc.event_id')
+            ->leftJoin('ophtroperationnote_procedurelist_procedure_assignment oppa', 'oppa.procedurelist_id = eop.id')
+            ->leftJoin('proc','proc.id = oppa.proc_id');
+        $raw_data = $command->queryAll();
+        foreach ($raw_data as $row){
+            if (array_key_exists($row['event_id'],$return_data)){
+                $return_data[$row['event_id']]['procedures'] .= ', '.$row['event_procedure'];
+            }else{
+                $return_data[$row['event_id']] = array(
+                    'event_id' => $row['event_id'],
+                    'patient_name'=>$row['patient_name'],
+                    'procedures'=>$row['event_procedure'],
+                );
+            }
+        }
+        return array_values($return_data);
     }
 
     public function getPatientsListBySurgeon($surgeon_id = null){
