@@ -1847,6 +1847,20 @@ class Patient extends BaseActiveRecordVersioned
         return Event::model()->with('episode')->find($criteria);
     }
 
+    public function getLatestExaminationEvent(){
+        $event_type = EventType::model()->findByAttributes(array("name"=>"Examination"));
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('episode.patient_id = :pid');
+        $criteria->addCondition('event_type_id = :etypeid');
+        $criteria->params = array(':pid' => $this->id, ':etypeid' => $event_type->id);
+
+        $criteria->order = 't.event_date DESC, t.created_date DESC';
+        $criteria->limit = 1;
+
+        return Event::model()->with('episode')->find($criteria);
+    }
+
     /**
      * @return string
      * @deprecated - since v2.0 - moved to operation note api.
