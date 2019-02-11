@@ -4,37 +4,6 @@
 
     <div class="specialty"><?= $specialty ?></div>
       <div class="service flex-layout">
-        <?php if(isset($user_list)){?>
-            <div class="service-selected" id="js-service-selected-filter">All</div>
-        <?php }else{?>
-            <div class="service-selected" id="js-service-selected-filter"><?=$current_user->getFullName();?></div>
-        <?php }?>
-        <!-- OE UI Filter options (id: select-service) -->
-        <?php if (isset($user_list)){?>
-        <div class="oe-filter-options" id="oe-filter-options-select-service" data-filter-id="select-service">
-            <!-- simple button to popup filter options -->
-            <button class="oe-filter-btn green hint" id="oe-filter-btn-select-service">
-                <i class="oe-i filter pro-theme"></i>
-            </button><!-- Filter options. Popup is JS positioned: top-left, top-right, bottom-left, bottom-right -->
-            <div class="filter-options-popup" id="filter-options-popup-select-service" style="display: none;">
-                <!-- provide close (for touch) -->
-                <div class="close-icon-btn">
-                    <i class="oe-i remove-circle medium pro-theme"></i>
-                </div>
-                <div class="flex-layout flex-top">
-                    <div class="options-group" data-filter-ui-id="js-service-selected-filter">
-                        <!-- <h3>Title (optional)</h3> -->
-                        <ul class="btn-list">
-                            <li>All</li>
-                            <?php foreach ($user_list as $user){?>
-                            <li><?=$user->getFullName();?></li>
-                            <?php }?>
-                        </ul>
-                    </div><!-- options-group -->
-                </div><!-- .flex -->
-            </div><!-- filter-options-popup -->
-        </div><!-- .oe-filter-options -->
-        <?php }?>
     </div>
     <div class="specialty-options">
             <div class="view-mode">
@@ -81,6 +50,11 @@
                     <div class="service-filters custom-filters flex-layout">
                     <div class="service-filters flex-layout cols-9">
                         <ul class="filters-selected cols-9">
+                            <?php if(isset($user_list)){?>
+                                <li>User: <span class="service-selected" id="js-service-selected-filter">All</span></li>
+                            <?php }else{?>
+                                <li>User: <span class="service-selected" id="js-service-selected-filter"><?=$current_user->getFullName();?></span></li>
+                            <?php }?>
                             <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
                             <li>Diagnosis: <span id="js-chart-filter-service-diagnosis">All</span></li>
                         </ul>
@@ -108,6 +82,17 @@
                                                 <?php } ?>
                                             </ul>
                                         </div><!-- options-group -->
+                                        <?php if (isset($user_list)) { ?>
+                                            <div class="options-group" data-filter-ui-id="js-service-selected-filter">
+                                                <h3>Users</h3>
+                                                <ul class="btn-list">
+                                                    <li>All</li>
+                                                    <?php foreach ($user_list as $user) { ?>
+                                                        <li><?= $user->getFullName(); ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                        <?php } ?>
                                     </div><!-- .flex -->
                                 </div><!-- filter-options-popup -->
                             </div><!-- .oe-filter-options -->
@@ -120,6 +105,11 @@
                 <h3>Clinical Data Filters</h3>
                 <div class="custom-filters flex-layout">
                     <ul class="filters-selected cols-9">
+                        <?php if(isset($user_list)){?>
+                            <li>User: <span class="service-selected" id="js-service-clinical-filter">All</span></li>
+                        <?php }else{?>
+                            <li>User: <span class="service-selected" id="js-service-clinical-filter"><?=$current_user->getFullName();?></span></li>
+                        <?php }?>
                         <li>Eye: <span id="js-chart-filter-eye-side">Right</span></li>
                         <li id="js-chart-filter-age-all">Ages: <span id="js-chart-filter-age">All</span></li>
                         <li id="js-chart-filter-age-range" style="display: none;">Ages:
@@ -163,7 +153,7 @@
                                             $analytics_treatment = array('Lucentis', 'Elyea', 'Avastin', 'Triamcinolone', 'Ozurdex');
                                             $analytics_diagnoses = array('AMD(wet)', 'BRVO', 'CRVO', 'DMO');
                                             ?>
-                                            <div class="options-group" data-filter-ui-id="js-chart-filter-treatment">
+                                            <div class="options-group" data-filter-ui-id="js-chart-filter-treatment-clinical">
                                                 <h3>Treatment</h3>
                                                 <ul class="btn-list">
                                                     <li class="selected">ALL</li>
@@ -175,6 +165,18 @@
                                         <?php } elseif ($specialty === 'Glaucoma') {
                                             $analytics_diagnoses = array('Macular degeneration', 'Diabetic Macular Oedema', 'BRVO', 'CRVO', 'Hemivein');
                                         } ?>
+
+                                        <?php if (isset($user_list)) { ?>
+                                            <div class="options-group" data-filter-ui-id="js-service-clinical-filter">
+                                                <h3>Users</h3>
+                                                <ul class="btn-list">
+                                                    <li>All</li>
+                                                    <?php foreach ($user_list as $user) { ?>
+                                                        <li><?= $user->getFullName(); ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div><!-- options-group -->
+                                        <?php } ?>
 
                                         <div class="options-group" data-filter-ui-id="js-chart-filter-diagnosis">
                                             <h3>Diagnosis</h3>
@@ -304,7 +306,7 @@
         var specialty = "<?=$specialty;?>";
         var side_bar_user_list = <?=CJavaScript::encode($side_bar_user_list);?>;
         var service_common_disorders = <?=CJavaScript::encode($common_disorders);?>;
-        var side_bar_user_filter_content = $('#js-service-selected-filter').html();
+        var side_bar_user_filter_content = $('#js-btn-custom').attr('class').includes('selected') ? $('#js-service-clinical-filter').html() : $('#js-service-selected-filter').html();
         var filters ="";
         if (side_bar_user_list !== null && side_bar_user_filter_content !== "All"){
             filters += "&surgeon_id="+side_bar_user_list[side_bar_user_filter_content];
