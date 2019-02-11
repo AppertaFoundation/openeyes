@@ -29,7 +29,7 @@ class DisorderController extends BaseController
                 'roles' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions'=>array('create','update','index','view', 'delete'),
+                'actions'=>array('create','update','index','view', 'delete', 'autocomplete'),
                 'users'=>array('TaskCreateDisorder', 'admin'),
             ),
             array('deny',  // deny all users
@@ -53,7 +53,6 @@ class DisorderController extends BaseController
         $columns = $model::model()->metadata->columns;
 
         $options = $this->addExtraFieldsToOptions($options, $columns);
-
         $items = array();
         $errors = array();
         $options['display_order'] = false;
@@ -138,55 +137,9 @@ class DisorderController extends BaseController
                             ++$j;
                         }
                     }
-
-                    if (empty($errors)) {
-                        $criteria = new CDbCriteria();
-
-                        if ($items) {
-                            $criteria->addNotInCondition('id', array_map(function ($i) {
-                                return $i->id;
-                            }, $items));
-                        }
-                        $this->addFilterCriteria($criteria, $options['filter_fields']);
-
-                        $to_delete = $model::model()->findAll($criteria);
-                        foreach ($to_delete as $i=>$item) {
-                            if (!$item->delete()) {
-                                $tx->rollback();
-                                $error = $item->getErrors();
-                                foreach ($error as $e)
-                                {
-                                    $errors[$i]=$e[0];
-                                }
-
-                                Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
-                                $this->redirect(Yii::app()->request->url);
-
-                            }
-                            Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                                'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                                'model' => $model::getShortModelName(),
-                            ));
-                        }
-
-                        $tx->commit();
-
-                        Yii::app()->user->setFlash('success', 'List updated.');
-
-                        $this->redirect(Yii::app()->request->url);
-                    } else {
-                        $tx->rollback();
-                    }
+                    $errors = $this->amendCommonOphthalmicDisorderGroups($model, $options, $errors, $items, $tx);
                 } else {
-                    $order = array();
-
-                    if ($model::model()->hasAttribute('display_order')) {
-                        $order = array('order' => 'display_order');
-                        $options['display_order'] = true;
-                    }
-                    $crit = new CDbCriteria($order);
-                    $this->addFilterCriteria($crit, $options['filter_fields']);
-                    $items = $model::model()->findAll($crit);
+                    list($options, $items) = $this->optionsFiltersNotAvailable($model, $options);
                 }
             }
 
@@ -230,6 +183,7 @@ class DisorderController extends BaseController
      */
     public function actionAutocomplete()
     {
+        Yii::log(CVarDumper::dumpAsString("asdkjfhkasjdfkljsaf"));
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
             $params = array();
@@ -694,5 +648,75 @@ class DisorderController extends BaseController
             }
         }
         return $options;
+    }
+
+    /**
+     * @param $model
+     * @param array $options
+     * @param $errors
+     * @param $items
+     * @param $tx
+     * @return mixed
+     * @throws Exception
+     */
+    protected function amendCommonOphthalmicDisorderGroups($model, array $options, $errors, $items, $tx)
+    {
+        if (empty($errors)) {
+            $criteria = new CDbCriteria();
+
+            if ($items) {
+                $criteria->addNotInCondition('id', array_map(function ($i) {
+                    return $i->id;
+                }, $items));
+            }
+            $this->addFilterCriteria($criteria, $options['filter_fields']);
+
+            $to_delete = $model::model()->findAll($criteria);
+            foreach ($to_delete as $i => $item) {
+                if (!$item->delete()) {
+                    $tx->rollback();
+                    $error = $item->getErrors();
+                    foreach ($error as $e) {
+                        $errors[$i] = $e[0];
+                    }
+
+                    Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
+                    $this->redirect(Yii::app()->request->url);
+
+                }
+                Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                    'model' => $model::getShortModelName(),
+                ));
+            }
+
+            $tx->commit();
+
+            Yii::app()->user->setFlash('success', 'List updated.');
+
+            $this->redirect(Yii::app()->request->url);
+        } else {
+            $tx->rollback();
+        }
+        return $errors;
+    }
+
+    /**
+     * @param $model
+     * @param array $options
+     * @return array
+     */
+    protected function optionsFiltersNotAvailable($model, array $options)
+    {
+        $order = array();
+
+        if ($model::model()->hasAttribute('display_order')) {
+            $order = array('order' => 'display_order');
+            $options['display_order'] = true;
+        }
+        $crit = new CDbCriteria($order);
+        $this->addFilterCriteria($crit, $options['filter_fields']);
+        $items = $model::model()->findAll($crit);
+        return array($options, $items);
     }
 }
