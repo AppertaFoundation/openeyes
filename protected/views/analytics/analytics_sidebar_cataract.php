@@ -9,7 +9,7 @@
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                 $clinical_button_disable = false;
             }?>
-            <button class="analytics-section pro-theme cols-6 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
+            <button class="analytics-section pro-theme cols-12 selected <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                     data-section="#js-hs-chart-analytics-clinical-main"
                     data-tab="#js-charts-clinical">
                     Clinical
@@ -110,7 +110,6 @@
         $('#js-back-to-chart').hide();
         $('#js-all-surgeons').html('View all surgeons');
         var selected_value = $(this).data("report");
-        console.log(selected_value);
         switch (selected_value) {
             case "PCR":
                 OpenEyes.Dash.init('#pcr-risk-grid');

@@ -428,7 +428,7 @@ class AnalyticsController extends BaseController
     public function queryCataractEventList(){
         $return_data = array();
         $command = Yii::app()->db->createCommand()
-            ->select('eoc.event_id as event_id, CONCAT(c.first_name, " ", c.last_name) as patient_name, proc.term as event_procedure')
+            ->select('eoc.event_id as event_id, CONCAT(c.title," ",c.first_name, " ", c.last_name) as patient_name, proc.term as event_procedure')
             ->from('et_ophtroperationnote_cataract eoc')
             ->join('event e', 'e.id = eoc.event_id')
             ->join('episode ep', 'ep.id = e.episode_id')

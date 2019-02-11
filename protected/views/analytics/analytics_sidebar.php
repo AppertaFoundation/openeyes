@@ -3,28 +3,26 @@
     <?php $this->renderPartial('analytics_sidebar_header',array('specialty'=>$specialty));?>
 
     <div class="specialty"><?= $specialty ?></div>
-      <div class="service flex-layout">
-    </div>
     <div class="specialty-options">
-            <div class="view-mode">
+            <div class="view-mode flex-layout">
                 <?php $clinical_button_disable = true;
                 if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){
                     $clinical_button_disable = false;
                 }?>
                 <?php if ($specialty === 'All'){?>
-                    <button class="analytics-section pro-theme cols-4 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
+                    <button class="analytics-section pro-theme cols-6 <?=$clinical_button_disable? 'disabled': '';?>" id="js-btn-clinical"
                         data-section="#js-hs-chart-analytics-clinical-main"
                         data-tab="#js-charts-clinical">
                             Clinical
                     </button>
                 <?php }else{?>
-                    <button class="analytics-section pro-theme cols-4" id="js-btn-custom"
+                    <button class="analytics-section pro-theme cols-6" id="js-btn-custom"
                             data-section="#js-hs-chart-analytics-clinical-others"
                             data-tab="#js-custom-data-filter">
                         Clinical
                     </button>
                 <?php }?>
-                <button class="analytics-section pro-theme cols-4 selected" id="js-btn-service"
+                <button class="analytics-section pro-theme cols-6 selected" id="js-btn-service"
                         data-section="#js-hs-chart-analytics-service"
                         data-tab="#js-charts-service">
                     Service
@@ -35,7 +33,7 @@
         <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
                     <li>
-                        <a href="#" id="js-hs-diagnoses">Diagnoses ()</a>
+                        <a href="#" id="js-hs-diagnoses">Diagnoses (699)</a>
                     </li>
                 </ul>
                 <div id="js-clinical-data-filter" class=""  style="display: block">
@@ -282,13 +280,9 @@
                        value=""
                        name="to"
                        placeholder="to">
-                <input type="hidden" class="pro-theme cols-5"
-                       id="analytics_allsurgeons"
-                       value=""
-                       name="allsurgeons">
             </div>
             <div class="row">
-                <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()">View all dates</button>
+                <button id="js-clear-date-range" class="pro-theme" onclick="viewAllDates()" type="button">View all dates</button>
             </div>
             <button class="pro-theme green hint cols-full update-chart-btn" type="submit">Update Chart</button>
         </form>
