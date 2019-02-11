@@ -51,7 +51,7 @@ class AnalyticsController extends BaseController
             'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
         );
 
-        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
         $clinical_data = array(
             'title' => 'Disorders Section',
@@ -114,11 +114,11 @@ class AnalyticsController extends BaseController
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
 
-      $follow_patient_list = $this->getFollowUps($subspecialty_id);
+      $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
       $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
 
-      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
-      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id);
+      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
+      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id,$this->surgeon);
 
       $current_user = User::model()->findByPk(Yii::app()->user->id);
       if (isset($this->surgeon)){
@@ -202,9 +202,9 @@ class AnalyticsController extends BaseController
           'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
       );
       $this->custom_csv_data = array();
-      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
-      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
-      $follow_patient_list = $this->getFollowUps($subspecialty_id);
+      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id,$this->surgeon);
+      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
+      $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
       $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
 
       $current_user = User::model()->findByPk(Yii::app()->user->id);
@@ -317,20 +317,20 @@ class AnalyticsController extends BaseController
      * Return arraies for left and right eye side which can be easily transformed to plotly readable data format.
      * Note: the name getCustomXXX() because we thought they are for custom section, but seems not, names will be changed if needed.
      */
-  public function getCustomVA($subspecialty_id) {
+  public function getCustomVA($subspecialty_id,$surgeon = null) {
       //As the dataset is huge and to speed up the performance, sql queries are used to get all data.
       $va_elements = $this->queryVA($subspecialty_id);
-      return $this->getCustomDataListQuery($va_elements,"VA",$this->surgeon);
+      return $this->getCustomDataListQuery($va_elements,"VA",$surgeon);
   }
 
-  public function getCustomCRT($subspecialty_id) {
+  public function getCustomCRT($subspecialty_id,$surgeon=null) {
       $crt_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_OCT::model()->findAll();
-      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id, $this->surgeon);
+      return $this->getCustomDataList($crt_elements,'CRT', $subspecialty_id, $surgeon);
   }
 
-  public function getCustomIOP($subspecialty_id){
+  public function getCustomIOP($subspecialty_id,$surgeon=null){
       $iop_elements = $this->queryIOP($subspecialty_id);
-      return $this->getCustomDataListQuery($iop_elements,"IOP",$this->surgeon);
+      return $this->getCustomDataListQuery($iop_elements,"IOP",$surgeon);
   }
 
     /**
@@ -772,7 +772,7 @@ class AnalyticsController extends BaseController
       return $common_ophthalmic_disorders;
   }
 
-  public function getDisorders($subspecialty_id, $start_date = null, $end_date = null){
+  public function getDisorders($subspecialty_id, $surgeon_id = null, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
           'y'=>array(),
@@ -807,8 +807,8 @@ class AnalyticsController extends BaseController
       $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
       $all_patients = $this->getPatientsListBySurgeon($this->surgeon);
       foreach ($diagnoses_elements as $diagnosis_element_item){
-          if (isset($this->surgeon)){
-              if ($this->surgeon !== $diagnosis_element_item->created_user_id){
+          if (isset($surgeon_id)){
+              if ($surgeon_id !== $diagnosis_element_item->created_user_id){
                   continue;
               }
           }
@@ -941,7 +941,9 @@ class AnalyticsController extends BaseController
   public function actionUpdateData(){
       $this->checkAuth();
       $specialty = Yii::app()->request->getParam('specialty');
-      $surgeon_id = Yii::app()->request->getParam('surgeon_id');
+      $clinical_surgeon_id = Yii::app()->request->getParam('clinical_surgeon_id');
+      $service_surgeon_id = Yii::app()->request->getParam('service_surgeon_id');
+
       if (!isset($this->surgeon)&&isset($surgeon_id)){
           $this->surgeon = $surgeon_id;
       }
@@ -950,7 +952,7 @@ class AnalyticsController extends BaseController
 
       if ($specialty == 'All'){
           $subspecialty_id = null;
-          $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['date_from'],$this->filters['date_to']);
+          $disorder_data = $this->getDisorders($subspecialty_id,$clinical_surgeon_id,$this->filters['date_from'],$this->filters['date_to']);
           $clinical_data = array(
               'x' => $disorder_data['x'],
               'y' => $disorder_data['y'],
@@ -960,11 +962,11 @@ class AnalyticsController extends BaseController
           );
       }else{
           $subspecialty_id = $this->getSubspecialtyID($specialty);
-          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$clinical_surgeon_id);
           if ($specialty === "Glaucoma"){
-              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id);
+              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id,$clinical_surgeon_id);
           }elseif ($specialty === "Medical Retina"){
-              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id);
+              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id,$clinical_surgeon_id);
           }
           $clinical_data = array();
           foreach (['left','right'] as $side){
@@ -1020,7 +1022,7 @@ class AnalyticsController extends BaseController
           }
           $clinical_data['csv_data']=$this->custom_csv_data;
       }
-      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
+      $service_data = $this->getFollowUps($subspecialty_id, $service_surgeon_id,$this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
 
 
       $this->renderJSON(array($clinical_data, $service_data));
@@ -1062,7 +1064,7 @@ class AnalyticsController extends BaseController
      * Todo: split this function into small chunk of code to make it more readable
      *
      */
-  public function getFollowUps($subspecialty_id, $start_date = null, $end_date = null, $diagnosis=null){
+  public function getFollowUps($subspecialty_id,$surgeon = null, $start_date = null, $end_date = null, $diagnosis=null){
 
       $followup_patient_list = array(
           'overdue' => array(),
@@ -1082,8 +1084,8 @@ class AnalyticsController extends BaseController
           $current_event = $followup_item->event;
           if (isset($current_event->episode)){
 
-              if (isset($this->surgeon)){
-                  if ($this->surgeon !== $current_event->created_user_id){
+              if (isset($surgeon)){
+                  if ($surgeon !== $current_event->created_user_id){
                       continue;
                   }
               }
