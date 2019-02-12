@@ -51,7 +51,10 @@ class RefMedicationAdminController extends BaseAdminController
         $admin = new Admin(Medication::model(), $this);
 
         if(!is_null($id)) {
-            $search_indexes = Medication::model()->findByPk($id)->medicationSearchIndexes;
+        	$medication  = Medication::model()->findByPk($id);
+        	/** @var Medication $medication */
+            $search_indexes = $medication->medicationSearchIndexes;
+            $attrs = $medication->medicationAttributeAssignments;
         }
         else {
             $search_indexes = array();
@@ -69,7 +72,14 @@ class RefMedicationAdminController extends BaseAdminController
             'vmp_code' => 'VMP code',
             'amp_term' => 'AMP term',
             'amp_code' => 'AMP code',
-            'alternative_terms' =>  array(
+            'attributes' => array(
+				'widget' => 'CustomView',
+				'viewName' => 'application.modules.OphDrPrescription.views.admin.edit_attributes',
+				'viewArguments' => array(
+					'medication' => $medication
+				)
+			),
+			'alternative_terms' =>  array(
                 'widget' => 'GenericAdmin',
                 'options' => array(
                     'model' => MedicationSearchIndex::class,
