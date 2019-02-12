@@ -1211,8 +1211,14 @@ class AnalyticsController extends BaseController
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
 
-        list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
-        list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+        if($speciality_name === 'Glaucoma'){
+            list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
+            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+        } else {
+            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
+            list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id,$this->surgeon);
+        }
+
 
 
         $current_user = User::model()->findByPk(Yii::app()->user->id);
