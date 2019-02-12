@@ -164,8 +164,16 @@
     let $filterDiv = $('<div />', {class: 'has-filter'}).appendTo(this.searchWrapper);
     $searchInput.appendTo($filterDiv);
 
+    var timeout = null;
     $searchInput.on('keyup', function () {
-      dialog.runItemSearch($(this).val());
+      var term = $(this).val();
+      if(timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      timeout = setTimeout(function(){
+          dialog.runItemSearch(term);
+      }, 500);
     });
 
     this.noSearchResultsWrapper = $('<span />').text('No results found');
