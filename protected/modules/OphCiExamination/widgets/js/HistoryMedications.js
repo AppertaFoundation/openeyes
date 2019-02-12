@@ -215,9 +215,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row)
   {
       let drug_id = $row.find("input[name*='[drug_id]']").val();
-      if(drug_id === ''){
-          drug_id = $row.find("input[name*='[medication_drug_id]']").val();
-      }
       if(drug_id !== '') {
           $.getJSON('/medication/drugdefaults', {drug_id: drug_id}, function (res) {
               for (let name in res) {

@@ -41,8 +41,13 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext ( 'AdminPageContext', new AdminPageContext ( $parameters ) );
 		$this->useContext ( 'BiometryContext', new BiometryContext ( $parameters ) );
         $this->useContext ( 'CaseSearchContext', new CaseSearchContext ( $parameters ) );
-
-		$this->loadModuleContextsPages ( $parameters );
+        // added Delete and TestDocument
+        $this->useContext('DeleteEventContext',new DeleteEventContext($parameters));
+        $this->useContext('DocumentContext',new DocumentContext($parameters));
+        $this->useContext('VisualFieldContext',new VisualFieldContext($parameters));
+        $this->useContext('EditExistingEventContext',new EditExistingEventContext($parameters));
+        $this->useContext('DidNotAttendContext.php',new DidNotAttendContext($parameters));
+        $this->loadModuleContextsPages ( $parameters );
 		
 		$this->screenshots = array ();
 		$this->screenshotPath = realpath ( join ( DIRECTORY_SEPARATOR, array (
@@ -152,7 +157,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 						'step' => substr ( $step->getType () . ' ' . $step->getText (), 0, 255 ) 
 				);
 				$path = preg_replace ( '/[^\-\.\w]/', '_', $path );
-				//change here
 				$filename = $this->screenshotPath . DIRECTORY_SEPARATOR . implode ( '/', $path ) . '.png';
 				
 				if (count ( $this->screenshots ) >= 5) {
@@ -169,8 +173,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		}
 	}
 	private function saveScreenshots() {
-
-        foreach ( $this->screenshots as $screenshot ) {
+//	    echo 'There is an unknown error in the permissions for this function (saveScreenshots), for now it\'s disabled';
+//	    return;
+		foreach ( $this->screenshots as $screenshot ) {
 			try {
 				if (! @is_dir ( dirname ( $screenshot ['filename'] ) )) {
 					echo "\n\nCreating dir " . dirname ( $screenshot ['filename'] ) . " \n";
@@ -271,4 +276,17 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	public function iSaveTheTherapyApplication() {
 		throw new PendingException ();
 	}
+
+    /**
+     * @Then /^I logout$/
+     */
+    public function iLogout()
+    {
+        /*
+         * @var $page OpenEyesPage
+         */
+        $page = $this->getPage('OpenEyesPage');
+        $page->logout();
+    }
+
 }

@@ -1,10 +1,10 @@
 @examination @regression
-Feature: Near Visual Acuity test
+Feature: DidNotAttend test
   @EXAM
   @javascript
 
   Scenario Outline:
-  Route 1: Login and create a near visual acuity:
+  Route 1: Login and create an Did Not Attend element, filling the comments.
   Site :  Kings
   Firm :  MR Clinic (Medical Retina)
 
@@ -17,15 +17,11 @@ Feature: Near Visual Acuity test
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
 
     And I add a New Event "<event>"
-    And I select Close All elements
-    And I add Near Visual Acuity
-    Then I select a "left" Near Visual Acuity of "60" using "1"
-    Then I select a "right" Near Visual Acuity of "60" using "1"
-
+    Then I add not attend comments of "<comments>"
     Then I Save the Event and confirm it has been created successfully
     Then I delete the event
     Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiExamination |
+      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event             | comments                                          |
+      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiDidNotAttend | (Testing) She is busy and cancel the appointment. |
