@@ -1212,11 +1212,13 @@ class AnalyticsController extends BaseController
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
 
         if($speciality_name === 'Glaucoma'){
-            list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
-            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+            list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id,$this->surgeon);
+            list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
+            $second_list_name = '_iop_list';
         } else {
             list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
             list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id,$this->surgeon);
+            $second_list_name = '_crt_list';
         }
 
 
@@ -1257,23 +1259,23 @@ class AnalyticsController extends BaseController
                 array(
                     'name' => $speciality_name === 'Glaucoma' ? 'IOP' : 'CRT',
                     'yaxis' => 'y2',
-                    'x' => $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'}) ,
+                    'x' => array_keys(${$side . $second_list_name}) ,
                     'y' => array_map(
                         function ($item) {
                             return $item['average'];
-                        }, $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                        }, array_values(${$side . $second_list_name})),
                     'customdata' => array_map(
                         function ($item) {
                             return $item['patients'];
                         },
-                        $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                        array_values(${$side . $second_list_name})),
                     'error_y' => array(
                         'type' => 'data',
                         'array' => array_map(
                             function ($item) {
                                 return $item['SD'];
                             },
-                            $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                            array_values(${$side . $second_list_name})),
                         'visible' => true,
                         'color' => '#aaa',
                         'thickness' => 1
