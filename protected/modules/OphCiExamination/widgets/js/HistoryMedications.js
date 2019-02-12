@@ -445,7 +445,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.processRisks = function(setIds , drug_name)
   {
-      if (setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
+      if (typeof setIds === "undefined" || setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
           return;
       }
       var self = this;
