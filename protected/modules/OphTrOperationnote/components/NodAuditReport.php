@@ -417,7 +417,7 @@ class NodAuditReport extends Report implements ReportInterface
                 $dataset['PCR_RISK']['known'],
                 $dataset['COMPLICATION']['post-complete'],
                 $dataset['INDICATION_FOR_SURGERY']['complete'],
-                $dataset['E/I']['ineligible'],
+                $dataset['E/I']['eligible'],
             ),
         );
 
