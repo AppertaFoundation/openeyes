@@ -63,7 +63,7 @@ class SurgicalLids extends \SplitEventTypeElement
     public function rules()
     {
         return array(
-            array('eye_id, left_eyedraw, left_ed_report, left_comments ' .
+            array('eye_id, left_eyedraw, left_ed_report, left_comments, ' .
                 'right_eyedraw, right_ed_report, right_comments', 'safe'),
             array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
             array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
