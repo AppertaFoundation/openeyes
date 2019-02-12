@@ -29,7 +29,7 @@
                     array('event_list'=> $event_list)); ?>
                     </div>
                 <?php }else{?>
-                    <div id="js-hs-chart-analytics-clinical-main">
+                    <div id="js-hs-chart-analytics-clinical-main" style="display: none;">
                      <?php
                      $this->renderPartial('//analytics/analytics_clinical',
                          array('clinical_data'=>$clinical_data)
