@@ -56,7 +56,26 @@ class Laser extends OpenEyesPage {
 			'collapseComments' => array (
 					//'xpath' => "//*[@class='icon-button-small-mini-cross']"
 					'xpath' => "//*[@class='button button-icon small js-remove-element 1']//*[@class='icon-button-small-mini-cross']"
-			)
+			),
+        //add for laser test
+            'addProcedureRightBtn'=>array(
+                'xpath'=>"//*[@id='add-procedure-btn-right']"
+            ),
+            'addProcedureLeftBtn'=>array(
+                'xpath'=>"//*[@id='add-procedure-btn-left']"
+            ),
+            'addProcedureList'=>array(
+                'css'=>".oe-add-select-search.auto-width"
+            ),
+            'addProcedureBtn'=>array(
+                'css'=>'.add-icon-btn'
+            ),
+            'rightEyeColumn'=>array(
+                'css'=>'.js-element-eye.right-eye.column.left.side'
+            ),
+            'leftEyeColumn'=>array(
+                'css'=>'.js-element-eye.left-eye.column.right.side'
+            )
 	);
 	public function laserSiteID($site) {
 		$this->getElement ( 'laserSiteID' )->selectOption ( $site );
@@ -67,28 +86,47 @@ class Laser extends OpenEyesPage {
 	public function laserOperator($operator) {
 		$this->getElement ( 'laserOperator' )->selectOption ( $operator );
 	}
+
 	public function rightProcedure($right) {
-		$this->getElement ( 'rightProcedure' )->selectOption ( $right );
+		//$this->getElement ( 'rightProcedure' )->selectOption ( $right );
+        $this->getElement('addProcedureRightBtn')->click();
+        $this->addProcedure($right,false);
 	}
-	public function leftProcedure($left) {
-		$this->getElement ( 'leftProcedure' )->selectOption ( $left );
-	}
+    public function leftProcedure($left) {
+//		$this->getElement ( 'leftProcedure' )->selectOption ( $left );
+        $this->getElement('addProcedureLeftBtn')->click();
+        $this->addProcedure($left,true);
+    }
+    // add for laser test
+	public function addProcedure($procedure,$left_indicator){
+	    $procedure = str_replace(' '," ",$procedure);
+	    $this->elements['Laser_val'] = array();
+        $this->elements['Laser_val'] = array(
+            'css'=> 'li[data-label=\''.$procedure.'\']',
+        );
+        if ($left_indicator){
+            $this->getElement('leftEyeColumn')->find('xpath',$this->getElement('addProcedureList')->getXpath())->find('xpath',$this->getElement('Laser_val')->getXpath())->click();
+            $this->getElement('leftEyeColumn')->find('xpath',$this->getElement('addProcedureList')->getXpath())->find('xpath',$this->getElement('addProcedureBtn')->getXpath())->click();
+        }else{
+            $this->getElement('rightEyeColumn')->find('xpath',$this->getElement('addProcedureList')->getXpath())->find('xpath',$this->getElement('Laser_val')->getXpath())->click();
+            $this->getElement('rightEyeColumn')->find('xpath',$this->getElement('addProcedureList')->getXpath())->find('xpath',$this->getElement('addProcedureBtn')->getXpath())->click();
+
+        }
+    }
+    //
+
 	public function saveLaser() {
 		$this->getElement ( 'saveLaser' )->click ();
 	}
 	protected function hasLaserSaved() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'saveLaserOK' )->getXpath () );
-		;
 	}
 	public function saveLaserAndConfirm() {
+	    sleep(5);
 		$this->getElement ( 'saveLaser' )->click ();
 
 		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if ($this->hasLaserSaved ()) {
-			print "Laser has been saved OK";
-		} 
-
-		else {
+		if (!$this->hasLaserSaved ()) {
 			throw new BehaviorException ( "WARNING!!!  Laser has NOT been saved!!  WARNING!!" );
 		}
 	}
@@ -101,9 +139,7 @@ class Laser extends OpenEyesPage {
 } */
 	
 	public function laserValidationCheck() {
-		if ($this->laserValidationError ()) {
-			print "Laser validation errors have been displayed correctly";
-		} else {
+		if (!$this->laserValidationError ()) {
 			throw new BehaviorException ( "LASER VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY" );
 		}
 	}

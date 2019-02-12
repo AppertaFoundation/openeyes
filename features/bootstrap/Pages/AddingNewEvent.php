@@ -16,6 +16,9 @@ class AddingNewEvent extends OpenEyesPage {
 			'addNewEpisodeButton' => array (
 					'xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]" 
 			),
+            'medicalRetinaOption'=>array(
+                    'xpath'=> "//*[@class='.subspecialty.event']//*[contains(text(),'Medical Retina')]"
+            ),
 //			'expandCataractEpisode' => array (
 //					'xpath' => "//*[@class='episode-title']//*[contains(text(),'Cataract')]"
 //			),
@@ -153,6 +156,10 @@ class AddingNewEvent extends OpenEyesPage {
 		$this->getElement ( 'addEvent' )->click ();
 		$this->getElement ('newEvent')->click();
 	}
+	public function selectMedicalRetinaEpisodes(){
+	    $this->getElement('medicalRetinaOption')->click();
+        $this->getSession ()->wait ( 5000, 'window.$ && $.active ==0' );
+    }
 
 
 //	public function addNewEvent($event) {
