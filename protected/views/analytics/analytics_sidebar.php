@@ -23,7 +23,7 @@
             <input type="hidden" id="side-bar-subspecialty-id" value="<?= $specialty == 'Glaucoma'? 1:0; ?>">
             <div id="js-charts-clinical" style="display: none;">
                 <ul class="charts">
-                    <li><a href="#" id="js-hs-clinical-diagnoses" data-plotid="#js-hs-chart-analytics-clinical-diagnosis" data-filterid="#js-clinical-data-filter-diagnosis" class="selected clinical-plot-button">Diagnoses (699)</a></li>
+                    <li><a href="#" id="js-hs-clinical-diagnoses" data-plotid="#js-hs-chart-analytics-clinical-diagnosis" data-filterid="#js-clinical-data-filter-diagnosis" class="selected clinical-plot-button">Diagnoses</a></li>
                     <?php if ($specialty !== "All"){?>
                         <li><a href="#" id="js-hs-clinical-custom" data-plotid="#js-hs-chart-analytics-clinical-others" data-filterid="#js-clinical-data-filter-custom" class="clinical-plot-button">Change In Vision</a></li>
                     <?php }?>
@@ -331,7 +331,7 @@
             dataType:'json',
 
             success: function (data, textStatus, jqXHR) {
-                //plotUpdate(data);
+                plotUpdate(data);
             }
         });
     });
@@ -365,7 +365,7 @@
     function plotUpdate(data){
         <?php
             if (Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) || Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id)){ ?>
-                var clinical_chart = $('#js-hs-chart-analytics-clinical-diagnosis')[0];
+                var clinical_chart = $('#js-hs-chart-analytics-clinical')[0];
                 var clinical_data = data[0];
                 window.csv_data_for_report['clinical_data'] = clinical_data['csv_data'];
                 clinical_chart.data[0]['x'] = clinical_data.x;
@@ -373,11 +373,12 @@
                 clinical_chart.data[0]['customdata'] = clinical_data.customdata;
                 clinical_chart.data[0]['text'] = clinical_data.text;
                 Plotly.redraw(clinical_chart);
-        <?php }
+        <?php
             if ($specialty !== 'All'){?>
         var custom_charts = ['js-hs-chart-analytics-clinical-others-left','js-hs-chart-analytics-clinical-others-right'];
-        var custom_data = data[0];
-        window.csv_data_for_report['clinical_data'] = custom_data['csv_data'];
+        var custom_data = data[2];
+        console.log(data);
+        window.csv_data_for_report['custom_data'] = custom_data['csv_data'];
         for (var i = 0; i < custom_charts.length; i++) {
             var chart = $('#'+custom_charts[i])[0];
             chart.layout['title'] = (i)? 'Clinical Section (Right Eye)': 'Clinical Section (Left Eye)';
@@ -389,7 +390,7 @@
             chart.data[1]['customdata'] = custom_data[i][1]['customdata'];
             Plotly.redraw(chart);
         }
-        <?php }?>
+        <?php }}?>
         //update the service data
         constructPlotlyData(data[1]['plot_data']);
         window.csv_data_for_report['service_data'] = data[1]['csv_data'];

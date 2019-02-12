@@ -105,7 +105,7 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
-      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data) = $this->getClinicalSpecialityData('Medical Retina');
+      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Medical Retina');
       $this->render('/analytics/analytics_container',
           array(
               'specialty' => 'Medical Retina',
@@ -115,11 +115,12 @@ class AnalyticsController extends BaseController
               'user_list' => $user_list,
               'current_user' => $current_user,
               'common_disorders' => $common_ophthalmic_disorders,
+              'clinical_data'=>$clinical_data,
           )
       );
   }
   public function actionGlaucoma(){
-      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data) = $this->getClinicalSpecialityData('Glaucoma');
+      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data) = $this->getClinicalSpecialityData('Glaucoma');
       $this->render('/analytics/analytics_container',
           array(
               'specialty' => 'Glaucoma',
@@ -129,6 +130,7 @@ class AnalyticsController extends BaseController
               'user_list' => $user_list,
               'current_user' => $current_user,
               'common_disorders' => $common_ophthalmic_disorders,
+              'clinical_data'=>$clinical_data,
           )
       );
   }
@@ -238,8 +240,8 @@ class AnalyticsController extends BaseController
             ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
             ->group('va_id, side');
 
-        if(isset($this->filters['diagnosis'])){
-            foreach ($this->filters['diagnosis'] as $diagnosis){
+        if(isset($this->filters['custom_diagnosis'])){
+            foreach ($this->filters['custom_diagnosis'] as $diagnosis){
                 $command->andWhere(array('like','term',$diagnosis));
             }
         }
@@ -263,8 +265,8 @@ class AnalyticsController extends BaseController
             ->where('ssa.subspecialty_id=:subspecialty_id', array(':subspecialty_id'=>$subspecialty_id))
             ->group('iop_id, side');
 
-        if(isset($this->filters['diagnosis'])){
-            foreach ($this->filters['diagnosis'] as $diagnosis){
+        if(isset($this->filters['custom_diagnosis'])){
+            foreach ($this->filters['custom_diagnosis'] as $diagnosis){
                 $command->andWhere(array('like','term',$diagnosis));
             }
         }
@@ -359,7 +361,16 @@ class AnalyticsController extends BaseController
                     if (!array_key_exists($current_patient->id, $patient_list)) {
                         $patient_list[$current_patient->id] = array();
                     }
-                    if  (!array_key_exists($current_patient->id, $this->custom_csv_data)){
+
+                    // eye 1 left, 2 right, 3 both
+                    if(isset($this->filters['custom_diagnosis'])){
+                        if ($element['eye_id'] == 1){
+                            $right_reading = null;
+                        }elseif ($element['eye_id'] == 2){
+                            $left_reading = null;
+                        }
+                    }
+                    if  (!array_key_exists($current_patient->id, $this->custom_csv_data) && (isset($right_reading) || isset($left_reading))){
                         $this->custom_csv_data[$current_patient->id] = array(
                             'first_name'=>$current_patient->getFirst_name(),
                             'second_name'=>$current_patient->getLast_name(),
@@ -378,14 +389,6 @@ class AnalyticsController extends BaseController
                                 "IOP"=>array(),
                             ),
                         );
-                    }
-                    // eye 1 left, 2 right, 3 both
-                    if (isset($this->filters['diagnosis'])){
-                        if ($element['eye_id'] == 1){
-                            $right_reading = null;
-                        }elseif ($element['eye_id'] == 2){
-                            $left_reading = null;
-                        }
                     }
                     if (isset($right_reading)){
                         array_push($this->custom_csv_data[$current_patient->id]['right'][$type],$right_reading);
@@ -508,7 +511,41 @@ class AnalyticsController extends BaseController
                       if (!array_key_exists($current_patient->id, $patient_list)) {
                           $patient_list[$current_patient->id] = array();
                       }
-                      if  (!array_key_exists($current_patient->id, $this->custom_csv_data)){
+
+
+                      if (isset($this->filters['custom_diagnosis'])){
+                          if (!empty($current_diagnoses_left)){
+                              $i = 1;
+                              foreach ($current_diagnoses_left as $diagnosis){
+                                  if (in_array($diagnosis, $this->filters['custom_diagnosis'])){
+                                      break;
+                                  }
+                                  if ($i == count($current_diagnoses_left)){
+                                      $left_reading = false;
+                                  }
+                                  $i += 1;
+                              }
+                          }else{
+                              $left_reading = false;
+                          }
+
+
+                          if (!empty($current_diagnoses_right)){
+                              $i = 1;
+                              foreach ($current_diagnoses_right as $diagnosis){
+                                  if (in_array($diagnosis, $this->filters['custom_diagnosis'])){
+                                      break;
+                                  }
+                                  if ($i == count($current_diagnoses_right)){
+                                      $right_reading = false;
+                                  }
+                                  $i += 1;
+                              }
+                          }else{
+                              $right_reading = false;
+                          }
+                      }
+                      if  (!array_key_exists($current_patient->id, $this->custom_csv_data) && ($right_reading || $left_reading)){
                           $this->custom_csv_data[$current_patient->id] = array(
                               'first_name'=>$current_patient->getFirst_name(),
                               'second_name'=>$current_patient->getLast_name(),
@@ -527,39 +564,6 @@ class AnalyticsController extends BaseController
                                   "IOP"=>array(),
                               ),
                           );
-                      }
-
-                      if (isset($this->filters['diagnosis'])){
-                          if (!empty($current_diagnoses_left)){
-                              $i = 1;
-                              foreach ($current_diagnoses_left as $diagnosis){
-                                  if (in_array($diagnosis, $this->filters['diagnosis'])){
-                                      break;
-                                  }
-                                  if ($i == count($current_diagnoses_left)){
-                                      $left_reading = false;
-                                  }
-                                  $i += 1;
-                              }
-                          }else{
-                              $left_reading = false;
-                          }
-
-
-                          if (!empty($current_diagnoses_right)){
-                              $i = 1;
-                              foreach ($current_diagnoses_right as $diagnosis){
-                                  if (in_array($diagnosis, $this->filters['diagnosis'])){
-                                      break;
-                                  }
-                                  if ($i == count($current_diagnoses_right)){
-                                      $right_reading = false;
-                                  }
-                                  $i += 1;
-                              }
-                          }else{
-                              $right_reading = false;
-                          }
                       }
                       if ($right_reading){
                           array_push($this->custom_csv_data[$current_patient->id]['right'][$type],$right_reading);
@@ -766,21 +770,21 @@ class AnalyticsController extends BaseController
       $specialty = Yii::app()->request->getParam('specialty');
       $dateFrom = Yii::app()->request->getParam('from');
       $dateTo = Yii::app()->request->getParam('to');
-      $ageMin = Yii::app()->request->getParam('age-min');
-      $ageMax = Yii::app()->request->getParam('age-max');
-      $diagnosis = Yii::app()->request->getParam('diagnosis');
-      $service_diagnosis = Yii::app()->request->getParam('serviceDiagnosis');
+      $ageMin = Yii::app()->request->getParam('custom_age_min');
+      $ageMax = Yii::app()->request->getParam('custom_age_max');
+      $custom_diagnosis = Yii::app()->request->getParam('custom_diagnosis');
+      $service_diagnosis = Yii::app()->request->getParam('service_diagnosis');
+      $clinical_surgeon_id = Yii::app()->request->getParam('clinical_surgeon');
+      $service_surgeon_id = Yii::app()->request->getParam('service_surgeon');
+      $custom_surgeon_id = Yii::app()->request->getParam('custom_surgeon');
 
-      if (isset($diagnosis)){
+      if (isset($custom_diagnosis)){
           if ($specialty === "Medical Retina"){
-              $diagnosis = array($diagnoses_MR[$diagnosis]);
+              $custom_diagnosis = array($diagnoses_MR[$custom_diagnosis]);
           }else{
-              $diagnosis = null;
+              $custom_diagnosis = null;
           }
       }
-      $protocol = Yii::app()->request->getParam('protocol');
-      $plotVA = Yii::app()->request->getParam('plot-VA');
-      $treatment = Yii::app()->request->getParam('treatment');
 
       if ($dateTo){
           $dateTo = Helper::mysqlDate2JsTimestamp($dateTo);
@@ -794,15 +798,19 @@ class AnalyticsController extends BaseController
       }
 
       $this->filters = array(
+          'specialty'=>$specialty,
           'date_from' => $dateFrom,
           'date_to' => $dateTo,
           'age_min'=>$ageMin,
           'age_max'=>$ageMax,
-          'diagnosis'=>$diagnosis,
-          'protocol'=>$protocol,
-          'plot-va'=>$plotVA,
-          'treatment'=>$treatment,
+          'custom_diagnosis'=>$custom_diagnosis,
+          'protocol'=>null,
+          'plot-va'=>null,
+          'treatment'=>null,
           'service_diagnosis'=>$service_diagnosis,
+          'clinical_surgeon_id'=>$clinical_surgeon_id,
+          'service_surgeon_id'=>$service_surgeon_id,
+          'custom_surgeon_id'=>$custom_surgeon_id,
       );
   }
 
@@ -811,37 +819,29 @@ class AnalyticsController extends BaseController
      */
   public function actionUpdateData(){
       $this->checkAuth();
-      $specialty = Yii::app()->request->getParam('specialty');
-      $clinical_surgeon_id = Yii::app()->request->getParam('clinical_surgeon_id');
-      $service_surgeon_id = Yii::app()->request->getParam('service_surgeon_id');
+      $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
+
+      $specialty = $this->filters['specialty'];
 
       if (!isset($this->surgeon)&&isset($surgeon_id)){
           $this->surgeon = $surgeon_id;
       }
       $this->custom_csv_data = array();
-      $this->obtainFilters(); // get current filters. Question: why not call validateFilters() in this function.
 
       if ($specialty == 'All'){
           $subspecialty_id = null;
-          $disorder_data = $this->getDisorders($subspecialty_id,$clinical_surgeon_id,$this->filters['date_from'],$this->filters['date_to']);
-          $clinical_data = array(
-              'x' => $disorder_data['x'],
-              'y' => $disorder_data['y'],
-              'text' => $disorder_data['text'],
-              'customdata' =>$disorder_data['customdata'],
-              'csv_data' => $disorder_data['csv_data'],
-          );
+          $custom_data = array();
       }else{
           $subspecialty_id = $this->getSubspecialtyID($specialty);
-          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$clinical_surgeon_id);
+          list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->filters['custom_surgeon_id']);
           if ($specialty === "Glaucoma"){
-              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id,$clinical_surgeon_id);
+              list($left_second_list,$right_second_list) = $this->getCustomIOP($subspecialty_id,$this->filters['custom_surgeon_id']);
           }elseif ($specialty === "Medical Retina"){
-              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id,$clinical_surgeon_id);
+              list($left_second_list,$right_second_list) = $this->getCustomCRT($subspecialty_id,$this->filters['custom_surgeon_id']);
           }
-          $clinical_data = array();
+          $custom_data = array();
           foreach (['left','right'] as $side){
-              $clinical_data[] = array(
+              $custom_data[] = array(
                   array(
                       'x' => array_keys(${$side.'_va_list'}),
                       'y' => array_map(
@@ -891,12 +891,20 @@ class AnalyticsController extends BaseController
                   )
               );
           }
-          $clinical_data['csv_data']=$this->custom_csv_data;
+          $custom_data['csv_data']=$this->custom_csv_data;
       }
-      $service_data = $this->getFollowUps($subspecialty_id, $service_surgeon_id,$this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
+      $disorder_data = $this->getDisorders($subspecialty_id,$this->filters['clinical_surgeon_id'],$this->filters['date_from'],$this->filters['date_to']);
+      $clinical_data = array(
+          'x' => $disorder_data['x'],
+          'y' => $disorder_data['y'],
+          'text' => $disorder_data['text'],
+          'customdata' =>$disorder_data['customdata'],
+          'csv_data' => $disorder_data['csv_data'],
+      );
+      $service_data = $this->getFollowUps($subspecialty_id, $this->filters['service_surgeon_id'],$this->filters['date_from']/1000,$this->filters['date_to']/1000, $this->filters['service_diagnosis']);
 
 
-      $this->renderJSON(array($clinical_data, $service_data));
+      $this->renderJSON(array($clinical_data, $service_data, $custom_data));
   }
 
     /**
@@ -1210,6 +1218,16 @@ class AnalyticsController extends BaseController
         $this->custom_csv_data = array();
         $follow_patient_list = $this->getFollowUps($subspecialty_id);
         $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+        $disorder_data = $this->getDisorders($subspecialty_id);
+
+        $clinical_data = array(
+            'title' => 'Disorders Section',
+            'x' => $disorder_data['x'],
+            'y' => $disorder_data['y'],
+            'text' => $disorder_data['text'],
+            'customdata' =>$disorder_data['customdata'],
+            'csv_data'=>$disorder_data['csv_data'],
+        );
 
         if($speciality_name === 'Glaucoma'){
             list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id,$this->surgeon);
@@ -1284,7 +1302,7 @@ class AnalyticsController extends BaseController
             );
         }
         $custom_data['csv_data'] = $this->custom_csv_data;
-        return array($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data);
+        return array($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data,$clinical_data);
     }
 
 

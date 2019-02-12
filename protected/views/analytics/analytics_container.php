@@ -31,9 +31,9 @@
                 <?php }else{?>
                     <div id="js-hs-chart-analytics-clinical-main">
                      <?php
-//                     $this->renderPartial('//analytics/analytics_clinical',
-//                         array('clinical_data'=>$clinical_data)
-//                     );
+                     $this->renderPartial('//analytics/analytics_clinical',
+                         array('clinical_data'=>$clinical_data)
+                     );
                      if ($specialty !== "All"){
                             $this->renderPartial('//analytics/analytics_custom', array('custom_data'=>$custom_data));
                         }
