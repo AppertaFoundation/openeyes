@@ -77,4 +77,13 @@ $(document).ready(function () {
         });
     }
 
+    $('.clinical-plot-button').on('click',function () {
+       $(this).addClass('selected');
+       $('.clinical-plot-button').not(this).removeClass('selected');
+       $('.js-hs-chart-analytics-clinical').hide();
+       $('.js-hs-filter-analytics-clinical').hide();
+       $($(this).data('filterid')).show();
+       $($(this).data('plotid')).show();
+    });
+
 });

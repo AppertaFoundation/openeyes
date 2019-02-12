@@ -28,12 +28,18 @@
                     <?php  $this->renderPartial('//analytics/analytics_cataract',
                     array('event_list'=> $event_list)); ?>
                     </div>
-                <?php }elseif ($specialty === 'All'){
-                    $this->renderPartial('//analytics/analytics_clinical',
-                        array('clinical_data'=>$clinical_data));
-                }else{
-                    $this->renderPartial('//analytics/analytics_custom',
-                        array('custom_data'=> $custom_data));
+                <?php }else{?>
+                    <div id="js-hs-chart-analytics-clinical-main">
+                     <?php
+//                     $this->renderPartial('//analytics/analytics_clinical',
+//                         array('clinical_data'=>$clinical_data)
+//                     );
+                     if ($specialty !== "All"){
+                            $this->renderPartial('//analytics/analytics_custom', array('custom_data'=>$custom_data));
+                        }
+                     ?>
+                    </div>
+                <?php
                 }
             }
         ?>
