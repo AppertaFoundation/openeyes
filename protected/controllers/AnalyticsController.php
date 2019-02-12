@@ -105,180 +105,32 @@ class AnalyticsController extends BaseController
       );
   }
   public function actionMedicalRetina(){
-      $this->checkAuth();
-      $subspecialty_id = $this->getSubspecialtyID('Medical Retina');
-      $this->current_user = User::model()->findByPk(Yii::app()->user->id);
-      $this->custom_csv_data = array();
-      $this->filters = array(
-          'date_from' => 0,
-          'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data) = $this->getClinicalSpecialityData('Medical Retina');
+      $this->render('/analytics/analytics_container',
+          array(
+              'specialty' => 'Medical Retina',
+              'service_data' => $follow_patient_list,
+              'custom_data' => $custom_data,
+              'patient_list' => $this->patient_list,
+              'user_list' => $user_list,
+              'current_user' => $current_user,
+              'common_disorders' => $common_ophthalmic_disorders,
+          )
       );
-
-      $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
-      $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
-
-      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
-      list($left_crt_list, $right_crt_list) = $this->getCustomCRT($subspecialty_id,$this->surgeon);
-
-      $current_user = User::model()->findByPk(Yii::app()->user->id);
-      if (isset($this->surgeon)){
-          $user_list = null;
-      }else{
-          $user_list = User::model()->findAll();
-      }
-
-      $custom_data = array();
-      foreach (['left','right'] as $side){
-          $custom_data[] = array(
-              array(
-                  'name' => 'VA',
-                  'x' => array_keys(${$side.'_va_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_va_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_va_list'})),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values(${$side.'_va_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-              array(
-                  'name' => 'CRT',
-                  'yaxis' => 'y2',
-                  'x' => array_keys(${$side.'_crt_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_crt_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_crt_list'})),
-                  'error_y' => array(
-                      'type' => 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values(${$side.'_crt_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              )
-          );
-      }
-    $custom_data['csv_data'] = $this->custom_csv_data;
-    $this->render('/analytics/analytics_container',
-        array(
-            'specialty'=>'Medical Retina',
-            'service_data'=> $follow_patient_list,
-            'custom_data' => $custom_data,
-            'patient_list' => $this->patient_list,
-            'user_list' => $user_list,
-            'current_user'=> $current_user,
-            'common_disorders'=> $common_ophthalmic_disorders,
-        )
-    );
   }
   public function actionGlaucoma(){
-      $this->checkAuth();
-      $subspecialty_id = $this->getSubspecialtyID('Glaucoma');
-      $this->filters = array(
-          'date_from' => 0,
-          'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+      list($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data) = $this->getClinicalSpecialityData('Glaucoma');
+      $this->render('/analytics/analytics_container',
+          array(
+              'specialty' => 'Glaucoma',
+              'service_data' => $follow_patient_list,
+              'custom_data' => $custom_data,
+              'patient_list' => $this->patient_list,
+              'user_list' => $user_list,
+              'current_user' => $current_user,
+              'common_disorders' => $common_ophthalmic_disorders,
+          )
       );
-      $this->custom_csv_data = array();
-      list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id,$this->surgeon);
-      list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id,$this->surgeon);
-      $follow_patient_list = $this->getFollowUps($subspecialty_id,$this->surgeon);
-      $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id,true);
-
-      $current_user = User::model()->findByPk(Yii::app()->user->id);
-      if (isset($this->surgeon)){
-          $user_list = null;
-      }else{
-          $user_list = User::model()->findAll();
-      }
-      $custom_data = array();
-      foreach (['left','right'] as $side){
-          $custom_data[] = array(
-              array(
-                  'name' => 'VA',
-                  'x' => array_keys(${$side.'_va_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_va_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_va_list'})),
-                  'error_y'=> array(
-                      'type'=> 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values(${$side.'_va_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              ),
-              array(
-                  'name' => 'IOP',
-                  'yaxis' => 'y2',
-                  'x' => array_keys(${$side.'_iop_list'}),
-                  'y' => array_map(
-                      function ($item){
-                          return $item['average'];
-                      }, array_values(${$side.'_iop_list'})),
-                  'customdata'=>array_map(
-                      function($item){
-                          return $item['patients'];
-                      },
-                      array_values(${$side.'_iop_list'})),
-                  'error_y' => array(
-                      'type' => 'data',
-                      'array' => array_map(
-                          function($item){
-                              return $item['SD'];
-                          },
-                          array_values(${$side.'_iop_list'})),
-                      'visible' => true,
-                      'color' => '#aaa',
-                      'thickness' => 1
-                  )
-              )
-          );
-      }
-      $custom_data['csv_data'] = $this->custom_csv_data;
-    $this->render('/analytics/analytics_container',
-        array(
-            'specialty'=>'Glaucoma',
-            'service_data'=> $follow_patient_list,
-            'custom_data' => $custom_data,
-            'patient_list' => $this->patient_list,
-            'user_list' => $user_list,
-            'current_user'=> $current_user,
-            'common_disorders'=> $common_ophthalmic_disorders,
-        )
-    );
   }
 
   public function sortByTime($a, $b){
@@ -1343,4 +1195,89 @@ class AnalyticsController extends BaseController
           Yii::log($this->surgeon);
       }
   }
+
+    /**
+     * @return array
+     */
+    protected function getClinicalSpecialityData($speciality_name)
+    {
+        $this->checkAuth();
+        $subspecialty_id = $this->getSubspecialtyID($speciality_name);
+        $this->filters = array(
+            'date_from' => 0,
+            'date_to' => Helper::mysqlDate2JsTimestamp(date("Y-m-d h:i:s")),
+        );
+        $this->custom_csv_data = array();
+        $follow_patient_list = $this->getFollowUps($subspecialty_id);
+        $common_ophthalmic_disorders = $this->getCommonDisorders($subspecialty_id, true);
+
+        list($left_iop_list, $right_iop_list) = $this->getCustomIOP($subspecialty_id);
+        list($left_va_list, $right_va_list) = $this->getCustomVA($subspecialty_id);
+
+
+        $current_user = User::model()->findByPk(Yii::app()->user->id);
+        if (isset($this->surgeon)) {
+            $user_list = null;
+        } else {
+            $user_list = User::model()->findAll();
+        }
+        $custom_data = array();
+        foreach (['left', 'right'] as $side) {
+            $custom_data[] = array(
+                array(
+                    'name' => 'VA',
+                    'x' => array_keys(${$side . '_va_list'}),
+                    'y' => array_map(
+                        function ($item) {
+                            return $item['average'];
+                        }, array_values(${$side . '_va_list'})),
+                    'customdata' => array_map(
+                        function ($item) {
+                            return $item['patients'];
+                        },
+                        array_values(${$side . '_va_list'})),
+                    'error_y' => array(
+                        'type' => 'data',
+                        'array' => array_map(
+                            function ($item) {
+                                return $item['SD'];
+                            },
+                            array_values(${$side . '_va_list'})),
+                        'visible' => true,
+                        'color' => '#aaa',
+                        'thickness' => 1
+                    )
+                ),
+                array(
+                    'name' => $speciality_name === 'Glaucoma' ? 'IOP' : 'CRT',
+                    'yaxis' => 'y2',
+                    'x' => $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'}) ,
+                    'y' => array_map(
+                        function ($item) {
+                            return $item['average'];
+                        }, $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                    'customdata' => array_map(
+                        function ($item) {
+                            return $item['patients'];
+                        },
+                        $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                    'error_y' => array(
+                        'type' => 'data',
+                        'array' => array_map(
+                            function ($item) {
+                                return $item['SD'];
+                            },
+                            $speciality_name === 'Glaucoma' ? array_keys(${$side . '_iop_list'}) : array_keys(${$side.'_crt_list'})),
+                        'visible' => true,
+                        'color' => '#aaa',
+                        'thickness' => 1
+                    )
+                )
+            );
+        }
+        $custom_data['csv_data'] = $this->custom_csv_data;
+        return array($follow_patient_list, $common_ophthalmic_disorders, $current_user, $user_list, $custom_data);
+    }
+
+
 }
