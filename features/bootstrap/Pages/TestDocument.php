@@ -8,44 +8,49 @@
 
 use Behat\Behat\Exception\BehaviorException;
 
-class TestDocument extends OpenEyesPage
+class TestDocument extends EventPage
 {
+    public function __construct(\Behat\Mink\Session $session, \SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+        $this->elements = array_merge($this->elements, self::getPageElements());
+    }
+
     protected $path = "OphCoDocument/Default/create?patient_id={patientId}";
-    protected $elements = array(
-        'EventSubType' => array(
-            'xpath' => "//*[@id='Element_OphCoDocument_Document_event_sub_type']"
-        ),
-        'SingleDocument' => array(
-            'xpath' => "//*[@id='upload_box_single_document']"
-        ),
-        'SingleFileUpload' => array(
-            'xpath' => "//*[@value='single']"
-        ),
-        'DoubleFileUpload' => array(
-            'xpath' => "//*[@value='double']"
-        ),
-        'DoubleFileUploadLeft' => array(
-            'xpath' => "//*[@id='left_document_id_row']"
-        ),
-        'DoubleFileUploadRight' => array(
-            'xpath' => "//*[@id='right_document_id_row']"
-        ),
-        'singleFileInput' => array(
-            'xpath' => "//*[@id='Document_single_document_row_id']"
-        ),
-        'leftFileInput' => array(
-            'xpath' => "//*[@id='Document_left_document_row_id']"
-        ),
-        'rightFileInput' => array(
-            'xpath' => "//*[@id='Document_right_document_row_id']"
-        ),
-        'saveBtn' => array(
-            'xpath' => "//*[@id='et_save']"
-        ),
-        'saveOK' => array(
-            'xpath' => "//*[@id='flash-success']"
-        ),
-    );
+
+    protected static function getPageElements()
+    {
+        return array(
+            'EventSubType' => array(
+                'xpath' => "//*[@id='Element_OphCoDocument_Document_event_sub_type']"
+            ),
+            'SingleDocument' => array(
+                'xpath' => "//*[@id='upload_box_single_document']"
+            ),
+            'SingleFileUpload' => array(
+                'xpath' => "//*[@value='single']"
+            ),
+            'DoubleFileUpload' => array(
+                'xpath' => "//*[@value='double']"
+            ),
+            'DoubleFileUploadLeft' => array(
+                'xpath' => "//*[@id='left_document_id_row']"
+            ),
+            'DoubleFileUploadRight' => array(
+                'xpath' => "//*[@id='right_document_id_row']"
+            ),
+            'singleFileInput' => array(
+                'xpath' => "//*[@id='Document_single_document_row_id']"
+            ),
+            'leftFileInput' => array(
+                'xpath' => "//*[@id='Document_left_document_row_id']"
+            ),
+            'rightFileInput' => array(
+                'xpath' => "//*[@id='Document_right_document_row_id']"
+            ),
+        );
+    }
+
 
     public function uploadSingleDocument()
     {
@@ -100,21 +105,4 @@ class TestDocument extends OpenEyesPage
     {
         $this->getElement('saveBtn')->click();
     }
-
-    public function saveDocumentAndConfirm()
-    {
-        $this->getElement('saveBtn')->click();
-
-        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
-        if (!$this->hasDocumentSaved()) {
-            throw new BehaviorException ("WARNING!!!  Document has NOT been saved!!  WARNING!!");
-        }
-    }
-
-    protected function hasDocumentSaved()
-    {
-        return ( bool )$this->find('xpath', $this->getElement('saveOK')->getXpath());
-
-    }
-
 }

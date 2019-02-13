@@ -16,10 +16,10 @@ class LabResultsContext extends PageObjectContext
     {
         /**
          *
-         * @var labResults $type
+         * @var $labResults LabResults
          *
          */
-        $labResults = $this->getPage('labResults');
+        $labResults = $this->getPage('LabResults');
         $labResults->selectLabResultsType($type);
     }
 
@@ -46,15 +46,22 @@ class LabResultsContext extends PageObjectContext
      */
     public function iSelectACommentMessageOf($comment)
     {
+        /**
+         * @var $labResults LabResults
+         */
         $labResults = $this->getPage('LabResults');
         $labResults->selectComment($comment);
     }
 
     /**
      * @Then /^I save the Lab Result and confirm$/
+     *
      */
     public function iSaveTheLabResultAndConfirm()
     {
+        /**
+         * @var $labResults LabResults
+         */
         $labResults = $this->getPage('LabResults');
         $labResults->saveAndConfirm();
     }

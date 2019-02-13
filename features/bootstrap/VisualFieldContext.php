@@ -92,7 +92,7 @@ class VisualFieldContext extends PageObjectContext
          * @var VisualField $visualField
          */
         $visualField = $this->getPage('VisualField');
-        $visualField->saveVisualField();
+        $visualField->saveEvent();
     }
 
     /**
@@ -103,7 +103,7 @@ class VisualFieldContext extends PageObjectContext
          * @var VisualField $visualField
          */
         $visualField = $this->getPage('VisualField');
-        $visualField->saveVisualFieldAndConfirm();
+        $visualField->saveAndConfirm();
     }
 
 
