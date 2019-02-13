@@ -35,6 +35,10 @@ class LabResults extends EventPage
             'commentField' => array(
                 'xpath' => "//*[@id='Element_OphInLabResults_Inr_comment']"
             ),
+             'inrResultField' => array(
+                 'xpath' => "//*[@class='element full edit Element_OphInLabResults_Inr']"
+             ),
+
         );
     }
 
@@ -42,13 +46,15 @@ class LabResults extends EventPage
     {
         $this->getElement('typeBtn')->click();
         $this->getElement('typeBtn')->selectOption($type);
-        sleep(1);
     }
 
     public function selectTimeOfRecording($time)
     {
+        $this->waitForElementDisplayBlock('inrResultField');
+        if($this->getElement('inrResultField')->isVisible()){
         $this->getElement('timeBtn')->click();
         $this->getElement('timeField')->setValue($time);
+        }
     }
 
     public function selectResult($result)
