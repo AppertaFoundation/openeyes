@@ -41,6 +41,7 @@
                                 <li><input type="checkbox" id="js-chart-filter-service-unbooked-only" checked><span>Unbooked Only</span></li>
                             </ul>
                         </div>
+                        <?php if (isset($user_list)) { ?>
                         <div class="flex-item-bottom">
                             <div class="oe-filter-options" id="oe-filter-options-clinical-filters"
                                  data-filter-id="clinical-filters"><!-- simple button to popup filter options -->
@@ -55,7 +56,6 @@
                                         <i class="oe-i remove-circle medium pro-theme"></i>
                                     </div>
                                     <div class="flex-layout flex-top">
-                                        <?php if (isset($user_list)) { ?>
                                             <div class="options-group" data-filter-ui-id="js-chart-filter-clinical-surgeon-diagnosis">
                                                 <h3>Users</h3>
                                                 <ul class="btn-list">
@@ -65,11 +65,11 @@
                                                     <?php } ?>
                                                 </ul>
                                             </div><!-- options-group -->
-                                        <?php } ?>
                                     </div><!-- .flex -->
                                 </div><!-- filter-options-popup -->
                             </div><!-- .oe-filter-options -->
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             <?php if($specialty !== 'All'){?>
