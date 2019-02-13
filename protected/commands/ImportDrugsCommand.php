@@ -464,9 +464,9 @@ EOD;
 
     public function copyToOE()
     {
-        echo "Please wait...".PHP_EOL;
-
-        @unlink('/tmp/ref_medication_set.csv');
+        if(!@unlink('/tmp/ref_medication_set.csv')) {
+        	die("Error while attepting to delete /tmp/ref_medication_set.csv, please delete manually and re-run.");
+		}
 
         $scripts = [
             'delete', 'copy_amp', 'copy_vmp', 'copy_vtm', 'forms_routes', 'sets', 'ref_medication_sets', 'ref_medication_sets_load', 'add_formulary', 'search_index'
@@ -563,7 +563,7 @@ EOD;
 						med.id,
 						mao.id
 						FROM medication AS med
-						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.vmp_code COLLATE utf8_general_ci
 						LEFT JOIN {$this->tablePrefix}vmp_drug_route AS dr ON dr.vpid = vmp.vpid
 						LEFT JOIN medication_attribute_option AS mao ON mao.`value` COLLATE utf8_general_ci = dr.routecd COLLATE utf8_general_ci
 						LEFT JOIN medication_attribute AS attr ON mao.medication_attribute_id = attr.id
@@ -580,7 +580,7 @@ EOD;
 						med.id,
 						{$pres_free_opt_id}
 						FROM medication AS med						
-						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.preferred_code COLLATE utf8_general_ci
+						LEFT JOIN {$this->tablePrefix}vmp_vmps AS vmp ON vmp.vpid COLLATE utf8_general_ci = med.vmp_code COLLATE utf8_general_ci
 						WHERE vmp.pres_f = '0001'
 						";
 
@@ -613,7 +613,7 @@ EOD;
 
 						$cmd = "INSERT INTO medication_attribute_assignment (medication_id, medication_attribute_option_id)
 								VALUES ( 
-								(SELECT id FROM medication WHERE preferred_code = '{$amp[$id_col]}'),
+								(SELECT id FROM medication WHERE amp_code = '{$amp[$id_col]}'),
 								(SELECT mao.id 
 									FROM medication_attribute_option mao
 									LEFT JOIN medication_attribute ma ON ma.id = mao.medication_attribute_id 
