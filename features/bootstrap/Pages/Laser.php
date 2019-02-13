@@ -1,82 +1,87 @@
 <?php
 use Behat\Behat\Exception\BehaviorException;
-class Laser extends OpenEyesPage {
+class Laser extends EventPage {
 	protected $path = "/site/OphTrLaser/Default/create?patient_id={patientId}";
-	protected $elements = array (
-			
-			'laserSiteID' => array (
-					'xpath' => "//*[@id='Element_OphTrLaser_Site_site_id']" 
-			),
-			'laserID' => array (
-					'xpath' => "//*[@id='Element_OphTrLaser_Site_laser_id']" 
-			),
-			'laserOperator' => array (
-					'xpath' => "//*[@id='Element_OphTrLaser_Site_operator_id']" 
-			),
-			'rightProcedure' => array (
-					'xpath' => ".//*[@id='treatment_right_procedures']" 
-			),
-			'leftProcedure' => array (
-					'xpath' => "//*[@id='treatment_left_procedures']" 
-			),
-			'saveLaser' => array (
-					'xpath' => "//*[@id='et_save']" 
-			),
-			'saveLaserOK' => array (
-					'xpath' => "//*[@id='flash-success']" 
-			),
-			'siteValidationError' => array (
-					//'xpath' => "//*[@class='alert-box errorlink with-icon']//*[contains(text(),'Site: Site cannot be blank.')]"
-					'xpath' => "//*[contains(text(),'Site cannot be blank.')]"
-			),
-			'laserValidationError' => array (
-					'xpath' => "//*[contains(text(),'Laser cannot be blank.')]"
-			),
-			'treatmentLeftValidationError' => array (
-					'xpath' => "//*[contains(text(),'Left Procedures cannot be blank.')]"
-			),
-			'treatmentRightValidationError' => array (
-					'xpath' => "//*[contains(text(),'Right Procedures cannot be blank.')]"
-			),
-			'removeLastProcedure' => array (
-					'xpath' => "//a[contains(text(),'Remove')]" 
-			),
-			'removeRightEye' => array (
-					'xpath' => "//*[@class='js-element-eye right-eye column side left']//a[contains(text(),'Remove eye')]"
-			),
-			'addRightEye' => array (
-					'xpath' => "//*[@class='js-element-eye right-eye column side left inactive']//a[contains(text(),'Add right side')]"
-			),
-			'expandComments' => array (
-					'xpath' => "//*[@class='optional-elements-list']//a[contains(text(),'Comments')]" 
-			),
-			'commentsField' => array (
-					'xpath' => "//*[@id='Element_OphTrLaser_Comments_comments']" 
-			),
-			'collapseComments' => array (
-					//'xpath' => "//*[@class='icon-button-small-mini-cross']"
-					'xpath' => "//*[@class='button button-icon small js-remove-element 1']//*[@class='icon-button-small-mini-cross']"
-			),
-        //add for laser test
-            'addProcedureRightBtn'=>array(
-                'xpath'=>"//*[@id='add-procedure-btn-right']"
+
+    public function __construct(\Behat\Mink\Session $session, \SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+        $this->elements = array_merge($this->elements, self::getPageElements());
+    }
+
+    protected static function getPageElements()
+    {
+        return array(
+
+            'laserSiteID' => array(
+                'xpath' => "//*[@id='Element_OphTrLaser_Site_site_id']"
             ),
-            'addProcedureLeftBtn'=>array(
-                'xpath'=>"//*[@id='add-procedure-btn-left']"
+            'laserID' => array(
+                'xpath' => "//*[@id='Element_OphTrLaser_Site_laser_id']"
             ),
-            'addProcedureList'=>array(
-                'css'=>".oe-add-select-search.auto-width"
+            'laserOperator' => array(
+                'xpath' => "//*[@id='Element_OphTrLaser_Site_operator_id']"
             ),
-            'addProcedureBtn'=>array(
-                'css'=>'.add-icon-btn'
+            'rightProcedure' => array(
+                'xpath' => ".//*[@id='treatment_right_procedures']"
             ),
-            'rightEyeColumn'=>array(
-                'css'=>'.js-element-eye.right-eye.column.left.side'
+            'leftProcedure' => array(
+                'xpath' => "//*[@id='treatment_left_procedures']"
             ),
-            'leftEyeColumn'=>array(
-                'css'=>'.js-element-eye.left-eye.column.right.side'
+            'siteValidationError' => array(
+                //'xpath' => "//*[@class='alert-box errorlink with-icon']//*[contains(text(),'Site: Site cannot be blank.')]"
+                'xpath' => "//*[contains(text(),'Site cannot be blank.')]"
+            ),
+            'laserValidationError' => array(
+                'xpath' => "//*[contains(text(),'Laser cannot be blank.')]"
+            ),
+            'treatmentLeftValidationError' => array(
+                'xpath' => "//*[contains(text(),'Left Procedures cannot be blank.')]"
+            ),
+            'treatmentRightValidationError' => array(
+                'xpath' => "//*[contains(text(),'Right Procedures cannot be blank.')]"
+            ),
+            'removeLastProcedure' => array(
+                'xpath' => "//a[contains(text(),'Remove')]"
+            ),
+            'removeRightEye' => array(
+                'xpath' => "//*[@class='js-element-eye right-eye column side left']//a[contains(text(),'Remove eye')]"
+            ),
+            'addRightEye' => array(
+                'xpath' => "//*[@class='js-element-eye right-eye column side left inactive']//a[contains(text(),'Add right side')]"
+            ),
+            'expandComments' => array(
+                'xpath' => "//*[@class='optional-elements-list']//a[contains(text(),'Comments')]"
+            ),
+            'commentsField' => array(
+                'xpath' => "//*[@id='Element_OphTrLaser_Comments_comments']"
+            ),
+            'collapseComments' => array(
+                //'xpath' => "//*[@class='icon-button-small-mini-cross']"
+                'xpath' => "//*[@class='button button-icon small js-remove-element 1']//*[@class='icon-button-small-mini-cross']"
+            ),
+            //add for laser test
+            'addProcedureRightBtn' => array(
+                'xpath' => "//*[@id='add-procedure-btn-right']"
+            ),
+            'addProcedureLeftBtn' => array(
+                'xpath' => "//*[@id='add-procedure-btn-left']"
+            ),
+            'addProcedureList' => array(
+                'css' => ".oe-add-select-search.auto-width"
+            ),
+            'addProcedureBtn' => array(
+                'css' => '.add-icon-btn'
+            ),
+            'rightEyeColumn' => array(
+                'css' => '.js-element-eye.right-eye.column.left.side'
+            ),
+            'leftEyeColumn' => array(
+                'css' => '.js-element-eye.left-eye.column.right.side'
             )
-	);
+        );
+    }
+
 	public function laserSiteID($site) {
 		$this->getElement ( 'laserSiteID' )->selectOption ( $site );
 	}
@@ -100,7 +105,6 @@ class Laser extends OpenEyesPage {
     // add for laser test
 	public function addProcedure($procedure,$left_indicator){
 	    $procedure = str_replace(' '," ",$procedure);
-	    $this->elements['Laser_val'] = array();
         $this->elements['Laser_val'] = array(
             'css'=> 'li[data-label=\''.$procedure.'\']',
         );
@@ -113,30 +117,11 @@ class Laser extends OpenEyesPage {
 
         }
     }
-    //
 
-	public function saveLaser() {
-		$this->getElement ( 'saveLaser' )->click ();
-	}
-	protected function hasLaserSaved() {
-		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'saveLaserOK' )->getXpath () );
-	}
-	public function saveLaserAndConfirm() {
-	    sleep(5);
-		$this->getElement ( 'saveLaser' )->click ();
 
-		$this->getSession ()->wait ( 5000, 'window.$ && $.active == 0' );
-		if (!$this->hasLaserSaved ()) {
-			throw new BehaviorException ( "WARNING!!!  Laser has NOT been saved!!  WARNING!!" );
-		}
-	}
 	public function laserValidationError() {
 		return ( bool ) $this->find ( 'xpath', $this->getElement ( 'siteValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'laserValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentLeftValidationError' )->getXpath () ) && ( bool ) $this->find ( 'xpath', $this->getElement ( 'treatmentRightValidationError' )->getXpath () );
 	}
-	
-/* 	public function laserValidationError() {
-	 return ( bool ) $this->find ( 'xpath', $this->getElement ( 'siteValidationError' )->getXpath () );
-} */
 	
 	public function laserValidationCheck() {
 		if (!$this->laserValidationError ()) {

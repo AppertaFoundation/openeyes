@@ -1614,7 +1614,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination = $this->getPage('Examination');
-        $examination->saveExaminationOnly();
+        $examination->saveEvent();
     }
 
     /**
@@ -1627,7 +1627,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination = $this->getPage('Examination');
-        $examination->saveExaminationAndConfirm();
+        $examination->saveAndConfirm();
     }
 
     // VALIDATION TESTS

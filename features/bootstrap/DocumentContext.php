@@ -121,7 +121,7 @@ class DocumentContext extends PageObjectContext
          * @var Testdocument $document
          */
         $document=$this->getPage('TestDocument');
-        $document->saveDocumentAndConfirm();
+        $document->saveAndConfirm();
     }
 
 }

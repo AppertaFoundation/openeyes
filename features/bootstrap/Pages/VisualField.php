@@ -8,29 +8,33 @@
 
 use Behat\Behat\Exception\BehaviorException;
 
-class VisualField extends OpenEyesPage
+class VisualField extends EventPage
 {
+    public function __construct(\Behat\Mink\Session $session, \SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface $pageFactory, array $parameters = array())
+    {
+        parent::__construct($session, $pageFactory, $parameters);
+        $this->elements = array_merge($this->elements, self::getPageElements());
+    }
+
     protected $path = "OphInVisualfields/Default/create?patient_id={patientId}";
-    protected $elements = array(
-        'abilitySelect' => array(
-            'xpath' => "//*[@id='MultiSelect_ability']"
-        ),
-        'comment' => array(
-            'xpath' => "//*[@id='Element_OphInVisualfields_Comments_comments']"
-        ),
-        'result' => array(
-            'xpath' => "//*[@id='MultiSelect_assessment']"
-        ),
-        'resultOther' => array(
-            'xpath' => "//*[@id='Element_OphInVisualfields_Result_other']"
-        ),
-        'saveBtn' => array(
-            'xpath' => "//*[@id='et_save']"
-        ),
-        'saveOK' => array(
-            'xpath' => "//*[@id='flash-success']"
-        ),
-    );
+
+    protected static function getPageElements()
+    {
+        array(
+            'abilitySelect' => array(
+                'xpath' => "//*[@id='MultiSelect_ability']"
+            ),
+            'comment' => array(
+                'xpath' => "//*[@id='Element_OphInVisualfields_Comments_comments']"
+            ),
+            'result' => array(
+                'xpath' => "//*[@id='MultiSelect_assessment']"
+            ),
+            'resultOther' => array(
+                'xpath' => "//*[@id='Element_OphInVisualfields_Result_other']"
+            ),
+        );
+    }
 
     public function selectAbility($ability)
     {
@@ -66,26 +70,4 @@ class VisualField extends OpenEyesPage
     {
         $this->getElement('resultOther')->setValue($result_comment);
     }
-
-    public function saveVisualField()
-    {
-        $this->getElement('saveBtn')->click();
-    }
-
-    public function saveVisualFieldAndConfirm()
-    {
-        $this->getElement('saveBtn')->click();
-
-        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
-        if (!$this->hasVisualFieldSaved()) {
-            throw new BehaviorException ("WARNING!!!  VisualField has NOT been saved!!  WARNING!!");
-        }
-    }
-
-    protected function hasVisualFieldSaved()
-    {
-        return ( bool )$this->find('xpath', $this->getElement('saveOK')->getXpath());
-
-    }
-
 }

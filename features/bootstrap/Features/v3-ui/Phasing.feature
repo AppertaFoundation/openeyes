@@ -10,9 +10,7 @@ Feature: Phasing Test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
+
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
 
@@ -39,5 +37,5 @@ Feature: Phasing Test
 
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event                  |right_instrument   |right_reading_time |right_reading |right_comment       |left_instrument   |left_reading_time |left_reading |left_comment|
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiPhasing           |Goldmann           |01:13              |128           |Nothing to comment  |Other             |05:06             |23           |Seriously   |
+      |uname|pwd  |lastName|firstName|event                  |right_instrument   |right_reading_time |right_reading |right_comment       |left_instrument   |left_reading_time |left_reading |left_comment|
+      |admin|admin|Coffin, |Violet   |OphCiPhasing           |Goldmann           |01:13              |128           |Nothing to comment  |Other             |05:06             |23           |Seriously   |
