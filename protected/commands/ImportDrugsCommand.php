@@ -464,8 +464,8 @@ EOD;
 
     public function copyToOE()
     {
-        if(!@unlink('/tmp/ref_medication_set.csv')) {
-        	die("Error while attepting to delete /tmp/ref_medication_set.csv, please delete manually and re-run.");
+        if(file_exists('/tmp/ref_medication_set.csv') && !@unlink('/tmp/ref_medication_set.csv')) {
+        	die("Error while attepting to delete /tmp/ref_medication_set.csv, please delete manually and re-run.".PHP_EOL);
 		}
 
         $scripts = [
