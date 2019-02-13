@@ -10,9 +10,6 @@ Feature: Allergy test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
 
@@ -27,5 +24,5 @@ Feature: Allergy test
     Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event            | allergy |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphCiExamination | Other   |
+      |uname|pwd  |lastName|firstName|event            | allergy |
+      |admin|admin|Coffin, |Violet   |OphCiExamination | Other   |

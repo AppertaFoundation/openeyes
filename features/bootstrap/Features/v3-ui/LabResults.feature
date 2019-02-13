@@ -21,6 +21,7 @@ Feature: Lab Results test
 
     Then I save the Lab Result and confirm
     And I delete the event
+    Then I logout
 
 
     Examples:

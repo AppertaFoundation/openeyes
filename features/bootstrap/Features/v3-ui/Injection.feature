@@ -10,9 +10,7 @@ Feature: Intravitreal Injection Test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
+
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
     And I select the Medical Retina option in the sidebar
@@ -49,5 +47,5 @@ Feature: Intravitreal Injection Test
     Then I logout
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event                            |right_agent   |right_pre_antiseptic |right_pre_skin |right_drug |right_batch_number |right_injection_by |right_post_drop|right_comment|left_agent   |left_pre_antiseptic |left_pre_skin |left_drug                   |left_batch_number |left_injection_by |left_post_drop                               |left_comment     |
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphTrIntravitrealinjection       |G Benoxinate  |Iodine 5%            |Iodine 10%     |Foscarnet  |3                  |Stevens Simon      |None           |Lens damage  |G Benoxinate |Iodine 5%           |Iodine 10%    |Photodynamic Therapy (PDT)  |5                 |Stevens Simon     | G. Levofloxacin four times daily for 5 days |Corneal abrasion |
+      |uname|pwd  |lastName|firstName|event                            |right_agent   |right_pre_antiseptic |right_pre_skin |right_drug |right_batch_number |right_injection_by |right_post_drop|right_comment|left_agent   |left_pre_antiseptic |left_pre_skin |left_drug                   |left_batch_number |left_injection_by |left_post_drop                               |left_comment     |
+      |admin|admin|Coffin, |Violet   |OphTrIntravitrealinjection       |G Benoxinate  |Iodine 5%            |Iodine 10%     |Foscarnet  |3                  |Stevens Simon      |None           |Lens damage  |G Benoxinate |Iodine 5%           |Iodine 10%    |Photodynamic Therapy (PDT)  |5                 |Stevens Simon     | G. Levofloxacin four times daily for 5 days |Corneal abrasion |

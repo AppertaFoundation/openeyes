@@ -10,9 +10,7 @@ Feature: Prescription Test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "<uname>" and "<pwd>"
-    And I select Change Firm
-    And I select Site "<siteName/Number>"
-    Then I select a firm of "<firmName/Number>"
+
 
     Then I search for patient name last name "<lastName>" and first name "<firstName>"
     And I add a New Event "<event>"
@@ -38,5 +36,5 @@ Feature: Prescription Test
 
 
     Examples:
-      |uname|pwd  |siteName/Number|firmName/Number           |lastName|firstName|event                            |drug                                         |comment                |dose|route|eye_option|frequency|duration|condition         |location|
-      |admin|admin|Kings          |MR Clinic (Medical Retina)|Coffin, |Violet   |OphDrPrescription                |heparin 5,000 units in 1mL eye drops         |testing testing testing|10  |Eye  |Both      |6/day    |7 days  |Hospital to supply|Pharmacy|
+      |uname|pwd  |lastName|firstName|event                            |drug                                         |comment                |dose|route|eye_option|frequency|duration|condition         |location|
+      |admin|admin|Coffin, |Violet   |OphDrPrescription                |heparin 5,000 units in 1mL eye drops         |testing testing testing|10  |Eye  |Both      |6/day    |7 days  |Hospital to supply|Pharmacy|
