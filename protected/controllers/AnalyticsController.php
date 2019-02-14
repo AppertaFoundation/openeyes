@@ -341,7 +341,9 @@ class AnalyticsController extends BaseController
                 $left_reading = $element['left_reading'];
                 $right_reading = $element['right_reading'];
             }
-
+            if (!isset($left_reading) && !isset($right_reading)){
+                continue;
+            }
             /*Only use data which is created by the selected surgeon*/
             if (isset($surgeon_id)){
                 if ($surgeon_id !== $element['created_user_id']){
@@ -471,6 +473,9 @@ class AnalyticsController extends BaseController
           }else{
               $left_reading = $element->getReading('left');
               $right_reading = $element->getReading('right');
+          }
+          if (!isset($left_reading) && !isset($right_reading)){
+              continue;
           }
           $current_event = $element->event;
           if(isset($current_event->episode)) {
