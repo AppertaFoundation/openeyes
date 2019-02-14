@@ -20,6 +20,7 @@
 <script id="row_template" type="x-tmpl-mustache">
     <tr id="{{ key }}">
         <td>
+        <input type="hidden" name="Medication[medicationAttributeAssignment][id][]" value="-1" />
             <?php echo CHtml::dropDownList('Medication[medicationAttributeAssignment][medication_attribute_id][]', null, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id{{ key }}')); ?>
         </td>
         <td>
@@ -76,6 +77,7 @@
         ?>
         <tr data-key="<?=$rowkey?>">
             <td>
+                <input type="hidden" name="Medication[medicationAttributeAssignment][id][]" value="<?=$assignment->id?>" />
                 <?php echo CHtml::dropDownList('Medication[medicationAttributeAssignment][medication_attribute_id][]', $attr_id, CHtml::listData($attrs, 'id', 'name'), array('empty' => '-- Please select --', "class" => "js-attribute", "id" => 'Medication_attribute_id'.$rowkey)); ?>
             </td>
             <td>

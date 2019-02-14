@@ -27,6 +27,7 @@ class RefMedicationAdminController extends BaseAdminController
         $admin->setListFields(array(
             'id',
             'source_type',
+            'source_subtype',
             'preferred_term',
             'alternativeTerms',
             'vtm_term',
@@ -35,6 +36,8 @@ class RefMedicationAdminController extends BaseAdminController
         ));
 
         $admin->getSearch()->addSearchItem('preferred_term');
+        $admin->getSearch()->addSearchItem('source_type');
+        $admin->getSearch()->addSearchItem('source_subtype');
 
         $admin->setModelDisplayName('All Medications');
 
@@ -108,6 +111,10 @@ class RefMedicationAdminController extends BaseAdminController
     {
         $admin = $this->_getEditAdmin($id);
 
+        $old_attrs = array();
+
+		/** @var Medication $model */
+
         if(is_null($id)) {
             $model = new Medication();
         }
@@ -115,9 +122,14 @@ class RefMedicationAdminController extends BaseAdminController
             if(!$model = Medication::model()->findByPk($id)) {
                 throw new CHttpException(404, 'Page not found');
             }
-        }
 
-        /** @var Medication $model */
+            // store old attrs
+			foreach ($model->medicationAttributeAssignments as $assignment) {
+            	$old_attrs[$assignment->id] = [
+            		'option_id' => $assignment->medication_attribute_option_id
+				];
+			}
+        }
 
         $data = Yii::app()->request->getPost('Medication');
         $model->setAttributes($data);
@@ -129,6 +141,8 @@ class RefMedicationAdminController extends BaseAdminController
         }
 
         $model->save();
+
+        // update indices
 
         $existing_ids = array();
         $updated_ids = array();
@@ -160,6 +174,34 @@ class RefMedicationAdminController extends BaseAdminController
         if(!empty($deleted_ids)) {
             MedicationSearchIndex::model()->deleteByPk($deleted_ids);
         }
+
+        // update attribute assignments
+
+		if(!array_key_exists('medicationAttributeAssignment', $data)) {
+			$data['medicationAttributeAssignment'] = array();
+		}
+
+		$updated_ids = array();
+		foreach ($data['medicationAttributeAssignment']['id'] as $key=>$assignment_id) {
+        	if($assignment_id == -1) {
+        		$assignment = new MedicationAttributeAssignment();
+        		$assignment->medication_id = $model->id;
+        		$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+				$assignment->save();
+        	}
+			else {
+				$assignment = MedicationAttributeAssignment::model()->findByPk($assignment_id);
+				$assignment->medication_attribute_option_id = $data['medicationAttributeAssignment']['medication_attribute_option_id'][$key];
+				$assignment->save();
+				$updated_ids[] = $assignment_id;
+			}
+		}
+
+		foreach ($old_attrs as $id=>$attr) {
+			if(!in_array($id, $updated_ids)) {
+				MedicationAttributeAssignment::model()->deleteByPk($id);
+			}
+		}
 
         $this->redirect('/OphDrPrescription/refMedicationAdmin/list');
 

@@ -33,6 +33,8 @@
  */
 class Medication extends BaseActiveRecordVersioned
 {
+	const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -224,13 +226,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function isPreservativeFree()
     {
-        foreach ($this->getTypes() as $type) {
-            if($type->name == 'Preservative free') {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($this->getAttrs(self::ATTR_PRESERVATIVE_FREE));
     }
 
     /**
@@ -246,7 +242,7 @@ class Medication extends BaseActiveRecordVersioned
         }
 
         if ($this->isPreservativeFree()) {
-            $name.= ' (No Preservative)';
+            $name.= ' (PF)';
         }
 
         return $name;
