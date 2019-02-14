@@ -22,7 +22,7 @@
         clinical_layout['yaxis']['showgrid'] = false;
         clinical_layout['yaxis']['tickvals'] = clinical_data['y'];
         clinical_layout['yaxis']['ticktext'] = clinical_data['text'];
-        clinical_layout['clickmode'] = 'event+select';
+        clinical_layout['clickmode'] = 'event';
         clinical_layout['hovermode'] = 'y';
         Plotly.newPlot(
             'js-hs-chart-analytics-clinical', data ,clinical_layout, analytics_options
@@ -32,6 +32,8 @@
             var custom_data = data.points[0].customdata;
             if (!Array.isArray(custom_data)){
                 if ('text' in custom_data && 'customdata' in custom_data){
+                    clinical_data['y'] = $('#js-hs-chart-analytics-clinical')[0].layout['yaxis']['tickvals'];
+                    clinical_data['text'] = $('#js-hs-chart-analytics-clinical')[0].layout['yaxis']['ticktext'];
                     $('#js-back-to-common-disorder').show();
                     //click on "other" bar, redraw the chart show details of other disorders.
                     custom_data['type'] = 'bar';
