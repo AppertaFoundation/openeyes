@@ -635,9 +635,9 @@ class AnalyticsController extends BaseController
       return [$left_list,$right_list];
   }
 
-  public function getCommonDisorders($subspecialty_id, $only_name = false){
+  public function getCommonDisorders($subspecialty_id = null, $only_name = false){
       $criteria = new CDbCriteria();
-      if (isset($criteria)){
+      if (isset($criteria) && isset($subspecialty_id)){
           $criteria->compare('subspecialty_id', $subspecialty_id);
       }
       $common_ophthalmic_disorders= CommonOphthalmicDisorder::model()->findAll($criteria);
@@ -725,7 +725,7 @@ class AnalyticsController extends BaseController
                   continue;
 
               $current_episode = $current_event->episode;
-              if ($current_episode->getSubspecialtyId() !== $subspecialty_id)
+              if ($current_episode->getSubspecialtyId() !== $subspecialty_id && isset($subspecialty_id))
                   continue;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
