@@ -652,13 +652,18 @@ class AnalyticsController extends BaseController
       }
       return $common_ophthalmic_disorders;
   }
-  public function getPatientsListByDiagnosisSurgeon($surgeon_id = null){
+  public function getPatientsListByDiagnosisSurgeon($surgeon_id = null, $subspecialty = null){
         $command = Yii::app()->db->createCommand()
             ->select('e2.patient_id as patient_id')
             ->from('et_ophciexamination_diagnoses eod')
-            ->join('event e','e.id = eod.event_id')
-            ->join('episode e2','e2.id = e.episode_id')
+            ->leftJoin('event e','e.id = eod.event_id')
+            ->leftJoin('episode e2','e2.id = e.episode_id')
+            ->leftJoin('firm','firm.id = e2.firm_id')
+            ->leftJoin('service_subspecialty_assignment ssa','firm.service_subspecialty_assignment_id = ssa.id')
             ->group('e2.patient_id');
+        if (isset($subspecialty)){
+            $command->where('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty));
+        }
         if (isset($surgeon_id)){
             $command->where('eod.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
         }
@@ -672,7 +677,7 @@ class AnalyticsController extends BaseController
         }
         return $patients_list;
     }
-  public function getDisorders($subspecialty_id, $surgeon_id = null, $start_date = null, $end_date = null){
+  public function getDisorders($subspecialty_id=null, $surgeon_id = null, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
           'y'=>array(),
@@ -705,7 +710,7 @@ class AnalyticsController extends BaseController
 
       //get all the diagnoses and the patient list
       $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
-      $all_patients = $this->getPatientsListByDiagnosisSurgeon($surgeon_id);
+      $all_patients = $this->getPatientsListByDiagnosisSurgeon($surgeon_id,$subspecialty_id);
       foreach ($diagnoses_elements as $diagnosis_element_item){
           if (isset($surgeon_id)){
               if ($surgeon_id !== $diagnosis_element_item->created_user_id){
@@ -720,6 +725,8 @@ class AnalyticsController extends BaseController
                   continue;
 
               $current_episode = $current_event->episode;
+              if ($current_episode->getSubspecialtyId() !== $subspecialty_id)
+                  continue;
               $current_patient = $current_episode->patient;
               if (!array_key_exists($current_patient->id, $this->patient_list)){
                   $this->patient_list[$current_patient->id] = $current_patient;
