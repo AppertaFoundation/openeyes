@@ -18,7 +18,7 @@
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('LaserSpot','PI' ,'PosteriorCapsule', 'CornealGraft', 'EndothelialKeratoplasty', 'ContinuousCornealSuture'),
+        array('LaserSpot','PI' ,'PosteriorCapsule', 'CornealGraft', 'EndothelialKeratoplasty', 'CornealSuture', 'ContinuousCornealSuture'),
     ),
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
