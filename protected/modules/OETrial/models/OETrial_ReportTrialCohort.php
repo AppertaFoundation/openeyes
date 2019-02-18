@@ -34,7 +34,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             ->join('trial_patient t_p', 't.id = t_p.trial_id')
             ->join('patient p', 'p.id = t_p.patient_id')
             ->join('contact c', 'p.contact_id = c.id')
-            ->group('p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type_id, t_p.status_id')
+            ->group('p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.treatment_type_id, t_p.status_id, t_p.comment')
             ->order('c.first_name, c.last_name');
     }
 
@@ -43,7 +43,7 @@ class OETrial_ReportTrialCohort extends BaseReport
      */
     public function run()
     {
-        $select = 'p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.id as trial_patient_id';
+        $select = 'p.id, p.hos_num, c.first_name, c.last_name, p.dob, t_p.external_trial_identifier, t_p.comment, t_p.id as trial_patient_id';
 
         $query = $this->getDbCommand();
 
@@ -87,6 +87,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             'last_name' => $item['last_name'],
             'external_trial_identifier' => $item['external_trial_identifier'],
             'trial_patient_id' => $item['trial_patient_id'],
+            'comment'=>$item['comment'],
         );
     }
 
@@ -108,6 +109,7 @@ class OETrial_ReportTrialCohort extends BaseReport
         $cols[] = TrialPatient::model()->getAttributeLabel('status_id');
         $cols[] = 'Diagnoses';
         $cols[] = 'Medications';
+        $cols[] = TrialPatient::model()->getAttributeLabel('comment');
         $rows[] = $cols;
 
         foreach ($this->patients as $ts => $patient) {
@@ -148,7 +150,7 @@ class OETrial_ReportTrialCohort extends BaseReport
                 $medications[] = $medication->getMedicationDisplay();
             }
             $cols[] = implode($medications, '; ');
-
+            $cols[] = $trial_patient->comment;
             $rows[] = $cols;
         }
 

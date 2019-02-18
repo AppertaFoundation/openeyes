@@ -62,7 +62,7 @@
         <div class="change-subspecialty">
           <h6>Add New Subspecialty</h6>
           <select class="new-subspecialty">
-            <option value="">- Please Select -</option>
+            <option value="">Select</option>
             {{#selectableSubspecialties}}
             <option value="{{id}}">{{name}} ({{shortName}})</option>
             {{/selectableSubspecialties}}

@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -35,14 +34,13 @@ class BaseEventTypeElement extends BaseElement
     /**
      * set to true for the element to load from previous
      * @see BaseElement::loadFromExisting
-    */
+     */
     protected $default_from_previous = false;
 
     // array of audit messages
     protected $audit = array();
 
     protected $_element_type;
-    protected $_children;
     protected $frontEndErrors = array();
     // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
@@ -60,26 +58,14 @@ class BaseEventTypeElement extends BaseElement
     private $settings = array();
 
     /**
-     * Get the ElementType for this element.
+     * Return the title of the element to be displayed in view mode
+     * Should be overridden by subclasses to customise the title
      *
-     * @return ElementType
+     * @return string The title to be displayed
      */
-    public function getElementType()
+    public function getViewTitle()
     {
-        if (!$this->_element_type) {
-            $this->_element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
-        }
-
-        return $this->_element_type;
-    }
-
-    /**
-     * @return BaseAPI
-     */
-    public function getModuleApi()
-    {
-        $event_type = $this->getElementType()->event_type;
-        return $this->getApp()->moduleAPI->get($event_type->class_name);
+        return $this->getElementTypeName();
     }
 
     /**
@@ -93,14 +79,17 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * Return the title of the element to be displayed in view mode
-     * Should be overridden by subclasses to customise the title
+     * Get the ElementType for this element.
      *
-     * @return string The title to be displayed
+     * @return ElementType
      */
-    public function getViewTitle()
+    public function getElementType()
     {
-        return $this->getElementTypeName();
+        if (!$this->_element_type) {
+            $this->_element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
+        }
+
+        return $this->_element_type;
     }
 
     /**
@@ -135,16 +124,6 @@ class BaseEventTypeElement extends BaseElement
         return false;
     }
 
-    /**
-     * Is this a required element?
-     *
-     * @return bool
-     */
-    public function isRequired()
-    {
-        return $this->elementType->required;
-    }
-
     public function getDisplayAttributes()
     {
         return $this->getAttributes();
@@ -171,6 +150,16 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Is this a required element?
+     *
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->elementType->required;
+    }
+
+    /**
      * Is this element to be hidden in the UI? (Prevents the elements from
      * being displayed on page load.).
      *
@@ -179,53 +168,6 @@ class BaseEventTypeElement extends BaseElement
     public function isHiddenInUI()
     {
         return false;
-    }
-
-    /**
-     * get the child element types for this BaseEventElementType.
-     *
-     * @return ElementType[]
-     */
-    public function getChildElementTypes()
-    {
-        return ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
-    }
-    /**
-     * set the children for this element - allows external definition of what the children should
-     * be (for workflows determined by controllers and the like.
-     *
-     * @param BaseEventTypeElement[] $children
-     */
-    public function setChildren($children)
-    {
-        $this->_children = $children;
-    }
-
-    /**
-     * Return this elements children.
-     *
-     * @return array
-     */
-    public function getChildren()
-    {
-        if ($this->_children === null) {
-            $this->_children = array();
-            foreach ($this->getChildElementTypes() as $child_element_type) {
-                if ($this->event_id) {
-                    if ($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
-                        $this->_children[] = $element;
-                    }
-                } else {
-                    // set the children to be based on the standard defaults - can be overridden by setting the children
-                    // with setChildren method outside of the element model
-                    if ($child_element_type->default) {
-                        $this->_children[] = new $child_element_type->class_name();
-                    }
-                }
-            }
-        }
-
-        return $this->_children;
     }
 
     public function render($action)
@@ -244,6 +186,18 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * @param \Patient $patient
+     */
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+        if ($this->default_from_previous && $patient) {
+            if ($previous = $this->getMostRecentForPatient($patient)) {
+                $this->loadFromExisting($previous);
+            }
+        }
+    }
+
+    /**
      * Get the most recent instance of this element type for the given patient. If there isn't one,
      * then returns $this
      *
@@ -257,15 +211,12 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * @param \Patient $patient
+     * @return BaseAPI
      */
-    public function setDefaultOptions(\Patient $patient = null)
+    public function getModuleApi()
     {
-        if ($this->default_from_previous && $patient) {
-            if ($previous = $this->getMostRecentForPatient($patient)) {
-                $this->loadFromExisting($previous);
-            }
-        }
+        $event_type = $this->getElementType()->event_type;
+        return $this->getApp()->moduleAPI->get($event_type->class_name);
     }
 
     /**
@@ -280,6 +231,16 @@ class BaseEventTypeElement extends BaseElement
     {
     }
 
+    public function getCreate_view()
+    {
+        return $this->getForm_View();
+    }
+
+    public function getForm_View()
+    {
+        return 'form_' . $this->getDefaultView();
+    }
+
     public function getDefaultView()
     {
         $kls = explode('\\', get_class($this));
@@ -287,19 +248,9 @@ class BaseEventTypeElement extends BaseElement
         return end($kls);
     }
 
-    public function getCreate_view()
-    {
-        return $this->getForm_View();
-    }
-
     public function getUpdate_view()
     {
         return $this->getForm_View();
-    }
-
-    public function getView_view()
-    {
-        return 'view_'.$this->getDefaultView();
     }
 
     public function getPrint_view()
@@ -307,9 +258,9 @@ class BaseEventTypeElement extends BaseElement
         return $this->getView_View();
     }
 
-    public function getForm_View()
+    public function getView_view()
     {
-        return 'form_'.$this->getDefaultView();
+        return 'view_' . $this->getDefaultView();
     }
 
     public function getDefaultContainerView()
@@ -327,14 +278,14 @@ class BaseEventTypeElement extends BaseElement
         return '//patient/element_container_print';
     }
 
-    public function getContainer_form_view()
-    {
-        return '//patient/element_container_form';
-    }
-
     public function getContainer_create_view()
     {
         return $this->getContainer_form_view();
+    }
+
+    public function getContainer_form_view()
+    {
+        return '//patient/element_container_form';
     }
 
     public function getContainer_update_view()
@@ -347,11 +298,33 @@ class BaseEventTypeElement extends BaseElement
         return true;
     }
 
+    /**
+     *  returns the front-end attributes with errors.
+     */
+    public function getFrontEndErrors()
+    {
+        echo json_encode($this->frontEndErrors);
+    }
+
+    public function requiredIfSide($attribute, $params)
+    {
+        if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {
+            if ($this->$attribute !== 0 && $this->$attribute == null) {
+                if (!@$params['message']) {
+                    $params['message'] = ucfirst($params['side']) . ' {attribute} cannot be blank.';
+                }
+                $params['{attribute}'] = $this->getAttributeLabel($attribute);
+
+                $this->addError($attribute, strtr($params['message'], $params));
+            }
+        }
+    }
+
     public function addError($attribute, $message)
     {
-        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)).'_'.$attribute, $message);
-        $message = '<a class="errorlink" onClick="scrollToElement($(\'.'.str_replace('\\', '_',
-                get_class($this)).'\'))">'.$message.'</a>';
+        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, $message);
+        $message = '<a class="errorlink" onClick="scrollToElement($(\'.' . str_replace('\\', '_',
+                get_class($this)) . '\'))">' . $message . '</a>';
         parent::addError($attribute, $message);
     }
 
@@ -372,28 +345,6 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     *  returns the front-end attributes with errors.
-     */
-    public function getFrontEndErrors()
-    {
-        echo json_encode($this->frontEndErrors);
-    }
-
-    public function requiredIfSide($attribute, $params)
-    {
-        if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {
-            if ($this->$attribute !== 0 && $this->$attribute == null) {
-                if (!@$params['message']) {
-                    $params['message'] = ucfirst($params['side']).' {attribute} cannot be blank.';
-                }
-                $params['{attribute}'] = $this->getAttributeLabel($attribute);
-
-                $this->addError($attribute, strtr($params['message'], $params));
-            }
-        }
-    }
-
-    /**
      * @param $attribute
      * @param $params
      *
@@ -403,12 +354,12 @@ class BaseEventTypeElement extends BaseElement
 
     public function requiredIfNoComments($attribute, $params)
     {
-        $comments_attribute = $params['side'].'_'.$params['comments_attribute'];
+        $comments_attribute = $params['side'] . '_' . $params['comments_attribute'];
 
         if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {
-            if ( (($this->$attribute === '' || is_null($this->$attribute)) && ($this->$comments_attribute === '' || is_null($this->$comments_attribute))) ) {
+            if ((($this->$attribute === '' || is_null($this->$attribute)) && ($this->$comments_attribute === '' || is_null($this->$comments_attribute)))) {
                 if (!@$params['message']) {
-                    $params['message'] = ucfirst($params['side']).' {attribute} cannot be blank.';
+                    $params['message'] = ucfirst($params['side']) . ' {attribute} cannot be blank.';
                 }
                 $params['{attribute}'] = $this->getAttributeLabel($attribute);
 
@@ -452,7 +403,7 @@ class BaseEventTypeElement extends BaseElement
                 $assignment->$relation_field = $id;
 
                 if (!$assignment->save()) {
-                    throw new Exception('Unable to save assignment: '.print_r($assignment->getErrors(), true));
+                    throw new Exception('Unable to save assignment: ' . print_r($assignment->getErrors(), true));
                 }
             }
 
@@ -485,49 +436,15 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
-
     /**
      * Return the display order of element, solve the problem elements has different order in different display mode.
      * @param $action
      * @return mixed
      */
-    public function getDisplayOrder($action){
+    public function getDisplayOrder($action)
+    {
         return $this->getElementType()->display_order;
     }
-
-    public function getChildDisplayOrder($action) {
-        if($this->isChild($action)) {
-            return $this->getDisplayOrder($action);
-        } else {
-            return -1;
-        }
-    }
-
-    public function getParentDisplayOrder($action) {
-        if ($this->getElementType($action)->parent_element_type_id) {
-            return $this->getElementType($action)->parent_element_type->display_order;
-        } else {
-            return $this->getDisplayOrder($action);
-        }
-    }
-
-    /**
-     * Return the parent type of element, solve the problem elements has different parent in different display mode.
-     * @param $action
-     * @return mixed
-     */
-    public function getParentType($action){
-        return $this->getElementType()->parent_element_type->class_name;
-    }
-
-    public function isChild($action){
-        return $this->getElementType()->isChild();
-    }
-    /**
-     * Stub method for audit checking before an element is saved.
-     */
-    protected function checkForAudits()
-    {}
 
     /**
      * @inheritdoc
@@ -537,6 +454,13 @@ class BaseEventTypeElement extends BaseElement
     {
         $this->checkForAudits();
         return parent::beforeSave();
+    }
+
+    /**
+     * Stub method for audit checking before an element is saved.
+     */
+    protected function checkForAudits()
+    {
     }
 
     /**
@@ -563,4 +487,35 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+    /**
+     * @return BaseEventTypeElement[] sibling elements in the same group
+     */
+    protected function getSiblings()
+    {
+        $siblings = array();
+
+        foreach ($this->getSiblingTypes() as $siblingType) {
+            if ($this->event_id) {
+                if ($element = self::model($siblingType->class_name)->find('event_id = ?', array($this->event_id))) {
+                    $siblings[] = $element;
+                }
+            }
+        }
+
+        return $siblings;
+    }
+
+    /**
+     * @return ElementType[] Array of element types in the same group minus self
+     */
+    private function getSiblingTypes()
+    {
+        $element_type = $this->getElementType();
+        return ElementType::model()->findAll(
+            'element_group_id = :group_id AND id != :this_id',
+            array(':group_id' => $element_type->element_group_id,
+                ':this_id' => $element_type->id
+            )
+        );
+    }
 }

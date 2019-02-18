@@ -11,10 +11,10 @@ class FlushableLogRouter extends CLogRouter
         $logger = Yii::getLogger();
         $logger->autoFlush = $this->autoFlush;
         $logger->detachEventHandler('onFlush', array($this, 'collectLogs'));
-        $logger->attachEventHandler('onFlush', array($this, 'processLogs'));
+        $logger->attachEventHandler('onFlush', array($this, 'clearLogs'));
     }
 
-    public function processLogs($event)
+    public function clearLogs($event)
     {
         parent::processLogs($event);
         foreach (parent::getRoutes() as $route) {

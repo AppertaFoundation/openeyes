@@ -25,7 +25,7 @@ $treatments = $element->getTreatments($side);
 
 $treat_opts = array(
     'options' => array(),
-    'empty' => '- Please select -',
+    'empty' => 'Select',
 );
 foreach ($treatments as $treatment) {
     $treat_opts['options'][(string)$treatment->id] = array(

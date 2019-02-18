@@ -42,7 +42,6 @@
     $(document).ready(function () {
         //right side image
         var doc_list = <?= CJavaScript::encode($this->getDocument()); ?>;
-
         //left side plots
         $('#mr_history_va_unit_id').change(function () {
             this.form.submit();
@@ -63,10 +62,7 @@
         var va_plotly = <?= CJavaScript::encode($this->getPlotlyVaData()); ?>;
 
         var crt_plotly = <?= CJavaScript::encode($this->getPlotlyCRTData()); ?>;
-
-        var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 17);
-        var oct_fly_list =  <?= CJavaScript::encode($this->getOctFly()); ?>;
-
+        var va_plotly_ticks = pruneYTicks(va_ticks, 1000, 30);
         const flag_height = 5;
         const flag_width = 5;
         const flag_height_perc = 0.8;
@@ -83,6 +79,7 @@
             setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, opnote_marking, side, -10, 150);
             setMarkingEvents_plotly(layout_MR, marker_line_plotly_options, marking_annotations, laser_marking, side, -10, 150);
 
+            //Set trace for VA
             var trace1 = {
                 name: 'VA(' + side + ')',
                 x: va_plotly[side]['x'],
@@ -105,7 +102,7 @@
                     size: 10,
                 },
             };
-
+            //Set trace for CRT
             var trace2 = {
                 name: 'CRT(' + side + ')',
                 x: crt_plotly[side]['x'],
@@ -140,7 +137,7 @@
             crt_yaxis['overlaying'] = 'y';
 
 
-            var j = Object.keys(injections_data[side]).length + 1;
+            var j = Object.keys(injections_data[side]).length + 2;
             flags_yaxis['range'] = [0, flag_height * j];
             flags_yaxis['domain'] = [0, 0.04 * j];
             flags_yaxis['ticktext'] = [];
@@ -160,8 +157,27 @@
                 mode: 'text',
             };
 
-            //Set the flags for injections
+            //set flags for oct fly
+            flags_yaxis['ticktext'].push('OCT');
+            flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc) + 2);
+            for (var i in doc_list[side]) {
+                text['x'].push(new Date(doc_list[side][i]['date']));
+                text['y'].push(flag_height * (j - flag_height_perc));
+                text['hovertext'].push('OCT<br>ID: ' + doc_list[side][i]['doc_id'] + '<br>Side: ' + side);
 
+                var line_shape = {
+                    x0: new Date(doc_list[side][i]['date']),
+                    y0: flag_height * j,
+                    x1: new Date(doc_list[side][i]['date'] + oneday_time * flag_width),
+                    y1: flag_height * (j - flag_height_perc),
+                    color: (side == 'right') ? '#9fec6d' : '#fe6767',
+                    yaxis: 'y3',
+                };
+                layout_MR['shapes'].push(setMRFlags_options(line_shape));
+            }
+            j--;
+
+            //Set the flags for injections
             for (var key in injections_data[side]) {
                 flags_yaxis['ticktext'].push(key);
                 flags_yaxis['tickvals'].push(flag_height * (j - flag_height_perc) + 2);
@@ -211,6 +227,8 @@
                 };
                 layout_MR['shapes'].push(setMRFlags_options(line_shape));
             }
+
+
             layout_MR['yaxis3'] = setYAxis_MR(flags_yaxis);
             layout_MR['yaxis2'] = setYAxis_MR(crt_yaxis);
             layout_MR['yaxis'] = setYAxis_MR(va_yaxis);
@@ -228,7 +246,7 @@
 
             var currentPlot = document.getElementById('plotly-MR-' + side);
 
-            for (var i = Object.keys(injections_data[side]).length + 1; i > 0; i--) {
+            for (var i = Object.keys(injections_data[side]).length + 2; i > 0; i--) {
                 var inj_background = {
                     x0: currentPlot.layout.xaxis.range[0],
                     y0: flag_height * i,
@@ -245,32 +263,59 @@
             currentPlot.on('plotly_hover', function (data) {
                 for (var i = 0; i < data.points.length; i++) {
                     var tn = data.points[i].curveNumber;
-                    if (tn === 0) {
-                        var side = data.points[i].data.text;
-                        var current_date = data.points[i].x;
-                        for (var item in oct_fly_list[side]) {
-                            if (current_date === oct_fly_list[side][item]['x']) {
-                                octImgStack[side].setImg(oct_fly_list[side][item]['id'], side); // link chart points to OCTs
-                            }
+                    if (tn === 2) {
+                        var data_info = data.points[i].hovertext.split('<br>');
+                        if (data_info[0] === 'OCT') {
+                            var side = data_info[2].substring(6);
+                            var id = data_info[1].substring(4);
+                            octImgStack[side].setImg(id, side); // link chart points to OCTs
                         }
                     }
                 }
             });
+
+
+            //resize the injection bars after xaxis rangeslider changed
+            document.body.onmouseup = function (e) {
+                var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
+
+                var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
+                var shapes = chart_MR.layout.shapes;
+                var new_width = oneday_time * flag_width / 600 * date_range;
+                for (var i in shapes) {
+                    if (shapes[i].layer !== "below") {
+                        shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
+                    }
+                }
+
+                Plotly.redraw(chart_MR);
+            }
         }
 
-        //resize the injection bars after xaxis rangeslider changed
-        document.body.onmouseup = function (e) {
-            var chart_MR = $('.rangeslider-container').first().parents('.plotly-MR')[0];
-            var date_range = (new Date(chart_MR.layout.xaxis.range[1]).getTime() - new Date(chart_MR.layout.xaxis.range[0]).getTime()) / oneday_time;
-            var shapes = chart_MR.layout.shapes;
-            var new_width = oneday_time * flag_width / 600 * date_range;
-            for (var i in shapes) {
-                if (shapes[i].layer !== "below") {
-                    shapes[i].x1 = new Date(shapes[i].x0).getTime() + new_width;
+        document.body.onmousemove = function (data) {
+            var side = $('#js-hs-chart-MR').find('.plotly-MR:visible')[0].dataset['eyeSide'];
+            var current_img = $('#oct_stack_'+side).find('.oct-img:visible');
+            var chart_MR = $('#plotly-MR-'+side)[0];
+            var start_time = new Date(chart_MR.layout.xaxis.range[0]).getTime();
+            var end_time = new Date(chart_MR.layout.xaxis.range[1]).getTime();
+            var date_range = end_time - start_time;
+            var rangeslider = $('.plotly-' + side + ' .rangeslider-container')[0];
+            var rangesliderLeftX = rangeslider.getBoundingClientRect().left + window.scrollX;
+            var rangesliderRightX = rangeslider.getBoundingClientRect().right + window.scrollX;
+            var current_time = (data.clientX - rangesliderLeftX) / (rangesliderRightX - rangesliderLeftX) * date_range + start_time;
+            var closest_img = doc_list[side][0]['id'];
+            var closest_time = Math.abs(doc_list[side][0]['date'] - current_time);
+            for (var i = 0; i < doc_list[side].length; i++) {
+                var img_date = doc_list[side][i]['date'];
+                if (Math.abs(current_time - img_date) <= closest_time) {
+                    closest_time = Math.abs(current_time - img_date);
+                    closest_img = doc_list[side][i]['doc_id'];
                 }
             }
+            current_img.hide();
+            $('#oct_img_'+side+'_'+closest_img).show();
+            current_img = $('#oct_img_'+side+'_'+closest_img);
+        };
 
-            Plotly.redraw(chart_MR);
-        }
     });
 </script>

@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -236,6 +236,7 @@ class BaseEventTypeController extends BaseModuleController
     public function getElementWidgetMode($action)
     {
         $action_type = $this->getActionType($action);
+
         return in_array($action_type,
             array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
             ? BaseEventElementWidget::$EVENT_EDIT_MODE
@@ -281,31 +282,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setOpenElementsFromCurrentEvent($action)
     {
-        $this->open_elements = $this->getEventElements();
+        $this->open_elements = $this->getEventElements($action);
         $this->setElementOptions($action);
-
-        // Ensure the element type is initialised so getDisplayOrder() doesn't mutate array during sorting
-        array_map(function ($e) {
-            $e->getElementType();
-            if ($e->getElementType()->parent_element_type) {
-                $e->getElementType()->parent_element_type->display_order;
             }
-        }, $this->open_elements);
-
-        usort($this->open_elements, function ($a, $b) use ($action) {
-            $a_parent_order = (int)$a->getParentDisplayOrder($action);
-            $b_parent_order = (int)$b->getParentDisplayOrder($action);
-            $a_child_order = (int)$a->getChildDisplayOrder($action);
-            $b_child_order = (int)$b->getChildDisplayOrder($action);
-
-            if ($a_parent_order === $b_parent_order) {
-                return $a_child_order < $b_child_order ? -1 : 1;
-            } else {
-                return $a_parent_order < $b_parent_order ? -1 : 1;
-            }
-        }
-        );
-    }
 
     /**
      * Renders the metadata of the event with the standard template.
@@ -332,6 +311,7 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
+
         return $elements;
     }
 
@@ -350,79 +330,38 @@ class BaseEventTypeController extends BaseModuleController
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
-        foreach ($this->event_type->getRootElementTypes() as $et) {
-            if (count($remove_list) && in_array($et->class_name, $remove_list)) {
-                continue;
-            }
+        foreach ($this->event_type->getAllElementGroups() as $element_group) {
             $struct = array(
-                'name' => $et->group_title ?: $et->name,
-                'class_name' => CHtml::modelName($et->class_name),
-                'id' => $et->id,
-                'display_order' => -1,
-                'parent_display_order' => $et->display_order,
+                'name' => $element_group->name,
+                'element_group_id' => $element_group->id,
+                'display_order' => $element_group->display_order,
                 'children' => array(),
             );
-
-            if (count($et->child_element_types) > 0) {
-                // Add the parent as its first child with the display name instead of the group title
-                $struct['children'][] = array(
-                    'name' => $et->name,
-                    'class_name' => CHtml::modelName($et->class_name),
-                    'id' => $et->id,
-                    'display_order' => -1,
-                    'parent_display_order' => $et->display_order,
-                );
-
-                foreach ($et->child_element_types as $child) {
-                    if (count($remove_list) && in_array($child->class_name, $remove_list)) {
-                        continue;
-                    }
+            $children = $this->event_type->getElementTypesForGroup($element_group->id);
+            if (count($remove_list)) {
+                $children = array_filter($children, function ($child) use ($remove_list) {
+                    return !in_array($child->class_name, $remove_list);
+                });
+            }
+            // Single child elements should load the child for them
+            if (count($children) === 1) {
+                $element_type = reset($children);
+                $struct['id'] = $element_type->id;
+                $struct['class_name'] = CHtml::modelName($element_type->class_name);
+                $element_types_tree[] = $struct;
+            } elseif (count($children) > 0) {
+                foreach ($children as $element_type) {
                     $struct['children'][] = array(
-                        'name' => $child->name,
-                        'id' => $child->id,
-                        'display_order' => $child->display_order,
-                        'parent_display_order' => $et->display_order,
-                        'class_name' => CHtml::modelName($child->class_name),
+                        'name' => $element_type->name,
+                        'id' => $element_type->id,
+                        'display_order' => $element_type->display_order,
+                        'class_name' => CHtml::modelName($element_type->class_name),
                     );
                 }
+                $element_types_tree[] = $struct;
             }
-            $element_types_tree[] = $struct;
         }
-
         return json_encode($element_types_tree);
-    }
-
-    /**
-     * Get the open child elements for the given ElementType.
-     *
-     * @param ElementType $parent_type
-     *
-     * @return \BaseEventTypeElement[] $open_elements
-     */
-    public function getChildElements($parent_type, $action = 'edit')
-    {
-        $open_child_elements = array();
-        if (is_array($this->open_elements)) {
-            foreach ($this->open_elements as $open) {
-                $et = $open->getElementType();
-                if ($et && $open->isChild($action) && $open->getParentType($action) == $parent_type->class_name) {
-                    $open_child_elements[] = $open;
-                }
-            }
-        }
-
-        if($action === 'view') {
-            usort($open_child_elements, function ($a, $b) {
-                $a_order = $a->getDisplayOrder('view');
-                $b_order = $b->getDisplayOrder('view');
-                if ($a_order == $b_order) {
-                    return 0;
-                }
-                return ($a_order < $b_order) ? -1 : 1;
-            }
-            );
-        }
-        return $open_child_elements;
     }
 
     /**
@@ -439,36 +378,8 @@ class BaseEventTypeController extends BaseModuleController
 
         $optional = array();
         foreach ($this->event_type->getAllElementTypes() as $element_type) {
-            if (!in_array($element_type->class_name, $open_et) && !$element_type->isChild()) {
+            if (!in_array($element_type->class_name, $open_et)) {
                 $optional[] = $element_type->getInstance();
-            }
-        }
-
-        return $optional;
-    }
-
-    /**
-     * Get the child optional elements for the given element type.
-     *
-     * @param ElementType $parent_type
-     *
-     * @return BaseEventTypeElement[] $optional_elements
-     */
-    public function getChildOptionalElements($parent_type)
-    {
-        $open_et = array();
-        if (is_array($this->open_elements)) {
-            foreach ($this->open_elements as $open) {
-                $et = $open->getElementType();
-                if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
-                    $open_et[] = $et->class_name;
-                }
-            }
-        }
-        $optional = array();
-        foreach ($parent_type->child_element_types as $child_type) {
-            if (!in_array($child_type->class_name, $open_et)) {
-                $optional[] = $child_type->getInstance();
             }
         }
 
@@ -505,7 +416,8 @@ class BaseEventTypeController extends BaseModuleController
             if (!$this->isPrintAction($action->id)) {
                 // nested elements behaviour
                 //TODO: possibly put this into standard js library for events
-                Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
+                Yii::app()->getClientScript()->registerScript('nestedElementJS',
+                    'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
             }
@@ -1051,7 +963,8 @@ class BaseEventTypeController extends BaseModuleController
                         $this->event->user = Yii::app()->user->id;
 
                         if (!$this->event->save()) {
-                            throw new SystemException('Unable to update event: ' . print_r($this->event->getErrors(), true));
+                            throw new SystemException('Unable to update event: ' . print_r($this->event->getErrors(),
+                                    true));
                         }
 
                         OELog::log("Updated event {$this->event->id}");
@@ -1192,23 +1105,8 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setValidationScenarioForElement($element)
     {
-        if ($child_types = $element->getElementType()->child_element_types) {
-            $ct_cls_names = array();
-            foreach ($child_types as $ct) {
-                $ct_cls_names[] = $ct->class_name;
-            }
 
-            $has_children = false;
-            foreach ($this->open_elements as $open) {
-                $et = $open->getElementType();
-                if ($et->isChild() && in_array($et->class_name, $ct_cls_names)) {
-                    $has_children = true;
-                    break;
                 }
-            }
-            $element->scenario = $has_children ? 'formHasChildren' : 'formHasNoChildren';
-        }
-    }
 
     /**
      * Determines if this is a widget based element or not, and then sets the attributes from the data accordingly
@@ -1227,7 +1125,7 @@ class BaseEventTypeController extends BaseModuleController
                 'patient' => $this->patient,
                 'element' => $element,
                 'data' => $el_data,
-                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
+                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE,
             ));
             $element->widget = $widget;
         } else {
@@ -1307,6 +1205,7 @@ class BaseEventTypeController extends BaseModuleController
                 $elements[] = $element;
             }
         }
+
         return $elements;
     }
 
@@ -1605,55 +1504,62 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @throws Exception
      */
-    protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
-    {
+    protected function renderElement(
+        $element,
+        $action,
+        $form,
+        $data,
+        $view_data = array(),
+        $return = false,
+        $processOutput = false
+    ) {
+        if(is_string($action)){
+            if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
+                $action = 'print';
+            }
+            if ($action == 'savePDFprint') {
+                $action = 'print';
+            }
 
-        if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
-            $action = 'print';
+            if($action === 'createImage') {
+                $action = 'view';
+            }
+
+            // Get the view names from the model.
+            $view = isset($element->{$action . '_view'})
+                ? $element->{$action . '_view'}
+                : $element->getDefaultView();
+            $container_view = isset($element->{'container_' . $action . '_view'})
+                ? $element->{'container_' . $action . '_view'}
+                : $element->getDefaultContainerView();
+
+            $use_container_view = ($element->useContainerView && $container_view);
+            $view_data = array_merge(array(
+                'element' => $element,
+                'data' => $data,
+                'form' => $form,
+                'container_view' => $container_view,
+            ), $view_data);
+
+            // Render the view.
+            ($use_container_view) && $this->beginContent($container_view, $view_data);
+            if ($element->widgetClass) {
+                // only wrap the element in a widget if it's not already in one
+                $widget = $element->widget ?:
+                    $this->createWidget($element->widgetClass,
+                        array(
+                            'patient' => $this->patient,
+                            'element' => $view_data['element'],
+                            'data' => $view_data['data'],
+                            'mode' => $this->getElementWidgetMode($action),
+                        ));
+                $widget->form = $view_data['form'];
+                $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
+            } else {
+                $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+            }
+            ($use_container_view) && $this->endContent();
         }
-        if ($action == 'savePDFprint') {
-            $action = 'print';
-        }
-
-        if($action === 'createImage') {
-            $action = 'view';
-        }
-
-        // Get the view names from the model.
-        $view = isset($element->{$action . '_view'})
-            ? $element->{$action . '_view'}
-            : $element->getDefaultView();
-        $container_view = isset($element->{'container_' . $action . '_view'})
-            ? $element->{'container_' . $action . '_view'}
-            : $element->getDefaultContainerView();
-
-        $use_container_view = ($element->useContainerView && $container_view);
-        $view_data = array_merge(array(
-            'element' => $element,
-            'data' => $data,
-            'form' => $form,
-            'child' => $element->getElementType()->isChild(),
-            'container_view' => $container_view,
-        ), $view_data);
-
-        // Render the view.
-        ($use_container_view) && $this->beginContent($container_view, $view_data);
-        if ($element->widgetClass) {
-            // only wrap the element in a widget if it's not already in one
-            $widget = $element->widget ?:
-                $this->createWidget($element->widgetClass,
-                    array(
-                        'patient' => $this->patient,
-                        'element' => $view_data['element'],
-                        'data' => $view_data['data'],
-                        'mode' => $this->getElementWidgetMode($action)
-                    ));
-            $widget->form = $view_data['form'];
-            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
-        } else {
-            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
-        }
-        ($use_container_view) && $this->endContent();
     }
 
     /**
@@ -1681,7 +1587,9 @@ class BaseEventTypeController extends BaseModuleController
     public function renderTiledElements($elements, $action, $form = null, $data = null)
     {
         $element_count = count($elements);
-        if($element_count < 1)return;
+        if ($element_count < 1) {
+            return;
+        }
         $rows = array(array());
         foreach ($elements as $element) {
             if ($element->widgetClass) {
@@ -1689,7 +1597,7 @@ class BaseEventTypeController extends BaseModuleController
                     'patient' => $this->patient,
                     'element' => $element,
                     'data' => $data,
-                    'mode' => $this->getElementWidgetMode($action)
+                    'mode' => $this->getElementWidgetMode($action),
                 ));
                 $element->widget = $widget;
                 $element->widget->renderWarnings();
@@ -1698,8 +1606,7 @@ class BaseEventTypeController extends BaseModuleController
         //Find the groupings
         for ($element_index = 0, $tile_index = 0, $row_index = 0;
              $element_index < $element_count;
-             $element_index++)
-        {
+             $element_index++) {
             $element = $elements[$element_index];
 
             //if the tile size can't be determined assume a full row
@@ -1733,7 +1640,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function renderElements($elements, $action, $form = null, $data = null)
     {
-        if(count($elements) < 1){return;}
+        if (count($elements) < 1) {
+            return;
+        }
         foreach ($elements as $element){
             $this->renderElement($element, $action, $form, $data);
         }
@@ -1764,23 +1673,6 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
-     * Render the open elements that are children of the given parent element type.
-     *
-     * @param BaseEventTypeElement $parent_element
-     * @param string $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
-     *
-     * @throws Exception
-     */
-    public function renderChildOpenElements($parent_element, $action, $form = null, $data = null)
-    {
-        foreach ($this->getChildElements($parent_element->getElementType()) as $element) {
-            $this->renderElement($element, $action, $form, $data);
-        }
-    }
-
-    /**
      * Render the optional elements for the controller state.
      *
      * @param string $action
@@ -1790,23 +1682,6 @@ class BaseEventTypeController extends BaseModuleController
     public function renderOptionalElements($action, $form = null, $data = null)
     {
         foreach ($this->getOptionalElements() as $element) {
-            $this->renderOptionalElement($element, $action, $form, $data);
-        }
-    }
-
-    /**
-     * Render the optional child elements for the given parent element type.
-     *
-     * @param BaseEventTypeElement $parent_element
-     * @param string $action
-     * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
-     *
-     * @throws Exception
-     */
-    public function renderChildOptionalElements($parent_element, $action, $form = null, $data = null)
-    {
-        foreach ($this->getChildOptionalElements($parent_element->getElementType()) as $element) {
             $this->renderOptionalElement($element, $action, $form, $data);
         }
     }
@@ -1957,7 +1832,8 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'], $inject_autoprint_js);
+        $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $html, (boolean)@$_GET['html'],
+            $inject_autoprint_js);
 
         return $this->pdf_print_suffix;
     }
@@ -1993,7 +1869,7 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             $result = array(
                 'success' => 0,
-                'message' => "couldn't save file object" . print_r($pf->getErrors(), true)
+                'message' => "couldn't save file object" . print_r($pf->getErrors(), true),
             );
         }
 
@@ -2055,7 +1931,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->layout = '//layouts/print';
         $this->render($template, array(
             'elements' => $elements,
-            'eventId' => $id
+            'eventId' => $id,
         ));
     }
 
@@ -2121,7 +1997,8 @@ class BaseEventTypeController extends BaseModuleController
                     if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                         $this->event->episode->deleted = 1;
                         if (!$this->event->episode->save()) {
-                            throw new Exception('Unable to save episode: ' . print_r($this->event->episode->getErrors(), true));
+                            throw new Exception('Unable to save episode: ' . print_r($this->event->episode->getErrors(),
+                                    true));
                         }
 
                         $this->event->episode->audit('episode', 'delete', false);
@@ -2135,7 +2012,8 @@ class BaseEventTypeController extends BaseModuleController
                         }
                     }
 
-                    Yii::app()->user->setFlash('success', 'An event was deleted, please ensure the episode status is still correct.');
+                    Yii::app()->user->setFlash('success',
+                        'An event was deleted, please ensure the episode status is still correct.');
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
@@ -2170,7 +2048,7 @@ class BaseEventTypeController extends BaseModuleController
         $episodes = $this->getEpisodes();
         $viewData = array_merge(array(
             'eventId' => $id,
-            'errors' => isset($errors) ? $errors : null
+            'errors' => isset($errors) ? $errors : null,
         ), $episodes);
 
         $this->render('delete', $viewData);
@@ -2282,7 +2160,9 @@ class BaseEventTypeController extends BaseModuleController
                 $this->event->requestDeletion($_POST['delete_reason']);
 
                 if (Yii::app()->params['admin_email']) {
-                    mail(Yii::app()->params['admin_email'], 'Request to delete an event', 'A request to delete an event has been submitted.  Please log in to the admin system to review the request.', 'From: OpenEyes');
+                    mail(Yii::app()->params['admin_email'], 'Request to delete an event',
+                        'A request to delete an event has been submitted.  Please log in to the admin system to review the request.',
+                        'From: OpenEyes');
                 }
 
                 Yii::app()->user->setFlash('success', 'Your request to delete this event has been submitted.');
@@ -2294,10 +2174,12 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $this->title = 'Delete ' . $this->event_type->name;
-        $this->event_tabs = array(array(
+        $this->event_tabs = array(
+            array(
             'label' => 'View',
             'active' => true,
-        ));
+            ),
+        );
 
         $this->render('request_delete', array(
             'errors' => $errors,
@@ -2357,20 +2239,21 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!empty($_POST['canvas'])) {
             foreach ($_POST['canvas'] as $drawingName => $blob) {
-                if (!file_exists($this->event->imageDirectory . "/$drawingName.png")) {
-                    if (!@file_put_contents(
-                            $this->event->imageDirectory . "/$drawingName.png",
+                $full_path = $this->event->imageDirectory . "/$drawingName.png";
+                if (!file_exists($full_path)) {
+                    if (false === file_put_contents(
+                            $full_path,
                             base64_decode(preg_replace('/^data\:image\/png;base64,/', '', $blob))
                         )
                     ){
-                        throw new Exception("Failed to write to {$this->event->imageDirectory}/$drawingName.png: check permissions.");
+                        throw new Exception("Failed to write to $full_path.");
                     }
                 }
             }
         }
 
         // Regenerate the EventImage in the background
-        EventImageManager::actionGenerateImage($this->event);
+        EventImageManager::actionGenerateImage($this->event->id);
 
         /*
          * TODO: need to check with all events why this was here!!!
@@ -2447,29 +2330,15 @@ class BaseEventTypeController extends BaseModuleController
     }
 
 
-
-    /**
-     * Gets a value indicating whether this event has any extra information to display in the title
-     * This function will always return false, but can be overridden to return true
-     * iF it is, then getExtraTitleInfo() should also be overridden.
-     *
-     * @return bool
-     */
-    public function hasExtraTitleInfo()
-    {
-        return false;
-    }
-
     /**
      * Gets the extra info to be displayed in the title of this event
-     * Should only be overridden if hasExtraTitleInfo() has also been overridden
+     * returns null if no extra info exists
      *
-     * @return string HTML to display next to the title
-     * @throws BadMethodCallException thrown if the method hasn't been overridden
+     * @return string|null HTML to display next to the title
      */
     public function getExtraTitleInfo()
     {
-        throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
+        return null;
     }
 
     protected function updateHotlistItem(Patient $patient)

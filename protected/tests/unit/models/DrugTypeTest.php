@@ -75,30 +75,6 @@ class DrugTypeTest extends CDbTestCase
            $this->assertEmpty($this->drugtypes('drugtype2')->errors);
        }
 
-       /**
-        * @covers DrugType::relations
-        *
-        * @todo   Implement testRelations().
-        */
-       public function testRelations()
-       {
-           // Remove the following lines when you implement this test.
-              $this->markTestIncomplete(
-                        'This test has not been implemented yet.'
-              );
-       }
-
-       /**
-        * @covers DrugType::attributeLabels
-        *
-        * @todo   Implement testAttributeLabels().
-        */
-       public function testAttributeLabels()
-       {
-           $expected = array();
-
-           $this->assertEquals($expected, $this->model->attributeLabels());
-       }
 
        /**
         * @covers DrugType::search

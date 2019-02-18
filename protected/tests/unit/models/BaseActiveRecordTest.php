@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * (C) OpenEyes Foundation, 2016
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,7 +12,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseActiveRecordTest extends CDbTestCase
@@ -112,15 +112,6 @@ class BaseActiveRecordTest extends CDbTestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @covers BaseActiveRecord::audit
-     *
-     * @todo   Implement testAudit().
-     */
-    public function testAudit()
-    {
-        $this->markTestSkipped('this has been already implemented in the audittest model');
-    }
 
     public function test__set_has_many()
     {
@@ -555,73 +546,6 @@ class BaseActiveRecordTest extends CDbTestCase
         $as->setAccessible(true);
 
         $as->invoke($test);
-    }
-
-    public function testbeforeDelete()
-    {
-        $test = $this->getMockBuilder('RelationOwnerSaveClass')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
-            ->getMock();
-
-        $hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
-        $hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
-        $mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
-
-        $meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
-            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
-                'primaryKey' => 'the_pk',
-            )),
-            'relations' => array(
-                //'has_many' => $hm_cls,
-                //'has_many_thru' => $hmt_cls,
-                'many_many' => $mm_cls,
-            ),
-        ));
-
-        $test->expects($this->any())
-            ->method('getMetaData')
-            ->will($this->returnValue($meta));
-
-        $test->expects($this->any())
-            ->method('getPrimaryKey')
-            ->will($this->returnValue('TestPK'));
-
-        // many many uses command builder behaviour to delete assignment table entries
-        $del_cmd = $this->getMockBuilder('CDbCommand')
-            ->disableOriginalConstructor()
-            ->setMethods(array('execute'))
-            ->getMock();
-
-        $del_cmd->expects($this->once())
-            ->method('execute')
-            ->will($this->returnValue(true));
-
-        $cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
-            ->disableOriginalConstructor()
-            ->setMethods(array('createDeleteCommand'))
-            ->getMock();
-
-        $cmd_builder->expects($this->any())
-            ->method('createDeleteCommand')
-            ->with($this->equalTo('many_many_ass'))
-            ->will($this->returnValue($del_cmd));
-
-        $test->expects($this->any())
-            ->method('getCommandBuilder')
-            ->will($this->returnValue($cmd_builder));
-
-        $r = new ReflectionClass($test);
-        $m = $r->getMethod('beforeDelete');
-        $m->setAccessible(true);
-
-        $p = $r->getProperty('auto_update_relations');
-        $p->setAccessible(true);
-        $p->setValue($test, true);
-
-        $m->invoke($test);
-
-        $this->markTestIncomplete('has many uses static model method so cannot complete the test.');
     }
 
     public function testsaveOnlyIfDirty()

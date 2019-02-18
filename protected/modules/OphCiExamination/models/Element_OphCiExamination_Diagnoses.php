@@ -421,15 +421,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             $validator = new \OEFuzzyDateValidator();
 
-            foreach ($this->diagnoses as $k => $diagnosis) {
+            foreach ($this->diagnoses as $key => $diagnosis) {
                 if ($diagnosis->principal) {
                     $principal = true;
                 }
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
                 if(!$diagnosis->eye_id){
-                    $key = $k+1;
-
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
@@ -462,7 +460,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             $have_further_findings = false;
 
-            foreach ($controller->getChildElements($et_diagnoses) as $element) {
+            foreach ($controller->getElements() as $element) {
                 if (\CHtml::modelName($element) == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
                     $have_further_findings = true;
                 }
@@ -486,40 +484,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return "Eye Diagnoses";
     }
 
-    public function getDisplayOrder($action)
-    {
-        if ($action === 'view') {
-            return 10;
-        } else {
-            return parent::getDisplayOrder($action);
-        }
-    }
-
-    public function getChildDIsplayOrder($action)
-    {
-        return $action === 'view' ? 25 : parent::getChildDisplayOrder($action);
-    }
-
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' ? 1 : null;
     }
 
-    public function getParentType($action)
+    public function getDisplayOrder($action)
     {
-        if ($action=='view') {
-            return Element_OphCiExamination_History::class;
-        } else {
-            return parent::getParentType($action);
-        }
-    }
-
-    public function isChild($action)
-    {
-        if ($action=='view') {
-            return true;
-        } else {
-            return parent::isChild($action);
-        }
+        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 }

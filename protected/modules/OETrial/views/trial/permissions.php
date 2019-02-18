@@ -31,8 +31,8 @@
             <th>User</th>
             <th>User Role</th>
             <th>Permission</th>
-            <th><?= Trial::model()->getAttributeLabel('principle_investigator_user_id') ?></th>
-            <th><?= Trial::model()->getAttributeLabel('coordinator_user_id') ?></th>
+            <th>Principal Investigator</th>
+            <th>Study Coordinator</th>
               <?php if ($permission && $permission->can_manage): ?>
                 <th></th>
               <?php endif; ?>
@@ -153,7 +153,7 @@
               <div class="alert-box info with-icon" id="no-user-result" style="display: none;">
                 Can't find the user you're looking for? They might not have the permission to view trials.
                 <br/>
-                Please contact an administrator and ask them to give that user the "View Trial" role.
+                Please contact an administrator and ask them to give that user the "Create Trial" or "Trial User" role.
               </div>
             </div>
           <?php endif; ?>
@@ -182,6 +182,41 @@
     $(document).ready(function () {
       $('#selected_user_wrapper').on('click', '.remove', function () {
         removeSelectedUser();
+      });
+
+      $('.is_principal_investigator, .is_coordinator').change(function () {
+        var user_id = $(this).data('user');
+        var trial_id = $(this).data('trial');
+        var loader = $('#pi-change-loader-' + user_id);
+        var checked = $(this).prop('checked')?'1':'0';
+        var checkbox = $(this);
+        loader.show();
+        $.ajax({
+          'type': 'POST',
+          'url': '<?= $this->createUrl('trial/changeTrialUserPosition'); ?>',
+          'data': {
+            id: trial_id,
+            user_id: user_id,
+            isTrue: checked,
+            column_name: $(this).hasClass('is_principal_investigator') ? 'is_principal_investigator': 'is_study_coordinator',
+            YII_CSRF_TOKEN: YII_CSRF_TOKEN
+          },
+          complete: function (response) {
+            var res_obj = response.responseText? JSON.parse(response.responseText): {};
+            if (res_obj.Error){
+              new OpenEyes.UI.Dialog.Alert({
+                content: res_obj.Error
+              }).open();
+              checkbox.prop('checked', true);
+            }
+            loader.hide();
+          },
+          error: function (error) {
+            new OpenEyes.UI.Dialog.Alert({
+              content: "Sorry, an internal error occurred and we were unable to change the principal investigator.\n\nPlease contact support for assistance."
+            }).open();
+          },
+        });
       });
 
       $('.trial-permission-pi-selector').change(function () {

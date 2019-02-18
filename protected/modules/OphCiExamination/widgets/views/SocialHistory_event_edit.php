@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -11,7 +11,7 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -75,16 +75,7 @@
                   echo implode(', ', $driving_statuses);
               } ?>
           </div>
-          <?= $form->multiSelectList(
-              $element,
-              CHtml::modelName($element) . '[driving_statuses]',
-              'driving_statuses',
-              'id',
-              CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-              array(),
-              ['empty' => '- Select -'],
-              true
-          ); ?>
+
       </td>
     </tr>
     <tr>
@@ -123,7 +114,7 @@
           <?= $form->labelEx($element, $element->getAttributeLabel('alcohol_intake')) ?>
       </td>
       <td class="flex-layout flex-left">
-          <div id="textField_alcohol_intake" class="cols-1">
+          <div id="textField_alcohol_intake" class="cols-1 <?= (isset($element->alcohol_intake) ? '' : 'hidden') ?>">
               <?= isset($element->alcohol_intake) ? $element->alcohol_intake: ''?>
           </div>
           <?= $form->textField(
@@ -133,7 +124,7 @@
                   'autocomplete' => Yii::app()->params['html_autocomplete'],
                   'nowrapper' => true,
                   'style' => 'width: 100px; margin-right: 10px;',
-                  'append-text' => 'units/week',
+                  'append-text' => (isset($element->alcohol_intake) ? 'units/week' : 'Nothing selected.'),
                   'hidden' => true
               )
           );

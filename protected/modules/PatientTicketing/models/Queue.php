@@ -245,9 +245,7 @@ class Queue extends \BaseActiveRecordVersioned
         }
 
         // generate the report field on the ticket.
-        if ($this->report_definition) {
-            $assignment->generateReportText();
-        }
+        $assignment->generateReportText();
 
         if (!$assignment->save()) {
             throw new \Exception('Unable to save queue assignment');

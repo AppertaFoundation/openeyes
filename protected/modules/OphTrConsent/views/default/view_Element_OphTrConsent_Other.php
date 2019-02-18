@@ -32,15 +32,6 @@
   </tr>
   <tr>
     <td>
-        <?=\CHtml::encode($element->getAttributeLabel('information')) ?>:
-    </td>
-    <td>
-        <?php echo $element->information ? 'Yes' : 'No' ?>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>
         <?=\CHtml::encode($element->getAttributeLabel('anaesthetic_leaflet')) ?>:
     </td>
     <td>

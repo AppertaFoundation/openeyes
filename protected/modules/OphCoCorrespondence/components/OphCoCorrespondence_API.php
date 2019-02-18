@@ -170,7 +170,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefraction(\Patient $patient, $side, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return Yii::app()->format->text($element->getCombined($side));
         }
         return null;
@@ -185,7 +186,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastRefractionDate(\Patient $patient, $use_context = false){
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        if ($element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context)){
+        $element = $api->getLatestElement('models\Element_OphCiExamination_Refraction', $patient, $use_context);
+        if ($element){
             return $element->event->event_date;
         }
         return null;
@@ -200,7 +202,8 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
-        if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+        $element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context);
+        if ($element){
             return $element->eye->adjective;
         }
     }
@@ -347,13 +350,14 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
         }
 
         if (isset($contact)) {
             $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
+            $data['to']['contact_nickname'] = $this->getNickname($contact->contact->id);
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -387,13 +391,13 @@ class OphCoCorrespondence_API extends BaseAPI
             } else {
                 $data['cc'][$k]['contact_name'] = $patient->getCorrespondenceName();
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
-                $data['cc'][$k]['address'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['cc'][$k]['address'] = "Letters to the ".\Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
             $k++;
         }
 
         if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['cc'][$k]['contact_type'] = 'GP';
+            $data['cc'][$k]['contact_type'] = Yii::app()->params['gp_label'];
             $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
             $data['cc'][$k]['contact_id'] = $cc_contact->contact->id;
             $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
@@ -472,7 +476,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == 'GP' && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['sel_address_target'] = get_class($contact) . $contact->id;
         }
 
@@ -517,7 +521,7 @@ class OphCoCorrespondence_API extends BaseAPI
                     'include_prefix' => true,
                 ));
             } else {
-                $data['alert'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['alert'] = "Letters to the ".\Yii::app()->params['gp_label']." should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 
@@ -679,6 +683,7 @@ class OphCoCorrespondence_API extends BaseAPI
             'contact_type' => $contact_type,
             'contact_id' => isset($contact->contact->id) ? $contact->contact->id : null,
             'contact_name' => $correspondence_name,
+            'contact_nickname' => isset($contact->contact->nick_name) ? $contact->contact->nick_name : null,           
             'address' => $address ? $address : "The contact does not have a valid address.",
             'text_ElementLetter_address' => $text_ElementLetter_address,
             'text_ElementLetter_introduction' => $contact->getLetterIntroduction(array(
@@ -894,5 +899,21 @@ class OphCoCorrespondence_API extends BaseAPI
 
         }
         return '';
+    }
+
+    public function getNickname($identify_with)
+    {
+        if(is_numeric($identify_with)){
+            $contact_id = $identify_with;
+        }
+
+        if(isset($contact_id)){
+            $contact = Contact::model()->find('id=?', array($contact_id));
+            if($contact){
+                return $contact->nick_name;
+            }
+        }
+        
+        return;
     }
 }
