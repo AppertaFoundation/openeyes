@@ -49,6 +49,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'CottonWoolSpot',
             'DiabeticNV',
             'VitelliformMacularLesion',
+            'PigmentEpitheliumDetachment',
             'VitreousOpacity',
             'FibrousProliferation',
             'TractionRetinalDetachment',
