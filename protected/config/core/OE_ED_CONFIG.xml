@@ -311,7 +311,7 @@
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>DiabeticNV</EYEDRAW_CLASS_MNEMONIC>
-      <TITLE>Diabetic new vessels</TITLE>
+      <TITLE>Retinal neovascularisation</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
     <DOODLE>
@@ -2813,7 +2813,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
               <GOTO_DOODLE_CLASS_NAME>CottonWoolSpot</GOTO_DOODLE_CLASS_NAME>
             </INDEX>
             <INDEX>
-              <PRIMARY_TERM>Diabetic new vessels</PRIMARY_TERM>
+              <PRIMARY_TERM>Retinal neovascularisation</PRIMARY_TERM>
               <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/DiabeticNV.png</IMG_URL>
               <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
               <GOTO_DOODLE_CLASS_NAME>DiabeticNV</GOTO_DOODLE_CLASS_NAME>
