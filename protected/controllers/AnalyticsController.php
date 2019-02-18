@@ -662,10 +662,10 @@ class AnalyticsController extends BaseController
             ->leftJoin('service_subspecialty_assignment ssa','firm.service_subspecialty_assignment_id = ssa.id')
             ->group('e2.patient_id');
         if (isset($subspecialty)){
-            $command->where('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty));
+            $command->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty));
         }
         if (isset($surgeon_id)){
-            $command->where('eod.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+            $command->andWhere('eod.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
         }
         $query_list= $command->queryAll();
         $patients_list = array();
@@ -677,6 +677,44 @@ class AnalyticsController extends BaseController
         }
         return $patients_list;
     }
+
+    public function queryDiagnosis($subspecialty_id = null, $surgeon_id =null, $start_date= null, $end_date=null){
+        $command_principal = Yii::app()->db->createCommand()
+            ->select('e.patient_id as patient_id, e.disorder_id as disorder_id','DISTINCT')
+            ->from('episode e')
+            ->leftJoin('firm f','e.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
+            ->where('e.disorder_id IS NOT NULL')
+            ->andWhere('e.deleted = 0');
+
+        $command_secondary = Yii::app()->db->createCommand()
+            ->select('sd.patient_id as patient_id, sd.disorder_id as disorder_id','DISTINCT')
+            ->from('secondary_diagnosis sd')
+            ->leftJoin('episode e','e.patient_id = sd.patient_id')
+            ->leftJoin('firm f','e.firm_id = f.id')
+            ->leftJoin('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
+            ->where('sd.disorder_id IS NOT NULL');
+        if (isset($subspecialty_id)){
+            $command_principal->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
+            $command_secondary->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
+        }
+        if (isset($surgeon_id)){
+            $command_principal->andWhere('e.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+            $command_secondary->andWhere('sd.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
+        }
+        if (isset($start_date) && $start_date !== 0){
+            $command_principal->andWhere('e.created_date > TIMESTAMP("'.$start_date.'")');
+            $command_secondary->andWhere('sd.created_date > TIMESTAMP("'.$start_date.'")');
+        }
+        if (isset($end_date)){
+            $command_principal->andWhere('e.created_date < TIMESTAMP("'.$end_date.'")');
+            $command_secondary->andWhere('sd.created_date < TIMESTAMP("'.$end_date.'")');
+        }
+        $principal_diagnoses = $command_principal->queryAll();
+        $secondary_diagnoses = $command_secondary->queryAll();
+        return array_merge_recursive($principal_diagnoses,$secondary_diagnoses);
+    }
+
   public function getDisorders($subspecialty_id=null, $surgeon_id = null, $start_date = null, $end_date = null){
       $disorder_list = array(
           'x'=> array(),
@@ -722,88 +760,15 @@ class AnalyticsController extends BaseController
 //              }
 //          }
 //      }
-
-      $principal_diagnoses_elements = Episode::model()->findAll();
-      foreach ($principal_diagnoses_elements as $current_element){
-          if (isset($surgeon_id)){
-              if ($surgeon_id !== $current_element->created_user_id){
-                  continue;
-              }
-          }
-          $current_time = Helper::mysqlDate2JsTimestamp($current_element->created_date);
-          if( ($start_date && $current_time < $start_date) ||
-              ($end_date && $current_time > $end_date))
-              continue;
-          if ($current_element->getSubspecialtyId() !== $subspecialty_id && isset($subspecialty_id))
-              continue;
-          $current_patient = $current_element->patient;
+      $diagnoses = $this->queryDiagnosis($subspecialty_id,$surgeon_id,$start_date,$end_date);
+      foreach ($diagnoses as $current_diagnosis){
+          $current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
           if (!array_key_exists($current_patient->id, $this->patient_list)){
               $this->patient_list[$current_patient->id] = $current_patient;
           }
-          if (isset($current_element->disorder_id)){
-              $disorder_id = $current_element->disorder_id;
-          }else{
-              continue;
-          }
+
+          $disorder_id = $current_diagnosis['disorder_id'];
           $diagnosis_item = Disorder::model()->findByPk($disorder_id);
-          $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
-          if (array_key_exists($disorder_id, $disorder_patient_list)){
-              if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
-                  array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
-              }
-          } else {
-              if (!array_key_exists($disorder_id, $other_disorder_list)){
-                  $other_disorder_list[$disorder_id]= array(
-                      'full_name' => $diagnosis_item->fully_specified_name,
-                      'short_name' => $diagnosis_item->term,
-                      'patient_list' => array(),
-                  );
-              }
-              if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])){
-                  array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
-              }
-              if(!in_array($current_patient->id, $other_patient_list)){
-                  array_push($other_patient_list, $current_patient->id);
-              }
-          }
-      }
-
-      $secondary_diagnosis_elements = SecondaryDiagnosis::model()->findAll();
-      foreach ($secondary_diagnosis_elements as $current_element){
-          if (isset($surgeon_id)){
-              if ($surgeon_id !== $current_element->created_user_id){
-                  continue;
-              }
-          }
-          $current_time = Helper::mysqlDate2JsTimestamp($current_element->created_date);
-          if( ($start_date && $current_time < $start_date) ||
-              ($end_date && $current_time > $end_date))
-              continue;
-          $current_episode = null;
-          if (isset($subspecialty_id)){
-              $current_episodes  = Episode::model()->findAllByAttributes(array('patient_id'=>$current_element->patient_id));
-              foreach ($current_episodes as $episode){
-                  if ($episode->getSubspecialtyID() == $subspecialty_id){
-                      $current_episode = $episode;
-                  }
-              }
-          }else{
-              continue;
-          }
-          if (!isset($current_episode)){
-              continue;
-          }
-
-          $current_patient = $current_element->patient;
-          if (!array_key_exists($current_patient->id, $this->patient_list)){
-              $this->patient_list[$current_patient->id] = $current_patient;
-          }
-          if (isset($current_element->disorder_id)){
-              $disorder_id = $current_element->disorder_id;
-          }else{
-              continue;
-          }
-          $diagnosis_item = $current_element->disorder;
           $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
           if (array_key_exists($disorder_id, $disorder_patient_list)){
               if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
