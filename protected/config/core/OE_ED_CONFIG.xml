@@ -1029,6 +1029,11 @@
       <TITLE>Pterygium</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>EndothelialKeratoplasty</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>DMEK/DSAEK</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
   </DOODLE_LIST>
   <DOODLE_USAGE_LIST>
     <DOODLE_USAGE>
@@ -3896,6 +3901,20 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
                 </INDEX>
               </INDEX_LIST>
             </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>DMEK/DSAEK</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/EndothelialKeratoplasty.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>EndothelialKeratoplasty</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Endothelial Keratoplasty</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>EndothelialKeratoplasty</GOTO_DOODLE_CLASS_NAME>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+
           </INDEX_LIST>
         </INDEX>
       </INDEX_LIST>

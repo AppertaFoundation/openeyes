@@ -20,7 +20,7 @@
 <div class="eyedraw-row field-row anterior-segment">
 	<?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array('InjectionSite'),
+        'doodleToolBarArray' => array('InjectionSite', 'EndothelialKeratoplasty'),
         'onReadyCommandArray' => array(
                 array('addDoodle', array('AntSeg')),
                 array('addDoodle', array('InjectionSite')),
