@@ -707,68 +707,127 @@ class AnalyticsController extends BaseController
               }
           }
       }
+      // this is secondary_common_ophthalmic_disorders regarding to the latest comment by toby
+//      $secondary_common_ophthalmic_disorders = SecondaryToCommonOphthalmicDisorder::model()->findAll();
+//      foreach ($secondary_common_ophthalmic_disorders as $disorder){
+//          if(isset($disorder->disorder->id)){
+//              if ($disorder->parent->subspecialty_id !== $subspecialty_id)
+//                  continue;
+//              if (!array_key_exists($disorder->disorder->id, $disorder_patient_list)){
+//                  $disorder_patient_list[$disorder->disorder->id]= array(
+//                      'full_name' => $disorder->disorder->fully_specified_name,
+//                      'short_name' => $disorder->disorder->term,
+//                      'patient_list' => array(),
+//                  );
+//              }
+//          }
+//      }
 
-      //get all the diagnoses and the patient list
-      $diagnoses_elements = \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses::model()->findAll();
-      $all_patients = $this->getPatientsListByDiagnosisSurgeon($surgeon_id,$subspecialty_id);
-      foreach ($diagnoses_elements as $diagnosis_element_item){
+      $principal_diagnoses_elements = Episode::model()->findAll();
+      foreach ($principal_diagnoses_elements as $current_element){
           if (isset($surgeon_id)){
-              if ($surgeon_id !== $diagnosis_element_item->created_user_id){
+              if ($surgeon_id !== $current_element->created_user_id){
                   continue;
               }
           }
-          $current_event = $diagnosis_element_item->event;
-          if(isset($current_event->episode)) {
-              $current_time = Helper::mysqlDate2JsTimestamp($current_event->event_date);
-              if( ($start_date && $current_time < $start_date) ||
-                  ($end_date && $current_time > $end_date))
-                  continue;
-
-              $current_episode = $current_event->episode;
-              if ($current_episode->getSubspecialtyId() !== $subspecialty_id && isset($subspecialty_id))
-                  continue;
-              $current_patient = $current_episode->patient;
-              if (!array_key_exists($current_patient->id, $this->patient_list)){
-                  $this->patient_list[$current_patient->id] = $current_patient;
+          $current_time = Helper::mysqlDate2JsTimestamp($current_element->created_date);
+          if( ($start_date && $current_time < $start_date) ||
+              ($end_date && $current_time > $end_date))
+              continue;
+          if ($current_element->getSubspecialtyId() !== $subspecialty_id && isset($subspecialty_id))
+              continue;
+          $current_patient = $current_element->patient;
+          if (!array_key_exists($current_patient->id, $this->patient_list)){
+              $this->patient_list[$current_patient->id] = $current_patient;
+          }
+          if (isset($current_element->disorder_id)){
+              $disorder_id = $current_element->disorder_id;
+          }else{
+              continue;
+          }
+          $diagnosis_item = Disorder::model()->findByPk($disorder_id);
+          $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
+          if (array_key_exists($disorder_id, $disorder_patient_list)){
+              if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
+                  array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
               }
-              if (in_array($current_patient->id, $all_patients)){
-                    $all_patients = array_diff($all_patients,array(($current_patient->id)));
+          } else {
+              if (!array_key_exists($disorder_id, $other_disorder_list)){
+                  $other_disorder_list[$disorder_id]= array(
+                      'full_name' => $diagnosis_item->fully_specified_name,
+                      'short_name' => $diagnosis_item->term,
+                      'patient_list' => array(),
+                  );
               }
-              $diagnoses = $diagnosis_element_item->diagnoses;
-              foreach($diagnoses as $diagnosis_item){
+              if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])){
+                  array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
+              }
+              if(!in_array($current_patient->id, $other_patient_list)){
+                  array_push($other_patient_list, $current_patient->id);
+              }
+          }
+      }
 
-                  $disorder_id = $diagnosis_item->disorder->id;
-                  $disorder_list_csv[$diagnosis_item->disorder->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->disorder->term);
-                  if (array_key_exists($disorder_id, $disorder_patient_list)){
-                      if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
-                          array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
-                      }
-                  } else {
-                      if (!array_key_exists($disorder_id, $other_disorder_list)){
-                          $other_disorder_list[$disorder_id]= array(
-                              'full_name' => $diagnosis_item->disorder->fully_specified_name,
-                              'short_name' => $diagnosis_item->disorder->term,
-                              'patient_list' => array(),
-                          );
-                      }
-                      if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])){
-                          array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
-                      }
-                      if(!in_array($current_patient->id, $other_patient_list)){
-                          array_push($other_patient_list, $current_patient->id);
-                      }
+      $secondary_diagnosis_elements = SecondaryDiagnosis::model()->findAll();
+      foreach ($secondary_diagnosis_elements as $current_element){
+          if (isset($surgeon_id)){
+              if ($surgeon_id !== $current_element->created_user_id){
+                  continue;
+              }
+          }
+          $current_time = Helper::mysqlDate2JsTimestamp($current_element->created_date);
+          if( ($start_date && $current_time < $start_date) ||
+              ($end_date && $current_time > $end_date))
+              continue;
+          $current_episode = null;
+          if (isset($subspecialty_id)){
+              $current_episodes  = Episode::model()->findAllByAttributes(array('patient_id'=>$current_element->patient_id));
+              foreach ($current_episodes as $episode){
+                  if ($episode->getSubspecialtyID() == $subspecialty_id){
+                      $current_episode = $episode;
                   }
+              }
+          }else{
+              continue;
+          }
+          if (!isset($current_episode)){
+              continue;
+          }
+
+          $current_patient = $current_element->patient;
+          if (!array_key_exists($current_patient->id, $this->patient_list)){
+              $this->patient_list[$current_patient->id] = $current_patient;
+          }
+          if (isset($current_element->disorder_id)){
+              $disorder_id = $current_element->disorder_id;
+          }else{
+              continue;
+          }
+          $diagnosis_item = $current_element->disorder;
+          $disorder_list_csv[$diagnosis_item->term.$current_patient->id] = array($current_patient->getFirst_name(),$current_patient->getLast_name(),$current_patient->hos_num,$current_patient->dob,$current_patient->getAge(),$diagnosis_item->term);
+          if (array_key_exists($disorder_id, $disorder_patient_list)){
+              if(!in_array($current_patient->id, $disorder_patient_list[$disorder_id]['patient_list'])){
+                  array_push($disorder_patient_list[$disorder_id]['patient_list'], $current_patient->id);
+              }
+          } else {
+              if (!array_key_exists($disorder_id, $other_disorder_list)){
+                  $other_disorder_list[$disorder_id]= array(
+                      'full_name' => $diagnosis_item->fully_specified_name,
+                      'short_name' => $diagnosis_item->term,
+                      'patient_list' => array(),
+                  );
+              }
+              if (!in_array($current_patient->id, $other_disorder_list[$disorder_id]['patient_list'])){
+                  array_push($other_disorder_list[$disorder_id]['patient_list'], $current_patient->id);
+              }
+              if(!in_array($current_patient->id, $other_patient_list)){
+                  array_push($other_patient_list, $current_patient->id);
               }
           }
       }
 
       $i=0;
       foreach ($disorder_patient_list as $key=>$value) {
-          if ($disorder_patient_list[$key]['short_name'] == "No abnormality detected") {
-              if ($disorder_patient_list[$key]['short_name'] == "No abnormality detected") {
-                  $disorder_patient_list[$key]['patient_list'] = array_merge_recursive($disorder_patient_list[$key]['patient_list'], $all_patients);
-              }
-          }
           if (count($disorder_patient_list[$key]['patient_list'])) {
               $disorder_list['y'][] = $i;
               $disorder_list['x'][] = count($disorder_patient_list[$key]['patient_list']);
