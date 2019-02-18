@@ -18,7 +18,7 @@ class m150505_113604_doctor_grade extends CDbMigration
             'doctor_grade',
             array(
                 'id' => 'pk',
-                'grade' => 'varchar(250) not null',
+                'grade' => 'varchar(180) not null', ## This has been reduced from 250 due to it failing when migrating up from clean db. Longest entry in db at time of typing this was 43
                 'display_order' => 'int(3) not null',
             )
         );
