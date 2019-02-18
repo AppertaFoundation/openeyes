@@ -31,7 +31,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       ACIOL: 'ACIOLCrossSection',
       CornealOpacity: 'CornealOpacityCrossSection',
       Hypopyon: 'HypopyonCrossSection',
-      CornealGraft: 'CornealGraftCrossSection'
+      CornealGraft: 'CornealGraftCrossSection',
+      Hyphaema: 'HyphaemaCrossSection',
+      EndothelialKeratoplasty: 'EndothelialKeratoplastyCrossSection'
     }
   };
 
