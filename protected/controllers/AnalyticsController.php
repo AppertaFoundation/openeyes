@@ -803,7 +803,7 @@ class AnalyticsController extends BaseController
 //              }
 //          }
 //      }
-      $diagnoses = $this->queryDiagnosisFromExamiandOperation($subspecialty_id,$surgeon_id,$start_date,$end_date);
+      $diagnoses = $this->queryDiagnosis($subspecialty_id,$surgeon_id,$start_date,$end_date);
       foreach ($diagnoses as $current_diagnosis){
           $current_patient = Patient::model()->findByPk($current_diagnosis['patient_id']);
           if (!array_key_exists($current_patient->id, $this->patient_list)){
