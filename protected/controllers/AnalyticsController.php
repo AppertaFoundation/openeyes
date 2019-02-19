@@ -716,47 +716,6 @@ class AnalyticsController extends BaseController
     }
 
 
-    public function queryDiagnosisFromExamiandOperation($subspecialty_id = null, $surgeon_id =null, $start_date= null, $end_date=null){
-        $command_examination = Yii::app()->db->createCommand()
-            ->select('e2.patient_id as patient_id, od.disorder_id as disorder_id','DISTINCT')
-            ->from('ophciexamination_diagnosis od')
-            ->leftJoin('et_ophciexamination_diagnoses eod','od.element_diagnoses_id = eod.id')
-            ->leftJoin('event e','eod.event_id = e.id')
-            ->leftJoin('episode e2','e.episode_id = e2.id')
-            ->leftJoin('patient p','p.id = e2.patient_id')
-            ->leftJoin('firm f','e2.firm_id = f.id')
-            ->leftJoin('service_subspecialty_assignment ssa','f.service_subspecialty_assignment_id = ssa.id')
-            ->where('e.deleted = 0 and e2.deleted = 0 and p.deleted = 0');
-
-        $command_operationbooking = Yii::app()->db->createCommand()
-            ->select('e2.patient_id as patient_id, eod.disorder_id as disorder_id','DISTINCT')
-            ->from('et_ophtroperationbooking_diagnosis eod')
-            ->leftJoin('event e','eod.event_id = e.id')
-            ->leftJoin('episode e2','e.episode_id = e2.id')
-            ->leftJoin('patient p','p.id = e2.patient_id')
-            ->leftJoin('firm f','e2.firm_id = f.id')
-            ->leftJoin('service_subspecialty_assignment ssa','f.service_subspecialty_assignment_id = ssa.id')
-            ->where('e.deleted = 0 and e2.deleted = 0 and p.deleted = 0');
-        if (isset($subspecialty_id)){
-            $command_examination->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
-            $command_operationbooking->andWhere('ssa.subspecialty_id = :subspecialty_id', array(':subspecialty_id'=>$subspecialty_id));
-        }
-        if (isset($surgeon_id)){
-            $command_examination->andWhere('od.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
-            $command_operationbooking->andWhere('eod.created_user_id = :surgeon_id', array(':surgeon_id'=>$surgeon_id));
-        }
-        if (isset($start_date) && $start_date !== 0){
-            $command_examination->andWhere('od.created_date > TIMESTAMP("'.$start_date.'")');
-            $command_operationbooking->andWhere('eod.created_date > TIMESTAMP("'.$start_date.'")');
-        }
-        if (isset($end_date)){
-            $command_examination->andWhere('od.created_date < TIMESTAMP("'.$end_date.'")');
-            $command_operationbooking->andWhere('eod.created_date < TIMESTAMP("'.$end_date.'")');
-        }
-        $examination_diagnoses = $command_examination->queryAll();
-        $operationbooking_diagnoses = $command_operationbooking->queryAll();
-        return array_merge_recursive($examination_diagnoses,$operationbooking_diagnoses);
-    }
 
   public function getDisorders($subspecialty_id=null, $surgeon_id = null, $start_date = null, $end_date = null){
       $disorder_list = array(
