@@ -17,12 +17,12 @@
  */
 ?>
 <?php
-$glaucoma_subspecialty = Subspecialty::model()->findByAttributes(['name' => 'Glaucoma']);
-$subspecialty = Firm::model()->findByPk($this->selectedFirmId)->getSubspecialtyID();
+$firm_subspecialty = Firm::model()->findByPk($this->selectedFirmId)->getSubspecialtyID();
+$subspecialty = Subspecialty::model()->findByPk($firm_subspecialty);
 $mode = 'Basic';
-if($subspecialty == $glaucoma_subspecialty->id){
-    $expert = SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $glaucoma_subspecialty->id, 'key' => 'expert'])->value;
-    if($expert){
+if($subspecialty && $subspecialty->id){
+    $expert = SettingSubspecialty::model()->findByAttributes(['subspecialty_id' => $subspecialty->id, 'key' => 'expert']);
+    if($expert && $expert->value === "1"){
         $mode = 'Expert';
     }
 }
