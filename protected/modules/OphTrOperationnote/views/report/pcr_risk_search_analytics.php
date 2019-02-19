@@ -17,34 +17,25 @@
  */
 ?>
 
+    <form class="report-search-form mdl-color-text--grey-600" action="/report/reportData" style="display: none;">
+        <input type="hidden" name="report" value="<?= $report->getApp()->getRequest()->getQuery('report'); ?>" />
+        <fieldset>
+            <div id="search-form-to-side-bar">
+            <div class="mdl-selectfield">
+                <h3>Rendering mode</h3>
+                <select name="mode" id="pcr-risk-mode" style="font-size: 1em; width: inherit" >
+                    <?php foreach ($modes as $mode):?>
+                        <option value="<?=$mode['id']?>"><?=$mode['name']?></option>
+                    <?php endforeach;?>
+                </select>
+            </div>
+            </div>
+            <div>
+                <button type="submit" name="action">Submit</button>
+            </div>
+        </fieldset>
+    </form>
+
 <?php
-$uri_append = $this->getUriAppend();
+// select class="browser-default"
 ?>
-<ul class="pagination">
-    <li class="previous<?php echo $this->page <= 1 ? ' unavailable' : '';?>">
-        <?=\CHtml::link(
-            '&lt; Previous',
-            Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page - 1).$uri_append),
-            array('rel' => 'back')
-        )?>
-    </li>
-
-    <?php for ($i = 1;$i <= $this->pages;++$i) {?>
-        <li class="page<?php echo $i == $this->page ? ' current' : '';?>">
-            <?=\CHtml::link(
-                $i,
-                Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.$i.$uri_append),
-                array('rel' => $i)
-            )?>
-        </li>
-    <?php }?>
-
-
-    <li class="next<?php echo !$this->pages || $this->page == $this->pages ? ' unavailable' : '';?>">
-        <?=\CHtml::link(
-            'Next &gt;',
-            Yii::app()->createUrl('/OphTrOperationbooking/transport/index?page='.($this->page + 1).$uri_append),
-            array('rel' => 'back')
-        )?>
-    </li>
-</ul>
