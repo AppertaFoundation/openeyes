@@ -168,12 +168,6 @@ class HistoryMedications extends BaseMedicationElement
         return parent::model($className);
     }
 
-    public function __toString()
-    {
-        return 'Current: ' . implode(' <br /> ', $this->currentOrderedEntries) .
-            ' Stopped: ' . implode(' <br /> ', $this->stoppedOrderedEntries);
-    }
-
     public function getEntryRelations()
     {
         $usage_type_condition = "usage_type = '".\EventMedicationUse::getUsageType()."' AND usage_subtype = '".\EventMedicationUse::getUsageSubtype()."'";
