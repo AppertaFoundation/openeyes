@@ -21,7 +21,7 @@
     switch(Yii::app()->controller->module->id){
         case 'OphCoCorrespondence':
             $printHelperClass = 'OphCoCorrespondence large-font';
-            $printHelperStyles = 'margin: 50px; padding: 0; margin-bottom: 68.6em;';
+            $printHelperStyles = 'margin-top: 25px; margin-right: 87px; margin-left: 87px; padding: 0px;';
             break;
         case 'OphTrConsent':
             $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
